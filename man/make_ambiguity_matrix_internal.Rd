@@ -8,7 +8,7 @@ function}
 make_ambiguity_matrix_internal(ambiguities)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{ambiguities}{Ambiguities matrix produced by \code{get_ambiguities()}}
 }
 \description{
 Internal function that transforms the ambiguity list into an indicator
