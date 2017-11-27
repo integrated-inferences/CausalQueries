@@ -15,8 +15,3 @@ A DAG
 \description{
 Make a DAG
 }
-\examples{
-
-
-
-}

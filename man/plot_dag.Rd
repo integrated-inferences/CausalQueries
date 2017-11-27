@@ -16,13 +16,13 @@ dagitty translation of DAG
 Plot your dag using dagitty
 }
 \examples{
-
+\dontrun{
 dag <- make_dag(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
 plot_dag(dag)
-
+}
 
 }

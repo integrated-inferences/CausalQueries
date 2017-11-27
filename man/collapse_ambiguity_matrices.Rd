@@ -16,9 +16,11 @@ RETURN_DESCRIPTION
 FUNCTION_DESCRIPTION
 }
 \examples{
+
+\dontrun{
 test_dag <-
      gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
      								add_edges(parent = c("K"),children = "Y"))
 gbiqq::collapse_ambiguity_matrices(test_dag)
-
+}
 }

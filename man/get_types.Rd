@@ -16,13 +16,13 @@ A list of parents in a DAG
 Get list of types for variables in a DAG
 }
 \examples{
-
+\dontrun{
 dag <- make_dag(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
 get_types(dag)
-
+}
 
 }

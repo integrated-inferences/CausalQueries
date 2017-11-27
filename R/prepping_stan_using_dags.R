@@ -145,7 +145,7 @@ make_ambiguity_matrices <- function(dag){
 #' @return A list of mappings between types and data
 map_types_to_data <- function(dag){
 	possible_data <- get_possible_data(dag)
-	types <- get_types(dag)
+	# types <- get_types(dag)
 	variables <- get_variables(dag)
 	# type_indices <- get_type_indices(dag)
 	parents <- get_parents(dag)

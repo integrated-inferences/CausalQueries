@@ -34,11 +34,13 @@ make_adjacency_matrix <- function(dag) {
 #'
 #' @return RETURN_DESCRIPTION
 #' @examples
+#'
+#' \dontrun{
 #' test_dag <-
 #'      gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
 #'      								add_edges(parent = c("K"),children = "Y"))
 #' gbiqq::collapse_ambiguity_matrices(test_dag)
-#'
+#' }
 #' @export
 collapse_ambiguity_matrices <- function(dag) {
 

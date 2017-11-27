@@ -9,7 +9,7 @@ add_edges(parent, children)
 \arguments{
 \item{parent}{Character. The name of the parent variable.}
 
-\item{chilren}{Character scalar or vector. The name(s) of the child(ren) variable(s).}
+\item{children}{Character scalar or vector. The name(s) of the child(ren) variable(s).}
 }
 \value{
 Edge(s) in a DAG
@@ -18,10 +18,10 @@ Edge(s) in a DAG
 Add edges to a DAG
 }
 \examples{
-
+\dontrun{
 dag1 <- make_dag(
 add_edges(parent = "X",children = c("K","Y")),
 add_edges(parent = "K",children = "Y")
 )
-
+}
 }

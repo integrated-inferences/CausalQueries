@@ -17,12 +17,13 @@ Get list of parent variables in a dag
 }
 \examples{
 
+\dontrun{
 dag <- make_dag(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
 get_parents(dag)
-
+}
 
 }
