@@ -7,14 +7,14 @@
 #' @return dagitty translation of DAG
 #'
 #' @examples
-#'
+#' \dontrun{
 #' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
 #' translate_dagitty(dag)
-#'
+#' }
 #'
 translate_dagitty <- function(dag){
 	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "),collapse = " ; "),collapse = "")
@@ -31,14 +31,14 @@ translate_dagitty <- function(dag){
 #' @return dagitty translation of DAG
 #'
 #' @examples
-#'
+#' \dontrun{
 #' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
 #' plot_dag(dag)
-#'
+#' }
 #'
 
 plot_dag <- function(dag){

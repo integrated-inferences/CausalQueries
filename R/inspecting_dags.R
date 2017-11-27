@@ -8,13 +8,14 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
 #' get_parents(dag)
-#'
+#' }
 #'
 get_parents <- function(dag){
 	if(nrow(dag)>1){
@@ -49,14 +50,14 @@ get_parents <- function(dag){
 #' @return A list of parents in a DAG
 #'
 #' @examples
-#'
+#' \dontrun{
 #' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
 #' get_types(dag)
-#'
+#' }
 #'
 get_types <- function(dag){
 
@@ -124,7 +125,7 @@ get_variables <- function(dag){
 
 #' Get observable data implied by DAG
 #'
-#' @param dag A dag created by make_dag()
+#' @param variables A dag created by make_dag()
 #'
 #' @export
 #'
@@ -157,9 +158,10 @@ get_observable_data <- function(variables){
 #'
 #' @examples
 #'
+#' \dontrun{
 #' perm(c(2,2,2))
-#'
-perm <- function (v) {
+#' }
+perm <- function(v) {
 	sapply(1:length(v), function(x) {
 		rep(rep(1:v[x], each = prod(v[x:length(v)])/v[x]), length.out = prod(v))
 	}) - 1

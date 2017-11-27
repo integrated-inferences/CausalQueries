@@ -7,7 +7,7 @@
 get_observable_data(variables)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{variables}{A dag created by make_dag()}
 }
 \value{
 A list of data realizations
