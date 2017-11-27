@@ -16,7 +16,7 @@ get_possible_data <- function(dag,
 	for (variable in variables) {
 		# var_types <- types[variable][[1]]
 		var_parents <- parents[variable][[1]]
-		var_variables <- c(variable,var_parents)
+		var_variables <- c(var_parents,variable)
 		possible_data <- do.call(
 			what = "expand.grid",
 			args = lapply(

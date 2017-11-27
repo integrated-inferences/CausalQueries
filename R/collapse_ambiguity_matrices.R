@@ -105,7 +105,7 @@ collapse_ambiguity_matrices <- function(dag) {
 		} else {
 			# else we have to go through all endogenous parents of the terminal child and merge them into child's
 			# ambiguity matrix
-			collapsed_ambiguity[[ paste0(c(names(collapse_list)[i], collapse_list[[i]]), collapse = "_") ]] <-
+			collapsed_ambiguity[[ paste0(c(collapse_list[[i]], names(collapse_list)[i]), collapse = "_") ]] <-
 				ambiguity_matrices[[names(collapse_list)[i]]]
 
 			for (j in seq_along(collapse_list[[i]])) {
@@ -114,12 +114,13 @@ collapse_ambiguity_matrices <- function(dag) {
 				.parent_data <- possible_data[[collapse_list[[i]][j]]]
 				.parent_ambiguity <- ambiguity_matrices[[collapse_list[[i]][j]]]
 				.child_data <- possible_data[[names(collapse_list)[i]]]
-				.child_ambiguity <- collapsed_ambiguity[[ paste0(c(names(collapse_list)[i], collapse_list[[i]]), collapse = "_") ]]
+				.child_ambiguity <- collapsed_ambiguity[[ paste0(c(collapse_list[[i]], names(collapse_list)[i]), collapse = "_") ]]
 
 				# create matrixes mergable by possible data columns
 				# (only parent columns, since they all have to be in child!)
 				endogenous_parent <- cbind(.parent_data, .parent_ambiguity)
 				endogenous_child <- cbind(.child_data, .child_ambiguity)
+
 
 				# inner join (modified) terminal parent and child to create temporary matrix with:
 				# 1. all possible_data columns for terminal child
@@ -144,8 +145,8 @@ collapse_ambiguity_matrices <- function(dag) {
 										# parent ambiguity values
 										.row_parent <- row[(ncol(endogenous_child) + 1):ncol(endogenous_parent_child)]
 										# create df with all possible combinations of parent and child
-										.grid_df <- expand.grid(child = 1:ncol(.child_ambiguity),
-																						parent = 1:ncol(.parent_ambiguity))
+										.grid_df <- expand.grid(parent = 1:ncol(.parent_ambiguity),
+																						child = 1:ncol(.child_ambiguity))
 										# multiply
 										return(.row_child[.grid_df$child] * .row_parent[.grid_df$parent])
 									}
@@ -158,13 +159,16 @@ collapse_ambiguity_matrices <- function(dag) {
 				}
 
 				# name the collapsed object using the "_" as a separator and inheriting row names
-				rownames(collapsed) <- rownames( .child_ambiguity )
-				colnames(collapsed) <- apply(expand.grid(child = colnames(.child_ambiguity),
-																								 parent = colnames(.parent_ambiguity)),
+				# note that row order changes due to merge behavior in creation of endogenous_parent_child
+				rownames(collapsed) <- apply(endogenous_parent_child[,colnames(.child_data)],
+																		 MARGIN = 1,
+																		 FUN = paste, collapse = "")
+				colnames(collapsed) <- apply(expand.grid(parent = colnames(.parent_ambiguity),
+																								 child = colnames(.child_ambiguity)),
 																		 MARGIN = 1,
 																		 FUN = paste, collapse = "_")
 
-				collapsed_ambiguity[[ paste0(c(names(collapse_list)[i], collapse_list[[i]]), collapse = "_") ]] <- collapsed
+				collapsed_ambiguity[[ paste0(c(collapse_list[[i]], names(collapse_list)[i]), collapse = "_") ]] <- collapsed
 
 			}
 
