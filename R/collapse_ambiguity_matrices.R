@@ -48,7 +48,7 @@ collapse_ambiguity_matrices <- function(dag) {
 	ambiguity_matrices <- make_ambiguity_matrices(dag)
 	possible_data <- gbiqq::get_possible_data(dag, collapse = FALSE)
 	# parents <- gbiqq::get_parents(dag)
-	endogenous_adj_matrix <- gbiqq::make_adjacency_matrix(test_dag)[endogenous,endogenous, drop = FALSE]
+	endogenous_adj_matrix <- gbiqq::make_adjacency_matrix(dag)[endogenous,endogenous, drop = FALSE]
 
 	# ## create adjacency matrix for endogenous variables only
 	# endogenous_adj_matrix <-
