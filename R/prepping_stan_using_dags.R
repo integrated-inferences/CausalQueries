@@ -1,18 +1,20 @@
 
 #' This creates a list of all possible data realizations, for each child
-#' @param dag A dag created by make_dag()
+#' @param dag A dag created by \code{make_dag()}
+#' @param collapse whaether to collapse possible data
 #'
 #' @export
 #'
 #' @return A list of all data realizations possible
-get_possible_data <- function(dag){
+get_possible_data <- function(dag,
+															collapse = TRUE){
 	variables <- get_variables(dag)
 	parents <- get_parents(dag)
-	types <- get_types(dag)
+	# types <- get_types(dag)
 
 	possible_data_list <- list()
 	for (variable in variables) {
-		var_types <- types[variable][[1]]
+		# var_types <- types[variable][[1]]
 		var_parents <- parents[variable][[1]]
 		var_variables <- c(variable,var_parents)
 		possible_data <- do.call(
@@ -22,7 +24,11 @@ get_possible_data <- function(dag){
 				FUN = function(x) 0:1
 			)
 		)
-		possible_data <- apply(possible_data,1,paste,collapse = "")
+		if (collapse) {
+			possible_data <- apply(possible_data,1,paste,collapse = "")
+		} else if (!collapse) {
+			names(possible_data) <- var_variables
+		}
 
 		possible_data_list[variable][[1]] <- possible_data
 
