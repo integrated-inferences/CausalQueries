@@ -1,89 +1,302 @@
 rm(list = ls())
 library(gbiqq)
 
-dag <-
-	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
-									add_edges(parent = c("K"),children = "Y"))
-
+dag <- gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
+											 add_edges(parent = c("K"),children = "Y"))
 
 A <- gbiqq::collapse_ambiguity_matrices(dag)$Y_K
 
-get_types(dag)
+get_possible_data(dag)
+exogenous_value <- rep(c(0,0,1,1),2)
 
-# Can Y type 1 and K type 4 produce 010, assuming: Y = 0, X = 1 , K = 0
-# Y type 1:
-# 00 01 10 11
-# 0  0  0  0
-# K type 4:
-# 0 1
-# 1 1
+# MH BIQQ Code ------------------------------------------------------------
+
+biqq_loop <- function(lambda_Y,lambda_K,pi){
+	# Taken from implement_biqq_ABCD_from_primitives
+	# Generate matrix of types
+	causal_type <- function(iK, iY){
+		Y0 <- lambda_Y_types[iY, 1 + lambda_K_types[iK,1]]     #X=0, K= K(0)
+		Y1 <- lambda_Y_types[iY, 3 + lambda_K_types[iK,2]]
+		type <- 1 + (Y0 + 2*Y1)
+		(c(3,1,2,4))[type]
+	}
+	lambda_Y_types <- matrix(perm(rep(2,4)), 16, 4)
+	lambda_K_types <- matrix(perm(rep(2,2)), 4, 2)
+	types <- t(sapply(1:16, function(iY){sapply(1:4, function(iK) {causal_type(iK, iY)})} ))
+
+	# Parameters
+	w_XKY <- rep(0,8)
+
+	for (i in 1:16) {
+		for (j in 1:2)  {
+			# // X = 0, K = 0, Y = 0
+			if (types[i,j] == 2  || types[i,j] == 3 ) w_XKY[1] = w_XKY[1] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
+
+			# // X = 0, K = 1, Y = 0
+			if(types[i,j] == 1  || types[i,j] == 4 ) w_XKY[3] = w_XKY[3] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
+
+			# // X = 1, K = 0, Y = 0
+			if(types[i,j] == 1  || types[i,j] == 3 )  w_XKY[5]  =  w_XKY[5] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
+
+			# // X = 1, K = 0 , Y = 1
+			if(types[i,j] == 2  || types[i,j] == 4 ) w_XKY[7]  =  w_XKY[7] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
+		}
+
+		for (j in 3:4)  {
+			# // X = 0, K = 0, Y = 1
+			if(types[i,j] == 2  || types[i,j] == 3 ) w_XKY[2] = w_XKY[2] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
+
+			# // X = 0, K = 1, Y = 1
+			if(types[i,j] == 1  || types[i,j] == 4 ) w_XKY[4]  =  w_XKY[4] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
+
+			# // X = 1, K = 1, Y = 0
+			if(types[i,j] == 1  || types[i,j] == 3 ) w_XKY[6]  =  w_XKY[6] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
+
+			# // X = 1, K = 1, Y = 1
+			if(types[i,j] == 2  || types[i,j] == 4 ) w_XKY[8]  =  w_XKY[8] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
+		}}
+
+	# Here is a bunch of jazz to get it back into a comparable order
+	reorder_mat <- rbind(
+		data.frame(X = 0,K = 0,Y = 0),
+		data.frame(X = 0,K = 1,Y = 0),
+		data.frame(X = 1,K = 0,Y = 0),
+		data.frame(X = 1,K = 0,Y = 1),
+		data.frame(X = 0,K = 0,Y = 1),
+		data.frame(X = 0,K = 1,Y = 1),
+		data.frame(X = 1,K = 1,Y = 0),
+		data.frame(X = 1,K = 1,Y = 1)
+	)
+	reorder_mat$w <- w_XKY
+	reorder_mat$data_event <- with(reorder_mat,paste0("X",X,",K",K,",Y",Y))
+	reorder_mat <- dplyr::arrange(reorder_mat,data_event)
+	w <- reorder_mat$w
+	names(w) <- reorder_mat$data_event
+	return(w)
+}
+
+
+
+
+
+# biqq_lower test ---------------------------------------------------------
+biqq_lower <- function(lambda_Y,lambda_K,pi){
+	abcd <- rep(0,4)
+	w_XY <- rep(0,4)
+	w_XYK <- rep(0,8)
+
+	names(w_XYK) <- c( "X = 0,Y = 0,K = 0",
+										 "X = 0,Y = 0,K = 1",
+										 "X = 0,Y = 1,K = 0",
+										 "X = 0,Y = 1,K = 1",
+										 "X = 1,Y = 0,K = 0",
+										 "X = 1,Y = 0,K = 1",
+										 "X = 1,Y = 1,K = 0",
+										 "X = 1,Y = 1,K = 1")
+	abcd[1] = (
+		(lambda_Y[9]+lambda_Y[10]+lambda_Y[13]+lambda_Y[14])*lambda_K[1]+
+			(lambda_Y[9]+lambda_Y[11]+lambda_Y[13]+lambda_Y[15])*lambda_K[2]+
+			(lambda_Y[5]+lambda_Y[6] +lambda_Y[13]+lambda_Y[14])*lambda_K[3]+
+			(lambda_Y[5]+lambda_Y[7] +lambda_Y[13]+lambda_Y[15])*lambda_K[4]
+	);
+	abcd[2] = (
+		(lambda_Y[3]+lambda_Y[4]+lambda_Y[7]+lambda_Y[8])*lambda_K[1]+
+			(lambda_Y[2]+lambda_Y[4]+lambda_Y[6]+lambda_Y[8])*lambda_K[2]+
+			(lambda_Y[3]+lambda_Y[4]+lambda_Y[11]+lambda_Y[12])*lambda_K[3]+
+			(lambda_Y[2]+lambda_Y[4]+lambda_Y[10]+lambda_Y[12])*lambda_K[4]
+	) ;
+	abcd[3] = (
+		(lambda_Y[1]+lambda_Y[2]+lambda_Y[5]+lambda_Y[6])* lambda_K[1]+
+			(lambda_Y[1]+lambda_Y[3]+lambda_Y[5]+lambda_Y[7])* lambda_K[2]+
+			(lambda_Y[1]+lambda_Y[2]+lambda_Y[9]+lambda_Y[10])*lambda_K[3]+
+			(lambda_Y[1]+lambda_Y[3]+lambda_Y[9]+lambda_Y[11])*lambda_K[4]
+	);
+	abcd[4] = (
+		(lambda_Y[11]+lambda_Y[12]+lambda_Y[15]+lambda_Y[16])*lambda_K[1]+
+			(lambda_Y[10]+lambda_Y[12]+lambda_Y[14]+lambda_Y[16])*lambda_K[2]+
+			(lambda_Y[7] +lambda_Y[8] +lambda_Y[15]+lambda_Y[16])*lambda_K[3]+
+			(lambda_Y[6] +lambda_Y[8] +lambda_Y[14]+lambda_Y[16])*lambda_K[4]
+	);
+
+
+
+	pi_a = (
+		(lambda_Y[9]*pi[9,1] + lambda_Y[10]*pi[10,1] + lambda_Y[13]*pi[13,1] + lambda_Y[14]*pi[14,1])*lambda_K[1] +
+			(lambda_Y[9]*pi[9,2] + lambda_Y[11]*pi[11,2] + lambda_Y[13]*pi[13,2] + lambda_Y[15]*pi[15,2])*lambda_K[2] +
+			(lambda_Y[5]*pi[5,3] + lambda_Y[6]*pi[6,3]   + lambda_Y[13]*pi[13,3] + lambda_Y[14]*pi[14,3])*lambda_K[3] +
+			(lambda_Y[5]*pi[5,4] + lambda_Y[7]*pi[7,4]   + lambda_Y[13]*pi[13,4] + lambda_Y[15]*pi[15,4])*lambda_K[4])/abcd[1];
+
+	pi_b = (
+		(lambda_Y[3]*pi[3,1] + lambda_Y[4]*pi[4,1] + lambda_Y[7]*pi[7,1]   + lambda_Y[8]*pi[8,1])*lambda_K[1] +
+			(lambda_Y[2]*pi[2,2] + lambda_Y[4]*pi[4,2] + lambda_Y[6]*pi[6,2]   + lambda_Y[8]*pi[8,2])*lambda_K[2] +
+			(lambda_Y[3]*pi[3,3] + lambda_Y[4]*pi[4,3] + lambda_Y[11]*pi[11,3] + lambda_Y[12]*pi[12,3])*lambda_K[3] +
+			(lambda_Y[2]*pi[2,4] + lambda_Y[4]*pi[4,4] + lambda_Y[10]*pi[10,4] + lambda_Y[12]*pi[12,4])*lambda_K[4])/abcd[2];
+
+
+	pi_c = (
+		(lambda_Y[1]*pi[1,1] + lambda_Y[2]*pi[2,1] + lambda_Y[5]*pi[5,1]  + lambda_Y[6]*pi[6,1])*lambda_K[1] +
+			(lambda_Y[1]*pi[1,2] + lambda_Y[3]*pi[3,2] + lambda_Y[5]*pi[5,2]  + lambda_Y[7]*pi[7,2])*lambda_K[2] +
+			(lambda_Y[1]*pi[1,3] + lambda_Y[2]*pi[2,3] + lambda_Y[9]*pi[9,3]  + lambda_Y[10]*pi[10,3])*lambda_K[3] +
+			(lambda_Y[1]*pi[1,4] + lambda_Y[3]*pi[3,4] + lambda_Y[9]*pi[9,4]  + lambda_Y[11]*pi[11,4])*lambda_K[4]
+	)/abcd[3];
+
+	pi_d = (
+		(lambda_Y[11]*pi[11,1] + lambda_Y[12]*pi[12,1] + lambda_Y[15]*pi[15,1] + lambda_Y[16]*pi[16,1])*lambda_K[1] +
+			(lambda_Y[10]*pi[10,2] + lambda_Y[12]*pi[12,2] + lambda_Y[14]*pi[14,2] + lambda_Y[16]*pi[16,2])*lambda_K[2] +
+			(lambda_Y[7]*pi[7,3]   + lambda_Y[8]*pi[8,3]   + lambda_Y[15]*pi[15,3] + lambda_Y[16]*pi[16,3])*lambda_K[3] +
+			(lambda_Y[6]*pi[6,4]   + lambda_Y[8]*pi[8,4]   + lambda_Y[14]*pi[14,4] + lambda_Y[16]*pi[16,4])*lambda_K[4]
+	)/abcd[4];
+
+	# u_K3 and U_K4
+	phi_a_0 = (
+		(lambda_Y[5]*(1-pi[5,3])  + lambda_Y[6]*(1-pi[6,3])  +  lambda_Y[13]*(1-pi[13,3])  + lambda_Y[14]*(1-pi[14,3]))*lambda_K[3] +
+			(lambda_Y[5]*(1-pi[5,4])  + lambda_Y[7]*(1-pi[7,4])  +  lambda_Y[13]*(1-pi[13,4])  + lambda_Y[15]*(1-pi[15,4]))*lambda_K[4]
+	)/(abcd[1]*(1-pi_a));
+
+	phi_b_0 = (
+		(lambda_Y[3]*(1-pi[3,3])  + lambda_Y[4]*(1-pi[4,3]) +  lambda_Y[11]*(1-pi[11,3])   + lambda_Y[12]*(1-pi[12,3]))*lambda_K[3]+
+			(lambda_Y[2]*(1-pi[2,4])  + lambda_Y[4]*(1-pi[4,4])  +  lambda_Y[10]*(1-pi[10,4])  + lambda_Y[12]*(1-pi[12,4]))*lambda_K[4]
+	)/(abcd[2]*(1-pi_b));
+
+	phi_c_0 = (
+		(lambda_Y[1]*(1-pi[1,3])  +  lambda_Y[2]*(1-pi[2,3]) +  lambda_Y[9]*(1-pi[9,3])  +  lambda_Y[10]*(1-pi[10,3]))*lambda_K[3]+
+			(lambda_Y[1]*(1-pi[1,4])  +  lambda_Y[3]*(1-pi[3,4])  +  lambda_Y[9]*(1-pi[9,4])  +  lambda_Y[11]*(1-pi[11,4]))*lambda_K[4]
+	)/(abcd[3]*(1-pi_c));
+
+	phi_d_0 = (
+		(lambda_Y[7]*(1-pi[7,3])  +  lambda_Y[8]*(1-pi[8,3])  +  lambda_Y[15]*(1-pi[15,3])  +  lambda_Y[16]*(1-pi[16,3]))*lambda_K[3]+
+			(lambda_Y[6]*(1-pi[6,4])  +  lambda_Y[8]*(1-pi[8,4])  +  lambda_Y[14]*(1-pi[14,4])  +  lambda_Y[16]*(1-pi[16,4]))*lambda_K[4]
+	)/(abcd[4]*(1-pi_d));
+
+
+	# u_K2 and U_K4
+	phi_a_1 = ((lambda_Y[9]*(pi[9,2])  +  lambda_Y[11]*(pi[11,2])  +  lambda_Y[13]*(pi[13,2])  +  lambda_Y[15]*(pi[15,2]))*lambda_K[2]  +
+						 	(lambda_Y[5]*(pi[5,4])  +  lambda_Y[7]*(pi[7,4])    +  lambda_Y[13]*(pi[13,4])  +  lambda_Y[15]*(pi[15,4]))*lambda_K[4] )/(abcd[1]*(pi_a));
+
+	phi_b_1 = ((lambda_Y[2]*(pi[2,2])  +  lambda_Y[4]*(pi[4,2])  +  lambda_Y[6]*(pi[6,2])  +  lambda_Y[8]*(pi[8,2]))*lambda_K[2]  +
+						 	(lambda_Y[2]*(pi[2,4])  +  lambda_Y[4]*(pi[4,4])    +  lambda_Y[10]*(pi[10,4])  +  lambda_Y[12]*(pi[12,4]))*lambda_K[4] )/(abcd[2]*(pi_b));
+
+	phi_c_1 = ((lambda_Y[1]*(pi[1,2])  +  lambda_Y[3]*(pi[3,2])  +  lambda_Y[5]*(pi[5,2])  +  lambda_Y[7]*(pi[7,2]))*lambda_K[2]  +
+						 	(lambda_Y[1]*(pi[1,4])  +  lambda_Y[3]*(pi[3,4])    +  lambda_Y[9]*(pi[9,4])  +  lambda_Y[11]*(pi[11,4]))*lambda_K[4] )/(abcd[3]*(pi_c));
+
+	phi_d_1 = ((lambda_Y[10]*(pi[10,2])  +  lambda_Y[12]*(pi[12,2])  +  lambda_Y[14]*(pi[14,2])  +  lambda_Y[16]*(pi[16,2]))*lambda_K[2]  +
+						 	(lambda_Y[6]*(pi[6,4])  +  lambda_Y[8]*(pi[8,4])    +  lambda_Y[14]*(pi[14,4])  +  lambda_Y[16]*(pi[16,4]))*lambda_K[4] )/(abcd[4]*(pi_d));
+
+
+
+	w_XY[1] =  (1-pi_b)*abcd[2]          +(1-pi_c)*abcd[3]
+	w_XY[2] =  (1-pi_a)*abcd[1]          +(1-pi_d)*abcd[4]
+	w_XY[3] =  pi_a*abcd[1]              +pi_c*abcd[3]
+	w_XY[4] =  pi_b*abcd[2]              +pi_d*abcd[4]
+
+
+	w_XYK[1] =  (1-pi_b)*(1-phi_b_0)*abcd[2] +(1-pi_c)*(1-phi_c_0)*abcd[3] ;
+	w_XYK[2] =  (1-pi_b)*phi_b_0*abcd[2]     +(1-pi_c)*phi_c_0*abcd[3]     ;
+
+	w_XYK[3] =  (1-pi_a)*(1-phi_a_0)*abcd[1] +(1-pi_d)*(1-phi_d_0)*abcd[4] ;
+	w_XYK[4] =  (1-pi_a)*phi_a_0*abcd[1]     +(1-pi_d)*phi_d_0*abcd[4]     ;
+
+	w_XYK[5] =  pi_a*(1-phi_a_1)*abcd[1]     +pi_c*(1-phi_c_1)*abcd[3]     ;
+	w_XYK[6] =  pi_a*phi_a_1*abcd[1]         +pi_c*phi_c_1*abcd[3]         ;
+
+	w_XYK[7] =  pi_b*(1-phi_b_1)*abcd[2]     +pi_d*(1-phi_d_1)*abcd[4]     ;
+	w_XYK[8] =  pi_b*phi_b_1*abcd[2]         +pi_d*phi_d_1*abcd[4]         ;
+
+	# Here is a bunch of jazz to get it back into a comparable order
+	reorder_mat <- rbind(
+		data.frame(X = 0,K = 0,Y = 0),
+		data.frame(X = 0,K = 1,Y = 0),
+		data.frame(X = 0,K = 0,Y = 1),
+		data.frame(X = 0,K = 1,Y = 1),
+		data.frame(X = 1,K = 0,Y = 0),
+		data.frame(X = 1,K = 1,Y = 0),
+		data.frame(X = 1,K = 0,Y = 1),
+		data.frame(X = 1,K = 1,Y = 1)
+	)
+	reorder_mat$w <- w_XYK
+	reorder_mat$data_event <- with(reorder_mat,paste0("X",X,",K",K,",Y",Y))
+	reorder_mat <- dplyr::arrange(reorder_mat,data_event)
+	w <- reorder_mat$w
+	names(w) <- reorder_mat$data_event
+	return(w)
+}
+
+# Test --------------------------------------------------------------------
+
+# Our matrix algebra using pi, lambda and A should produce w_XKY
+
+# test <- expand.grid(lambda_K = lambda_K,lambda_Y = lambda_Y)
+# test_pi <- expand.grid(lambda_K = 1:4,lambda_Y = 1:16)
+#
+# pi_indices <- matrix(paste0(test_pi[,1],"_",test_pi[,2]),nrow = 16,byrow = TRUE)
+# matrix(t(pi_indices),nrow = 1)
+
+
+# lambda_2 <- test[,1] * test[,2]
+
+# temp <- lambda_K[3]
+# lambda_K[3] <- lambda_K[2]
+# lambda_K[2] <- temp
+
+
+
+
+biqq_matrix <- function(lambda_Y,lambda_K,pi,exogenous_value,A){
+	# Likelihood:
+	lambda <- matrix(t(lambda_K) %*% lambda_Y,nrow = 1)
+	pi_1 <- matrix(t(pi),nrow = 1)
+	pi_0 <- 1-pi_1
+	pi_new <- exogenous_value %*% pi_1 + (1 - exogenous_value) %*% pi_0
+	w_XKY <- lambda %*% t(A*pi_new)
+
+	# Here is a bunch of jazz to get it back into a comparable order
+	reorder_mat <- rbind(
+		data.frame(X = 0,K = 0,Y = 0),
+		data.frame(X = 0,K = 0,Y = 1),
+		data.frame(X = 1,K = 0,Y = 0),
+		data.frame(X = 1,K = 0,Y = 1),
+		data.frame(X = 0,K = 1,Y = 0),
+		data.frame(X = 0,K = 1,Y = 1),
+		data.frame(X = 1,K = 1,Y = 0),
+		data.frame(X = 1,K = 1,Y = 1)
+	)
+	reorder_mat$w <- w_XYK
+	reorder_mat$data_event <- with(reorder_mat,paste0("X",X,",K",K,",Y",Y))
+	reorder_mat <- dplyr::arrange(reorder_mat,data_event)
+	w <- reorder_mat$w
+	names(w) <- reorder_mat$data_event
+	return(w)
+}
+
+
+
+
+
+
 
 
 # Parameters --------------------------------------------------------------
 
 set.seed(10)
 # Parameters of interest: share of Y causal types in population
-lambda_Y <- runif(16)
+lambda_Y <- matrix(runif(16),nrow = 1)
 lambda_Y <- lambda_Y/sum(lambda_Y)
 # Parameters of interest: share of K causal types in population
-lambda_K <- runif(4)
+lambda_K <- matrix(runif(4),nrow = 1)
 lambda_K <- lambda_K/sum(lambda_K)
 # pi for each primitive value of Y, K
 pi <- matrix(data = runif( 16 * 4 ), nrow = 16)
 
 
-# MH BIQQ Code ------------------------------------------------------------
-
-
-# Generate matrix of types
-causal_type <- function(iK, iY){
-	Y0 <- lambda_Y_types[iY, 1 + lambda_K_types[iK,1]]     #X=0, K= K(0)
-	Y1 <- lambda_Y_types[iY, 3 + lambda_K_types[iK,2]]
-	type <- 1 + (Y0 + 2*Y1)
-	(c(3,1,2,4))[type]
-}
-lambda_Y_types <- matrix(perm(rep(2,4)), 16, 4)
-lambda_K_types <- matrix(perm(rep(2,2)), 4, 2)
-types <- t(sapply(1:16, function(iY){sapply(1:4, function(iK) {causal_type(iK, iY)})} ))
-
-
-# Parameters
-w_XKY <- rep(0,8)
-
-for (i in 1:16) {
-	for (j in 1:2)  {
-		# // X = 0, K = 0, Y = 0
-		if (types[i,j] == 2  || types[i,j] == 3 ) w_XKY[1] = w_XKY[1] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
-
-		# // X = 0, Y = 1, K = 0
-		if(types[i,j] == 1  || types[i,j] == 4 ) w_XKY[3] = w_XKY[3] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
-
-		# // X = 1, Y = 0, K = 0
-		if(types[i,j] == 1  || types[i,j] == 3 )  w_XKY[5]  =  w_XKY[5] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
-
-		# // X = 1, K = 0  , Y = 1
-		if(types[i,j] == 2  || types[i,j] == 4 ) w_XKY[7]  =  w_XKY[7] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
-	}
-
-	for (j in 3:4)  {
-		if(types[i,j] == 2  || types[i,j] == 3 ) w_XKY[2] = w_XKY[2] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
-
-		# // X = 0, Y = 1, K = 1
-		if(types[i,j] == 1  || types[i,j] == 4 ) w_XKY[4]  =  w_XKY[4] + (lambda_Y[i]*(1-pi[i,j])*lambda_K[j]);
-
-		# // X = 1, K = 1, Y = 0
-		if(types[i,j] == 1  || types[i,j] == 3 ) w_XKY[6]  =  w_XKY[6] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
-
-		# // X = 1, K = 1, Y = 1
-		if(types[i,j] == 2  || types[i,j] == 4 ) w_XKY[8]  =  w_XKY[8] + (lambda_Y[i]*(pi[i,j])*lambda_K[j]);
-	}}
-
-# Test --------------------------------------------------------------------
-
-# Our matrix algebra using pi, lambda and A should produce w_XKY
-
-
-
-
+# Parameters of interest: share of Y causal types in population
+lambda_Y <- matrix(rep(1,16),nrow = 1)
+lambda_Y <- lambda_Y/sum(lambda_Y)
+# Parameters of interest: share of K causal types in population
+# lambda_K <- matrix(rep(1,4),nrow = 1)
+lambda_K <- matrix(c(1,0,1,0),nrow = 1)
+# lambda_K <- matrix(1:4,nrow = 1)
+lambda_K <- lambda_K/sum(lambda_K)
+# pi for each primitive value of Y, K
+pi <- matrix(data = rep(.5, 16 * 4 ), nrow = 16)
 
 
