@@ -45,6 +45,9 @@ get_chains <- function(dag) {
 			lapply(split(df, seq(nrow(df))), FUN = function(row) {unname(row[!is.na(row)])})
 		})
 
+	chains_out <- append(x = chains_out[!(names(chains_out) %in% get_terminal_vars(dag))],
+											 values = chains_out[names(chains_out) %in% get_terminal_vars(dag)])
+
 	return(chains_out)
 }
 
