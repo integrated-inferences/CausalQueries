@@ -204,20 +204,6 @@ get_exogenous_vars <- function(dag){
 	)
 }
 
-#' Get endogenous variables in a DAG
-#'
-#' @param dag A dag created by make_dag()
-#'
-#' @export
-#'
-#' @return A vector of endogenous variables
-get_endogenous_vars <- function(dag){
-	return(
-		as.character(unique(dag$children))
-	)
-}
-
-
 
 #' Get endogenous variables in a DAG which are also terminal
 #'
@@ -236,6 +222,19 @@ get_terminal_vars <- function(dag){
 	)
 }
 
+#' Get endogenous variables in a DAG
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A vector of endogenous variables
+get_endogenous_vars <- function(dag){
+	return(
+		c(setdiff(as.character(unique(dag$children)), get_terminal_vars(dag)), get_terminal_vars(dag))
+	)
+}
+
 
 #' Get variable names from a DAG
 #'
@@ -245,7 +244,9 @@ get_terminal_vars <- function(dag){
 #'
 #' @return A vector of variable names
 get_variables <- function(dag){
-	return(names(get_parents(dag)))
+	return(
+		c(get_exogenous_vars(dag), get_endogenous_vars(dag))
+	)
 }
 
 

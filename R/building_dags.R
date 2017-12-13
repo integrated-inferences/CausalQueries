@@ -28,6 +28,12 @@ add_edges <- function(parent,children){
 #' @return A DAG
 #'
 make_dag <- function(...){
-	rbind(...)
+	dag <- rbind(...)
+	intermediary <- (dag$children %in% dag$parent)
+
+	return(
+		rbind(dag[intermediary,],
+					dag[!intermediary,])
+	)
 }
 
