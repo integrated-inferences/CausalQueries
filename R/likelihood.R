@@ -62,7 +62,7 @@ get_likelihood_helpers <- function(dag){
 	# each strategy
 	indices <-
 		sapply(sapply(strategies,paste,collapse = ""),
-					 function(x) which(sapply(which_included,paste,collapse = "") %in% x))
+					 function(x) which(sapply(which_strategy,paste,collapse = "") %in% x))
 	# Get the indices
 	starts <- sapply(indices,min)
 	ends <- sapply(indices,max)
@@ -94,7 +94,7 @@ get_likelihood_helpers <- function(dag){
 	rownames(A_w) <- 1:nrow(A_w)
 
 	return(list(
-		A_w = A_w, w_starts = starts, w_ends = w_ends
+		A_w = A_w, w_starts = starts, w_ends = ends, n_strategies = n_strategies
 	))
 
 }
