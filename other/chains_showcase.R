@@ -207,3 +207,42 @@ for (exogenous_var in get_exogenous_vars(test_dag)) {
 w <- L %*% t(A*P)
 sum(w)
 
+
+# Likelihood using w ------------------------------------------------------
+
+likelihood_helpers <- get_likelihood_helpers(test_dag)
+
+w_starts <- likelihood_helpers$w_starts
+w_ends <- likelihood_helpers$w_ends
+A_w <- likelihood_helpers$A_w
+n_strategies <- likelihood_helpers$n_strategies
+
+
+# Expand w to be big
+
+w_all <- A_w %*% t(w)
+
+
+# Likelihood will be a loop like this:
+for(i in 1:n_strategies){
+	print(sum(w_all[w_starts[i]:w_ends[i]]))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
