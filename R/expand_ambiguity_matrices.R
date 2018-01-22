@@ -193,8 +193,11 @@ expand_ambiguity_matrices_internal <- function(dag) {
 					 ambiguity = make_ambiguity_matrices(dag)[get_endogenous_vars(dag)],
 					 FUN = function(possible_data, ambiguity) {
 					 	out <- merge(max_possible_data, cbind(possible_data,ambiguity), all.x = TRUE)
+					 	out <- out[do.call("order", as.list(out[,rev(intersect(names(out), names(max_possible_data)))])),]
+					 	rownames(out) <- apply(out[,(names(out) %in% names(max_possible_data))], 1, paste0, collapse = "")
+					 	if (!all(max_possible_data == out[,(names(out) %in% names(max_possible_data))]))
+					 		stop("The naming of rows is an issue in expand_ambiguity_matrices_internal.")
 					 	out <- out[,!(names(out) %in% names(max_possible_data))]
-					 	rownames(out) <- apply(max_possible_data, 1, paste0, collapse = "")
 					 	return(out)
 					 },
 					 SIMPLIFY = FALSE)

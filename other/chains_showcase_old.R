@@ -1,5 +1,64 @@
 rm(list = ls())
 
+library(gbiqq)
+
+
+
+# test_dag <-
+# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+# 									add_edges(parent = "K", children = c("Y1","Y2")),
+# 									add_edges(parent = "Z", children = c("K")))
+#
+# test_dag <-
+# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+# 									add_edges(parent = "K", children = c("Y1")),
+# 									add_edges(parent = "Z", children = c("Y2")))
+#
+test_dag <-
+	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+									add_edges(parent = "K", children = "M"),
+									add_edges(parent = "M", children = "Y1"),
+									add_edges(parent = "Z", children = "Y2"))
+
+
+test_dag <-
+	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
+									add_edges(parent = c("K"),children = "Y"))
+
+plot_dag(test_dag)
+
+gbiqq::get_types(test_dag)
+gbiqq::get_parents(test_dag)
+gbiqq::get_exogenous_vars(test_dag)
+gbiqq::get_terminal_vars(test_dag)
+gbiqq::get_endogenous_vars(test_dag)
+gbiqq::get_variables(test_dag)
+# chains approach
+
+gbiqq::get_chains(test_dag)
+
+gbiqq::get_possible_data(test_dag, collapse = FALSE)
+gbiqq::get_ambiguities(test_dag)
+gbiqq::make_ambiguity_matrices(test_dag)
+# gbiqq::collapse_ambiguity_matrices(test_dag)
+
+a <- gbiqq::expand_ambiguity_matrices(test_dag)
+
+dim(a) ==
+	c(2^length(gbiqq::get_variables(test_dag)),
+		Reduce(x = lapply(gbiqq::get_types(test_dag)[gbiqq::get_endogenous_vars(test_dag)],
+											FUN = nrow), f = "*"))
+
+rownames(a)
+colnames(a)
+
+
+
+
+# ATTEMPT CREATING L AND P --------------------------------------------------------------------
+
+rm(list = ls())
+
 
 library(gbiqq)
 
