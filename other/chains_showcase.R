@@ -119,7 +119,11 @@ childs <-
 #
 # In generalized framework this will be asked to be filled in outside STAN program and the length of
 # expansion of those vectors will be given as well as priors in expanded form
-lambdas <- lapply(types, function(variable_types) sample(x = seq(0.5, 0.5, by = 0.5), size = variable_types, replace = T))
+lambdas <- lapply(types, function(variable_types) {
+	# sample(x = seq(0.5, 0.5, by = 0.5), size = variable_types, replace = T)
+	lambda_draw <- runif(variable_types)
+	return(lambda_draw/sum(lambda_draw))
+				 })
 
 # pi stuff
 pi <- lapply(childs, FUN = function(childs) types[childs])
@@ -149,7 +153,7 @@ max_possible_data <-
 	Reduce(f = merge,
 				 x = get_possible_data(test_dag, collapse = FALSE)[get_terminal_vars(test_dag)])
 
-max_possible_data <- max_possible_data[get_variables(dag)]
+max_possible_data <- max_possible_data[get_variables(test_dag)]
 
 endogenous_vars <- get_endogenous_vars(test_dag)
 
@@ -201,5 +205,5 @@ for (exogenous_var in get_exogenous_vars(test_dag)) {
 
 
 w <- L %*% t(A*P)
-
+sum(w)
 
