@@ -186,6 +186,8 @@ expand_ambiguity_matrices_internal <- function(dag) {
 		Reduce(f = merge,
 					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
 
+	max_possible_data <- max_possible_data[get_variables(dag)]
+
 	matrices_out <-
 		mapply(possible_data = get_possible_data(dag, collapse = FALSE)[get_endogenous_vars(dag)],
 					 ambiguity = make_ambiguity_matrices(dag)[get_endogenous_vars(dag)],
@@ -229,6 +231,8 @@ expand_ambiguity_matrices <- function(dag) {
 	max_possible_data <-
 		Reduce(f = merge,
 					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
+
+	max_possible_data <- max_possible_data[get_variables(dag)]
 
 	rownames(out) <- apply(max_possible_data, 1, paste0, collapse = "")
 	colnames(out) <-
