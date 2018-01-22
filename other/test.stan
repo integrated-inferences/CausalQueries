@@ -3,7 +3,7 @@ data {
   int<lower=0> n_strategies; // number of strategies that can be pursued to collect data
   int<lower=0> n_data_realizations; // number of all possible realizations of data, given all strategies
   int<lower=0> n_fundamental_data_realizations; // number of possible realizations of data, given data sought on all nodes 
-
+  int<lower=0> D[n_data_realizations];      // number of cases with X only data
 
 
   int<lower=0> X[2];      // number of cases with X only data
@@ -36,7 +36,7 @@ transformed parameters {
 
   w_fundamental = lambda %*% t(A*pi_new);
 
-  
+
 
  }
 
@@ -44,8 +44,7 @@ transformed parameters {
 
 
 model {
-  lambda_Y ~ dirichlet(Y_u_prior);               // Priors for causal types
-  lambda_K ~ dirichlet(K_u_prior);               // Priors for causal types
+  lambda ~ dirichlet(lambda_prior);               // Priors for causal types
 
   // 16 * 4 pi values need to be defined --
   for (r in 1:16) {
