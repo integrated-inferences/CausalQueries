@@ -63,7 +63,7 @@ children <- get_children_of_exogenous(test_dag)
 )
 
 # important object which allows to expand all pi priors to the same dimensionality as A matrix
-pi_times_each <- get_pi_expanders(pi = pi,dag = test_dag)
+pi_times_each <- get_pi_expanders(pi = pi, dag = test_dag)
 
 # a bunch of useful objects
 max_possible_data <- get_max_possible_data(test_dag)
@@ -117,6 +117,9 @@ for (exogenous_var in get_exogenous_vars(test_dag)) {
 
 t( w <- L %*% t(A * P) )
 
+stopifnot(
+	all.equal(target = 1, current =  sum(w))
+)
 
 # Likelihood using w ------------------------------------------------------
 
