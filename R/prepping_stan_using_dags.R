@@ -174,3 +174,27 @@ map_types_to_data <- function(dag){
 
 }
 
+#' Get helpers for expanding the pi matrix
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A list of pi helpers
+get_pi_expanders <- function(pi,dag){
+	types <- get_n_endogenous_types(dag)
+	lapply(pi,
+				 FUN = function(exogenous_var) {
+
+				 	pos <- which(names(exogenous_var) %in% names(types))
+				 	select_vars <-
+				 		cumsum((seq_along(names(types)) == min(pos)) +
+				 					 	(seq_along(names(types)) == (max(pos) + 1)))
+
+				 	return(list(times = prod(types[select_vars == 2]),
+				 							each = prod(types[select_vars == 0])))
+
+				 })
+}
+
+

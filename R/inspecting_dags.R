@@ -321,11 +321,35 @@ get_max_possible_data <- function(dag) {
 	return(max_possible_data)
 }
 
+#' Get number of endogenous types
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A list of the numbers of endogenous types
+get_n_endogenous_types <- function(dag){
+	types <- sapply(gbiqq::get_types(dag), FUN = function(types) dim(types)[1])
+	types <- types[gbiqq::get_endogenous_vars(dag)]
+	return(types)
+}
 
 
 
-
-
-
+#' Get children of exogenous variables
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A list of the children of exogenous variables
+get_children_of_exogenous <- function(dag){
+	sapply(gbiqq::get_exogenous_vars(test_dag),
+				 FUN = function(exogenous_variable) {
+				 	names(gbiqq::get_parents(test_dag))[sapply(X = gbiqq::get_parents(test_dag),
+				 																						 FUN = function(parents) exogenous_variable %in% parents ) ] },
+				 simplify = FALSE
+	)
+}
 
 
