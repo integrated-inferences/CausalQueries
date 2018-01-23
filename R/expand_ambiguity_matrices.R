@@ -182,21 +182,17 @@ make_adjacency_matrix <- function(dag) {
 #' # ADD_EXAMPLES_HERE
 expand_ambiguity_matrices_internal <- function(dag) {
 
-	max_possible_data <-
-		Reduce(f = merge,
-					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
-
-	max_possible_data <- max_possible_data[get_variables(dag)]
+	max_possible_data <- get_max_possible_data(dag)
 
 	matrices_out <-
 		mapply(possible_data = get_possible_data(dag, collapse = FALSE)[get_endogenous_vars(dag)],
 					 ambiguity = make_ambiguity_matrices(dag)[get_endogenous_vars(dag)],
 					 FUN = function(possible_data, ambiguity) {
 					 	out <- merge(max_possible_data, cbind(possible_data,ambiguity), all.x = TRUE)
-					 	out <- out[do.call("order", as.list(out[,rev(intersect(names(out), names(max_possible_data)))])),]
-					 	rownames(out) <- apply(out[,(names(out) %in% names(max_possible_data))], 1, paste0, collapse = "")
-					 	if (!all(max_possible_data == out[,(names(out) %in% names(max_possible_data))]))
+					 	out <- out[do.call("order", as.list(out[,rev(names(max_possible_data))])),]
+					 	if (!all(max_possible_data == out[,names(max_possible_data)]))
 					 		stop("The naming of rows is an issue in expand_ambiguity_matrices_internal.")
+					 	rownames(out) <- apply(out[,names(max_possible_data)], 1, paste0, collapse = "")
 					 	out <- out[,!(names(out) %in% names(max_possible_data))]
 					 	return(out)
 					 },
@@ -231,11 +227,7 @@ expand_ambiguity_matrices <- function(dag) {
 
 	out <- t(do.call(mapply, append(list(FUN = expand_grid_fn), ambiguity_ls)))
 
-	max_possible_data <-
-		Reduce(f = merge,
-					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
-
-	max_possible_data <- max_possible_data[get_variables(dag)]
+	max_possible_data <- get_max_possible_data(dag)
 
 	rownames(out) <- apply(max_possible_data, 1, paste0, collapse = "")
 	colnames(out) <-

@@ -298,9 +298,28 @@ perm <- function(v) {
 }
 
 
+#' Get data frame with all possible data combinations
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A data frame
+#'
+get_max_possible_data <- function(dag) {
+	max_possible_data <-
+		Reduce(f = merge,
+					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
 
+	max_possible_data <- max_possible_data[get_variables(dag)]
 
+	max_possible_data <-
+		max_possible_data[do.call("order", as.list(max_possible_data[,rev(names(max_possible_data))])),]
 
+	rownames(max_possible_data) <- 1:nrow(max_possible_data)
+
+	return(max_possible_data)
+}
 
 
 

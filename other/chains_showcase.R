@@ -3,20 +3,20 @@ rm(list = ls())
 
 library(gbiqq)
 
-test_dag <-
-	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
-									add_edges(parent = c("K"),children = "Y"))
-#
+# test_dag <-
+# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
+# 									add_edges(parent = c("K"),children = "Y"))
+
 # test_dag <-
 # 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
 # 									add_edges(parent = "K", children = c("Y1","Y2")),
 # 									add_edges(parent = "Z", children = c("K")))
-#
-# test_dag <-
-# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
-# 									add_edges(parent = "K", children = c("Y1")),
-# 									add_edges(parent = "Z", children = c("Y2")))
-#
+
+test_dag <-
+	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+									add_edges(parent = "K", children = c("Y1")),
+									add_edges(parent = "Z", children = c("Y2")))
+
 # test_dag <-
 # 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
 # 									add_edges(parent = "K", children = "M"),
@@ -90,24 +90,18 @@ pi <- lapply(pi,
 
 						 })
 
-max_possible_data <-
-	Reduce(f = merge,
-				 x = get_possible_data(test_dag, collapse = FALSE)[get_terminal_vars(test_dag)])
-
-max_possible_data <- max_possible_data[get_variables(test_dag)]
-
+max_possible_data <- get_max_possible_data(test_dag)
 endogenous_vars <- get_endogenous_vars(test_dag)
 
 # our stuff -----------------------------------------------------------------------------------
 
 
-
 A <- gbiqq::expand_ambiguity_matrices(test_dag)
 
-dim(A) ==
-	c(2^length(gbiqq::get_variables(test_dag)),
-		Reduce(x = lapply(gbiqq::get_types(test_dag)[gbiqq::get_endogenous_vars(test_dag)],
-											FUN = nrow), f = "*"))
+if (any(dim(A) !=
+				 c(2^length(gbiqq::get_variables(test_dag)),
+				 	Reduce(x = lapply(gbiqq::get_types(test_dag)[gbiqq::get_endogenous_vars(test_dag)],
+				 										FUN = nrow), f = "*")))) stop("expand_ambiguity_matrices produced incorrect dimensions")
 
 
 rownames(A)
@@ -132,6 +126,8 @@ for (variable in (length(lambdas) - 1):1) {
 
 	L <- L_temp
 }
+
+if (sum(L) != 1) stop("Vector of lambdas does not sum up to 1.")
 
 # L construction sanity check one-liner
 # L <- apply(expand.grid(lambdas), MARGIN = 1, FUN = prod)
