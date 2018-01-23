@@ -7,15 +7,15 @@ library(gbiqq)
 # 	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
 # 									add_edges(parent = c("K"),children = "Y"))
 
-# test_dag <-
-# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
-# 									add_edges(parent = "K", children = c("Y1","Y2")),
-# 									add_edges(parent = "Z", children = c("K")))
-
 test_dag <-
 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
-									add_edges(parent = "K", children = c("Y1")),
-									add_edges(parent = "Z", children = c("Y2")))
+									add_edges(parent = "K", children = c("Y1","Y2")),
+									add_edges(parent = "Z", children = c("K")))
+
+# test_dag <-
+# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+# 									add_edges(parent = "K", children = c("Y1")),
+# 									add_edges(parent = "Z", children = c("Y2")))
 
 # test_dag <-
 # 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
@@ -130,7 +130,9 @@ for (variable in (length(lambdas) - 1):1) {
 	L <- L_temp
 }
 
-stopifnot(sum(L) == 1)
+stopifnot(
+	all.equal(target = 1, current =  sum(L))
+)
 
 # L construction sanity check one-liner
 # L <- apply(expand.grid(lambdas), MARGIN = 1, FUN = prod)
@@ -158,7 +160,9 @@ for (exogenous_var in get_exogenous_vars(test_dag)) {
 
 t( w <- L %*% t(A * P) )
 
-stopifnot(sum(w) == 1)
+stopifnot(
+	all.equal(target = 1, current =  sum(w))
+)
 
 
 # Likelihood using w ------------------------------------------------------
@@ -183,22 +187,3 @@ for (i in 1:n_strategies) {
 							current =  sum(w_all[w_starts[i]:w_ends[i]]))
 	)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
