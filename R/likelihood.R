@@ -13,8 +13,8 @@ get_likelihood_helpers <- function(dag){
 
 	# Get variables in order of exogeneity
 	variables <- c(
-		gbiqq::get_exogenous_vars(test_dag),
-		gbiqq::get_endogenous_vars(test_dag)
+		gbiqq::get_exogenous_vars(dag),
+		gbiqq::get_endogenous_vars(dag)
 	)
 	variables_reversed <- variables[length(variables):1]
 
@@ -57,6 +57,7 @@ get_likelihood_helpers <- function(dag){
 	strategies <- unique(which_strategy)
 	# Get the number of unique strategies of data collection
 	n_strategies <- length(strategies)
+	# do.call(c,strategies)
 	# Now for each strategy, get the data that corresponds to it
 	# this will be used in the data to fit a likelihood separately for
 	# each strategy
@@ -91,13 +92,34 @@ get_likelihood_helpers <- function(dag){
 		}
 	)) * 1
 
+	possible_events <- sapply(data_realizations,paste,collapse = "")
+	strategy_labels <- sapply(which_strategy,paste,collapse = "")
+	names(possible_events) <- strategy_labels
+
 	rownames(A_w) <- 1:nrow(A_w)
 
 	return(list(
-		A_w = A_w, w_starts = starts, w_ends = ends, n_strategies = n_strategies
+		A_w = A_w,
+		w_starts = starts,
+		w_ends = ends,
+		n_strategies = n_strategies,
+		possible_events = possible_events
 	))
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4,7 +4,7 @@
 \alias{get_pi_expanders}
 \title{Get helpers for expanding the pi matrix}
 \usage{
-get_pi_expanders(pi)
+get_pi_expanders(pi, dag)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}
