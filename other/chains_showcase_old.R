@@ -22,7 +22,7 @@ library(gbiqq)
 test_dag <-
 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
 									add_edges(parent = "K", children = "M"),
-									add_edges(parent = "M", children = "Y1"),
+									add_edges(parent = c("Z", "M"), children = "Y1"),
 									add_edges(parent = "Z", children = "Y2"))
 
 
