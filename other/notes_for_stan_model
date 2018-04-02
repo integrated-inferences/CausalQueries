@@ -1,0 +1,46 @@
+Data from user 
+IGNORE FOR NOW
+- DAG
+- some easy prior stuff
+
+Data for Stan
+Y - vector event counts data - see line 59 get_likelihood_helpers
+max_possible_data - matrix of all possible fundamental data realizations
+w_starts - starts for each strategy
+w_ends - ends for each strategy
+A_w - ambiguity to build out L
+n_strategies - number of strategies
+
+A - ambiguity matrix that maps endogenous types to observable data at fundamental level
+n_endog - the number of endogenous nodes in the dag
+n_exog - the number of endogenous nodes in the dag
+
+lambda_prior - ragged array / list / vector of dirichlet priors (alphas)
+
+pi_times - vector as long as n_exog, that tells us how many times to rep
+pi_each - vector as long as n_exog, that tells us how many each to rep
+max_possible_data - a matrix we feed in, tells us which combinations of data are possible
+pi_prior - vector, as long as the number of exogenous variables, times each exogenous variables' number of endogenous children types
+  - need alpha and beta for beta distribution (priors over probability)
+
+
+Parameters in Stan
+L - vector of combinations of all endogenous types 
+lambda - vector of vectors that we need to have dirichlet priors over 
+pis - vector of vectors, that we have beta priors over
+P - matrix created from pis in a loop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

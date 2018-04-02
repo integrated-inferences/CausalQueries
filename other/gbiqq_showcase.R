@@ -80,6 +80,7 @@ A <- gbiqq::expand_ambiguity_matrices(test_dag)
 
 L <- lambdas[[length(endogenous_vars)]]
 
+# Fix loop to work with lambda = vector instead of lambda = list
 for (variable in (length(lambdas) - 1):1) {
 
 	L_temp <- rep(NA, times = length(L)*length(lambdas[[variable]]))
@@ -101,7 +102,7 @@ for (variable in (length(lambdas) - 1):1) {
 # to conformable dimensions and requires all relevant pi parameters given by user)
 
 P <- matrix(1, nrow = nrow(A), ncol = ncol(A))
-
+# pis and pi_each and pi_times need to work as vectors here
 for (exogenous_var in get_exogenous_vars(test_dag)) {
 
 	pi_temp <-
@@ -143,3 +144,14 @@ for (i in 1:n_strategies) {
 							current =  sum(w_all[w_starts[i]:w_ends[i]]))
 	)
 }
+
+
+
+
+
+
+
+
+
+
+
