@@ -147,6 +147,16 @@ for (i in 1:n_strategies) {
 
 
 
+data <- data.frame(
+	X = rbinom(100,1,.5),
+	Y = rbinom(100,1,.5),
+	K = c(rbinom(25,1,.5),rep(NA,75))
+)
+
+get_data_events(data = data, dag = dag)
+
+dag <- test_dag
+
 
 
 

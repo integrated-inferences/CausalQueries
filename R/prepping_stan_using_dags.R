@@ -198,3 +198,87 @@ get_pi_expanders <- function(pi,dag){
 }
 
 
+
+
+
+
+
+#' Get the multinomial data events
+#'
+#' @param data A data.frame of variables that can take three values: 0, 1, and NA
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A vector of data events
+get_data_events <- function(data, dag){
+	possible_events <- get_likelihood_helpers(dag)$possible_events
+	possible_strategies <- unique(names(possible_events))
+	variables <- get_variables(dag)
+
+	if(!all(variables %in% names(data))){
+		stop("Could not find all of the variables in the DAG in the data you provided.\nPlease double-check variable names and try again.")
+	}
+
+	data <- data[,variables]
+
+	data_to_agg <- data
+	data_to_agg[is.na(data_to_agg)] <- ""
+
+	observed_events <- apply(
+		X = data_to_agg,
+		MARGIN = 1,
+		FUN = function(row){
+			variable_labels <- variables[!row == ""]
+			row_subset <- row[!row == ""]
+			paste(variable_labels,row_subset,sep = "")
+		})
+	used_strategies <- unique(apply(
+		X = data_to_agg,
+		MARGIN = 1,
+		FUN = function(row){
+			strategy <- paste(variables[!row == ""],collapse = "")
+			return(strategy)
+		}))
+
+	observed_events <- sapply(observed_events,paste,collapse = "")
+	observed_events <- table(observed_events)
+
+	unobserved_event_labels <- possible_events[!possible_events %in% names(observed_events)]
+
+	unused_strategies <- possible_strategies[!possible_strategies %in% used_strategies]
+
+	unobserved_events <- rep(0,length(unobserved_event_labels))
+
+	names(unobserved_events) <- unobserved_event_labels
+
+	data_events <- data.frame(
+		event = names(c(observed_events,unobserved_events)),
+		count = c(observed_events,unobserved_events),
+		row.names = NULL
+	)
+	data_events <- data_events[match(possible_events,data_events$event),]
+
+	return(list(
+		data_events = data_events,
+		observed_events = observed_events,
+		unobserved_events = unobserved_events,
+		used_strategies = used_strategies,
+		unused_strategies = unused_strategies
+	))
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
