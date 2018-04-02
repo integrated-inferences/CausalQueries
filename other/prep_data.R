@@ -4,24 +4,24 @@ library(gbiqq)
 
 ## PREPARE DATA FOR STAN
 
-
-
-# Generate DAG --------------------------------------------------------------------------------
+test_dag <-
+	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
+									add_edges(parent = c("K"),children = "Y"))
 
 # test_dag <-
-# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
-# 									add_edges(parent = c("K"),children = "Y"))
-
-test_dag <-
-	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
-									add_edges(parent = "K", children = c("Y1","Y2")),
-									add_edges(parent = "Z", children = c("Y2")))
+# 	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
+# 									add_edges(parent = "K", children = c("Y1","Y2")),
+# 									add_edges(parent = "Z", children = c("Y2")))
 
 # look at the DAG
 plot_dag(test_dag)
 
+# User supplied stuff --------------------------------------------------------------------------------
+
+
+
 (
-	L_alpha <-
+	lambdas_prior <-
 		lambdas <-
 		do.call(c,
 						lapply(gbiqq::get_n_endogenous_types(test_dag), function(variable_types) {
@@ -31,26 +31,33 @@ plot_dag(test_dag)
 		)
 )
 
-(
-	P_alpha <- P_beta <-
-		pi <-
-		do.call(c,
-						lapply(
-							lapply(gbiqq::get_children_of_exogenous(test_dag),
-										 FUN = function(childs) gbiqq::get_n_endogenous_types(test_dag)[childs]),
-							FUN = function(child_types) rep(.5, times = prod(child_types))
-						)
-		)
+pis_prior <-
+	do.call(c,
+					lapply(
+						lapply(gbiqq::get_children_of_exogenous(test_dag),
+									 FUN = function(childs) gbiqq::get_n_endogenous_types(test_dag)[childs]),
+						FUN = function(child_types) rep(.5, times = prod(child_types))
+					)
+	)
+
+( pis_prior <- cbind(pis_prior,pis_prior) )
+
+data <- data.frame(
+	X = rbinom(100,1,.5),
+	Y = rbinom(100,1,.5),
+	K = c(rbinom(25,1,.5),rep(NA,75))
 )
 
 # Prep data for STAN --------------------------------------------------------------------------
 
+likelihood_helpers <- get_likelihood_helpers(test_dag)
+max_possible_data <- gbiqq::get_max_possible_data(test_dag)
+children_of_exogenous <- gbiqq::get_children_of_exogenous(test_dag)
+
 n_endog <- length(gbiqq::get_endogenous_vars(test_dag))
 n_exog <- length(gbiqq::get_exogenous_vars(test_dag))
 n_endogenous_types <- gbiqq::get_n_endogenous_types(test_dag)
-n_strategies <- gbiqq::get_likelihood_helpers(test_dag)$n_strategies
-
-max_possible_data <- gbiqq::get_max_possible_data(test_dag)
+n_strategies <- likelihood_helpers$n_strategies
 
 # for A (ambiguity)
 
@@ -58,30 +65,42 @@ A <- gbiqq::expand_ambiguity_matrices(test_dag)
 
 # for L (lambda)
 
-l_starts <-
-	cumsum(n_endogenous_types) - n_endogenous_types + 1
+# for the vector of vectors of draws from the prior distributions of lambda
+l_starts <- cumsum(n_endogenous_types) - n_endogenous_types + 1
+l_ends <- cumsum(n_endogenous_types)
 
-l_ends <-
-	cumsum(n_endogenous_types)
+n_lambdas <- max(l_ends)
 
 # for P (pi)
 
-.pi_temp <-
+# for the vector of vectors of draws from the prior distributions of pis
+.p_temp <-
 		sapply(
-			lapply(gbiqq::get_children_of_exogenous(test_dag),
-						 FUN = function(childs) gbiqq::get_n_endogenous_types(test_dag)[childs]),
+			lapply(children_of_exogenous,
+						 FUN = function(childs) n_endogenous_types[childs]),
 			FUN = function(child_types) prod(child_types)
 		)
 
-pi_starts <- cumsum(.pi_temp) - .pi_temp + 1
-pi_ends <- cumsum(.pi_temp)
+p_starts <- cumsum(.p_temp) - .p_temp + 1
+p_ends <- cumsum(.p_temp)
 
-# important object which allows to expand all pi priors to the same dimensionality as A matrix
-.pi_temp <-
-	get_pi_expanders(pi = lapply(gbiqq::get_children_of_exogenous(test_dag),
-															 FUN = function(childs) gbiqq::get_n_endogenous_types(test_dag)[childs]),
+# for expanding this to conform with A and L
+.p_temp <-
+	get_pi_expanders(pi = lapply(children_of_exogenous,
+															 FUN = function(childs) n_endogenous_types[childs]),
 									 dag = test_dag)
 
-pi_times <- sapply(.pi_temp, function(v) v$times)
-pi_each <- sapply(.pi_temp, function(v) v$each)
+p_times <- sapply(.pi_temp, function(v) v$times)
+p_each <- sapply(.pi_temp, function(v) v$each)
 
+n_pis <- max(p_ends)
+
+# for w (vector of vectors of weights)
+
+w_starts <- likelihood_helpers$w_starts
+w_ends <- likelihood_helpers$w_ends
+A_w <- likelihood_helpers$A_w
+
+# for Y
+
+Y <- get_data_events(data = data, dag = test_dag)$data_events
