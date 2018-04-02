@@ -10,7 +10,7 @@ test_dag <-
 									add_edges(parent = c("K"),children = "Y"))
 
 # test_dag <-
-# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y1")),
+# 	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
 # 									add_edges(parent = "K", children = c("Y1","Y2")),
 # 									add_edges(parent = "Z", children = c("K")))
 
