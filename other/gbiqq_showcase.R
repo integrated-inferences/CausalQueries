@@ -134,7 +134,7 @@ n_strategies <- likelihood_helpers$n_strategies
 
 # Expand w to be big
 
-w_all <- A_w %*% t(w)
+w_full <- A_w %*% t(w)
 
 
 # Likelihood will be a loop like this:
@@ -153,10 +153,9 @@ data <- data.frame(
 	K = c(rbinom(25,1,.5),rep(NA,75))
 )
 
-get_data_events(data = data, dag = dag)
-
-dag <- test_dag
-
+data_events <- get_data_events(data = data, dag = test_dag)
+Y <- data_events$data_events$count
+n_events <- length(Y)
 
 
 

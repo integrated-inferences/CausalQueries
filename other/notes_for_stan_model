@@ -1,3 +1,5 @@
+
+
 Data from user 
 IGNORE FOR NOW
 - DAG
@@ -32,7 +34,8 @@ P - matrix created from pis in a loop
 
 
 
-
+Issue with changing dimensions of simplexes for dirichlet:
+  http://discourse.mc-stan.org/t/ragged-array-of-simplexes/1382/24
 
 
 
