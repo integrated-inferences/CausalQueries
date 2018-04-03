@@ -16,10 +16,9 @@ test_dag <-
 # look at the DAG
 plot_dag(test_dag)
 
-# User supplied stuff --------------------------------------------------------------------------------
+# USER SUPPLIED --------------------------------------------------------------------------------
 
-
-
+# lambda priors in correct dimensionality
 (
 	lambdas_prior <-
 		lambdas <-
@@ -31,6 +30,7 @@ plot_dag(test_dag)
 		)
 )
 
+# pi priors in correct dimensionality
 pis_prior <-
 	do.call(c,
 					lapply(
@@ -42,13 +42,14 @@ pis_prior <-
 
 ( pis_prior <- cbind(pis_prior,pis_prior) )
 
+# observed data in correct dimensionality
 data <- data.frame(
 	X = rbinom(100,1,.5),
 	Y = rbinom(100,1,.5),
 	K = c(rbinom(25,1,.5),rep(NA,75))
 )
 
-# Prep data for STAN --------------------------------------------------------------------------
+# OUTSIDE STAN --------------------------------------------------------------------------
 
 likelihood_helpers <- get_likelihood_helpers(test_dag)
 max_possible_data <- gbiqq::get_max_possible_data(test_dag)
@@ -59,11 +60,11 @@ n_exog <- length(gbiqq::get_exogenous_vars(test_dag))
 n_endogenous_types <- gbiqq::get_n_endogenous_types(test_dag)
 n_strategies <- likelihood_helpers$n_strategies
 
-# for A (ambiguity)
+### for A (ambiguity)
 
 A <- gbiqq::expand_ambiguity_matrices(test_dag)
 
-# for L (lambda)
+### for L (lambda)
 
 # for the vector of vectors of draws from the prior distributions of lambda
 l_starts <- cumsum(n_endogenous_types) - n_endogenous_types + 1
@@ -71,7 +72,8 @@ l_ends <- cumsum(n_endogenous_types)
 
 n_lambdas <- max(l_ends)
 
-# for P (pi)
+
+### for P (pi)
 
 # for the vector of vectors of draws from the prior distributions of pis
 .p_temp <-
@@ -95,12 +97,65 @@ p_each <- sapply(.pi_temp, function(v) v$each)
 
 n_pis <- max(p_ends)
 
-# for w (vector of vectors of weights)
+### for w (vector of vectors of weights)
 
 w_starts <- likelihood_helpers$w_starts
 w_ends <- likelihood_helpers$w_ends
 A_w <- likelihood_helpers$A_w
 
-# for Y
+### for Y (vector of data counts)
 
-Y <- get_data_events(data = data, dag = test_dag)$data_events
+Y <- get_data_events(data = data, dag = test_dag)$data_events$count
+
+
+
+# WITHIN STAN Stuff -----------------------------------------------------------------------------------
+
+# L construction STAN style
+# (only requires priors and number of variables)
+
+L <- lambdas[l_starts[n_endog]:l_ends[n_endog]]
+
+# Fix loop to work with lambda = vector instead of lambda = list
+for (i in (n_endog - 1):1) {
+
+	L_temp <- rep(NA, times = length(L)*length(lambdas[l_starts[i]:l_ends[i]]))
+
+	m <- 1
+	for (j in 1:length(L)) {
+		for (k in 1:length(lambdas[l_starts[i]:l_ends[i]])) {
+			L_temp[m] <- L[j] * lambdas[l_starts[i]:l_ends[i]][k]
+			m <- m + 1
+		}
+	}
+
+	L <- L_temp
+}
+
+
+# P construction STAN style
+# (This requires only times/each object for each exogenous variable to bring only relevant endogenous vars
+# to conformable dimensions and requires all relevant pi parameters given by user)
+
+P <- matrix(1, nrow = nrow(A), ncol = ncol(A))
+# pis and pi_each and pi_times need to work as vectors here
+for (exogenous_var in get_exogenous_vars(test_dag)) {
+
+	pi_temp <-
+		rep(pis[[exogenous_var]],
+				times = pi_times_each[[exogenous_var]]$times,
+				each = pi_times_each[[exogenous_var]]$each)
+
+	P <- P * (max_possible_data[,exogenous_var] %*% t(pi_temp) +
+							(1 - max_possible_data[,exogenous_var]) %*% t(1 - pi_temp))
+
+}
+
+
+t( w <- L %*% t(A * P) )
+
+stopifnot(
+	all.equal(target = 1, current =  sum(w))
+)
+
+# Likelihood using w ------------------------------------------------------
