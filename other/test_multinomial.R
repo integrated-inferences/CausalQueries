@@ -26,13 +26,13 @@ rstan_options(auto_write = TRUE)
 
 test <- stan(file = "other/ragged_simplex.stan",
 						 data = list(
-						 	K = 3,
-						 	K_each = c(5,5,3),
-						 	N = sum(c(5,5,3)),
-						 	dirichlet_prior = rep(1, 13),
-						 	starts = c(1,6,11),
-						 	ends = c(5,10,13),
-						 	Y = 2 * rmultinom(1, size = 20, prob = 1:13 / 13)[,1]
+						 	K = 4,
+						 	K_each = c(5,5,3,20),
+						 	N = sum(c(5,5,3,20)),
+						 	dirichlet_prior = rep(1, 33),
+						 	starts = c(1,6,11,14),
+						 	ends = cumsum(c(5,5,3,20)),
+						 	Y = 2 * rmultinom(1, size = 20, prob = 1:33 / 50)[,1]
 	))
 
 test
