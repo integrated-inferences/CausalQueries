@@ -1,6 +1,8 @@
 rm(list = ls())
 
-library(gbiqq)
+if (!require("pacman")) install.packages("pacman")
+# library(gbiqq)
+pacman::p_load(rstan, gbiqq)
 
 
 # USER SUPPLIED --------------------------------------------------------------------------------
@@ -9,7 +11,7 @@ library(gbiqq)
 
 # Canonical BIQQ
 test_dag <-
-	gbiqq::make_dag(add_edges(parent = "X",children = c("K","Y")),
+	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
 									add_edges(parent = c("K"),children = "Y"))
 
 data <- data.frame(
@@ -25,11 +27,11 @@ data <- data.frame(
 # 									add_edges(parent = "Z", children = c("Y2")))
 #
 # data <- data.frame(
-# 	X = rbinom(100,1,.5),
-# 	Z = rbinom(100,1,.5),
-# 	Y1 = rbinom(100,1,.5),
-# 	Y2 = rbinom(100,1,.5),
-# 	K = c(rbinom(25,1,.5),rep(NA,75))
+# 	X = rbinom(100,1,.6),
+# 	Z = rbinom(100,1,.6),
+# 	Y1 = rbinom(100,1,.6),
+# 	Y2 = rbinom(100,1,.6),
+# 	K = c(rbinom(25,1,.6),rep(NA,75))
 # )
 
 # look at the DAG
@@ -104,8 +106,7 @@ K_exog <- n_exog <- length(gbiqq::get_exogenous_vars(test_dag))
 N_endog_each <- n_endogenous_types <- gbiqq::get_n_endogenous_types(test_dag)
 N_types <- n_lambdas <- sum(N_endog_each)
 # for now, this is generally incorrect
-N_events <-
-	length(likelihood_helpers$possible_events[which(names(likelihood_helpers$possible_events) == "XKY")])
+N_events <- nrow(get_data_events(data = data, dag = test_dag)$data_events)
 N_data <- nrow(gbiqq::get_max_possible_data(test_dag))
 N_endog_expand <- prod(N_endog_each)
 max_possible_data <- gbiqq::get_max_possible_data(test_dag)
@@ -165,14 +166,14 @@ A <- gbiqq::expand_ambiguity_matrices(test_dag)
 
 ### for w (vector of vectors of weights) -- not implemented yet
 
-# w_starts <- likelihood_helpers$w_starts
-# w_ends <- likelihood_helpers$w_ends
-# A_w <- likelihood_helpers$A_w
+w_starts <- likelihood_helpers$w_starts
+w_ends <- likelihood_helpers$w_ends
+A_w <- likelihood_helpers$A_w
+K_strategies <- likelihood_helpers$n_strategies
 
 ### for Y (vector of data counts)
 
-Y <- get_data_events(data = data, dag = test_dag)$data_events$count[1:2^K]
-
+Y <- get_data_events(data = data, dag = test_dag)$data_events$count
 
 
 # WITHIN STAN Stuff -----------------------------------------------------------------------------------
@@ -184,15 +185,18 @@ lambdas_base <- lambdas_prior # to simplify things
 lambdas <- rep(NA, N_endog_expand) # no need to do this in STAN
 expansion <- N_endog_each[K_endog]
 
-lambdas[(N_endog_expand - N_endog_each[K_endog] + 1):N_endog_expand] = lambdas_base[l_starts[K_endog]:l_ends[K_endog]]
+lambdas[(N_endog_expand - N_endog_each[K_endog] + 1):N_endog_expand] =
+	lambdas_base[l_starts[K_endog]:l_ends[K_endog]]
 
 for (i in (K_endog - 1):1) {
 
 	lambdas_temp <- rep(NA, expansion*N_endog_each[i]) # no need to do this in STAN
 
 	m = 1
-	for (j in (N_endog_expand - expansion + 1):N_endog_expand) { # j goes from first to last element position of previous expansion
-		for (k in l_starts[i]:l_ends[i]) { # k goes from first to last element position for endog variable i in lambdas_base
+	for (j in (N_endog_expand - expansion + 1):N_endog_expand) {
+		# j goes from first to last element position of previous expansion
+		for (k in l_starts[i]:l_ends[i]) {
+			# k goes from first to last element position for endog variable i in lambdas_base
 			lambdas_temp[m] = lambdas[j] * lambdas_base[k]
 			m = m + 1
 		}
@@ -285,32 +289,54 @@ stopifnot(
 	all.equal(target = 1, current =  sum(w))
 )
 
+# Expand w to be big
+
+( w_full <- A_w %*% t(w) )
+
+# Likelihood will be a loop like this:
+for (i in 1:K_strategies) {
+	stopifnot(
+		all.equal(target = 1,
+							current =  sum(w_all[w_starts[i]:w_ends[i]]))
+	)
+}
+
+Y[w_starts[i]:w_ends[i]]
+
+w_full[w_starts[i]:w_ends[i]]
 
 # Run STAN ------------------------------------------------------------------------------------
 
-test <- stan(file = "other/gbiqq_ragged_simplex.stan",
-						 data = list(
-						 	K = K,
-						 	K_endog = K_endog,
-						 	K_exog = K_exog,
-						 	N_endog_each = N_endog_each,
-						 	N_types = N_types,
-						 	N_events = N_events,
-						 	N_data = N_data,
-						 	N_endog_expand = N_endog_expand,
-						 	max_possible_data = max_possible_data,
-						 	dirichlet_prior = dirichlet_prior,
-						 	l_starts = l_starts,
-						 	l_ends = l_ends,
-						 	N_exog_each = N_exog_each,
-						 	N_exog_types = N_exog_types,
-						 	beta_prior = beta_prior,
-						 	p_starts = p_starts,
-						 	p_ends = p_ends,
-						 	p_times = p_times,
-						 	p_each = p_each,
-						 	A = A,
-						 	Y = Y
-						 ))
+### generate data
 
-test
+biqq_data <-
+	list(K = K,
+			 K_endog = K_endog,
+			 K_exog = K_exog,
+			 N_endog_each = N_endog_each,
+			 N_types = N_types,
+			 N_events = N_events,
+			 N_data = N_data,
+			 N_endog_expand = N_endog_expand,
+			 max_possible_data = max_possible_data,
+			 dirichlet_prior = dirichlet_prior,
+			 l_starts = l_starts,
+			 l_ends = l_ends,
+			 N_exog_each = as.array(N_exog_each),
+			 N_exog_types = N_exog_types,
+			 beta_prior = beta_prior,
+			 p_starts = as.array(p_starts),
+			 p_ends = as.array(p_ends),
+			 p_times = as.array(p_times),
+			 p_each = as.array(p_each),
+			 K_strategies = K_strategies,
+			 w_starts = w_starts,
+			 w_ends = w_ends,
+			 A_w = A_w,
+			 A = A,
+			 Y = Y)
+
+test <- rstan::stan(file = "other/gbiqq_ragged_simplex.stan",
+										data = biqq_data)
+
+print(test)
