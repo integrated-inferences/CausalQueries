@@ -3,11 +3,12 @@ data {
 	int<lower=1> K; // number of variables
 	int<lower=1> K_endog; // number of endogenous variables
 	int<lower=1> K_exog; // number of exogenous variables
-  int<lower=1> N_endog_each[K_endog]; // number of types for each exogenous variable
+  int<lower=1> N_endog_each[K_endog]; // number of types for each endogenous variable
 	int<lower=1> N_types; // sum(N_endog_each)
 	int<lower=1> N_events; // number of possible events
 	int<lower=1> N_data; // number of possible data realizations
 	int<lower=1> N_endog_expand; // prod(N_endog_each)
+	matrix<lower=0,upper=1>[N_data,K] max_possible_data;
 
 	// lambda data
 	vector<lower=0>[N_types] dirichlet_prior;
@@ -15,6 +16,7 @@ data {
   int<lower=1> l_ends[K_endog];
 
   // pi data
+  int<lower=1> N_exog_each[K_exog]; //
   int<lower=1> N_exog_types; //
   real<lower=0> beta_prior[N_exog_types,2];
   int<lower=1> p_starts[K_exog];
@@ -22,8 +24,10 @@ data {
   int<lower=1> p_each[K_exog];
   int<lower=1> p_times[K_exog];
 
-	matrix<lower=0,upper=1>[N_data,K] max_possible_data;
+  // ambiguity data
 	matrix<lower=0,upper=1>[N_data,N_endog_expand] A;
+
+	// user data
 	int<lower=0,upper=2147483647> Y[N_events]; // incorrect dimensionality, only for the tryout
 
 }
@@ -57,7 +61,7 @@ model {
 
 
 	// fill in L with only lambda draws for last endogenous variable (will be changed in the loop for L)
-	lambdas[(N_endog_expand - N_endog_each[K_endog]):N_endog_expand] = lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
+	lambdas[(N_endog_expand-N_endog_each[K_endog]+1):N_endog_expand] = lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
 	// fill in L for the rest of endogenous variables in a BACKWARDS order
 	for (i in (K_endog - 1):1) {
 
@@ -75,27 +79,30 @@ model {
 		// adjust expansion for the next iteration of the loop
 		expansion = expansion * N_endog_each[i];
 		// fill in L with temporary L fill in
-		lambdas[(N_endog_expand-expansion):N_endog_expand] = lambdas_temp;
+		lambdas[(N_endog_expand-expansion+1):N_endog_expand] = lambdas_temp;
 	}
 
 	for (i in 1:K_exog) {
 
 		vector[N_endog_expand] pis_temp;
-		vector[N_exog_types*p_each[i]] pis_temp_each;
+		vector[N_exog_each[i]*p_each[i]] pis_temp_each;
 
 		int pos = 1;
-		for (j in 1:N_exog_types) {
+		int counter = p_times[i];
+
+		for (j in 1:N_exog_each[i]) {
 			pis_temp_each[pos:(pos+p_each[i]-1)] = rep_vector(pis_base[j], p_each[i]);
 			pos = pos + p_each[i];
 		}
 
-		pis_temp[1:(N_exog_types*p_each[i]-1)] = pis_temp_each;
+		pis_temp[1:(N_exog_each[i]*p_each[i])] = pis_temp_each;
 
-		for (k in 1:(p_times[i]-1)) {
+		while (counter > 1) {
 			pis_temp = append_row(pis_temp,pis_temp_each);
+			counter = counter - 1;
 		}
 
-		pis = pis * (max_possible_data[,i] * pis_temp' +
+		pis = pis .* (max_possible_data[,i] * pis_temp' +
 								(1 - max_possible_data[,i]) * (1 - pis_temp)');
 
 	}

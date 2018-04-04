@@ -186,7 +186,7 @@ get_pi_expanders <- function(pi,dag){
 	lapply(pi,
 				 FUN = function(exogenous_var) {
 
-				 	pos <- which(names(exogenous_var) %in% names(types))
+				 	pos <- which(names(exogenous_var) == names(types))
 				 	select_vars <-
 				 		cumsum((seq_along(names(types)) == min(pos)) +
 				 					 	(seq_along(names(types)) == (max(pos) + 1)))
