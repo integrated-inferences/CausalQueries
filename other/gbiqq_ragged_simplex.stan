@@ -37,24 +37,24 @@ data {
 	int<lower=0,upper=2147483647> Y[N_events]; // incorrect dimensionality, only for the tryout
 
 	// debugging
-	vector<lower=0,upper=1>[N_types] lambdas_base;
+	// vector<lower=0,upper=1>[N_types] lambdas_base;
 }
 parameters {
 
-	vector<lower=0,upper=2>[N_types-K_endog] gamma;
+	vector<lower=0>[N_types-K_endog] gamma;
 	real<lower=0,upper=1> pis_base[N_exog_types];
 
 }
 transformed parameters {
 
-	// // this is a workaround for vector of estimated simpleces for dirichlet distribution
-	// vector<lower=0,upper=1>[N_types] lambdas_base;
-	// vector<lower=1>[K_endog] sum_gammas;
-	// for (i in 1:K_endog) {
-	// 	sum_gammas[i] = 1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
-	// 	lambdas_base[l_starts[i]:l_ends[i]] =
-	// 		append_row(1,gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
-	// }
+	// this is a workaround for vector of estimated simpleces for dirichlet distribution
+	vector<lower=0,upper=1>[N_types] lambdas_base;
+	vector<lower=1>[K_endog] sum_gammas;
+	for (i in 1:K_endog) {
+		sum_gammas[i] = 1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
+		lambdas_base[l_starts[i]:l_ends[i]] =
+			append_row(1,gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
+	}
 
 }
 model {
@@ -64,28 +64,33 @@ model {
 
 	// expansion size (will be changed in the loop for L)
 	int expansion = N_endog_each[K_endog];
+	int endog_i = K_endog - 1; // helps implementing backwars order
 
 	// pis matrix placeholder for multiplication by pi matrices for each exogenous variable
 	matrix[N_data,N_endog_expand] pis = rep_matrix(1, N_data, N_endog_expand);
 
 	// weights placeholder
 	vector[N_data] w;
-	// vector[N_events] w_full;
+	vector[N_events] w_full;
 
 	// LAMBDAS STUFF
 
 	// fill in L with only lambda draws for last endogenous variable (will be changed in the loop for L)
-	lambdas[(N_endog_expand - expansion + 1):N_endog_expand] = lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
+	lambdas[(N_endog_expand - expansion + 1):N_endog_expand] =
+		lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
+
 	// fill in L for the rest of endogenous variables in a BACKWARDS order
-	for (i in (K_endog - 1):1) {
+	// while-loop is used to implement backwards order, since for-loop doesnt take descending
+	// indeces
+	while (endog_i > 0) {
 
 		// temproary L fill in
-		vector[expansion*N_endog_each[i]] lambdas_temp;
+		vector[expansion*N_endog_each[endog_i]] lambdas_temp;
 		int m = 1;
 
 		for (j in (N_endog_expand - expansion + 1):N_endog_expand) {
 			// j goes from first to last element position of previous expansion
-			for (k in l_starts[i]:l_ends[i]) {
+			for (k in l_starts[endog_i]:l_ends[endog_i]) {
 				// k goes from first to last element position for endog variable i in lambdas_base
 				lambdas_temp[m] = lambdas[j] * lambdas_base[k];
 				m = m + 1;
@@ -93,7 +98,8 @@ model {
 		}
 
 		// adjust expansion for the next iteration of the loop
-		expansion = expansion * N_endog_each[i];
+		expansion = expansion * N_endog_each[endog_i];
+		endog_i = endog_i - 1;
 		// fill in L with temporary L fill in
 		lambdas[(N_endog_expand - expansion + 1):N_endog_expand] = lambdas_temp;
 	}
@@ -142,10 +148,10 @@ model {
 	// A_w -- ambiguity matrix transfering weights for each of max data weights into data events
 
 	w = (A .* pis) * lambdas;
-	// w_full = A_w * w;
-	print("exp:", expansion);
-	print("lambdas: ", lambdas);
-	print("w: ", w);
+	w_full = A_w * w;
+
+	// debugging
+	// print("w: ", w);
 
 	// LIKELIWOOD
 
@@ -153,10 +159,9 @@ model {
 	// This is currently causing problems for models with large numbers of w's
 	// and seems to be an issue with underflowing 0's
 	// see http://discourse.mc-stan.org/t/dirichlet-log-probabilities-is-not-a-valid-simplex/1805/2
-  // for (i in 1:K_strategies) {
-  // 	target += multinomial_lpmf(Y[w_starts[i]:w_ends[i]] | w_full[w_starts[i]:w_ends[i]]);
-    target += multinomial_lpmf(Y[w_starts[1]:w_ends[1]] | w[w_starts[1]:w_ends[1]]);
-  // }
+  for (i in 1:K_strategies) {
+  	target += multinomial_lpmf(Y[w_starts[i]:w_ends[i]] | w_full[w_starts[i]:w_ends[i]]);
+  }
 
 	// PRIORS
 
@@ -165,12 +170,12 @@ model {
 	// target += gamma_lpdf(lambdas_base | dirichlet_prior, 1);
 
 	// correction required for identification of gamma implementation for dirichlet priors on lambda
-	// for (i in 1:K_endog) {
-	// 	target += -N_endog_each[i] * log(sum_gammas[i]);
-	// }
+	for (i in 1:K_endog) {
+		target += -N_endog_each[i] * log(sum_gammas[i]);
+	}
 
 	// gamma prior
-	target += uniform_lpdf(gamma | 0, 2);
+	target += uniform_lpdf(gamma | 0, 10);
 
 	// beta prior for pis
 	target += beta_lpdf(pis_base | beta_prior[,1], beta_prior[,2]);

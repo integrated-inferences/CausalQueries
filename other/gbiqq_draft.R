@@ -9,31 +9,30 @@ pacman::p_load(rstan, gbiqq)
 
 ## PREPARE DATA FOR STAN
 
-# Canonical BIQQ
-test_dag <-
-	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
-									add_edges(parent = c("K"),children = c("Y", "M")))
-
-data <- data.frame(
-	X = rbinom(1000,1,.5),
-	Y = c(rep(NA,150),rbinom(850,1,.5)),
-	K = c(rbinom(250,1,.5),rep(NA,750)),
-	M = c(rbinom(1000,1,.5))
-)
-
-# # More complex example
+# # Canonical BIQQ
 # test_dag <-
-# 	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
-# 									add_edges(parent = "K", children = c("Y1","Y2")),
-# 									add_edges(parent = "Z", children = c("Y2")))
+# 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
+# 									add_edges(parent = c("K"),children = c("Y")))
 #
 # data <- data.frame(
-# 	X = rbinom(100,1,.6),
-# 	Z = rbinom(100,1,.6),
-# 	Y1 = rbinom(100,1,.6),
-# 	Y2 = rbinom(100,1,.6),
-# 	K = c(rbinom(25,1,.6),rep(NA,75))
+# 	X = rbinom(1000,1,.5),
+# 	Y = c(rep(NA,150),rbinom(850,1,.5)),
+# 	K = c(rbinom(250,1,.5),rep(NA,750))
 # )
+
+# More complex example
+test_dag <-
+	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
+									add_edges(parent = "K", children = c("Y1","Y2")),
+									add_edges(parent = "Z", children = c("Y2")))
+
+data <- data.frame(
+	X  = rbinom(100,1,.5),
+	Z = c(rep(NA,25), rbinom(75,1,.5)),
+	K  = c(rbinom(25,1,.5), rep(NA,75)),
+	Y1 = rbinom(100,1,.5),
+	Y2 = c(rep(NA,25), rbinom(75,1,.5))
+)
 
 # look at the DAG
 plot_dag(test_dag)
@@ -189,92 +188,35 @@ for (i in 1:K_endog) {
 		c(1,gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]) / sum_gammas[i];
 }
 
-# lambdas_base <-
-# 	do.call(c,
-# 					lapply(gbiqq::get_endogenous_vars(test_dag),
-# 								 FUN = function(v) {
-# 								 	gtools::rdirichlet(1, lambdas_prior[grep(pattern = v, x = names(lambdas_prior))])
-# 								 }))
-
-# // expanded vector of lambdas (L)
-# vector[N_endog_expand] lambdas;
-#
-# // expansion size (will be changed in the loop for L)
-# int expansion = N_endog_each[K_endog];
-#
-# // LAMBDAS STUFF
-#
-# // fill in L with only lambda draws for last endogenous variable (will be changed in the loop for L)
-# lambdas[(N_endog_expand - N_endog_each[K_endog] + 1):N_endog_expand] =
-# 	lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
-# // fill in L for the rest of endogenous variables in a BACKWARDS order
-# for (i in (K_endog - 1):1) {
-#
-# 	// temproary L fill in
-# 	vector[expansion*N_endog_each[i]] lambdas_temp;
-#
-# 	int m = 1;
-# 	for (j in (N_endog_expand - expansion + 1):N_endog_expand) { // j goes from first to last element position of previous expansion
-# 		for (k in l_starts[i]:l_ends[i]) { // k goes from first to last element position for endog variable i in lambdas_base
-# 			lambdas_temp[m] = lambdas[j] * lambdas_base[k];
-# 			m = m + 1;
-# 		}
-# 	}
-#
-# 	// adjust expansion for the next iteration of the loop
-# 	expansion = expansion * N_endog_each[i];
-# 	// fill in L with temporary L fill in
-# 	lambdas[(N_endog_expand - expansion + 1):N_endog_expand] = lambdas_temp;
-# }
-
-
-# lambdas construction STAN style
+# LAMBDAS STUFF
 lambdas <- rep(NA, N_endog_expand) # no need to do this in STAN
 expansion <- N_endog_each[K_endog]
 
 lambdas[(N_endog_expand - expansion + 1):N_endog_expand] =
 	lambdas_base[l_starts[K_endog]:l_ends[K_endog]]
 
-for (i in (K_endog - 1):1) {
+endog_i <- K_endog - 1
 
-	lambdas_temp <- rep(NA, expansion*N_endog_each[i]) # no need to do this in STAN
+while (endog_i > 0) {
+
+	lambdas_temp <- rep(NA, expansion*N_endog_each[endog_i]) # no need to do this in STAN
 
 	m = 1
 	for (j in (N_endog_expand - expansion + 1):N_endog_expand) {
 		# j goes from first to last element position of previous expansion
-		for (k in l_starts[i]:l_ends[i]) {
+		for (k in l_starts[endog_i]:l_ends[endog_i]) {
 			# k goes from first to last element position for endog variable i in lambdas_base
 			lambdas_temp[m] = lambdas[j] * lambdas_base[k]
 			m = m + 1
 		}
 	}
 
-	expansion = expansion * N_endog_each[i]
+	expansion = expansion * N_endog_each[endog_i]
+	endog_i = endog_i - 1
 	lambdas[(N_endog_expand - expansion + 1):N_endog_expand] = lambdas_temp
 }
 
-
-# for (i in 1:K_exog) {
-#
-# 	vector[N_endog_expand] pis_temp;
-# 	vector[N_exog_types*p_each[i]] pis_temp_each;
-#
-# 	int pos = 1;
-# 	for (j in 1:N_exog_types) {
-# 		pis_temp_each[pos:(pos+p_each[i]-1)] = rep_vector(pis_base[j], p_each[i]);
-# 		pos = pos + p_each[i];
-# 	}
-#
-# 	pis_temp[1:(N_exog_types*p_each[i]-1)] = pis_temp_each;
-#
-# 	for (k in 1:(p_times[i]-1)) {
-# 		pis_temp = append_row(pis_temp,pis_temp_each);
-# 	}
-#
-# 	pis = pis * (max_possible_data[,i] * pis_temp' +
-# 							 (1 - max_possible_data[,i]) * (1 - pis_temp)');
-#
-# }
+# PIS STUFF
 
 pis_base <- apply(beta_prior, MARGIN = 1, FUN = function(pr) rbeta(1, pr[1], pr[2])) # to simplify things
 pis = matrix(1, nrow = N_data, ncol = N_endog_expand)
@@ -303,44 +245,18 @@ for (i in 1:K_exog) {
 
 }
 
-# children <- get_children_of_exogenous(test_dag)
-# ( pi <- lapply(children, FUN = function(childs) n_endogenous_types[childs]) )
-# (
-# 	pis <- lapply(pi,
-# 								FUN = function(exogenous_var) {
-# 									rep(.5, times = prod(exogenous_var))
-# 								})
-# )
-# # important object which allows to expand all pi priors to the same dimensionality as A matrix
-# pi_times_each <- get_pi_expanders(pi = pi, dag = test_dag)
-#
-#
-# P <- matrix(1, nrow = nrow(A), ncol = ncol(A))
-# # pis and pi_each and pi_times need to work as vectors here
-# for (exogenous_var in get_exogenous_vars(test_dag)) {
-#
-# 	pi_temp <-
-# 		rep(pis[[exogenous_var]],
-# 				times = pi_times_each[[exogenous_var]]$times,
-# 				each = pi_times_each[[exogenous_var]]$each)
-#
-# 	P <- P * (max_possible_data[,exogenous_var] %*% t(pi_temp) +
-# 							(1 - max_possible_data[,exogenous_var]) %*% t(1 - pi_temp))
-#
-# }
+# MAGIC STUFF
 
+w <- lambdas %*% t(A * pis)
 
-t( w <- lambdas %*% t(A * pis) )
-
+# check
 stopifnot(
 	all.equal(target = 1, current =  sum(w))
 )
 
-# Expand w to be big
+w_full <- A_w %*% t(w)
 
-( w_full <- A_w %*% t(w) )
-
-# Likelihood will be a loop like this:
+# check
 for (i in 1:K_strategies) {
 	stopifnot(
 		all.equal(target = 1,
@@ -348,6 +264,7 @@ for (i in 1:K_strategies) {
 	)
 }
 
+# Y STUFF
 Ys <- c()
 for (i in 1:K_strategies) {
 	Ys <- c(Ys, as.vector(rmultinom(n = 1, size = 25, w_full[w_starts[i]:w_ends[i]])))
@@ -355,9 +272,7 @@ for (i in 1:K_strategies) {
 
 
 
-# Run STAN ------------------------------------------------------------------------------------
-
-### generate data
+# RUN GBIQQ ------------------------------------------------------------------------------------
 
 biqq_data <-
 	list(K = K,
@@ -384,22 +299,24 @@ biqq_data <-
 			 w_ends = w_ends,
 			 A_w = A_w,
 			 A = A,
-			 Y = Y,
-			 lambdas_base = lambdas_base)
+			 Y = Y #,
+			 #lambdas_base = lambdas_base
+			 )
 
 initf <- function() {
-	list(gamma = array(rep(.5, times = (N_types - K_endog))),
-			 pis_base = array(rep(.4, times = N_exog_types)))
+	list(gamma = array(rep(1, times = (N_types - K_endog))),
+			 pis_base = array(rep(.5, times = N_exog_types)))
 }
 
 test <- rstan::stan(file = "other/gbiqq_ragged_simplex.stan",
 										data = biqq_data,
-										init = initf,
-										iter = 1,
-										chains = 1,
-										# pars = "lambdas_base",
-										algorithm = "Fixed_param",
-										diagnostic_file = "other/gbiqq_ragged_simplex_report",
-										control = list(adapt_delta = .8))
+										# init = initf,
+										# algorithm = "Fixed_param",
+										iter = 400,
+										warmup = 200,
+										chains = 4,
+										pars = "lambdas_base",
+										cores = parallel::detectCores()
+										)
 
 print(test)
