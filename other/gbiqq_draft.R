@@ -12,12 +12,13 @@ pacman::p_load(rstan, gbiqq)
 # Canonical BIQQ
 test_dag <-
 	gbiqq::make_dag(add_edges(parent = "X",children = c("K", "Y")),
-									add_edges(parent = c("K"),children = "Y"))
+									add_edges(parent = c("K"),children = c("Y", "M")))
 
 data <- data.frame(
-	X = rbinom(100,1,.5),
-	Y = rbinom(100,1,.5),
-	K = c(rbinom(25,1,.5),rep(NA,75))
+	X = rbinom(1000,1,.5),
+	Y = c(rep(NA,150),rbinom(850,1,.5)),
+	K = c(rbinom(250,1,.5),rep(NA,750)),
+	M = c(rbinom(1000,1,.5))
 )
 
 # # More complex example
@@ -43,8 +44,8 @@ lambdas_prior <-
 	lambdas <-
 	do.call(c,
 					lapply(gbiqq::get_n_endogenous_types(test_dag), function(variable_types) {
-						lambda_draw <- rep(1/variable_types, times = variable_types)
-						return(lambda_draw)
+						lambda <- rep(1/variable_types, times = variable_types)
+						return(lambda)
 					})
 	)
 
@@ -178,14 +179,60 @@ Y <- get_data_events(data = data, dag = test_dag)$data_events$count
 
 # WITHIN STAN Stuff -----------------------------------------------------------------------------------
 
+gamma <- runif(N_types - K_endog, 0, 2)
 
-lambdas_base <- lambdas_prior # to simplify things
+lambdas_base <- rep(NA, N_types)
+sum_gammas <- rep(NA, K_endog)
+for (i in 1:K_endog) {
+	sum_gammas[i] = 1 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
+	lambdas_base[l_starts[i]:l_ends[i]] =
+		c(1,gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]) / sum_gammas[i];
+}
+
+# lambdas_base <-
+# 	do.call(c,
+# 					lapply(gbiqq::get_endogenous_vars(test_dag),
+# 								 FUN = function(v) {
+# 								 	gtools::rdirichlet(1, lambdas_prior[grep(pattern = v, x = names(lambdas_prior))])
+# 								 }))
+
+# // expanded vector of lambdas (L)
+# vector[N_endog_expand] lambdas;
+#
+# // expansion size (will be changed in the loop for L)
+# int expansion = N_endog_each[K_endog];
+#
+# // LAMBDAS STUFF
+#
+# // fill in L with only lambda draws for last endogenous variable (will be changed in the loop for L)
+# lambdas[(N_endog_expand - N_endog_each[K_endog] + 1):N_endog_expand] =
+# 	lambdas_base[l_starts[K_endog]:l_ends[K_endog]];
+# // fill in L for the rest of endogenous variables in a BACKWARDS order
+# for (i in (K_endog - 1):1) {
+#
+# 	// temproary L fill in
+# 	vector[expansion*N_endog_each[i]] lambdas_temp;
+#
+# 	int m = 1;
+# 	for (j in (N_endog_expand - expansion + 1):N_endog_expand) { // j goes from first to last element position of previous expansion
+# 		for (k in l_starts[i]:l_ends[i]) { // k goes from first to last element position for endog variable i in lambdas_base
+# 			lambdas_temp[m] = lambdas[j] * lambdas_base[k];
+# 			m = m + 1;
+# 		}
+# 	}
+#
+# 	// adjust expansion for the next iteration of the loop
+# 	expansion = expansion * N_endog_each[i];
+# 	// fill in L with temporary L fill in
+# 	lambdas[(N_endog_expand - expansion + 1):N_endog_expand] = lambdas_temp;
+# }
+
 
 # lambdas construction STAN style
 lambdas <- rep(NA, N_endog_expand) # no need to do this in STAN
 expansion <- N_endog_each[K_endog]
 
-lambdas[(N_endog_expand - N_endog_each[K_endog] + 1):N_endog_expand] =
+lambdas[(N_endog_expand - expansion + 1):N_endog_expand] =
 	lambdas_base[l_starts[K_endog]:l_ends[K_endog]]
 
 for (i in (K_endog - 1):1) {
@@ -229,7 +276,7 @@ for (i in (K_endog - 1):1) {
 #
 # }
 
-pis_base <- beta_prior[,1] # to simplify things
+pis_base <- apply(beta_prior, MARGIN = 1, FUN = function(pr) rbeta(1, pr[1], pr[2])) # to simplify things
 pis = matrix(1, nrow = N_data, ncol = N_endog_expand)
 
 for (i in 1:K_exog) {
@@ -297,13 +344,16 @@ stopifnot(
 for (i in 1:K_strategies) {
 	stopifnot(
 		all.equal(target = 1,
-							current =  sum(w_all[w_starts[i]:w_ends[i]]))
+							current =  sum(w_full[w_starts[i]:w_ends[i]]))
 	)
 }
 
-Y[w_starts[i]:w_ends[i]]
+Ys <- c()
+for (i in 1:K_strategies) {
+	Ys <- c(Ys, as.vector(rmultinom(n = 1, size = 25, w_full[w_starts[i]:w_ends[i]])))
+}
 
-w_full[w_starts[i]:w_ends[i]]
+
 
 # Run STAN ------------------------------------------------------------------------------------
 
@@ -334,9 +384,22 @@ biqq_data <-
 			 w_ends = w_ends,
 			 A_w = A_w,
 			 A = A,
-			 Y = Y)
+			 Y = Y,
+			 lambdas_base = lambdas_base)
+
+initf <- function() {
+	list(gamma = array(rep(.5, times = (N_types - K_endog))),
+			 pis_base = array(rep(.4, times = N_exog_types)))
+}
 
 test <- rstan::stan(file = "other/gbiqq_ragged_simplex.stan",
-										data = biqq_data)
+										data = biqq_data,
+										init = initf,
+										iter = 1,
+										chains = 1,
+										# pars = "lambdas_base",
+										algorithm = "Fixed_param",
+										diagnostic_file = "other/gbiqq_ragged_simplex_report",
+										control = list(adapt_delta = .8))
 
 print(test)
