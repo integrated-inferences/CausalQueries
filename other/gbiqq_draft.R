@@ -319,4 +319,9 @@ test <- rstan::stan(file = "other/gbiqq_ragged_simplex.stan",
 										cores = parallel::detectCores()
 										)
 
-print(test)
+t <- rstan::As.mcmc.list(test)
+
+gbiqq::get_endogenous_vars(test_dag)
+gbiqq::get_n_endogenous_types(test_dag)
+
+apply(t[[1]][,l_starts[2]:l_ends[2]], 2, function(x) c(mn = mean(x), sd = sd(x)))
