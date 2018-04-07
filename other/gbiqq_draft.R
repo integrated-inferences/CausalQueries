@@ -2,7 +2,7 @@ rm(list = ls())
 
 if (!require("pacman")) install.packages("pacman")
 # library(gbiqq)
-pacman::p_load(rstan, gbiqq)
+pacman::p_load(rstan, gbiqq, magrittr, parallel, tidyverse)
 
 
 # USER SUPPLIED --------------------------------------------------------------------------------
@@ -23,8 +23,9 @@ pacman::p_load(rstan, gbiqq)
 # More complex example
 test_dag <-
 	gbiqq::make_dag(add_edges(parent = "X", children = c("K", "Y1")),
-									add_edges(parent = "K", children = c("Y1","Y2")),
-									add_edges(parent = "Z", children = c("Y2")))
+									add_edges(parent = "K", children = c("Y1","Y2"))#,
+									#add_edges(parent = "Z", children = c("Y2"))
+									)
 
 data <- data.frame(
 	X  = rbinom(100,1,.5),
@@ -308,20 +309,50 @@ initf <- function() {
 			 pis_base = array(rep(.5, times = N_exog_types)))
 }
 
+n_chains <- 4
+
 test <- rstan::stan(file = "other/gbiqq_ragged_simplex.stan",
 										data = biqq_data,
-										# init = initf,
+										init = initf,
 										# algorithm = "Fixed_param",
-										iter = 400,
-										warmup = 200,
-										chains = 4,
-										pars = "lambdas_base",
-										cores = parallel::detectCores()
+										iter = 2000,
+										warmup = 1000,
+										chains = 1,
+										pars = c("lambdas_base", "pis_base"),
+										cores = parallel::detectCores(),
+										control = list(adapt_delta = .999,
+																	 max_treedepth = 15)
 										)
+
+print(test)
+
+# REPORT --------------------------------------------------------------------------------------
+
+pairs_exam <- 2
+
+rstan:::pairs.stanfit(test,
+											pars = c(paste0("lambdas_base[",l_starts[pairs_exam]:l_ends[pairs_exam],"]")),
+											include = TRUE)
 
 t <- rstan::As.mcmc.list(test)
 
-gbiqq::get_endogenous_vars(test_dag)
-gbiqq::get_n_endogenous_types(test_dag)
 
-apply(t[[1]][,l_starts[2]:l_ends[2]], 2, function(x) c(mn = mean(x), sd = sd(x)))
+# report lambdas
+lapply(1:K_endog,
+			 FUN = function(endog) {
+
+			 	t_temp <- t[[1]][,l_starts[endog]:l_ends[endog]]
+
+			 	for (i in 2:n_chains) {
+			 		t_temp <- t_temp + t[[i]][,l_starts[endog]:l_ends[endog]]
+			 	}
+
+			 	as_data_frame(t(apply(t_temp/n_chains, 2,
+			 				FUN = function(x) {
+			 					x <- c(mn = mean(x), sd = sd(x), fivenum(x))
+			 					names(x) <- c("mn", "sd", "min", "l_hinge", "med", "u_hinge", "max")
+			 					return(x)
+			 				})))
+
+			 }) %>%
+	`names<-`(gbiqq::get_endogenous_vars(test_dag))

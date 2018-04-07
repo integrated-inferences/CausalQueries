@@ -167,7 +167,7 @@ model {
 
 	// gamma prior for lambdas which ensures lambdas ~ dirichlet(dirichlet_prior)
 	// this is a workaround necessary to deal with vector of vectors of simpleces
-	// target += gamma_lpdf(lambdas_base | dirichlet_prior, 1);
+	target += gamma_lpdf(lambdas_base | dirichlet_prior, 1);
 
 	// correction required for identification of gamma implementation for dirichlet priors on lambda
 	for (i in 1:K_endog) {
@@ -175,7 +175,7 @@ model {
 	}
 
 	// gamma prior
-	target += uniform_lpdf(gamma | 0, 10);
+	// target += uniform_lpdf(gamma | 0, 10);
 
 	// beta prior for pis
 	target += beta_lpdf(pis_base | beta_prior[,1], beta_prior[,2]);
