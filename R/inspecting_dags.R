@@ -148,7 +148,7 @@ get_parents <- function(dag) {
 get_types <- function(dag) {
 
 	types <- lapply(
-		X = lapply(get_parents(test_dag), length),
+		X = lapply(get_parents(dag), length),
 		FUN = function(parent_n){
 			type_mat <- perm(rep(2,2^parent_n))
 			if(parent_n == 0){
