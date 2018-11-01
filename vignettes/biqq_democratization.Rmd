@@ -1,0 +1,124 @@
+---
+title: "A lower-level model of democratization"
+author: "biqq Team"
+date: "October 30, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+```{r}
+democratization_dag <-
+	gbiqq::make_dag(add_edges(parent = "I", children = c("M", "D")),
+									add_edges(parent = "M", children = c("D")),
+									add_edges(parent = "P", children = c("D")))
+
+
+plot_dag(democratization_dag)
+
+```
+
+
+```{r}
+N <- 100
+data <- data.frame(
+	I = rbinom(N,1, .8),
+	M = rbinom(N,1,.5),
+	P = rbinom(N,1,0.3),
+  D = rbinom(N,1,.5))
+
+```
+
+
+
+
+```{r}
+lambdas_prior <-
+	lambdas <-
+	do.call(c,
+					lapply(gbiqq::get_n_endogenous_types(democratization_dag), function(variable_types) {
+						lambda <- rep(1/variable_types, times = variable_types)
+						return(lambda)
+					})
+	)
+
+
+
+# pi priors in correct dimensionality
+pis_prior <-
+	do.call(c,
+					lapply(
+						lapply(gbiqq::get_children_of_exogenous(democratization_dag),
+									 FUN = function(childs) gbiqq::get_n_endogenous_types(democratization_dag)[childs]),
+						FUN = function(child_types) rep(.5, times = prod(child_types))
+					)
+	)
+
+pis_prior <- cbind(pis_prior,pis_prior)
+
+```
+
+```{r}
+
+# STAN Model --------------------------------------------------------------------------
+
+# int<lower=1> K; // number of variables
+# int<lower=1> K_endog; // number of endogenous variables
+# int<lower=1> K_exog; // number of exogenous variables
+# int<lower=1> N_endog_each[K_endog]; // number of types for each endogenous variable
+# int<lower=1> N_types; // sum(N_endog_each)
+# int<lower=1> N_events; // number of possible events
+# int<lower=1> N_data; // number of possible data realizations
+# int<lower=1> N_endog_expand; // prod(N_endog_each)
+# matrix<lower=0,upper=1>[N_data,K] max_possible_data;
+#
+# // lambda data
+# vector<lower=0>[N_types] dirichlet_prior;
+# int<lower=1> l_starts[K_endog];
+# int<lower=1> l_ends[K_endog];
+#
+# // pi data
+# int<lower=1> N_exog_types; //
+# real<lower=0> beta_prior[N_exog_types,2];
+# int<lower=1> p_starts[K_exog];
+# int<lower=1> p_ends[K_exog];
+# int<lower=1> p_each[K_exog];
+# int<lower=1> p_times[K_exog];
+#
+# // ambiguity data
+# matrix<lower=0,upper=1>[N_data,N_endog_expand] A;
+#
+# // user data
+# int<lower=0,upper=2147483647> Y[N_events]; // incorrect dimensionality, only for the tryout
+
+```
+
+```{r}
+
+# preliminary
+likelihood_helpers <- get_likelihood_helpers(democratization_dag)
+children_of_exogenous <- gbiqq::get_children_of_exogenous(democratization_dag)
+
+
+K <- n <- length(gbiqq::get_variables(democratization_dag))
+K_endog <- n_endog <-  length(gbiqq::get_endogenous_vars(democratization_dag))
+K_exog <- n_exog <- length(gbiqq::get_exogenous_vars(democratization_dag))
+N_endog_each <- n_endogenous_types <- gbiqq::get_n_endogenous_types(democratization_dag)
+N_types <- n_lambdas <- sum(N_endog_each)
+# for now, this is generally incorrect
+N_events <- nrow(get_data_events(data = data, dag = democratization_dag)$data_events)
+N_data <- nrow(gbiqq::get_max_possible_data(democratization_dag))
+N_endog_expand <- prod(N_endog_each)
+max_possible_data <- gbiqq::get_max_possible_data(democratization_dag)
+
+```
+
+
+
+
+

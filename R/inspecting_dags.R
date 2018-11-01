@@ -344,9 +344,9 @@ get_n_endogenous_types <- function(dag){
 #'
 #' @return A list of the children of exogenous variables
 get_children_of_exogenous <- function(dag){
-	sapply(gbiqq::get_exogenous_vars(test_dag),
+	sapply(gbiqq::get_exogenous_vars(dag),
 				 FUN = function(exogenous_variable) {
-				 	names(gbiqq::get_parents(test_dag))[sapply(X = gbiqq::get_parents(test_dag),
+				 	names(gbiqq::get_parents(dag))[sapply(X = gbiqq::get_parents(dag),
 				 																						 FUN = function(parents) exogenous_variable %in% parents ) ] },
 				 simplify = FALSE
 	)
