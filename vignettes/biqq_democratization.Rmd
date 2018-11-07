@@ -7,6 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(mc.cores = parallel::detectCores())
+# To avoid recompilation of unchanged Stan programs, we recommend calling
+rstan_options(auto_write = TRUE)
 ```
 
 
