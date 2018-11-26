@@ -6,6 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+require(rstan)
 knitr::opts_chunk$set(echo = TRUE)
 options(mc.cores = parallel::detectCores())
 # To avoid recompilation of unchanged Stan programs, we recommend calling
@@ -41,14 +42,15 @@ data <- data.frame(
 
 
 ```{r}
-lambdas_prior <-
-	lambdas <-
-	do.call(c,
-					lapply(gbiqq::get_n_endogenous_types(democratization_dag), function(variable_types) {
-						lambda <- rep(1/variable_types, times = variable_types)
-						return(lambda)
-					})
-	)
+
+
+lambdas_prior <- lambdas <-
+	do.call(c, 
+	 lapply(gbiqq::get_n_endogenous_types(democratization_dag), 
+		function(variable_types) {
+  	 lambda <- rep(1/variable_types, times = variable_types)
+	   return(lambda)
+  	 }))
 
 
 
