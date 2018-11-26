@@ -13,7 +13,9 @@ options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 ```
 
+# A model of democratization
 
+We apply the gBIQQ framework to estimate the causal linkage between inequality (I) and democratization (D). In our model we allow for direct effects of inequality on democratization, as well as effects running through a mediator: mobilization. Based on the work of Huntington (1993) and Litz and Stepan (1996), we include international pressure (P) as an exogenous variable that might directly affect democratization. The directed acyclyc graph below depicts these relationships.
 
 
 ```{r}
@@ -28,21 +30,33 @@ plot_dag(democratization_dag)
 ```
 
 
+# Data
+
+For simplicity, we allow the variables in this model to take values 0 or 1. 
 ```{r}
 N <- 100
 data <- data.frame(
-	I = rbinom(N,1, .8),
-	M = rbinom(N,1,.5),
-	P = rbinom(N,1,0.3),
-  D = rbinom(N,1,.5))
+	I = rbinom(N,1, .8), # Inequality
+	M = rbinom(N,1,.5),  # Mobilization
+	P = rbinom(N,1,0.3), # International Pressure
+  D = rbinom(N,1,.5))  # Democratization
 
 ```
 
 
+# Defining priors
 
+We now express our prior beliefs over our set of parameters $\theta :\{ \lambda, \pi\}$. The p $\lambda$ parameter represents the proportion of the population that for which a change in given treatment condition (e.g from I = 0, M = 1, P =1 to  I = 1, M = 1, P =1) would result in democratization (D = 1). $\pi$ represents the propabilty that a case is assigned to treatment.
 
 ```{r}
 
+# M has 4 possible causal types
+# a: inequality =0 --> M = 1 and I = 1 --> M =0
+# b: inequality = 0 -> M=0 and I = 1-> M=1
+# c: I= 0 -> M=0 and I = 1  M =0
+# d I =0 -> M=1 and I= 1 -> M=1
+
+# For Democartization the situation is somewhat more complicated; there are 3 variables affecting democratization P, I, and M. Each variable has two levels 1 and 0 2^3 = 8 and for each of those democaratization can be either 0 or 1 2^8=256
 
 lambdas_prior <- lambdas <-
 	do.call(c, 
@@ -51,7 +65,6 @@ lambdas_prior <- lambdas <-
   	 lambda <- rep(1/variable_types, times = variable_types)
 	   return(lambda)
   	 }))
-
 
 
 # pi priors in correct dimensionality
@@ -67,6 +80,8 @@ pis_prior <-
 pis_prior <- cbind(pis_prior,pis_prior)
 
 ```
+
+
 
 ```{r}
 
@@ -106,6 +121,10 @@ pis_prior <- cbind(pis_prior,pis_prior)
 ```{r}
 
 # preliminary
+# likelihood_helpers
+# w are the event probabilities defined in terms of lambda .
+# Strategies? ---seems to be the exhaustive combinations of variables. Includes each of the variables as single and allone variables I;P;M;D..but also as a combination IM or ID  IMD.. variables that are not d-connected are not strategies. so it seems.....and the events related to estrategies IM I = 1 M =0 
+
 likelihood_helpers <- get_likelihood_helpers(democratization_dag)
 children_of_exogenous <- gbiqq::get_children_of_exogenous(democratization_dag)
 
@@ -116,8 +135,8 @@ K_exog <- n_exog <- length(gbiqq::get_exogenous_vars(democratization_dag))
 N_endog_each <- n_endogenous_types <- gbiqq::get_n_endogenous_types(democratization_dag)
 N_types <- n_lambdas <- sum(N_endog_each)
 # for now, this is generally incorrect
-N_events <- nrow(get_data_events(data = data, dag = democratization_dag)$data_events)
-N_data <- nrow(gbiqq::get_max_possible_data(democratization_dag))
+N_events <- nrow(get_data_events(data = data, dag = democratization_dag)$data_events) #ocurrences of events in data
+N_data <- nrow(gbiqq::get_max_possible_data(democratization_dag)) ##??
 N_endog_expand <- prod(N_endog_each)
 max_possible_data <- gbiqq::get_max_possible_data(democratization_dag)
 
