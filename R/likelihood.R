@@ -105,7 +105,7 @@ get_likelihood_helpers <- function(dag){
 	strategy_labels <- sapply(which_strategy,paste,collapse = "")
 	names(possible_events) <- strategy_labels
 
-	rownames(A_w) <- 1:nrow(A_w)
+#	rownames(A_w) <- 1:nrow(A_w)
 
 	return(list(
 		A_w = A_w,

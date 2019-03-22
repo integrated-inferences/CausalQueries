@@ -24,6 +24,8 @@ get_possible_data <- function(dag,
 				FUN = function(x) 0:1
 			)
 		)
+
+
 		if (collapse) {
 			possible_data <- apply(possible_data,1,paste,collapse = "")
 		} else if (!collapse) {
@@ -273,6 +275,34 @@ get_data_events <- function(data, dag){
 
 
 
+#' Get indicator matrix
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+get_indicator_matrix  <- function(dag){
+
+	possible_data <-	get_possible_data(dag)
+	nodes <- names(possible_data)
+	nodal_types <-  mapply(function(realization, node) paste0(node, realization),
+												 node = nodes,
+												 realization = possible_data )
+
+	types <- expand.grid(nodal_types, stringsAsFactors = FALSE)
+	row_identifiers <- unlist(nodal_types)
+
+	# Which nodal_types correspond to a type
+	indicator_matrix <- sapply(1:nrow(types), function(i){
+		type <- types[i,]
+		sapply(row_identifiers, function(nodal_type)
+			all(nodal_type %in% type) )})*1
+
+
+	colnames(indicator_matrix) <- do.call(paste, c(types, sep =""))
+	rownames(indicator_matrix ) <- row_identifiers
+	indicator_matrix
+}
 
 
 
