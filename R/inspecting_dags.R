@@ -54,13 +54,13 @@ get_chains <- function(dag) {
 
 
 
-#' Get list of parent variables in a dag
+#' Get list of ancestor variables in a dag
 #'
 #' @param dag A dag created by make_dag()
 #'
 #' @export
 #'
-#' @return A list of parents in a DAG
+#' @return A list of ancestors in a DAG
 #'
 #' @examples
 #'
@@ -70,11 +70,11 @@ get_chains <- function(dag) {
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
-#' get_parents(dag)
+#' get_ancestors(dag)
 #' }
 #'
 
-get_parents <- function(dag) {
+get_ancestors <- function(dag) {
 
 	chains <- get_chains(dag)
 	exogenous <- get_exogenous_vars(dag)
@@ -100,30 +100,40 @@ get_parents <- function(dag) {
 
 }
 
-## OLD VERSION
-# get_parents <- function(dag){
-# 	if(nrow(dag)>1){
-# 		dag <- as.data.frame(apply(dag,2,as.character))
-# 	}
-# 	variables <- as.character(
-# 		unique(
-# 			unlist(dag)
-# 		)
-# 	)
-# 	parents <- lapply(
-# 		X = variables,
-# 		FUN = function(variable) as.character(dag$parent[dag$child == variable])
-# 	)
-# 	names(parents) <- variables
-#
-# 	# Re-order by seniority
-# 	n_parents <- sapply(parents,length)
-#
-# 	variables <- variables[order(n_parents)]
-# 	parents <- parents[variables]
-#
-# 	return(parents)
-# }
+
+
+#' Get list of parents in a dag
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @export
+#'
+#' @return A list of parents in a DAG
+#'
+#' @examples
+#'
+#' \dontrun{
+#' dag <- make_dag(
+#'  add_edges(parent = "X",children = c("K","Y")),
+#'  add_edges(parent = "K",children = "Y")
+#' )
+#'
+#' get_parents(dag)
+#' }
+#'
+#' dag <- make_dag(
+#'  add_edges(parent = "X",children = c("K")),
+#'  add_edges(parent = "K",children = "Y")
+#' )
+#'
+#' get_parents(dag)
+#' get_ancestors(dag)
+
+
+get_parents <- function(dag) {
+		sapply(paste(unique(unlist(dag))), function(j) paste(dag$parent)[paste(dag$children) == j])
+  }
+
 
 
 
@@ -308,8 +318,11 @@ perm <- function(v) {
 #'
 get_max_possible_data <- function(dag) {
 	max_possible_data <-
-		Reduce(f = merge,
-					 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
+		#Reduce(f = merge,
+		#			 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
+	 Reduce(f = merge,
+				 x = get_possible_data(dag, collapse = FALSE))
+
 
 	max_possible_data <- max_possible_data[get_variables(dag)]
 

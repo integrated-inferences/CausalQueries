@@ -45,6 +45,15 @@ get_likelihood_helpers <- function(dag){
 	# Remove strategy in which no data is sought
 	all_data <- all_data[-nrow(all_data), ]
 
+	# make names for all_data
+	.all_data <- all_data
+	.all_data[is.na(.all_data)] <- "-"
+	for(j in 1:ncol(.all_data)) {
+		.all_data[.all_data[ , j ]==0 , j ] <- tolower(names(.all_data[j]))
+		.all_data[.all_data[ , j ]==1 , j ] <- toupper(names(.all_data[j]))}
+	rownames(all_data) <- 	apply(.all_data, 1, paste, collapse= "")
+
+
 	# Figure out what strategy is being used in each of the possible data
 	# realizations, given which nodes are unobserved
 	which_strategy <- apply(
