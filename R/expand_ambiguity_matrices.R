@@ -308,7 +308,7 @@ get_ambiguity_matrix <- function(dag){
 #'
 #' @param dag A dag as created by \code{make_dag}
 #'
-#' @return RETURN_DESCRIPTION
+#' @return revealed_data
 #' @keywords internal
 #'
 #' @examples
@@ -346,7 +346,7 @@ reveal_data <- function(dag){
 	  			 })})
 
 	  data_realizations[, endogenous_vars] <- revealed_data
+	  data_realizations
+}
 
-}
-data_realizations
-}
+
