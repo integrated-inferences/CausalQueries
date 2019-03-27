@@ -241,3 +241,95 @@ expand_ambiguity_matrices <- function(dag) {
 
 }
 
+#' FUNCTION_TITLE
+#'
+#' FUNCTION_DESCRIPTION
+#'
+#' @param dag DESCRIPTION.
+#'
+#' @return RETURN_DESCRIPTION
+#'
+#' @export
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
+get_ambiguity_matrix <- function(dag){
+
+  # 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
+	possible_data <-	get_possible_data(dag)
+	nodes <- names(possible_data)
+	nodal_types <-  mapply(function(realization, node) paste0(node, realization),
+												 node = nodes,
+												 realization = possible_data )
+
+
+	# 2. Get types as the combination of nodal types. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+	types <- expand.grid(possible_data, stringsAsFactors = FALSE)
+
+	# 3. types_to_data is a helper object for getting ambiguities
+	##  It matches types to data realization
+	##  e.g type =  X0Y00 & type = X0Y10 -> types_to_data = X0 Y0
+   nodal_types_to_data <-  mapply(function(realization, node){
+		    										var_value <- substr(realization, nchar(realization) , nchar(realization))
+		     									  paste0(node, var_value)
+		     									},
+												  node = nodes,
+												  realization = possible_data )
+
+	 types_to_data <- expand.grid(nodal_types_to_data, stringsAsFactors = FALSE)
+
+
+  # 4. Get max possible data events and, in order to do matching, express it as X0 Y0 instead of 00
+	max_possible_data <- get_max_possible_data(dag)
+	data_events <- sapply(1:ncol(max_possible_data), function(j) paste0(names(max_possible_data)[j], max_possible_data[,j] ))
+
+
+  # 5. Create A: Matrix that maps types to data events
+	A <- sapply(1:nrow(col_identifiers), function(i){
+							type <- col_identifiers[i,]
+							sapply(1:nrow(data_events), function(j){
+											event <- data_events[j,]
+											all(event %in% type)
+						  			})
+							}*1)
+
+  #6. Name cols and rows
+
+
+	colnames(A) <- do.call(paste, c(types, sep ="."))
+	rownames(A) <- apply(data_events, 1, paste0, collapse = "")
+
+	return(A)
+}
+
+reveal_data <- function(dag){
+	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
+	possible_data <-	get_possible_data(dag)
+	parents <- get_parents(dag)
+	# 2. Get types as the combination of nodal types. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+	types <- expand.grid(possible_data, stringsAsFactors = FALSE)
+
+	exogenous_vars <- get_exogenous_vars(dag)
+	endogenous_vars <- get_endogenous_vars(dag)
+
+	types_of_exogenous <-   data.frame(types[, exogenous_vars])
+	names(types_of_exogenous) <- 	exogenous_vars
+	types_of_endogenous <-  data.frame(types[, endogenous_vars])
+	names(types_of_endogenous) <- 	endogenous_vars
+	data_realizations <- 	types
+
+	for(j in 1:ncol(types_of_endogenous)){
+		var <- names(types_of_endogenous)[j]
+		child_type <- types_of_endogenous[,j]
+		parent <- parents[[var]]
+		parent_value <- 	data_realizations[j, parent]
+		indeces <- nchar(child_type [1]) - 1
+		indeces <- 1:indeces
+	  revealed_data <- sapply(child_type, function(type){
+	  			 sapply(indeces, function(index) substr(type, index, index))}
+
+	  			 )
+	  data_realizations[, var] <- revealed_data
+
+	}
+}
