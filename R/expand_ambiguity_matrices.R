@@ -302,10 +302,21 @@ get_ambiguity_matrix <- function(dag){
 	return(A)
 }
 
+#' Reveal data
+#'
+#' Reveals data given types of exogenous variables
+#'
+#' @param dag A dag as created by \code{make_dag}
+#'
+#' @return RETURN_DESCRIPTION
+#' @keywords internal
+#'
+#' @examples
+#' # ADD_EXAMPLES_HERE
 reveal_data <- function(dag){
 	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
 	possible_data <-	get_possible_data(dag)
-	parents <- get_parents(dag)
+	parents_list <- get_parents(dag)
 	# 2. Get types as the combination of nodal types. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	types <- expand.grid(possible_data, stringsAsFactors = FALSE)
 
@@ -317,19 +328,25 @@ reveal_data <- function(dag){
 	types_of_endogenous <-  data.frame(types[, endogenous_vars])
 	names(types_of_endogenous) <- 	endogenous_vars
 	data_realizations <- 	types
+	revealed_data <- 		sapply(1:ncol(types_of_endogenous), function(j) {
+			var <- names(types_of_endogenous)[j]
+			child_type <- types_of_endogenous[,j]
+			parents <- parents_list[[var]]
 
-	for(j in 1:ncol(types_of_endogenous)){
-		var <- names(types_of_endogenous)[j]
-		child_type <- types_of_endogenous[,j]
-		parent <- parents[[var]]
-		parent_value <- 	data_realizations[j, parent]
-		indeces <- nchar(child_type [1]) - 1
-		indeces <- 1:indeces
-	  revealed_data <- sapply(child_type, function(type){
-	  			 sapply(indeces, function(index) substr(type, index, index))}
+			sapply(1:length(child_type), function(i){
+    				type <- child_type[i]
+	  				type_ <- unlist(strsplit(type, split = ""))
+	  			 	outcome_index <- nchar(type)
+	  			 	outcome <- type_[outcome_index]
+	  			 	predecessors <- type_[1:(outcome_index-1)]
+	  			 	affects <- predecessors != outcome
+	  			 	causes <- parents[affects]
+	  			 	value_of_causes <- as.numeric(data_realizations[i, parentt])
+	  			 	revealed_outcome <- ifelse(all(!affects), outcome, prod(value_of_causes == outcome))
+	  			 })})
 
-	  			 )
-	  data_realizations[, var] <- revealed_data
+	  data_realizations[, endogenous_vars] <- revealed_data
 
-	}
+}
+data_realizations
 }
