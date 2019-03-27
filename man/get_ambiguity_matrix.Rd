@@ -2,7 +2,7 @@
 % Please edit documentation in R/expand_ambiguity_matrices.R
 \name{get_ambiguity_matrix}
 \alias{get_ambiguity_matrix}
-\title{FUNCTION_TITLE}
+\title{Get ambiguity matrix}
 \usage{
 get_ambiguity_matrix(dag)
 }
@@ -13,7 +13,7 @@ get_ambiguity_matrix(dag)
 RETURN_DESCRIPTION
 }
 \description{
-FUNCTION_DESCRIPTION
+Get matrix that maps types to data realizations
 }
 \examples{
 # ADD_EXAMPLES_HERE
