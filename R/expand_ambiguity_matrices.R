@@ -243,7 +243,7 @@ expand_ambiguity_matrices <- function(dag) {
 
 # New functions ------------------------------------------------------------------
 
-#' Get ambiguity matrix
+#' Get ambiguities matrix
 #'
 #' Get matrix that maps types to data realizations
 #'

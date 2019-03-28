@@ -2,7 +2,7 @@
 % Please edit documentation in R/expand_ambiguity_matrices.R
 \name{get_ambiguities_matrix}
 \alias{get_ambiguities_matrix}
-\title{Get ambiguity matrix}
+\title{Get ambiguities matrix}
 \usage{
 get_ambiguities_matrix(dag)
 }
