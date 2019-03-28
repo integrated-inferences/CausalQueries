@@ -13,6 +13,9 @@ reveal_data(dag)
 revealed_data
 }
 \description{
-Reveals data given types of exogenous variables
+Reveal data based on parents' data realizations and types of exogenous variables
+}
+\details{
+\code{reveal_data} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 }
 \keyword{internal}

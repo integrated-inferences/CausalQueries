@@ -13,6 +13,6 @@ get_expanded_types(dag)
 types
 }
 \description{
-Create a data frame with types produced from all combinations of the nodal types for a given dag
+Create a data frame with types produced from all combinations of possible data produce by a dag.
 }
 \keyword{internal}

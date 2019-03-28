@@ -242,29 +242,34 @@ expand_ambiguity_matrices <- function(dag) {
 }
 
 # New functions ------------------------------------------------------------------
+
 #' Get ambiguity matrix
 #'
 #' Get matrix that maps types to data realizations
 #'
-#' @param dag DESCRIPTION.
+#' @param dag A dag as created by \code{make_dag}
 #'
-#' @return RETURN_DESCRIPTION
+#' @return A data frame that maps types (columns) to possible data realizations (rows).
 #'
 #' @export
 #'
 #' @examples
-#' # ADD_EXAMPLES_HERE
-get_ambiguity_matrix <- function(dag){
+#'
+#' XMYdag <- make_dag(add_edges(parent = "X", children = c("M")),
+#'                    add_edges(parent = "M", children = c("Y")))
+#'
+#' get_ambiguity_matrix(dag = XMYdag)
+#'
+get_ambiguities_matrix <- function(dag){
 
 	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
 	possible_data <-	get_possible_data(dag)
 	nodal_types <-   gbiqq:::get_nodal_types(dag)
-
-	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types <-  gbiqq:::get_expanded_types(dag)
 	type_labels <- expand.grid(nodal_types)
 	type_labels <- apply(type_labels, 1, paste0, collapse = "")
-	types$type <- apply(types , 1, paste0, collapse = "")
+
+	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+	types <- 	types <-  gbiqq:::get_expanded_types(dag)
 
   # 3. Map types to data realizations. This is is done in reveal_data
   data_realizations <- gbiqq:::reveal_data(dag)
@@ -282,40 +287,38 @@ get_ambiguity_matrix <- function(dag){
 
 #' Reveal data
 #'
-#' Reveals data given types of exogenous variables
+#' Reveal data based on parents' data realizations and types of exogenous variables
+#'
+#' @details \code{reveal_data} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
 #' @param dag A dag as created by \code{make_dag}
-#'
 #' @return revealed_data
 #' @keywords internal
 #'
 reveal_data <- function(dag){
 
+	exogenous_vars  <- get_exogenous_vars(dag)
   types <- get_expanded_types(dag)
-	exogenous_vars <- get_exogenous_vars(dag)
-	endogenous_vars <- get_endogenous_vars(dag)
-	types_of_exogenous <-   data.frame(types[, exogenous_vars])
-	names(types_of_exogenous) <- 	exogenous_vars
-	types_of_endogenous <-  data.frame(types[, endogenous_vars])
-	names(types_of_endogenous) <- 	endogenous_vars
-	data_realizations <- 	types
+	types_of_endogenous  <- data.frame(types[, endogenous_var])
+	names(types_of_endogenous) <- endogenous_vars
+	data_realizations <- types # For correct shape and to get data realizations of exogenous vars
 	parents_list <- get_parents(dag)
-	revealed_data <- 		sapply(1:ncol(types_of_endogenous), function(j) {
-			var <- names(types_of_endogenous)[j]
-			child_type <- types_of_endogenous[,j]
-			parents <- parents_list[[var]]
 
-			sapply(1:length(child_type), function(i){
-    				type <- child_type[i]
-	  				type_ <- unlist(strsplit(type, split = ""))
-	  			 	outcome_index <- nchar(type)
-	  			 	outcome <- type_[outcome_index]
-	  			 	predecessors <- type_[1:(outcome_index-1)]
-	  			 	affects <- predecessors != outcome
-	  			 	causes <- parents[affects]
-	  			 	value_of_causes <- as.numeric(data_realizations[i, causes])
-	  			 	revealed_outcome <- ifelse(all(!affects), outcome, prod(value_of_causes == outcome))
-	  			 })})
+	revealed_data <- sapply(1:ncol(types_of_endogenous), function(j) {
+												var <- names(types_of_endogenous)[j]
+												parents <- parents_list[[var]]
+												child_type <- types_of_endogenous[,j]
+												sapply(1:length(child_type), function(i){
+								    	 		type <- child_type[i]
+									  			type_ <- unlist(strsplit(type, split = ""))
+									  			outcome_index <- nchar(type)
+									  			outcome <- type_[outcome_index]
+									  			predecessors <- type_[1:(outcome_index-1)]
+									  			affects <- predecessors != outcome
+									  			causes <- parents[affects]
+									  			value_of_causes <- as.numeric(data_realizations[i, causes])
+									  			 revealed_outcome <- ifelse(all(!affects), outcome, prod(value_of_causes == outcome))
+									  			 })})
 
 	  data_realizations[, endogenous_vars] <- revealed_data
 	  data_realizations
@@ -323,7 +326,7 @@ reveal_data <- function(dag){
 
 #' Get expanded types
 #'
-#' Create a data frame with types produced from all combinations of the nodal types for a given dag
+#' Create a data frame with types produced from all combinations of possible data produce by a dag.
 #'
 #' @param dag A dag as created by \code{make_dag}
 #'
@@ -332,12 +335,12 @@ reveal_data <- function(dag){
 #'
 get_expanded_types <- function(dag){
 	possible_data <-	get_possible_data(dag)
-	# 2. Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types <- expand.grid(possible_data, stringsAsFactors = FALSE)
+ # Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+	expand.grid(possible_data, stringsAsFactors = FALSE)
 }
 
 #' Get nodal types
-#'
+#' Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
 #'
 #' @param dag A dag as created by \code{make_dag}
 #'

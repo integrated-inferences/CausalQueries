@@ -2,7 +2,8 @@
 % Please edit documentation in R/expand_ambiguity_matrices.R
 \name{get_nodal_types}
 \alias{get_nodal_types}
-\title{Get nodal types}
+\title{Get nodal types
+Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.}
 \usage{
 get_nodal_types(dag)
 }
@@ -14,5 +15,6 @@ types
 }
 \description{
 Get nodal types
+Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
 }
 \keyword{internal}
