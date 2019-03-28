@@ -297,29 +297,32 @@ get_ambiguities_matrix <- function(dag){
 #'
 reveal_data <- function(dag){
 
-	exogenous_vars  <- get_exogenous_vars(dag)
-  types <- get_expanded_types(dag)
-	types_of_endogenous  <- data.frame(types[, endogenous_var])
-	names(types_of_endogenous) <- endogenous_vars
-	data_realizations <- types # For correct shape and to get data realizations of exogenous vars
+	types <- get_expanded_types(dag)
+	exogenous_vars <- get_exogenous_vars(dag)
+	endogenous_vars <- get_endogenous_vars(dag)
+	types_of_exogenous <-   data.frame(types[, exogenous_vars])
+	names(types_of_exogenous) <- 	exogenous_vars
+	types_of_endogenous <-  data.frame(types[, endogenous_vars])
+	names(types_of_endogenous) <- 	endogenous_vars
+	data_realizations <- 	types
 	parents_list <- get_parents(dag)
 
-	revealed_data <- sapply(1:ncol(types_of_endogenous), function(j) {
-												var <- names(types_of_endogenous)[j]
-												parents <- parents_list[[var]]
-												child_type <- types_of_endogenous[,j]
-												sapply(1:length(child_type), function(i){
-								    	 		type <- child_type[i]
-									  			type_ <- unlist(strsplit(type, split = ""))
-									  			outcome_index <- nchar(type)
-									  			outcome <- type_[outcome_index]
-									  			predecessors <- type_[1:(outcome_index-1)]
-									  			affects <- predecessors != outcome
-									  			causes <- parents[affects]
-									  			value_of_causes <- as.numeric(data_realizations[i, causes])
-									  			 revealed_outcome <- ifelse(all(!affects), outcome, prod(value_of_causes == outcome))
-									  			 })})
+	revealed_data <- 		sapply(1:ncol(types_of_endogenous), function(j) {
+		var <- names(types_of_endogenous)[j]
+		child_type <- types_of_endogenous[,j]
+		parents <- parents_list[[var]]
 
+		sapply(1:length(child_type), function(i){
+			type <- child_type[i]
+			type_ <- unlist(strsplit(type, split = ""))
+			outcome_index <- nchar(type)
+			outcome <- type_[outcome_index]
+			predecessors <- type_[1:(outcome_index-1)]
+			affects <- predecessors != outcome
+			causes <- parents[affects]
+			value_of_causes <- as.numeric(data_realizations[i, causes])
+			revealed_outcome <- ifelse(all(!affects), outcome, prod(value_of_causes == outcome))
+		})})
 	  data_realizations[, endogenous_vars] <- revealed_data
 	  data_realizations
 }
