@@ -2,14 +2,15 @@ data {
 
 	int<lower=1> N_vars;
 	int<lower=1> N_nodal_types;
-  int<lower=1> N_types_each[N_vars];
 	int<lower=1> N_types;
 	int<lower=1> N_data;
-	vector<lower=0>[N] dirichlet_prior;
-  int<lower=1> l_starts[N_types];
-  int<lower=1> l_ends[N_types];
-  int<lower=1> strategie_starts[N_data];
-  int<lower=1> strategie_ends[N_data];
+	int<lower=1> N_strategies;
+
+	vector<lower=0>[N_nodal_types] lambdas_prior;
+  int<lower=1> l_starts[N_vars];
+  int<lower=1> l_ends[N_vars];
+  int<lower=1> strategie_starts[N_strategies];
+  int<lower=1> strategie_ends[N_strategies];
   matrix<lower=0,upper=1> [N_nodal_types, N_types] P
   matrix<lower=0,upper=1>[N_nodal_types, N_types] inverted_P
   matrix<lower=0,upper=1>[N_nodal_types, N_types] ones
