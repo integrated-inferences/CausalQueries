@@ -1,0 +1,79 @@
+---
+title: "test_stan"
+author: "Lily Medina"
+date: "March 29, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(gbiqq)
+library(DeclareDesign)
+library(rstan)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+```
+
+
+
+```{r}
+
+P <- get_indicator_matrix(XYdag )
+inverted_P = 1-P
+
+
+
+lambdas_prior <- c(rep(0.5,2), rep(0.25, 4))
+names(lambdas_prior) <- rownames(P)
+P.lambdas <- P*lambdas_prior 
+P.lambdas <- P.lambdas +	1 - P 
+prob_of_types <- apply(P.lambdas, 2, prod)
+A <- get_ambiguities_matrix(XYdag )
+w <- A %*% prob_of_types # Prob of (fundamental) data realization
+likelihood_helpers <- get_likelihood_helpers(XYdag)
+A_w <- likelihood_helpers$A_w
+w_full <- A_w %*% w
+
+
+
+N_types_each = sapply(gbiqq:::get_nodal_types(XYdag), length)
+N_vars = length(get_variables(XYdag ))
+l_ends = cumsum(N_types_each)
+l_starts = c(1, l_ends[1:(N_vars-1)] + 1)
+dat <- fabricate(N = 100,
+	X  = rbinom(N,1,.5),
+	Y  = rbinom(N,1,.5))
+possible_data =  get_max_possible_data(XYdag )
+								
+stan_data <- 	list(N_vars = N_vars ,
+									 N_nodal_types = nrow(P),
+									 N_types = ncol(P),
+									 N_types_each = N_types_each,
+									 N_data = nrow( possible_data),
+									 N_events = nrow(A_w),
+									 N_strategies = likelihood_helpers$n_strategies,
+									 lambdas_prior = lambdas_prior, 
+									 l_starts = l_starts,
+									 strategie_starts = likelihood_helpers$w_starts,
+									 strategie_ends = likelihood_helpers$w_ends,
+									 P = t(P),
+									 inverted_P = t(inverted_P),
+									 A = A,
+									 A_w= A_w,
+									 Y =get_data_events(data = dat, dag = XYdag )$data_events$count)
+									 
+test <- rstan::stan(file = "../other/simpler.stan",
+										data = stan_data ,
+										iter = 2000,
+										warmup = 1000,
+										chains = 1,
+										cores = parallel::detectCores(),
+										control = list(adapt_delta = .999,
+																	 max_treedepth = 15)
+										)
+```

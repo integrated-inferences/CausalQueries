@@ -302,7 +302,7 @@ reveal_data <- function(dag){
 	endogenous_vars <- get_endogenous_vars(dag)
 	types_of_exogenous <-   data.frame(types[, exogenous_vars])
 	names(types_of_exogenous) <- 	exogenous_vars
-	types_of_endogenous <-  data.frame(types[, endogenous_vars])
+	types_of_endogenous <-  data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
 	names(types_of_endogenous) <- 	endogenous_vars
 	data_realizations <- 	types
 	parents_list <- get_parents(dag)

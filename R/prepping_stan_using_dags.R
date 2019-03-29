@@ -309,6 +309,3 @@ get_indicator_matrix  <- function(dag){
 
 
 
-
-
-
