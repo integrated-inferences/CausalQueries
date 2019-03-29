@@ -15,6 +15,7 @@ data {
   matrix<lower=0,upper=1>[N_nodal_types, N_types] ones
   matrix<lower=0,upper=1>[N_data, N_vars] max_possible_data;
   matrix<lower=0,upper=1>[N_data, N_types] A;
+  matrix<lower=0,upper=1>[N_events,N_data] A_w;
   int<lower=0,upper=2147483647> Y[N_data]; // incorrect dimensionality, only for the tryout
 
 }
@@ -27,7 +28,7 @@ transformed parameters {
 	vector<lower=0>[N_types] lambdas;
 	vector<lower=1>[N_vars] sum_gammas;
 	for (i in 1:N_vars) {
-		sum_gammas[i] = 1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
+		sum_gammas[i] = 1 + sum(segment(gamma, l_starts, l_ends + 1));
 		lambdas[l_starts[i]:ends[i]] = append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
 	}
 }
