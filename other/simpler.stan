@@ -1,5 +1,4 @@
 data {
-
 	int<lower=1> n_vars;
 	int<lower=1> n_nodal_types;
 	int<lower=1> n_types;
@@ -11,8 +10,8 @@ data {
 	vector<lower=0>[n_nodal_types] lambdas_prior;
 	int<lower=1> l_starts[n_vars];
 	int<lower=1> l_ends[n_vars];
-  int<lower=1> strategie_starts[n_strategies];
-  int<lower=1> strategie_ends[n_strategies];
+  int<lower=1> strategy_starts[n_strategies];
+  int<lower=1> strategy_ends[n_strategies];
 
   vector[n_types] P[n_nodal_types] ;
   vector[n_types] inverted_P[n_nodal_types] ;
@@ -64,6 +63,6 @@ model {
 
   for (i in 1:n_strategies) {
   	target += multinomial_lpmf(
-  		Y[strategie_starts[i]:strategie_ends[i]] | w_full[strategie_starts[i]:strategie_ends[i]]);
+  		Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]);
   }
 }

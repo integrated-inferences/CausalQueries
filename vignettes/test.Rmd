@@ -71,8 +71,8 @@ stan_data <- 	list(n_vars = n_vars ,
 									 A = A,
 									 A_w= A_w,
 									 Y =get_data_events(data = dat, dag = XYdag )$data_events$count)
-									 
-test <- rstan::stan(file = "../other/simpler.stan",
+
+test <- rstan::stan(file= "../other/simpler.stan",
 										data = stan_data ,
 										iter = 2000,
 										warmup = 1000,
