@@ -214,27 +214,32 @@ get_pi_expanders <- function(pi,dag){
 #'
 #' @return A vector of data events
 get_data_events <- function(data, dag){
-	possible_events <- get_likelihood_helpers(dag)$possible_events
-	possible_strategies <- unique(names(possible_events))
+	likelihood_helpers <- get_likelihood_helpers(dag)
+	possible_events <- likelihood_helpers$possible_events
+	possible_strategies <- names(likelihood_helpers$w_starts)
 	variables <- get_variables(dag)
+	i_strategy <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
+
 
 	if(!all(variables %in% names(data))){
 		stop("Could not find all of the variables in the DAG in the data you provided.\nPlease double-check variable names and try again.")
 	}
 
+	# replace "" with na and remove rows where all values are na
 	data <- data[,variables]
-
 	data_to_agg <- data
-	data_to_agg[is.na(data_to_agg)] <- ""
+	data_to_agg[data == ""] <- NA
+  ind <- apply(data_to_agg, 1,  function(x) all(is.na(x)))
+  data_to_agg <- data_to_agg[!ind, ]
 
-	observed_events <- apply(
-		X = data_to_agg,
-		MARGIN = 1,
-		FUN = function(row){
-			variable_labels <- variables[!row == ""]
-			row_subset <- row[!row == ""]
-			paste(variable_labels,row_subset,sep = "")
-		})
+	observed_events <- apply(data_to_agg , 1, function(row){
+	observed_variables <- variables[!is.na(row)]
+	row <- row[!is.na(row)]
+	 paste0(observed_variables, row, collapse = "")
+	})
+
+
+
 	used_strategies <- unique(apply(
 		X = data_to_agg,
 		MARGIN = 1,
@@ -243,7 +248,7 @@ get_data_events <- function(data, dag){
 			return(strategy)
 		}))
 
-	observed_events <- sapply(observed_events,paste,collapse = "")
+
 	observed_events <- table(observed_events)
 
 	unobserved_event_labels <- possible_events[!possible_events %in% names(observed_events)]
@@ -257,7 +262,9 @@ get_data_events <- function(data, dag){
 	data_events <- data.frame(
 		event = names(c(observed_events,unobserved_events)),
 		count = c(observed_events,unobserved_events),
-		row.names = NULL
+		strategy = rep(possible_strategies, i_strategy),
+		row.names = NULL,
+		stringsAsFactors = FALSE
 	)
 	data_events <- data_events[match(possible_events,data_events$event),]
 
@@ -323,15 +330,31 @@ make_gbiqq_data <- function(dag, data, lambdas_prior ){
 	A <- get_ambiguities_matrix(dag )
 	likelihood_helpers <- get_likelihood_helpers(dag)
 	A_w <- likelihood_helpers$A_w
-	possible_data <-   get_max_possible_data(dag )
-	P.lambdas <- P*lambdas_prior   +	1 - P
-	prob_of_types <- apply(P.lambdas, 2, prod)
-	w <- A %*% prob_of_types # Prob of (fundamental) data realization
-	w_full <- A_w %*% w
-	n_types_each <- sapply(gbiqq:::get_nodal_types(dag), length)
-	n_vars <- length(get_variables(dag ))
-	l_ends <- cumsum(n_types_each)
-	l_starts <- c(1, l_ends[1:(n_vars-1)] + 1)
+
+
+	data_events<-  get_data_events(data, dag )$data_events
+	A_w<- A_w[data_events$count != 0,]
+	data_events <- data_events[data_events$count != 0,]
+  strategies <- data_events$strategy
+  n_strategies <- length(unique(strategies))
+  w_starts <-  which(!duplicated(  strategies))
+  k <- length(strategies)
+  w_ends <- c(w_starts[2:n_strategies], k )
+  if(n_strategies< 2){
+  	w_ends <- k
+  }
+
+
+  possible_data <-   get_max_possible_data(dag )
+  P.lambdas <- P*lambdas_prior   +	1 - P
+  prob_of_types <- apply(P.lambdas, 2, prod)
+  w <- A %*% prob_of_types # Prob of (fundamental) data realization
+  w_full <- A_w %*% w
+  n_types_each <- sapply(gbiqq:::get_nodal_types(dag), length)
+  n_vars <- length(get_variables(dag ))
+  l_ends <- cumsum(n_types_each)
+  l_starts <- c(1, l_ends[1:(n_vars-1)] + 1)
+
 
 	stan_data <- 	list(n_vars = n_vars,
 										 n_nodal_types = nrow(P),
@@ -339,17 +362,17 @@ make_gbiqq_data <- function(dag, data, lambdas_prior ){
 										 n_types_each = n_types_each,
 										 n_data = nrow( possible_data),
 										 n_events = nrow(A_w),
-										 n_strategies = likelihood_helpers$n_strategies,
+										 n_strategies = n_strategies,
 										 lambdas_prior = lambdas_prior,
 										 l_starts = l_starts,
 										 l_ends = l_ends,
-										 strategy_starts = likelihood_helpers$w_starts,
-										 strategy_ends = likelihood_helpers$w_ends,
+										 strategy_starts = w_starts,
+										 strategy_ends = w_ends,
 										 P = P,
 										 inverted_P = inverted_P,
 										 A = A,
 										 A_w= A_w,
-										 Y =get_data_events(data = dat, dag = dag )$data_events$count)
+										 Y = get_data_events(data, dag )$data_events$count)
 }
 
 #' Fit stan model
