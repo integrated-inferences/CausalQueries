@@ -372,13 +372,13 @@ make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
 										 lambdas_prior = lambdas_prior,
 										 l_starts = l_starts,
 										 l_ends = l_ends,
-										 strategy_starts = w_starts,
-										 strategy_ends = w_ends,
+										 strategy_starts = as.array(w_starts),
+										 strategy_ends = as.array(w_ends),
 										 P = P,
 										 inverted_P = inverted_P,
 										 A = A,
 										 A_w= A_w,
-										 Y = get_data_events(data, dag )$data_events$count)
+										 Y = data_events$count)
 }
 
 
