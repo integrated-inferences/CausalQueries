@@ -4,7 +4,7 @@
 \alias{gbiqq}
 \title{Fit stan model}
 \usage{
-gbiqq(dag, data, lambda_priors = NULL, P = NULL, ...)
+gbiqq(dag, data, lambdas_prior = NULL, P = NULL, ...)
 }
 \arguments{
 \item{dag}{A dag as created by \code{make_dag}}

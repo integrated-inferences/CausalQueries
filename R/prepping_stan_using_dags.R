@@ -317,7 +317,7 @@ get_indicator_matrix  <- function(dag){
 #'
 #' Create a list containing the data to be passed to stan
 #'
-#' @param dag A dag as created by \code{make_dag}
+#' @param dag A dag created by \code{make_dag}
 #' @param data A data frame with observations
 #' @param lambdas_prior A vector containg priors for lambda
 #' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.
@@ -326,7 +326,7 @@ get_indicator_matrix  <- function(dag){
 #'
 make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
 
-	if(is.null(P)) P <- get_indicator_matrix(dag )
+	if(is.null(P)) P <- get_indicator_matrix(dag)
 
 	n_params <- nrow(P)
 
@@ -380,6 +380,46 @@ make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
 										 A_w= A_w,
 										 Y = data_events$count)
 }
+
+
+
+
+
+
+#' Define priors
+#'
+#' @param dag A dag created by make_dag()
+#' @param nodal_types
+#'
+#' @export
+#'
+define_priors  <- function(dag = NULL,
+													 nodal_types = NULL,
+													 prior_distribution = NULL
+													 ){
+	if(is.null(nodal_types)){
+		if(is.null(dag)){
+			stop("Either dag or nodal_types must be a non-null object ")
+
+		}
+	}
+	else{
+
+	}
+
+}
+
+#' Reduce nodal types
+#'
+#' @param dag A dag created by make_dag()
+#' @param nodal_types
+#'
+#' @export
+#'
+define_priors  <- function(restrictions, dag){
+
+}
+
 
 
 #' gbiqq-internal
