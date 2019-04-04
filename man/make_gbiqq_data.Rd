@@ -4,7 +4,7 @@
 \alias{make_gbiqq_data}
 \title{Prepare data for stan}
 \usage{
-make_gbiqq_data(dag, data, lambdas_prior)
+make_gbiqq_data(dag, data, lambdas_prior = NULL, P = NULL)
 }
 \arguments{
 \item{dag}{A dag as created by \code{make_dag}}
@@ -12,6 +12,8 @@ make_gbiqq_data(dag, data, lambdas_prior)
 \item{data}{A data frame with observations}
 
 \item{lambdas_prior}{A vector containg priors for lambda}
+
+\item{P}{A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.}
 }
 \value{
 a list
