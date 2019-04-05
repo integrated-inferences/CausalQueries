@@ -409,17 +409,6 @@ define_priors  <- function(dag = NULL,
 
 }
 
-#' Reduce nodal types
-#'
-#' @param dag A dag created by make_dag()
-#' @param nodal_types
-#'
-#' @export
-#'
-define_priors  <- function(restrictions, dag){
-
-}
-
 
 
 #' gbiqq-internal

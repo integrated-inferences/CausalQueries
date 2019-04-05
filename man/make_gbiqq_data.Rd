@@ -7,7 +7,7 @@
 make_gbiqq_data(dag, data, lambdas_prior = NULL, P = NULL)
 }
 \arguments{
-\item{dag}{A dag as created by \code{make_dag}}
+\item{dag}{A dag created by \code{make_dag}}
 
 \item{data}{A data frame with observations}
 
