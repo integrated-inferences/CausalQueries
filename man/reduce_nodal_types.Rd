@@ -12,7 +12,7 @@ reduce_nodal_types(dag, restrictions)
 \item{restrictions}{a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.}
 }
 \value{
-A DAG
+A dag with restrictions and nodal types as attributes.
 }
 \description{
 Restrict a model

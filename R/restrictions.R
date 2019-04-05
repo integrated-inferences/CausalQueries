@@ -3,7 +3,7 @@
 #' @param dag a dag created by make_dag()
 #' @param restrictions a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.
 #' @export
-#' @return A DAG
+#' @return A dag with restrictions and nodal types as attributes.
 #'
 #' @examples
 #' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
