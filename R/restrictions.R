@@ -1,11 +1,17 @@
 #' Restrict a model
 #'
-#' @param dag a
-#' @param restrictions  list
+#' @param dag a dag created by make_dag()
+#' @param restrictions a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.
 #' @export
-#'
 #' @return A DAG
 #'
+#' @examples
+#' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+#' # restrictions can be specified following nodal_types syntax
+#' reduce_nodal_types(dag = XYdag, restrictions(X = "X0", Y = "Y00"))
+#'
+#' # or alternatively variable name can be omitted from restriction
+#' reduce_nodal_types(dag = XYdag, restrictions(X = "0", Y = "00"))
 reduce_nodal_types <- function(dag, restrictions){
 
 variables       <- get_variables(dag)

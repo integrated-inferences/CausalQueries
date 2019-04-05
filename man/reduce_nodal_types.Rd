@@ -7,13 +7,21 @@
 reduce_nodal_types(dag, restrictions)
 }
 \arguments{
-\item{dag}{a}
+\item{dag}{a dag created by make_dag()}
 
-\item{restrictions}{list}
+\item{restrictions}{a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.}
 }
 \value{
 A DAG
 }
 \description{
 Restrict a model
+}
+\examples{
+XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+# restrictions can be specified following nodal_types syntax
+reduce_nodal_types(dag = XYdag, restrictions(X = "X0", Y = "Y00"))
+
+# or alternatively variable name can be omitted from restriction
+reduce_nodal_types(dag = XYdag, restrictions(X = "0", Y = "00"))
 }
