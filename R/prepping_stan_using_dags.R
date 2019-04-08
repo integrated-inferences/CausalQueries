@@ -386,28 +386,6 @@ make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
 
 
 
-#' Define priors
-#'
-#' @param dag A dag created by make_dag()
-#' @param nodal_types
-#'
-#' @export
-#'
-define_priors  <- function(dag = NULL,
-													 nodal_types = NULL,
-													 prior_distribution = NULL
-													 ){
-	if(is.null(nodal_types)){
-		if(is.null(dag)){
-			stop("Either dag or nodal_types must be a non-null object ")
-
-		}
-	}
-	else{
-
-	}
-
-}
 
 
 

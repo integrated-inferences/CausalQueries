@@ -45,9 +45,10 @@ get_likelihood_helpers <- function(dag){
 	# Remove strategy in which no data is sought
 	all_data <- all_data[-nrow(all_data), ]
 
+
 	# make names for all_data
 	.all_data <- all_data
-	.all_data[is.na(.all_data)] <- "-"
+	.all_data[is.na(.all_data)] <- "*"
 	for(j in 1:ncol(.all_data)) {
 		.all_data[.all_data[ , j ]==0 , j ] <- tolower(names(.all_data[j]))
 		.all_data[.all_data[ , j ]==1 , j ] <- toupper(names(.all_data[j]))}
@@ -100,12 +101,13 @@ get_likelihood_helpers <- function(dag){
 			sapply(fundamental_data,function(fun_data)all(realization %in% fun_data))
 		}
 	)) * 1
+	colnames(A_w) <- sapply(	fundamental_data  , paste0, collapse = "")
 
 	possible_events <- sapply(data_realizations,paste,collapse = "")
 	strategy_labels <- sapply(which_strategy,paste,collapse = "")
-	#names(possible_events) <- strategy_labels
+	names(possible_events) <- strategy_labels
 
-#	rownames(A_w) <- 1:nrow(A_w)
+	rownames(A_w) <- possible_events
 
 	return(list(
 		A_w = A_w,
