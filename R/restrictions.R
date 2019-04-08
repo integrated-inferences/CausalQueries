@@ -30,9 +30,7 @@ if(!any(matches)){
 }
 
 
-
 nodal_types_restrictions <- nodal_types[restricted_vars]
-
 
 # Paste vars to restrictions when needed
 # For flexibility, restrictions can be written as "0" or "X0" for an exogenous var X
