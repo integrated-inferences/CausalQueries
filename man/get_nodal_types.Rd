@@ -5,10 +5,10 @@
 \title{Get nodal types
 Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.}
 \usage{
-get_nodal_types(dag)
+get_nodal_types(pcm)
 }
 \arguments{
-\item{dag}{A dag as created by \code{make_dag}}
+\item{pcm}{A dag as created by \code{make_dag}}
 }
 \value{
 types

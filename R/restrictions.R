@@ -1,9 +1,9 @@
 #' Restrict a model
 #'
 #' @param dag a dag created by make_dag()
-#' @param restrictions a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.
+#' @param restrictions a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.
 #' @export
-#' @return A dag with restrictions and nodal types as attributes.
+#' @return A dag with restrictions and nodal types saved as attributes.
 #'
 #' @examples
 #' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
@@ -12,29 +12,29 @@
 #'
 #' # or alternatively variable name can be omitted from restriction
 #' reduce_nodal_types(dag = XYdag, restrictions(X = "0", Y = "00"))
-reduce_nodal_types <- function(dag, restrictions){
+reduce_nodal_types <- function(pcm, restrictions){
 
-variables       <- get_variables(dag)
-nodal_types     <- get_nodal_types(dag)
+
+variables       <- get_variables(pcm)
+nodal_types     <- get_nodal_types(pcm)
 restricted_vars <- names(restrictions)
 matches         <- restricted_vars %in% variables
 
 
 # Stop if none of the names of the restrictions vector matches variables in dag
 # Stop if there's any restriction name that doesn't match any of the variables in the dag
-# and remove any not-matching restriction name
 if(!any(matches)){
 	stop("Restrictions don't match variables in DAG")
 } else if(any(!matches)){
 	stop("Variables ", paste(names(restrictions[!matches ]) ,"are not part of the DAG."))
 }
 
-
 nodal_types_restrictions <- nodal_types[restricted_vars]
+
 
 # Paste vars to restrictions when needed
 # For flexibility, restrictions can be written as "0" or "X0" for an exogenous var X
-# Though, we'd write its nodal_types as "X0" "X1"
+# Though, we'd write its nodal_types as "X0" or "X1"
 # length(restrictions) = n_vars for which restrictions were specified
 restrictions_out <- lapply(1:length(restrictions), function(i){
 
@@ -65,21 +65,12 @@ restrictions_out <- lapply(1:length(restrictions), function(i){
 	restrictions_i
 	})
 
-
-
-names(restrictions_out) <- restricted_vars
-
-
-attr(dag, "nodal_types") <- nodal_types
-attr(dag, "restrictions") <- restrictions_out
+names(restrictions_out)   <- restricted_vars
+pcm$nodal_types  <- nodal_types
+pcm$restrictions <- restrictions_out
 
 
 # TO DO: define print.dag ?
-cat("$nodal_types \n")
-print(attr(dag, c("nodal_types")))
-cat("$restrictions \n")
-print(attr(dag, c("restrictions")))
-cat("dag: \n")
-dag
 
+return(pcm)
 }

@@ -4,10 +4,10 @@
 \alias{get_pi_expanders}
 \title{Get helpers for expanding the pi matrix}
 \usage{
-get_pi_expanders(pi, dag)
+get_pi_expanders(pi, pcm)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{pcm}{A dag created by make_dag()}
 }
 \value{
 A list of pi helpers

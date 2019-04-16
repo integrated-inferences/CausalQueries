@@ -30,10 +30,9 @@ add_edges <- function(parent,children){
 make_dag <- function(...){
 	dag <- rbind(...)
 	intermediary <- (dag$children %in% dag$parent)
-
-	return(
-		rbind(dag[intermediary,],
-					dag[!intermediary,])
-	)
+	pcm <- list(dag = rbind(dag[intermediary,], dag[!intermediary,]),
+							step = "dag" )
+  pcm <-
+	return(pcm)
 }
 

@@ -4,7 +4,7 @@
 \alias{get_ancestors}
 \title{Get list of ancestor variables in a dag}
 \usage{
-get_ancestors(dag)
+get_ancestors(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

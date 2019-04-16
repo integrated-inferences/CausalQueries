@@ -4,7 +4,7 @@
 \alias{get_variables}
 \title{Get variable names from a DAG}
 \usage{
-get_variables(dag)
+get_variables(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

@@ -2,14 +2,15 @@
 #'
 #' FUNCTION_DESCRIPTION
 #'
-#' @param dag DESCRIPTION.
+#' @param pcm DESCRIPTION.
 #'
 #' @return RETURN_DESCRIPTION
 #' @examples
 #' # ADD_EXAMPLES_HERE
 #' @export
-make_adjacency_matrix <- function(dag) {
-	vars <- gbiqq::get_variables(dag)
+make_adjacency_matrix <- function(pcm) {
+	dag <- pcm$dag
+	vars <- gbiqq::get_variables(pcm)
 
 	adj_matrix <-
 		matrix(FALSE,
@@ -30,7 +31,7 @@ make_adjacency_matrix <- function(dag) {
 #'
 #' FUNCTION_DESCRIPTION
 #'
-#' @param dag DESCRIPTION.
+#' @param pcm DESCRIPTION.
 #'
 #' @return RETURN_DESCRIPTION
 #'
@@ -38,13 +39,13 @@ make_adjacency_matrix <- function(dag) {
 #'
 #' @examples
 #' # ADD_EXAMPLES_HERE
-expand_ambiguity_matrices_internal <- function(dag) {
+expand_ambiguity_matrices_internal <- function(pcm) {
 
-	max_possible_data <- get_max_possible_data(dag)
+	max_possible_data <- get_max_possible_data(pcm)
 
 	matrices_out <-
-		mapply(possible_data = get_possible_data(dag, collapse = FALSE)[get_endogenous_vars(dag)],
-					 ambiguity = make_ambiguity_matrices(dag)[get_endogenous_vars(dag)],
+		mapply(possible_data = get_possible_data(pcm, collapse = FALSE)[get_endogenous_vars(dag)],
+					 ambiguity = make_ambiguity_matrices(pcm)[get_endogenous_vars(dag)],
 					 FUN = function(possible_data, ambiguity) {
 					 	out <- merge(max_possible_data, cbind(possible_data,ambiguity), all.x = TRUE)
 					 	out <- out[do.call("order", as.list(out[,rev(names(max_possible_data))])),]
@@ -65,7 +66,7 @@ expand_ambiguity_matrices_internal <- function(dag) {
 #'
 #' FUNCTION_DESCRIPTION
 #'
-#' @param dag DESCRIPTION.
+#' @param pcm DESCRIPTION.
 #'
 #' @return RETURN_DESCRIPTION
 #'
@@ -74,7 +75,7 @@ expand_ambiguity_matrices_internal <- function(dag) {
 #' @examples
 #' # ADD_EXAMPLES_HERE
 expand_ambiguity_matrices <- function(dag) {
-
+	dag <- pcm$dag
 	ambiguity_ls <-
 		lapply(expand_ambiguity_matrices_internal(dag),
 					 FUN = function(mat) {
@@ -118,23 +119,23 @@ expand_ambiguity_matrices <- function(dag) {
 #'
 #' get_ambiguity_matrix(dag = XMYdag)
 #'
-get_ambiguities_matrix <- function(dag){
-
+get_ambiguities_matrix <- function(pcm){
+	dag <- pcm$dag
 	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
-	possible_data <-	get_possible_data(dag)
-	nodal_types <-   gbiqq:::get_nodal_types(dag)
+	possible_data <-	get_possible_data(pcm)
+	nodal_types <-   gbiqq:::get_nodal_types(pcm)
 	type_labels <- expand.grid(nodal_types)
 	type_labels <- apply(type_labels, 1, paste0, collapse = "")
 
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types <- 	types <-  gbiqq:::get_expanded_types(dag)
+	types <- gbiqq:::get_expanded_types(pcm)
 
   # 3. Map types to data realizations. This is is done in reveal_data
-  data_realizations <- gbiqq:::reveal_data(dag)
+  data_realizations <- gbiqq:::reveal_data(pcm)
   types$revealed_data <- apply(data_realizations , 1, paste0, collapse = "")
 
   # 4.  Create and return matrix A
-  max_possible_data <- get_max_possible_data(dag)
+  max_possible_data <- get_max_possible_data(pcm)
   fundamental_data	<- apply(max_possible_data, 1, paste0, collapse = "")
   A <- sapply(1:nrow(types), function(i)(types$revealed_data[i] == fundamental_data)*1)
   colnames(A) <- type_labels
@@ -149,15 +150,15 @@ get_ambiguities_matrix <- function(dag){
 #'
 #' @details \code{reveal_data} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
-#' @param dag A dag as created by \code{make_dag}
+#' @param pcm A dag as created by \code{make_dag}
 #' @return revealed_data
 #' @keywords internal
 #'
-reveal_data <- function(dag){
+reveal_data <- function(pcm){
 
-	types <- get_expanded_types(dag)
-	exogenous_vars <- get_exogenous_vars(dag)
-	endogenous_vars <- get_endogenous_vars(dag)
+	types <- gbiqq:::get_expanded_types(pcm)
+	exogenous_vars <- get_exogenous_vars(pcm)
+	endogenous_vars <- get_endogenous_vars(pcm)
 	types_of_exogenous <-   data.frame(types[, exogenous_vars])
 	names(types_of_exogenous) <- 	exogenous_vars
 	types_of_endogenous <-  data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
@@ -189,13 +190,14 @@ reveal_data <- function(dag){
 #'
 #' Create a data frame with types produced from all combinations of possible data produce by a dag.
 #'
-#' @param dag A dag as created by \code{make_dag}
+#' @param pcm A dag as created by \code{make_dag}
 #'
 #' @return types
 #' @keywords internal
 #'
-get_expanded_types <- function(dag){
-	possible_data <-	get_possible_data(dag)
+get_expanded_types <- function(pcm){
+
+	possible_data <-	get_possible_data_internal(pcm)
  # Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	expand.grid(possible_data, stringsAsFactors = FALSE)
 }
@@ -203,15 +205,23 @@ get_expanded_types <- function(dag){
 #' Get nodal types
 #' Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
 #'
-#' @param dag A dag as created by \code{make_dag}
+#' @param pcm A dag as created by \code{make_dag}
 #'
 #' @return types
 #' @keywords internal
 #'
-get_nodal_types <- function(dag){
-possible_data <-	get_possible_data(dag)
+get_nodal_types <- function(pcm){
+if(!is.null(pcm$nodal_types )){
+	return(pcm$nodal_types )
+} else{
+
+
+
+possible_data <-	get_possible_data(pcm)
 nodes <- names(possible_data)
-mapply(function(realization, node) paste0(node, realization),
+
+return(mapply(function(realization, node) paste0(node, realization),
 											 node = nodes,
-											 realization = possible_data )
+											 realization = possible_data ))
+}
 }

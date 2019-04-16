@@ -4,10 +4,10 @@
 \alias{expand_ambiguity_matrices_internal}
 \title{FUNCTION_TITLE}
 \usage{
-expand_ambiguity_matrices_internal(dag)
+expand_ambiguity_matrices_internal(pcm)
 }
 \arguments{
-\item{dag}{DESCRIPTION.}
+\item{pcm}{DESCRIPTION.}
 }
 \value{
 RETURN_DESCRIPTION

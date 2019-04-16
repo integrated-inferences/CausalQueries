@@ -7,14 +7,14 @@
 #' @return Returns indices and ambiguity matrix
 #'
 #'
-#' @export
 
-get_likelihood_helpers <- function(dag){
+
+old_get_likelihood_helpers <- function(pcm){
 
 	# Get variables in order of exogeneity
 	variables <- c(
-		gbiqq::get_exogenous_vars(dag),
-		gbiqq::get_endogenous_vars(dag)
+		gbiqq::get_exogenous_vars(pcm),
+		gbiqq::get_endogenous_vars(pcm)
 	)
 	variables_reversed <- variables[length(variables):1]
 
@@ -24,6 +24,7 @@ get_likelihood_helpers <- function(dag){
 		variables,
 		function(x) c(0,1,NA)
 	)
+
 	all_data <- do.call(expand.grid,observable)
 	names(all_data) <- variables
 
@@ -53,7 +54,6 @@ get_likelihood_helpers <- function(dag){
 		.all_data[.all_data[ , j ]==0 , j ] <- tolower(names(.all_data[j]))
 		.all_data[.all_data[ , j ]==1 , j ] <- toupper(names(.all_data[j]))}
 	rownames(all_data) <- 	apply(.all_data, 1, paste, collapse= "")
-
 
 	# Figure out what strategy is being used in each of the possible data
 	# realizations, given which nodes are unobserved
@@ -91,6 +91,8 @@ get_likelihood_helpers <- function(dag){
 			row_subset <- row[!row == ""]
 			paste(variable_labels,row_subset,sep = "")
 		})
+
+
 	# Get the realizations of the fundamental data events
 	fundamental_data <- data_realizations[starts[1]:ends[1]]
 	# For each data realization, find the fundamental data event in which those
@@ -123,7 +125,20 @@ get_likelihood_helpers <- function(dag){
 
 
 
+#' get_likelihood_helpers
+#'
+#' Produce the indices and ambiguity matrix needed for the
+#'
+#' @param dag A dag created by make_dag()
+#'
+#' @return Returns indices and ambiguity matrix
+#'
+#'
+#' @export
 
+get_likelihood_helpers <- function(pcm){
+
+}
 
 
 

@@ -4,10 +4,10 @@
 \alias{make_adjacency_matrix}
 \title{FUNCTION_TITLE}
 \usage{
-make_adjacency_matrix(dag)
+make_adjacency_matrix(pcm)
 }
 \arguments{
-\item{dag}{DESCRIPTION.}
+\item{pcm}{DESCRIPTION.}
 }
 \value{
 RETURN_DESCRIPTION

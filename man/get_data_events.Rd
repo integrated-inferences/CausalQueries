@@ -4,12 +4,12 @@
 \alias{get_data_events}
 \title{Get the multinomial data events}
 \usage{
-get_data_events(data, dag)
+get_data_events(data, pcm)
 }
 \arguments{
 \item{data}{A data.frame of variables that can take three values: 0, 1, and NA}
 
-\item{dag}{A dag created by make_dag()}
+\item{pcm}{A dag created by make_dag()}
 }
 \value{
 A vector of data events

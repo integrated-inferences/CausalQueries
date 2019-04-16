@@ -4,10 +4,10 @@
 \alias{get_expanded_types}
 \title{Get expanded types}
 \usage{
-get_expanded_types(dag)
+get_expanded_types(pcm)
 }
 \arguments{
-\item{dag}{A dag as created by \code{make_dag}}
+\item{pcm}{A dag as created by \code{make_dag}}
 }
 \value{
 types

@@ -17,8 +17,8 @@
 #' }
 #'
 #' @export
-get_chains <- function(dag) {
-
+get_chains <- function(pcm) {
+	dag <- pcm$dag
 	n <- 0
 	chains_out <- setNames(object = dag, nm = c("parent", paste0("children", n)))
 
@@ -74,10 +74,10 @@ get_chains <- function(dag) {
 #' }
 #'
 
-get_ancestors <- function(dag) {
-
-	chains <- get_chains(dag)
-	exogenous <- get_exogenous_vars(dag)
+get_ancestors <- function(pcm) {
+	dag <- pcm$dag
+	chains <- get_chains(pcm)
+	exogenous <- get_exogenous_vars(pcm)
 
 	endogenous_parents <-
 		sapply(X = names(chains),
@@ -130,7 +130,8 @@ get_ancestors <- function(dag) {
 #' get_ancestors(dag)
 
 
-get_parents <- function(dag) {
+get_parents <- function(pcm) {
+	dag <- pcm$dag
 		sapply(paste(unique(unlist(dag))), function(j) paste(dag$parent)[paste(dag$children) == j])
   }
 
@@ -155,10 +156,10 @@ get_parents <- function(dag) {
 #' get_types(dag)
 #' }
 #'
-get_types <- function(dag) {
-
+get_types <- function(pcm) {
+	dag <- pcm$dag
 	types <- lapply(
-		X = lapply(get_parents(dag), length),
+		X = lapply(get_parents(pcm), length),
 		FUN = function(parent_n){
 			type_mat <- perm(rep(2,2^parent_n))
 			if(parent_n == 0){
@@ -210,7 +211,8 @@ get_types <- function(dag) {
 #' @export
 #'
 #' @return A vector of exogenous variables
-get_exogenous_vars <- function(dag){
+get_exogenous_vars <- function(pcm){
+	dag <- pcm$dag
 	parents <- unique(dag$parent)
 	return(
 		as.character(parents[!(parents %in% dag$children)])
@@ -228,7 +230,8 @@ get_exogenous_vars <- function(dag){
 #'
 #' @export
 #'
-get_terminal_vars <- function(dag){
+get_terminal_vars <- function(pcm){
+	dag <- pcm$dag
 	children <- unique(dag$children)
 	return(
 		as.character(children[!(children %in% dag$parent)])
@@ -242,9 +245,10 @@ get_terminal_vars <- function(dag){
 #' @export
 #'
 #' @return A vector of endogenous variables
-get_endogenous_vars <- function(dag){
+get_endogenous_vars <- function(pcm){
+	dag <- pcm$dag
 	return(
-		c(setdiff(as.character(unique(dag$children)), get_terminal_vars(dag)), get_terminal_vars(dag))
+		c(setdiff(as.character(unique(dag$children)), get_terminal_vars(pcm)), get_terminal_vars(pcm))
 	)
 }
 
@@ -256,9 +260,10 @@ get_endogenous_vars <- function(dag){
 #' @export
 #'
 #' @return A vector of variable names
-get_variables <- function(dag){
+get_variables <- function(pcm){
+
 	return(
-		c(get_exogenous_vars(dag), get_endogenous_vars(dag))
+		c(get_exogenous_vars(pcm), get_endogenous_vars(pcm))
 	)
 }
 
@@ -316,15 +321,16 @@ perm <- function(v) {
 #'
 #' @return A data frame
 #'
-get_max_possible_data <- function(dag) {
+get_max_possible_data <- function(pcm) {
+	dag <- pcm$dag
 	max_possible_data <-
 		#Reduce(f = merge,
 		#			 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
 	 Reduce(f = merge,
-				 x = get_possible_data(dag, collapse = FALSE))
+				 x = get_possible_data(pcm, collapse = FALSE))
 
 
-	max_possible_data <- max_possible_data[get_variables(dag)]
+	max_possible_data <- max_possible_data[get_variables(pcm)]
 
 	max_possible_data <-
 		max_possible_data[do.call("order", as.list(max_possible_data[,rev(names(max_possible_data))])),]
@@ -341,9 +347,10 @@ get_max_possible_data <- function(dag) {
 #' @export
 #'
 #' @return A list of the numbers of endogenous types
-get_n_endogenous_types <- function(dag){
-	types <- sapply(gbiqq::get_types(dag), FUN = function(types) dim(types)[1])
-	types <- types[gbiqq::get_endogenous_vars(dag)]
+get_n_endogenous_types <- function(pcm){
+
+	types <- sapply(gbiqq::get_types(pcm), FUN = function(types) dim(types)[1])
+	types <- types[gbiqq::get_endogenous_vars(pcm)]
 	return(types)
 }
 
@@ -356,10 +363,11 @@ get_n_endogenous_types <- function(dag){
 #' @export
 #'
 #' @return A list of the children of exogenous variables
-get_children_of_exogenous <- function(dag){
-	sapply(gbiqq::get_exogenous_vars(dag),
+get_children_of_exogenous <- function(pcm){
+	dag <- pcm$dag
+	sapply(gbiqq::get_exogenous_vars(pcm),
 				 FUN = function(exogenous_variable) {
-				 	names(gbiqq::get_parents(dag))[sapply(X = gbiqq::get_parents(dag),
+				 	names(gbiqq::get_parents(pcm))[sapply(X = gbiqq::get_parents(pcm),
 				 																						 FUN = function(parents) exogenous_variable %in% parents ) ] },
 				 simplify = FALSE
 	)

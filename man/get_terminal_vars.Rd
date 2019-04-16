@@ -4,7 +4,7 @@
 \alias{get_terminal_vars}
 \title{Get endogenous variables in a DAG which are also terminal}
 \usage{
-get_terminal_vars(dag)
+get_terminal_vars(pcm)
 }
 \arguments{
 \item{dag}{DESCRIPTION.}

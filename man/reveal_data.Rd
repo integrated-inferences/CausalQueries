@@ -4,10 +4,10 @@
 \alias{reveal_data}
 \title{Reveal data}
 \usage{
-reveal_data(dag)
+reveal_data(pcm)
 }
 \arguments{
-\item{dag}{A dag as created by \code{make_dag}}
+\item{pcm}{A dag as created by \code{make_dag}}
 }
 \value{
 revealed_data

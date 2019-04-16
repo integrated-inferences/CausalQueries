@@ -4,7 +4,7 @@
 \alias{make_ambiguity_matrices}
 \title{Higher level function that returns an indicator matrix showing correspondence between type and possible evidence pattern for each type and evidence pattern}
 \usage{
-make_ambiguity_matrices(dag)
+make_ambiguity_matrices(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

@@ -4,7 +4,7 @@
 \alias{get_children_of_exogenous}
 \title{Get children of exogenous variables}
 \usage{
-get_children_of_exogenous(dag)
+get_children_of_exogenous(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

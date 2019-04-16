@@ -1,15 +1,16 @@
 
 #' This creates a list of all possible data realizations, for each child
-#' @param dag A dag created by \code{make_dag()}
+#' @param pcm A dag created by \code{make_dag()}
 #' @param collapse whaether to collapse possible data
 #'
 #' @export
 #'
 #' @return A list of all data realizations possible
-get_possible_data <- function(dag,
+get_possible_data <- function(pcm,
 															collapse = TRUE){
-	variables <- get_variables(dag)
-	parents <- get_parents(dag)
+
+	variables <- get_variables(pcm)
+	parents <- get_parents(pcm)
 	# types <- get_types(dag)
 
 	possible_data_list <- list()
@@ -24,33 +25,39 @@ get_possible_data <- function(dag,
 				FUN = function(x) 0:1
 			)
 		)
+		names(possible_data) <- var_variables
+
 
 
 		if (collapse) {
 			possible_data <- apply(possible_data,1,paste,collapse = "")
-		} else if (!collapse) {
+		} else {
 			names(possible_data) <- var_variables
 		}
 
 		possible_data_list[variable][[1]] <- possible_data
 
 	}
+
+
+	names(possible_data_list) <- variables
 	return(possible_data_list)
 }
 
 #' Higher level function that returns all of the type ambiguities for all possible patterns of evidence
 #'
-#' @param dag A dag created by make_dag()
+#' @param pcm A dag created by make_dag()
 #'
 #' @export
 #'
 #' @return A list of mappings between types
-get_ambiguities <- function(dag){
-	variables <- get_variables(dag)
-	# parents <- get_parents(dag)
-	types <- get_types(dag)
+get_ambiguities <- function(pcm){
 
-	possible_data <- get_possible_data(dag)
+	variables <- get_variables(pcm)
+	# parents <- get_parents(pcm)
+	types <- get_types(pcm)
+
+	possible_data <- get_possible_data(pcm)
 
 	ambiguities <- list()
 
@@ -120,9 +127,10 @@ make_ambiguity_matrix_internal <- function(ambiguities){
 #' @export
 #'
 #' @return A list of mappings between types
-make_ambiguity_matrices <- function(dag){
-	ambiguities <- get_ambiguities(dag)
-	possible_data <- get_possible_data(dag)
+make_ambiguity_matrices <- function(pcm){
+
+	ambiguities <- get_ambiguities(pcm)
+	possible_data <- get_possible_data(pcm)
 
 	ambiguity_matrices <- list()
 	for (variable in names(ambiguities)) {
@@ -140,19 +148,20 @@ make_ambiguity_matrices <- function(dag){
 
 #' Map types of every varibale to observable data
 #'
-#' @param dag A dag created by make_dag()
+#' @param pcm A dag created by make_dag()
 #'
 #' @export
 #'
 #' @return A list of mappings between types and data
-map_types_to_data <- function(dag){
-	possible_data <- get_possible_data(dag)
+map_types_to_data <- function(pcm){
+
+	possible_data <- get_possible_data(pcm)
 	# types <- get_types(dag)
-	variables <- get_variables(dag)
+	variables <- get_variables(pcm)
 	# type_indices <- get_type_indices(dag)
-	parents <- get_parents(dag)
+	parents <- get_parents(pcm)
 	n_vars <- sapply(parents,length) + 1
-	ambiguities <- get_ambiguities(dag)
+	ambiguities <- get_ambiguities(pcm)
 
 	# Get the data at the terminal node
 	full_data <- possible_data[variables[length(variables)]][[1]]
@@ -178,13 +187,14 @@ map_types_to_data <- function(dag){
 
 #' Get helpers for expanding the pi matrix
 #'
-#' @param dag A dag created by make_dag()
+#' @param pcm A dag created by make_dag()
 #'
 #' @export
 #'
 #' @return A list of pi helpers
-get_pi_expanders <- function(pi,dag){
-	types <- get_n_endogenous_types(dag)
+get_pi_expanders <- function(pi,pcm){
+
+	types <- get_n_endogenous_types(pcm)
 	lapply(pi,
 				 FUN = function(exogenous_var) {
 
@@ -208,16 +218,17 @@ get_pi_expanders <- function(pi,dag){
 #' Get the multinomial data events
 #'
 #' @param data A data.frame of variables that can take three values: 0, 1, and NA
-#' @param dag A dag created by make_dag()
+#' @param pcm A dag created by make_dag()
 #'
 #' @export
 #'
 #' @return A vector of data events
-get_data_events <- function(data, dag){
-	likelihood_helpers <- get_likelihood_helpers(dag)
+get_data_events <- function(data, pcm){
+
+	likelihood_helpers <- get_likelihood_helpers(pcm)
 	possible_events <- likelihood_helpers$possible_events
 	possible_strategies <- names(likelihood_helpers$w_starts)
-	variables <- get_variables(dag)
+	variables <- get_variables(pcm)
 	i_strategy <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
 
 
@@ -284,18 +295,16 @@ get_data_events <- function(data, dag){
 
 #' Get indicator matrix
 #'
-#' @param dag A dag created by make_dag()
+#' @param pcm A dag created by make_dag()
 #'
 #' @export
 #'
-get_indicator_matrix  <- function(dag){
+get_indicator_matrix  <- function(pcm){
 
-	possible_data <-	get_possible_data(dag)
+
+	possible_data <-	get_possible_data(pcm)
 	nodes <- names(possible_data)
-	nodal_types <-  mapply(function(realization, node) paste0(node, realization),
-												 node = nodes,
-												 realization = possible_data )
-
+	nodal_types <- get_nodal_types(pcm)
 	types <- expand.grid(nodal_types, stringsAsFactors = FALSE)
 	row_identifiers <- unlist(nodal_types)
 
@@ -317,28 +326,29 @@ get_indicator_matrix  <- function(dag){
 #'
 #' Create a list containing the data to be passed to stan
 #'
-#' @param dag A dag created by \code{make_dag}
+#' @param pcm A dag created by \code{make_dag}
 #' @param data A data frame with observations
 #' @param lambdas_prior A vector containg priors for lambda
 #' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.
 #' @return a list
 #' @keywords internal
 #'
-make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
+make_gbiqq_data <- function(pcm, data, lambdas_prior = NULL, P = NULL ){
 
-	if(is.null(P)) P <- get_indicator_matrix(dag)
+	dag <- pcm$dag
+	if(is.null(P)) P <- get_indicator_matrix(pcm)
 
 	n_params <- nrow(P)
 
 	if(is.null(lambdas_prior)) lambdas_prior <- rep(1, n_params)
 
 	inverted_P <- 1-P
-	A <- get_ambiguities_matrix(dag )
-	likelihood_helpers <- get_likelihood_helpers(dag)
+	A <- get_ambiguities_matrix(pcm)
+	likelihood_helpers <- get_likelihood_helpers(pcm)
 	A_w <- likelihood_helpers$A_w
 
 
-	data_events<-  get_data_events(data, dag )$data_events
+	data_events<-  get_data_events(data, pcm)$data_events
 	A_w<- A_w[data_events$count != 0,]
 	data_events <- data_events[data_events$count != 0,]
   strategies <- data_events$strategy
@@ -351,13 +361,13 @@ make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
   }
 
 
-  possible_data <-   get_max_possible_data(dag )
+  possible_data <-   get_max_possible_data(pcm)
   P.lambdas <- P*lambdas_prior   +	1 - P
   prob_of_types <- apply(P.lambdas, 2, prod)
   w <- A %*% prob_of_types # Prob of (fundamental) data realization
   w_full <- A_w %*% w
-  n_types_each <- sapply(gbiqq:::get_nodal_types(dag), length)
-  n_vars <- length(get_variables(dag ))
+  n_types_each <- sapply(gbiqq:::get_nodal_types(pcm), length)
+  n_vars <- length(get_variables(pcm))
   l_ends <- cumsum(n_types_each)
   l_starts <- c(1, l_ends[1:(n_vars-1)] + 1)
 
@@ -383,8 +393,32 @@ make_gbiqq_data <- function(dag, data, lambdas_prior = NULL, P = NULL ){
 
 
 
+#'
+#' get_possible_data_internal
+#'
+#' @param pcm A dag created by \code{make_dag}
+#' @return a list
+#' @keywords internal
+#'
+get_possible_data_internal <- function(pcm, collapse = TRUE){
+  nodal_types <- gbiqq:::get_nodal_types(pcm)
+	var_names <-  names(nodal_types)
+	t_nodal_types <- lapply(1:length(nodal_types),function(i){ gsub(var_names[i], "", nodal_types[[i]])} )
+  if(!collapse){
+	t_nodal_types <- lapply(1:length(t_nodal_types), function(i){
+		variable <- var_names[i]
+		var_parents <- parents[variable][[1]]
+		var_variables <- c(var_parents,variable)
+		out <- t_nodal_types[[i]]
+	  out <- t(sapply(strsplit(out,""), as.numeric))
+	  if(nrow(out) == 1) out <- t(out)
 
-
+    colnames(out) <- var_variables
+    out
+	})}
+	names(t_nodal_types) <- var_names
+	t_nodal_types
+ }
 
 
 

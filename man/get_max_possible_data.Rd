@@ -4,7 +4,7 @@
 \alias{get_max_possible_data}
 \title{Get data frame with all possible data combinations}
 \usage{
-get_max_possible_data(dag)
+get_max_possible_data(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

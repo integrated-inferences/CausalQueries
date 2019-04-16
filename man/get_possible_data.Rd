@@ -4,10 +4,10 @@
 \alias{get_possible_data}
 \title{This creates a list of all possible data realizations, for each child}
 \usage{
-get_possible_data(dag, collapse = TRUE)
+get_possible_data(pcm, collapse = TRUE)
 }
 \arguments{
-\item{dag}{A dag created by \code{make_dag()}}
+\item{pcm}{A dag created by \code{make_dag()}}
 
 \item{collapse}{whaether to collapse possible data}
 }

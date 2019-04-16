@@ -17,6 +17,7 @@
 #' }
 #'
 translate_dagitty <- function(dag){
+
 	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "),collapse = " ; "),collapse = "")
 	dagitty_dag <- paste0("dag{ ",inner, " }")
 	return(dagitty_dag)
@@ -41,7 +42,8 @@ translate_dagitty <- function(dag){
 #' }
 #'
 
-plot_dag <- function(dag){
+plot_dag <- function(pcm){
+	dag <- pcm$dag
 	dagitty_dag <- translate_dagitty(dag = dag)
 	plot(dagitty::graphLayout(dagitty_dag))
 }

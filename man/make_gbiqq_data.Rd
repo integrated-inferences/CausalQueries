@@ -4,10 +4,10 @@
 \alias{make_gbiqq_data}
 \title{Prepare data for stan}
 \usage{
-make_gbiqq_data(dag, data, lambdas_prior = NULL, P = NULL)
+make_gbiqq_data(pcm, data, lambdas_prior = NULL, P = NULL)
 }
 \arguments{
-\item{dag}{A dag created by \code{make_dag}}
+\item{pcm}{A dag created by \code{make_dag}}
 
 \item{data}{A data frame with observations}
 

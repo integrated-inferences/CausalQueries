@@ -7,7 +7,7 @@
 expand_ambiguity_matrices(dag)
 }
 \arguments{
-\item{dag}{DESCRIPTION.}
+\item{pcm}{DESCRIPTION.}
 }
 \value{
 RETURN_DESCRIPTION

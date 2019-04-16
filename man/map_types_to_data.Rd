@@ -4,10 +4,10 @@
 \alias{map_types_to_data}
 \title{Map types of every varibale to observable data}
 \usage{
-map_types_to_data(dag)
+map_types_to_data(pcm)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{pcm}{A dag created by make_dag()}
 }
 \value{
 A list of mappings between types and data

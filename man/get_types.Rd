@@ -4,7 +4,7 @@
 \alias{get_types}
 \title{Get list of types for variables in a DAG}
 \usage{
-get_types(dag)
+get_types(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

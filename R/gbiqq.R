@@ -8,11 +8,13 @@
 #' @importFrom Rcpp cpp_object_initializer
 #' @export
 #'
-gbiqq <- function(dag, data, lambdas_prior = NULL,  P = NULL, ...) {
+gbiqq <- function(pcm, data, lambdas_prior = NULL,  P = NULL, ...) {
+
+
 
 stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
 
-stan_data    <- make_gbiqq_data(dag = dag, data = data, lambdas_prior = lambdas_prior, P = P)
+stan_data    <- make_gbiqq_data(pcm, data = data, lambdas_prior = lambdas_prior, P = P)
 
 fitted_model <-	stan(file = stan_file, data = stan_data,  ...)
 

@@ -4,7 +4,7 @@
 \alias{get_chains}
 \title{Create list by endogenous variable containing all chains terminating at this endogenous variable}
 \usage{
-get_chains(dag)
+get_chains(pcm)
 }
 \arguments{
 \item{dag}{DESCRIPTION.}

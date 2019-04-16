@@ -4,7 +4,7 @@
 \alias{get_endogenous_vars}
 \title{Get endogenous variables in a DAG}
 \usage{
-get_endogenous_vars(dag)
+get_endogenous_vars(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

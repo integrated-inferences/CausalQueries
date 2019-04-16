@@ -4,10 +4,10 @@
 \alias{get_ambiguities}
 \title{Higher level function that returns all of the type ambiguities for all possible patterns of evidence}
 \usage{
-get_ambiguities(dag)
+get_ambiguities(pcm)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{pcm}{A dag created by make_dag()}
 }
 \value{
 A list of mappings between types

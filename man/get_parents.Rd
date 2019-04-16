@@ -4,7 +4,7 @@
 \alias{get_parents}
 \title{Get list of parents in a dag}
 \usage{
-get_parents(dag)
+get_parents(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

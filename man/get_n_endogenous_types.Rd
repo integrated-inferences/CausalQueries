@@ -4,7 +4,7 @@
 \alias{get_n_endogenous_types}
 \title{Get number of endogenous types}
 \usage{
-get_n_endogenous_types(dag)
+get_n_endogenous_types(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

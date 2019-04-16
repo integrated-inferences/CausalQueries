@@ -4,10 +4,10 @@
 \alias{get_indicator_matrix}
 \title{Get indicator matrix}
 \usage{
-get_indicator_matrix(dag)
+get_indicator_matrix(pcm)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{pcm}{A dag created by make_dag()}
 }
 \description{
 Get indicator matrix

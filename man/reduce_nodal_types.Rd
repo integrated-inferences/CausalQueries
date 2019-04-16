@@ -4,15 +4,15 @@
 \alias{reduce_nodal_types}
 \title{Restrict a model}
 \usage{
-reduce_nodal_types(dag, restrictions)
+reduce_nodal_types(pcm, restrictions)
 }
 \arguments{
-\item{dag}{a dag created by make_dag()}
+\item{restrictions}{a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.}
 
-\item{restrictions}{a list of character vectors. Names in list should match dag's variables, and restrictions can be specified as nodal types.}
+\item{dag}{a dag created by make_dag()}
 }
 \value{
-A dag with restrictions and nodal types as attributes.
+A dag with restrictions and nodal types saved as attributes.
 }
 \description{
 Restrict a model

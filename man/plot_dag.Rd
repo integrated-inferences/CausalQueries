@@ -4,7 +4,7 @@
 \alias{plot_dag}
 \title{Plot your dag using dagitty}
 \usage{
-plot_dag(dag)
+plot_dag(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}

@@ -4,7 +4,7 @@
 \alias{get_ambiguities_matrix}
 \title{Get ambiguities matrix}
 \usage{
-get_ambiguities_matrix(dag)
+get_ambiguities_matrix(pcm)
 }
 \arguments{
 \item{dag}{A dag as created by \code{make_dag}}
