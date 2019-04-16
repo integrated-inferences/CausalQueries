@@ -83,7 +83,7 @@ set_priors  <- function(pcm,  prior_distribution = "uniform", alphas = NULL){
 
 		} else{
 
-			stop("if prior_distribution is not specified, alphas must contain either one value for each nodal_type or a single value to be assigned to all nodal types.")
+			stop("if prior_distribution is not specified, alphas must contain either a value for each nodal_type or a single value to be assigned to all nodal types.")
 
 		}
 	}
