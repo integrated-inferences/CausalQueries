@@ -25,7 +25,7 @@
 set_priors  <- function(pcm,  prior_distribution = "uniform", alphas = NULL){
 
 	dag <- pcm$dag
-	nodal_types   <- get_nodal_types(dag)
+	nodal_types   <- get_nodal_types(pcm)
 
 	n_nodal_types <- length(unlist(nodal_types))
 
@@ -50,8 +50,9 @@ set_priors  <- function(pcm,  prior_distribution = "uniform", alphas = NULL){
 			paste0("\n variable ", splitted_name[2], " and corresponding nodal_type ",  splitted_name[1], " must match variables in dag and nodal_types syntax")
 
 		})
+		stop(	error_text )
 	}
-	stop(	error_text )
+
 
 
 	if(any(	alphas_vector  <= 0)){
@@ -99,6 +100,7 @@ pcm$lambda_priors <- lambdas
 cat("$lambdas_prior \n")
 print(pcm$lambda_priors)
 cat("dag: \n")
-dag
+print(pcm$dag)
+pcm
 
 }

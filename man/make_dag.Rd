@@ -10,8 +10,16 @@ make_dag(...)
 \item{...}{Edges added by add_edges()}
 }
 \value{
-A DAG
+An object of class probabilistic_causal_model containing a dag
 }
 \description{
 Make a DAG
+}
+\examples{
+\dontrun{
+dagXKY <- make_dag(
+add_edges(parent = "X",children = c("K","Y")),
+add_edges(parent = "K",children = "Y")
+)
+}
 }

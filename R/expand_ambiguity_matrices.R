@@ -44,8 +44,8 @@ expand_ambiguity_matrices_internal <- function(pcm) {
 	max_possible_data <- get_max_possible_data(pcm)
 
 	matrices_out <-
-		mapply(possible_data = get_possible_data(pcm, collapse = FALSE)[get_endogenous_vars(dag)],
-					 ambiguity = make_ambiguity_matrices(pcm)[get_endogenous_vars(dag)],
+		mapply(possible_data = get_possible_data(pcm, collapse = FALSE)[get_endogenous_vars(pcm)],
+					 ambiguity = make_ambiguity_matrices(pcm)[get_endogenous_vars(pcm)],
 					 FUN = function(possible_data, ambiguity) {
 					 	out <- merge(max_possible_data, cbind(possible_data,ambiguity), all.x = TRUE)
 					 	out <- out[do.call("order", as.list(out[,rev(names(max_possible_data))])),]
@@ -74,10 +74,10 @@ expand_ambiguity_matrices_internal <- function(pcm) {
 #'
 #' @examples
 #' # ADD_EXAMPLES_HERE
-expand_ambiguity_matrices <- function(dag) {
+expand_ambiguity_matrices <- function(pcm) {
 	dag <- pcm$dag
 	ambiguity_ls <-
-		lapply(expand_ambiguity_matrices_internal(dag),
+		lapply(expand_ambiguity_matrices_internal(pcm),
 					 FUN = function(mat) {
 					 	lapply(split(mat, f = seq(nrow(mat))), FUN = unlist)
 					 })
@@ -86,11 +86,11 @@ expand_ambiguity_matrices <- function(dag) {
 
 	out <- t(do.call(mapply, append(list(FUN = expand_grid_fn), ambiguity_ls)))
 
-	max_possible_data <- get_max_possible_data(dag)
+	max_possible_data <- get_max_possible_data(pcm)
 
 	rownames(out) <- apply(max_possible_data, 1, paste0, collapse = "")
 	colnames(out) <-
-		Reduce(x = lapply(gbiqq::get_types(dag)[get_endogenous_vars(dag)],
+		Reduce(x = lapply(gbiqq::get_types(pcm)[get_endogenous_vars(pcm)],
 											FUN = function(types) as.character(1:nrow(types))),
 					 f = function(a,b) {
 					 	apply(expand.grid(x = a, y = b), 1, paste0, collapse = "_")
@@ -136,11 +136,14 @@ get_ambiguities_matrix <- function(pcm){
 
   # 4.  Create and return matrix A
   max_possible_data <- get_max_possible_data(pcm)
-  fundamental_data <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
-  fundamental_data	<- apply(fundamental_data, 1, paste0, collapse = "")
+  data_names <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
+  data_names <- matrix(data_names, ncol = ncol(max_possible_data))
+  data_names <- apply(data_names, 1, paste0, collapse = "")
+  fundamental_data	<- apply(max_possible_data, 1, paste0, collapse = "")
   A <- sapply(1:nrow(types), function(i)(types$revealed_data[i] == fundamental_data)*1)
+  A <- matrix(A, ncol = length(type_labels))
   colnames(A) <- type_labels
-  rownames(A) <- fundamental_data
+  rownames(A) <-  data_names
 
 	return(A)
 }
@@ -157,7 +160,7 @@ get_ambiguities_matrix <- function(pcm){
 #'
 reveal_data <- function(pcm){
 
-	types <- gbiqq:::get_expanded_types(pcm)
+	types <- gbiqq::get_expanded_types(pcm)
 	exogenous_vars <- get_exogenous_vars(pcm)
 	endogenous_vars <- get_endogenous_vars(pcm)
 	types_of_exogenous <-   data.frame(types[, exogenous_vars])
@@ -165,7 +168,7 @@ reveal_data <- function(pcm){
 	types_of_endogenous <-  data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
 	names(types_of_endogenous) <- 	endogenous_vars
 	data_realizations <- 	types
-	parents_list <- get_parents(dag)
+	parents_list <- get_parents(pcm)
 
 	revealed_data <- 		sapply(1:ncol(types_of_endogenous), function(j) {
 		var <- names(types_of_endogenous)[j]
@@ -194,13 +197,15 @@ reveal_data <- function(pcm){
 #' @param pcm A dag as created by \code{make_dag}
 #'
 #' @return types
-#' @keywords internal
+#' @export
 #'
 get_expanded_types <- function(pcm){
-
-	possible_data <-	get_possible_data_internal(pcm)
+	possible_types<-	get_nodal_types(pcm)
+	variables <- names(possible_types)
+	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
+  names(possible_types) <- variables
  # Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	expand.grid(possible_data, stringsAsFactors = FALSE)
+	expand.grid(possible_types, stringsAsFactors = FALSE)
 }
 
 #' Get nodal types
@@ -209,7 +214,7 @@ get_expanded_types <- function(pcm){
 #' @param pcm A dag as created by \code{make_dag}
 #'
 #' @return types
-#' @keywords internal
+#' @export
 #'
 get_nodal_types <- function(pcm){
 if(!is.null(pcm$nodal_types )){

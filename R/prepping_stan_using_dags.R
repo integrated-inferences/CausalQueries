@@ -225,6 +225,7 @@ get_pi_expanders <- function(pi,pcm){
 #' @return A vector of data events
 get_data_events <- function(data, pcm){
 
+
 	likelihood_helpers <- get_likelihood_helpers(pcm)
 	possible_events <- likelihood_helpers$possible_events
 	possible_strategies <- names(likelihood_helpers$w_starts)
@@ -236,9 +237,22 @@ get_data_events <- function(data, pcm){
 		stop("Could not find all of the variables in the DAG in the data you provided.\nPlease double-check variable names and try again.")
 	}
 
-	# replace "" with na and remove rows where all values are na
+
+	revealed_data <- gbiqq:::reveal_data(pcm)
 	data <- data[,variables]
 	data_to_agg <- data
+
+	# Stop if observed data is not in conflict with restrictions
+	inconsistencies <- !apply(data, 1, function(observed){
+		  any(apply(revealed_data, 1, function(possible){ !any(possible != observed)}))
+	})
+
+	if(any(inconsistencies)){
+		stop("Observations are not consistent with restrictions")
+	}
+
+	# replace "" with na and remove rows where all values are na
+
 	data_to_agg[data == ""] <- NA
   ind <- apply(data_to_agg, 1,  function(x) all(is.na(x)))
   data_to_agg <- data_to_agg[!ind, ]
@@ -346,10 +360,15 @@ make_gbiqq_data <- function(pcm, data, lambdas_prior = NULL, P = NULL ){
 	A <- get_ambiguities_matrix(pcm)
 	likelihood_helpers <- get_likelihood_helpers(pcm)
 	A_w <- likelihood_helpers$A_w
-
+	rnames <- rownames(A_w)
+	cnames <- colnames(A_w)
+  n_realizations <- ncol(A_w)
 
 	data_events<-  get_data_events(data, pcm)$data_events
 	A_w<- A_w[data_events$count != 0,]
+	A_w <- matrix(A_w, ncol = n_realizations)
+	colnames(A_w) <- cnames
+	rownames(A_w) <- rnames[data_events$count != 0]
 	data_events <- data_events[data_events$count != 0,]
   strategies <- data_events$strategy
   n_strategies <- length(unique(strategies))
@@ -401,24 +420,34 @@ make_gbiqq_data <- function(pcm, data, lambdas_prior = NULL, P = NULL ){
 #' @keywords internal
 #'
 get_possible_data_internal <- function(pcm, collapse = TRUE){
-  nodal_types <- gbiqq:::get_nodal_types(pcm)
-	var_names <-  names(nodal_types)
+
+	revealed_data <- gbiqq:::reveal_data(pcm)
+	variables <- get_variables(pcm)
 	parents <- get_parents(pcm)
-	t_nodal_types <- lapply(1:length(nodal_types),function(i){ gsub(var_names[i], "", nodal_types[[i]])} )
-  if(!collapse){
-	t_nodal_types <- lapply(1:length(t_nodal_types), function(i){
-		variable <- var_names[i]
+
+	possible_data <- lapply(variables, function(variable){
 		var_parents <- parents[variable][[1]]
 		var_variables <- c(var_parents,variable)
-		out <- t_nodal_types[[i]]
-	  out <- t(sapply(strsplit(out,""), as.numeric))
-	  if(nrow(out) == 1) out <- t(out)
-
-    colnames(out) <- var_variables
+		out <- revealed_data[,var_variables]
+		duplicates <- duplicated(out)
+	  if(length(	var_variables) == 1) {
+	  	out <- matrix(as.double(out[!duplicates]), ncol = length(var_variables))
+	  } else {
+	  		out <- out[!duplicates, ]
+	  	}
+		colnames(out) <- var_variables
     out
-	})}
-	names(t_nodal_types) <- var_names
-	t_nodal_types
+	})
+	names(possible_data) <- var_names
+	if(collapse){
+	possible_data <- lapply(variables, function(variable){
+	  mat <- possible_data[[variable]]
+	  apply(mat, 1, function(x) paste0(variable, x, collapse = ""))
+	})
+	}
+
+	names(possible_data) <- var_names
+	possible_data
  }
 
 

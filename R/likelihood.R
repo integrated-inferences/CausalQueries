@@ -53,7 +53,7 @@ get_likelihood_helpers <- function(pcm){
 	for(j in 1:ncol(.all_data)) {
 		.all_data[.all_data[ , j ]==0 , j ] <- tolower(names(.all_data[j]))
 		.all_data[.all_data[ , j ]==1 , j ] <- toupper(names(.all_data[j]))}
-	rownames(all_data) <- 	apply(.all_data, 1, paste, collapse= "")
+	#rownames(all_data) <- 	apply(.all_data, 1, paste, collapse= "")
 
 	# Figure out what strategy is being used in each of the possible data
 	# realizations, given which nodes are unobserved
@@ -97,8 +97,10 @@ get_likelihood_helpers <- function(pcm){
 	max_possible_data <- get_max_possible_data(pcm)
 	A <- get_ambiguities_matrix(pcm)
 	fundamental_data <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
+	fundamental_data <- matrix(	fundamental_data, ncol = ncol(max_possible_data))
+
 	fundamental_data	<- lapply(1:nrow(fundamental_data),  function(i) c(fundamental_data[i,]))
-	names(fundamental_data) <- rownames(A)
+  names(fundamental_data) <- rownames(A)
 	# For each data realization, find the fundamental data event in which those
 	# same events would have been observed, and make a matrix of 1s and 0s
 	A_w <- t(sapply(
@@ -107,8 +109,11 @@ get_likelihood_helpers <- function(pcm){
 			sapply(fundamental_data, function(fun_data)all(realization %in% fun_data))
 		}
 	)) * 1
-	colnames(A_w) <- sapply(	fundamental_data  , paste0, collapse = "")
 
+
+	c_names <- sapply(	fundamental_data  , paste0, collapse = "")
+	A_w <- matrix(A_w, ncol = length(c_names) )
+	colnames(A_w) <- c_names
 	possible_events <- sapply(data_realizations,paste,collapse = "")
 	strategy_labels <- sapply(which_strategy,paste,collapse = "")
 	names(possible_events) <- strategy_labels

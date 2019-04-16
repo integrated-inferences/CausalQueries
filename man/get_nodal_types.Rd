@@ -17,4 +17,3 @@ types
 Get nodal types
 Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
 }
-\keyword{internal}
