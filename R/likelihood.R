@@ -9,7 +9,7 @@
 #'
 
 
-old_get_likelihood_helpers <- function(pcm){
+get_likelihood_helpers <- function(pcm){
 
 	# Get variables in order of exogeneity
 	variables <- c(
@@ -125,7 +125,7 @@ old_get_likelihood_helpers <- function(pcm){
 
 
 
-#' get_likelihood_helpers
+#' new_get_likelihood_helpers
 #'
 #' Produce the indices and ambiguity matrix needed for the
 #'
@@ -136,7 +136,7 @@ old_get_likelihood_helpers <- function(pcm){
 #'
 #' @export
 
-get_likelihood_helpers <- function(pcm){
+new_get_likelihood_helpers <- function(pcm){
 
 }
 
