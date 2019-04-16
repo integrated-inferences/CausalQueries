@@ -403,6 +403,7 @@ make_gbiqq_data <- function(pcm, data, lambdas_prior = NULL, P = NULL ){
 get_possible_data_internal <- function(pcm, collapse = TRUE){
   nodal_types <- gbiqq:::get_nodal_types(pcm)
 	var_names <-  names(nodal_types)
+	parents <- get_parents(pcm)
 	t_nodal_types <- lapply(1:length(nodal_types),function(i){ gsub(var_names[i], "", nodal_types[[i]])} )
   if(!collapse){
 	t_nodal_types <- lapply(1:length(t_nodal_types), function(i){

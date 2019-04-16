@@ -327,7 +327,7 @@ get_max_possible_data <- function(pcm) {
 		#Reduce(f = merge,
 		#			 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
 	 Reduce(f = merge,
-				 x = get_possible_data(pcm, collapse = FALSE))
+				 x = gbiqq:::get_possible_data_internal(pcm, collapse = FALSE))
 
 
 	max_possible_data <- max_possible_data[get_variables(pcm)]

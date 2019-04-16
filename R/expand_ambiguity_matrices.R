@@ -136,7 +136,8 @@ get_ambiguities_matrix <- function(pcm){
 
   # 4.  Create and return matrix A
   max_possible_data <- get_max_possible_data(pcm)
-  fundamental_data	<- apply(max_possible_data, 1, paste0, collapse = "")
+  fundamental_data <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
+  fundamental_data	<- apply(fundamental_data, 1, paste0, collapse = "")
   A <- sapply(1:nrow(types), function(i)(types$revealed_data[i] == fundamental_data)*1)
   colnames(A) <- type_labels
   rownames(A) <- fundamental_data
