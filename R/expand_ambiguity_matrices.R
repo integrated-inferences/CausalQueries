@@ -130,7 +130,7 @@ get_ambiguities_matrix <- function(pcm){
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	types <- gbiqq:::get_expanded_types(pcm)
 
-  # 3. Map types to data realizations. This is is done in reveal_data
+  # 3. Map types to data realizations. This is done in reveal_data
   data_realizations <- gbiqq:::reveal_data(pcm)
   types$revealed_data <- apply(data_realizations , 1, paste0, collapse = "")
 

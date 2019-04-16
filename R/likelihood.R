@@ -6,7 +6,7 @@
 #'
 #' @return Returns indices and ambiguity matrix
 #'
-#'
+#' @export
 
 
 get_likelihood_helpers <- function(pcm){
