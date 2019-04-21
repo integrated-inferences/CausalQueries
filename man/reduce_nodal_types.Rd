@@ -4,7 +4,7 @@
 \alias{reduce_nodal_types}
 \title{Restrict a model}
 \usage{
-reduce_nodal_types(pcm, restrictions)
+reduce_nodal_types(model, restrictions)
 }
 \arguments{
 \item{restrictions}{a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.}

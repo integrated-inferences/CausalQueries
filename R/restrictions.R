@@ -12,11 +12,11 @@
 #'
 #' # or alternatively variable name can be omitted from restriction
 #' reduce_nodal_types(dag = XYdag, restrictions(X = "0", Y = "00"))
-reduce_nodal_types <- function(pcm, restrictions){
+reduce_nodal_types <- function(model, restrictions){
 
 
-variables       <- get_variables(pcm)
-nodal_types     <- get_nodal_types(pcm)
+variables       <- get_variables(model)
+nodal_types     <- get_nodal_types(model)
 restricted_vars <- names(restrictions)
 matches         <- restricted_vars %in% variables
 
@@ -66,11 +66,11 @@ restrictions_out <- lapply(1:length(restrictions), function(i){
 	})
 
 names(restrictions_out)   <- restricted_vars
-pcm$nodal_types  <- nodal_types
-pcm$restrictions <- restrictions_out
+model$nodal_types  <- nodal_types
+model$restrictions <- restrictions_out
 
 
 # TO DO: define print.dag ?
 
-return(pcm)
+return(model)
 }

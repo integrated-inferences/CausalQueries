@@ -28,17 +28,21 @@ add_edges <- function(parent,children){
 #' @return An object of class probabilistic_causal_model containing a dag
 #' @examples
 #' \dontrun{
-#'dagXKY <- make_dag(
+#' modelXKY <- make_model(
 #' add_edges(parent = "X",children = c("K","Y")),
 #' add_edges(parent = "K",children = "Y")
 #' )
 #' }
-make_dag <- function(...){
+make_model <- function(...){
 	dag <- rbind(...)
 	intermediary <- (dag$children %in% dag$parent)
-	pcm <- list(dag = rbind(dag[intermediary,], dag[!intermediary,]),
+	dag <- list(dag = rbind(dag[intermediary,], dag[!intermediary,]),
 							step = "dag" )
 
-	return(pcm)
+	model <- set_priors(dag)
+
+	class(model) <- "probabilistic_causal_model"
+
+	return(model)
 }
 

@@ -4,14 +4,14 @@
 \alias{gbiqq}
 \title{Fit stan model}
 \usage{
-gbiqq(pcm, data, lambdas_prior = NULL, P = NULL, ...)
+gbiqq(model, data, P = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame with observations}
 
-\item{lambdas_prior}{A vector containg priors for lambda}
-
 \item{dag}{A dag as created by \code{make_dag}}
+
+\item{lambdas_prior}{A vector containg priors for lambda}
 }
 \description{
 Fit stan model

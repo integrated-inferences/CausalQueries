@@ -1,6 +1,6 @@
 #' Set priors
 #'
-#' @param pcm A dag created by make_dag()
+#' @param model A dag created by make_dag()
 #' @param prior_distribution A character indicating the prior distribuiton
 #' @param alphas the hyperparameters of the dirichlet distribution.
 #'
@@ -8,24 +8,24 @@
 #' @examples
 #' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
 #' #  Default sets all priors to 1
-#' set_priors(pcm = XYdag)
+#' set_priors(model = XYdag)
 #' #  Set all priors to 0.5
-#' set_priors(pcm = XYdag, prior_distribution = "jeffreys")
+#' set_priors(model = XYdag, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
-#' set_priors(pcm = XYdag, prior_distribution = "certainty")
+#' set_priors(model = XYdag, prior_distribution = "certainty")
 #'
 #'#  set all priors to 1 except for prior of nodal_type X0
-#' set_priors(pcm = XYdag, alpha = list(X = c(X0 = 2)))
-#'#  specify priors for each of the nodal_types in pcm
-#' set_priors(pcm = XYdag, prior_distribution = "uniform" ,
+#' set_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
+#'#  specify priors for each of the nodal_types in model
+#' set_priors(model = XYdag, prior_distribution = "uniform" ,
 #'            alpha = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
 #' # set all priors to 10
-#' set_priors(pcm = XYdag, prior_distribution = NULL,
+#' set_priors(model = XYdag, prior_distribution = NULL,
 #'            alpha =  10)
-set_priors  <- function(pcm,  prior_distribution = "uniform", alphas = NULL){
+set_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 
-	dag <- pcm$dag
-	nodal_types   <- get_nodal_types(pcm)
+	dag <- model$dag
+	nodal_types   <- get_nodal_types(model)
 
 	n_nodal_types <- length(unlist(nodal_types))
 
@@ -94,13 +94,13 @@ set_priors  <- function(pcm,  prior_distribution = "uniform", alphas = NULL){
 
 	lambdas[alpha_names] <- alphas_vector
 
-pcm$lambda_priors <- lambdas
+model$lambda_priors <- lambdas
 
 # TO DO: define print.dag ?
 cat("$lambdas_prior \n")
-print(pcm$lambda_priors)
+print(model$lambda_priors)
 cat("dag: \n")
-print(pcm$dag)
-pcm
+print(model$dag)
+model
 
 }

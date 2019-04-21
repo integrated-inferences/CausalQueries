@@ -2,19 +2,19 @@
 #'
 #' Produce the indices and ambiguity matrix needed for the
 #'
-#' @param dag A dag created by make_dag()
+#' @param model A probabilistic causal model created by make_model()
 #'
 #' @return Returns indices and ambiguity matrix
 #'
 #' @export
 
 
-get_likelihood_helpers <- function(pcm){
+get_likelihood_helpers <- function(model, data){
 
 	# Get variables in order of exogeneity
 	variables <- c(
-		gbiqq::get_exogenous_vars(pcm),
-		gbiqq::get_endogenous_vars(pcm)
+		gbiqq::get_exogenous_vars(model),
+		gbiqq::get_endogenous_vars(model)
 	)
 	variables_reversed <- variables[length(variables):1]
 
@@ -94,8 +94,8 @@ get_likelihood_helpers <- function(pcm){
 
 
 	# Get the realizations of the fundamental data events
-	max_possible_data <- get_max_possible_data(pcm)
-	A <- get_ambiguities_matrix(pcm)
+	max_possible_data <- get_max_possible_data(model)
+	A <- get_ambiguities_matrix(model)
 	fundamental_data <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
 	fundamental_data <- matrix(	fundamental_data, ncol = ncol(max_possible_data))
 
@@ -117,8 +117,9 @@ get_likelihood_helpers <- function(pcm){
 	possible_events <- sapply(data_realizations,paste,collapse = "")
 	strategy_labels <- sapply(which_strategy,paste,collapse = "")
 	names(possible_events) <- strategy_labels
-
+# To account for strategies w no data events
 	rownames(A_w) <- possible_events
+
 
 	return(list(
 		A_w = A_w,
@@ -134,22 +135,52 @@ get_likelihood_helpers <- function(pcm){
 
 
 
-#' new_get_likelihood_helpers
+#' get_weights_ambiguities
 #'
-#' Produce the indices and ambiguity matrix needed for the
 #'
 #' @param dag A dag created by make_dag()
 #'
 #' @return Returns indices and ambiguity matrix
 #'
 #'
-#' @export
 
-new_get_likelihood_helpers <- function(pcm){
+
+get_weights_ambiguities <- function(model, data){
+
+	data_events <- trim_strategies(model, data)
+
+
 
 }
 
+#' trim_strategies
+#'
+#'
+#' @param model A probabilistic causal model created by make_model()
+#'
+#' @return Returns indices and ambiguity matrix
+#'
+#' @export
+trim_strategies <- function(model, data){
+	# 1. Get data and delete all rows from estrategies that contained no observed data
+	data_events <- get_data_events(data = data, model = model)$data_events
+	data_events_split <- split(data_events, as.factor(data_events$strategy))
+	data_events_w_NA <- do.call(rbind,lapply(data_events_split, function(df){
+		out <- df
+		if(sum(df$count) == 0){
+			out[,] <- NA
+		}
 
+		out
+	}))
+
+	delete_strategies <- !apply(	data_events_w_NA, 1, function(x) all(is.na(x)))
+	r_names <- rownames(data_events)
+	trimmed_data_events <- 	data_events_w_NA[delete_strategies, ]
+  rownames(trimmed_data_events) <- 1:nrow(trimmed_data_events)
+	trimmed_data_events
+
+}
 
 
 
