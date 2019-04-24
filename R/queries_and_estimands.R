@@ -23,6 +23,7 @@
 #' # This is not quite right since the *same* prior draw should be used for the two queries -- a bit confusing though
 #' # as currently set up since the two models have different parameters! May need another approch to "do":
 #' # e.g. draw a parameter vector and set certainty around that, calculated estimand, repeat over different draws
+#' model     <-  make_model(add_edges(parent = "X", children = c("Y")))
 
 
 query_model <- function(model, query, subset = TRUE, w = NULL){
@@ -39,3 +40,40 @@ query_model <- function(model, query, subset = TRUE, w = NULL){
 	weighted.mean(a[subset], w[subset])
 }
 
+
+#' Calculate estimand
+#'
+#' Ask a question of a model
+#' @param model A model created by make_model()
+#' @param query A logic operation on variables, in quotes. For example "Y==1"
+#' @param subset An optional logic condition on variabless, in quotes.. For example "X==0"
+#' @export
+#' @examples
+#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- reduce_nodal_types(model = model, restrictions = list(Y = "Y10"))
+#' estimand <- calculate_estimand (model = model,
+#' 										do1 = list(X = 0),
+#' 										query1 = "Y==1",
+#' 										do2 = list(X = 1),
+#' 										query2 = "Y==1",
+#' 										aggregation = function(q1,q2) q2-q1,
+#' 										sims = 300)
+#' summary(estimand)
+
+calculate_estimand <- function(model,
+															 do1, query1,
+															 do2 = NULL, query2 = NULL,
+															 subset1 = TRUE, subset2 = TRUE,
+															 aggregation = function(a,b) a-b,
+															 sims = 100) {
+
+	f <- function() {
+	  m  <-  set_priors(model = model, alpha = 10000*draw_lambda(model))
+	  aggregation(
+	  query_model(reduce_nodal_types(model = m, do = do1),  query1, subset1),
+	  query_model(reduce_nodal_types(model = m, do = do2),  query2, subset2))
+	  }
+	out <- replicate(sims, f())
+	out
+
+}

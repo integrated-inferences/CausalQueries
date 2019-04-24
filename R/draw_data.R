@@ -3,6 +3,30 @@
 library(gtools)
 
 
+#' Draw lambda
+#'
+# `draw_lambda` draws a lambda vector given model priors
+#'
+#' @param model A model created by make_model()
+#'
+#' @export
+#' @examples
+#' draw_lambda(model = model)
+
+draw_lambda <- function(model){
+
+	if(is.null(model$lambda_priors)) model <- set_priors(model)
+	lambdas_prior <- model$lambda_priors
+	variables     <- get_variables(model)
+
+	# Draw lambda, given priors
+	lambda <- unlist(sapply(variables, function(v){
+		i <- which(startsWith(names(lambdas_prior), v))
+		rdirichlet(1, lambdas_prior[i])}))
+	names(lambda) <- names(lambdas_prior)
+	lambda
+}
+
 #' Draw event probabilities
 #'
 # `draw_event_prob` draws event probability vector `w`  given a single realization of lambda, drawn from model priors
@@ -16,19 +40,26 @@ library(gtools)
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
 #' draw_event_prob(model = model)
 
-draw_event_prob <- function(model, P = NULL, A = NULL){
-
-	if(is.null(P)) 	P <- get_indicator_matrix(model)
-	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
+draw_lambda <- function(model){
 
 	if(is.null(model$lambda_priors)) model <- set_priors(model)
 	lambdas_prior <- model$lambda_priors
 	variables     <- get_variables(model)
 
 	# Draw lambda, given priors
-	lambda        <- unlist(sapply(variables, function(v){
+	lambda <- unlist(sapply(variables, function(v){
 		i <- which(startsWith(names(lambdas_prior), v))
 		rdirichlet(1, lambdas_prior[i])}))
+	names(lambda) <- names(lambdas_prior)
+	lambda
+ }
+
+draw_event_prob <- function(model, P = NULL, A = NULL){
+
+	lambda <- draw_lambda(model)
+
+	if(is.null(P)) 	P <- get_indicator_matrix(model)
+	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
 
 	# Type probabilities
 	P.lambdas     <- P*lambda +	1 - P
