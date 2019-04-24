@@ -97,6 +97,10 @@ set_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 model$lambda_priors <- lambdas
 
 # TO DO: define print.dag ?
+
+# To Do: Check that priors can be set after restrictions
+
+# TODO: May need to replace infinity with a big number since infinity does not seem to calculate well with rmultinom
 cat("$lambdas_prior \n")
 print(model$lambda_priors)
 cat("dag: \n")

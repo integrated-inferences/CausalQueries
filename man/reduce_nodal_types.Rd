@@ -4,7 +4,7 @@
 \alias{reduce_nodal_types}
 \title{Restrict a model}
 \usage{
-reduce_nodal_types(model, restrictions)
+reduce_nodal_types(model, restrictions = NULL, dos = NULL)
 }
 \arguments{
 \item{restrictions}{a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.}
@@ -15,13 +15,22 @@ reduce_nodal_types(model, restrictions)
 A dag with restrictions and nodal types saved as attributes.
 }
 \description{
-Restrict a model
+Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 }
 \examples{
-XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+XYdag <- make_model(add_edges(parent = "X", children = c("Y")))
 # restrictions can be specified following nodal_types syntax
-reduce_nodal_types(dag = XYdag, restrictions(X = "X0", Y = "Y00"))
+reduce_nodal_types(model = XYdag, restrictions = list(X = "X0", Y = "Y00"))
 
 # or alternatively variable name can be omitted from restriction
-reduce_nodal_types(dag = XYdag, restrictions(X = "0", Y = "00"))
+reduce_nodal_types(dag = XYdag, restrictions = list(X = "0", Y = "00"))
+
+# A particularly important restriction is the do operator that removes all but one nodal_type from a node
+reduce_nodal_types(model = XYdag, dos = list(X = 1))
+reduce_nodal_types(model = XYdag, dos = list(Y = 0))
+
+# Restrictions can be iteratively applied
+my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "Y10"))
+my_model <-  reduce_nodal_types(model = my_model, do = list(X = 1))
+get_indicator_matrix(my_model)
 }
