@@ -154,15 +154,15 @@ get_ambiguities_matrix <- function(model){
 #'
 #' @details \code{reveal_data} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
-#' @param model A dag as created by \code{make_dag}
+#' @param model A model as created by \code{make_model}
 #' @return revealed_data
 #' @keywords internal
 #'
 reveal_data <- function(model){
 
-	types <- gbiqq::get_expanded_types(model)
-	nodal_types <- get_nodal_types(model, collapse = FALSE)
-	exogenous_vars <- get_exogenous_vars(model)
+	types           <- gbiqq::get_expanded_types(model)
+	nodal_types     <- get_nodal_types(model, collapse = FALSE)
+	exogenous_vars  <- get_exogenous_vars(model)
 	endogenous_vars <- get_endogenous_vars(model)
 	types_of_exogenous <-   data.frame(types[, exogenous_vars])
 	names(types_of_exogenous) <- 	exogenous_vars
@@ -185,7 +185,8 @@ reveal_data <- function(model){
 			row <- which(nodal_label == type )
 			outcome <- nodal_type_var[row, parents_val]
 			outcome
-		})})
+		})
+		})
 	  data_realizations[, endogenous_vars] <- revealed_data
 	  data_realizations
 }

@@ -48,6 +48,7 @@ query_model <- function(model, query, subset = TRUE, w = NULL, lambda = NULL){
 #' @param model A model created by make_model()
 #' @param query A logic operation on variables, in quotes. For example "Y==1"
 #' @param subset An optional logic condition on variabless, in quotes.. For example "X==0"
+#' @param lambda A parameter vector, If specified the estimand is deterministic.
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
@@ -67,8 +68,8 @@ calculate_estimand <- function(model,
 															 do1, query1,
 															 do2 = NULL, query2 = NULL,
 															 subset1 = TRUE, subset2 = TRUE,
-															 aggregation = function(a,b) a-b,
-															 sims = 100, lambda = NULL) {
+															 aggregation = function(a,b) b-a,
+															 sims = 1, lambda = NULL) {
 	redraw <- is.null(lambda)
 
 	M1 <- reduce_nodal_types(model = model, do = do1)
