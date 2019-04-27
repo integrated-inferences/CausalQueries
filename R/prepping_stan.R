@@ -68,7 +68,7 @@ get_data_events <- function(data, model){
 	}
 
 
-	revealed_data <- gbiqq:::reveal_data(model)
+	revealed_data <- gbiqq:::reveal_outcomes(model)
 	data <- data[,variables]
 	data_to_agg <- data
 
@@ -145,7 +145,7 @@ get_data_events <- function(data, model){
 #'
 get_possible_data_internal <- function(model, collapse = TRUE){
 
-	revealed_data <- gbiqq:::reveal_data(model)
+	revealed_data <- gbiqq:::reveal_outcomes(model)
 	variables <- get_variables(model)
 	parents <- get_parents(model)
 

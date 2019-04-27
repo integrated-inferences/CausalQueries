@@ -5,11 +5,13 @@
 \title{Calculate estimand}
 \usage{
 calculate_estimand(model, do1, query1, do2 = NULL, query2 = NULL,
-  subset1 = TRUE, subset2 = TRUE, aggregation = function(a, b) a - b,
-  sims = 100, lambda = NULL)
+  subset1 = TRUE, subset2 = TRUE, aggregation = function(a, b) b - a,
+  sims = 1, lambda = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
+
+\item{lambda}{A parameter vector, If specified the estimand is deterministic.}
 
 \item{query}{A logic operation on variables, in quotes. For example "Y==1"}
 

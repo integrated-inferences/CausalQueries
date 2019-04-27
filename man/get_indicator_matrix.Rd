@@ -2,13 +2,13 @@
 % Please edit documentation in R/ambiguities.R
 \name{get_indicator_matrix}
 \alias{get_indicator_matrix}
-\title{Get indicator matrix}
+\title{Get parameter matrix}
 \usage{
 get_indicator_matrix(model)
 }
 \arguments{
-\item{model}{A dag created by make_dag()}
+\item{model}{A model created by make_model()}
 }
 \description{
-Get indicator matrix
+Generate a  matricex that maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 }
