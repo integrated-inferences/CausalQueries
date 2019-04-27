@@ -7,9 +7,9 @@
 reduce_nodal_types(model, restrictions = NULL, dos = NULL)
 }
 \arguments{
-\item{restrictions}{a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.}
+\item{model}{a model created by make_model()}
 
-\item{dag}{a dag created by make_dag()}
+\item{restrictions}{a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.}
 }
 \value{
 A dag with restrictions and nodal types saved as attributes.

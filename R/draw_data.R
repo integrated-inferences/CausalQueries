@@ -1,14 +1,10 @@
 
-
-library(gtools)
-
-
 #' Draw lambda
 #'
 # `draw_lambda` draws a lambda vector given model priors
 #'
 #' @param model A model created by make_model()
-#'
+#' @importFrom gtools rdirichlet
 #' @export
 #' @examples
 #' draw_lambda(model = model)

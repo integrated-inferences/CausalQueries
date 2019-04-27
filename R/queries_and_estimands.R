@@ -61,6 +61,8 @@ query_model <- function(model, query, subset = TRUE, w = NULL, lambda = NULL){
 #' 										sims = 300)
 #' summary(estimand)
 
+
+
 calculate_estimand <- function(model,
 															 do1, query1,
 															 do2 = NULL, query2 = NULL,
@@ -75,8 +77,8 @@ calculate_estimand <- function(model,
 	f <- function() {
 		if(redraw) lambda <- draw_lambda(model)
 	  aggregation(
-	  query_model(M1,  query1, subset1, lambda = lambda),
-	  query_model(M2,  query2, subset2, lambda = lambda))
+	  query_model(M1,  query1, subset1, lambda = reduce_lambda(M1, lambda)),
+	  query_model(M2,  query2, subset2, lambda = reduce_lambda(M2, lambda)))
 	}
 
 	out <- replicate(sims, f())

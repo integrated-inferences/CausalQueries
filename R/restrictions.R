@@ -2,7 +2,7 @@
 #'
 #' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 #'
-#' @param dag a dag created by make_dag()
+#' @param model a model created by make_model()
 #' @param restrictions a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.
 #' @export
 #' @return A dag with restrictions and nodal types saved as attributes.
@@ -23,6 +23,7 @@
 #' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "Y10"))
 #' my_model <-  reduce_nodal_types(model = my_model, do = list(X = 1))
 #' get_indicator_matrix(my_model)
+
 
 
 reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
@@ -100,16 +101,10 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 	model$nodal_types  <- nodal_types
 	model$restrictions <- restrictions_out
 
+  # Subset lambda_priors
+	type_names  <- get_type_names(nodal_types)
+	model$lambda_priors <- model$lambda_priors[type_names]
 
-	if(!is.null(model$lambda_priors)) {
-		type_names  <- unlist(sapply(1:length(nodal_types), function(i){
-			name <- names(nodal_types)[i]
-			a <- nodal_types[[i]]
-			paste(name, a, sep =".")
-		}))
-
-		model$lambda_priors <- model$lambda_priors[type_names]
-	}
 
 	# TO DO: define print.dag ?
 	# Have restrictions for a class eg (Z = xxx1xx0)
@@ -117,3 +112,35 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 
 	return(model)
 }
+
+
+
+
+#' Reduce lambda
+#' If lambda is longer than nodel types, because of a model restriction, subset lambda and renormalize
+#' @param model a model created by make_model()
+#' @param lambda a parameter vector possibly longer than the parameter length expected by model
+#' @export
+
+reduce_lambda <- function(model, lambda){
+
+	variables   <- get_variables(model)
+	nodal_types <- get_nodal_types(model)
+	type_names  <- get_type_names(nodal_types)
+	lambda      <- lambda[type_names]
+
+	unlist(sapply(variables, function(v){
+		i <- which(startsWith(names(lambda), paste0(v, ".")))
+		lambda[i]/sum(lambda[i])}))
+	 }
+
+
+#' Get type names
+#'
+get_type_names <- function(nodal_types) {
+	unlist(sapply(1:length(nodal_types), function(i){
+		name <- names(nodal_types)[i]
+		a   <- nodal_types[[i]]
+		paste(name, a, sep =".")
+	}))}
+

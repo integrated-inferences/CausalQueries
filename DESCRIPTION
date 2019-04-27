@@ -1,10 +1,12 @@
 Package: gbiqq
 Type: Package
 Title: Generalized BIQQ
-Version: 0.0.1
-Authors@R: c(person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("aut")),
-             person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut","cre")))
-Description: An attempt to generalize BIQQ for arbitrary DAGs.
+Version: 0.0.2
+Authors@R: c(person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
+             person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
+             person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut", "cre")),
+             person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("aut")))
+Description: Define and update arbitrary binary probabilistic structural models.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -12,6 +14,10 @@ RoxygenNote: 6.1.1
 Depends:
 		R (>= 3.3.0)
 Imports:
-    dagitty
+    dagitty,
+    gtools,
+    rstan
 Suggests: 
 		testthat
+
+
