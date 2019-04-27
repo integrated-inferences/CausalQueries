@@ -4,6 +4,7 @@
 #' @param model A model created by make_model()
 #' @param query A logic operation on variables, in quotes. For example "Y==1"
 #' @param subset An optional logic condition on variabless, in quotes.. For example "X==0"
+#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
@@ -26,9 +27,9 @@
 #' model     <-  make_model(add_edges(parent = "X", children = c("Y")))
 
 
-query_model <- function(model, query, subset = TRUE, w = NULL){
+query_model <- function(model, query, subset = TRUE, w = NULL, lambda = NULL){
 
-	if(is.null(w)) w <- draw_event_prob(model)
+	if(is.null(w)) w <- draw_event_prob(model, lambda = lambda)
 
 	df <- get_max_possible_data(model)
 
@@ -65,14 +66,19 @@ calculate_estimand <- function(model,
 															 do2 = NULL, query2 = NULL,
 															 subset1 = TRUE, subset2 = TRUE,
 															 aggregation = function(a,b) a-b,
-															 sims = 100) {
+															 sims = 100, lambda = NULL) {
+	redraw <- is.null(lambda)
+
+	M1 <- reduce_nodal_types(model = model, do = do1)
+	M2 <- reduce_nodal_types(model = model, do = do2)
 
 	f <- function() {
-	  m  <-  set_priors(model = model, alpha = 10000*draw_lambda(model))
+		if(redraw) lambda <- draw_lambda(model)
 	  aggregation(
-	  query_model(reduce_nodal_types(model = m, do = do1),  query1, subset1),
-	  query_model(reduce_nodal_types(model = m, do = do2),  query2, subset2))
-	  }
+	  query_model(M1,  query1, subset1, lambda = lambda),
+	  query_model(M2,  query2, subset2, lambda = lambda))
+	}
+
 	out <- replicate(sims, f())
 	out
 

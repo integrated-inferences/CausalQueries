@@ -34,32 +34,18 @@ draw_lambda <- function(model){
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
 #' @param A Ambiguity matrix, not required but may be provided to avoide repeated computation for simulations
+#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
 #'
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
 #' draw_event_prob(model = model)
 
-draw_lambda <- function(model){
+draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL){
 
-	if(is.null(model$lambda_priors)) model <- set_priors(model)
-	lambdas_prior <- model$lambda_priors
-	variables     <- get_variables(model)
-
-	# Draw lambda, given priors
-	lambda <- unlist(sapply(variables, function(v){
-		i <- which(startsWith(names(lambdas_prior), v))
-		rdirichlet(1, lambdas_prior[i])}))
-	names(lambda) <- names(lambdas_prior)
-	lambda
- }
-
-draw_event_prob <- function(model, P = NULL, A = NULL){
-
-	lambda <- draw_lambda(model)
-
-	if(is.null(P)) 	P <- get_indicator_matrix(model)
-	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
+	if(is.null(lambda)) lambda <- draw_lambda(model)
+	if(is.null(P)) 	    P      <- get_indicator_matrix(model)
+	if(is.null(A)) 	    A      <- get_ambiguities_matrix(model)
 
 	# Type probabilities
 	P.lambdas     <- P*lambda +	1 - P
@@ -80,6 +66,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL){
 #' @param w Vector of event probabilities
 #' @param P Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param A Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations
+#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
 #'
 #' @export
 #' @examples
@@ -90,15 +77,15 @@ draw_data <- function(model,
 											n = 1,
 											w = NULL,
                       P = NULL,
-											A = NULL
+											A = NULL,
+											lambda = NULL
 											){
 
  if(is.null(w)){
  	if(is.null(P)) 	P <- get_indicator_matrix(model)
  	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
- 	w <- draw_event_prob(model, P, A)
+ 	w <- draw_event_prob(model, P, A, lambda = lambda)
  }
-
 
 	# Draw events (Compact dataframe)
 	data.frame(event = rownames(w), count = rmultinom(1, n, w))
@@ -129,7 +116,3 @@ compact_to_full <- function(model, compact_df){
 	names(out) <- names(df)
 	out
  }
-
-
-
-

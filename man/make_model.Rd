@@ -2,7 +2,7 @@
 % Please edit documentation in R/making_models.R
 \name{make_model}
 \alias{make_model}
-\title{Make a DAG}
+\title{Make a model}
 \usage{
 make_model(...)
 }
@@ -13,7 +13,8 @@ make_model(...)
 An object of class probabilistic_causal_model containing a dag
 }
 \description{
-Make a DAG
+`make_model` requires specifying nodes and edges of a graph. Imlpied causal types are calculated and default priors are provided under the assumption of no confounding.
+Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters. `
 }
 \examples{
 \dontrun{

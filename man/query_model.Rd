@@ -4,7 +4,7 @@
 \alias{query_model}
 \title{Query a model}
 \usage{
-query_model(model, query, subset = TRUE, w = NULL)
+query_model(model, query, subset = TRUE, w = NULL, lambda = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -12,6 +12,8 @@ query_model(model, query, subset = TRUE, w = NULL)
 \item{query}{A logic operation on variables, in quotes. For example "Y==1"}
 
 \item{subset}{An optional logic condition on variabless, in quotes.. For example "X==0"}
+
+\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
 }
 \description{
 Ask a question of a model
@@ -34,4 +36,5 @@ hist(simulations, main = paste("E(ATE) = ", round(mean(simulations), 2)))
 # This is not quite right since the *same* prior draw should be used for the two queries -- a bit confusing though
 # as currently set up since the two models have different parameters! May need another approch to "do":
 # e.g. draw a parameter vector and set certainty around that, calculated estimand, repeat over different draws
+model     <-  make_model(add_edges(parent = "X", children = c("Y")))
 }

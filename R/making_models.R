@@ -19,7 +19,10 @@ add_edges <- function(parent,children){
 }
 
 
-#' Make a DAG
+#' Make a model
+#'
+#' `make_model` requires specifying nodes and edges of a graph. Imlpied causal types are calculated and default priors are provided under the assumption of no confounding.
+#' Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters. `
 #'
 #' @param ... Edges added by add_edges()
 #'

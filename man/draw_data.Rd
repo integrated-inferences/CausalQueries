@@ -4,7 +4,8 @@
 \alias{draw_data}
 \title{Draw compact data}
 \usage{
-draw_data(model, n = 1, w = NULL, P = NULL, A = NULL)
+draw_data(model, n = 1, w = NULL, P = NULL, A = NULL,
+  lambda = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -16,6 +17,8 @@ draw_data(model, n = 1, w = NULL, P = NULL, A = NULL)
 \item{P}{Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations}
 
 \item{A}{Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations}
+
+\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
 }
 \description{
 Draw compact data
