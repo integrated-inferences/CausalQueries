@@ -22,5 +22,18 @@ modelXKY <- make_model(
 add_edges(parent = "X",children = c("K","Y")),
 add_edges(parent = "K",children = "Y")
 )
+
+# Example where variables need re-ordering
+model <- make_model(
+  add_edges(parent = "X3",  children = "Y"),
+  add_edges(parent = "X2", children = "X3"),
+  add_edges(parent = "X2", children = "Y"),
+  add_edges(parent = "X1", children = "X2"))
+
+# Example where cyclicaly dag attempted
+model <- make_model(
+  add_edges(parent = "X1",  children = "X2"),
+  add_edges(parent = "X2", children = "X3"),
+  add_edges(parent = "X3", children = "X2"))
 }
 }

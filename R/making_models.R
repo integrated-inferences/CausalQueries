@@ -35,12 +35,41 @@ add_edges <- function(parent,children){
 #' add_edges(parent = "X",children = c("K","Y")),
 #' add_edges(parent = "K",children = "Y")
 #' )
+#'
+#' # Example where variables need re-ordering
+#' model <- make_model(
+#'   add_edges(parent = "X3",  children = "Y"),
+#'   add_edges(parent = "X2", children = "X3"),
+#'   add_edges(parent = "X2", children = "Y"),
+#'   add_edges(parent = "X1", children = "X2"))
+#'
+#' # Example where cyclicaly dag attempted
+#' model <- make_model(
+#'   add_edges(parent = "X1",  children = "X2"),
+#'   add_edges(parent = "X2", children = "X3"),
+#'   add_edges(parent = "X3", children = "X2"))
+
 #' }
+
+# dag <- data.frame(parent = c("X3","X2","X1"), children = c("Y", "X3", "X2"))
+
 make_model <- function(...){
 	dag <- rbind(...)
-	intermediary <- (dag$children %in% dag$parent)
-	dag <- list(dag = rbind(dag[intermediary,], dag[!intermediary,]),
-							step = "dag" )
+
+	# Procedure to order dag
+	if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
+
+	gen <- rep(NA, nrow(dag))
+	j = 1
+	gen[!(dag$parent %in% dag$children)] <- j
+	while(sum(is.na(gen))>0) {
+		j <- j+1
+		x <- (dag$parent %in% dag$children[is.na(gen)])
+		if(all(x[is.na(gen)])) stop(paste("Cycling at generation ", j))
+  	gen[!x & is.na(gen)] <- j
+  	}
+
+	dag <- list(dag = dag[order(gen, dag[,1], dag[,2]),], step = "dag" )
 
 	model <- set_priors(dag)
 

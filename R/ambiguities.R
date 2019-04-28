@@ -154,18 +154,26 @@ get_ambiguities_matrix <- function(model){
 
 #' Reveal outcomes
 #'
-#' Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables
+#' Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables.
+#' If a do operator is applied to any variable then it takes the given value and all its descendents are generated accordingly.
 #'
 #' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
 #' @param model A model as created by \code{make_model}
+#' @param dos  A list of do actions  e.g. \code{list(X = 0, M = 1)}
 #' @return revealed_data
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = "Y"))
 #' reveal_outcomes(model)
 #'
-reveal_outcomes <- function(model){
+#'model <- make_model(add_edges(parent = "X1", children = "Y"),
+#'                    add_edges(parent = "X2", children = "M"),
+#'                    add_edges(parent = "M",  children = "Y"))
+#'reveal_outcomes(model, dos = list(X1= 1, M = 0))
+#'
+
+reveal_outcomes <- function(model, dos = NULL){
 
 	types           <- gbiqq::get_expanded_types(model)
 	nodal_types     <- get_nodal_types(model, collapse = FALSE)
@@ -177,9 +185,16 @@ reveal_outcomes <- function(model){
 	names(types_of_endogenous) <- endogenous_vars
 	data_realizations <- types
 	parents_list      <- get_parents(model)
+	in_dos <- names(dos) # vars in do list
+
+	# Fill in values for dos
+	if(!is.null(dos))for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
+
 
 	# Work though each endogeneous variabls in sequence and substitute its implied values
- for(j in 1:ncol(types_of_endogenous)) {
+  for(j in 1:ncol(types_of_endogenous)) {
+ 	      if(!(endogenous_vars[j] %in% in_dos)){   # skip if do applied to var
+
 				var            <- endogenous_vars[j]
 				child_type     <- types_of_endogenous[,j]
 				parents        <- parents_list[[var]]
@@ -195,7 +210,7 @@ reveal_outcomes <- function(model){
 					outcome
 				})
 				data_realizations[, endogenous_vars[j]] <- J
-		}
+		}}
 
 	  data_realizations
 	  rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")

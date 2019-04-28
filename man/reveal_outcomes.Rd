@@ -4,16 +4,19 @@
 \alias{reveal_outcomes}
 \title{Reveal outcomes}
 \usage{
-reveal_outcomes(model)
+reveal_outcomes(model, dos = NULL)
 }
 \arguments{
 \item{model}{A model as created by \code{make_model}}
+
+\item{dos}{A list of do actions  e.g. \code{list(X = 0, M = 1)}}
 }
 \value{
 revealed_data
 }
 \description{
-Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables
+Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables.
+If a do operator is applied to any variable then it takes the given value and all its descendents are generated accordingly.
 }
 \details{
 \code{reveal_outcomes} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
@@ -21,5 +24,10 @@ Reveal outcomes for all causal types. Calculated by sequentially calculating end
 \examples{
 model <- make_model(add_edges(parent = "X", children = "Y"))
 reveal_outcomes(model)
+
+model <- make_model(add_edges(parent = "X1", children = "Y"),
+                   add_edges(parent = "X2", children = "M"),
+                   add_edges(parent = "M",  children = "Y"))
+reveal_outcomes(model, dos = list(X1= 1, M = 0))
 
 }
