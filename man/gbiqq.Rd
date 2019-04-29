@@ -12,5 +12,5 @@ gbiqq(model, data, ...)
 \item{dag}{A dag as created by \code{make_dag}}
 }
 \description{
-Fit stan model
+Takes a model and data and returns a model object with data attached and a posterior model
 }

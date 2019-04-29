@@ -4,7 +4,7 @@
 \alias{draw_data}
 \title{Generate full dataset, possibly from compact data}
 \usage{
-draw_data(model, n = 1, data_events = NULL)
+draw_data(model, n = 1, data_events = NULL, lambda = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -12,6 +12,8 @@ draw_data(model, n = 1, data_events = NULL)
 \item{n}{Number of observations}
 
 \item{data_events}{A compact dataframe compatible with model}
+
+\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
 }
 \description{
 Generate full dataset, possibly from compact data

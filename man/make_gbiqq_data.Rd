@@ -23,7 +23,7 @@ Create a list containing the data to be passed to stan
 }
 \examples{
 model <- make_model(add_edges(parent = "X", children = "Y"))
-data   <- draw_data(model, n = 3)
+data   <- draw_data(model, n = 6)
 make_gbiqq_data(model, data)
 data[1,1]   <- NA
 make_gbiqq_data(model, data)

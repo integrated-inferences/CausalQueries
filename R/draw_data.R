@@ -117,6 +117,7 @@ draw_data_events <- function(model,
 #' @param model A model created by make_model()
 #' @param n Number of observations
 #' @param data_events A compact dataframe compatible with model
+#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
 #'
 #' @export
 #' @examples
@@ -124,9 +125,9 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-draw_data <- function(model, n = 1, data_events = NULL){
+draw_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
 
-	if(is.null(data_events)) data_events <- draw_data_events(model, n = n)
+	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
 
 	df <- get_max_possible_data(model)
 

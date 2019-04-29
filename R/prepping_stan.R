@@ -162,11 +162,8 @@ get_possible_data_internal <- function(model, collapse = TRUE){
 get_max_possible_data <- function(model) {
 	dag <- model$dag
 	max_possible_data <-
-		#Reduce(f = merge,
-		#			 x = get_possible_data(dag, collapse = FALSE)[get_terminal_vars(dag)])
 		Reduce(f = merge,
 					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
-
 
 	max_possible_data <- max_possible_data[get_variables(model)]
 

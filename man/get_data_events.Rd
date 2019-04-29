@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepping_stan.R
 \name{get_data_events}
 \alias{get_data_events}
-\title{Get the multinomial data events}
+\title{Summarize data events}
 \usage{
 get_data_events(data, model)
 }
@@ -15,5 +15,5 @@ get_data_events(data, model)
 A vector of data events
 }
 \description{
-Get the multinomial data events
+Take a dataframe and return compact dataframe of event types and strategies.
 }

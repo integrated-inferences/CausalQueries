@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepping_stan.R
 \name{get_possible_data}
 \alias{get_possible_data}
-\title{This creates a list of all possible data realizations, for each child}
+\title{Get Possible Data}
 \usage{
 get_possible_data(model, collapse = TRUE)
 }
@@ -15,5 +15,5 @@ get_possible_data(model, collapse = TRUE)
 A list of all data realizations possible
 }
 \description{
-This creates a list of all possible data realizations, for each child
+Creates a list of all possible data realizations for each node given each possible parent value
 }
