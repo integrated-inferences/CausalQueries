@@ -1,5 +1,7 @@
 
-#' This creates a list of all possible data realizations, for each child
+#' Get Possible Data
+#'
+#' Creates a list of all possible data realizations for each node given each possible parent value
 #' @param model A probabilistic causal model created by \code{make_model()}
 #' @param collapse whether to collapse possible data
 #'
@@ -11,11 +13,9 @@ get_possible_data <- function(model,
 
 	variables <- get_variables(model)
 	parents <- get_parents(model)
-	# types <- get_types(dag)
 
 	possible_data_list <- list()
 	for (variable in variables) {
-		# var_types <- types[variable][[1]]
 		var_parents <- parents[variable][[1]]
 		var_variables <- c(var_parents,variable)
 		possible_data <- do.call(
@@ -42,7 +42,9 @@ get_possible_data <- function(model,
 }
 
 
-#' Get the multinomial data events
+#' Summarize data events
+#'
+#' Take a dataframe and return compact dataframe of event types and strategies.
 #'
 #' @param data A data.frame of variables that can take three values: 0, 1, and NA
 #' @param model A dag created by make_dag()
@@ -59,13 +61,13 @@ get_data_events <- function(data, model){
 	i_strategy          <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
 
 
-	if(!all(variables %in% names(data))){
-		stop("Could not find all of the variables in the DAG in the data you provided.\nPlease double-check variable names and try again.")
-	}
+	if(!all(variables %in% names(data))){stop("Could not find all of the variables in the DAG in
+																						the data you provided.\nPlease double-check variable
+																						names and try again.")}
 
 	revealed_data <- gbiqq:::reveal_outcomes(model)
 	data <- data[,variables]
-	data_to_agg <- data
+
 
 	# Stop if observed data is not in conflict with restrictions
 	inconsistencies <- !apply(data, 1, function(observed){
@@ -79,54 +81,32 @@ get_data_events <- function(data, model){
 	}
 
 	# replace "" with na and remove rows where all values are na
-
-	data_to_agg[data == ""] <- NA
-  ind <- apply(data_to_agg, 1,  function(x) all(is.na(x)))
-  data_to_agg <- data_to_agg[!ind, ]
-
-	observed_events <- apply(data_to_agg , 1, function(row){
-	observed_variables <- variables[!is.na(row)]
-	row <- row[!is.na(row)]
-	 paste0(observed_variables, row, collapse = "")
-	})
-
-	used_strategies <- unique(apply(
-		X = data_to_agg,
-		MARGIN = 1,
-		FUN = function(row){
-			strategy <- paste(variables[!row == ""],collapse = "")
-			return(strategy)
-		}))
+  data <- data[!apply(data, 1,  function(x) all(is.na(x) | x == "")),]
+	data[is.na(data)] <- ""
 
 
-	observed_events <- table(observed_events)
+  # Data events dataframe
+	data_type <- apply(X = data, MARGIN = 1, FUN = function(row){
+		paste0(variables[!(row == "")],row[!(row == "")], collapse = "")})
 
-	unobserved_event_labels <- possible_events[!possible_events %in% names(observed_events)]
+	data_events <- data.frame(event = possible_events,
+									 strategy   = rep(possible_strategies, i_strategy),
+									 count = 0,
+									 stringsAsFactors = FALSE,
+									 row.names = NULL)
 
-	unused_strategies <- possible_strategies[!possible_strategies %in% used_strategies]
+	data_events$count <- sapply(data_events$event, function(j) sum(data_type == paste(j)))
 
-	unobserved_events <- rep(0,length(unobserved_event_labels))
+	# Output
+	list(
+			data_events       = data_events,
+			observed_events   = with(data_events, unique(event[count>0])),
+			unobserved_events = with(data_events, unique(event[count==0])),
+			used_strategies   = with(data_events, unique(strategy[count>0])),
+			unused_strategies = with(data_events, unique(strategy[count==0]))
+		)
 
-	names(unobserved_events) <- unobserved_event_labels
-
-	data_events <- data.frame(
-		event = names(c(observed_events,unobserved_events)),
-		count = c(observed_events,unobserved_events),
-		strategy = rep(possible_strategies, i_strategy),
-		row.names = NULL,
-		stringsAsFactors = FALSE
-	)
-	data_events <- data_events[match(possible_events,data_events$event),]
-
-	return(list(
-		data_events = data_events,
-		observed_events = observed_events,
-		unobserved_events = unobserved_events,
-		used_strategies = used_strategies,
-		unused_strategies = unused_strategies
-	))
-
-}
+	}
 
 
 #'
@@ -211,29 +191,24 @@ get_max_possible_data <- function(model) {
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = "Y"))
-#' data   <- draw_data(model, n = 3)
+#' data   <- draw_data(model, n = 6)
+#' make_gbiqq_data(model, data)
+#' data[1,1]   <- NA
 #' make_gbiqq_data(model, data)
 #'
 #'
 make_gbiqq_data <- function(model, data){
-
+	n_vars             <- length(get_variables(model))
 	data_events        <- trim_strategies(model, data)
 	P                  <- get_parameter_matrix(model)
 	inverted_P         <- 1-P
-	n_params           <- nrow(P)
-  lambdas_prior      <- model$lambda_priors
-	A                  <- get_ambiguities_matrix(model)
 	A_w                <- (get_likelihood_helpers(model)$A_w)[data_events$event, ]
 	strategies         <- data_events$strategy
 	n_strategies       <- length(unique(strategies))
-	w_starts           <-  which(!duplicated(strategies))
+	w_starts           <- which(!duplicated(strategies))
 	k                  <- length(strategies)
-	w_ends             <- c(w_starts[2:n_strategies], k )
-	if(n_strategies < 2) w_ends <- k
-  variables          <- get_variables(model)
-  possible_data      <- get_max_possible_data(model)
+	w_ends             <- ifelse(n_strategies < 2, k, c(w_starts[2:n_strategies], k ))
   n_types_each       <- sapply(gbiqq:::get_nodal_types(model), length)
-  n_vars             <- length(get_variables(model))
   l_ends             <- cumsum(n_types_each)
   l_starts           <- c(1, l_ends[1:(n_vars-1)] + 1)
 
@@ -241,17 +216,17 @@ make_gbiqq_data <- function(model, data){
 			n_nodal_types   = nrow(P),
 			n_types         = ncol(P),
 			n_types_each    = n_types_each,
-			n_data          = nrow(possible_data),
+			n_data          = nrow(get_max_possible_data(model)),
 			n_events        = nrow(A_w),
 			n_strategies    = n_strategies,
-			lambdas_prior   = lambdas_prior,
+			lambdas_prior   = model$lambda_priors,
 			l_starts        = l_starts,
 			l_ends          = l_ends,
 			strategy_starts = as.array(w_starts),
 			strategy_ends   = as.array(w_ends),
 			P               = P,
 			inverted_P      = inverted_P,
-			A               = A,
+			A               = get_ambiguities_matrix(model),
 			A_w             = A_w,
 			Y               = data_events$count)
 }
