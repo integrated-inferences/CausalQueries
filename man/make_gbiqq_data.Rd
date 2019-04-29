@@ -4,16 +4,16 @@
 \alias{make_gbiqq_data}
 \title{Prepare data for stan}
 \usage{
-make_gbiqq_data(model, data, P = NULL)
+make_gbiqq_data(model, data)
 }
 \arguments{
 \item{model}{A probabilistic causal model created by \code{make_model}}
 
 \item{data}{A data frame with observations}
 
-\item{P}{A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.}
-
 \item{lambdas_prior}{A vector containg priors for lambda}
+
+\item{P}{A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.}
 }
 \value{
 a list
