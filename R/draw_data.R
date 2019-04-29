@@ -23,39 +23,62 @@ draw_lambda <- function(model){
 	lambda
 }
 
+#' Draw type probabilities
+#'
+# `draw_type_prob` draws probability of vector of causal types  given a single realization of lambda, drawn from model priors
+#'
+#' @param model A model created by make_model()
+#' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
+#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#'
+#' @export
+#' @examples
+#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' draw_type_prob(model = model)
+
+draw_type_prob <- function(model, P = NULL,  lambda = NULL){
+
+	if(is.null(lambda)) lambda <- draw_lambda(model)
+	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
+
+	# Type probabilities
+	P.lambdas     <- P*lambda +	1 - P
+	apply(P.lambdas, 2, prod)
+
+}
+
 #' Draw event probabilities
 #'
 # `draw_event_prob` draws event probability vector `w`  given a single realization of lambda, drawn from model priors
 #'
 #' @param model A model created by make_model()
-#' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
-#' @param A Ambiguity matrix, not required but may be provided to avoide repeated computation for simulations
-#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#' @param P Parameter matrix, not required but may be provided to avoid repeated computation for simulations
+#' @param A Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations
+#' @param lambda A specific parameter vector, lambda; if not  provided,  lambda is drawn from priors
 #'
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
 #' draw_event_prob(model = model)
 
-draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL){
+draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
 
-	if(is.null(lambda)) lambda <- draw_lambda(model)
-	if(is.null(P)) 	    P      <- get_indicator_matrix(model)
+	# Ambiguity matrix
 	if(is.null(A)) 	    A      <- get_ambiguities_matrix(model)
 
 	# Type probabilities
-	P.lambdas     <- P*lambda +	1 - P
-	prob_of_types <- apply(P.lambdas, 2, prod)
+	if(is.null(type_prob)) {
+	type_prob <- draw_type_prob(model = model, P = P, lambda = lambda)}
 
 	# Event probabilities
-	A %*% prob_of_types # Prob of (fundamental) data realization
+	A %*% type_prob
 
  }
 
 
 #' Draw compact data
 #'
-# `draw_data` draws `n` events given event probabilities
+# `draw_data_events` draws `n` events given event probabilities
 #'
 #' @param model A model created by make_model()
 #' @param n Number of observations
@@ -67,9 +90,9 @@ draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL){
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
-#' draw_data(model = model)
+#' draw_data_events(model = model)
 
-draw_data <- function(model,
+draw_data_events <- function(model,
 											n = 1,
 											w = NULL,
                       P = NULL,
@@ -78,7 +101,7 @@ draw_data <- function(model,
 											){
 
  if(is.null(w)){
- 	if(is.null(P)) 	P <- get_indicator_matrix(model)
+ 	if(is.null(P)) 	P <- get_parameter_matrix(model)
  	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
  	w <- draw_event_prob(model, P, A, lambda = lambda)
  }
@@ -89,26 +112,29 @@ draw_data <- function(model,
 	}
 
 
-#' Generate full dataset from compact data
+#' Generate full dataset, possibly from compact data
 #'
 #' @param model A model created by make_model()
 #' @param n Number of observations
-#' @param compact_df A compact dataframe compatible with model
+#' @param data_events A compact dataframe compatible with model
 #'
 #' @export
 #' @examples
 #' model <- make_model(add_edges(parent = "X", children = c("Y")))
-#' compact_df <- draw_data(model = model, n = 4)
-#' compact_to_full(model, compact_df)
+#' data_events <- draw_data_events(model = model, n = 4)
+#' draw_data(model, data_events = data_events)
 
-compact_to_full <- function(model, compact_df){
+draw_data <- function(model, n = 1, data_events = NULL){
+
+	if(is.null(data_events)) data_events <- draw_data_events(model, n = n)
 
 	df <- get_max_possible_data(model)
 
-	if(nrow(df) != nrow(compact_df)) stop("nrow(df) is not equal to nrow(compact_df)")
+	if(nrow(df) != nrow(data_events)) stop("nrow(df) is not equal to nrow(data_events)")
 
-	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(compact_df[i, 2],df[i,])))
+	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(data_events[i, 2],df[i,])))
 	out <- data.frame(matrix(xx, ncol = ncol(df), byrow = TRUE))
 	names(out) <- names(df)
 	out
+
  }

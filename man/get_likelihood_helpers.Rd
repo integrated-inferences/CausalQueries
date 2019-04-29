@@ -4,7 +4,7 @@
 \alias{get_likelihood_helpers}
 \title{get_likelihood_helpers}
 \usage{
-get_likelihood_helpers(model, data)
+get_likelihood_helpers(model)
 }
 \arguments{
 \item{model}{A probabilistic causal model created by make_model()}

@@ -9,7 +9,7 @@
 #' @export
 
 
-get_likelihood_helpers <- function(model, data){
+get_likelihood_helpers <- function(model){
 
 	# Get variables in order of exogeneity
 	variables <- c(
@@ -41,7 +41,7 @@ get_likelihood_helpers <- function(model, data){
 				function(variable) all_data[,variable]
 			)
 		)
-	all_data <- all_data[do.call(what = order,args = order_list),]
+	all_data <- all_data[do.call(what = order, args = order_list),]
 
 	# Remove strategy in which no data is sought
 	all_data <- all_data[-nrow(all_data), ]
@@ -77,7 +77,8 @@ get_likelihood_helpers <- function(model, data){
 	# Get the indices
 	starts <- sapply(indices,min)
 	ends <- sapply(indices,max)
-	# Now built the ambiguity matrix for the event probs as a function of the
+
+	# Now build the ambiguity matrix for the event probs as a function of the
 	# fundamental data events (where all nodes are observed)
 	all_data_labels <- all_data
 	all_data_labels[is.na(all_data_labels)] <- ""
@@ -91,7 +92,6 @@ get_likelihood_helpers <- function(model, data){
 			row_subset <- row[!row == ""]
 			paste(variable_labels,row_subset,sep = "")
 		})
-
 
 	# Get the realizations of the fundamental data events
 	max_possible_data <- get_max_possible_data(model)
@@ -110,29 +110,26 @@ get_likelihood_helpers <- function(model, data){
 		}
 	)) * 1
 
-
 	c_names <- sapply(	fundamental_data  , paste0, collapse = "")
 	A_w <- matrix(A_w, ncol = length(c_names) )
 	colnames(A_w) <- c_names
 	possible_events <- sapply(data_realizations,paste,collapse = "")
 	strategy_labels <- sapply(which_strategy,paste,collapse = "")
 	names(possible_events) <- strategy_labels
+
 # To account for strategies w no data events
 	rownames(A_w) <- possible_events
 
 
 	return(list(
-		A_w = A_w,
-		w_starts = starts,
-		w_ends = ends,
-		n_strategies = n_strategies,
+		A_w             = A_w,
+		w_starts        = starts,
+		w_ends          = ends,
+		n_strategies    = n_strategies,
 		possible_events = possible_events
 	))
 
 }
-
-
-
 
 
 #' get_weights_ambiguities
@@ -143,14 +140,8 @@ get_likelihood_helpers <- function(model, data){
 #' @return Returns indices and ambiguity matrix
 #'
 #'
-
-
 get_weights_ambiguities <- function(model, data){
-
 	data_events <- trim_strategies(model, data)
-
-
-
 }
 
 #' trim_strategies
@@ -181,11 +172,3 @@ trim_strategies <- function(model, data){
 	trimmed_data_events
 
 }
-
-
-
-
-
-
-
-

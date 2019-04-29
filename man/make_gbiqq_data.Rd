@@ -21,4 +21,10 @@ a list
 \description{
 Create a list containing the data to be passed to stan
 }
-\keyword{internal}
+\examples{
+model <- make_model(add_edges(parent = "X", children = "Y"))
+data   <- draw_data(model, n = 3)
+make_gbiqq_data(model, data)
+
+
+}

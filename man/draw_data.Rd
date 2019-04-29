@@ -2,28 +2,22 @@
 % Please edit documentation in R/draw_data.R
 \name{draw_data}
 \alias{draw_data}
-\title{Draw compact data}
+\title{Generate full dataset, possibly from compact data}
 \usage{
-draw_data(model, n = 1, w = NULL, P = NULL, A = NULL,
-  lambda = NULL)
+draw_data(model, n = 1, data_events = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{n}{Number of observations}
 
-\item{w}{Vector of event probabilities}
-
-\item{P}{Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations}
-
-\item{A}{Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations}
-
-\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
+\item{data_events}{A compact dataframe compatible with model}
 }
 \description{
-Draw compact data
+Generate full dataset, possibly from compact data
 }
 \examples{
 model <- make_model(add_edges(parent = "X", children = c("Y")))
-draw_data(model = model)
+data_events <- draw_data_events(model = model, n = 4)
+draw_data(model, data_events = data_events)
 }

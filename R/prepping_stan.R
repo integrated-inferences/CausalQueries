@@ -27,8 +27,6 @@ get_possible_data <- function(model,
 		)
 		names(possible_data) <- var_variables
 
-
-
 		if (collapse) {
 			possible_data <- apply(possible_data,1,paste,collapse = "")
 		} else {
@@ -38,7 +36,6 @@ get_possible_data <- function(model,
 		possible_data_list[variable][[1]] <- possible_data
 
 	}
-
 
 	names(possible_data_list) <- variables
 	return(possible_data_list)
@@ -55,18 +52,16 @@ get_possible_data <- function(model,
 #' @return A vector of data events
 get_data_events <- function(data, model){
 
-
-	likelihood_helpers <- get_likelihood_helpers(model)
-	possible_events <- likelihood_helpers$possible_events
+	likelihood_helpers  <- get_likelihood_helpers(model)
+	possible_events     <- likelihood_helpers$possible_events
 	possible_strategies <- names(likelihood_helpers$w_starts)
-	variables <- get_variables(model)
-	i_strategy <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
+	variables           <- get_variables(model)
+	i_strategy          <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
 
 
 	if(!all(variables %in% names(data))){
 		stop("Could not find all of the variables in the DAG in the data you provided.\nPlease double-check variable names and try again.")
 	}
-
 
 	revealed_data <- gbiqq:::reveal_outcomes(model)
 	data <- data[,variables]
@@ -74,7 +69,9 @@ get_data_events <- function(data, model){
 
 	# Stop if observed data is not in conflict with restrictions
 	inconsistencies <- !apply(data, 1, function(observed){
-		  any(apply(revealed_data, 1, function(possible){ !any(possible != observed)}))
+		  any(apply(revealed_data, 1, function(possible){
+		  	!any(possible[!is.na(observed)] != observed[!is.na(observed)])}
+		  	))
 	})
 
 	if(any(inconsistencies)){
@@ -92,8 +89,6 @@ get_data_events <- function(data, model){
 	row <- row[!is.na(row)]
 	 paste0(observed_variables, row, collapse = "")
 	})
-
-
 
 	used_strategies <- unique(apply(
 		X = data_to_agg,
@@ -132,8 +127,6 @@ get_data_events <- function(data, model){
 	))
 
 }
-
-
 
 
 #'
@@ -206,7 +199,6 @@ get_max_possible_data <- function(model) {
 }
 
 
-
 #' Prepare data for stan
 #'
 #' Create a list containing the data to be passed to stan
@@ -216,73 +208,52 @@ get_max_possible_data <- function(model) {
 #' @param lambdas_prior A vector containg priors for lambda
 #' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.
 #' @return a list
-#' @keywords internal
+#' @export
+#' @examples
+#' model <- make_model(add_edges(parent = "X", children = "Y"))
+#' data   <- draw_data(model, n = 3)
+#' make_gbiqq_data(model, data)
 #'
-make_gbiqq_data <- function(model, data,  P = NULL ){
-	dag <- model$dag
-	if(is.null(P)) P <- get_indicator_matrix(model)
+#'
+make_gbiqq_data <- function(model, data){
 
+	data_events        <- trim_strategies(model, data)
+	P                  <- get_parameter_matrix(model)
+	inverted_P         <- 1-P
+	n_params           <- nrow(P)
+  lambdas_prior      <- model$lambda_priors
+	A                  <- get_ambiguities_matrix(model)
+	A_w                <- (get_likelihood_helpers(model)$A_w)[data_events$event, ]
+	strategies         <- data_events$strategy
+	n_strategies       <- length(unique(strategies))
+	w_starts           <-  which(!duplicated(strategies))
+	k                  <- length(strategies)
+	w_ends             <- c(w_starts[2:n_strategies], k )
+	if(n_strategies < 2) w_ends <- k
+  variables          <- get_variables(model)
+  possible_data      <- get_max_possible_data(model)
+  n_types_each       <- sapply(gbiqq:::get_nodal_types(model), length)
+  n_vars             <- length(get_variables(model))
+  l_ends             <- cumsum(n_types_each)
+  l_starts           <- c(1, l_ends[1:(n_vars-1)] + 1)
 
-	n_params <- nrow(P)
-
-  lambdas_prior <- model$lambda_priors
-
-	inverted_P <- 1-P
-	A <- get_ambiguities_matrix(model)
-	likelihood_helpers <- get_likelihood_helpers(model)
-	A_w <- likelihood_helpers$A_w
-	rnames <- rownames(A_w)
-	cnames <- colnames(A_w)
-  n_realizations <- ncol(A_w)
-
-
-	l_helpers<- get_likelihood_helpers(model, data)
-	A_w <- l_helpers$A_w
-	data_events <- trim_strategies(model, data)
-	A_w <- A_w[data_events$event, ]
-	strategies <- data_events$strategy
-	n_strategies <- length(unique(strategies))
-	w_starts <-  which(!duplicated(  strategies))
-	k <- length(strategies)
-	w_ends <- c(w_starts[2:n_strategies], k )
-	if(n_strategies< 2){
-		w_ends <- k
-	}
-
-
-  variables <- get_variables(XMYmodel)
-  normalized_priors <- unlist(sapply(variables, function(v){
-  	i <- which(startsWith(names(lambdas_prior), v))
-  	lambdas_prior[i]/sum(lambdas_prior[i])}))
-
-  possible_data <-   get_max_possible_data(model)
-  P.lambdas <- P*normalized_priors    +	1 - P
-  prob_of_types <- apply(P.lambdas, 2, prod)
-  w <- A %*% prob_of_types # Prob of (fundamental) data realization
-  w_full <- A_w %*% w
-  n_types_each <- sapply(gbiqq:::get_nodal_types(model), length)
-  n_vars <- length(get_variables(model))
-  l_ends <- cumsum(n_types_each)
-  l_starts <- c(1, l_ends[1:(n_vars-1)] + 1)
-
-
-	stan_data <- 	list(n_vars = n_vars,
-										 n_nodal_types = nrow(P),
-										 n_types = ncol(P),
-										 n_types_each = n_types_each,
-										 n_data = nrow( possible_data),
-										 n_events = nrow(A_w),
-										 n_strategies = n_strategies,
-										 lambdas_prior = lambdas_prior,
-										 l_starts = l_starts,
-										 l_ends = l_ends,
-										 strategy_starts = as.array(w_starts),
-										 strategy_ends = as.array(w_ends),
-										 P = P,
-										 inverted_P = inverted_P,
-										 A = A,
-										 A_w= A_w,
-										 Y = data_events$count)
+ list(n_vars          = n_vars,
+			n_nodal_types   = nrow(P),
+			n_types         = ncol(P),
+			n_types_each    = n_types_each,
+			n_data          = nrow(possible_data),
+			n_events        = nrow(A_w),
+			n_strategies    = n_strategies,
+			lambdas_prior   = lambdas_prior,
+			l_starts        = l_starts,
+			l_ends          = l_ends,
+			strategy_starts = as.array(w_starts),
+			strategy_ends   = as.array(w_ends),
+			P               = P,
+			inverted_P      = inverted_P,
+			A               = A,
+			A_w             = A_w,
+			Y               = data_events$count)
 }
 
 #' gbiqq-internal
