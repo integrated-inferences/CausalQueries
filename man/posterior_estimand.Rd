@@ -5,10 +5,12 @@
 \title{Calculate posterior estimand}
 \usage{
 posterior_estimand(updated_model, do_1 = list(X = 1), do_2 = list(X =
-  0), q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0)
+  0), q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0, subset = TRUE)
 }
 \arguments{
 \item{updated_model}{An updated model}
+
+\item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 }
 \description{
 Calculate posterior estimand
