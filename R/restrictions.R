@@ -1,3 +1,6 @@
+
+
+
 #' Restrict a model
 #'
 #' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
@@ -20,8 +23,12 @@
 #' reduce_nodal_types(model = XYdag, dos = list(Y = 0))
 #'
 #' # Restrictions can be iteratively applied
-#' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "Y10"))
+#' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "10"))
 #' my_model <-  reduce_nodal_types(model = my_model, do = list(X = 1))
+#' get_indicator_matrix(my_model)
+#'
+#' # Restrictions can be  with wildcards
+#' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "?0"))
 #' get_indicator_matrix(my_model)
 
 
@@ -61,6 +68,10 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 		names(restrictions) <- names(dos)
 	  }
 
+	# If there are wild cards, spell them out
+	restrictions <- lapply(restrictions, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+
+#	for(j in restrictions) restrictions_record
 
 	nodal_types_restrictions <- nodal_types[restricted_vars]
 
@@ -86,9 +97,9 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 															 restriction_ij,
 															 paste0(restricted_var, restriction_ij))
 			#  stop if restriction doesn't conform to nodal_types syntax (i.e. it doesn't look like Y00)
-			if(!restriction_ij  %in% ntr){
-					stop(paste0("Restriction ",	restriction_ij, " not conformable to nodal_types"))
-			}
+#			if(!restriction_ij  %in% ntr){
+#					stop(paste0("Restriction ",	restriction_ij, " not conformable to nodal_types"))
+#			}
 			# and return restrictions if it does.
 			restriction_ij})
 
@@ -99,7 +110,7 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 
 	names(restrictions_out)   <- restricted_vars
 	model$nodal_types  <- nodal_types
-	model$restrictions <- restrictions_out
+#	model$restrictions <- restrictions_out
 
   # Subset lambda_priors
 	type_names  <- get_type_names(nodal_types)
@@ -107,7 +118,7 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 
 
 	# TO DO: define print.dag ?
-	# Have restrictions for a class eg (Z = xxx1xx0)
+	# Have restrictions for a class eg ("Z = monotonic in W")
   # CHeck adding old and new restrictions into restrictions attribute
 
 	return(model)
@@ -143,4 +154,16 @@ get_type_names <- function(nodal_types) {
 		a   <- nodal_types[[i]]
 		paste(name, a, sep =".")
 	}))}
+
+#' Unpack a wild card
+#'
+unpack_wildcard <- function(x) {
+	splitstring <- strsplit(x, "")[[1]]
+	n_wild <- sum(splitstring=="?")
+	if(n_wild ==0) return(x)
+	variations <- perm(rep(2, n_wild))
+	apply(variations, 1, function(j)  {
+		z <- splitstring
+		z[z=="?"] <- j
+		paste0(z, collapse = "")})}
 

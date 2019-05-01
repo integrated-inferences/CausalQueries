@@ -95,12 +95,12 @@ get_likelihood_helpers <- function(model){
 
 	# Get the realizations of the fundamental data events
 	max_possible_data <- get_max_possible_data(model)
-	A <- get_ambiguities_matrix(model)
+	if(is.null(model$A)) A <- get_ambiguities_matrix(model)
 	fundamental_data <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
 	fundamental_data <- matrix(	fundamental_data, ncol = ncol(max_possible_data))
 
 	fundamental_data	<- lapply(1:nrow(fundamental_data),  function(i) c(fundamental_data[i,]))
-  names(fundamental_data) <- rownames(A)
+  names(fundamental_data) <- colnames(A)
 	# For each data realization, find the fundamental data event in which those
 	# same events would have been observed, and make a matrix of 1s and 0s
 	A_w <- t(sapply(

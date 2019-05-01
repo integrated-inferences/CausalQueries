@@ -30,7 +30,11 @@ reduce_nodal_types(model = XYdag, dos = list(X = 1))
 reduce_nodal_types(model = XYdag, dos = list(Y = 0))
 
 # Restrictions can be iteratively applied
-my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "Y10"))
+my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "10"))
 my_model <-  reduce_nodal_types(model = my_model, do = list(X = 1))
+get_indicator_matrix(my_model)
+
+# Restrictions can be  with wildcards
+my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "?0"))
 get_indicator_matrix(my_model)
 }

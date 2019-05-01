@@ -175,6 +175,8 @@ get_variables <- function(model){
 
 #' Get list of types for variables in a DAG
 #'
+#' As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
+#'
 #' @param A probabilistic causal model created by make_model()
 #'
 #' @export
@@ -193,10 +195,11 @@ get_variables <- function(model){
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
 nodal_types <- model$nodal_types
-variables <- get_variables(model)
-	dag <- model$dag
-	types <- lapply(
-		X = lapply(get_parents(model), length),
+variables   <- get_variables(model)
+parents     <- get_parents(model)
+dag         <- model$dag
+types       <- lapply(
+		X = lapply(parents, length),
 		FUN = function(parent_n){
 			type_mat <- perm(rep(2,2^parent_n))
 			if(parent_n == 0){
@@ -208,6 +211,19 @@ variables <- get_variables(model)
 			colnames(type_mat) <- labels
 			return(type_mat)
 		})
+
+types_interpret       <-
+	lapply(parents,
+	FUN = function(parent){
+		parent_n <- length(parent)
+		if(parent_n == 0){
+			labels <- "exogeneous"
+		} else {
+			input_mat <- perm(rep(2,parent_n))
+			labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
+		}
+		labels
+	})
 
 	types_labels <- lapply(1:length(types), function(i){
 		var <- names(types)[i]
@@ -246,6 +262,7 @@ variables <- get_variables(model)
 
   names(types)  <- var_names
 
+  attr(types, "interpret") <- types_interpret
 	return(types)
 }
 #' Get nodal types

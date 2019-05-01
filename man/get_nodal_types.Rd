@@ -13,7 +13,7 @@ get_nodal_types(model, collapse = TRUE)
 A list of parents in a DAG
 }
 \description{
-Get list of types for variables in a DAG
+As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
 }
 \examples{
 \dontrun{

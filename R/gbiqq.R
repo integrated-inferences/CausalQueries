@@ -15,7 +15,7 @@ gbiqq <- function(model, data,   ...) {
 
 	stan_data    <- make_gbiqq_data(model = model, data = data)
 
-	model$posterior <-	stan(file = stan_file, data = stan_data,  ...)
+	model$posterior <-	rstan::stan(file = stan_file, data = stan_data,  ...)
 
 	model$data <- data
 

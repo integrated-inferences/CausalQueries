@@ -10,5 +10,5 @@ get_parameter_matrix(model)
 \item{model}{A model created by make_model()}
 }
 \description{
-Generate a  matrix that maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
+Return parameter matrix if it exists; otherwise calculate it assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 }

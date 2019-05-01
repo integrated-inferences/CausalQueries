@@ -148,7 +148,7 @@ get_ambiguities_matrix <- function(model){
   colnames(A) <- type_labels
   rownames(A) <-  data_names
 
-	return(A)
+	t(A)
 
 }
 

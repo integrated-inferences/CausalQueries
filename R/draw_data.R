@@ -64,14 +64,14 @@ draw_type_prob <- function(model, P = NULL,  lambda = NULL){
 draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
 
 	# Ambiguity matrix
-	if(is.null(A)) 	    A      <- get_ambiguities_matrix(model)
+	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
 
 	# Type probabilities
 	if(is.null(type_prob)) {
 	type_prob <- draw_type_prob(model = model, P = P, lambda = lambda)}
 
 	# Event probabilities
-	A %*% type_prob
+	t(A) %*% type_prob
 
  }
 
@@ -125,7 +125,7 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-draw_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
+simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
 
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
 

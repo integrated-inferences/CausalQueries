@@ -197,20 +197,20 @@ get_max_possible_data <- function(model) {
 make_gbiqq_data <- function(model, data){
 	n_vars             <- length(get_variables(model))
 	data_events        <- trim_strategies(model, data)
-	P                  <- get_parameter_matrix(model)
+	P                  <- if(!is.null(model$P)) P else get_parameter_matrix(model)
 	inverted_P         <- 1-P
 	A_w                <- (get_likelihood_helpers(model)$A_w)[data_events$event, ]
 	strategies         <- data_events$strategy
 	n_strategies       <- length(unique(strategies))
 	w_starts           <- which(!duplicated(strategies))
 	k                  <- length(strategies)
-	w_ends             <- ifelse(n_strategies < 2, k, c(w_starts[2:n_strategies], k ))
+	w_ends             <- if(n_strategies < 2) k else c(w_starts[2:n_strategies]-1, k)
   n_types_each       <- sapply(gbiqq:::get_nodal_types(model), length)
   l_ends             <- cumsum(n_types_each)
   l_starts           <- c(1, l_ends[1:(n_vars-1)] + 1)
 
  list(n_vars          = n_vars,
-			n_nodal_types   = nrow(P),
+			n_params        = nrow(P),
 			n_types         = ncol(P),
 			n_types_each    = n_types_each,
 			n_data          = nrow(get_max_possible_data(model)),

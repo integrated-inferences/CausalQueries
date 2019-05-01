@@ -1,12 +1,14 @@
 #' Get parameter matrix
 #'
-#' Generate a  matrix that maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
+#' Return parameter matrix if it exists; otherwise calculate it assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
 #' @param model A model created by make_model()
 #'
 #' @export
 #'
 get_parameter_matrix  <- function(model){
+
+	if(!is.null(model$P)) return(model$P)
 
 	possible_data   <-	get_possible_data(model)
 	nodes           <- names(possible_data)

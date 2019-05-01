@@ -25,6 +25,7 @@ posterior_estimand <- function(updated_model,
 
 	if(!is.logical(subset)) subset <- with(reveal_outcomes(updated_model),
 																				 eval(parse(text = subset)))
+  if(all(!subset)) return(0)
 
 	x <- as.matrix(q(reveal_outcomes(updated_model, dos = do_1),
 									 reveal_outcomes(updated_model, dos = do_2)),

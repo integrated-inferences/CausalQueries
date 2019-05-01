@@ -90,21 +90,20 @@ set_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 	}
 
 
-	names(lambdas) <- type_names
-
+	names(lambdas)       <- type_names
 	lambdas[alpha_names] <- alphas_vector
-
-model$lambda_priors <- lambdas
+  model$lambda_priors  <- lambdas
 
 # TO DO: define print.dag ?
 
 # To Do: Check that priors can be set after restrictions
 
 # TODO: May need to replace infinity with a big number since infinity does not seem to calculate well with rmultinom
-cat("$lambdas_prior \n")
-print(model$lambda_priors)
+
 cat("dag: \n")
 print(model$dag)
-model
+cat("$lambdas_prior \n")
+print(summary(model$lambda_priors))
 
+model
 }
