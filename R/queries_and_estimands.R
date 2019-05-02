@@ -1,88 +1,82 @@
-#' Query a model
+#' Calculate estimand
 #'
-#' Ask a question of a model
-#' @param model A model created by make_model()
-#' @param query A logic operation on variables, in quotes. For example "Y==1"
-#' @param subset An optional logic condition on variabless, in quotes.. For example "X==0"
-#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#' Calculated from a prior or posterior distribution
+#'
+#'
+#' @param model A  model
+#' @param posterior if true use a posterior distribution, otherwise use the prior
+#' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
+#' @param type_distribution if provided saves calculatio, otherwise clculated from model; may be based on prior or posterion
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
-#' w     <- draw_event_prob(model, P = NULL, A = NULL)
-#' query_model(model,  "Y==1", "X==1", w)
-#' query_model(model,  "Y==1", "X==1", w) - query_model(model,  "Y==1", "X==0", w)
-#'
-#'# ATE: Make a model with monotonicity and reasonable prior certainty on uniform types
-#' model     <-  make_model(add_edges(parent = "X", children = c("Y")))
-#' model     <-  set_priors(model = model, prior_distribution = NULL, alpha =  10)
-#' model     <-  reduce_nodal_types(model = model, restrictions = list(Y = "Y10"))
-#' model_do0 <-  reduce_nodal_types(model = model, do = list(X = 0))
-#' model_do1 <-  reduce_nodal_types(model = model, do = list(X = 1))
-#' query_model(model_do1,  "Y==1") - query_model(model_do0,  "Y==1")
-#' simulations <- replicate(200, query_model(model_do1,  "Y==1") - query_model(model_do0,  "Y==1"))
-#' hist(simulations, main = paste("E(ATE) = ", round(mean(simulations), 2)))
-#' # This is not quite right since the *same* prior draw should be used for the two queries -- a bit confusing though
-#' # as currently set up since the two models have different parameters! May need another approch to "do":
-#' # e.g. draw a parameter vector and set certainty around that, calculated estimand, repeat over different draws
-#' model     <-  make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X" %->% "Y")
+#' model <- reduce_nodal_types(model, restrictions = list(Y = "Y10"))
+#' model <- add_prior_distribution(model)
+#' summary(calculate_estimand(model))
+
+calculate_estimand <- function(model,
+															 posterior = FALSE,
+															 do_1 = list(X = 1),
+															 do_2 = list(X = 0),
+															 q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0,
+															 subset = TRUE,
+															 type_distribution = NULL) {
 
 
-query_model <- function(model, query, subset = TRUE, w = NULL, lambda = NULL){
+	if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
+																				 eval(parse(text = subset)))
+	if(all(!subset)) return(0)
 
-	if(is.null(w)) w <- draw_event_prob(model, lambda = lambda)
+	x <- as.matrix(q(reveal_outcomes(model, dos = do_1),
+									 reveal_outcomes(model, dos = do_2)),
+								 ncol = 1)[subset]
 
-	df <- get_max_possible_data(model)
+	if(is.null(type_distribution)) type_distribution <-
+		draw_type_prob_multiple(model, posterior = posterior)[subset,]
 
-	a  <- with(df, eval(parse(text = query)))
+	apply(type_distribution, 2, function(wt) weighted.mean(x, wt))
 
-	if(!is.logical(subset)) subset <- with(df, eval(parse(text = subset)))
-	if(!any(subset)) stop("Empty subset")
-
-	weighted.mean(a[subset], w[subset])
 }
 
 
-#' Calculate estimand
+#' Calculate multipl estimands
 #'
-#' Ask a question of a model
-#' @param model A model created by make_model()
-#' @param query A logic operation on variables, in quotes. For example "Y==1"
-#' @param subset An optional logic condition on variabless, in quotes.. For example "X==0"
-#' @param lambda A parameter vector, If specified the estimand is deterministic.
+#' Calculated from a prior or posterior distribution
+#'
+#'
+#' @param model A  model
+#' @param posterior if true use a posterior distribution, otherwise use the prior
+#' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
-#' model <- reduce_nodal_types(model = model, restrictions = list(Y = "Y10"))
-#' estimand <- calculate_estimand (model = model,
-#' 										do1 = list(X = 0),
-#' 										query1 = "Y==1",
-#' 										do2 = list(X = 1),
-#' 										query2 = "Y==1",
-#' 										aggregation = function(q1,q2) q2-q1,
-#' 										sims = 300)
-#' summary(estimand)
+#' model <- make_model("X" %->% "Y")
+#' model <- add_prior_distribution(model)
+#' calculate_multiple_estimands(model,
+#'            posteriors = FALSE,
+#'            dos = list(op_1 =  list(do_1 = list(X = 1), do_2 = list(X = 0)),
+#'											 op_2 =  list(do_1 = list(X = 1), do_2 = list(X = 0))),
+#'						qs =  list(q1   =  function(Q1, Q2) Q1$Y -  Q2$Y,
+#'											 q2   =  function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0),
+#'						subsets = TRUE,
+#'						estimand_labels = c("ATE", "Share_positive"))
+#'
+calculate_multiple_estimands <- function(model = make_model("X" %->% "Y"),
+																				 posteriors = list(FALSE),
+																				 dos = list(op_1 =  list(do_1 = list(X = 1), do_2 = list(X = 0))
+																				 ),
+																				 qs =  list(q1   =  function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0
+																				 ),
+																				 subsets = list(TRUE),
+																				 estimand_labels = NULL,
+																				 stats = c(mean = mean, sd = sd)){
 
-
-
-calculate_estimand <- function(model,
-															 do1, query1,
-															 do2 = NULL, query2 = NULL,
-															 subset1 = TRUE, subset2 = TRUE,
-															 aggregation = function(a,b) b-a,
-															 sims = 1, lambda = NULL) {
-	redraw <- is.null(lambda)
-
-	M1 <- reduce_nodal_types(model = model, do = do1)
-	M2 <- reduce_nodal_types(model = model, do = do2)
-
-	f <- function() {
-		if(redraw) lambda <- draw_lambda(model)
-	  aggregation(
-	  query_model(M1,  query1, subset1, lambda = reduce_lambda(M1, lambda)),
-	  query_model(M2,  query2, subset2, lambda = reduce_lambda(M2, lambda)))
+	f <- function(posterior, do, q, subset){
+		v <-calculate_estimand(model, posterior = posterior, do_1 = do[[1]], do_2 = do[[2]],q = q, subset = subset)
+		sapply(stats, function(g) g(v))
 	}
 
-	out <- replicate(sims, f())
-	out
-
+	out <- mapply(f, posteriors, dos, qs, subsets)
+	rownames(out) <- paste(names(stats))
+	if(!is.null(estimand_labels)) colnames(out) <- estimand_labels
+	data.frame(out)
 }

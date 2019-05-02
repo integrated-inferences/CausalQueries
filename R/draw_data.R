@@ -47,6 +47,36 @@ draw_type_prob <- function(model, P = NULL,  lambda = NULL){
 
 }
 
+#' Draw matrix of type probabilities, before or after estimation
+#'
+#' @param model A model, normally containing a prior or a posterior distribution
+#' @param posterior if true use a posterior distribution, otherwise use the prior
+#' @param n_draws If no prior distribution provided, generate prior distribution with n_draws draws
+#' @export
+
+draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
+
+	if(!posterior){
+		if(is.null(model$prior_distribution)) {
+			message("Model does not contain a prior distribution")
+			lambdas <- t(replicate(n_draws, draw_lambda(model)))
+		} else {
+			lambdas <- model$prior_distribution
+		}}
+
+	if(posterior){
+		if(is.null(model$posterior_distribution)) {
+			stop("Model does not contain a posterior distribution")}
+		lambdas <- rstan::extract(model$posterior, pars= "lambdas")$lambdas
+	}
+
+	P  <- get_parameter_matrix(model)
+
+	apply(lambdas, 1, function(j) draw_type_prob(model, P = P,  lambda = j))
+}
+
+
+
 #' Draw event probabilities
 #'
 # `draw_event_prob` draws event probability vector `w`  given a single realization of lambda, drawn from model priors

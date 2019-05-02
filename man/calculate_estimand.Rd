@@ -4,31 +4,25 @@
 \alias{calculate_estimand}
 \title{Calculate estimand}
 \usage{
-calculate_estimand(model, do1, query1, do2 = NULL, query2 = NULL,
-  subset1 = TRUE, subset2 = TRUE, aggregation = function(a, b) b - a,
-  sims = 1, lambda = NULL)
+calculate_estimand(model, posterior = FALSE, do_1 = list(X = 1),
+  do_2 = list(X = 0), q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0,
+  subset = TRUE, type_distribution = NULL)
 }
 \arguments{
-\item{model}{A model created by make_model()}
+\item{model}{A  model}
 
-\item{lambda}{A parameter vector, If specified the estimand is deterministic.}
+\item{posterior}{if true use a posterior distribution, otherwise use the prior}
 
-\item{query}{A logic operation on variables, in quotes. For example "Y==1"}
+\item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
-\item{subset}{An optional logic condition on variabless, in quotes.. For example "X==0"}
+\item{type_distribution}{if provided saves calculatio, otherwise clculated from model; may be based on prior or posterion}
 }
 \description{
-Ask a question of a model
+Calculated from a prior or posterior distribution
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = c("Y")))
-model <- reduce_nodal_types(model = model, restrictions = list(Y = "Y10"))
-estimand <- calculate_estimand (model = model,
-										do1 = list(X = 0),
-										query1 = "Y==1",
-										do2 = list(X = 1),
-										query2 = "Y==1",
-										aggregation = function(q1,q2) q2-q1,
-										sims = 300)
-summary(estimand)
+model <- make_model("X" \%->\% "Y")
+model <- reduce_nodal_types(model, restrictions = list(Y = "Y10"))
+model <- add_prior_distribution(model)
+summary(calculate_estimand(model))
 }
