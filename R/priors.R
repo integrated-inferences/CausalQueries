@@ -1,6 +1,6 @@
 #' Set priors
 #'
-#' @param model A dag created by make_dag()
+#' @param model A model created by make_model()
 #' @param prior_distribution A character indicating the prior distribuiton
 #' @param alphas the hyperparameters of the dirichlet distribution.
 #'
@@ -8,38 +8,40 @@
 #' @examples
 #' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
 #' #  Default sets all priors to 1
-#' set_priors(model = XYdag)
+#' make_priors(model = XYdag)
 #' #  Set all priors to 0.5
-#' set_priors(model = XYdag, prior_distribution = "jeffreys")
+#' make_priors(model = XYdag, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
-#' set_priors(model = XYdag, prior_distribution = "certainty")
+#' make_priors(model = XYdag, prior_distribution = "certainty")
 #'
 #'#  set all priors to 1 except for prior of nodal_type X0
-#' set_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
+#' make_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
-#' set_priors(model = XYdag, prior_distribution = "uniform" ,
+#' make_priors(model = XYdag, prior_distribution = "uniform" ,
 #'            alpha = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
 #' # set all priors to 10
-#' set_priors(model = XYdag, prior_distribution = NULL,
+#' make_priors(model = XYdag, prior_distribution = NULL,
 #'            alpha =  10)
-set_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
+make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 
-	dag <- model$dag
-	nodal_types   <- get_nodal_types(model)
+	# parameter housekeeping
+	P                  <- get_parameter_matrix(model)
+	n_params           <- nrow(P)
+	param_set          <- attr(P, "param_set")
+	param_sets         <- unique(param_set)
+	n_param_sets       <- length(param_sets)
+	par_names          <- paste0(param_set, ".", rownames(P))
 
-	n_nodal_types <- length(unlist(nodal_types))
-
+	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
 	n_alphas      <- length(alphas_vector)
+	if(is.null(prior_distribution) & ((n_alphas!=1 | n_alphas!=n_params)))	stop(
+		"if prior_distribution is not specified, alphas must contain either a value
+		for each parameter or a single value to be assigned to all parameters.")
 	alpha_names   <- names(alphas_vector)
 
-	type_names  <- unlist(sapply(1:length(nodal_types), function(i){
-		name <- names(nodal_types)[i]
-		a <- nodal_types[[i]]
-		paste(name, a, sep =".")
-	}))
-
-	not_in_dag <- !alpha_names %in% type_names
+	# Check that alpha names match par names
+	not_in_dag <- !alpha_names %in% par_names
 	if(any(not_in_dag )){
 		index <- which(not_in_dag)
 		error_text	<- sapply(index, function(i){
@@ -50,62 +52,51 @@ set_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 			paste0("\n variable ", splitted_name[2], " and corresponding nodal_type ",  splitted_name[1], " must match variables in dag and nodal_types syntax")
 
 		})
-		stop(	error_text )
-	}
+		stop(	error_text )}
 
+  # Check alpha strictly positive
+	if(any(	alphas_vector  <= 0)) stop("alphas must be strictly positive real numbers")
 
-
-	if(any(	alphas_vector  <= 0)){
-		stop("alphas must be positive real numbers")
-	}
-
+  # Calculate lambda_priors
 	if(!is.null(prior_distribution)){
-	if(prior_distribution == "uniform"){
+		if(prior_distribution == "uniform")   lambda_priors <- rep(1, n_params )
+		if(prior_distribution == "jeffreys")  lambda_priors <- rep(0.5, n_params )
+		if(prior_distribution == "certainty") lambda_priors <- rep(10000, n_params )
 
-		lambdas <- rep(1, n_nodal_types )
+	} else{
+		if(n_alphas == 1)                     lambda_priors <- rep(alphas, n_params)
+		if(n_alphas == n_params)              lambda_priors <- alphas}
 
-	} else if(prior_distribution == "jeffreys"){
+  # Substitute alpha vector when provided
+  lambda_priors[alpha_names] <- alphas_vector
 
-		lambdas <- rep(0.5, n_nodal_types )
-
-	} else if(prior_distribution == "certainty"){
-
-		lambdas <- rep(Inf, n_nodal_types )
-
-	} } else{
-
-		if(n_alphas == 1){
-
-			lambdas <- rep(alphas, n_nodal_types )
-
-		} else if(n_alphas == n_nodal_types){
-
-			lambdas <- alphas
-
-		} else{
-
-			stop("if prior_distribution is not specified, alphas must contain either a value for each nodal_type or a single value to be assigned to all nodal types.")
-
-		}
+  # result
+	names(lambda_priors)       <- par_names
+	lambda_priors
 	}
 
 
-	names(lambdas)       <- type_names
-	lambdas[alpha_names] <- alphas_vector
-  model$lambda_priors  <- lambdas
+#' Set prior distribution
+#'
+#' @param model A model created by make_model()
+#' @param lambda_priors Vector of Dirichlet hyperparameters
+#' @param prior_distribution A character indicating the prior distribuiton
+#' @param alphas the hyperparameters of the dirichlet distribution.
+#'
+#' @export
 
-# TO DO: define print.dag ?
+set_priors  <- function(model,  lambda_priors = NULL, prior_distribution = "uniform", alphas = NULL) {
 
-# To Do: Check that priors can be set after restrictions
+	if(is.null(lambda_priors)) lambda_priors <-
+			                            make_priors(model,
+			                            						prior_distribution = prior_distribution,
+																							alphas = alphas)
 
-# TODO: May need to replace infinity with a big number since infinity does not seem to calculate well with rmultinom
-
-print(paste("Priors attached to model"))
-cat("$lambdas_prior \n")
-print(summary(model$lambda_priors))
-
-model
+   model$lambda_priors  <- lambda_priors
+   message(paste("Priors attached to model"))
+   model
 }
+
 
 
 #' Add prior distribution draws
@@ -119,7 +110,7 @@ model
 add_prior_distribution <- function(model, n_draws = 4000) {
 
 	model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
-  print(paste("Prior distribution based on", n_draws, "draws attached to model"))
+  message(paste("Prior distribution based on", n_draws, "draws attached to model"))
 	return(model)
 	}
 

@@ -13,11 +13,13 @@ draw_lambda <- function(model){
 
 	if(is.null(model$lambda_priors)) model <- set_priors(model)
 	lambdas_prior <- model$lambda_priors
-	variables     <- get_variables(model)
+	param_set          <- attr(model$P, "param_set")
+	if(length(lambdas_prior) != length(param_set)) stop("lambda priors should have same length as parameter set")
+	param_sets         <- unique(param_set)
 
 	# Draw lambda, given priors
-	lambda <- unlist(sapply(variables, function(v){
-		i <- which(startsWith(names(lambdas_prior), v))
+	lambda <- unlist(sapply(param_sets, function(v){
+		i <- which(startsWith(names(lambdas_prior), paste0(v,".")))
 		rdirichlet(1, lambdas_prior[i])}))
 	names(lambda) <- names(lambdas_prior)
 	lambda

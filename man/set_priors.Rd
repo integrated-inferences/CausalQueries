@@ -2,35 +2,20 @@
 % Please edit documentation in R/priors.R
 \name{set_priors}
 \alias{set_priors}
-\title{Set priors}
+\title{Set prior distribution}
 \usage{
-set_priors(model, prior_distribution = "uniform", alphas = NULL)
+set_priors(model, lambda_priors, prior_distribution = NULL,
+  alphas = NULL)
 }
 \arguments{
-\item{model}{A dag created by make_dag()}
+\item{model}{A model created by make_model()}
+
+\item{lambda_priors}{Vector of Dirichlet hyperparameters}
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 
 \item{alphas}{the hyperparameters of the dirichlet distribution.}
 }
 \description{
-Set priors
-}
-\examples{
-XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
-#  Default sets all priors to 1
-set_priors(model = XYdag)
-#  Set all priors to 0.5
-set_priors(model = XYdag, prior_distribution = "jeffreys")
-#  Set all priors to infinity
-set_priors(model = XYdag, prior_distribution = "certainty")
-
-#  set all priors to 1 except for prior of nodal_type X0
-set_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
-#  specify priors for each of the nodal_types in model
-set_priors(model = XYdag, prior_distribution = "uniform" ,
-           alpha = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
-# set all priors to 10
-set_priors(model = XYdag, prior_distribution = NULL,
-           alpha =  10)
+Set prior distribution
 }
