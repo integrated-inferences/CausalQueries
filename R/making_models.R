@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'dag1 <- make_dag(
+#'model <- make_model(
 #' add_edges(parent = "X",children = c("K","Y")),
 #' add_edges(parent = "K",children = "Y")
 #' )
