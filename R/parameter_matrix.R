@@ -15,12 +15,10 @@
 
 make_parameter_matrix  <- function(model, confound = NULL){
 
-	possible_data   <- get_possible_data(model)
-	nodes           <- names(possible_data)
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
 	types           <- expand.grid(nodal_types, stringsAsFactors = FALSE)
-	pars <- unlist(nodal_types)
+	pars            <- unlist(nodal_types)
 
 
 	# Which nodal_types correspond to a type
@@ -34,21 +32,35 @@ make_parameter_matrix  <- function(model, confound = NULL){
 
 		A  <- confound[[1]] # Ancestors
 		D  <- confound[[2]] # Descendents
+
+		if(length(A) != length(D)) stop("Please provide matched ancestor and descendent lists for confounded relations")
+
 		Ds <- names(D)
 
   	for(j in 1:length(A)) {
-			P         <- rbind(P[param_set == A[j],], P)
-			new_params <- paste0(pars[param_set == A[j]], "-", paste0(Ds[j], ".", paste(D[j][[1]], collapse = ".")))
-			pars       <- c(new_params, pars)
-			param_set  <- c(new_params,param_set)
+  		# Make duplicate entries
+			P             <- rbind(P[param_set == A[j],], P)
+
+			new_params    <- paste0(pars[param_set == A[j]], "", paste0(Ds[j], "", paste(D[j][[1]], collapse = "_")))
+			pars          <- c(new_params, pars)
+
+			new_param_set <- paste0(param_set[param_set == A[j]], "", paste0(Ds[j], "", paste(D[j][[1]], collapse = "_")))
+			param_set     <- c(new_param_set,param_set)
+
+
+			# Zero out duplicated entries
 			P[param_set == A[j], types[,names(D)[j]]	%in%	paste0(Ds[j], D[j][[1]])] <- 0
-			P[param_set %in% new_params, !(types[, names(D)[j]]	%in%	paste0(Ds[j], D[j][[1]]))] <- 0
+			P[param_set %in% new_param_set, !(types[, names(D)[j]]	%in%	paste0(Ds[j], D[j][[1]]))] <- 0
   	}
 		attr(P, "confounds") <- data.frame(t(mapply(c, names(confound[[1]]), names(confound[[2]]))))
 		}
 
+  # Tidy up
 	colnames(P)  <- do.call(paste, c(types, sep =""))
 	rownames(P ) <- pars
+
+	# Add the parameter set as attribute
+	names(param_set) <- NULL
 	attr(P, "param_set") <- param_set
 	P
 }

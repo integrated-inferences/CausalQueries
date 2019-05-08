@@ -13,8 +13,10 @@ draw_lambda <- function(model){
 
 	if(is.null(model$lambda_priors)) model <- set_priors(model)
 	lambdas_prior <- model$lambda_priors
-	param_set          <- attr(model$P, "param_set")
+	param_set     <- attr(model$P, "param_set")
+
 	if(length(lambdas_prior) != length(param_set)) stop("lambda priors should have same length as parameter set")
+
 	param_sets         <- unique(param_set)
 
 	# Draw lambda, given priors

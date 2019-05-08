@@ -1,6 +1,8 @@
 #' Puts your DAG into daggity syntax (useful for using their plotting functions)
 #'
-#' @param dag A dag created by make_dag()
+#' If confounds are indicated (provided in \code{attr(model$P, "confounds")}), then these are represented as bidirectional arcs.
+#'
+#' @param model A model created by make_model()
 #'
 #' @export
 #'
@@ -8,24 +10,26 @@
 #'
 #' @examples
 #' \dontrun{
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' translate_dagitty(dag)
+#' model <- make_model(X %->% Y)
+#' translate_dagitty(model)
 #' }
 #'
-translate_dagitty <- function(dag){
-
+translate_dagitty <- function(model){
+  dag <- model$dag
 	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "),collapse = " ; "),collapse = "")
+
+	if(!is.null(model$P)) if(!is.null(attr(model$P, "confounds"))) {
+		conf_df <- attr(model$P, "confounds")
+		inner <- paste(inner, " ; ", paste(paste(conf_df[,1], conf_df[,2], sep =  " <-> "), collapse = " ; "))
+		}
+
 	dagitty_dag <- paste0("dag{ ",inner, " }")
 	return(dagitty_dag)
 }
 
 #' Plot your dag using dagitty
 #'
-#' @param dag A dag created by make_dag()
+#' @param model A dag created by make_model()
 #'
 #' @export
 #'
@@ -33,17 +37,16 @@ translate_dagitty <- function(dag){
 #'
 #' @examples
 #' \dontrun{
-#' dag <- make_dag(
+#' model <- make_model(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
-#' plot_dag(dag)
+#' plot_dag(model)
 #' }
 #'
 
-plot_dag <- function(pcm){
-	dag <- pcm$dag
-	dagitty_dag <- translate_dagitty(dag = dag)
+plot_dag <- function(model){
+	dagitty_dag <- translate_dagitty(model)
 	plot(dagitty::graphLayout(dagitty_dag))
 }
