@@ -7,9 +7,9 @@
 gbiqq(model, data, ...)
 }
 \arguments{
-\item{model}{A model as created by \code{make_model}}
-
 \item{data}{A data frame with observations}
+
+\item{dag}{A dag as created by \code{make_dag}}
 }
 \description{
 Takes a model and data and returns a model object with data attached and a posterior model

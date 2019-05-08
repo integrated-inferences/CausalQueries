@@ -4,7 +4,7 @@
 \alias{set_priors}
 \title{Set prior distribution}
 \usage{
-set_priors(model, lambda_priors = NULL, prior_distribution = "uniform",
+set_priors(model, lambda_priors, prior_distribution = NULL,
   alphas = NULL)
 }
 \arguments{

@@ -19,7 +19,7 @@ Add edges to a DAG
 }
 \examples{
 \dontrun{
-model <- make_model(
+dag1 <- make_dag(
 add_edges(parent = "X",children = c("K","Y")),
 add_edges(parent = "K",children = "Y")
 )

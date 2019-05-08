@@ -47,7 +47,7 @@ get_possible_data <- function(model,
 #' Take a dataframe and return compact dataframe of event types and strategies.
 #'
 #' @param data A data.frame of variables that can take three values: 0, 1, and NA
-#' @param model A model created by make_model()
+#' @param model A dag created by make_dag()
 #'
 #' @export
 #'
@@ -112,7 +112,7 @@ get_data_events <- function(data, model){
 #'
 #' get_possible_data_internal
 #'
-#' @param model A model created by \code{make_model}
+#' @param model A probabilistic causal model created by \code{make_model}
 #' @return a list
 #' @keywords internal
 #'
@@ -153,7 +153,7 @@ get_possible_data_internal <- function(model, collapse = TRUE){
 
 #' Get data frame with all possible data combinations
 #'
-#' @param A model created by make_model()
+#' @param A probabilistic causal model created by make_model()
 #'
 #' @export
 #'
@@ -164,9 +164,8 @@ get_max_possible_data <- function(model) {
 	max_possible_data <-
 		Reduce(f = merge,
 					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
-  variables <- 	c(attr(model, "exogenous_variables"),
-  								attr(model, "endogenous_variables"))
-	max_possible_data <- max_possible_data[variables]
+
+	max_possible_data <- max_possible_data[get_variables(model)]
 
 	max_possible_data <-
 		max_possible_data[do.call("order", as.list(max_possible_data[,rev(names(max_possible_data))])),]
@@ -181,7 +180,7 @@ get_max_possible_data <- function(model) {
 #'
 #' Create a list containing the data to be passed to stan
 #'
-#' @param model A model created by \code{make_model}
+#' @param model A probabilistic causal model created by \code{make_model}
 #' @param data A data frame with observations
 #' @param lambdas_prior A vector containg priors for lambda
 #' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.

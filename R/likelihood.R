@@ -13,8 +13,8 @@ get_likelihood_helpers <- function(model){
 
 	# Get variables in order of exogeneity
 	variables <- c(
-		attr(model, "exogenous_variables"),
-		attr(model, "endogenous_variables")
+		gbiqq::get_exogenous_vars(model),
+		gbiqq::get_endogenous_vars(model)
 	)
 	variables_reversed <- variables[length(variables):1]
 
@@ -165,9 +165,9 @@ trim_strategies <- function(model, data){
 		out
 	}))
 
-	delete_strategies <- !apply(data_events_w_NA, 1, function(x) all(is.na(x)))
+	delete_strategies <- !apply(	data_events_w_NA, 1, function(x) all(is.na(x)))
 	r_names <- rownames(data_events)
-	trimmed_data_events <- data_events_w_NA[delete_strategies, ]
+	trimmed_data_events <- 	data_events_w_NA[delete_strategies, ]
   rownames(trimmed_data_events) <- 1:nrow(trimmed_data_events)
 	trimmed_data_events
 

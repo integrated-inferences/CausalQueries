@@ -1,6 +1,6 @@
 #' Puts your DAG into daggity syntax (useful for using their plotting functions)
 #'
-#' @param dag a dag from a model created by make_model()
+#' @param dag A dag created by make_dag()
 #'
 #' @export
 #'
@@ -8,12 +8,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' model <- make_model(
+#' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
-#' translate_dagitty(model$dag)
+#' translate_dagitty(dag)
 #' }
 #'
 translate_dagitty <- function(dag){
@@ -33,17 +33,17 @@ translate_dagitty <- function(dag){
 #'
 #' @examples
 #' \dontrun{
-#' model <- make_model(
+#' dag <- make_dag(
 #'  add_edges(parent = "X",children = c("K","Y")),
 #'  add_edges(parent = "K",children = "Y")
 #' )
 #'
-#' plot_dag(model)
+#' plot_dag(dag)
 #' }
 #'
 
-plot_dag <- function(model){
-	dag <- model$dag
+plot_dag <- function(pcm){
+	dag <- pcm$dag
 	dagitty_dag <- translate_dagitty(dag = dag)
 	plot(dagitty::graphLayout(dagitty_dag))
 }

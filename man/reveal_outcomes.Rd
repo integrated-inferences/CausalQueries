@@ -7,7 +7,7 @@
 reveal_outcomes(model, dos = NULL)
 }
 \arguments{
-\item{model}{A model created by \code{make_model}}
+\item{model}{A model as created by \code{make_model}}
 
 \item{dos}{A list of do actions  e.g. \code{list(X = 0, M = 1)}}
 }

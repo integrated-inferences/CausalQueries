@@ -7,7 +7,7 @@
 get_expanded_types(model)
 }
 \arguments{
-\item{model}{A model as created by \code{make_model}}
+\item{model}{A dag as created by \code{make_dag}}
 }
 \value{
 types

@@ -4,7 +4,7 @@
 \alias{plot_dag}
 \title{Plot your dag using dagitty}
 \usage{
-plot_dag(model)
+plot_dag(pcm)
 }
 \arguments{
 \item{dag}{A dag created by make_dag()}
@@ -17,12 +17,12 @@ Plot your dag using dagitty
 }
 \examples{
 \dontrun{
-model <- make_model(
+dag <- make_dag(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
-plot_dag(model)
+plot_dag(dag)
 }
 
 }

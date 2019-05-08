@@ -7,7 +7,7 @@
 get_possible_data_internal(model, collapse = TRUE)
 }
 \arguments{
-\item{model}{A model created by \code{make_model}}
+\item{model}{A probabilistic causal model created by \code{make_model}}
 }
 \value{
 a list

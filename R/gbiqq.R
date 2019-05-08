@@ -2,7 +2,7 @@
 #' Fit stan model
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
-#' @param model A model as created by \code{make_model}
+#' @param dag A dag as created by \code{make_dag}
 #' @param data A data frame with observations
 #' @importFrom rstan stan
 #' @importFrom Rcpp cpp_object_initializer
