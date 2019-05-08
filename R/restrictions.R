@@ -1,44 +1,41 @@
-
-
-
 #' Restrict a model
 #'
 #' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 #'
 #' @param model a model created by make_model()
-#' @param restrictions a list of character vectors. Names in list should match dag's variables. Restrictions are specificified by as nodal types.
+#' @param restrictions a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
+#' @param do a list containing the names of variables and their assigned value.
 #' @export
-#' @return A dag with restrictions and nodal types saved as attributes.
+#' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
-#' XYdag <- make_model(add_edges(parent = "X", children = c("Y")))
+#' XYmodel <- make_model(add_edges(parent = "X", children = c("Y")))
 #' # restrictions can be specified following nodal_types syntax
-#' reduce_nodal_types(model = XYdag, restrictions = list(X = "X0", Y = "Y00"))
+#' restrict_nodal_types(model = XYmodel, restrictions = list(X = "X0", Y = "Y00"))
 #'
 #' # or alternatively variable name can be omitted from restriction
-#' reduce_nodal_types(dag = XYdag, restrictions = list(X = "0", Y = "00"))
+#' restrict_nodal_types(model = XYmodel, restrictions = list(X = "0", Y = "00"))
 #'
 #' # A particularly important restriction is the do operator that removes all but one nodal_type from a node
-#' reduce_nodal_types(model = XYdag, dos = list(X = 1))
-#' reduce_nodal_types(model = XYdag, dos = list(Y = 0))
+#' restrict_nodal_types(model = XYmodel, dos = list(X = 1))
+#' restrict_nodal_types(model = XYmodel, dos = list(Y = 0))
 #'
 #' # Restrictions can be iteratively applied
-#' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "10"))
-#' my_model <-  reduce_nodal_types(model = my_model, do = list(X = 1))
+#' my_model <-  restrict_nodal_types(model = XYmodel, restrictions = list(Y = "10"))
+#' my_model <-  restrict_nodal_types(model = my_model, do = list(X = 1))
 #' get_indicator_matrix(my_model)
 #'
 #' # Restrictions can be  with wildcards
-#' my_model <-  reduce_nodal_types(model = XYdag, restrictions = list(Y = "?0"))
+#' my_model <-  restrict_nodal_types(model = XYmodel, restrictions = list(Y = "?0"))
 #' get_indicator_matrix(my_model)
 
-
-
-reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
+restrict_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 
 	if(is.null(restrictions)  & is.null(dos))  stop("Provide either types to restrict or variables to fix")
 	if(!is.null(restrictions) & !is.null(dos)) stop("Provide either types to restrict or variables to fix")
 
-	variables       <- get_variables(model)
+	variables <-  	c(attr(model, "exogenous_variables"),
+									  attr(model, "endogenous_variables"))
 	nodal_types     <- get_nodal_types(model)
 
 	# Stop if none of the names of the restrictions vector matches variables in dag
@@ -135,7 +132,8 @@ reduce_nodal_types <- function(model, restrictions = NULL, dos = NULL){
 
 reduce_lambda <- function(model, lambda){
 
-	variables   <- get_variables(model)
+	variables <-  	c(attr(model, "exogenous_variables"),
+									  attr(model, "endogenous_variables"))
 	nodal_types <- get_nodal_types(model)
 	type_names  <- get_type_names(nodal_types)
 	lambda      <- lambda[type_names]

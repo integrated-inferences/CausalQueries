@@ -233,7 +233,6 @@ get_chains <- function(model) {
 #'
 #' @param variables A dag created by make_dag()
 #'
-#' @export
 #'
 #' @return A list of data realizations
 get_observable_data <- function(variables){
@@ -261,7 +260,6 @@ get_observable_data <- function(variables){
 #'
 #' @param A probabilistic causal model created by make_model()
 #'
-#' @export
 #'
 #' @return A list of the numbers of endogenous types
 get_n_endogenous_types <- function(model){
@@ -277,8 +275,6 @@ get_n_endogenous_types <- function(model){
 #'
 #' @param A probabilistic causal model created by make_model()
 #'
-#' @export
-#'
 #' @return A list of the children of exogenous variables
 get_children_of_exogenous <- function(model){
 	dag <- model$dag
@@ -287,6 +283,143 @@ get_children_of_exogenous <- function(model){
 				 	names(gbiqq::get_parents(model))[sapply(X = gbiqq::get_parents(model),
 				 																					FUN = function(parents) exogenous_variable %in% parents ) ] },
 				 simplify = FALSE
+	)
+}
+
+
+#' Get endogenous variables in a DAG which are also terminal
+#'
+#' FUNCTION_DESCRIPTION
+#'
+#' @param dag DESCRIPTION.
+#'
+#' @return RETURN_DESCRIPTION
+#'
+#'
+get_terminal_vars <- function(model){
+	dag <- model$dag
+	children <- unique(dag$children)
+	return(
+		as.character(children[!(children %in% dag$parent)])
+	)
+}
+
+
+
+
+#' Get list of ancestor variables in a dag
+#'
+#' @param A probabilistic causal model created by make_model()
+#'
+#'
+#' @return A list of ancestors in a DAG
+#'
+#' @examples
+#'
+#' \dontrun{
+#' dag <- make_dag(
+#'  add_edges(parent = "X",children = c("K","Y")),
+#'  add_edges(parent = "K",children = "Y")
+#' )
+#'
+#' get_ancestors(dag)
+#' }
+#'
+
+get_ancestors <- function(model) {
+	dag <- model$dag
+	chains <- get_chains(model)
+	exogenous <- get_exogenous_vars(model)
+
+	endogenous_parents <-
+		sapply(X = names(chains),
+					 FUN = function(endog_name) {
+
+					 	parents <- unlist(chains[[endog_name]])
+
+					 	setdiff(x = unique(c(base::intersect(parents, exogenous),
+					 											 base::setdiff(parents, exogenous))),
+					 					y = endog_name)
+					 })
+
+	exogenous_parents <-
+		sapply(exogenous,
+					 FUN = function(vars) { character(0) },
+					 simplify = FALSE)
+
+	return(append(x = exogenous_parents,
+								values = endogenous_parents))
+
+}
+
+## OLD VERSION
+# get_types <- function(dag){
+#
+# 	parents <- get_parents(dag)
+#
+# 	n_variables <- length(parents)
+#
+# 	variable_names <- names(parents)
+#
+# 	n_parents <- sapply(parents,length)
+#
+# 	types <- lapply(
+# 		X = n_parents,
+# 		FUN = function(parent_n){
+# 			type_mat <- perm(rep(2,2^parent_n))
+# 			if(parent_n == 0){
+# 				labels <- NULL
+# 			} else {
+# 				input_mat <- perm(rep(2,parent_n))
+# 				labels <- apply(input_mat,1,paste,collapse = "")
+# 			}
+# 			colnames(type_mat) <- labels
+# 			return(type_mat)
+# 		}
+# 	)
+# 	return(types)
+# }
+
+#' Get exogenous variables in a DAG
+#'
+#' @param A probabilistic causal model created by make_model()
+#'
+#'
+#' @return A vector of exogenous variables
+get_exogenous_vars <- function(model){
+	dag <- model$dag
+	parents <- unique(dag$parent)
+	return(
+		as.character(parents[!(parents %in% dag$children)])
+	)
+}
+
+
+
+#' Get endogenous variables in a DAG
+#'
+#' @param A probabilistic causal model created by make_model()
+#'
+#'
+#' @return A vector of endogenous variables
+get_endogenous_vars <- function(model){
+	dag <- model$dag
+	return(
+		c(setdiff(as.character(unique(dag$children)), get_terminal_vars(model)), get_terminal_vars(model))
+	)
+}
+
+
+#' Get variable names from a DAG
+#'
+#' @param A probabilistic causal model created by make_model()
+#'
+#'
+#' @return A vector of variable names
+get_variables <- function(model){
+
+	return(
+		c(get_exogenous_vars(model), get_endogenous_vars(model))
 	)
 }
 

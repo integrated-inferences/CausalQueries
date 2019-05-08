@@ -7,7 +7,7 @@
 get_nodal_types(model, collapse = TRUE)
 }
 \arguments{
-\item{A}{probabilistic causal model created by make_model()}
+\item{model}{A model created by make_model()}
 }
 \value{
 A list of parents in a DAG
@@ -17,12 +17,12 @@ As type labels are hard to interpret for large models, the type list includes an
 }
 \examples{
 \dontrun{
-dag <- make_dag(
+model <- make_model(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
-get_types(dag)
+get_nodal_types(model)
 }
 
 }

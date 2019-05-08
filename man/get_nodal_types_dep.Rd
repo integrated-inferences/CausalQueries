@@ -8,7 +8,7 @@ Nodal types are created by concatening variables and their possible data. Used f
 get_nodal_types_dep(model)
 }
 \arguments{
-\item{model}{A dag as created by \code{make_dag}}
+\item{model}{A model created by \code{make_model}}
 }
 \value{
 types

@@ -3,7 +3,7 @@
 #'
 #' Get matrix that maps types to data realizations
 #'
-#' @param model A probabilistic causal model created by \code{make_model}
+#' @param model A model created by \code{make_model}
 #'
 #' @return A data frame that maps types (rows) to possible data realizations (columns).
 #'
@@ -56,7 +56,7 @@ get_ambiguities_matrix <- function(model){
 #'
 #' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
-#' @param model A model as created by \code{make_model}
+#' @param model A model created by \code{make_model}
 #' @param dos  A list of do actions  e.g. \code{list(X = 0, M = 1)}
 #' @return revealed_data
 #' @export
@@ -74,8 +74,8 @@ reveal_outcomes <- function(model, dos = NULL){
 
 	types           <- gbiqq::get_expanded_types(model)
 	nodal_types     <- get_nodal_types(model, collapse = FALSE)
-	exogenous_vars  <- get_exogenous_vars(model)
-	endogenous_vars <- get_endogenous_vars(model)
+	exogenous_vars  <- attr(model, "exogenous_variables")
+	endogenous_vars <- attr(model, "endogenous_variables")
 	types_of_exogenous         <- data.frame(types[, exogenous_vars])
 	names(types_of_exogenous)  <- exogenous_vars
 	types_of_endogenous        <- data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
@@ -99,6 +99,7 @@ reveal_outcomes <- function(model, dos = NULL){
 				nodal_label    <- apply(nodal_type_var, 1,paste, collapse ="")
 
 				J <- sapply(1:length(child_type), function(i){
+
 					type        <- child_type[i]
 					parents_val <- data_realizations[i, parents]
 					parents_val <- paste(parents_val, collapse = "")

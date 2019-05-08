@@ -7,7 +7,7 @@
 translate_dagitty(dag)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{dag}{a dag from a model created by make_model()}
 }
 \value{
 dagitty translation of DAG
@@ -17,12 +17,12 @@ Puts your DAG into daggity syntax (useful for using their plotting functions)
 }
 \examples{
 \dontrun{
-dag <- make_dag(
+model <- make_model(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
-translate_dagitty(dag)
+translate_dagitty(model$dag)
 }
 
 }

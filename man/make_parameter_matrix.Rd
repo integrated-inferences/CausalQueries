@@ -4,11 +4,19 @@
 \alias{make_parameter_matrix}
 \title{Make parameter matrix}
 \usage{
-make_parameter_matrix(model)
+make_parameter_matrix(model, confound = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 }
 \description{
 Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
+}
+\examples{
+model <- make_model(add_edges(parent = "X", children = "Y"))
+confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
+make_parameter_matrix(model = model, confound = confound)
+model <- make_model("X" \%->\% "M", "M" \%->\% "Y")
+confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
+make_parameter_matrix(model = model, confound = confound)
 }

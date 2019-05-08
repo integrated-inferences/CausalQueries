@@ -7,7 +7,7 @@
 make_gbiqq_data(model, data)
 }
 \arguments{
-\item{model}{A probabilistic causal model created by \code{make_model}}
+\item{model}{A model created by \code{make_model}}
 
 \item{data}{A data frame with observations}
 

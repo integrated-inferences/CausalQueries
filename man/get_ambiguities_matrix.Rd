@@ -7,7 +7,7 @@
 get_ambiguities_matrix(model)
 }
 \arguments{
-\item{model}{A probabilistic causal model created by \code{make_model}}
+\item{model}{A model created by \code{make_model}}
 }
 \value{
 A data frame that maps types (rows) to possible data realizations (columns).

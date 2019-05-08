@@ -71,6 +71,11 @@ make_model <- function(...){
 
 	dag <- list(dag = dag[order(gen, dag[,1], dag[,2]),], step = "dag" )
 
+	endogenous_variables <- as.character(unique(dag$dag$children))
+	exogenous_variables  <- as.character(unique(dag$dag$parent[!dag$dag$parent %in% endogenous_variables]))
+	attr(dag, "endogenous_variables") <- endogenous_variables
+	attr(dag, "exogenous_variables")  <- exogenous_variables
+
 	model <- set_priors(dag)
 
 	class(model) <- "probabilistic_causal_model"
