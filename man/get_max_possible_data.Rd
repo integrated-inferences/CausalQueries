@@ -7,7 +7,7 @@
 get_max_possible_data(model)
 }
 \arguments{
-\item{A}{probabilistic causal model created by make_model()}
+\item{A}{model created by make_model()}
 }
 \value{
 A data frame
