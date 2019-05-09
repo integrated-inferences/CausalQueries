@@ -61,6 +61,7 @@ make_model <- function(...){
 
 	gen <- rep(NA, nrow(dag))
 	j = 1
+	# assign 1 to exogenous variables
 	gen[!(dag$parent %in% dag$children)] <- j
 	while(sum(is.na(gen))>0) {
 		j <- j+1
@@ -68,15 +69,21 @@ make_model <- function(...){
 		if(all(x[is.na(gen)])) stop(paste("Cycling at generation ", j))
   	gen[!x & is.na(gen)] <- j
   	}
+#	dag$generation <- gen
 
-	dag <- list(dag = dag[order(gen, dag[,1], dag[,2]),], step = "dag" )
+	# Model is a list
+	model <- list(dag = dag[order(gen, dag[,1], dag[,2]),],
+								step = "dag" )
 
-	endogenous_variables <- as.character(unique(dag$dag$children))
-	exogenous_variables  <- as.character(unique(dag$dag$parent[!dag$dag$parent %in% endogenous_variables]))
-	attr(dag, "endogenous_variables") <- endogenous_variables
-	attr(dag, "exogenous_variables")  <- exogenous_variables
+	# Add a unique ordering of variables such that no earlier variables are caused by later variables
+	endog_node <- as.character(rev(unique(rev(model$dag$children))))
+	.exog_node <- as.character(rev(unique(rev(model$dag$parent))))
+	exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
+	model$variables  <- c(exog_node, endog_node)
+	attr(model, "endogenous_variables") <- endog_node
+	attr(model, "exogenous_variables")  <- exog_node
 
-	model <- set_priors(dag)
+	model <- set_priors(model)
 
 	class(model) <- "probabilistic_causal_model"
 
