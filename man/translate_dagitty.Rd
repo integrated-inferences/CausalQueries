@@ -13,7 +13,7 @@ translate_dagitty(model)
 dagitty translation of DAG
 }
 \description{
-Puts your DAG into daggity syntax (useful for using their plotting functions)
+If confounds are indicated (provided in \code{attr(model$P, "confounds")}), then these are represented as bidirectional arcs.
 }
 \examples{
 \dontrun{

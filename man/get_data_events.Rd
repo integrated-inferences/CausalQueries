@@ -9,7 +9,7 @@ get_data_events(data, model)
 \arguments{
 \item{data}{A data.frame of variables that can take three values: 0, 1, and NA}
 
-\item{model}{A moswl created by make_model()}
+\item{model}{A model created by make_model()}
 }
 \value{
 A vector of data events
