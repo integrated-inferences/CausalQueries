@@ -4,25 +4,21 @@
 \alias{translate_dagitty}
 \title{Puts your DAG into daggity syntax (useful for using their plotting functions)}
 \usage{
-translate_dagitty(dag)
+translate_dagitty(model)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{model}{A model created by make_model()}
 }
 \value{
 dagitty translation of DAG
 }
 \description{
-Puts your DAG into daggity syntax (useful for using their plotting functions)
+If confounds are indicated (provided in \code{attr(model$P, "confounds")}), then these are represented as bidirectional arcs.
 }
 \examples{
 \dontrun{
-dag <- make_dag(
- add_edges(parent = "X",children = c("K","Y")),
- add_edges(parent = "K",children = "Y")
-)
-
-translate_dagitty(dag)
+model <- make_model(X \%->\% Y)
+translate_dagitty(model)
 }
 
 }

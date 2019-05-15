@@ -4,10 +4,10 @@
 \alias{get_likelihood_helpers}
 \title{get_likelihood_helpers}
 \usage{
-get_likelihood_helpers(dag)
+get_likelihood_helpers(model)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{model}{A probabilistic causal model created by make_model()}
 }
 \value{
 Returns indices and ambiguity matrix
