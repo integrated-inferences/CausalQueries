@@ -4,10 +4,10 @@
 \alias{plot_dag}
 \title{Plot your dag using dagitty}
 \usage{
-plot_dag(dag)
+plot_dag(model)
 }
 \arguments{
-\item{dag}{A dag created by make_dag()}
+\item{model}{A dag created by make_model()}
 }
 \value{
 dagitty translation of DAG
@@ -17,12 +17,12 @@ Plot your dag using dagitty
 }
 \examples{
 \dontrun{
-dag <- make_dag(
+model <- make_model(
  add_edges(parent = "X",children = c("K","Y")),
  add_edges(parent = "K",children = "Y")
 )
 
-plot_dag(dag)
+plot_dag(model)
 }
 
 }
