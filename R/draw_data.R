@@ -11,7 +11,13 @@
 
 draw_lambda <- function(model){
 
-	if(is.null(model$lambda_priors)) model <- set_priors(model)
+	if(is.null(model$lambda_priors)) {model <- set_priors(model)
+	                                  message(paste("Priors missing from model. Generated on the fly."))
+	}
+	if(is.null(model$P)) {model <- set_parameter_matrix(model)
+												message(paste("Parameter matrix missing from model. Generated on the fly."))
+	}
+
 	lambdas_prior <- model$lambda_priors
 	param_set     <- attr(model$P, "param_set")
 
