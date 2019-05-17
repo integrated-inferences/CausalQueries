@@ -3,7 +3,7 @@
 #'
 #' @param model A dag created by make_dag()
 #'
-#' @export
+
 #'
 #' @return A list of mappings between types
 get_ambiguities <- function(model){
@@ -79,7 +79,7 @@ make_ambiguity_matrix_internal <- function(ambiguities){
 #'
 #' @param dag A dag created by make_dag()
 #'
-#' @export
+
 #'
 #' @return A list of mappings between types
 make_ambiguity_matrices <- function(model){
@@ -105,7 +105,7 @@ make_ambiguity_matrices <- function(model){
 #'
 #' @param model A dag created by make_dag()
 #'
-#' @export
+
 #'
 #' @return A list of mappings between types and data
 map_types_to_data <- function(model){
@@ -144,7 +144,7 @@ map_types_to_data <- function(model){
 #'
 #' @param model A dag created by make_dag()
 #'
-#' @export
+
 #'
 #' @return A list of pi helpers
 get_pi_expanders <- function(pi,model){
@@ -186,7 +186,7 @@ get_pi_expanders <- function(pi,model){
 #' get_chains(test_dag)
 #' }
 #'
-#' @export
+
 get_chains <- function(model) {
 	dag <- model$dag
 	n <- 0
@@ -411,7 +411,6 @@ get_endogenous_vars <- function(model){
 
 
 #' Get variable names from a DAG
-#'
 #' @param A probabilistic causal model created by make_model()
 #'
 #'
