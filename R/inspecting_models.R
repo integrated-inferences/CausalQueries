@@ -199,6 +199,14 @@ perm <- function(v) {
 #'
 #' @return A list containing the types and the evaluated expression
 #'
+#' @examples
+#' model <- make_model("X"%->%"M", "X"%->%"Y", "M"%->%"Y")
+#' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
+#' x <- get_types(model, query)
+#' x$types[x$types]
+#' query <- "Y[M=M[X=0], X=1]==1"
+#' x <- get_types(model, query)
+#' x$types[x$types]
 
 get_types <- function(model, query){
 
@@ -307,9 +315,9 @@ get_types <- function(model, query){
 	names(types) <- colnames(model$P)
 
 
-	return_list <- list(types = types,
-											query = query,
-											exp = eval_var)
+	list(types = types,
+			 query = query,
+			 exp   = eval_var)
 
 }
 
