@@ -54,10 +54,10 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 		})
 		stop(	error_text )}
 
-  # Check alpha strictly positive
+	# Check alpha strictly positive
 	if(any(	alphas_vector  <= 0)) stop("alphas must be strictly positive real numbers")
 
-  # Calculate lambda_priors
+	# Calculate lambda_priors
 	if(!is.null(prior_distribution)){
 		if(prior_distribution == "uniform")   lambda_priors <- rep(1, n_params )
 		if(prior_distribution == "jeffreys")  lambda_priors <- rep(0.5, n_params )
@@ -67,13 +67,13 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 		if(n_alphas == 1)                     lambda_priors <- rep(alphas, n_params)
 		if(n_alphas == n_params)              lambda_priors <- alphas}
 
-  # Substitute alpha vector when provided
-  lambda_priors[alpha_names] <- alphas_vector
+	# Substitute alpha vector when provided
+	lambda_priors[alpha_names] <- alphas_vector
 
-  # result
+	# result
 	names(lambda_priors)       <- par_names
 	lambda_priors
-	}
+}
 
 
 #' Set prior distribution
@@ -97,6 +97,25 @@ set_priors  <- function(model,  lambda_priors = NULL, prior_distribution = "unif
    model
 }
 
+
+
+#' Get prior distribution
+#'
+#' @param model A model created by make_model()
+#' @param lambda_priors Vector of Dirichlet hyperparameters
+#' @param prior_distribution A character indicating the prior distribuiton
+#' @param alphas the hyperparameters of the dirichlet distribution.
+#'
+#' @export
+
+get_priors  <- function(model,  lambda_priors = NULL, prior_distribution = "uniform", alphas = NULL) {
+
+	if(!is.null(model$lambda_priors)) return(model$lambda_priors)
+
+	message(paste("Priors missing from model. Generated on the fly."))
+	make_priors(model, prior_distribution = prior_distribution, alphas = alphas)
+
+}
 
 
 #' Add prior distribution draws

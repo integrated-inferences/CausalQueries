@@ -71,9 +71,9 @@ get_data_events <- function(data, model){
 
 	# Stop if observed data is not in conflict with restrictions
 	inconsistencies <- !apply(data, 1, function(observed){
-		  any(apply(revealed_data, 1, function(possible){
-		  	!any(possible[!is.na(observed)] != observed[!is.na(observed)])}
-		  	))
+		any(apply(revealed_data, 1, function(possible){
+			!any(possible[!is.na(observed)] != observed[!is.na(observed)])}
+		))
 	})
 
 	if(any(inconsistencies)){
@@ -81,32 +81,32 @@ get_data_events <- function(data, model){
 	}
 
 	# replace "" with na and remove rows where all values are na
-  data <- data[!apply(data, 1,  function(x) all(is.na(x) | x == "")),]
+	data <- data[!apply(data, 1,  function(x) all(is.na(x) | x == "")),]
 	data[is.na(data)] <- ""
 
 
-  # Data events dataframe
+	# Data events dataframe
 	data_type <- apply(X = data, MARGIN = 1, FUN = function(row){
 		paste0(variables[!(row == "")],row[!(row == "")], collapse = "")})
 
 	data_events <- data.frame(event = possible_events,
-									 strategy   = rep(possible_strategies, i_strategy),
-									 count = 0,
-									 stringsAsFactors = FALSE,
-									 row.names = NULL)
+														strategy   = rep(possible_strategies, i_strategy),
+														count = 0,
+														stringsAsFactors = FALSE,
+														row.names = NULL)
 
 	data_events$count <- sapply(data_events$event, function(j) sum(data_type == paste(j)))
 
 	# Output
 	list(
-			data_events       = data_events,
-			observed_events   = with(data_events, unique(event[count>0])),
-			unobserved_events = with(data_events, unique(event[count==0])),
-			used_strategies   = with(data_events, unique(strategy[count>0])),
-			unused_strategies = with(data_events, unique(strategy[count==0]))
-		)
+		data_events       = data_events,
+		observed_events   = with(data_events, unique(event[count>0])),
+		unobserved_events = with(data_events, unique(event[count==0])),
+		used_strategies   = with(data_events, unique(strategy[count>0])),
+		unused_strategies = with(data_events, unique(strategy[count==0]))
+	)
 
-	}
+}
 
 
 #'
@@ -164,8 +164,8 @@ get_max_possible_data <- function(model) {
 	max_possible_data <-
 		Reduce(f = merge,
 					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
-  variables <- 	c(attr(model, "exogenous_variables"),
-  								attr(model, "endogenous_variables"))
+	variables <- 	c(attr(model, "exogenous_variables"),
+									attr(model, "endogenous_variables"))
 	max_possible_data <- max_possible_data[variables]
 
 	max_possible_data <-
@@ -197,10 +197,10 @@ get_max_possible_data <- function(model) {
 #'
 make_gbiqq_data <- function(model, data){
 
-	P                  <- if(!is.null(model$P)) model$P else get_parameter_matrix(model)
-	lambdas_prior      <- model$lambda_priors
+	P                  <- get_parameter_matrix(model)
 	param_set          <- attr(P, "param_set")
-	if(length(lambdas_prior) != length(param_set)) stop("lambda priors should have same length as parameter set")
+	model$lambda_priors <- get_priors(model)
+	if(length(model$lambda_priors) != length(param_set)) stop("lambda priors should have same length as parameter set")
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
 	data_events        <- trim_strategies(model, data)
@@ -211,16 +211,16 @@ make_gbiqq_data <- function(model, data){
 	w_starts           <- which(!duplicated(strategies))
 	k                  <- length(strategies)
 	w_ends             <- if(n_strategies < 2) k else c(w_starts[2:n_strategies]-1, k)
-  n_param_each       <- sapply(param_sets, function(j) sum(param_set ==j))
-  l_ends             <- cumsum(n_param_each)
-  l_starts           <- c(1, l_ends[1:(n_param_sets-1)] + 1)
+	n_param_each       <- sapply(param_sets, function(j) sum(param_set ==j))
+	l_ends             <- cumsum(n_param_each)
+	l_starts           <- c(1, l_ends[1:(n_param_sets-1)] + 1)
 
  list(n_params        = nrow(P),
 			n_param_sets    = n_param_sets,
 			n_param_each    = n_param_each,
 			l_starts        = l_starts,
 			l_ends          = l_ends,
-			lambdas_prior   = lambdas_prior,
+			lambdas_prior   = model$lambda_priors,
 			n_types         = ncol(P),
 			n_data          = nrow(get_max_possible_data(model)),
 			n_events        = nrow(A_w),
