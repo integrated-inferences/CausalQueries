@@ -20,7 +20,7 @@ library(gbiqq)
 library(dplyr)
 ```
 
-We will walk through a simple model in which $X$ causes $Y$. We will assume uninformative priors ("Jeffrey's priors").
+We will walk through a simple model in which $X$ causes $Y$. We will assume uninformative priors ("Jeffreys priors").
 
 # Define the model
 
