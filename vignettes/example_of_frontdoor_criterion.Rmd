@@ -1,0 +1,138 @@
+---
+title: "Inference from a mediator"
+author: "Macartan"
+date: "April 27, 2019"
+output:
+  html_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(gbiqq)
+library(dplyr)
+```
+
+# A model with possible confounding
+
+We explore a model where a front door type criterion is satisfied: $X\rightarrow M \rightarrow Y$ but $X$ is less likely in cases where $Y=1$ regardless.
+
+With simple $X,Y$ data we greatly underestimate the effect of $X$ on $Y$ because of confounding; with full data on $M$ we do very well; but we also do well even with quite partial data on $M$, eg for 40 out of 20,000 cases.
+
+
+```{r}
+model    <- make_model("X" %->% "M", "M" %->% "Y")
+P        <- make_parameter_matrix(model, list(ancestor = c(X="X"), descendent_type = list( Y = "11" )))
+model    <- set_parameter_matrix(model, P)
+model    <- set_priors(model)
+```
+
+Graph it:
+
+```{r}
+plot_dag(model)
+```
+
+
+
+# Draw data
+
+We imagine a true model with a treatment effect of .25 but negative confounding. 
+
+
+```{r}
+# true lambda
+true_lambda = c(.8, .2,
+                .5, .5,
+                .25, .5, 0, .25,
+                .25, .5, 0, .25)
+           
+```
+
+Generate three data frames: full XMY data, XY data only, XY and small M data
+
+```{r}
+n <- 20000
+
+data       <- dataXY <- data_partial <- simulate_data(model, n = n, lambda = true_lambda)
+dataXY$M   <- NA
+data_partial$M[sample(1:n, n - 50)] <- NA
+
+
+```
+
+
+Naive analysis:
+
+```{r}
+with(data, lm(Y~X)$coef)
+
+```
+
+Note that the the estiamted ATE is too low -- about half of what it should be.
+
+
+
+
+# Calculate posteriors given different types of data
+
+
+```{r, include = FALSE}
+
+# X, Y data only
+updated_XY      <- gbiqq(model, dataXY)
+
+# Full Data
+updated_full    <- gbiqq(model, data)
+
+# Partial Data
+updated_partial <- gbiqq(model, data_partial)
+```
+
+
+```{r, eval = FALSE}
+
+# X, Y data only
+updated_XY       <- gbiqq(model, dataXY)
+
+# Full Data
+updated_full     <- gbiqq(model, data)
+
+# Partial Data
+updated_partial  <- gbiqq(model, data_partial)
+```
+
+
+# Illustrate joint posteriors 
+
+We'll make a function to graph posteriors:
+
+```{r}
+
+
+
+plot_posterior <- function(updated, main = "", prior = FALSE) {
+  if(prior) {lambdas <- data.frame(t(replicate(4000, draw_lambda(model)))) 
+  } else {
+  lambdas <- data.frame(rstan::extract(updated$posterior, pars= "lambdas")$lambdas)
+  names(lambdas) <- names(model$lambda_priors)}
+  lambdas$ATE      <- with(lambdas, M.M01*(Y.Y01 - Y.Y10) + M.M10*(Y.Y10 - Y.Y01))
+  lambdas$confound <- with(lambdas, XY11.X1Y11 - X.X1)
+  with(lambdas, plot(confound, ATE, xlim = c(-1,1), ylim = c(-.5, .5), main = main))
+  abline(v = -.3, col = "red")
+  abline(a = .25, b = 0, col = "red")
+  abline(v = mean(lambdas$confound))
+  abline(a = mean(lambdas$ATE), b = 0)
+}
+
+par(mfrow = c(2,2))
+
+plot_posterior(model, main = "prior", prior = TRUE)
+plot_posterior(updated_XY, main = "data on X,Y only")
+plot_posterior(updated_full, main = "full data on X, Y and M")
+plot_posterior(updated_partial, main = "XY for all, M for some")
+```
+
+
