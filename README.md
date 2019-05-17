@@ -29,18 +29,23 @@ Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There
 
 The DAG is defined like this:
 
-```model    <- make_model("X" %->% "M", "M" %->% "Y")```
+```
+model    <- make_model("X" %->% "M", "M" %->% "Y")
+```
 
 To add the confounding we have to alow an additional parameter that allows a possibly differnet assignment probability for `X` given a causal type for `Y`.
 
 
 ```
-P        <- make_parameter_matrix(model, list(ancestor = c(X = "X"), descendent_type = list(Y = "11")))
-model <- set_parameter_matrix(model, P)
+model <- set_parameter_matrix(model,
+                              confound = list(ancestor = c(X = "X"), descendent_type = list(Y = "11")))
 ```
+
 We then set priors thus:
 
-```model <- set_priors(model)```
+```
+model <- set_priors(model)
+```
 
 You can plot the dag, making use of functions in the `dagitty` package. 
 
@@ -51,10 +56,10 @@ plot_dag(model)
 You can draw data from the model, thus:
 
 ```
-data       <- simulate_data(model, n = 10)
+data <- simulate_data(model, n = 10)
 ```
 
-Updating is done thus:
+Updating is done like this:
 
 
 ```
@@ -63,7 +68,8 @@ updated_model <- gbiqq(model, data)
 
 Finally you can calculate an estimand of interest like this:
 
-``` calculate_estimand(
+``` 
+calculate_estimand(
                    model = updated_model, 
                    posterior = TRUE,
                    do_1 = list(X = 1), 
