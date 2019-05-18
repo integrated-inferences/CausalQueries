@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @examples
-#' XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+#' XYdag <- make_dag(add_edges(parent = "X", children = "Y"))
 #' #  Default sets all priors to 1
 #' make_priors(model = XYdag)
 #' #  Set all priors to 0.5
@@ -23,6 +23,10 @@
 #' make_priors(model = XYdag, prior_distribution = NULL,
 #'            alpha =  10)
 make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
+
+	if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty"))) stop(
+		"prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.
+		 Stipulated alpha values override prior_distribution")
 
 	# parameter housekeeping
 	P                  <- get_parameter_matrix(model)

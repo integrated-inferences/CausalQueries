@@ -165,7 +165,7 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
+simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL, strategy = NULL){
 
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
 
@@ -176,6 +176,32 @@ simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
 	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(data_events[i, 2],df[i,])))
 	out <- data.frame(matrix(xx, ncol = ncol(df), byrow = TRUE))
 	names(out) <- names(df)
+
+	if(is.null(strategy)) return(out)
+
 	out
 
  }
+
+
+#' Peek at data given a strategy
+#'
+#' @param complete_data   Data observed and unobserved
+#' @param observed_data   Data observed
+#' @param vars_to_observe  A list of variables to observe
+#' @param n Number of observations to observe of this type
+#' @param subset  A condition for observing data
+#'
+#' @export
+#' @examples
+#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' df <- draw_data(model, n = 4, data_events = data_events)
+#' peek(complete_data = df, vars_to_observe, "X", n = 2)
+
+# A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them
+
+peek <- function(complete_data, observed_data = NULL, vars_to_observe, n, subset = NULL){
+	if(is.null(observed_data)) observed_data <- complete_data; observed_data[,] <- FALSE
+
+
+}

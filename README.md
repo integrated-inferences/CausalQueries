@@ -25,26 +25,28 @@ Our goal is to form beliefs over parameters but also over more substantive estim
 
 ## Example
 
-Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There is, in addition, unobservable confounding between `X` and `Y`.
+Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There is, in addition, unobservable confounding between `X` and `Y`. This is an example of a model in which you might use information on `M` to figure out whether `X` caused `Y`.
 
 The DAG is defined like this:
 
 ```
-model    <- make_model("X" %->% "M", "M" %->% "Y")
+model <- make_model("X" %->% "M", "M" %->% "Y")
 ```
 
-To add the confounding we have to alow an additional parameter that allows a possibly differnet assignment probability for `X` given a causal type for `Y`.
+To add the confounding we have to slow an additional parameter that allows a possibly different assignment probability for `X` given a causal type for `Y`.
 
 
 ```
-model <- set_parameter_matrix(model,
-                              confound = list(ancestor = c(X = "X"), descendent_type = list(Y = "11")))
+model <- set_parameter_matrix(
+                  model,
+                  confound = list(ancestor = c(X = "X"), 
+                                  descendent_type = list(Y = "11")))
 ```
 
 We then set priors thus:
 
 ```
-model <- set_priors(model)
+model <- set_priors(model, prior_distribution = "jeffreys")
 ```
 
 You can plot the dag, making use of functions in the `dagitty` package. 
@@ -53,11 +55,12 @@ You can plot the dag, making use of functions in the `dagitty` package.
 plot_dag(model)
 ```
 
-You can draw data from the model, thus:
+You can draw data from the model, like this:
 
 ```
 data <- simulate_data(model, n = 10)
 ```
+
 
 Updating is done like this:
 
@@ -69,16 +72,16 @@ updated_model <- gbiqq(model, data)
 Finally you can calculate an estimand of interest like this:
 
 ``` 
-calculate_estimand(
+CoE <- calculate_estimand(
                    model = updated_model, 
                    posterior = TRUE,
                    do_1 = list(X = 1), 
                    do_2 = list(X = 0),
-                   q = function(Q1, Q2) Q1$Y == 0 & Q2$Y == 1,
+                   q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0,
                    subset = "X==1 & Y==1"
                    )
 ```
-This uses the posterior distribution and the model to assess the probability that `X=1` was the cause of `Y=1` in those cases in which `X=1` and `Y=1`. The approach is to imagine a set of "do" operations on the model, that control the level of `X` and to inquire about the level of `Y` given these operations, and then to assess how often a given relationship holds within a set that naturally take on particular values of `X` and `Y`.
+This uses the posterior distribution and the model to assess the "causes of effects" estimand: the probability that `X=1` was the cause of `Y=1` in those cases in which `X=1` and `Y=1`. The approach is to imagine a set of "do" operations on the model, that control the level of `X` and to inquire about the level of `Y` given these operations, and then to assess how often a given relationship holds within a set that naturally take on particular values of `X` and `Y`. By the same token this posterior can be calculated conditional on observations of `M`.
 
 ## Credits etc
 

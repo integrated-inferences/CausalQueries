@@ -89,9 +89,9 @@ get_parameter_matrix  <- function(model){
 #'
 #' @export
 #'
-set_parameter_matrix <- function(model, P = NULL){
+set_parameter_matrix <- function(model, P = NULL, confound = NULL){
 
-	if(is.null(P)) P <- make_parameter_matrix(model)
+	if(is.null(P)) P <- make_parameter_matrix(model, confound = confound)
 	model$P <- P
 	message("Parameter matrix attached to model")
 	model

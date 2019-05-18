@@ -83,7 +83,7 @@ hist(estimand, xlim = c(0,1))
 ```
 
 
-Now lets as ask about  the probability that $X=1$ caused $Y=1$ for those cases in which $X=Y=1$. The truth is 0.67 -- that is, given the assumed true dgp, in two thirds of cases with $X=Y=1$, $Y=1$ because $X=1$. This is the "probabilty of causation", PC. However, this quantity is not identified by $X,Y$ data alone. All that we can be sure of is that PC lies between .67 and 1 (see for example Dawid 2015). 
+Now lets ask about  the probability that $X=1$ caused $Y=1$ for those cases in which $X=Y=1$. The right answer is 0.67 -- that is, given the assumed true data generating process, in two thirds of cases with $X=Y=1$, $Y=1$ because $X=1$. This is the "probabilty of causation", PC. However, this quantity is not identified by $X,Y$ data alone. All that we can be sure of is that PC lies between .67 and 1 (see for example Dawid 2015). 
 
 How do our inferences look given the uninformative prior?  
 
@@ -101,4 +101,4 @@ hist(estimand, xlim = c(0,1), main = "Probability of Causation")
 ```
 
 
-We find that they do not converge but they do place positive mass in the right range. Within this range, the shape of the poseterior depends on the priors only. 
+We find that they do not converge but they do place positive mass in the right range. Within this range, the shape of the posterior depends on the priors only. 
