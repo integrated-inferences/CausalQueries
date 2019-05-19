@@ -17,7 +17,7 @@ make_priors(model, prior_distribution = "uniform", alphas = NULL)
 Set priors
 }
 \examples{
-XYdag <- make_dag(add_edges(parent = "X", children = c("Y")))
+XYdag <- make_dag(add_edges(parent = "X", children = "Y"))
 #  Default sets all priors to 1
 make_priors(model = XYdag)
 #  Set all priors to 0.5

@@ -184,24 +184,98 @@ simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL, strat
  }
 
 
-#' Peek at data given a strategy
+#' Observe data, given a strategy
 #'
 #' @param complete_data   Data observed and unobserved
-#' @param observed_data   Data observed
+#' @param observed_data   Data observed so far
 #' @param vars_to_observe  A list of variables to observe
-#' @param n Number of observations to observe of this type
-#' @param subset  A condition for observing data
+#' @param prob    Observation probability
+#' @param n    Number of units to observe; if specified, \code{n} overrides \code{prob}
+#' @param subset  A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
-#' df <- draw_data(model, n = 4, data_events = data_events)
-#' peek(complete_data = df, vars_to_observe, "X", n = 2)
+#' model <- make_model(add_edges(parent = "X", children = "Y"))
+#' df <- simulate_data(model, n = 8)
+#' # Observe X values only
+#' observe(complete_data = df, vars_to_observe = "X")
+#' # Observe half the Y values for cases with observed X = 1
+#' observe(complete_data = df,
+#'      observed = observe(complete_data = df, vars_to_observe = "X"),
+#'      vars_to_observe = "Y", prob = .5,
+#'      subset = "X==1")
 
 # A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them
 
-peek <- function(complete_data, observed_data = NULL, vars_to_observe, n, subset = NULL){
-	if(is.null(observed_data)) observed_data <- complete_data; observed_data[,] <- FALSE
+observe <- function(complete_data,
+								 observed = NULL,
+								 vars_to_observe = NULL,
+								 prob = 1,
+								 m = NULL,
+								 subset = NULL){
 
+	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
+  if(is.null(vars_to_observe)) vars_to_observe <- names(complete_data)
 
+  observed_data <- complete_data
+  observed_data[!observed] <- NA
+
+  # Handle cases with no subsetting; where condition is empty, and when the condition is satisfied
+
+  if(is.null(subset)){ observed[, vars_to_observe] <- TRUE
+
+    }  else {
+
+  strata <- with(observed_data, eval(parse(text = subset)))
+
+  if(max(strata) == 1){
+
+  if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
+
+  show <- randomizr::strata_rs(strata = strata,
+  									strata_prob = c(0, prob)) == 1
+  observed[show, vars_to_observe] <- TRUE
+  }}
+
+  observed
+}
+
+#' Data Strategy
+#' @export
+#' @examples
+#' model <- make_model("X" %->% "M", "M" %->% "Y")
+#' data_strategy(
+#'    model, n = 20,
+#'    vars = list(c("X", "Y"), "M"),
+#'    probs = list(1, .5),
+#'    subsets = list(NULL, "X==Y"))
+
+data_strategy <- function(model,
+	                  n,
+										vars    = list(NULL),
+										probs   = list(NULL),
+										ms      = NULL,
+										subsets = list(NULL)){
+
+#	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
+#		"vars, probs, subsets, should have the same length")
+#	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
+
+	complete_data <- observed <- simulate_data(model, n = n)
+	observed[,] <- FALSE
+
+	j = 1
+	while(j <= length(vars)) {
+	observed <- observe(complete_data,
+											observed = observed,
+											vars_to_observe = vars[[j]],
+											prob = probs[[j]],
+											m = ms[[j]],
+											subset = subsets[[j]])
+	j = j + 1
+	}
+
+	observed_data <- complete_data
+	observed_data[!observed] <- NA
+	observed_data
 }
