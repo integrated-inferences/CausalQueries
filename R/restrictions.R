@@ -11,27 +11,27 @@
 #' @examples
 #' XYmodel <- make_model(add_edges(parent = "X", children = c("Y")))
 #' # restrictions can be specified following nodal_types syntax
-#' restrict_nodal_types(model = XYmodel, restrictions = list(X = "X0", Y = "Y00"))
+#' set_restrictions(model = XYmodel, restrictions = list(X = "X0", Y = "Y00"))
 #'
 #' # or alternatively variable name can be omitted from restriction
-#' restrict_nodal_types(model = XYmodel, restrictions = list(X = "0", Y = "00"))
+#' set_restrictions(model = XYmodel, restrictions = list(X = "0", Y = "00"))
 #'
 #' # A particularly important restriction is the do operator that removes all but one nodal_type from a node
-#' restrict_nodal_types(model = XYmodel, dos = list(X = 1))
-#' restrict_nodal_types(model = XYmodel, dos = list(Y = 0))
+#' set_restrictions(model = XYmodel, dos = list(X = 1))
+#' set_restrictions(model = XYmodel, dos = list(Y = 0))
 #'
 #' # Restrictions can be iteratively applied
-#' my_model <-  restrict_nodal_types(model = XYmodel, restrictions = list(Y = "10"))
-#' my_model <-  restrict_nodal_types(model = my_model, do = list(X = 1))
+#' my_model <-  set_restrictions(model = XYmodel, restrictions = list(Y = "10"))
+#' my_model <-  set_restrictions(model = my_model, do = list(X = 1))
 #' get_indicator_matrix(my_model)
 #'
 #' # Restrictions can be  with wildcards
-#' my_model <-  restrict_nodal_types(model = XYmodel, restrictions = list(Y = "?0"))
+#' my_model <-  set_restrictions(model = XYmodel, restrictions = list(Y = "?0"))
 #' get_indicator_matrix(my_model)
 
-restrict_nodal_types <- function(model, restrictions = NULL, dos = NULL){
+set_restrictions <- function(model, restrictions = NULL, dos = NULL){
 
-	if(is.null(restrictions)  & is.null(dos))  stop("Provide either types to restrict or variables to fix")
+	if(is.null(restrictions)  & is.null(dos))  {message("No restrictions provided"); return(model)}
 	if(!is.null(restrictions) & !is.null(dos)) stop("Provide either types to restrict or variables to fix")
 
 	variables <-  	c(attr(model, "exogenous_variables"),

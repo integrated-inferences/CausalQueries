@@ -21,8 +21,9 @@ Calculated from a prior or posterior distribution
 \examples{
 model <- make_model("X" \%->\% "Y") \%>\%
            set_prior_distribution()
-calculate_multiple_estimands(model,
-           queries = list("Y[X=1] - Y[X=0]", "Y[X=1] > Y[X=0]"),
-					estimand_labels = c("ATE", "Share_positive"))
+
+calculate_multiple_estimands(
+      model,
+      queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
 
 }
