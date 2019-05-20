@@ -16,7 +16,8 @@ Depends:
 Imports:
     dagitty,
     gtools,
-    rstan
+    rstan,
+    dplyr
 Suggests: 
 		testthat
 

@@ -53,7 +53,7 @@ add_edges <- function(parent,children){
 
 # dag <- data.frame(parent = c("X3","X2","X1"), children = c("Y", "X3", "X2"))
 
-make_model <- function(...){
+make_model <- function(..., add_priors = FALSE){
 	dag <- rbind(...)
 
 	# Procedure to order dag
@@ -83,7 +83,7 @@ make_model <- function(...){
 	attr(model, "endogenous_variables") <- endog_node
 	attr(model, "exogenous_variables")  <- exog_node
 
-	model <- set_priors(model)
+	if(add_priors) model <- set_priors(model)
 
 	class(model) <- "probabilistic_causal_model"
 

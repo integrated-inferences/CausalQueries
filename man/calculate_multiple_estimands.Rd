@@ -4,11 +4,9 @@
 \alias{calculate_multiple_estimands}
 \title{Calculate multipl estimands}
 \usage{
-calculate_multiple_estimands(model = make_model("X" \%->\% "Y"),
-  posteriors = list(FALSE), dos = list(op_1 = list(do_1 = list(X = 1),
-  do_2 = list(X = 0))), qs = list(q1 = function(Q1, Q2) Q1$Y == 1 & Q2$Y
-  == 0), subsets = list(TRUE), estimand_labels = NULL, stats = c(mean
-  = mean, sd = sd))
+calculate_multiple_estimands(model, queries = list(NULL),
+  subsets = list(TRUE), posteriors = list(FALSE),
+  estimand_labels = NULL, stats = c(mean = mean, sd = sd))
 }
 \arguments{
 \item{model}{A  model}
@@ -21,15 +19,10 @@ calculate_multiple_estimands(model = make_model("X" \%->\% "Y"),
 Calculated from a prior or posterior distribution
 }
 \examples{
-model <- make_model("X" \%->\% "Y")
-model <- add_prior_distribution(model)
+model <- make_model("X" \%->\% "Y") \%>\%
+           set_prior_distribution()
 calculate_multiple_estimands(model,
-           posteriors = FALSE,
-           dos = list(op_1 =  list(do_1 = list(X = 1), do_2 = list(X = 0)),
-										 op_2 =  list(do_1 = list(X = 1), do_2 = list(X = 0))),
-					qs =  list(q1   =  function(Q1, Q2) Q1$Y -  Q2$Y,
-										 q2   =  function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0),
-					subsets = TRUE,
+           queries = list("Y[X=1] - Y[X=0]", "Y[X=1] > Y[X=0]"),
 					estimand_labels = c("ATE", "Share_positive"))
 
 }

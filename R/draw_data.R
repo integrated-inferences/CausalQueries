@@ -68,11 +68,11 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 
 	if(!posterior){
 		if(is.null(model$prior_distribution)) {
-			message("Model does not contain a prior distribution")
-			lambdas <- t(replicate(n_draws, draw_lambda(model)))
-		} else {
-			lambdas <- model$prior_distribution
-		}}
+			message("Prior distribution added to model")
+			model <- set_prior_distribution(model, n_draws = n_draws)
+		}
+		lambdas <- model$prior_distribution
+		}
 
 	if(posterior){
 		if(is.null(model$posterior_distribution)) {
@@ -258,12 +258,17 @@ data_strategy <- function(model,
 										ms      = NULL,
 										subsets = list(NULL)){
 
-#	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
-#		"vars, probs, subsets, should have the same length")
-#	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
+	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
+		"vars, probs, subsets, should have the same length")
+	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
 
 	complete_data <- observed <- simulate_data(model, n = n)
 	observed[,] <- FALSE
+
+	# Default behavior is to return complete data -- triggered if first strategy step has vars =  null
+	if(is.null(vars[[1]])) return(complete_data)
+
+	# Otherwise work through strategies
 
 	j = 1
 	while(j <= length(vars)) {

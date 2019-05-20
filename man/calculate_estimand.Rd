@@ -4,25 +4,25 @@
 \alias{calculate_estimand}
 \title{Calculate estimand}
 \usage{
-calculate_estimand(model, posterior = FALSE, do_1 = list(X = 1),
-  do_2 = list(X = 0), q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0,
-  subset = TRUE, type_distribution = NULL)
+calculate_estimand(model, query, subset = TRUE, posterior = FALSE,
+  type_distribution = NULL, verbose = TRUE)
 }
 \arguments{
 \item{model}{A  model}
 
-\item{posterior}{if true use a posterior distribution, otherwise use the prior}
+\item{query}{A query on potential otcomes such as "Y[X=1] - Y[X=0]"}
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
-\item{type_distribution}{if provided saves calculatio, otherwise clculated from model; may be based on prior or posterion}
+\item{posterior}{if true use a posterior distribution, otherwise use the prior}
+
+\item{type_distribution}{if provided saves calculation, otherwise clculated from model; may be based on prior or posterior}
 }
 \description{
 Calculated from a prior or posterior distribution
 }
 \examples{
-model <- make_model("X" \%->\% "Y")
-model <- reduce_nodal_types(model, restrictions = list(Y = "Y10"))
-model <- add_prior_distribution(model)
-summary(calculate_estimand(model))
+model <- make_model("X" \%->\% "Y") \%>\%
+         set_prior_distribution()
+estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
 }

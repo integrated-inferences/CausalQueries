@@ -130,9 +130,11 @@ get_priors  <- function(model,  lambda_priors = NULL, prior_distribution = "unif
 #' @param n_draws Number of draws
 #' @export
 #'
-add_prior_distribution <- function(model, n_draws = 4000) {
+set_prior_distribution <- function(model, n_draws = 4000) {
+  if(is.null(model$lambda_priors)) model <- set_priors(model)
+  if(is.null(model$P)) model <- set_parameter_matrix(model)
 
-	model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
+  model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
   message(paste("Prior distribution based on", n_draws, "draws attached to model"))
 	return(model)
 	}

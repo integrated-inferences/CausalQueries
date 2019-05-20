@@ -5,37 +5,37 @@
 #'
 #' @param model A  model
 #' @param posterior if true use a posterior distribution, otherwise use the prior
+#' @param query A query on potential otcomes such as "Y[X=1] - Y[X=0]"
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
-#' @param type_distribution if provided saves calculatio, otherwise clculated from model; may be based on prior or posterion
+#' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y")
-#' model <- reduce_nodal_types(model, restrictions = list(Y = "Y10"))
-#' model <- add_prior_distribution(model)
-#' summary(calculate_estimand(model))
+#' model <- make_model("X" %->% "Y") %>%
+#'          set_prior_distribution()
+#' estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
+#  estimand_2  <- calculate_estimand(model, query = "Y[X=1] > Y[X=0]")
 
 calculate_estimand <- function(model,
-															 posterior = FALSE,
-															 do_1 = list(X = 1),
-															 do_2 = list(X = 0),
-															 q = function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0,
+															 query,
 															 subset = TRUE,
-															 type_distribution = NULL) {
+															 posterior = FALSE,
+															 type_distribution = NULL,
+															 verbose = TRUE) {
 
 
 	if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
 																				 eval(parse(text = subset)))
 	if(all(!subset)) return(0)
 
-	x <- as.matrix(q(reveal_outcomes(model, dos = do_1),
-									 reveal_outcomes(model, dos = do_2)),
-								 ncol = 1)[subset]
+	x <- (get_types(model, query = query)$types)[subset]
 
 	if(is.null(type_distribution)) type_distribution <-
 		draw_type_prob_multiple(model, posterior = posterior)[subset,]
 
-	apply(type_distribution, 2, function(wt) weighted.mean(x, wt))
+	estimand <- apply(type_distribution, 2, function(wt) weighted.mean(x, wt))
+  if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
 
+  estimand
 }
 
 
@@ -49,33 +49,28 @@ calculate_estimand <- function(model,
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y")
-#' model <- add_prior_distribution(model)
-#' calculate_multiple_estimands(model,
-#'            posteriors = FALSE,
-#'            dos = list(op_1 =  list(do_1 = list(X = 1), do_2 = list(X = 0)),
-#'											 op_2 =  list(do_1 = list(X = 1), do_2 = list(X = 0))),
-#'						qs =  list(q1   =  function(Q1, Q2) Q1$Y -  Q2$Y,
-#'											 q2   =  function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0),
-#'						subsets = TRUE,
-#'						estimand_labels = c("ATE", "Share_positive"))
+#' model <- make_model("X" %->% "Y") %>%
+#'            set_prior_distribution()
 #'
-calculate_multiple_estimands <- function(model = make_model("X" %->% "Y"),
-																				 posteriors = list(FALSE),
-																				 dos = list(op_1 =  list(do_1 = list(X = 1), do_2 = list(X = 0))
-																				 ),
-																				 qs =  list(q1   =  function(Q1, Q2) Q1$Y == 1 & Q2$Y == 0
-																				 ),
+#' calculate_multiple_estimands(
+#'       model,
+#'       queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
+#'
+calculate_multiple_estimands <- function(model,
+																				 queries = list(NULL),
 																				 subsets = list(TRUE),
+																				 posteriors = list(FALSE),
 																				 estimand_labels = NULL,
 																				 stats = c(mean = mean, sd = sd)){
 
-	f <- function(posterior, do, q, subset){
-		v <-calculate_estimand(model, posterior = posterior, do_1 = do[[1]], do_2 = do[[2]],q = q, subset = subset)
+	if(is.null(estimand_labels)) estimand_labels <- names(queries)
+
+	f <- function(q, subset, posterior){
+		v <-calculate_estimand(model, query = q, subset = subset, posterior = posterior, verbose = FALSE)
 		sapply(stats, function(g) g(v))
 	}
 
-	out <- mapply(f, posteriors, dos, qs, subsets)
+	out <- mapply(f, queries, subsets, posteriors)
 	rownames(out) <- paste(names(stats))
 	if(!is.null(estimand_labels)) colnames(out) <- estimand_labels
 	data.frame(out)

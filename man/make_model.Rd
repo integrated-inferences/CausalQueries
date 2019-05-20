@@ -4,7 +4,7 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(...)
+make_model(..., add_priors = FALSE)
 }
 \arguments{
 \item{...}{Edges added by add_edges()}
