@@ -50,7 +50,7 @@ gbiqq_designer <- function(
 	# Estimator runs gbiqq
 	 estimate <- declare_estimator(handler = function(data) {
 		updated <- gbiqq(model = model,  data = data)
-		calculate_multiple_estimands(updated, posterior = TRUE, queries = queries)
+		value <- calculate_multiple_estimands(updated, posterior = TRUE, queries = queries)
 		data.frame(estimate_label = paste0("est_", names(queries)),
 							 estimand = names(queries),
 							 estimate = value[1,],
