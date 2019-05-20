@@ -4,8 +4,8 @@
 \alias{data_strategy}
 \title{Data Strategy}
 \usage{
-data_strategy(model, n, vars = list(NULL), probs = list(NULL),
-  ms = NULL, subsets = list(NULL))
+data_strategy(model, lambda = NULL, n, vars = list(NULL),
+  probs = list(NULL), ms = NULL, subsets = list(NULL))
 }
 \description{
 Data Strategy

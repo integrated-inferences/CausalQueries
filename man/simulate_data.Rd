@@ -4,8 +4,7 @@
 \alias{simulate_data}
 \title{Generate full dataset, possibly from compact data}
 \usage{
-simulate_data(model, n = 1, data_events = NULL, lambda = NULL,
-  strategy = NULL)
+simulate_data(model, n = 1, data_events = NULL, lambda = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}

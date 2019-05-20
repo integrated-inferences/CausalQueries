@@ -10,11 +10,11 @@ set_priors(model, lambda_priors = NULL, prior_distribution = "uniform",
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{lambda_priors}{Vector of Dirichlet hyperparameters}
+\item{lambda_priors}{Existing vector of Dirichlet hyperparameters}
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 
-\item{alphas}{the hyperparameters of the dirichlet distribution.}
+\item{alphas}{Vector of hyperparameters of the dirichlet distribution to be passed to \code{make_priors}.}
 }
 \description{
 Set prior distribution

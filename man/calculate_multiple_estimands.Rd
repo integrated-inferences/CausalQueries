@@ -2,14 +2,17 @@
 % Please edit documentation in R/queries_and_estimands.R
 \name{calculate_multiple_estimands}
 \alias{calculate_multiple_estimands}
-\title{Calculate multipl estimands}
+\title{Calculate multiple estimands}
 \usage{
-calculate_multiple_estimands(model, queries = list(NULL),
-  subsets = list(TRUE), posteriors = list(FALSE),
-  estimand_labels = NULL, stats = c(mean = mean, sd = sd))
+calculate_multiple_estimands(model, lambda = NULL,
+  queries = list(NULL), subsets = list(TRUE),
+  posteriors = list(FALSE), estimand_labels = NULL, stats = c(mean =
+  mean, sd = sd))
 }
 \arguments{
 \item{model}{A  model}
+
+\item{lambda}{A  true parameter vector, if available}
 
 \item{posterior}{if true use a posterior distribution, otherwise use the prior}
 

@@ -4,8 +4,8 @@
 \alias{calculate_estimand}
 \title{Calculate estimand}
 \usage{
-calculate_estimand(model, query, subset = TRUE, posterior = FALSE,
-  type_distribution = NULL, verbose = TRUE)
+calculate_estimand(model, query, subset = TRUE, lambda = NULL,
+  posterior = FALSE, type_distribution = NULL, verbose = TRUE)
 }
 \arguments{
 \item{model}{A  model}
@@ -13,6 +13,8 @@ calculate_estimand(model, query, subset = TRUE, posterior = FALSE,
 \item{query}{A query on potential otcomes such as "Y[X=1] - Y[X=0]"}
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
+
+\item{lambda}{A  true parameter vector, if available}
 
 \item{posterior}{if true use a posterior distribution, otherwise use the prior}
 
@@ -24,5 +26,7 @@ Calculated from a prior or posterior distribution
 \examples{
 model <- make_model("X" \%->\% "Y") \%>\%
          set_prior_distribution()
-estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
+ estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
+ estimand_2  <- calculate_estimand(model, query = "Y[X=1] > Y[X=0]")
+ calculate_estimand(model, lambda = draw_lambda(model), query = "Y[X=1] > Y[X=0]")
 }

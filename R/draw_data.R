@@ -165,10 +165,12 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL, strategy = NULL){
+simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
 
+	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
 
+	# The rest is reshaping
 	df <- get_max_possible_data(model)
 
 	if(nrow(df) != nrow(data_events)) stop("nrow(df) is not equal to nrow(data_events)")
@@ -176,8 +178,6 @@ simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL, strat
 	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(data_events[i, 2],df[i,])))
 	out <- data.frame(matrix(xx, ncol = ncol(df), byrow = TRUE))
 	names(out) <- names(df)
-
-	if(is.null(strategy)) return(out)
 
 	out
 
@@ -252,17 +252,18 @@ observe <- function(complete_data,
 #'    subsets = list(NULL, "X==1 & Y==0"))
 
 data_strategy <- function(model,
-	                  n,
-										vars    = list(NULL),
-										probs   = list(NULL),
-										ms      = NULL,
-										subsets = list(NULL)){
+													lambda = NULL,
+				                  n,
+													vars    = list(NULL),
+													probs   = list(NULL),
+													ms      = NULL,
+													subsets = list(NULL)){
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
 	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
 
-	complete_data <- observed <- simulate_data(model, n = n)
+	complete_data <- observed <- simulate_data(model, n = n, lambda = lambda)
 	observed[,] <- FALSE
 
 	# Default behavior is to return complete data -- triggered if first strategy step has vars =  null

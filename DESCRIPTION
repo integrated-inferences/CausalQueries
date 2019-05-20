@@ -17,7 +17,8 @@ Imports:
     dagitty,
     gtools,
     rstan,
-    dplyr
+    dplyr,
+    DeclareDesign
 Suggests: 
 		testthat
 
