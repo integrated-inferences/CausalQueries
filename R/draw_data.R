@@ -245,10 +245,11 @@ observe <- function(complete_data,
 #' @examples
 #' model <- make_model("X" %->% "M", "M" %->% "Y")
 #' data_strategy(
-#'    model, n = 20,
+#'    model,
+#'    n = 8,
 #'    vars = list(c("X", "Y"), "M"),
 #'    probs = list(1, .5),
-#'    subsets = list(NULL, "X==Y"))
+#'    subsets = list(NULL, "X==1 & Y==0"))
 
 data_strategy <- function(model,
 	                  n,
