@@ -4,14 +4,12 @@
 \alias{set_restrictions}
 \title{Restrict a model}
 \usage{
-set_restrictions(model, restrictions = NULL, dos = NULL)
+set_restrictions(model, node_restrict = NULL)
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
-\item{restrictions}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
-
-\item{do}{a list containing the names of variables and their assigned value.}
+\item{node_restrict}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
 }
 \value{
 A model with restrictions and nodal types saved as attributes.
@@ -20,23 +18,16 @@ A model with restrictions and nodal types saved as attributes.
 Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 }
 \examples{
-XYmodel <- make_model(add_edges(parent = "X", children = c("Y")))
 # restrictions can be specified following nodal_types syntax
-set_restrictions(model = XYmodel, restrictions = list(X = "X0", Y = "Y00"))
+XYmodel <- make_model("X" \%->\% "Y") \%>\%
+  set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 
 # or alternatively variable name can be omitted from restriction
-set_restrictions(model = XYmodel, restrictions = list(X = "0", Y = "00"))
+XYmodel <- make_model(add_edges(parent = "X", children = "Y")) \%>\%
+   set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
 
-# A particularly important restriction is the do operator that removes all but one nodal_type from a node
-set_restrictions(model = XYmodel, dos = list(X = 1))
-set_restrictions(model = XYmodel, dos = list(Y = 0))
-
-# Restrictions can be iteratively applied
-my_model <-  set_restrictions(model = XYmodel, restrictions = list(Y = "10"))
-my_model <-  set_restrictions(model = my_model, do = list(X = 1))
-get_indicator_matrix(my_model)
 
 # Restrictions can be  with wildcards
-my_model <-  set_restrictions(model = XYmodel, restrictions = list(Y = "?0"))
-get_indicator_matrix(my_model)
+my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))
+get_parameter_matrix(my_model)
 }

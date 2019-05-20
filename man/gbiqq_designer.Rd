@@ -21,4 +21,7 @@ my_design <- gbiqq_designer(
   lambda = c(.5, .5, .1, .7, .1, .1),  # Truth
   data_strat = list(n = 4, vars = list(NULL), probs = list(NULL), ms = NULL, subsets = list(NULL)),
   queries = list(ATE = "Y[X=1] - Y[X=0]"))
+  draw_data(my_design)
+  draw_estimands(my_design)
+  draw_estimates(my_design)
 }

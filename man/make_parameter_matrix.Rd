@@ -8,6 +8,8 @@ make_parameter_matrix(model, confound = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
+
+\item{confound}{A list relating nodes to types with whihc  they are confounded}
 }
 \description{
 Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
