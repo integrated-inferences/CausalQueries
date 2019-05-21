@@ -52,12 +52,12 @@ get_parents <- function(model) {
 #' }
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
-nodal_types <- model$nodal_types
-variables   <- c(attr(model, "exogenous_variables"),
-								 attr(model, "endogenous_variables"))
-parents     <- get_parents(model)
-dag         <- model$dag
-types       <- lapply(
+	nodal_types <- model$nodal_types
+	variables   <- c(attr(model, "exogenous_variables"),
+									 attr(model, "endogenous_variables"))
+	parents     <- get_parents(model)
+	dag         <- model$dag
+	types       <- lapply(
 		X = lapply(parents, length),
 		FUN = function(parent_n){
 			type_mat <- perm(rep(2,2^parent_n))
@@ -71,18 +71,18 @@ types       <- lapply(
 			return(type_mat)
 		})
 
-types_interpret       <-
-	lapply(parents,
-	FUN = function(parent){
-		parent_n <- length(parent)
-		if(parent_n == 0){
-			labels <- "exogeneous"
-		} else {
-			input_mat <- perm(rep(2,parent_n))
-			labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
-		}
-		labels
-	})
+	types_interpret       <-
+		lapply(parents,
+					 FUN = function(parent){
+					 	parent_n <- length(parent)
+					 	if(parent_n == 0){
+					 		labels <- "exogeneous"
+					 	} else {
+					 		input_mat <- perm(rep(2,parent_n))
+					 		labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
+					 	}
+					 	labels
+					 })
 
 	types_labels <- lapply(1:length(types), function(i){
 		var <- names(types)[i]
@@ -92,36 +92,36 @@ types_interpret       <-
 	})
 
 	names(types_labels )<- var_names <- names(types)
-  types <- lapply(variables, function(v){
-  	rownames(types[[v]]) <- types_labels[[v]]
-  	types[[v]]
-  })
-  names(types)  <- var_names
-  if(!is.null(nodal_types)){
-  	types <- lapply(variables, function(v){
-  		mat <- types[[v]]
-  		cn <- colnames(mat)
-  		nt <- nodal_types[[v]]
-  		mat <- mat[nt, ]
-  		colnames(mat) <- cn
-  		mat
-  	})
-  }
-  names(types)  <- var_names
-  if(collapse){
+	types <- lapply(variables, function(v){
+		rownames(types[[v]]) <- types_labels[[v]]
+		types[[v]]
+	})
+	names(types)  <- var_names
+	if(!is.null(nodal_types)){
+		types <- lapply(variables, function(v){
+			mat <- types[[v]]
+			cn <- colnames(mat)
+			nt <- nodal_types[[v]]
+			mat <- mat[nt, ]
+			colnames(mat) <- cn
+			mat
+		})
+	}
+	names(types)  <- var_names
+	if(collapse){
 
-  types <-	sapply(1:length(types), function(i){
-  		var <- names(types)[i]
-  		mat <- as.matrix(types[[i]])
-  		labels <- apply(mat,1,paste,collapse = "")
-  		paste0(var, labels)
-  	})
+		types <-	sapply(1:length(types), function(i){
+			var <- names(types)[i]
+			mat <- as.matrix(types[[i]])
+			labels <- apply(mat,1,paste,collapse = "")
+			paste0(var, labels)
+		})
 
-  }
+	}
 
-  names(types)  <- var_names
+	names(types)  <- var_names
 
-  attr(types, "interpret") <- types_interpret
+	attr(types, "interpret") <- types_interpret
 	return(types)
 }
 #' Get nodal types
@@ -214,7 +214,7 @@ get_types <- function(model, query){
 	aritmetic_operators  <- c("+", "-", "/", "*", "^")
 	relational_operators <- c(">",">=", "<","<=", "==", "!=")
 	operators <- c(aritmetic_operators, relational_operators)
-	condition <- paste0(operators, collapse = "|")
+	#	condition <- paste0(operators, collapse = "|")
 	eval_var  <- list()
 	k <- 1
 	i <- 0
@@ -227,7 +227,7 @@ get_types <- function(model, query){
 	w_query <- gsub(" ", "", query)
 	w_query <- unlist(strsplit(query, ""))
 	bracket_starts <- rev(grep( "\\[", w_query))
-
+	bracket_ends    <- rev(grep( "\\]", w_query))
 
 	while(continue){
 		i <- i + 1
@@ -249,41 +249,47 @@ get_types <- function(model, query){
 		dos <- list()
 
 		# Walks through splitted expressions (i.e dos)
-		# and checks if expression can be evaluated
+		# and evaulates each expression when possible
 		for (j in 1:length(.query)) {
 
 			do <- unlist(strsplit( .query[j], ""))
 			# Perform operations if any
-			if(any(operators %in%  do)){
-
-				do <- paste0(do, collapse = "")
-				do <- gsub(" ", "", do)
-				do <- unlist(strsplit( do, ""))
-				equal <- grep("=", do)
-				var_name <- do[1:(equal-1)]
-				exp <- paste0(do[(equal+1):length(do)], collapse = "")
-				dos[[j]] <- eval(parse(text = exp), eval_var)
-				names(dos)[[j]] <- var_name
-
-			} else{
-				value <- c(eval(parse(text = paste0(do, collapse = ""), eval_var ), eval_var))
-				vars  <- gbiqq:::get_variables(model)
-				v_cond  <- paste0(vars, collapse = "|")
-				i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
-				var_name <- do[i_var]
-				dos[[j]] <- value
-				names(dos)[[j]] <- var_name
-			}
+			# 		if(any(operators %in%  do)){
+			#
+			# 				do <- paste0(do, collapse = "")
+			# 				do <- gsub(" ", "", do)
+			# 		 	do <- unlist(strsplit( do, ""))
+			# 			equal <- grep("=", do)
+			#       var_name <- do[1:(equal-1)]
+			# 			exp <- paste0(do[(equal+1):length(do)], collapse = "")
+			# 			dos[[j]] <- eval(parse(text = exp), eval_var)
+			# 			names(dos)[[j]] <- var_name
+			#
+			# 		} else{
+			value <- c(eval(parse(text = paste0(do, collapse = "") ), envir =  eval_var))
+			vars  <- gbiqq:::get_variables(model)
+			v_cond  <- paste0(vars, collapse = "|")
+			i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
+			var_name <- do[i_var]
+			dos[[j]] <- value
+			names(dos)[[j]] <- var_name
+			#}
 		}
 
 		# Save result from last iteration
 		# and remove corresponding expression in w_query t
-		var <- w_query[bracket_starts[i]-1]
-		bracket_ends <- bracket_starts[i] + .bracket_ends - 1
-		s <- seq(bracket_starts[i], bracket_ends )
-		list_names[k] <- paste0(var, paste0( w_query[s], collapse = ""))
-		names(list_names)[k] <- w_query[s[1]-1] <-  paste0("var",k)
 
+		# 	b <- bracket_starts[i] - bracket_ends
+		# 	b[b<0] <- NA
+		#   b <- bracket_ends[which.min(b)] + 1
+		# 	var <- paste0(w_query[b:bracket_starts[i]], collapse = "")
+		# 	var <- find_indexed_arg(var)
+		var_length <- nchar(var)
+		.bracket_ends <- bracket_starts[i] + .bracket_ends - 1
+		s <- seq(bracket_starts[i], .bracket_ends )
+		list_names[k] <- paste0(var, paste0( w_query[s], collapse = ""))
+		names(list_names)[k] <- w_query[s[1] - 1] <-  paste0("var",k)
+		w_query[(s[1] - var_length):(s[1] - 2)] <- ""
 		data <- reveal_outcomes(model, dos )
 		eval_var[[k]] <-  as.numeric(data[, var])
 		names(eval_var)[k] <- paste0("var",k)
@@ -320,5 +326,3 @@ get_types <- function(model, query){
 			 exp   = eval_var)
 
 }
-
-
