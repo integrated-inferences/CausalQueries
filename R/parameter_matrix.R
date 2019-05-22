@@ -62,6 +62,7 @@ make_parameter_matrix  <- function(model, confound = NULL){
 	# Add the parameter set as attribute
 	names(param_set) <- NULL
 	attr(P, "param_set") <- param_set
+
 	P
 }
 
@@ -93,8 +94,39 @@ set_parameter_matrix <- function(model, P = NULL, confound = NULL){
 
 	if(is.null(P)) P <- make_parameter_matrix(model, confound = confound)
 	model$P <- P
+	class(model$P) <- c("parameter_matrix")
 	message("Parameter matrix attached to model")
 	model
 }
+
+
+#' @export
+print.parameter_matrix <- function(x, ...) {
+	print(summary(x))
+	invisible(x)
+}
+
+
+#' @export
+summary.parameter_matrix <- function(object, ...) {
+	structure(object, class = c("summary.parameter_matrix", "table"))
+
+}
+
+#' @export
+print.summary.parameter_matrix <- function(x, ...){
+
+  print.table(x)
+	param_set <- attr(x,"param_set")
+
+  cat("\n parameter set  (P)\n ")
+  cat(paste0(param_set, collapse = "  "))
+	if(!is.null(attr(x,"confounds"))){
+		cat("\n\n confounds (P)\n")
+		print(attr(x,"confounds"))
+	}
+}
+
+
 
 

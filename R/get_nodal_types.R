@@ -120,22 +120,3 @@ get_nodal_types <- function(model, collapse = TRUE) {
 
 
 
-
-
-#' @export
-print.nodal_types <- function(x, ...) {
-	print(summary(x))
-	invisible(x)
-}
-
-
-#' @export
-summary.nodal_types <- function(object, ...) {
-	structure(object, class = c("summary.nodal_types", "data.frame"))
-
-}
-
-#' @export
-print.nodal_types <- function(x, ...){
-
-}

@@ -107,12 +107,12 @@ print.probabilistic_causal_model <- function(x, ...){
 
 	cat("\n DAG: \n")
 	print(x$dag)
-  if(exists(x$P)){
-  	cat("\n Parameter matrix: \n")
+  if(!is.null(x$P)){
+  	cat("\n\n Parameter matrix: \n ")
   	print(x$P)
   }
-	if(exists(x$lambdas_priors)){
-		cat("\n lambda priors: \n")
+	if(!is.null(x$lambdas_priors)){
+		cat("\n\n lambda priors: \n")
 		print(x$lambda_priors)
 	}
 
