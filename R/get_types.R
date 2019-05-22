@@ -136,7 +136,7 @@ print.causal_types <- function(x, ...) {
 
 #' @export
 summary.causal_types <- function(object, ...) {
-	structure(object, class = c("summary.compared_diagnoses", "data.frame"))
+	structure(object, class = c("summary.causal_types", "data.frame"))
 
 }
 

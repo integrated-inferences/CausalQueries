@@ -124,30 +124,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	attr(types, "interpret") <- types_interpret
 	return(types)
 }
-#' Get nodal types
-#' Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
-#'
-#' @param model A model created by \code{make_model}
-#'
-#' @return types
-#' @export
-#'
-get_nodal_types_dep <- function(model){
-	if(!is.null(model$nodal_types )){
-		return(model$nodal_types )
-	} else{
 
-
-		parents <- get_parents(model)
-
-		possible_data <-	get_possible_data(model, collapse = FALSE)
-		nodes <- names(possible_data)
-
-		return(mapply(function(realization, node) paste0(node, realization),
-									node = nodes,
-									realization = possible_data ))
-	}
-}
 
 
 #' Get expanded types

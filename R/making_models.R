@@ -31,10 +31,7 @@ add_edges <- function(parent,children){
 #' @return An object of class probabilistic_causal_model containing a dag
 #' @examples
 #' \dontrun{
-#' modelXKY <- make_model(
-#' add_edges(parent = "X",children = c("K","Y")),
-#' add_edges(parent = "K",children = "Y")
-#' )
+#' modelXKY <- make_model( "X" %->% "Y", "X" %->% "K", "K" %->% "Y")
 #'
 #' # Example where variables need re-ordering
 #' model <- make_model(
@@ -69,7 +66,7 @@ make_model <- function(..., add_priors = FALSE){
 		if(all(x[is.na(gen)])) stop(paste("Cycling at generation ", j))
   	gen[!x & is.na(gen)] <- j
   	}
-#	dag$generation <- gen
+ 	variables_generation <- gen
 
 	# Model is a list
 	model <- list(dag = dag[order(gen, dag[,1], dag[,2]),],
@@ -90,3 +87,34 @@ make_model <- function(..., add_priors = FALSE){
 	return(model)
 }
 
+
+
+#' @export
+print.probabilistic_causal_model <- function(x, ...) {
+	print(summary(x))
+	invisible(x)
+}
+
+
+#' @export
+summary.probabilistic_causal_model <- function(object, ...) {
+	structure(object, class = c("summary.compared_diagnoses", "data.frame"))
+
+}
+
+#' @export
+print.probabilistic_causal_model <- function(x, ...){
+
+	cat("\n DAG: \n")
+	print(x$dag)
+  if(exists(x$P)){
+  	cat("\n Parameter matrix: \n")
+  	print(x$P)
+  }
+	if(exists(x$lambdas_priors)){
+		cat("\n lambda priors: \n")
+		print(x$lambda_priors)
+	}
+
+
+}
