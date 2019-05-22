@@ -18,10 +18,7 @@ Models can be updated with specification of a parameter matrix, P, by providing 
 }
 \examples{
 \dontrun{
-modelXKY <- make_model(
-add_edges(parent = "X",children = c("K","Y")),
-add_edges(parent = "K",children = "Y")
-)
+modelXKY <- make_model( "X" \%->\% "Y", "X" \%->\% "K", "K" \%->\% "Y")
 
 # Example where variables need re-ordering
 model <- make_model(
