@@ -36,6 +36,15 @@ get_types <- function(model, query){
 	bracket_starts <- rev(grep( "\\[", w_query))
 	bracket_ends    <- rev(grep( "\\]", w_query))
 
+	if(length(bracket_starts) != length(bracket_ends)){
+		stop("Either '[' or ']' missing")
+	}
+	if(length(bracket_starts) == 0){
+		continue = FALSE
+		eval_var <-  reveal_outcomes(model)
+		list_names <- colnames(eval_var)
+	}
+
 	while(continue){
 		i <- i + 1
 
@@ -58,32 +67,38 @@ get_types <- function(model, query){
 		# Walks through splitted expressions (i.e dos)
 		# and evaulates each expression when possible
 		for (j in 1:length(.query)) {
-
 			do <- unlist(strsplit( .query[j], ""))
 			value <- c(eval(parse(text = paste0(do, collapse = "") ), envir =  eval_var))
-			vars  <- gbiqq:::get_variables(model)
+			vars  <-  model$variables
 			v_cond  <- paste0(vars, collapse = "|")
 			i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
 			var_name <- do[i_var]
 			dos[[j]] <- value
 			names(dos)[[j]] <- var_name
-			#}
 		}
 
-		# Save result from last iteration
-		# and remove corresponding expression in w_query t
 
-		b <- bracket_starts[i] - bracket_ends
-		b[b<0] <- NA
-		if(all(is.na(b))){
-			b <- 1:bracket_starts[i]
-		} else{
-			b <- (bracket_ends[which.min(b)] + 1):bracket_starts[i]
-		}
+
+		# Indentify corresponding variable
+		# if it's the first [ in the query extract expression until that [
+		# otherwise extract expression between square brackets
+		# Find variable within that expression
+    if(i == length(bracket_starts)){
+    	b <- 1:bracket_starts[i]
+    }else{
+    	b <- bracket_starts[i] - bracket_ends
+    	b[b<0] <- NA
+    	b <- (bracket_ends[which.min(b)] + 1):bracket_starts[i]
+    }
 		var <- paste0(w_query[b], collapse = "")
 		var <- find_indexed_arg(var)
+
+		# Save result from last iteration
+		# and remove corresponding expression iw_query t
 		var_length <- nchar(var)
 		.bracket_ends <- bracket_starts[i] + .bracket_ends - 1
+
+
 		s <- seq(bracket_starts[i], .bracket_ends )
 		list_names[k] <- paste0(var, paste0( w_query[s], collapse = ""))
 		names(list_names)[k] <- w_query[s[1] - 1] <-  paste0("var",k)
@@ -97,11 +112,12 @@ get_types <- function(model, query){
 		# Stop loop there are no [] left
 		if(!any(grep("\\[|\\]", w_query))){
 			continue <- FALSE
-			w_query <- paste0(w_query, collapse = "")
-			w_query <- gsub(" ", "", w_query)
-			types <- c(eval(parse(text = w_query),  eval_var))
-		}
+    }
 	}
+
+	w_query <- paste0(w_query, collapse = "")
+	w_query <- gsub(" ", "", w_query)
+	types <- c(eval(parse(text = w_query),  eval_var))
 
 	# p <- length(list_names)
 	# for (i in 1:p) {
@@ -117,11 +133,13 @@ get_types <- function(model, query){
 
 
 	names(types) <- colnames(model$P)
+  return_list <- 	list(types = types,
+  										 query = query,
+  										 exp   = eval_var)
 
-	class <- "causal_types"
-	list(types = types,
-			 query = query,
-			 exp   = eval_var)
+	class(return_list) <- "causal_types"
+
+	return(return_list)
 
 }
 
