@@ -17,7 +17,11 @@
 #' x$types[x$types]
 #' query <- "Y[M=M[X=0], X=1]==1"
 #' x <- get_types(model, query)
-#' x$types[x$types]
+#' get_types(model, query)
+#' query <- "(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])"
+#' get_types(model, query)
+#' query <- "Y[X=1] == Y[X=0]"
+#' get_types(model, query)
 
 get_types <- function(model, query){
 
@@ -82,19 +86,10 @@ get_types <- function(model, query){
 
 
 
-		# Indentify corresponding variable
-		# if it's the first [ in the query extract expression until that [
-		# otherwise extract expression between square brackets
-		# Find variable within that expression
-    if(i == length(bracket_starts)){
-    	b <- 1:bracket_starts[i]
-    }else{
-    	b <- bracket_starts[i] - bracket_ends
-    	b[b<0] <- NA
-    	b <- (bracket_ends[which.min(b)] + 1):bracket_starts[i]
-    }
+    b <- 1:bracket_starts[i]
 		var <- paste0(w_query[b], collapse = "")
 		var <- st_within(var)
+		var <- var[length(var)]
 
 		# Save result from last iteration
 		# and remove corresponding expression w_query
@@ -118,6 +113,7 @@ get_types <- function(model, query){
 
 	w_query <- paste0(w_query, collapse = "")
 	w_query <- gsub(" ", "", w_query)
+	w_query <- paste0("q <- ", w_query)
 	types <- c(eval(parse(text = w_query),  eval_var))
 
 	# p <- length(list_names)
@@ -136,7 +132,7 @@ get_types <- function(model, query){
 	names(types) <- colnames(model$P)
   return_list <- 	list(types = types,
   										 query = query,
-  										 exp   = eval_var)
+  										 evaluated_variables   = eval_var)
 
 	class(return_list) <- "causal_types"
 
@@ -161,6 +157,8 @@ summary.causal_types <- function(object, ...) {
 
 #' @export
 print.summary.causal_types <- function(x, ...){
+	output_type <- class(x$types)
+	if(	output_type== "logical"){
   types1 <- x$types[x$types]
 	cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query,  "\n\n"))
 
@@ -177,6 +175,12 @@ print.summary.causal_types <- function(x, ...){
 
 	cat(paste("\n\n Number of causal types that meet condition(s) = ", length(types1)))
 	cat(paste("\n Total number of causal types in model = ", length(x$types)))
+	} else if(output_type == "numeric"){
+		print(x$types)
+	} else{
+		print(x)
+	}
+
 
 }
 
