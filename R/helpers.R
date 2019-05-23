@@ -26,6 +26,7 @@ perm <- function(v) {
 #' @param left A regular expression to serve as look ahead.
 #' @param right A regular expression to serve as a look behind.
 #' @return A character vector.
+#' @export
 #' @examples
 #' a <- "(XX[Y=0] == 1) > (XX[Y=1] == 0)"
 #' st_within(a)

@@ -91,22 +91,20 @@ get_types <- function(model, query){
     	b <- (bracket_ends[which.min(b)] + 1):bracket_starts[i]
     }
 		var <- paste0(w_query[b], collapse = "")
-		var <- find_indexed_arg(var)
+		var <- st_within(var)
 
 		# Save result from last iteration
-		# and remove corresponding expression iw_query t
+		# and remove corresponding expression w_query
 		var_length <- nchar(var)
-		.bracket_ends <- bracket_starts[i] + .bracket_ends - 1
-
-
-		s <- seq(bracket_starts[i], .bracket_ends )
-		list_names[k] <- paste0(var, paste0( w_query[s], collapse = ""))
-		names(list_names)[k] <- w_query[s[1] - 1] <-  paste0("var",k)
-		w_query[(s[1] - var_length):(s[1] - 2)] <- ""
 		data <- reveal_outcomes(model, dos )
 		eval_var[[k]] <-  as.numeric(data[, var])
-		names(eval_var)[k] <- paste0("var",k)
-		w_query <- w_query[-s]
+
+
+		.bracket_ends <- bracket_starts[i] + .bracket_ends - 1
+		s <- seq(bracket_starts[i] - var_length , .bracket_ends )
+		list_names[k] <- paste0( w_query[s], collapse = "")
+		names(list_names)[k] <- names(eval_var)[k] <- w_query[s[1]] <-  paste0("var",k)
+		w_query[s[2:length(s)]] <- ""
 		k <- k + 1
 
 		# Stop loop there are no [] left
@@ -160,7 +158,23 @@ summary.causal_types <- function(object, ...) {
 
 #' @export
 print.summary.causal_types <- function(x, ...){
-	x$types[x$types]
+  types1 <- x$types[x$types]
+	cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query,  "\n\n"))
+
+  if(length(types1) %% 2 != 0){
+  	types1[length(types1) + 1] <- ""
+  }
+	counter <- 2
+	while (counter <= length(types1) ) {
+		cat(paste0(names(types1[(counter -1):counter]), collapse = "  "))
+		cat("\n")
+		counter <- counter + 2
+	}
+
+
+	cat(paste("\n\n Number of causal types that meet condition(s) = ", length(types1)))
+	cat(paste("\n Total number of causal types in model = ", length(x$types)))
+
 }
 
 
