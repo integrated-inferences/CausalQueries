@@ -22,7 +22,8 @@
 get_types <- function(model, query){
 
 	# Global Variables
-	eval_var  <- list()
+	eval_var <-  reveal_outcomes(model)
+	list_names <- colnames(eval_var)
 	k <- 1
 	i <- 0
 	list_names <- ""
@@ -41,9 +42,11 @@ get_types <- function(model, query){
 	}
 	if(length(bracket_starts) == 0){
 		continue = FALSE
-		eval_var <-  reveal_outcomes(model)
-		list_names <- colnames(eval_var)
 	}
+
+	eval_var <-  reveal_outcomes(model)
+	list_names <- colnames(eval_var)
+	k <- ncol(eval_var) + 1
 
 	while(continue){
 		i <- i + 1
@@ -97,7 +100,7 @@ get_types <- function(model, query){
 		# and remove corresponding expression w_query
 		var_length <- nchar(var)
 		data <- reveal_outcomes(model, dos )
-		eval_var[[k]] <-  as.numeric(data[, var])
+		eval_var[,k] <-  as.numeric(data[, var])
 
 
 		.bracket_ends <- bracket_starts[i] + .bracket_ends - 1
