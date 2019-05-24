@@ -89,7 +89,10 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 #'
 #' @export
 
-set_priors  <- function(model,  lambda_priors = NULL, prior_distribution = "uniform", alphas = NULL) {
+set_priors  <- function(model,
+												lambda_priors = NULL,
+												prior_distribution = "uniform",
+												alphas = NULL) {
 
 	if(is.null(lambda_priors)) lambda_priors <-
 			                            make_priors(model,
@@ -156,6 +159,8 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 #'
 set_lambda <- function(model, lambda = NULL, random = FALSE, average = FALSE) {
 
+	if(!is.null(lambda)) message("User supplied lambda attached to model")
+
 	if(is.null(lambda) &!random & !average) stop("Please provide lambda or set random=TRUE or average=TRUE")
 
 	if(random & average) stop("random and average should not both be TRUE")
@@ -184,7 +189,6 @@ set_lambda <- function(model, lambda = NULL, random = FALSE, average = FALSE) {
 			lambda
 		}
 	}
-	if(!is.null(lambda)) message("User supplied lambda attached to model")
 
 	model$lambda <- lambda
 	return(model)
