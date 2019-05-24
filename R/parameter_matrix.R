@@ -18,7 +18,9 @@ make_parameter_matrix  <- function(model, confound = NULL){
 
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
-	types           <- expand.grid(nodal_types, stringsAsFactors = FALSE)
+	#types          <- expand.grid(nodal_types, stringsAsFactors = FALSE)
+	types           <- get_causal_types(model)
+	types           <- data.frame(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), stringsAsFactors = FALSE)
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type
@@ -56,7 +58,7 @@ make_parameter_matrix  <- function(model, confound = NULL){
 		}
 
   # Tidy up
-	colnames(P)  <- do.call(paste, c(types, sep =""))
+	colnames(P)  <- do.call(paste, c(types, sep ="."))
 	rownames(P ) <- pars
 
 	# Add the parameter set as attribute

@@ -4,12 +4,15 @@
 \alias{set_restrictions}
 \title{Restrict a model}
 \usage{
-set_restrictions(model, node_restrict = NULL)
+set_restrictions(model, node_restrict = NULL,
+  causal_type_restrict = NULL)
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
 \item{node_restrict}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+
+\item{causal_type_restrict}{a quoted expressions defining the restriction}
 }
 \value{
 A model with restrictions and nodal types saved as attributes.
@@ -21,10 +24,10 @@ Restrict causal types. If priors exist prior probabilities are redistributed ove
 # restrictions can be specified following nodal_types syntax
 XYmodel <- make_model("X" \%->\% "Y") \%>\%
   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
-
+require(dplyr)
 # or alternatively variable name can be omitted from restriction
 XYmodel <- make_model(add_edges(parent = "X", children = "Y")) \%>\%
-   set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
+   set_restrictions(model =., node_restrict = list(X = "0", Y = "00"))
 
 
 # Restrictions can be  with wildcards

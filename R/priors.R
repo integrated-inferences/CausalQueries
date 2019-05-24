@@ -39,7 +39,7 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
 	n_alphas      <- length(alphas_vector)
-	if(is.null(prior_distribution) & ((n_alphas!=1 | n_alphas!=n_params)))	stop(
+	if(is.null(prior_distribution) & ((n_alphas!=1 & n_alphas!=n_params)))	stop(
 		"if prior_distribution is not specified, alphas must contain either a value
 		for each parameter or a single value to be assigned to all parameters.")
 	alpha_names   <- names(alphas_vector)

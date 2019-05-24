@@ -41,14 +41,23 @@ get_parents <- function(model) {
 #' @return types
 #' @export
 #'
-get_expanded_types <- function(model){
-	possible_types<-	get_nodal_types(model)
-	variables <- names(possible_types)
-	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
-	names(possible_types) <- variables
-	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	expand.grid(possible_types, stringsAsFactors = FALSE)
+get_causal_types <- function(model){
+	if(!is.null(model$causal_types)){
+		return_df <- model$causal_types
+	}
+	else{
+		possible_types <-	get_nodal_types(model)
+		variables <- names(possible_types)
+		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
+		names(possible_types) <- variables
+		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+		return_df <- expand.grid(possible_types, stringsAsFactors = FALSE)
+	}
+	return(return_df)
 }
+
+
+
 
 
 

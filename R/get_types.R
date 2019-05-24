@@ -124,12 +124,9 @@ get_types <- function(model, query){
 	# }
 
 	names(eval_var) <- list_names
-	if(is.null(model$P)){
-		model$P <- get_parameter_matrix(model)
-	}
 
 
-	names(types) <- colnames(model$P)
+	names(types) <- attr(eval_var, "type_names")
   return_list <- 	list(types = types,
   										 query = query,
   										 evaluated_variables   = eval_var)
