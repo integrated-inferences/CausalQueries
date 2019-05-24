@@ -36,34 +36,37 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\["){
 }
 
 
-get_str_diff <- function(a, b){
+retrieve_operator <- function(a, b){
 	as <- strsplit(a, "")[[1]]
 	bs <- strsplit(b, "")[[1]]
-	setdiff(bs[!bs %in% as], ".")
+	intersect(bs[!bs %in% as], c("|", "&"))
 }
 
 
-expand_wildcard <- function(restriction, joiner = "|"){
+expand_wildcard <- function(restriction, join_by = "|"){
+	# aritmetic_operators  <- c("+", "-", "/", "*", "^")
+	# relational_operators <- c(">",">=", "<","<=", "==", "!=")
+	# operators <- c(aritmetic_operators, relational_operators)
 	rest_oper <- sapply(strsplit(restriction, "\\\n"), trimws)
-	rest <- sapply(strsplit(restriction, "\\\n|\\||&"), trimws)
-	relational <- c(">",">=", "<","<=", "==", "!=")
-
+	#need to split by logical if followed by escape (\n)
+	rest <- sapply(strsplit(restriction, "(\\||&)\\\n"), trimws)
 	rest <- setdiff(rest, "")
 	to_expand <- grepl("\\.", rest)
-	# take_operator <- grep("", value = TRUE)
 
 	expanded_types <- sapply(1:length(rest), function(i){
 		if(!to_expand[i])
 			return(rest[i])
 		else {
 			exp_types <- strsplit(rest[i], ".", fixed = TRUE)[[1]]
-			n_types <- (length(exp_types) - 1)/2
+			a <- gregexpr("\\w{1}(?=(=\\.){1})", rest[i], perl = TRUE)
+			ma <- unlist(regmatches(rest[i], a))
+			rep_n <- sapply(unique(ma), function(e) sum(ma == e))
+			n_types <- length(unique(ma))
 			grid <- replicate(n_types, expr(c(0,1)))
 			type_values <- do.call(expand.grid, grid)
-			is_relational <- sum(sapply(relational, function(i)
-				any(grepl(i, exp_types, fixed = TRUE))))
-			if(is_relational > 0){
-				type_values_v <- t(apply(type_values, 1, rep, times = is_relational+1))
+
+			if(any(rep_n) > 0){
+				type_values_v <- t(apply(type_values, 1, rep, times = rep_n))
 			}else{
 				type_values_v <- type_values
 			}
@@ -77,33 +80,38 @@ expand_wildcard <- function(restriction, joiner = "|"){
 		}
 	})
 
-	operators <- lapply(1:length(expanded_types), function(i){
+	expr_operators <- lapply(1:length(expanded_types), function(i){
 		retrieve_operator(a = expanded_types[[i]][1],
 											b = rest_oper[i])
 	})
 
-	these <- lapply(expanded_types, function(a){
-		paste0(a, collapse = paste0(joiner, "\n"))
-	})
+	if(!is.null(join_by)){
+		if(!is.list(expanded_types)) expanded_types <- list(expanded_types[,,drop=TRUE])
+		to_print_list <- lapply(expanded_types, function(a){
+			paste0(a, collapse = paste0(" ", join_by, "\n"))
+		})
+		to_return_list <- lapply(expanded_types, function(a){
+			paste0(a, collapse = paste0(" ", join_by))
+		})
+	}else{
+		to_print_list <- expanded_types
+		to_return_list <- expanded_types
+	}
 
-	to_print <- paste0(unlist(lapply(these, function(l) paste0("(", l, ")"))),
-										 collapse = paste0(operators, "\n"))
-
-	# to_print <- paste0(unlist(expanded_types), collapse = paste0(joiner, "\n"))
-	cat(paste0("Generated expanded restriction:\n", to_print))
-	to_return <- paste0(unlist(lapply(expanded_types, function(a){
-		paste0("(", a, ")", collapse = joiner)
-	})), collapse = unlist(operators))
+	if(all(lapply(expr_operators, length) == 0)){
+		to_print <- unlist(to_print_list)
+		to_return <- unlist(to_return_list)
+	}else{
+		to_print <- paste0(unlist(lapply(to_print_list, function(l) paste0("(", l, ")"))),
+											 collapse = paste0(" ", expr_operators, "\n"))
+		to_return <- paste0(unlist(lapply(to_return_list, function(l) paste0("(", l, ")"))),
+												collapse = paste0(" ", expr_operators))
+	}
+	cat("Generated expanded expression:\n")
+	if(length(to_print)>1) cat(to_print, sep = "\n")
+	else cat(to_print)
 	to_return
 }
-
-
-restriction <- "(M[I=1] < M[I=0]) |
-  (D[M=1, I=., P=.] < D[M=0, I=., P=.]) |
-  (D[P=1, I=., M=.] < D[P=0, I=., M=.]) |
-  (D[I=1, M=., P=.] > D[I=0, M=., P=.])"
-
-expand_wildcard <- expand_restriction(restriction, joiner = "|")
 
 restriction <- "(M[I=1] < M[I=0]) &
   (D[M=1, I=., P=.] < D[M=0, I=., P=.]) &
