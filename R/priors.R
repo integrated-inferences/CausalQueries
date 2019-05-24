@@ -184,9 +184,8 @@ set_lambda <- function(model, lambda = NULL, random = FALSE, average = FALSE) {
 			lambda
 		}
 	}
+	if(!is.null(lambda)) message("User supplied lambda attached to model")
+
 	model$lambda <- lambda
 	return(model)
 }
-
-
-
