@@ -109,11 +109,16 @@ conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
 #' el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
 #'                   strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
 #' attr(el2, "results_table")
+#'
+#' # No givens
+#' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
+#' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
+
 
 expected_learning <- function(model, query, strategy, given = NULL, lambda = NULL){
 
 		vars <- model$variables
-		given0 <- given
+		given0 <- ifelse(is.null(given), " ", given)
 
 		# Figure out which variables are given
 		given_vars <- NULL
@@ -123,7 +128,7 @@ expected_learning <- function(model, query, strategy, given = NULL, lambda = NUL
 
 		# All strategy vars need to be seen
 		vars_to_see <- paste0("!is.na(", strategy, ")", collapse = " & ")
-		if(is.null(given)) { given <- unseen
+		if(is.null(given)) { given <- vars_to_see
 		} else {
 		given <- paste(given, "&", vars_to_see)}
 
@@ -150,8 +155,8 @@ expected_learning <- function(model, query, strategy, given = NULL, lambda = NUL
   							prior_var  = (prob%*%posterior)*(1- prob%*%posterior),
   							E_post_var = (prob%*%var)))
 
-  print(query)
-  print(out)
+#  print(query)
+#  print(out)
 
   attr(out, "results_table") <- results_table
 
