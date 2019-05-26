@@ -106,29 +106,38 @@ conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
 #' el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
 #'                   strategy = c("X", "M2"), given = "Y==1")
 #' attr(el, "results_table")
+#' el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
+#'                   strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
+#' attr(el2, "results_table")
 
 expected_learning <- function(model, query, strategy, given = NULL, lambda = NULL){
+
+		vars <- model$variables
+		given0 <- given
+
+		# Figure out which variables are given
+		given_vars <- NULL
+		if(!is.null(given)) {
+			given_vars <- stringr::str_extract_all(given, stringr::boundary("word"))[[1]]
+			given_vars <- given_vars[(given_vars %in% vars)]}
+
+		# All strategy vars need to be seen
+		vars_to_see <- paste0("!is.na(", strategy, ")", collapse = " & ")
+		if(is.null(given)) { given <- unseen
+		} else {
+		given <- paste(given, "&", vars_to_see)}
+
+		# Augment "given" to examine cases with NA in all other vars
+    unseen_vars <- vars[!(vars %in% c(strategy, given_vars)) ] # na only for these vars
+		if(length(unseen_vars) >0) {
+			unseen <- paste0("is.na(", unseen_vars, ")", collapse = " & ")
+		  given  <- paste(given, "&", unseen)}
+
+    ######################
 
 	results_table <-
 		conditional_inferences(model = model, query = query,
 													 given = given, lambda = lambda)
-
-	# Retain rows with data in strategy variables
-	strategy_rows <- paste0("!is.na(", strategy, ")", collapse = " & ")
-	results_table <- filter(results_table, !!parse_expr(strategy_rows))
-
-	# Remove rows with data in non strategy / non given variables
-	# Figure out which vars are in the given statement
-	# NOTE: SPPED UP BY ADDING UNWANTED VARS TO THE GIVENS
-	if(!is.null(given)) {
-		vars <- model$variables
-		poss_vars <- stringr::str_extract_all(given, stringr::boundary("word"))[[1]]
-		unseen_vars <- vars[!(vars %in% c(poss_vars,strategy)) ] # na only for these vars
-		if(length(unseen_vars)>0){
-	  	strategy_rows <- paste0("is.na(", unseen_vars, ")", collapse = " & ")
-	  	results_table <- filter(results_table, !!parse_expr(strategy_rows))
-			}
-  	}
 
 	# Clean up
 	results_table <- mutate(results_table,  prob = prob/sum(prob), var = posterior*(1-posterior))
@@ -136,7 +145,7 @@ expected_learning <- function(model, query, strategy, given = NULL, lambda = NUL
 	# Summarize
   out <- with(results_table,
   						data.frame(
-  							given = given, strategy = paste(strategy, collapse = ", "),
+  							given = given0, strategy = paste(strategy, collapse = ", "),
   							prior_estimand = prob%*%posterior,
   							prior_var  = (prob%*%posterior)*(1- prob%*%posterior),
   							E_post_var = (prob%*%var)))
