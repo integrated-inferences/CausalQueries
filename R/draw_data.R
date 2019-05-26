@@ -103,6 +103,10 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 
 draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
 
+		if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
+
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
 
@@ -166,6 +170,10 @@ draw_data_events <- function(model,
 #' draw_data(model, data_events = data_events)
 
 simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
+
+	if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
 
 	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
@@ -258,6 +266,10 @@ data_strategy <- function(model,
 													probs   = list(NULL),
 													ms      = NULL,
 													subsets = list(NULL)){
+	if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
+
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
