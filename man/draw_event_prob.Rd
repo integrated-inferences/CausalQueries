@@ -20,6 +20,6 @@ draw_event_prob(model, P = NULL, A = NULL, lambda = NULL,
 Draw event probabilities
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = c("Y")))
+model <- make_model("X" \%->\% "Y")
 draw_event_prob(model = model)
 }

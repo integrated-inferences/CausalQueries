@@ -98,7 +98,7 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X" %->% "Y")
 #' draw_event_prob(model = model)
 
 draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
@@ -285,4 +285,26 @@ data_strategy <- function(model,
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
 	observed_data
+}
+
+
+#' Encode data
+#'
+#' Takes data in long format, including NA values or blanks and returns vector with each row encoded as a data type.
+#'
+#' @param model A  model
+#' @param data Data in long format
+#' @export
+#' @examples
+#' model <- make_model("X" %->% "Y")
+#' data <- simulate_data(model, n = 4)
+#' data[1,1] <- ""
+#' data[3,2] <- NA
+#'
+#' encode_data(model, data)
+encode_data <- function(model, data){
+	data[data ==""] <- NA
+	vars <- model$variables
+	apply(data, MARGIN = 1, FUN = function(row){
+		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
 }

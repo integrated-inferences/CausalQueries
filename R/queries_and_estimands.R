@@ -13,11 +13,11 @@
 #' @examples
 #' model <- make_model("X" %->% "Y") %>%
 #'          set_prior_distribution()
-#'  estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
-#'  estimand_2  <- calculate_estimand(model, query = "Y[X=1] > Y[X=0]")
-#'  calculate_estimand(model, lambda = draw_lambda(model), query = "Y[X=1] > Y[X=0]")
+#'  estimand_1  <- get_single_estimand(model, query = "Y[X=1] - Y[X=0]")
+#'  estimand_2  <- get_single_estimand(model, query = "Y[X=1] > Y[X=0]")
+#'  get_single_estimand(model, lambda = draw_lambda(model), query = "Y[X=1] > Y[X=0]")
 
-calculate_estimand <- function(model,
+get_single_estimand <- function(model,
 															 query,
 															 subset = TRUE,
 															 lambda = NULL, # Use if true parameters known
@@ -51,7 +51,7 @@ calculate_estimand <- function(model,
 
 #' Calculate multiple estimands
 #'
-#' Calculated from a prior or posterior distribution
+#' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'
 #'
 #' @param model A  model
@@ -63,11 +63,11 @@ calculate_estimand <- function(model,
 #' model <- make_model("X" %->% "Y") %>%
 #'            set_prior_distribution()
 #'
-#' calculate_multiple_estimands(
+#' get_estimands(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
 #'
-calculate_multiple_estimands <- function(model,
+get_estimands <- function(model,
 																				 lambda = NULL,
 																				 queries = list(NULL),
 																				 subsets = list(TRUE),
@@ -78,7 +78,7 @@ calculate_multiple_estimands <- function(model,
 	if(is.null(estimand_labels)) estimand_labels <- names(queries)
 
 	f <- function(q, subset, posterior){
-		v <-calculate_estimand(model, query = q, subset = subset, lambda = lambda, posterior = posterior, verbose = FALSE)
+		v <- get_single_estimand(model, query = q, subset = subset, lambda = lambda, posterior = posterior, verbose = FALSE)
 		sapply(stats, function(g) g(v))
 	}
 
@@ -87,3 +87,75 @@ calculate_multiple_estimands <- function(model,
 	if(!is.null(estimand_labels)) colnames(out) <- estimand_labels
 	data.frame(out)
 }
+
+
+
+
+
+#' Get data probabilities
+#'
+#' Takes in a matrix of possible (single case) observations and returns the probability of each
+#'
+#'
+#' @param model A  model
+#' @param data Data in long format
+#' @export
+#' @examples
+#' model <- make_model("X" %->% "Y")
+#' data <- simulate_data(model, n = 4)
+#' get_data_probs(model, data)
+get_data_probs <- function(model, data){
+	events  <- get_data_events(data = data, model = model)$data_events
+	A_w     <- get_likelihood_helpers(model)$A_w
+	probs   <- A_w %*% draw_event_prob(model, lambda = model$lambda)
+	np      <- rownames(probs)
+	unlist(sapply(encode_data(model, data), function(j) probs[np==j]))
+	}
+
+
+
+#' Conditional inferences
+#'
+#' Calculate estimands condition on observed data (currently for single case process tracing) together with data realization probabilities
+#' Realization probabilities are the probability of the observed data given data is sought onb observed variables
+#'@export
+#'@examples
+#' model <- make_model("X" %->% "Y")
+#' model <- set_lambda(model, average = TRUE)
+#' conditional_inferences(model, model$lambda, query = "Y[X=1]>Y[X=0]")
+
+conditional_inferences <- function(model, lambda, query, given = NULL){
+
+	vars <- model$variables
+
+	# Possible data
+	vals <- data.frame(perm(rep(3,length(model$variables)))) - 1
+	vals[vals ==-1] <- NA
+	names(vals) <- vars
+	if(!is.null(given)) vals <- dplyr::filter(vals, eval(parse(text = given)))
+
+	# Conditions
+	conds <- t(apply(vals, 1, function(j) paste(vars, j, sep = "==")))
+	conds[is.na(vals)] <- NA
+	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
+	subsets[subsets==""] <- TRUE
+	estimands <- get_estimands(
+		model   = model,
+		lambda  = lambda,
+		queries = query,
+		subsets = subsets)[1,]
+
+	probs <- unlist(get_data_probs(model, vals))
+
+	# hack to deal with fact that get_data_probs returns missing if all NAs
+	p <- allNAs <- apply(vals, 1, function(j) all(is.na(j)))
+	p[p] <- 1
+  p[!p] <- probs
+
+	out <- data.frame(cbind(vals, t(estimands), p))
+
+	names(out) <- c(vars, "posterior", "prob")
+	rownames(out) <- NULL
+	data.frame(out)
+}
+
