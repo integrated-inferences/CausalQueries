@@ -8,22 +8,8 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' }
-#'
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' get_ancestors(dag)
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
 
 
 get_parents <- function(model) {
@@ -42,14 +28,9 @@ get_parents <- function(model) {
 #' @return A list of parents in a DAG
 #'
 #' @examples
-#' \dontrun{
-#' model <- make_model(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
 #' get_nodal_types(model)
-#' }
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
 nodal_types <- model$nodal_types
@@ -150,7 +131,8 @@ get_nodal_types_dep <- function(model){
 }
 
 
-#' Get expanded types
+
+#' Get causal types
 #'
 #' Create a data frame with types produced from all combinations of possible data produce by a dag.
 #'
@@ -159,13 +141,11 @@ get_nodal_types_dep <- function(model){
 #' @return types
 #' @export
 #'
-get_expanded_types <- function(model){
-	possible_types<-	get_nodal_types(model)
-	variables <- names(possible_types)
-	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
-	names(possible_types) <- variables
-	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	expand.grid(possible_types, stringsAsFactors = FALSE)
+get_causal_types <- function(model){
+	if(!is.null(model$causal_types)){
+		return_df <- model$causal_types
+	} else {
+		return_df <- update_causal_types(model)
 }
 
 
@@ -200,7 +180,7 @@ perm <- function(v) {
 #' @return A list containing the types and the evaluated expression
 #'
 #' @examples
-#' model <- make_model("X"%->%"M", "X"%->%"Y", "M"%->%"Y")
+#' model <- make_model("X -> M -> Y; X -> Y")
 #' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
 #' x <- get_types(model, query)
 #' x$types[x$types]
@@ -305,20 +285,13 @@ get_types <- function(model, query){
 		for(j in 1:p){
 			list_names[i] <- gsub(names(list_names)[j], list_names[j], list_names[i])
 		}
+
 	}
-	names(eval_var) <- list_names
-	if(is.null(model$P)){
-		model$P <- get_parameter_matrix(model)
-	}
-
-
-	names(types) <- colnames(model$P)
-
-
-	list(types = types,
-			 query = query,
-			 exp   = eval_var)
-
+	return(return_df)
 }
+
+
+
+
 
 

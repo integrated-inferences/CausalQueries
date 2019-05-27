@@ -11,10 +11,9 @@
 #'
 #' @examples
 #'
-#' XMYmodel <- make_model(add_edges(parent = "X", children = c("M")),
-#'                      add_edges(parent = "M", children = c("Y")))
+#' model <- make_model("X -> Y")
 #'
-#' get_ambiguity_matrix(model = XMYmodel)
+#' get_ambiguities_matrix(model = model)
 #'
 get_ambiguities_matrix <- function(model){
 
@@ -26,7 +25,7 @@ get_ambiguities_matrix <- function(model){
 	type_labels   <-  apply(type_labels, 1, paste0, collapse = "")
 
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types <- gbiqq:::get_expanded_types(model)
+	types <- gbiqq:::get_causal_types(model)
 
   # 3. Map types to data realizations. This is done in reveal_outcomes
   data_realizations   <- gbiqq:::reveal_outcomes(model)
@@ -61,7 +60,7 @@ get_ambiguities_matrix <- function(model){
 #' @return revealed_data
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = "Y"))
+#' model <- make_model("X -> Y")
 #' reveal_outcomes(model)
 #'
 #'model <- make_model(add_edges(parent = "X1", children = "Y"),
@@ -72,7 +71,7 @@ get_ambiguities_matrix <- function(model){
 
 reveal_outcomes <- function(model, dos = NULL){
 
-	types           <- gbiqq::get_expanded_types(model)
+	types           <- get_causal_types(model)
 	nodal_types     <- get_nodal_types(model, collapse = FALSE)
 	exogenous_vars  <- attr(model, "exogenous_variables")
 	endogenous_vars <- attr(model, "endogenous_variables")
@@ -99,7 +98,6 @@ reveal_outcomes <- function(model, dos = NULL){
 				nodal_label    <- apply(nodal_type_var, 1,paste, collapse ="")
 
 				J <- sapply(1:length(child_type), function(i){
-
 					type        <- child_type[i]
 					parents_val <- data_realizations[i, parents]
 					parents_val <- paste(parents_val, collapse = "")
@@ -112,7 +110,13 @@ reveal_outcomes <- function(model, dos = NULL){
 
 	  data_realizations
 	  rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
+	  type_names <- sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j]))
+	  attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
 	  data_realizations
 
 }
+
+
+
+
 

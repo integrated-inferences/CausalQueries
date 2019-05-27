@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' model <- make_model(X %->% Y)
+#' model <- make_model("X -> Y")
 #' translate_dagitty(model)
 #' }
 #'
@@ -37,11 +37,7 @@ translate_dagitty <- function(model){
 #'
 #' @examples
 #' \dontrun{
-#' model <- make_model(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
+#' model <- make_model("X -> K -> Y; X -> Y")
 #' plot_dag(model)
 #' }
 #'

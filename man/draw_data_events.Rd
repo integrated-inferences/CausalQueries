@@ -24,6 +24,6 @@ draw_data_events(model, n = 1, w = NULL, P = NULL, A = NULL,
 Draw compact data
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = c("Y")))
+model <- make_model("X -> Y")
 draw_data_events(model = model)
 }

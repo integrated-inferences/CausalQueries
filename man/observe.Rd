@@ -24,7 +24,7 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
 Observe data, given a strategy
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = "Y"))
+model <- make_model("X -> Y")
 df <- simulate_data(model, n = 8)
 # Observe X values only
 observe(complete_data = df, vars_to_observe = "X")

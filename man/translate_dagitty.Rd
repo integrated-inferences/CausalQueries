@@ -17,7 +17,7 @@ If confounds are indicated (provided in \code{attr(model$P, "confounds")}), then
 }
 \examples{
 \dontrun{
-model <- make_model(X \%->\% Y)
+model <- make_model("X -> Y")
 translate_dagitty(model)
 }
 

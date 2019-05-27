@@ -17,6 +17,6 @@ draw_type_prob(model, P = NULL, lambda = NULL)
 Draw type probabilities
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = c("Y")))
+model <- make_model("X -> Y")
 draw_type_prob(model = model)
 }

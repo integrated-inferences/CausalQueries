@@ -11,7 +11,9 @@ data_strategy(model, lambda = NULL, n, vars = list(NULL),
 Data Strategy
 }
 \examples{
-model <- make_model("X" \%->\% "M", "M" \%->\% "Y")
+ # A strategy in which X, Y aer observed for sure and M is observed with 50\% probabilit for X=1, Y=0 cases
+model <- make_model("X -> M -> Y")
+model <- set_lambda(model, average = TRUE)
 data_strategy(
    model,
    n = 8,

@@ -43,7 +43,7 @@ draw_lambda <- function(model){
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X -> Y")
 #' draw_type_prob(model = model)
 
 draw_type_prob <- function(model, P = NULL,  lambda = NULL){
@@ -98,10 +98,14 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
 
 draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
+
+		if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
 
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
@@ -129,7 +133,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob 
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X -> Y")
 #' draw_data_events(model = model)
 
 draw_data_events <- function(model,
@@ -161,11 +165,15 @@ draw_data_events <- function(model,
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = c("Y")))
+#' model <- make_model("X -> Y")
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
 simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
+
+	if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
 
 	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
@@ -195,7 +203,7 @@ simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
 #'
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = "Y"))
+#' model <- make_model("X -> Y")
 #' df <- simulate_data(model, n = 8)
 #' # Observe X values only
 #' observe(complete_data = df, vars_to_observe = "X")
@@ -243,7 +251,9 @@ observe <- function(complete_data,
 #' Data Strategy
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "M", "M" %->% "Y")
+#'  # A strategy in which X, Y aer observed for sure and M is observed with 50% probabilit for X=1, Y=0 cases
+#' model <- make_model("X -> M -> Y")
+#' model <- set_lambda(model, average = TRUE)
 #' data_strategy(
 #'    model,
 #'    n = 8,
@@ -258,6 +268,10 @@ data_strategy <- function(model,
 													probs   = list(NULL),
 													ms      = NULL,
 													subsets = list(NULL)){
+	if(is.null(lambda)) {
+		if(is.null(model$lambda)) stop("lambda not provided")
+		lambda <- model$lambda }
+
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
@@ -285,4 +299,26 @@ data_strategy <- function(model,
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
 	observed_data
+}
+
+
+#' Encode data
+#'
+#' Takes data in long format, including NA values or blanks and returns vector with each row encoded as a data type.
+#'
+#' @param model A  model
+#' @param data Data in long format
+#' @export
+#' @examples
+#' model <- make_model("X -> Y")
+#' data <- simulate_data(model, n = 4)
+#' data[1,1] <- ""
+#' data[3,2] <- NA
+#'
+#' encode_data(model, data)
+encode_data <- function(model, data){
+	data[data ==""] <- NA
+	vars <- model$variables
+	apply(data, MARGIN = 1, FUN = function(row){
+		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
 }
