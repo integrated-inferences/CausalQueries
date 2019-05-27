@@ -41,9 +41,9 @@ get_data_probs <- function(model, data, lambda = NULL){
 #'
 #' # Example of posteriors given monotonic X -> M -> Y model
 #' library(dplyr)
-#' model <- make_model("X-> M -> Y")
-#' set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
-#' set_lambda(average = TRUE)
+#' model <- make_model("X-> M -> Y")  %>%
+#'   set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
+#'   set_lambda(average = TRUE)
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
 
 conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
@@ -102,6 +102,7 @@ conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
 #' library(dplyr)
 #' model <- make_model("X -> M1 -> M2 -> Y") %>%
 #'   set_restrictions(node_restrict = list(M1 = "10", M2 = "10", Y = "10")) %>%
+#'   set_priors() %>%
 #'   set_lambda(average = TRUE)
 #' el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
 #'                   strategy = c("X", "M2"), given = "Y==1")
@@ -110,12 +111,15 @@ conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
 #'                   strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
 #' attr(el2, "results_table")
 #'
+#' # No strategy
+#' expected_learning(model, query = "Y[X=1]>Y[X=0]")
+#'
 #' # No givens
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
 
 
-expected_learning <- function(model, query, strategy, given = NULL, lambda = NULL){
+expected_learning <- function(model, query, strategy = NULL, given = NULL, lambda = NULL){
 
 		vars <- model$variables
 		given0 <- ifelse(is.null(given), " ", given)
@@ -127,16 +131,19 @@ expected_learning <- function(model, query, strategy, given = NULL, lambda = NUL
 			given_vars <- given_vars[(given_vars %in% vars)]}
 
 		# All strategy vars need to be seen
-		vars_to_see <- paste0("!is.na(", strategy, ")", collapse = " & ")
-		if(is.null(given)) { given <- vars_to_see
-		} else {
-		given <- paste(given, "&", vars_to_see)}
+		if(!is.null(strategy)){
+			vars_to_see <- paste0("!is.na(", strategy, ")", collapse = " & ")
+			if(is.null(given)) { given <- vars_to_see
+			} else {
+			given <- paste(given, "&", vars_to_see)}
+			}
 
 		# Augment "given" to examine cases with NA in all other vars
     unseen_vars <- vars[!(vars %in% c(strategy, given_vars)) ] # na only for these vars
 		if(length(unseen_vars) >0) {
 			unseen <- paste0("is.na(", unseen_vars, ")", collapse = " & ")
-		  given  <- paste(given, "&", unseen)}
+			if(is.null(given)) {given <- unseen} else {given  <- paste(given, "&", unseen)}
+			}
 
     ######################
 

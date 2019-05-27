@@ -4,7 +4,8 @@
 \alias{expected_learning}
 \title{Expected learning}
 \usage{
-expected_learning(model, query, strategy, given = NULL, lambda = NULL)
+expected_learning(model, query, strategy = NULL, given = NULL,
+  lambda = NULL)
 }
 \arguments{
 \item{model}{A  model}
@@ -25,6 +26,7 @@ Expected reduction in variance from one step data collection strategy
 library(dplyr)
 model <- make_model("X -> M1 -> M2 -> Y") \%>\%
   set_restrictions(node_restrict = list(M1 = "10", M2 = "10", Y = "10")) \%>\%
+  set_priors() \%>\%
   set_lambda(average = TRUE)
 el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
                   strategy = c("X", "M2"), given = "Y==1")
@@ -32,6 +34,9 @@ attr(el, "results_table")
 el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
                   strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
 attr(el2, "results_table")
+
+# No strategy
+expected_learning(model, query = "Y[X=1]>Y[X=0]")
 
 # No givens
 expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))

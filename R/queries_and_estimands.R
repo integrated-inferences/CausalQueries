@@ -60,11 +60,12 @@ estimand_distribution <- function(model,
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
-#'            set_prior_distribution()
+#'            set_prior_distribution(n_draws = 10000)
 #'
 #' get_estimands(
 #'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
+#'       queries = list(ATE = "Y[X=1] - Y[X=0]",
+#'                      Share_positive = "Y[X=1] > Y[X=0]"))
 #'
 get_estimands <- function(model,
 																				 lambda = NULL,
@@ -72,7 +73,10 @@ get_estimands <- function(model,
 																				 subsets = list(TRUE),
 																				 posteriors = list(FALSE),
 																				 estimand_labels = NULL,
-																				 stats = c(mean = mean, sd = sd)){
+																				 stats = NULL){
+
+	if(is.null(stats)) {if(!is.null(lambda)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
+
 
 	if(is.null(estimand_labels)) estimand_labels <- names(queries)
 
@@ -81,9 +85,9 @@ get_estimands <- function(model,
 		sapply(stats, function(g) g(v))
 	}
 
-	out <- mapply(f, queries, subsets, posteriors)
+	out <- matrix(mapply(f, queries, subsets, posteriors), nrow = length(stats))
 	rownames(out) <- paste(names(stats))
-	if(!is.null(estimand_labels)) colnames(out) <- estimand_labels
+	if(!is.null(estimand_labels)) {colnames(out) <- estimand_labels} else {colnames(out) <- paste0("Q", 1:ncol(out))}
 	data.frame(out)
 }
 

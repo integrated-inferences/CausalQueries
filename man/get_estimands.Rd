@@ -6,7 +6,7 @@
 \usage{
 get_estimands(model, lambda = NULL, queries = list(NULL),
   subsets = list(TRUE), posteriors = list(FALSE),
-  estimand_labels = NULL, stats = c(mean = mean, sd = sd))
+  estimand_labels = NULL, stats = NULL)
 }
 \arguments{
 \item{model}{A  model}
@@ -22,10 +22,11 @@ Calculated from a parameter vector, from a prior or from a posterior distributio
 }
 \examples{
 model <- make_model("X -> Y") \%>\%
-           set_prior_distribution()
+           set_prior_distribution(n_draws = 10000)
 
 get_estimands(
       model,
-      queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
+      queries = list(ATE = "Y[X=1] - Y[X=0]",
+                     Share_positive = "Y[X=1] > Y[X=0]"))
 
 }
