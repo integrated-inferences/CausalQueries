@@ -15,10 +15,12 @@ make_parameter_matrix(model, confound = NULL)
 Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = "Y"))
+model <- make_model("X -> Y")
+get_parents(model)
 confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
 make_parameter_matrix(model = model, confound = confound)
-model <- make_model("X" \%->\% "M", "M" \%->\% "Y")
+model <- make_model("X -> M -> Y")
+get_parents(model)
 confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
 make_parameter_matrix(model = model, confound = confound)
 }

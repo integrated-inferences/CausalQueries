@@ -8,22 +8,8 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' }
-#'
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' get_ancestors(dag)
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
 
 
 get_parents <- function(model) {
@@ -31,8 +17,122 @@ get_parents <- function(model) {
 	sapply(paste(unique(unlist(dag))), function(j) paste(dag$parent)[paste(dag$children) == j])
 }
 
+#' Get list of types for variables in a DAG
+#'
+#' As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
+#'
+#' @param model A model created by make_model()
+#'
+#' @export
+#'
+#' @return A list of parents in a DAG
+#'
+#' @examples
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
+#' get_nodal_types(model)
+#'
+get_nodal_types <- function(model, collapse = TRUE) {
+nodal_types <- model$nodal_types
+variables   <- c(attr(model, "exogenous_variables"),
+								 attr(model, "endogenous_variables"))
+parents     <- get_parents(model)
+dag         <- model$dag
+types       <- lapply(
+		X = lapply(parents, length),
+		FUN = function(parent_n){
+			type_mat <- perm(rep(2,2^parent_n))
+			if(parent_n == 0){
+				labels <- NULL
+			} else {
+				input_mat <- perm(rep(2,parent_n))
+				labels <- apply(input_mat,1,paste,collapse = "")
+			}
+			colnames(type_mat) <- labels
+			return(type_mat)
+		})
 
-#' Get expanded types
+types_interpret       <-
+	lapply(parents,
+	FUN = function(parent){
+		parent_n <- length(parent)
+		if(parent_n == 0){
+			labels <- "exogeneous"
+		} else {
+			input_mat <- perm(rep(2,parent_n))
+			labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
+		}
+		labels
+	})
+
+	types_labels <- lapply(1:length(types), function(i){
+		var <- names(types)[i]
+		mat <- types[[i]]
+		labels <- apply(mat,1,paste,collapse = "")
+		paste0(var, labels)
+	})
+
+	names(types_labels )<- var_names <- names(types)
+  types <- lapply(variables, function(v){
+  	rownames(types[[v]]) <- types_labels[[v]]
+  	types[[v]]
+  })
+  names(types)  <- var_names
+  if(!is.null(nodal_types)){
+  	types <- lapply(variables, function(v){
+  		mat <- types[[v]]
+  		cn <- colnames(mat)
+  		nt <- nodal_types[[v]]
+  		mat <- mat[nt, ]
+  		colnames(mat) <- cn
+  		mat
+  	})
+  }
+  names(types)  <- var_names
+  if(collapse){
+
+  types <-	sapply(1:length(types), function(i){
+  		var <- names(types)[i]
+  		mat <- as.matrix(types[[i]])
+  		labels <- apply(mat,1,paste,collapse = "")
+  		paste0(var, labels)
+  	})
+
+  }
+
+  names(types)  <- var_names
+
+  attr(types, "interpret") <- types_interpret
+	return(types)
+}
+#' Get nodal types
+#' Nodal types are created by concatening variables and their possible data. Used for labeling ambiguities matrix.
+#'
+#' @param model A model created by \code{make_model}
+#'
+#' @return types
+#' @export
+#'
+get_nodal_types_dep <- function(model){
+	if(!is.null(model$nodal_types )){
+		return(model$nodal_types )
+	} else{
+
+
+		parents <- get_parents(model)
+
+		possible_data <-	get_possible_data(model, collapse = FALSE)
+		nodes <- names(possible_data)
+
+		return(mapply(function(realization, node) paste0(node, realization),
+									node = nodes,
+									realization = possible_data ))
+	}
+}
+
+
+
+#' Get causal types
 #'
 #' Create a data frame with types produced from all combinations of possible data produce by a dag.
 #'
@@ -46,6 +146,146 @@ get_causal_types <- function(model){
 		return_df <- model$causal_types
 	} else {
 		return_df <- update_causal_types(model)
+}
+
+
+#' Produces the possible permutations of a set of variables
+#'
+#' @param v A vector of integers indicating the number of values each variable takes on. E.g., a binary variable is represented by 2.
+#'
+#' @export
+#'
+#' @return A matrix of permutations
+#'
+#' @examples
+#'
+#' \dontrun{
+#' perm(c(2,2,2))
+#' }
+perm <- function(v) {
+	sapply(1:length(v), function(x) {
+		rep(rep(1:v[x], each = prod(v[x:length(v)])/v[x]), length.out = prod(v))
+	}) - 1
+}
+
+
+#' Get values of types according to a query
+#'
+#' @param model A model  created by \code{make_model}
+#'
+#' @param query A quoted expression to interrogate \code{reveal_outcomes}
+#'
+#' @export
+#'
+#' @return A list containing the types and the evaluated expression
+#'
+#' @examples
+#' model <- make_model("X -> M -> Y; X -> Y")
+#' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
+#' x <- get_types(model, query)
+#' x$types[x$types]
+#' query <- "Y[M=M[X=0], X=1]==1"
+#' x <- get_types(model, query)
+#' x$types[x$types]
+
+get_types <- function(model, query){
+
+	# Global Variables
+	aritmetic_operators  <- c("+", "-", "/", "*", "^")
+	relational_operators <- c(">",">=", "<","<=", "==", "!=")
+	operators <- c(aritmetic_operators, relational_operators)
+	condition <- paste0(operators, collapse = "|")
+	eval_var  <- list()
+	k <- 1
+	i <- 0
+	list_names <- ""
+	continue <- TRUE
+
+	# strip whitespaces
+	# split query into single characters
+	# locate opening brackets and reverse oder
+	w_query <- gsub(" ", "", query)
+	w_query <- unlist(strsplit(query, ""))
+	bracket_starts <- rev(grep( "\\[", w_query))
+
+
+	while(continue){
+		i <- i + 1
+
+		# start at the latest found "["
+		# find the closest subsequent "]"
+		# remove brackets and extract expression
+		.query	<- w_query[(bracket_starts[i]):length(w_query)]
+		.bracket_ends <- grep("\\]", .query)[1]
+		.query <- .query[1:.bracket_ends]
+		brackets <- grepl("\\[|\\]",  .query)
+		.query <- .query[!brackets]
+
+		# Split expression by ","
+		# "x = 1, m = 0" into
+		# "x = 1" "m=0"
+		.query <- paste0(.query, collapse = "")
+		.query <- unlist(strsplit(.query, ","))
+		dos <- list()
+
+		# Walks through splitted expressions (i.e dos)
+		# and checks if expression can be evaluated
+		for (j in 1:length(.query)) {
+
+			do <- unlist(strsplit( .query[j], ""))
+			# Perform operations if any
+			if(any(operators %in%  do)){
+
+				do <- paste0(do, collapse = "")
+				do <- gsub(" ", "", do)
+				do <- unlist(strsplit( do, ""))
+				equal <- grep("=", do)
+				var_name <- do[1:(equal-1)]
+				exp <- paste0(do[(equal+1):length(do)], collapse = "")
+				dos[[j]] <- eval(parse(text = exp), eval_var)
+				names(dos)[[j]] <- var_name
+
+			} else{
+				value <- c(eval(parse(text = paste0(do, collapse = ""), eval_var ), eval_var))
+				vars  <- gbiqq:::get_variables(model)
+				v_cond  <- paste0(vars, collapse = "|")
+				i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
+				var_name <- do[i_var]
+				dos[[j]] <- value
+				names(dos)[[j]] <- var_name
+			}
+		}
+
+		# Save result from last iteration
+		# and remove corresponding expression in w_query t
+		var <- w_query[bracket_starts[i]-1]
+		bracket_ends <- bracket_starts[i] + .bracket_ends - 1
+		s <- seq(bracket_starts[i], bracket_ends )
+		list_names[k] <- paste0(var, paste0( w_query[s], collapse = ""))
+		names(list_names)[k] <- w_query[s[1]-1] <-  paste0("var",k)
+
+		data <- reveal_outcomes(model, dos )
+		eval_var[[k]] <-  as.numeric(data[, var])
+		names(eval_var)[k] <- paste0("var",k)
+		w_query <- w_query[-s]
+		k <- k + 1
+
+		# Stop loop there are no [] left
+		if(!any(grep("\\[|\\]", w_query))){
+			continue <- FALSE
+			w_query <- paste0(w_query, collapse = "")
+			w_query <- gsub(" ", "", w_query)
+
+			types <- c(eval(parse(text = paste0(w_query, collapse = "")),  eval_var))
+		}
+	}
+
+	p <- length(list_names)
+	for (i in 1:p) {
+		for(j in 1:p){
+			list_names[i] <- gsub(names(list_names)[j], list_names[j], list_names[i])
+		}
+
 	}
 	return(return_df)
 }

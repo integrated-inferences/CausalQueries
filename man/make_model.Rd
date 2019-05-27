@@ -4,33 +4,23 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(..., add_priors = FALSE)
+make_model(statement, add_priors = FALSE)
 }
 \arguments{
-\item{...}{Edges added by add_edges()}
+\item{statement}{A character statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2" or}
+
+\item{add_priors}{= FALSE Add default priors}
 }
 \value{
 An object of class probabilistic_causal_model containing a dag
 }
 \description{
-`make_model` requires specifying nodes and edges of a graph. Imlpied causal types are calculated and default priors are provided under the assumption of no confounding.
+`make_model` uses dagitty syntax and functionality to specify nodes and edges of a graph. Imlpied causal types are calculated and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters. `
 }
 \examples{
-\dontrun{
-modelXKY <- make_model( "X" \%->\% "Y", "X" \%->\% "K", "K" \%->\% "Y")
-
-# Example where variables need re-ordering
-model <- make_model(
-  add_edges(parent = "X3",  children = "Y"),
-  add_edges(parent = "X2", children = "X3"),
-  add_edges(parent = "X2", children = "Y"),
-  add_edges(parent = "X1", children = "X2"))
-
+modelXKY <- make_model("X -> K -> Y; X -> Y")
+  
 # Example where cyclicaly dag attempted
-model <- make_model(
-  add_edges(parent = "X1",  children = "X2"),
-  add_edges(parent = "X2", children = "X3"),
-  add_edges(parent = "X3", children = "X2"))
-}
+modelXKX <- make_model("X -> K -> X")
 }

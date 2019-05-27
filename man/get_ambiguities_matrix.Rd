@@ -17,9 +17,8 @@ Get matrix that maps types to data realizations
 }
 \examples{
 
-XMYmodel <- make_model(add_edges(parent = "X", children = c("M")),
-                     add_edges(parent = "M", children = c("Y")))
+model <- make_model("X -> Y")
 
-get_ambiguity_matrix(model = XMYmodel)
+get_ambiguities_matrix(model = model)
 
 }

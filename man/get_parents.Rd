@@ -17,20 +17,6 @@ Get list of parents in a dag
 }
 \examples{
 
-\dontrun{
-dag <- make_dag(
- add_edges(parent = "X",children = c("K","Y")),
- add_edges(parent = "K",children = "Y")
-)
-
-get_parents(dag)
-}
-
-dag <- make_dag(
- add_edges(parent = "X",children = c("K")),
- add_edges(parent = "K",children = "Y")
-)
-
-get_parents(dag)
-get_ancestors(dag)
+model <- make_model("X -> K -> Y")
+get_parents(model)
 }

@@ -22,13 +22,12 @@ Restrict causal types. If priors exist prior probabilities are redistributed ove
 }
 \examples{
 # restrictions can be specified following nodal_types syntax
-XYmodel <- make_model("X" \%->\% "Y") \%>\%
+XYmodel <- make_model("X->Y") \%>\%
   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 require(dplyr)
 # or alternatively variable name can be omitted from restriction
-XYmodel <- make_model(add_edges(parent = "X", children = "Y")) \%>\%
-   set_restrictions(model =., node_restrict = list(X = "0", Y = "00"))
-
+XYmodel <- make_model("X->Y") \%>\%
+   set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
 
 # Restrictions can be  with wildcards
 my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))

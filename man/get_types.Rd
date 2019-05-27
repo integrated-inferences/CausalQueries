@@ -18,7 +18,7 @@ A list containing the types and the evaluated expression
 Get values of types according to a query
 }
 \examples{
-model <- make_model("X"\%->\%"M", "X"\%->\%"Y", "M"\%->\%"Y")
+model <- make_model("X -> M -> Y; X -> Y")
 query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
 x <- get_types(model, query)
 x$types[x$types]

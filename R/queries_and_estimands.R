@@ -1,4 +1,4 @@
-#' Calculate estimand
+#' Calculate estimand distribution
 #'
 #' Calculated from a prior or posterior distribution
 #'
@@ -11,13 +11,12 @@
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y") %>%
+#' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  estimand_1  <- calculate_estimand(model, query = "Y[X=1] - Y[X=0]")
-#'  estimand_2  <- calculate_estimand(model, query = "Y[X=1] > Y[X=0]")
-#'  calculate_estimand(model, lambda = draw_lambda(model), query = "Y[X=1] > Y[X=0]")
+#'  estimand_1  <- estimand_distribution(model, query = "Y[X=1] - Y[X=0]")
+#'  estimand_2  <- estimand_distribution(model, query = "Y[X=1] > Y[X=0]")
 
-calculate_estimand <- function(model,
+estimand_distribution <- function(model,
 															 query,
 															 subset = TRUE,
 															 lambda = NULL, # Use if true parameters known
@@ -51,7 +50,7 @@ calculate_estimand <- function(model,
 
 #' Calculate multiple estimands
 #'
-#' Calculated from a prior or posterior distribution
+#' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'
 #'
 #' @param model A  model
@@ -60,14 +59,14 @@ calculate_estimand <- function(model,
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y") %>%
+#' model <- make_model("X -> Y") %>%
 #'            set_prior_distribution()
 #'
-#' calculate_multiple_estimands(
+#' get_estimands(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"))
 #'
-calculate_multiple_estimands <- function(model,
+get_estimands <- function(model,
 																				 lambda = NULL,
 																				 queries = list(NULL),
 																				 subsets = list(TRUE),
@@ -78,7 +77,7 @@ calculate_multiple_estimands <- function(model,
 	if(is.null(estimand_labels)) estimand_labels <- names(queries)
 
 	f <- function(q, subset, posterior){
-		v <-calculate_estimand(model, query = q, subset = subset, lambda = lambda, posterior = posterior, verbose = FALSE)
+		v <- estimand_distribution(model, query = q, subset = subset, lambda = lambda, posterior = posterior, verbose = FALSE)
 		sapply(stats, function(g) g(v))
 	}
 
@@ -87,3 +86,8 @@ calculate_multiple_estimands <- function(model,
 	if(!is.null(estimand_labels)) colnames(out) <- estimand_labels
 	data.frame(out)
 }
+
+
+
+
+

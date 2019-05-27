@@ -17,7 +17,7 @@ Define a model, estimand, and answer strategy
 }
 \examples{
 my_design <- gbiqq_designer(
-  model = make_model("X" \%->\% "Y"),
+model <- make_model("X -> Y")
   lambda = c(.5, .5, .1, .7, .1, .1),  # Truth
   data_strat = list(n = 4, vars = list(NULL), probs = list(NULL), ms = NULL, subsets = list(NULL)),
   queries = list(ATE = "Y[X=1] - Y[X=0]"))
