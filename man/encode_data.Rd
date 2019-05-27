@@ -15,7 +15,7 @@ encode_data(model, data)
 Takes data in long format, including NA values or blanks and returns vector with each row encoded as a data type.
 }
 \examples{
-model <- make_model("X" \%->\% "Y")
+model <- make_model("X -> Y")
 data <- simulate_data(model, n = 4)
 data[1,1] <- ""
 data[3,2] <- NA

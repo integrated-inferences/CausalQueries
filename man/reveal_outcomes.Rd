@@ -22,7 +22,7 @@ If a do operator is applied to any variable then it takes the given value and al
 \code{reveal_outcomes} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 }
 \examples{
-model <- make_model(add_edges(parent = "X", children = "Y"))
+model <- make_model("X -> Y")
 reveal_outcomes(model)
 
 model <- make_model(add_edges(parent = "X1", children = "Y"),

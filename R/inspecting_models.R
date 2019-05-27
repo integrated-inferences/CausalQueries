@@ -8,22 +8,8 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' }
-#'
-#' dag <- make_dag(
-#'  add_edges(parent = "X",children = c("K")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
-#' get_parents(dag)
-#' get_ancestors(dag)
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
 
 
 get_parents <- function(model) {
@@ -42,14 +28,9 @@ get_parents <- function(model) {
 #' @return A list of parents in a DAG
 #'
 #' @examples
-#' \dontrun{
-#' model <- make_model(
-#'  add_edges(parent = "X",children = c("K","Y")),
-#'  add_edges(parent = "K",children = "Y")
-#' )
-#'
+#' model <- make_model("X -> K -> Y")
+#' get_parents(model)
 #' get_nodal_types(model)
-#' }
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
 nodal_types <- model$nodal_types
@@ -200,7 +181,7 @@ perm <- function(v) {
 #' @return A list containing the types and the evaluated expression
 #'
 #' @examples
-#' model <- make_model("X"%->%"M", "X"%->%"Y", "M"%->%"Y")
+#' model <- make_model("X -> M -> Y; X -> Y")
 #' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
 #' x <- get_types(model, query)
 #' x$types[x$types]

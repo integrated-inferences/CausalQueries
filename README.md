@@ -27,20 +27,19 @@ Our goal is to form beliefs over parameters but also over more substantive estim
 
 Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There is, in addition, unobservable confounding between `X` and `Y`. This is an example of a model in which you might use information on `M` to figure out whether `X` caused `Y`.
 
-The DAG is defined like this:
+The DAG is defined using `dagitty` syntax like this:
 
 ```
-model <- make_model("X" %->% "M", "M" %->% "Y")
+model <- make_model("X -> M -> Y")
 ```
 
 To add the confounding we have to slow an additional parameter that allows a possibly different assignment probability for `X` given a causal type for `Y`.
 
 
 ```
-model <- set_parameter_matrix(
-                  model,
-                  confound = list(ancestor = c(X = "X"), 
-                                  descendent_type = list(Y = "11")))
+model <- set_parameter_matrix(model,
+                              confound = list(ancestor = c(X = "X"), 
+                                              descendent_type = list(Y = "11")))
 ```
 
 We then set priors thus:

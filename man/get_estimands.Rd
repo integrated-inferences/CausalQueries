@@ -21,7 +21,7 @@ get_estimands(model, lambda = NULL, queries = list(NULL),
 Calculated from a parameter vector, from a prior or from a posterior distribution
 }
 \examples{
-model <- make_model("X" \%->\% "Y") \%>\%
+model <- make_model("X -> Y") \%>\%
            set_prior_distribution()
 
 get_estimands(

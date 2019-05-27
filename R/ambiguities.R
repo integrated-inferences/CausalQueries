@@ -11,10 +11,9 @@
 #'
 #' @examples
 #'
-#' XMYmodel <- make_model(add_edges(parent = "X", children = c("M")),
-#'                      add_edges(parent = "M", children = c("Y")))
+#' model <- make_model("X -> Y")
 #'
-#' get_ambiguity_matrix(model = XMYmodel)
+#' get_ambiguities_matrix(model = model)
 #'
 get_ambiguities_matrix <- function(model){
 
@@ -61,7 +60,7 @@ get_ambiguities_matrix <- function(model){
 #' @return revealed_data
 #' @export
 #' @examples
-#' model <- make_model(add_edges(parent = "X", children = "Y"))
+#' model <- make_model("X -> Y")
 #' reveal_outcomes(model)
 #'
 #'model <- make_model(add_edges(parent = "X1", children = "Y"),

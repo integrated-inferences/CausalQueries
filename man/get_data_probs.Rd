@@ -15,7 +15,7 @@ get_data_probs(model, data, lambda = NULL)
 Takes in a matrix of possible (single case) observations and returns the probability of each
 }
 \examples{
-model <- make_model("X" \%->\% "Y")
+model <- make_model("X->Y")
 data <- simulate_data(model, n = 4)
 get_data_probs(model, data)
 }

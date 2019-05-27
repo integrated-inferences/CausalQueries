@@ -19,6 +19,6 @@ set_lambda(model, lambda = NULL, random = FALSE, average = FALSE)
 Add a vector of true parameters -- can be use to draw data, rather than true vector
 }
 \examples{
-set_lambda(make_model("X" \%->\% "Y"), average = TRUE)
+set_lambda(make_model("X -> Y"), average = TRUE)
 
 }

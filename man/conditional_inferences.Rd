@@ -20,13 +20,13 @@ Calculate estimands condition on observed data (currently for single case proces
 Realization probabilities are the probability of the observed data given data is sought onb observed variables
 }
 \examples{
-model <- make_model("X" \%->\% "Y")
+model <- make_model("X->Y")
 model <- set_lambda(model, average = TRUE)
 conditional_inferences(model, query = "Y[X=1]>Y[X=0]")
 
 # Example of posteriors given monotonic X -> M -> Y model
 library(dplyr)
-model <- make_model("X" \%->\% "M", "M" \%->\% "Y") \%>\%
+model <- make_model("X-> M -> Y")
 set_restrictions(node_restrict = list(M = "10", Y = "10")) \%>\%
 set_lambda(average = TRUE)
 conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")

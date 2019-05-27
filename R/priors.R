@@ -6,7 +6,7 @@
 #'
 #' @export
 #' @examples
-#' XYdag <- make_model("X" %->% "Y")
+#' XYdag <- make_model("X -> Y")
 #' #  Default sets all priors to 1
 #' make_priors(model = XYdag)
 #' #  Set all priors to 0.5
@@ -155,7 +155,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 #' @param average If true, prior mean used
 #' @export
 #' @examples
-#' set_lambda(make_model("X" %->% "Y"), average = TRUE)
+#' set_lambda(make_model("X -> Y"), average = TRUE)
 #'
 set_lambda <- function(model, lambda = NULL, random = FALSE, average = FALSE) {
 

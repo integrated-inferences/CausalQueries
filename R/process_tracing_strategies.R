@@ -6,7 +6,7 @@
 #' @param data Data in long format
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y")
+#' model <- make_model("X->Y")
 #' data <- simulate_data(model, n = 4)
 #' get_data_probs(model, data)
 get_data_probs <- function(model, data, lambda = NULL){
@@ -35,13 +35,13 @@ get_data_probs <- function(model, data, lambda = NULL){
 #'
 #' @export
 #' @examples
-#' model <- make_model("X" %->% "Y")
+#' model <- make_model("X->Y")
 #' model <- set_lambda(model, average = TRUE)
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]")
 #'
 #' # Example of posteriors given monotonic X -> M -> Y model
 #' library(dplyr)
-#' model <- make_model("X" %->% "M", "M" %->% "Y") %>%
+#' model <- make_model("X-> M -> Y")
 #' set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
 #' set_lambda(average = TRUE)
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
@@ -98,9 +98,9 @@ conditional_inferences <- function(model, query, lambda=NULL,  given = NULL){
 #'
 #' @export
 #' @examples
-#' # Reduction in variance given monotonic X -> M -> Y model
+#' # Reduction in variance given monotonic X -> M1 -> M2 -> Y model
 #' library(dplyr)
-#' model <- make_model("X" %->% "M1", "M1" %->% "M2", "M2" %->% "Y") %>%
+#' model <- make_model("X -> M1 -> M2 -> Y") %>%
 #'   set_restrictions(node_restrict = list(M1 = "10", M2 = "10", Y = "10")) %>%
 #'   set_lambda(average = TRUE)
 #' el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",

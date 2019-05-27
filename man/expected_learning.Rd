@@ -21,12 +21,19 @@ expected_learning(model, query, strategy, given = NULL, lambda = NULL)
 Expected reduction in variance from one step data collection strategy
 }
 \examples{
-# Reduction in variance given monotonic X -> M -> Y model
+# Reduction in variance given monotonic X -> M1 -> M2 -> Y model
 library(dplyr)
-model <- make_model("X" \%->\% "M1", "M1" \%->\% "M2", "M2" \%->\% "Y") \%>\%
-  set_restrictions(node_restrict = list(M1 = "10", Y = "10")) \%>\%
+model <- make_model("X -> M1 -> M2 -> Y") \%>\%
+  set_restrictions(node_restrict = list(M1 = "10", M2 = "10", Y = "10")) \%>\%
   set_lambda(average = TRUE)
-el <- expected_learning(model, model$lambda, query = "Y[X=1]>Y[X=0]",
-                  strategy = c("M1", "M2"), given = "Y==1")
+el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
+                  strategy = c("X", "M2"), given = "Y==1")
 attr(el, "results_table")
+el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
+                  strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
+attr(el2, "results_table")
+
+# No givens
+expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
+expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
 }
