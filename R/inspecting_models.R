@@ -131,7 +131,8 @@ get_nodal_types_dep <- function(model){
 }
 
 
-#' Get expanded types
+
+#' Get causal types
 #'
 #' Create a data frame with types produced from all combinations of possible data produce by a dag.
 #'
@@ -140,13 +141,11 @@ get_nodal_types_dep <- function(model){
 #' @return types
 #' @export
 #'
-get_expanded_types <- function(model){
-	possible_types<-	get_nodal_types(model)
-	variables <- names(possible_types)
-	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
-	names(possible_types) <- variables
-	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	expand.grid(possible_types, stringsAsFactors = FALSE)
+get_causal_types <- function(model){
+	if(!is.null(model$causal_types)){
+		return_df <- model$causal_types
+	} else {
+		return_df <- update_causal_types(model)
 }
 
 
@@ -286,20 +285,13 @@ get_types <- function(model, query){
 		for(j in 1:p){
 			list_names[i] <- gsub(names(list_names)[j], list_names[j], list_names[i])
 		}
+
 	}
-	names(eval_var) <- list_names
-	if(is.null(model$P)){
-		model$P <- get_parameter_matrix(model)
-	}
-
-
-	names(types) <- colnames(model$P)
-
-
-	list(types = types,
-			 query = query,
-			 exp   = eval_var)
-
+	return(return_df)
 }
+
+
+
+
 
 
