@@ -71,14 +71,14 @@ updated_model <- gbiqq(model, data)
 Finally you can calculate an estimand of interest like this:
 
 ``` 
-CoE <- calculate_estimand(
+CoE <- estimand_distribution(
                    model = updated_model, 
                    posterior = TRUE,
                    query = "Y[X=0] == 0",
                    subset = "X==1 & Y==1"
                    )
 ```
-This uses the posterior distribution and the model to assess the "causes of effects" estimand: the probability that `X=1` was the cause of `Y=1` in those cases in which `X=1` and `Y=1`. The approach is to imagine a set of "do" operations on the model, that control the level of `X` and to inquire about the level of `Y` given these operations, and then to assess how likely is is that `Y` would be 0 if `X` were fixed at 0 within a set that naturally take on particular values of `X` and `Y`. By the same token this posterior can be calculated conditional on observations of `M`.
+This uses the posterior distribution and the model to assess the "causes of effects" estimand: the probability that `X=1` was the cause of `Y=1` in those cases in which `X=1` and `Y=1`. The approach is to imagine a set of "do" operations on the model, that control the level of `X` and to inquire about the level of `Y` given these operations, and then to assess how likely is is that `Y` would be 0 if `X` were fixed at 0 within a set that naturally take on particular values of `X` and `Y`. By the same token this posterior can be calculated conditional on observations of `M`, allowing an assessment of how data on mediators alters inference about the causes of effects.
 
 ## Credits etc
 
