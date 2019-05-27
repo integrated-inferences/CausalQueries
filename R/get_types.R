@@ -14,14 +14,21 @@
 #' model <- make_model("X -> M -> Y; X->Y")
 #' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
 #' x <- get_types(model, query)
-#' x$types[x$types]
+#' summary(x)
+#'
 #' query <- "Y[M=M[X=0], X=1]==1"
 #' x <- get_types(model, query)
 #' get_types(model, query)
+#'
 #' query <- "(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])"
 #' get_types(model, query)
+#'
 #' query <- "Y[X=1] == Y[X=0]"
 #' get_types(model, query)
+#'
+#' query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+#' get_types(model, query)
+
 
 get_types <- function(model, query){
 
