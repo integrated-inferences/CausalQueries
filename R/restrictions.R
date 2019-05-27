@@ -122,9 +122,25 @@ restrict_nodal_types <- function(model, restriction){
 	# Subset lambda_priors
 	type_names          <- get_type_names(nodal_types)
 	model$lambda_priors <- model$lambda_priors[type_names]
-	model$causal_types  <- get_causal_types(model)
+	model$causal_types  <- update_causal_types(model)
 	return(model)
 }
+
+#' Update causal types based on nodal types
+# Do not export
+#'
+update_causal_types <- function(model){
+
+		possible_types <-	get_nodal_types(model)
+		variables <- names(possible_types)
+		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
+		names(possible_types) <- variables
+		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+		return_df <- expand.grid(possible_types, stringsAsFactors = FALSE)
+
+	return(return_df)
+}
+
 
 #' Reduce lambda
 #' If lambda is longer than nodel types, because of a model restriction, subset lambda and renormalize
