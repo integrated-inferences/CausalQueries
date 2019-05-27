@@ -38,6 +38,7 @@ make_model <- function(statement, add_priors = FALSE){
   	gen[!x & is.na(gen)] <- j
   	}
 
+
 	# Model is a list
 	model <- list(dag = dag[order(gen, dag[,1], dag[,2]),],
 								step = "dag" )
@@ -57,3 +58,34 @@ make_model <- function(statement, add_priors = FALSE){
 	return(model)
 }
 
+
+
+#' @export
+print.probabilistic_causal_model <- function(x, ...) {
+	print(summary(x))
+	invisible(x)
+}
+
+
+#' @export
+summary.probabilistic_causal_model <- function(object, ...) {
+	structure(object, class = c("summary.compared_diagnoses", "data.frame"))
+
+}
+
+#' @export
+print.probabilistic_causal_model <- function(x, ...){
+
+	cat("\n DAG: \n")
+	print(x$dag)
+  if(!is.null(x$P)){
+  	cat("\n\n Parameter matrix: \n ")
+  	print(x$P)
+  }
+	if(!is.null(x$lambdas_priors)){
+		cat("\n\n lambda priors: \n")
+		print(x$lambda_priors)
+	}
+
+
+}
