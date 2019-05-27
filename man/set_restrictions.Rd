@@ -29,6 +29,7 @@ require(dplyr)
 XYmodel <- make_model("X->Y") \%>\%
    set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
 
+
 # Restrictions can be  with wildcards
 my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))
 get_parameter_matrix(my_model)

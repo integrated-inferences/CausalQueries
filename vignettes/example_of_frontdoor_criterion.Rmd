@@ -24,7 +24,7 @@ With simple $X,Y$ data we greatly underestimate the effect of $X$ on $Y$ because
 
 ```{r}
 model    <- make_model("X -> M -> Y")
-P        <- make_parameter_matrix(model, list(ancestor = c(X="X"), descendent_type = list( Y = "11" )))
+P        <- make_parameter_matrix(model, confound = list(ancestor = c(X="X"), descendent_type = list( Y = "11" )))
 model    <- set_parameter_matrix(model, P)
 model    <- set_priors(model)
 ```

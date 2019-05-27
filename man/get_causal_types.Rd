@@ -2,7 +2,7 @@
 % Please edit documentation in R/inspecting_models.R
 \name{get_causal_types}
 \alias{get_causal_types}
-\title{Get expanded types}
+\title{Get causal types}
 \usage{
 get_causal_types(model)
 }

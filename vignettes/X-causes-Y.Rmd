@@ -46,7 +46,7 @@ Note that in a simple  "$X$ causes $Y$" model there are four "nodal types" for $
 
 # Draw data
 
-We can draw data directly from the model, in which case a parameter vector is draw from the priors and used to generate data. Alternatively we can imagine a "true" parameter vector and use that to simulate data. Here is one in which the parameter vector---corresponding to the rows of the parameter matrix --- imply  that $X=1$ with probability .5, that $X$ has a positive effect on $Y$ for half the units, and that $X$ never has a negative effect on $Y$. 
+We can draw data directly from the model, in which case a parameter vector is a draw from the priors and used to generate data. Alternatively we can imagine a "true" parameter vector and use that to simulate data. Here is an example in which the parameter vector---with entries corresponding to the rows of the parameter matrix --- imply  that $X=1$ with probability .5, that $X$ has a positive effect on $Y$ for half the units, and that $X$ never has a negative effect on $Y$. 
 
 ```{r}
 data <- simulate_data(model, n = 5000, lambda = c(.5, .5, .25, .5, 0, .25))

@@ -4,7 +4,8 @@
 \alias{st_within}
 \title{Get string between two regular expression patterns}
 \usage{
-st_within(x, left = "[[:punct:]]|\\\\b", right = "\\\\[")
+st_within(x, left = "[[:punct:]]|\\\\b", right = "\\\\[",
+  rm_left = 0, rm_right = -1)
 }
 \arguments{
 \item{x}{A character vector of length 1L.}
