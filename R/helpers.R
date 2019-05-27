@@ -12,12 +12,13 @@
 #' b <- "(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)"
 #' st_within(b)
 
-st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\["){
+st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, rm_right=-1){
 	if(!is.character(x)) stop("`x` must be a string.")
-	puncts <- gregexpr(left, x, perl = TRUE)
+	puncts <- gregexpr(left, x, perl = TRUE)[[1]]
 	stops <- gregexpr(right, x, perl = TRUE)[[1]]
 
-	# only index the first "[" when there are consecutive ones
+	# only index the first of the same boundary
+	# when there are consecutive ones (eg. "[[")
 	consec_brackets <- diff(stops)
 	if(any(consec_brackets == 1)){
 		remov <- which(consec_brackets == 1) + 1
@@ -26,96 +27,68 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\["){
 
 	# find the closest punctuation or space
 	starts <- sapply(stops, function(s){
-		dif <- s - puncts[[1]]
+		dif <- s - puncts
 		dif <- dif[dif>0]
-		# print(dif)
-		puncts[[1]][which(dif==min(dif))]}
-	)
-
-	sapply(1:length(starts), function(i) substr(x, starts[i], stops[i]-1))
+		ifelse(length(dif) == 0, ret <- NA, ret <- puncts[which(dif==min(dif))])
+		return(ret)
+	})
+	drop <- is.na(starts) | is.na(stops)
+	sapply(1:length(starts), function(i) if(!drop[i]) substr(x, starts[i]+rm_left, stops[i]+rm_right))
 }
 
-
-retrieve_operator <- function(a, b){
-	as <- strsplit(a, "")[[1]]
-	bs <- strsplit(b, "")[[1]]
-	intersect(bs[!bs %in% as], c("|", "&"))
+# Recursive substitution
+gsub_many <- function(x, pattern_vector, replacement_vector, ...){
+	if(!identical(length(pattern_vector), length(replacement_vector))) stop("pattern and replacement vectors must be the same length")
+	for(i in seq_along(pattern_vector)){
+		x <- gsub(pattern_vector[i], replacement_vector[i], x, ...)
+	}
+	x
 }
 
+expand_wildcard <- function(to_expand, join_by = "|"){
+	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
+	outer <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)),
+										 fixed = TRUE)
+	to_expand <- grepl("\\.", orig)
 
-expand_wildcard <- function(restriction, join_by = "|"){
-	# aritmetic_operators  <- c("+", "-", "/", "*", "^")
-	# relational_operators <- c(">",">=", "<","<=", "==", "!=")
-	# operators <- c(aritmetic_operators, relational_operators)
-	rest_oper <- sapply(strsplit(restriction, "\\\n"), trimws)
-	#need to split by logical if followed by escape (\n)
-	rest <- sapply(strsplit(restriction, "(\\||&)\\\n"), trimws)
-	rest <- setdiff(rest, "")
-	to_expand <- grepl("\\.", rest)
-
-	expanded_types <- sapply(1:length(rest), function(i){
+	expanded_types <- sapply(1:length(orig), function(i){
 		if(!to_expand[i])
-			return(rest[i])
+			return(orig[i])
 		else {
-			exp_types <- strsplit(rest[i], ".", fixed = TRUE)[[1]]
-			a <- gregexpr("\\w{1}(?=(=\\.){1})", rest[i], perl = TRUE)
-			ma <- unlist(regmatches(rest[i], a))
-			rep_n <- sapply(unique(ma), function(e) sum(ma == e))
-			n_types <- length(unique(ma))
+			exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
+			a <- gregexpr("\\w{1}(?=(=\\.){1})", orig[i], perl = TRUE)
+			matcha <- unlist(regmatches(orig[i], a))
+			rep_n <- sapply(unique(matcha), function(e) sum(matcha == e))
+			n_types <- length(unique(matcha))
 			grid <- replicate(n_types, expr(c(0,1)))
 			type_values <- do.call(expand.grid, grid)
+			colnames(type_values) <- unique(matcha)
 
-			if(any(rep_n) > 0){
-				type_values_v <- t(apply(type_values, 1, rep, times = rep_n))
-			}else{
-				type_values_v <- type_values
-			}
-			to_collapse <- cbind(type_values_v, "")
-			ret <- sapply(1:nrow(to_collapse), function(t){
-				tc <- cbind(exp_types, to_collapse[t,])
-				paste0(apply(tc, 1, paste0), collapse = "")
+			apply(type_values, 1, function(s){
+				to_sub <- paste0(colnames(type_values), "(\\b)*=(\\b)*$")
+				subbed <- gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
+				paste0(subbed, collapse = "")
 			})
-
-			return(ret)
 		}
 	})
 
-	expr_operators <- lapply(1:length(expanded_types), function(i){
-		retrieve_operator(a = expanded_types[[i]][1],
-											b = rest_oper[i])
-	})
-
 	if(!is.null(join_by)){
-		if(!is.list(expanded_types)) expanded_types <- list(expanded_types[,,drop=TRUE])
-		to_print_list <- lapply(expanded_types, function(a){
-			paste0(a, collapse = paste0(" ", join_by, "\n"))
+		oper <- sapply(expanded_types, function(l){
+			paste0(l, collapse = paste0(" ", join_by, " "))
 		})
-		to_return_list <- lapply(expanded_types, function(a){
-			paste0(a, collapse = paste0(" ", join_by))
-		})
-	}else{
-		to_print_list <- expanded_types
-		to_return_list <- expanded_types
-	}
+		if(length(orig)==1 && length(orig)!=length(oper)){
+			oper <- sapply(expanded_types, function(a) gsub("%expand%1", a, outer))
+			oper_return <- paste0(oper, collapse = paste0(" ", join_by, " "))
+		}else{
+			oper_return <- gsub_many(outer,paste0("%expand%", 1:length(orig)), oper)
+		}
 
-	if(all(lapply(expr_operators, length) == 0)){
-		to_print <- unlist(to_print_list)
-		to_return <- unlist(to_return_list)
-	}else{
-		to_print <- paste0(unlist(lapply(to_print_list, function(l) paste0("(", l, ")"))),
-											 collapse = paste0(" ", expr_operators, "\n"))
-		to_return <- paste0(unlist(lapply(to_return_list, function(l) paste0("(", l, ")"))),
-												collapse = paste0(" ", expr_operators))
+	} else {
+		oper <- do.call(cbind, list(expanded_types))
+		oper_return <- apply(oper, 1, function(i) gsub_many(outer,
+																												paste0("%expand%", 1:length(orig)),i))
 	}
 	cat("Generated expanded expression:\n")
-	if(length(to_print)>1) cat(to_print, sep = "\n")
-	else cat(to_print)
-	to_return
+	cat(unlist(oper_return), sep = "\n")
+	oper_return
 }
-
-restriction <- "(M[I=1] < M[I=0]) &
-  (D[M=1, I=., P=.] < D[M=0, I=., P=.]) &
-  (D[P=1, I=., M=.] < D[P=0, I=., M=.]) &
-  (D[I=1, M=., P=.] > D[I=0, M=., P=.])"
-
-expand_wildcard <- expand_restriction(restriction)
