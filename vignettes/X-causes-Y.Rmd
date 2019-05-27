@@ -86,14 +86,21 @@ Now lets ask about  the probability that $X=1$ caused $Y=1$ for those cases in w
 How do our inferences look given the uninformative prior?  
 
 ```{r} 
-estimand <- estimand_distribution(
+prior_estimand <- estimand_distribution(
+                   model = updated_model, 
+                   posterior = FALSE,
+                   query = "Y[X=1] > Y[X=0]",
+                   subset = "X==1 & Y==1"
+                   )
+posterior_estimand <- estimand_distribution(
                    model = updated_model, 
                    posterior = TRUE,
                    query = "Y[X=1] > Y[X=0]",
                    subset = "X==1 & Y==1"
                    )
-
-hist(estimand, xlim = c(0,1), main = "Probability of Causation")  
+par(mfrow = c(1,2))
+hist(prior_estimand, xlim = c(0,1), main = "Prior on Probability of Causation")  
+hist(posterior_estimand, xlim = c(0,1), main = "Posterior on Probability of Causation")  
 ```
 
 
