@@ -1,24 +1,25 @@
 #' Restrict a model
 #'
-#' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
+#' Restrict causal types. If priors exist, prior probabilities are redistributed over remaining types.
 #'
-#' @param model a model created by make_model()
-#' @param node_restrict a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
-#' @param causal_type_restrict  a quoted expressions defining the restriction
+#' @param model A model created by make_model().
+#' @param node_restrict A named list of character vectors. List elements specify nodal types to remove from the model. Names refer to variables. Use \code{get_nodal_types()} on a model to see syntax.
+#' @param causal_type_restrict A character vector of length 1L. An expression in string format defining causal types to restrict.
 #' @export
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
-#' # restrictions can be specified following nodal_types syntax
+#' # Restrictions can be specified in of the the three following ways:
+#' # 1. Using nodal_types syntax:
 #' XYmodel <- make_model("X->Y") %>%
 #'   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
+#'
+#' # 2. Using types without variable names:
 #' require(dplyr)
-#' # or alternatively variable name can be omitted from restriction
 #' XYmodel <- make_model("X->Y") %>%
-#'    set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
+#'    set_restrictions(node_restrict = list(X = "0", Y = "00"))
 #'
-#'
-#' # Restrictions can be  with wildcards
+#' # 3. Using wildcards:
 #' my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))
 #' get_parameter_matrix(my_model)
 
