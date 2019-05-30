@@ -70,10 +70,10 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
 	outer <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)),
 										 fixed = TRUE)
-	to_expand <- grepl("\\.", orig)
+	is_expand <- grepl("\\.", orig)
 
 	expanded_types <- sapply(1:length(orig), function(i){
-		if(!to_expand[i])
+		if(!is_expand[i])
 			return(orig[i])
 		else {
 			exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
