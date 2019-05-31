@@ -37,7 +37,9 @@
 
 get_types <- function(model, query, join_by = "|"){
 
-	query <- expand_wildcard(query, join_by = join_by)
+	if(grepl(".", query, fixed = TRUE))
+		query <- expand_wildcard(query, join_by = join_by)
+	if(length(query)>1L) stop("Please specify a query of length 1L.")
 
 	# Global Variables
 	eval_var <-  reveal_outcomes(model)
