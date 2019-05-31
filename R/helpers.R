@@ -62,6 +62,9 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, r
 }
 
 #' Recursive substitution
+#'
+#' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#'
 #' @param x A character vector.
 #' @param pattern_vector A character vector.
 #' @param replacement_vector A character vector.
@@ -93,8 +96,8 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			return(orig[i])
 		else {
 			exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
-			a <- gregexpr("\\w{1}(?=(=\\.){1})", orig[i], perl = TRUE)
-			matcha <- unlist(regmatches(orig[i], a))
+			a <- gregexpr("\\w{1}\\s*(?=(=\\s*\\.){1})", orig[i], perl = TRUE)
+			matcha <- trimws(unlist(regmatches(orig[i], a)))
 			rep_n <- sapply(unique(matcha), function(e) sum(matcha == e))
 			n_types <- length(unique(matcha))
 			grid <- replicate(n_types, expr(c(0,1)))
@@ -102,8 +105,8 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			colnames(type_values) <- unique(matcha)
 
 			apply(type_values, 1, function(s){
-				to_sub <- paste0(colnames(type_values), "(\\b)*=(\\b)*$")
-				subbed <- gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
+				to_sub <- paste0(colnames(type_values), "(\\s)*=(\\s)*$")
+				subbed <- gbiqq:::gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
 				paste0(subbed, collapse = "")
 			})
 		}
