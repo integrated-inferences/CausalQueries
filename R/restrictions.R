@@ -76,7 +76,7 @@ restrict_nodal_types <- function(model, restriction){
 	if(!any(matches)){
 		stop("Restrictions don't match variables in DAG")
 	} else if(any(!matches)){
-		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the DAG."))
+		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the model."))
 	}
 
 	# If there are wild cards, spell them out
