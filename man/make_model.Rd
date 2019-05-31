@@ -4,7 +4,7 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(statement, add_priors = FALSE)
+make_model(statement, add_priors = TRUE, add_parameters = TRUE)
 }
 \arguments{
 \item{statement}{A character statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2" or}

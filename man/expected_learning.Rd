@@ -5,7 +5,7 @@
 \title{Expected learning}
 \usage{
 expected_learning(model, query, strategy = NULL, given = NULL,
-  lambda = NULL)
+  parameters = NULL)
 }
 \arguments{
 \item{model}{A  model}
@@ -16,7 +16,7 @@ expected_learning(model, query, strategy = NULL, given = NULL,
 
 \item{given}{A conditioning set as a character string that evaluates to a logical, for example 'Y==1'}
 
-\item{lambda}{a parameter vector}
+\item{parameters}{a parameter vector}
 }
 \description{
 Expected reduction in variance from one step data collection strategy
@@ -27,7 +27,7 @@ library(dplyr)
 model <- make_model("X -> M1 -> M2 -> Y") \%>\%
   set_restrictions(node_restrict = list(M1 = "10", M2 = "10", Y = "10")) \%>\%
   set_priors() \%>\%
-  set_lambda(average = TRUE)
+  set_parameters(type = 'flat')
 el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
                   strategy = c("X", "M2"), given = "Y==1")
 attr(el, "results_table")

@@ -4,7 +4,7 @@
 \alias{estimand_distribution}
 \title{Calculate estimand distribution}
 \usage{
-estimand_distribution(model, query, subset = TRUE, lambda = NULL,
+estimand_distribution(model, query, subset = TRUE, parameters = NULL,
   posterior = FALSE, type_distribution = NULL, verbose = TRUE)
 }
 \arguments{
@@ -14,7 +14,7 @@ estimand_distribution(model, query, subset = TRUE, lambda = NULL,
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
-\item{lambda}{A  true parameter vector, if available}
+\item{parameters}{A  true parameter vector, if available}
 
 \item{posterior}{if true use a posterior distribution, otherwise use the prior}
 

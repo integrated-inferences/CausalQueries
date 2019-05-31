@@ -55,6 +55,13 @@ restrict_causal_types <- function(model, restriction){
 	current_nodal_types <- get_nodal_types(model)
 	model$nodal_types <- sapply(model$variables, function(v) intersect(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ))
 
+	# Subset priors and update
+	type_names          <- get_type_names(model$nodal_types)
+	if(!is.null(model$priors)) model$priors <- model$priors[type_names]
+	if(!is.null(model$parameters)) model$parameters <- model$parameters[type_names]
+
+	model$causal_types  <- update_causal_types(model)
+
 	return(model)
 
 }
@@ -119,9 +126,9 @@ restrict_nodal_types <- function(model, restriction){
 
 	#	model$restrictions <- restrictions_out
 
-	# Subset lambda_priors
+	# Subset priors
 	type_names          <- get_type_names(nodal_types)
-	model$lambda_priors <- model$lambda_priors[type_names]
+	model$priors <- model$priors[type_names]
 	model$causal_types  <- update_causal_types(model)
 	return(model)
 }
@@ -132,7 +139,7 @@ restrict_nodal_types <- function(model, restriction){
 update_causal_types <- function(model){
 
 		possible_types <-	get_nodal_types(model)
-		variables <- names(possible_types)
+		variables      <- names(possible_types)
 		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
 		names(possible_types) <- variables
 		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...

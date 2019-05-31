@@ -1,7 +1,7 @@
 
-#' Draw lambda
+#' Draw parameters
 #'
-# `draw_lambda` draws a lambda vector given model priors
+# `draw_lambda` draws a parameters vector given model priors
 #'
 #' @param model A model created by make_model()
 #' @importFrom gtools rdirichlet
@@ -11,48 +11,48 @@
 
 draw_lambda <- function(model){
 
-	if(is.null(model$lambda_priors)) {model <- set_priors(model)
+	if(is.null(model$priors)) {model <- set_priors(model)
 	                                  message(paste("Priors missing from model. Generated on the fly."))
 	}
 	if(is.null(model$P)) {model <- set_parameter_matrix(model)
 												message(paste("Parameter matrix missing from model. Generated on the fly."))
 	}
 
-	lambdas_prior <- model$lambda_priors
+	lambdas_prior <- model$priors
 	param_set     <- attr(model$P, "param_set")
 
-	if(length(lambdas_prior) != length(param_set)) stop("lambda priors should have same length as parameter set")
+	if(length(lambdas_prior) != length(param_set)) stop("parameters priors should have same length as parameter set")
 
 	param_sets         <- unique(param_set)
 
-	# Draw lambda, given priors
-	lambda <- unlist(sapply(param_sets, function(v){
+	# Draw parameters, given priors
+	parameters <- unlist(sapply(param_sets, function(v){
 		i <- which(startsWith(names(lambdas_prior), paste0(v,".")))
 		rdirichlet(1, lambdas_prior[i])}))
-	names(lambda) <- names(lambdas_prior)
-	lambda
+	names(parameters) <- names(lambdas_prior)
+	parameters
 }
 
 #' Draw type probabilities
 #'
-# `draw_type_prob` draws probability of vector of causal types  given a single realization of lambda, drawn from model priors
+# `draw_type_prob` draws probability of vector of causal types  given a single realization of parameters, drawn from model priors
 #'
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
-#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
 #'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_type_prob(model = model)
 
-draw_type_prob <- function(model, P = NULL,  lambda = NULL){
+draw_type_prob <- function(model, P = NULL,  parameters = NULL){
 
-	if(is.null(lambda)) lambda <- draw_lambda(model)
+	if(is.null(parameters)) parameters <- draw_lambda(model)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
-	P.lambdas     <- P*lambda +	1 - P
+	P.lambdas     <- P*parameters +	1 - P
 	apply(P.lambdas, 2, prod)
 
 }
@@ -82,37 +82,37 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 
 	P  <- get_parameter_matrix(model)
 
-	apply(lambdas, 1, function(j) draw_type_prob(model, P = P,  lambda = j))
+	apply(lambdas, 1, function(j) draw_type_prob(model, P = P,  parameters = j))
 }
 
 
 
 #' Draw event probabilities
 #'
-# `draw_event_prob` draws event probability vector `w`  given a single realization of lambda, drawn from model priors
+# `draw_event_prob` draws event probability vector `w`  given a single realization of parameters, drawn from model priors
 #'
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoid repeated computation for simulations
 #' @param A Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations
-#' @param lambda A specific parameter vector, lambda; if not  provided,  lambda is drawn from priors
+#' @param parameters A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors
 #'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
 
-draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob = NULL){
+draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL){
 
-		if(is.null(lambda)) {
-		if(is.null(model$lambda)) stop("lambda not provided")
-		lambda <- model$lambda }
+		if(is.null(parameters)) {
+		if(is.null(model$parameters)) stop("parameters not provided")
+		parameters <- model$parameters }
 
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
 
 	# Type probabilities
 	if(is.null(type_prob)) {
-	type_prob <- draw_type_prob(model = model, P = P, lambda = lambda)}
+	type_prob <- draw_type_prob(model = model, P = P, parameters = parameters)}
 
 	# Event probabilities
 	t(A) %*% type_prob
@@ -129,7 +129,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL, lambda = NULL, type_prob 
 #' @param w Vector of event probabilities
 #' @param P Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param A Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations
-#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
 #'
 #' @export
 #' @examples
@@ -141,13 +141,13 @@ draw_data_events <- function(model,
 											w = NULL,
                       P = NULL,
 											A = NULL,
-											lambda = NULL
+											parameters = NULL
 											){
 
  if(is.null(w)){
  	if(is.null(P)) 	P <- get_parameter_matrix(model)
  	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
- 	w <- draw_event_prob(model, P, A, lambda = lambda)
+ 	w <- draw_event_prob(model, P, A, parameters = parameters)
  }
 
 	# Draw events (Compact dataframe)
@@ -161,7 +161,7 @@ draw_data_events <- function(model,
 #' @param model A model created by make_model()
 #' @param n Number of observations
 #' @param data_events A compact dataframe compatible with model
-#' @param lambda A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors
+#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
 #'
 #' @export
 #' @examples
@@ -169,14 +169,14 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-simulate_data <- function(model, n = 1, data_events = NULL, lambda = NULL){
+simulate_data <- function(model, n = 1, data_events = NULL, parameters = NULL){
 
-	if(is.null(lambda)) {
-		if(is.null(model$lambda)) stop("lambda not provided")
-		lambda <- model$lambda }
+	if(is.null(parameters)) {
+		if(is.null(model$parameters)) stop("parameters not provided")
+		parameters <- model$parameters }
 
 	# Data drawn here
-	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, lambda = lambda)
+	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters)
 
 	# The rest is reshaping
 	df <- get_max_possible_data(model)
@@ -251,9 +251,9 @@ observe <- function(complete_data,
 #' Data Strategy
 #' @export
 #' @examples
-#'  # A strategy in which X, Y aer observed for sure and M is observed with 50% probabilit for X=1, Y=0 cases
+#'  # A strategy in which X, Y are observed for sure and M is observed with 50% probabilit for X=1, Y=0 cases
 #' model <- make_model("X -> M -> Y")
-#' model <- set_lambda(model, average = TRUE)
+#' model <- set_parameters(model, type = "flat")
 #' data_strategy(
 #'    model,
 #'    n = 8,
@@ -262,22 +262,22 @@ observe <- function(complete_data,
 #'    subsets = list(NULL, "X==1 & Y==0"))
 
 data_strategy <- function(model,
-													lambda = NULL,
+													parameters = NULL,
 				                  n,
 													vars    = list(NULL),
 													probs   = list(NULL),
 													ms      = NULL,
 													subsets = list(NULL)){
-	if(is.null(lambda)) {
-		if(is.null(model$lambda)) stop("lambda not provided")
-		lambda <- model$lambda }
+	if(is.null(parameters)) {
+		if(is.null(model$parameters)) stop("parameters not provided")
+		parameters <- model$parameters }
 
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
 	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
 
-	complete_data <- observed <- simulate_data(model, n = n, lambda = lambda)
+	complete_data <- observed <- simulate_data(model, n = n, parameters = parameters)
 	observed[,] <- FALSE
 
 	# Default behavior is to return complete data -- triggered if first strategy step has vars =  null

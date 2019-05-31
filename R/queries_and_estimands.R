@@ -4,7 +4,7 @@
 #'
 #'
 #' @param model A  model
-#' @param lambda A  true parameter vector, if available
+#' @param parameters A  true parameter vector, if available
 #' @param posterior if true use a posterior distribution, otherwise use the prior
 #' @param query A query on potential otcomes such as "Y[X=1] - Y[X=0]"
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
@@ -19,7 +19,7 @@
 estimand_distribution <- function(model,
 															 query,
 															 subset = TRUE,
-															 lambda = NULL, # Use if true parameters known
+															 parameters = NULL, # Use if true parameters known
 															 posterior = FALSE,
 															 type_distribution = NULL,
 															 verbose = TRUE) {
@@ -33,8 +33,8 @@ estimand_distribution <- function(model,
 	x <- (get_types(model, query = query)$types)[subset]
 
 
-	if(!is.null(lambda)){
-		type_distribution <- draw_type_prob(model, lambda = lambda)[subset]
+	if(!is.null(parameters)){
+		type_distribution <- draw_type_prob(model, parameters = parameters)[subset]
 		return(weighted.mean(x, type_distribution))
 		}
 
@@ -54,7 +54,7 @@ estimand_distribution <- function(model,
 #'
 #'
 #' @param model A  model
-#' @param lambda A  true parameter vector, if available
+#' @param parameters A  true parameter vector, if available
 #' @param posterior if true use a posterior distribution, otherwise use the prior
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @export
@@ -68,20 +68,20 @@ estimand_distribution <- function(model,
 #'                      Share_positive = "Y[X=1] > Y[X=0]"))
 #'
 get_estimands <- function(model,
-																				 lambda = NULL,
+																				 parameters = NULL,
 																				 queries = list(NULL),
 																				 subsets = list(TRUE),
 																				 posteriors = list(FALSE),
 																				 estimand_labels = NULL,
 																				 stats = NULL){
 
-	if(is.null(stats)) {if(!is.null(lambda)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
+	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
 
 	if(is.null(estimand_labels)) estimand_labels <- names(queries)
 
 	f <- function(q, subset, posterior){
-		v <- estimand_distribution(model, query = q, subset = subset, lambda = lambda, posterior = posterior, verbose = FALSE)
+		v <- estimand_distribution(model, query = q, subset = subset, parameters = parameters, posterior = posterior, verbose = FALSE)
 		sapply(stats, function(g) g(v))
 	}
 

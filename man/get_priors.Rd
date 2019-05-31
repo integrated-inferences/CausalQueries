@@ -4,13 +4,13 @@
 \alias{get_priors}
 \title{Get prior distribution}
 \usage{
-get_priors(model, lambda_priors = NULL, prior_distribution = "uniform",
+get_priors(model, priors = NULL, prior_distribution = "uniform",
   alphas = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{lambda_priors}{Vector of Dirichlet hyperparameters}
+\item{priors}{Vector of Dirichlet hyperparameters}
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 

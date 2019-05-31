@@ -4,14 +4,14 @@
 \alias{get_estimands}
 \title{Calculate multiple estimands}
 \usage{
-get_estimands(model, lambda = NULL, queries = list(NULL),
+get_estimands(model, parameters = NULL, queries = list(NULL),
   subsets = list(TRUE), posteriors = list(FALSE),
   estimand_labels = NULL, stats = NULL)
 }
 \arguments{
 \item{model}{A  model}
 
-\item{lambda}{A  true parameter vector, if available}
+\item{parameters}{A  true parameter vector, if available}
 
 \item{posterior}{if true use a posterior distribution, otherwise use the prior}
 

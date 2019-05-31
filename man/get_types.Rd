@@ -4,7 +4,7 @@
 \alias{get_types}
 \title{Get values of types according to a query}
 \usage{
-get_types(model, query)
+get_types(model, query, join_by = "|")
 }
 \arguments{
 \item{model}{A model  created by \code{make_model}}
@@ -34,5 +34,8 @@ query <- "Y[X=1] == Y[X=0]"
 get_types(model, query)
 
 query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+get_types(model, query)
+
+query <- "Y[X =.]==1"
 get_types(model, query)
 }

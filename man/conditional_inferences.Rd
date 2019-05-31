@@ -4,14 +4,14 @@
 \alias{conditional_inferences}
 \title{Conditional inferences}
 \usage{
-conditional_inferences(model, query, lambda = NULL, given = NULL)
+conditional_inferences(model, query, parameters = NULL, given = NULL)
 }
 \arguments{
 \item{model}{A  model}
 
 \item{query}{A query as a character string, for example 'Y[X=1]>Y[X=0]'}
 
-\item{lambda}{a parameter vector}
+\item{parameters}{a parameter vector}
 
 \item{given}{A conditioning set as a character string that evaluates to a logical, for example 'Y==1'}
 }
@@ -21,13 +21,13 @@ Realization probabilities are the probability of the observed data given data is
 }
 \examples{
 model <- make_model("X->Y")
-model <- set_lambda(model, average = TRUE)
+model <- set_parameters(model, type = "flat")
 conditional_inferences(model, query = "Y[X=1]>Y[X=0]")
 
 # Example of posteriors given monotonic X -> M -> Y model
 library(dplyr)
 model <- make_model("X-> M -> Y")  \%>\%
   set_restrictions(node_restrict = list(M = "10", Y = "10")) \%>\%
-  set_lambda(average = TRUE)
+  set_parameters(type = "flat")
 conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
 }
