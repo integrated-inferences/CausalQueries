@@ -3,7 +3,6 @@
 #'
 #' @param v A vector of integers indicating the number of values each variable takes on. E.g., a binary variable is represented by 2.
 #' @export
-#'
 #' @return A matrix of permutations
 #' @importFrom rlang expr
 #' @examples
@@ -62,7 +61,11 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, r
 	sapply(1:length(starts), function(i) if(!drop[i]) substr(x, starts[i]+rm_left, stops[i]+rm_right))
 }
 
-# Recursive substitution
+#' Recursive substitution
+#' @param x A character vector.
+#' @param pattern_vector A character vector.
+#' @param replacement_vector A character vector.
+#'
 gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 	if(!identical(length(pattern_vector), length(replacement_vector))) stop("pattern and replacement vectors must be the same length")
 	for(i in seq_along(pattern_vector)){
