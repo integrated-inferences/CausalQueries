@@ -251,33 +251,34 @@ observe <- function(complete_data,
 #' Data Strategy
 #' @export
 #' @examples
-#'  # A strategy in which X, Y are observed for sure and M is observed with 50% probabilit for X=1, Y=0 cases
+#' # A strategy in which X, Y are observed for sure and M is observed with 50% probability for X=1, Y=0 cases
 #' model <- make_model("X -> M -> Y")
 #' model <- set_parameters(model, type = "flat")
 #' data_strategy(
-#'    model,
-#'    n = 8,
-#'    vars = list(c("X", "Y"), "M"),
-#'    probs = list(1, .5),
-#'    subsets = list(NULL, "X==1 & Y==0"))
+#'   model,
+#'   n_obs = 8,
+#'   n = NULL,
+#'   vars = list(c("X", "Y"), "M"),
+#'   probs = list(1, .5),
+#'   subsets = list(NULL, "X==1 & Y==0"))
 
 data_strategy <- function(model,
 													parameters = NULL,
-				                  n,
+													n_obs = NULL,
+													n       = list(NULL),
 													vars    = list(NULL),
 													probs   = list(NULL),
-													ms      = NULL,
 													subsets = list(NULL)){
 	if(is.null(parameters)) {
 		if(is.null(model$parameters)) stop("parameters not provided")
 		parameters <- model$parameters }
 
-
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
-	if(!is.null(ms)) if(length(ms)!=length(vars)) stop("If specified, ms should be the same length as vars")
+	if(!is.null(n) && length(n)!=length(vars)) stop("If specified, n should be the same length as vars")
+	if(!is.null(n) && !is.null(probs)) warning("Both `n` and `prob` specified. `n` overrides `probs`.")
 
-	complete_data <- observed <- simulate_data(model, n = n, parameters = parameters)
+	complete_data <- observed <- simulate_data(model, n = n_obs, parameter = parameters)
 	observed[,] <- FALSE
 
 	# Default behavior is to return complete data -- triggered if first strategy step has vars =  null
@@ -287,13 +288,22 @@ data_strategy <- function(model,
 
 	j = 1
 	while(j <= length(vars)) {
+		ifelse(!is.null(n) && !is.null(probs),
+					 {name <- "n"; value = n[[j]]},
+					 {name <- "prob"; value = probs[[j]]})
+		if(!is.null(subsets[[j]])) given <- paste0(", given ", subsets[[j]])
+		else given <- NULL
+	description <- paste0("Step ", j, ": Observe ",
+												paste(vars[[j]], collapse = ", "),
+												" (", name, " = ", value, ")", given, ".\n")
 	observed <- observe(complete_data,
 											observed = observed,
 											vars_to_observe = vars[[j]],
 											prob = probs[[j]],
-											m = ms[[j]],
+											n = n[[j]],
 											subset = subsets[[j]])
 	j = j + 1
+	cat(description)
 	}
 
 	observed_data <- complete_data
