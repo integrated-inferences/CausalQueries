@@ -83,7 +83,7 @@ print.probabilistic_causal_model <- function(x, ...){
   	cat("\n\n Parameter matrix: \n ")
   	print(x$P)
   }
-	if(!is.null(x$lambdas_priors)){
+	if(!is.null(x$priors)){
 		cat("\n\n lambda priors: \n")
 		print(x$priors)
 	}
