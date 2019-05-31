@@ -113,3 +113,26 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 	cat(unlist(oper_return), sep = "\n")
 	oper_return
 }
+
+
+#' Identify nodes that satisfy a causal type query
+# Do not export
+#'
+types_to_nodes <- function(model, types){
+
+	causal_types <- get_causal_types(model)
+	restricted_causal_types <- get_types(model, query = types)
+	causal_types <- causal_types[!restricted_causal_types$types,]
+	rownames(causal_types) <- 1:nrow(causal_types)
+
+	type_names  <- sapply(1:ncol(causal_types), function(j) paste0(names(causal_types)[j], causal_types[,j]))
+	unrestricted_nodal_types <- apply(type_names, 2, unique)
+	names(unrestricted_nodal_types) <- model$variables
+	current_nodal_types <- get_nodal_types(model)
+
+	return_nodal_types <- sapply(model$variables, function(v) setdiff(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ))
+
+
+	unlist(return_nodal_types)
+
+}

@@ -9,10 +9,12 @@
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
+#'
+#' require(dplyr)
 #' # restrictions can be specified following nodal_types syntax
 #' XYmodel <- make_model("X->Y") %>%
 #'   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
-#' require(dplyr)
+#'
 #' # or alternatively variable name can be omitted from restriction
 #' XYmodel <- make_model("X->Y") %>%
 #'    set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
