@@ -21,7 +21,7 @@ make_parameter_matrix  <- function(model){
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
 	types           <- causal_type_names(get_causal_types(model))
-	names(types)    <- names(.types)
+	names(types)    <- names(types)
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type
