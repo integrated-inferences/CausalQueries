@@ -30,14 +30,13 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 	}
 
 	# parameter housekeeping
-	nodal_types_list        <- get_nodal_types(model) # change to nodal_types!
-	nodal_types             <- unlist(get_nodal_types(model))
-	n_params                <- length(nodal_types)
-	param_set               <- unlist(sapply(1:length(nodal_types_list),
-																					 function(i) rep(names(nodal_types_list)[i], length(nodal_types_list[[i]]))))
-	param_sets              <- unique(param_set)
-	n_param_sets            <- length(param_sets)
-	par_names               <- paste0(param_set, ".", nodal_types)
+	# parameter housekeeping
+	P                  <- get_parameter_matrix(model)
+	n_params           <- nrow(P)
+	param_set          <- attr(P, "param_set")
+	param_sets         <- unique(param_set)
+	n_param_sets       <- length(param_sets)
+	par_names          <- paste0(param_set, ".", rownames(P))
 
 	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
