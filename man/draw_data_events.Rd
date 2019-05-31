@@ -5,7 +5,7 @@
 \title{Draw compact data}
 \usage{
 draw_data_events(model, n = 1, w = NULL, P = NULL, A = NULL,
-  lambda = NULL)
+  parameters = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -18,7 +18,7 @@ draw_data_events(model, n = 1, w = NULL, P = NULL, A = NULL,
 
 \item{A}{Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations}
 
-\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
+\item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
 }
 \description{
 Draw compact data

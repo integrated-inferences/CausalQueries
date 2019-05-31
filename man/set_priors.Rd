@@ -4,13 +4,13 @@
 \alias{set_priors}
 \title{Set prior distribution}
 \usage{
-set_priors(model, lambda_priors = NULL, prior_distribution = "uniform",
+set_priors(model, priors = NULL, prior_distribution = "uniform",
   alphas = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{lambda_priors}{Existing vector of Dirichlet hyperparameters}
+\item{priors}{Existing vector of Dirichlet hyperparameters}
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 

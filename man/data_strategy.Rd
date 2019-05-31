@@ -4,16 +4,16 @@
 \alias{data_strategy}
 \title{Data Strategy}
 \usage{
-data_strategy(model, lambda = NULL, n, vars = list(NULL),
+data_strategy(model, parameters = NULL, n, vars = list(NULL),
   probs = list(NULL), ms = NULL, subsets = list(NULL))
 }
 \description{
 Data Strategy
 }
 \examples{
- # A strategy in which X, Y aer observed for sure and M is observed with 50\% probabilit for X=1, Y=0 cases
+ # A strategy in which X, Y are observed for sure and M is observed with 50\% probabilit for X=1, Y=0 cases
 model <- make_model("X -> M -> Y")
-model <- set_lambda(model, average = TRUE)
+model <- set_parameters(model, type = "flat")
 data_strategy(
    model,
    n = 8,

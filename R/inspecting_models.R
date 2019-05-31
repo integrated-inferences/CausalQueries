@@ -145,7 +145,9 @@ get_causal_types <- function(model){
 		return_df <- model$causal_types
 	} else {
 		return_df <- update_causal_types(model)
-}}
+	}
+	return_df
+	}
 
 
 #' Produces the possible permutations of a set of variables

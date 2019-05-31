@@ -15,7 +15,7 @@
 #' modelXKX <- make_model("X -> K -> X")
 
 
-make_model <- function(statement, add_priors = FALSE){
+make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){
 
 	dag <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}")))
 	if(!all(dag$e == "->")) stop("Please provide directed edges only")
@@ -51,7 +51,8 @@ make_model <- function(statement, add_priors = FALSE){
 	attr(model, "endogenous_variables") <- endog_node
 	attr(model, "exogenous_variables")  <- exog_node
 
-	if(add_priors) model <- set_priors(model)
+	if(add_priors)     model <- set_priors(model)
+	if(add_parameters) model <- set_parameters(model, type = "flat")
 
 	class(model) <- "probabilistic_causal_model"
 
@@ -82,9 +83,9 @@ print.probabilistic_causal_model <- function(x, ...){
   	cat("\n\n Parameter matrix: \n ")
   	print(x$P)
   }
-	if(!is.null(x$lambdas_priors)){
+	if(!is.null(x$priors)){
 		cat("\n\n lambda priors: \n")
-		print(x$lambda_priors)
+		print(x$priors)
 	}
 
 

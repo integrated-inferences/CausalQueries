@@ -2,7 +2,7 @@
 % Please edit documentation in R/draw_data.R
 \name{draw_lambda}
 \alias{draw_lambda}
-\title{Draw lambda}
+\title{Draw parameters}
 \usage{
 draw_lambda(model)
 }
@@ -10,7 +10,7 @@ draw_lambda(model)
 \item{model}{A model created by make_model()}
 }
 \description{
-Draw lambda
+Draw parameters
 }
 \examples{
 draw_lambda(model = model)

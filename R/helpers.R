@@ -66,14 +66,22 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 	x
 }
 
+#' Expand wildcard
+#'
+#' Expand statement containing wildcard
+#'
+#' @param to_expand A character vector of length 1L.
+#' @param join_by A character vector of length 1L.
+#' @export
+#'
 expand_wildcard <- function(to_expand, join_by = "|"){
 	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
-	outer <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)),
+	skeleton <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)),
 										 fixed = TRUE)
-	to_expand <- grepl("\\.", orig)
+	expand_it <- grepl("\\.", orig)
 
-	expanded_types <- sapply(1:length(orig), function(i){
-		if(!to_expand[i])
+	expanded_types <- lapply(1:length(orig), function(i){
+		if(!expand_it[i])
 			return(orig[i])
 		else {
 			exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
@@ -98,15 +106,15 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			paste0(l, collapse = paste0(" ", join_by, " "))
 		})
 		if(length(orig)==1 && length(orig)!=length(oper)){
-			oper <- sapply(expanded_types, function(a) gsub("%expand%1", a, outer))
+			oper <- sapply(expanded_types, function(a) gsub("%expand%1", a, skeleton))
 			oper_return <- paste0(oper, collapse = paste0(" ", join_by, " "))
 		}else{
-			oper_return <- gsub_many(outer,paste0("%expand%", 1:length(orig)), oper)
+			oper_return <- gsub_many(skeleton,paste0("%expand%", 1:length(orig)), oper)
 		}
 
 	} else {
-		oper <- do.call(cbind, list(expanded_types))
-		oper_return <- apply(oper, 1, function(i) gsub_many(outer,
+		oper <- do.call(cbind, expanded_types)
+		oper_return <- apply(oper, 1, function(i) gsub_many(skeleton,
 																												paste0("%expand%", 1:length(orig)),i))
 	}
 	cat("Generated expanded expression:\n")

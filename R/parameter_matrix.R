@@ -16,14 +16,12 @@
 #' confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
 #' make_parameter_matrix(model = model, confound = confound)
 
-make_parameter_matrix  <- function(model, confound = NULL){
+make_parameter_matrix  <- function(model){
 
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
-	#types          <- expand.grid(nodal_types, stringsAsFactors = FALSE)
-	.types           <- get_causal_types(model)
-	types           <- data.frame(sapply(1:ncol(.types), function(j) paste0(names(.types)[j], .types[,j])), stringsAsFactors = FALSE)
-	names(types) <- names(.types)
+	types           <- causal_type_names(get_causal_types(model))
+	names(types)    <- names(types)
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type
@@ -32,37 +30,9 @@ make_parameter_matrix  <- function(model, confound = NULL){
 		sapply(pars, function(nodal_type)
 			all(nodal_type %in% type) )})*1
 
-
-	if(!is.null(confound)) {
-
-		A  <- confound[[1]] # Ancestors
-		D  <- confound[[2]] # Descendents
-
-		if(length(A) != length(D)) stop("Please provide matched ancestor and descendent lists for confounded relations")
-
-		Ds <- names(D)
-
-  	for(j in 1:length(A)) {
-  		# Make duplicate entries
-			P             <- rbind(P[param_set == A[j],], P)
-
-			new_params    <- paste0(pars[param_set == A[j]], "", paste0(Ds[j], "", paste(D[j][[1]], collapse = "_")))
-			pars          <- c(new_params, pars)
-
-			new_param_set <- paste0(param_set[param_set == A[j]], "", paste0(Ds[j], "", paste(D[j][[1]], collapse = "_")))
-			param_set     <- c(new_param_set,param_set)
-
-
-			# Zero out duplicated entries
-			P[param_set == A[j], types[,names(D)[j]]	%in%	paste0(Ds[j], D[j][[1]])] <- 0
-			P[param_set %in% new_param_set, !(types[, names(D)[j]]	%in%	paste0(Ds[j], D[j][[1]]))] <- 0
-  	}
-		attr(P, "confounds") <- data.frame(t(mapply(c, names(confound[[1]]), names(confound[[2]]))))
-		}
-
   # Tidy up
-	colnames(P)  <- do.call(paste, c(types, sep ="."))
-	rownames(P ) <- pars
+	colnames(P) <- do.call(paste, c(types, sep ="."))
+	rownames(P) <- pars
 
 	# Add the parameter set as attribute
 	names(param_set) <- NULL
@@ -95,12 +65,11 @@ get_parameter_matrix  <- function(model){
 #'
 #' @export
 #'
-set_parameter_matrix <- function(model, P = NULL, confound = NULL){
+set_parameter_matrix <- function(model, P = NULL){
 
-	if(is.null(P)) P <- make_parameter_matrix(model, confound = confound)
+	if(is.null(P)) P <- make_parameter_matrix(model)
 	model$P <- P
 	class(model$P) <- c("parameter_matrix")
-	message("Parameter matrix attached to model")
 	model
 }
 
@@ -134,4 +103,10 @@ print.summary.parameter_matrix <- function(x, ...){
 
 
 
+# Names for causal types
+
+causal_type_names <- function(causal_types)
+          data.frame(sapply(1:ncol(causal_types),
+														function(j) paste0(names(causal_types)[j], causal_types[,j])),
+										stringsAsFactors = FALSE)
 
