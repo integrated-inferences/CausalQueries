@@ -81,7 +81,6 @@ get_types <- function(model, query){
 		# Walks through splitted expressions (i.e dos)
 		# and evaulates each expression when possible
 		for (j in 1:length(.query)) {
-			print(.query[j])
 			do <- unlist(strsplit( .query[j], ""))
 		  stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
 			var_name <-  paste0(do[1:stop], collapse = "")
