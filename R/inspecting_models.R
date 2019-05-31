@@ -28,9 +28,14 @@ get_parents <- function(model) {
 #'
 #' @examples
 #' model <- make_model("X -> K -> Y")
-#' get_parents(model)
 #' get_nodal_types(model)
 #'
+#' model <- make_model("X -> K -> Y") %>%
+#'    set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") %>%
+#'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
+#' unlist(get_nodal_types(model))
+
+
 get_nodal_types <- function(model, collapse = TRUE) {
 nodal_types <- model$nodal_types
 variables   <- c(attr(model, "exogenous_variables"),
