@@ -97,6 +97,9 @@ get_estimands <- function(model,
 													labels = NULL,
 													stats = NULL){
 
+	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
+		model <- set_prior_distribution(model)}
+
 	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
 	if(!is.null(names(queries))) query_names <- names(queries)
