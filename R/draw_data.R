@@ -35,7 +35,7 @@ draw_lambda <- function(model){
 
 #' Draw type probabilities
 #'
-# `draw_type_prob` draws probability of vector of causal types  given a single realization of parameters, drawn from model priors
+# `draw_type_prob` draws probability of vector of causal types  given a single realization of parameters, possibly drawn from model priors
 #'
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
@@ -60,29 +60,41 @@ draw_type_prob <- function(model, P = NULL,  parameters = NULL){
 #' Draw matrix of type probabilities, before or after estimation
 #'
 #' @param model A model, normally containing a prior or a posterior distribution
-#' @param posterior if true use a posterior distribution, otherwise use the prior
+#' @param using Character string indicating whether to use `priors`, `posteriors` or `parameters`
+#' @param parameters A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param n_draws If no prior distribution provided, generate prior distribution with n_draws draws
 #' @export
+#' @examples
+#' model <- make_model("X -> Y")
+#' draw_type_prob_multiple(model, using = "priors", n_draws = 3)
+#' draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
+#' draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
 
-draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 
-	if(!posterior){
+draw_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000){
+
+	if(using == "parameters") {
+		if(is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
+		if(is.null(parameters)) parameters <- model$parameters
+
+		return(draw_type_prob(model, parameters = parameters))
+	  }
+
+	if(using == "priors"){
 		if(is.null(model$prior_distribution)) {
 			message("Prior distribution added to model")
 			model <- set_prior_distribution(model, n_draws = n_draws)
 		}
-		lambdas <- model$prior_distribution
+		param_dist <- model$prior_distribution
 		}
 
-	if(posterior){
+	if(using == "posteriors"){
 		if(is.null(model$posterior_distribution)) {
 			stop("Model does not contain a posterior distribution")}
-		lambdas <- rstan::extract(model$posterior, pars= "lambdas")$lambdas
+		param_dist <- rstan::extract(model$posterior, pars= "lambdas")$lambdas
 	}
 
-	P  <- get_parameter_matrix(model)
-
-	apply(lambdas, 1, function(j) draw_type_prob(model, P = P,  parameters = j))
+	apply(param_dist, 1, function(j) draw_type_prob(model, parameters = j))
 }
 
 
@@ -100,7 +112,6 @@ draw_type_prob_multiple <- function(model, posterior = FALSE, n_draws = 4000){
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
-
 draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL){
 
 		if(is.null(parameters)) {
@@ -300,7 +311,7 @@ data_strategy <- function(model,
 											observed = observed,
 											vars_to_observe = vars[[j]],
 											prob = probs[[j]],
-											n = n[[j]],
+											m = n[[j]],
 											subset = subsets[[j]])
 	j = j + 1
 	cat(description)

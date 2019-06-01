@@ -67,9 +67,10 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	subsets[subsets==""] <- TRUE
 	estimands <- get_estimands(
 		model   = model,
+		using = "parameters",
 		parameters  = parameters,
 		queries = query,
-		subsets = subsets)[1,]
+		subsets = subsets)["mean",]
 
 	probs <- unlist(get_data_probs(model, vals))
 
