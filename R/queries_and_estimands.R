@@ -86,16 +86,16 @@ estimand_distribution <- function(model,
 #' get_estimands(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]"),
-#'       using = list("priors", "parameters"))
-
+#'       using = list("priors", "parameters"),
+#'       digits = 3)
 
 get_estimands <- function(model,
 													parameters = NULL,
 													queries = list(NULL),
 													subsets = list(TRUE),
 													using   = list(FALSE),
-													labels = NULL,
-													stats = NULL){
+													stats = NULL,
+													digits = 3){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model)}
@@ -113,13 +113,12 @@ get_estimands <- function(model,
 															 parameters = parameters,
 															 using = using,
 															 verbose = FALSE)
-		c(qname, using, sapply(stats, function(g) g(v)))
+		c(qname, using, round(sapply(stats, function(g) g(v)), digits = digits))
 	}
 
-	out <- matrix(mapply(f, queries, subsets, using, query_names), nrow = length(stats)+2)
+	out <- t(matrix(mapply(f, queries, subsets, using, query_names), nrow = length(stats)+2))
 
 	# Clean up
-	rownames(out) <- c( "Query:", "Using:", paste(names(stats)))
-  if(!is.null(labels)) {colnames(out) <- labels} else {colnames(out) <- paste0("Q", 1:ncol(out))}
+	colnames(out) <- c( "Query", "Using", paste(names(stats)))
 	data.frame(out)
 }

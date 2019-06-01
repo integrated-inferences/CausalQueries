@@ -5,8 +5,8 @@
 \title{Calculate multiple estimands}
 \usage{
 get_estimands(model, parameters = NULL, queries = list(NULL),
-  subsets = list(TRUE), using = list(FALSE), labels = NULL,
-  stats = NULL)
+  subsets = list(TRUE), using = list(FALSE), stats = NULL,
+  digits = 3)
 }
 \arguments{
 \item{model}{A  model}
@@ -39,5 +39,6 @@ get_estimands(
 get_estimands(
       model,
       queries = list(ATE = "Y[X=1] - Y[X=0]"),
-      using = list("priors", "parameters"))
+      using = list("priors", "parameters"),
+      digits = 3)
 }
