@@ -24,7 +24,7 @@ estimand_distribution <- function(model,
 															 using  = "priors",
 															 parameters = NULL, # Use if true parameters known
 															 type_distribution = NULL,
-															 verbose = TRUE) {
+															 verbose = FALSE) {
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
@@ -88,6 +88,14 @@ estimand_distribution <- function(model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]"),
 #'       using = list("priors", "parameters"),
 #'       digits = 3)
+#'
+#' get_estimands(
+#'       model,
+#'       using = "priors",
+#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+#'       digits = 3)
+
 
 get_estimands <- function(model,
 													parameters = NULL,
@@ -113,12 +121,15 @@ get_estimands <- function(model,
 															 parameters = parameters,
 															 using = using,
 															 verbose = FALSE)
-		c(qname, using, round(sapply(stats, function(g) g(v)), digits = digits))
+		c(qname, paste(subset), using,
+							 round(sapply(stats, function(g) g(v)), digits))
 	}
 
-	out <- t(matrix(mapply(f, queries, subsets, using, query_names), nrow = length(stats)+2))
+	out <- data.frame(t(mapply(f, queries, subsets, using, query_names)), stringsAsFactors = FALSE)
 
 	# Clean up
-	colnames(out) <- c( "Query", "Using", paste(names(stats)))
+	names(out) <- c( "Query", "Subset", "Using", paste(names(stats)))
+	out$Subset[out$Subset == "TRUE"] <- "All"
+	rownames(out) <- NULL
 	data.frame(out)
 }

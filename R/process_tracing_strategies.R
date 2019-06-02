@@ -67,10 +67,10 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	subsets[subsets==""] <- TRUE
 	estimands <- get_estimands(
 		model   = model,
-		using = "parameters",
 		parameters  = parameters,
+		using = "parameters",
 		queries = query,
-		subsets = subsets)["mean",]
+		subsets = subsets)$mean
 
 	probs <- unlist(get_data_probs(model, vals))
 
@@ -79,7 +79,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	p[p] <- 1
 	p[!p] <- probs
 
-	out <- data.frame(cbind(vals, t(estimands), p))
+	out <- data.frame(cbind(vals, estimands, p))
 
 	names(out) <- c(vars, "posterior", "prob")
 	rownames(out) <- NULL
