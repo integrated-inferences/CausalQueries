@@ -42,7 +42,7 @@ get_estimands(
       using = list("priors", "parameters"),
       digits = 3)
 
-get_estimands(
+a<- get_estimands(
       model,
       using = "priors",
       queries = list(Is_B = "Y[X=1] > Y[X=0]"),

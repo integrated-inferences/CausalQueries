@@ -89,7 +89,7 @@ estimand_distribution <- function(model,
 #'       using = list("priors", "parameters"),
 #'       digits = 3)
 #'
-#' get_estimands(
+#' a<- get_estimands(
 #'       model,
 #'       using = "priors",
 #'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
@@ -121,11 +121,15 @@ get_estimands <- function(model,
 															 parameters = parameters,
 															 using = using,
 															 verbose = FALSE)
-		c(qname, paste(subset), using,
-							 round(sapply(stats, function(g) g(v)), digits))
+		c(round(sapply(stats, function(g) g(v)), digits))
 	}
-
 	out <- data.frame(t(mapply(f, queries, subsets, using, query_names)), stringsAsFactors = FALSE)
+
+	## mapply again for identifiers
+	h <- function(qname, subset, using){ c(qname, paste(subset), using)}
+	cols <- data.frame(t(mapply(h, query_names, subsets, using)), stringsAsFactors = FALSE)
+
+	out <- cbind(cols, out)
 
 	# Clean up
 	names(out) <- c( "Query", "Subset", "Using", paste(names(stats)))

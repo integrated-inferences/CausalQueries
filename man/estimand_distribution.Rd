@@ -5,7 +5,7 @@
 \title{Calculate estimand distribution}
 \usage{
 estimand_distribution(model, query, subset = TRUE, using = "priors",
-  parameters = NULL, type_distribution = NULL, verbose = TRUE)
+  parameters = NULL, type_distribution = NULL, verbose = FALSE)
 }
 \arguments{
 \item{model}{A  model}

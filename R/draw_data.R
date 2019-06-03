@@ -107,6 +107,7 @@ draw_type_prob_multiple <- function(model, using = "priors", parameters = NULL, 
 #' @param P Parameter matrix, not required but may be provided to avoid repeated computation for simulations
 #' @param A Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations
 #' @param parameters A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors
+#' @param vector of type probabilities; usually not required
 #'
 #' @export
 #' @examples
@@ -125,7 +126,9 @@ draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_p
 	if(is.null(type_prob)) {
 	type_prob <- draw_type_prob(model = model, P = P, parameters = parameters)}
 
-	# Event probabilities
+	# Event probabilities  ## FLAG this is a hack for cases with only one possible data type
+	if(ncol(A)==1) {out <- matrix(1); rownames(out) <- colnames(A); return(out)}
+
 	t(A) %*% type_prob
 
  }
@@ -183,8 +186,7 @@ draw_data_events <- function(model,
 simulate_data <- function(model, n = 1, data_events = NULL, parameters = NULL){
 
 	if(is.null(parameters)) {
-		if(is.null(model$parameters)) stop("parameters not provided")
-		parameters <- model$parameters }
+		if(is.null(model$parameters)) stop("parameters not provided")}
 
 	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters)
