@@ -10,30 +10,25 @@
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
-#' # restrictions can be specified following nodal_types syntax
 #' require(dplyr)
 #' model <- make_model("X->Y") %>%
-#'   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
+#' set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 #' get_parameter_matrix(model)
-#'
 #' # Restrict to a single type
 #' model <- make_model("X->Y") %>%
-#'   set_restrictions(node_restrict = list(X = "X0", Y = c("Y00", "Y01", "Y11")))
-#' get_parameter_matrix(model)
-#'
-#' # Restrict to a single type
+#' set_restrictions(node_restrict = list(X = "X0", Y = c("Y00", "Y01", "Y11")))
+#'get_parameter_matrix(model)
+# Restrict to a single type
 #' model <- make_model("X->Y") %>%
-#'   set_restrictions(node_restrict = list(Y = "Y11"), action = "keep")
+#' set_restrictions(node_restrict = list(Y = "Y11"), action = "keep")
 #' get_parameter_matrix(model)
-#'
 #' # Restrictions can be  with wildcards
 #' model <- make_model("X->Y") %>%
-#'  set_restrictions(node_restrict = list(Y = "Y?0"))
+#' set_restrictions(node_restrict = list(Y = "Y?0"))
 #' get_parameter_matrix(model)
-#'
 #' # Running example: there are only four causal types
 #' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
-#'      set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+#' set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
 #' get_parameter_matrix(model)
 
 
@@ -100,7 +95,7 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	if(!any(matches)){
 		stop("Restrictions don't match variables in DAG")
 	} else if(any(!matches)){
-		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the DAG."))
+		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the model."))
 	}
 
 	# If there are wild cards, spell them out
