@@ -4,7 +4,7 @@
 \alias{perm}
 \title{Produces the possible permutations of a set of variables}
 \usage{
-perm(v)
+perm(n = 2)
 }
 \arguments{
 \item{v}{A vector of integers indicating the number of values each variable takes on. E.g., a binary variable is represented by 2.}

@@ -33,6 +33,9 @@ get_types(model, query)
 query <- "Y[X=1] == Y[X=0]"
 get_types(model, query)
 
-query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)" 
+query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+x <- get_types(model, query)
+
+query <- "(Y[X =.]==1)"
 get_types(model, query)
 }
