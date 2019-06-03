@@ -4,7 +4,7 @@
 \alias{make_parameter_matrix}
 \title{Make parameter matrix}
 \usage{
-make_parameter_matrix(model, confound = NULL)
+make_parameter_matrix(model)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -16,11 +16,5 @@ Calculate parameter matrix assuming no confounding. The parameter matrix  maps f
 }
 \examples{
 model <- make_model("X -> Y")
-get_parents(model)
-confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
-make_parameter_matrix(model = model, confound = confound)
-model <- make_model("X -> M -> Y")
-get_parents(model)
-confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
-make_parameter_matrix(model = model, confound = confound)
+make_parameter_matrix(model)
 }

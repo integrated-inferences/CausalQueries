@@ -4,7 +4,7 @@
 \alias{simulate_data}
 \title{Generate full dataset, possibly from compact data}
 \usage{
-simulate_data(model, n = 1, data_events = NULL, lambda = NULL)
+simulate_data(model, n = 1, data_events = NULL, parameters = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -13,7 +13,7 @@ simulate_data(model, n = 1, data_events = NULL, lambda = NULL)
 
 \item{data_events}{A compact dataframe compatible with model}
 
-\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
+\item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
 }
 \description{
 Generate full dataset, possibly from compact data

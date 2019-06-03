@@ -4,7 +4,7 @@
 \alias{set_parameter_matrix}
 \title{Set parameter matrix}
 \usage{
-set_parameter_matrix(model, P = NULL, confound = NULL)
+set_parameter_matrix(model, P = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}

@@ -8,7 +8,8 @@
 #'
 #' @export
 #'
-#' @return A list containing the types and the evaluated expression
+#' @return A list containing the types and the evaluated expression. manipulated_outcomes are the variables on the left of a [] expression
+#'
 #'
 #' @examples
 #' model <- make_model("X -> M -> Y; X->Y")
@@ -27,18 +28,27 @@
 #' get_types(model, query)
 #'
 #' query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+#' x <- get_types(model, query)
+#'
+#' query <- "(Y[X =.]==1)"
 #' get_types(model, query)
 
 
-get_types <- function(model, query){
+
+get_types <- function(model, query, join_by = "|"){
+
+	if(grepl(".", query, fixed = TRUE))
+		query <- expand_wildcard(query, join_by = join_by)
+	if(length(query)>1L) stop("Please specify a query of length 1L.")
 
 	# Global Variables
 	eval_var <-  reveal_outcomes(model)
-	list_names <- colnames(eval_var)
+	list_names <- colnames(eval_var)   #NEEDED?
 	k <- 1
 	i <- 0
 	list_names <- ""
 	continue <- TRUE
+  manipulated_outcomes <- NULL # keep a list of the manipulated outcomes for dagitty plotting
 
 	# strip whitespaces
 	# split query into single characters
@@ -99,6 +109,8 @@ get_types <- function(model, query){
 		var <- st_within(var)
 		var <- var[length(var)]
 
+		manipulated_outcomes <- c(manipulated_outcomes, var)
+
 		# Save result from last iteration
 		# and remove corresponding expression w_query
 		var_length <- nchar(var)
@@ -135,9 +147,15 @@ get_types <- function(model, query){
 
 
 	names(types) <- attr(eval_var, "type_names")
+
+	if(is.logical(types))  type_list <- names(types)[types]
+	if(!is.logical(types)) type_list <- NULL
+
   return_list <- 	list(types = types,
   										 query = query,
-  										 evaluated_variables   = eval_var)
+  										 evaluated_variables   = eval_var,
+  										 type_list = type_list,
+  										 manipulated_outcomes = unique(manipulated_outcomes))
 
 	class(return_list) <- "causal_types"
 

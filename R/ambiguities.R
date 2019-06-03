@@ -87,7 +87,7 @@ reveal_outcomes <- function(model, dos = NULL){
 	if(!is.null(dos))for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
 
 
-	# Work though each endogeneous variabls in sequence and substitute its implied values
+	# Work though each endogeneous variables in sequence and substitute its implied values
   for(j in 1:ncol(types_of_endogenous)) {
  	      if(!(endogenous_vars[j] %in% in_dos)){   # skip if do applied to var
 
@@ -108,9 +108,9 @@ reveal_outcomes <- function(model, dos = NULL){
 				data_realizations[, endogenous_vars[j]] <- J
 		}}
 
-	  data_realizations
 	  rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
-	  type_names <- sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j]))
+	  type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
+
 	  attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
 	  data_realizations
 

@@ -4,7 +4,7 @@
 \alias{get_types}
 \title{Get values of types according to a query}
 \usage{
-get_types(model, query)
+get_types(model, query, join_by = "|")
 }
 \arguments{
 \item{model}{A model  created by \code{make_model}}
@@ -12,7 +12,7 @@ get_types(model, query)
 \item{query}{A quoted expression to interrogate \code{reveal_outcomes}}
 }
 \value{
-A list containing the types and the evaluated expression
+A list containing the types and the evaluated expression. manipulated_outcomes are the variables on the left of a [] expression
 }
 \description{
 Get values of types according to a query
@@ -33,6 +33,6 @@ get_types(model, query)
 query <- "Y[X=1] == Y[X=0]"
 get_types(model, query)
 
-query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)" 
 get_types(model, query)
 }

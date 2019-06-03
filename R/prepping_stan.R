@@ -57,7 +57,7 @@ get_data_events <- function(data, model){
 	likelihood_helpers  <- get_likelihood_helpers(model)
 	possible_events     <- likelihood_helpers$possible_events
 	possible_strategies <- names(likelihood_helpers$w_starts)
-	variables           <- get_variables(model)
+	variables           <- model$variables
 	i_strategy          <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
 
 
@@ -77,7 +77,8 @@ get_data_events <- function(data, model){
 	})
 
 	if(any(inconsistencies)){
-		stop("Observations are not consistent with restrictions")
+		message(paste("Observations are not consistent with restrictions in", sum(!inconsistencies), "cases"))
+		data <- data[!inconsistencies, ]
 	}
 
 	# replace "" with na and remove rows where all values are na
@@ -183,7 +184,6 @@ get_max_possible_data <- function(model) {
 #'
 #' @param model A model created by \code{make_model}
 #' @param data A data frame with observations
-#' @param lambdas_prior A vector containg priors for lambda
 #' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.
 #' @return a list
 #' @export
@@ -199,8 +199,8 @@ make_gbiqq_data <- function(model, data){
 
 	P                  <- get_parameter_matrix(model)
 	param_set          <- attr(P, "param_set")
-	model$lambda_priors <- get_priors(model)
-	if(length(model$lambda_priors) != length(param_set)) stop("lambda priors should have same length as parameter set")
+	model$priors <- get_priors(model)
+	if(length(model$priors) != length(param_set)) stop("priors should have same length as parameter set")
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
 	data_events        <- trim_strategies(model, data)
@@ -220,7 +220,7 @@ make_gbiqq_data <- function(model, data){
 			n_param_each    = n_param_each,
 			l_starts        = l_starts,
 			l_ends          = l_ends,
-			lambdas_prior   = model$lambda_priors,
+			lambdas_prior   = model$priors,
 			n_types         = ncol(P),
 			n_data          = nrow(get_max_possible_data(model)),
 			n_events        = nrow(A_w),
