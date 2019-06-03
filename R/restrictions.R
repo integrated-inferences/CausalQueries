@@ -83,7 +83,7 @@ restrict_causal_types <- function(model, restriction){
 
 }
 
-#' Reduce causal types
+#' Reduce nodal types
 #' @param model a model created by make_model()
 #' @param restriction a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param action either `remove` or `keep`
@@ -104,15 +104,18 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	}
 
 	# If there are wild cards, spell them out
-	restriction <- lapply(restriction, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+	restriction_list <- lapply(restriction, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
 
 	# If "keep" specified, reverse meaning of restricted types -- only stipulated types to be kept
 	if(!(action %in% c("remove", "keep"))) stop("action should be either 'remove' to 'keep'")
 	if(action == "keep") for(j in names(restriction)){
-		restriction[[j]] <- nodal_types[[j]][!(nodal_types[[j]] %in% restriction[[j]])]
+
+	restriction_list <-
+		sapply(names(restriction_list), function(j){
+  	  nodal_types[[j]][!(nodal_types[[j]] %in% restriction_list[[j]])]
+		}, simplify = FALSE)
+
 	}
-
-
 	nodal_types_restrictions <- nodal_types[restricted_vars]
 
 
@@ -120,13 +123,13 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	# For flexibility, restrictions can be written as "0" or "X0" for an exogenous var X
 	# Though, we'd write its nodal_types as "X0" or "X1"
 	# length(restrictions) = n_vars for which restrictions were specified
-	restrictions_out <- lapply(1:length(restriction), function(i){
+	restrictions_out <- lapply(1:length(restriction_list), function(i){
 
 
 		#Identify nodal_types, var name and actual restriction statement for the current restriction
 		ntr <- nodal_types_restrictions[[i]]
 		restricted_var <- restricted_vars[i]
-		restrictions_i <- restriction[[i]]
+		restrictions_i <- restriction_list[[i]]
 		if(length(ntr) == length(restrictions_i)) {
 			stop(paste0("nodal_types can't be entirely reduced. Revise restrictions for variable ", restricted_var))
 		}
@@ -197,8 +200,8 @@ reduce_parameters <- function(model, parameters = model$parameters){
 	parameters <-
 		unlist(sapply(variables, function(v){
 		i <- which(startsWith(names(parameters), paste0(v, ".")))
-		parameters[i]/sum(parameters[i])}))
-	names(parameters) <- type_names   # FLAG: This shouldn't be necessary; here becuase of names change from previous line
+		parameters[i]/sum(parameters[i])}, USE.NAMES = FALSE))
+
 	parameters
 	 }
 
