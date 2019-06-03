@@ -45,6 +45,11 @@ get_data_probs <- function(model, data, parameters = NULL){
 #'   set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
 #'   set_parameters(type = "flat")
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
+#'
+#' # Running example
+#' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#'    set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+#' conditional_inferences(model, query = list(COE = "(Y[S=0] > Y[S=1])"))
 
 conditional_inferences <- function(model, query, parameters=NULL,  given = NULL){
 
@@ -68,8 +73,9 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	estimands <- get_estimands(
 		model   = model,
 		parameters  = parameters,
+		using = "parameters",
 		queries = query,
-		subsets = subsets)[1,]
+		subsets = subsets)$mean
 
 	probs <- unlist(get_data_probs(model, vals))
 
@@ -78,7 +84,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	p[p] <- 1
 	p[!p] <- probs
 
-	out <- data.frame(cbind(vals, t(estimands), p))
+	out <- data.frame(cbind(vals, estimands, p))
 
 	names(out) <- c(vars, "posterior", "prob")
 	rownames(out) <- NULL

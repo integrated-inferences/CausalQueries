@@ -147,7 +147,8 @@ get_types <- function(model, query, join_by = "|"){
 
 	names(types) <- attr(eval_var, "type_names")
 
-	type_list <- names(types)[types]
+	if(is.logical(types))  type_list <- names(types)[types]
+	if(!is.logical(types)) type_list <- NULL
 
   return_list <- 	list(types = types,
   										 query = query,

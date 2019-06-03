@@ -2,15 +2,17 @@
 % Please edit documentation in R/restrictions.R
 \name{restrict_nodal_types}
 \alias{restrict_nodal_types}
-\title{Reduce causal types}
+\title{Reduce nodal types}
 \usage{
-restrict_nodal_types(model, restriction)
+restrict_nodal_types(model, restriction, action = "remove")
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
 \item{restriction}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+
+\item{action}{either `remove` or `keep`}
 }
 \description{
-Reduce causal types
+Reduce nodal types
 }

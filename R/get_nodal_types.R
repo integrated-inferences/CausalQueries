@@ -92,12 +92,13 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	names(types)  <- var_names
 	if(!is.null(nodal_types)){
 		types <- lapply(variables, function(v){
+			# mat <- data.frame(types[[v]])
 			mat <- types[[v]]
 			cn <- colnames(mat)
 			nt <- nodal_types[[v]]
-			mat <- mat[nt, ]
-			colnames(mat) <- cn
-			mat
+	    mat2 <- matrix(mat[nt, ], ncol = ncol(mat))
+      colnames(mat2) <- cn
+      mat2
 		})
 	}
 	names(types)  <- var_names
