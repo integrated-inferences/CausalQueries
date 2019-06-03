@@ -11,19 +11,26 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Depends:
-		R (>= 3.3.0), Rcpp (>= 0.12.16), methods
-Imports:
+Depends: 
+    methods,
+    R (>= 3.4.0),
+    Rcpp (>= 1.0.1)
+Imports: 
+    rstan (>= 2.18.2),
+    rstantools (>= 1.5.1),
     dagitty,
     gtools,
-    rstan (>= 2.17.3),
-    rstantools (>= 1.5.0),
     dplyr,
     DeclareDesign
-LinkingTo: StanHeaders (>= 2.17.2), rstan (>= 2.17.3)
-SystemRequirements: GNU make
+LinkingTo: 
+    BH (>= 1.69.0-1),
+    Rcpp (>= 1.0.1),
+    RcppEigen (>= 0.3.3.5.0),
+    rstan (>= 2.18.2),
+    StanHeaders (>= 2.18.1)
+Encoding: UTF-8
+LazyData: true
 NeedsCompilation: yes
+SystemRequirements: GNU make
 Suggests: 
-		testthat
-
-
+    testthat
