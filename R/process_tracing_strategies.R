@@ -45,6 +45,11 @@ get_data_probs <- function(model, data, parameters = NULL){
 #'   set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
 #'   set_parameters(type = "flat")
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
+#'
+#' # Running example
+#' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#'    set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+#' conditional_inferences(model, query = list(COE = "(Y[S=0] > Y[S=1])"))
 
 conditional_inferences <- function(model, query, parameters=NULL,  given = NULL){
 

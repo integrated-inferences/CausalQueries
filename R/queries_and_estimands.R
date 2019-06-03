@@ -89,7 +89,7 @@ estimand_distribution <- function(model,
 #'       using = list("priors", "parameters"),
 #'       digits = 3)
 #'
-#' a<- get_estimands(
+#' get_estimands(
 #'       model,
 #'       using = "priors",
 #'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
@@ -114,16 +114,20 @@ get_estimands <- function(model,
 	if(is.null(names(queries)))  query_names <- "not named"
 
 	# Function for mapply
-	f <- function(query, subset, using, qname){
+	f <- function(query, subset, using){
 		v <- estimand_distribution(model,
 															 query = query,
 															 subset = subset,
 															 parameters = parameters,
 															 using = using,
 															 verbose = FALSE)
-		c(round(sapply(stats, function(g) g(v)), digits))
+		# FLAG: if needed for cases where evaluation sough on impossible subsets
+		if(is.null(v)) {rep(NA, length(stats))} else {c(round(sapply(stats, function(g) g(v)), digits))}
 	}
-	out <- data.frame(t(mapply(f, queries, subsets, using, query_names)), stringsAsFactors = FALSE)
+	 # FLAG: if needed because shape depends on length of stats -- must be better way
+
+	if(length(stats)==1) out <- data.frame((mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
+	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
 
 	## mapply again for identifiers
 	h <- function(qname, subset, using){ c(qname, paste(subset), using)}
