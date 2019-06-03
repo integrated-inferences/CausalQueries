@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrictions.R
 \name{restrict_nodal_types}
 \alias{restrict_nodal_types}
-\title{Reduce causal types}
+\title{Reduce nodal types}
 \usage{
 restrict_nodal_types(model, restriction, action = "remove")
 }
@@ -14,5 +14,5 @@ restrict_nodal_types(model, restriction, action = "remove")
 \item{action}{either `remove` or `keep`}
 }
 \description{
-Reduce causal types
+Reduce nodal types
 }

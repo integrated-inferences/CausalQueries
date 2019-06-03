@@ -17,14 +17,15 @@ gbiqq_designer(model = make_model("X -> Y"), restrictions = NULL,
 Define a model, estimand, and answer strategy
 }
 \examples{
+require("DeclareDesign")
 my_design <- gbiqq_designer(
   model = make_model("X -> Y"),
   parameters = c(.5, .5, .1, .7, .1, .1),  # Truth
   data_strat = list(n_obs = 5, vars = list(NULL), probs = list(NULL), ns = NULL,
      subsets = list(NULL)),
   queries = list(ATE = "Y[X=1] - Y[X=0]"))
-DeclareDesign:::draw_data(my_design)
-DeclareDesign:::draw_estimands(my_design)
-DeclareDesign:::draw_estimates(my_design)
-# DeclareDesign:::diagnose_design(my_design, sims = 2)
+draw_data(my_design)
+draw_estimands(my_design)
+draw_estimates(my_design)
+# diagnose_design(my_design, sims = 2)
 }
