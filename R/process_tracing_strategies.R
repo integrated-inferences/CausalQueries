@@ -124,6 +124,14 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #' # No givens
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
+#'
+#'
+#' library(dplyr)
+#'  model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#'  set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
+#' expected_learning(model, query = list(COE = "(Y[S=0] > Y[S=1])"), strategy = "C", given = "Y==1 & S==0")
+#' expected_learning(model, query = list(COE = "(Y[X=1] > Y[X=0])"), strategy = "S", given = "X==0 & Y==0")
+
 
 
 expected_learning <- function(model, query, strategy = NULL, given = NULL, parameters = NULL){
@@ -157,17 +165,18 @@ expected_learning <- function(model, query, strategy = NULL, given = NULL, param
 	results_table <-
 		conditional_inferences(model = model, query = query,
 													 given = given, parameters = parameters)
-
+  results_table <- filter(results_table, prob !=0)
 	# Clean up
 	results_table <- mutate(results_table,  prob = prob/sum(prob), var = posterior*(1-posterior))
 
 	# Summarize
   out <- with(results_table,
   						data.frame(
-  							given = given0, strategy = paste(strategy, collapse = ", "),
+  							strategy = paste(strategy, collapse = ", "),
+  							given = given0,
   							prior_estimand = prob%*%posterior,
   							prior_var  = (prob%*%posterior)*(1- prob%*%posterior),
-  							E_post_var = (prob%*%var)))
+  							E_post_var = (prob%*%var), stringsAsFactors = FALSE))
 
 #  print(query)
 #  print(out)
