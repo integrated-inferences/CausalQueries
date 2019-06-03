@@ -35,13 +35,14 @@ get_nodal_types_dep <- function(model){
 #' @return A list of parents in a DAG
 #'
 #' @examples
-#' model <- make_model("X -> K -> Y")
-#' get_nodal_types(model)
+#' \dontrun{
+#' model <- make_model(
+#'  add_edges(parent = "X",children = c("K","Y")),
+#'  add_edges(parent = "K",children = "Y")
+#' )
 #'
-#' model <- make_model("X -> K -> Y") %>%
-#'    set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") %>%
-#'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
-#' unlist(get_nodal_types(model))
+#' get_nodal_types(model)
+#' }
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
 	nodal_types <- model$nodal_types

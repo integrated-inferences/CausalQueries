@@ -11,6 +11,8 @@ make_gbiqq_data(model, data)
 
 \item{data}{A data frame with observations}
 
+\item{lambdas_prior}{A vector containg priors for lambda}
+
 \item{P}{A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.}
 }
 \value{

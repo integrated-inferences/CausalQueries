@@ -26,7 +26,7 @@ Produces the possible permutations of a set of variables
 \examples{
 
 \dontrun{
-perm(3)
+perm(c(2,2,2))
 }
 
 \dontrun{

@@ -5,8 +5,8 @@
 \title{Integrate gbiqq with DeclareDesign}
 \usage{
 gbiqq_designer(model = make_model("X" \%->\% "Y"), restrictions = NULL,
-  priors = "uniform", parameters = NULL, data_strat = list(n = 1,
-  vars = list(NULL), probs = list(NULL), ms = NULL, subsets = list(NULL)),
+  priors = "uniform", lambda = NULL, data_strat = list(n = 1, vars =
+  list(NULL), probs = list(NULL), ms = NULL, subsets = list(NULL)),
   queries = list(ATE = "Y[X=1] - Y[X=0]"))
 }
 \arguments{
@@ -18,7 +18,7 @@ Define a model, estimand, and answer strategy
 \examples{
 my_design <- gbiqq_designer(
 model <- make_model("X -> Y")
-  parameters = c(.5, .5, .1, .7, .1, .1),  # Truth
+  lambda = c(.5, .5, .1, .7, .1, .1),  # Truth
   data_strat = list(n = 4, vars = list(NULL), probs = list(NULL), ms = NULL, subsets = list(NULL)),
   queries = list(ATE = "Y[X=1] - Y[X=0]"))
   draw_data(my_design)
