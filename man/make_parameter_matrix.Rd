@@ -16,5 +16,11 @@ Calculate parameter matrix assuming no confounding. The parameter matrix  maps f
 }
 \examples{
 model <- make_model("X -> Y")
-make_parameter_matrix(model)
+get_parents(model)
+confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
+make_parameter_matrix(model = model, confound = confound)
+model <- make_model("X -> M -> Y")
+get_parents(model)
+confound = list(ancestor = c(X="X"), descendent_type = list( Y = c("00","11") ))
+make_parameter_matrix(model = model, confound = confound)
 }
