@@ -2,20 +2,24 @@
 #' Produces the possible permutations of a set of variables
 #'
 #' @param v A vector of integers indicating the number of values each variable takes on. E.g., a binary variable is represented by 2.
-#'
 #' @export
-#'
 #' @return A matrix of permutations
-#'
+#' @importFrom rlang expr
 #' @examples
 #'
 #' \dontrun{
-#' perm(c(2,2,2))
+#' perm(3)
 #' }
-perm <- function(v) {
-	sapply(1:length(v), function(x) {
-		rep(rep(1:v[x], each = prod(v[x:length(v)])/v[x]), length.out = prod(v))
-	}) - 1
+# perm <- function(v) {
+# 	sapply(1:length(v), function(x) {
+# 		rep(rep(1:v[x], each = prod(v[x:length(v)])/v[x]), length.out = prod(v))
+# 	}) - 1
+# }
+perm <- function(n = 2){
+	grid <- replicate(n, expr(c(0,1)))
+	perm <- do.call(expand.grid, grid)
+	colnames(perm) <- NULL
+	perm
 }
 
 #' Get string between two regular expression patterns
@@ -26,7 +30,7 @@ perm <- function(v) {
 #' @param left A regular expression to serve as look ahead.
 #' @param right A regular expression to serve as a look behind.
 #' @return A character vector.
- #' @export
+#' @export
 #' @examples
 #' a <- "(XX[Y=0] == 1) > (XX[Y=1] == 0)"
 #' st_within(a)
@@ -57,7 +61,14 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, r
 	sapply(1:length(starts), function(i) if(!drop[i]) substr(x, starts[i]+rm_left, stops[i]+rm_right))
 }
 
-# Recursive substitution
+#' Recursive substitution
+#'
+#' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#'
+#' @param x A character vector.
+#' @param pattern_vector A character vector.
+#' @param replacement_vector A character vector.
+#'
 gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 	if(!identical(length(pattern_vector), length(replacement_vector))) stop("pattern and replacement vectors must be the same length")
 	for(i in seq_along(pattern_vector)){
@@ -85,8 +96,8 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			return(orig[i])
 		else {
 			exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
-			a <- gregexpr("\\w{1}(?=(=\\.){1})", orig[i], perl = TRUE)
-			matcha <- unlist(regmatches(orig[i], a))
+			a <- gregexpr("\\w{1}\\s*(?=(=\\s*\\.){1})", orig[i], perl = TRUE)
+			matcha <- trimws(unlist(regmatches(orig[i], a)))
 			rep_n <- sapply(unique(matcha), function(e) sum(matcha == e))
 			n_types <- length(unique(matcha))
 			grid <- replicate(n_types, expr(c(0,1)))
@@ -94,8 +105,8 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			colnames(type_values) <- unique(matcha)
 
 			apply(type_values, 1, function(s){
-				to_sub <- paste0(colnames(type_values), "(\\b)*=(\\b)*$")
-				subbed <- gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
+				to_sub <- paste0(colnames(type_values), "(\\s)*=(\\s)*$")
+				subbed <- gbiqq:::gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
 				paste0(subbed, collapse = "")
 			})
 		}
