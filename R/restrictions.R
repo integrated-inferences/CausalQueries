@@ -217,7 +217,7 @@ unpack_wildcard <- function(x) {
 	splitstring <- strsplit(x, "")[[1]]
 	n_wild <- sum(splitstring=="?")
 	if(n_wild ==0) return(x)
-	variations <- perm(rep(2, n_wild))
+	variations <- perm(rep(1, n_wild))
 	apply(variations, 1, function(j)  {
 		z <- splitstring
 		z[z=="?"] <- j
