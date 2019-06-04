@@ -77,7 +77,7 @@ get_nodal_types_model <- function(model, collapse = TRUE) {
 			if(parent_n == 0){
 				labels <- NULL
 			} else {
-				input_mat <- perm(parent_n)
+				input_mat <- perm(rep(1, parent_n))
 				labels <- apply(input_mat,1,paste,collapse = "")
 			}
 			colnames(type_mat) <- labels
