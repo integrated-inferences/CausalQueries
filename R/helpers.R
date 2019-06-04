@@ -16,7 +16,7 @@
 # 	}) - 1
 # }
 perm <- function(max = rep(1, 2)){
-	grid <- sapply(max, function(m) exprs(c(0,!!m)))
+	grid <- sapply(max, function(m) exprs(0:!!m))
 	perm <- do.call(expand.grid, grid)
 	colnames(perm) <- NULL
 	perm
