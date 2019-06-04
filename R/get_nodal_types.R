@@ -92,7 +92,7 @@ get_nodal_types_model <- function(model, collapse = TRUE) {
 					 	if(parent_n == 0){
 					 		labels <- "exogeneous"
 					 	} else {
-					 		input_mat <- perm(rep(2,parent_n))
+					 		input_mat <- perm(parent_n)
 					 		labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
 					 	}
 					 	labels
