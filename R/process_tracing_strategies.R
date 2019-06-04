@@ -61,7 +61,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	vars <- model$variables
 
 	# Possible data
-	vals <- data.frame(perm(rep(3,length(model$variables)))) - 1
+	vals <- data.frame(perm(rep(2,length(model$variables)))) - 1
 	vals[vals ==-1] <- NA
 	names(vals) <- vars
 	if(!is.null(given)) vals <- dplyr::filter(vals, eval(parse(text = given)))
@@ -71,7 +71,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	conds[is.na(vals)] <- NA
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
 	subsets[subsets==""] <- TRUE
-	estimands <- qbiqq::get_estimands(
+	estimands <- gbiqq::get_estimands(
 		model   = model,
 		parameters  = parameters,
 		using = "parameters",

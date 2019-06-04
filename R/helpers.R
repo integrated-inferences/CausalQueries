@@ -1,10 +1,10 @@
 
 #' Produces the possible permutations of a set of variables
 #'
-#' @param max A vector of integers indicating the maximum value of an integer value starting at 0. Defaults to 1.
+#' @param max A vector of integers indicating the maximum value of an integer value starting at 0. Defaults to 1. The number of permutation is defined by \code{max}'s length
 #' @export
 #' @return A matrix of permutations
-#' @importFrom rlang expr
+#' @importFrom rlang exprs
 #' @examples
 #'
 #' \dontrun{
