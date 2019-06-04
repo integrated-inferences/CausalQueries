@@ -71,7 +71,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	conds[is.na(vals)] <- NA
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
 	subsets[subsets==""] <- TRUE
-	estimands <- get_estimands(
+	estimands <- qbiqq::get_estimands(
 		model   = model,
 		parameters  = parameters,
 		using = "parameters",
