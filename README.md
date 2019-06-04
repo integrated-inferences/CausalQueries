@@ -37,9 +37,7 @@ To add the confounding we have to allow an additional parameter that allows a po
 
 
 ```
-model <- set_parameter_matrix(model,
-                              confound = list(ancestor = c(X = "X"), 
-                                              descendent_type = list(Y = "11")))
+model <- set_confound(model, list(X = "Y[X=1] == 1"))
 ```
 
 We then set priors thus:
@@ -73,7 +71,7 @@ Finally you can calculate an estimand of interest like this:
 ``` 
 CoE <- estimand_distribution(
                    model = updated_model, 
-                   posterior = TRUE,
+                   using = "posteriors",
                    query = "Y[X=0] == 0",
                    subset = "X==1 & Y==1"
                    )

@@ -5,7 +5,7 @@
 \title{Restrict a model}
 \usage{
 set_restrictions(model, node_restrict = NULL,
-  causal_type_restrict = NULL)
+  causal_type_restrict = NULL, action = "remove")
 }
 \arguments{
 \item{model}{a model created by make_model()}
@@ -13,6 +13,8 @@ set_restrictions(model, node_restrict = NULL,
 \item{node_restrict}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
 
 \item{causal_type_restrict}{a quoted expressions defining the restriction}
+
+\item{action}{either `remove` or `keep`: for nodal type restrictions, indicate whether type to be removed or kept}
 }
 \value{
 A model with restrictions and nodal types saved as attributes.
@@ -21,16 +23,23 @@ A model with restrictions and nodal types saved as attributes.
 Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 }
 \examples{
-# restrictions can be specified following nodal_types syntax
-XYmodel <- make_model("X->Y") \%>\%
-  set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 require(dplyr)
-# or alternatively variable name can be omitted from restriction
-XYmodel <- make_model("X->Y") \%>\%
-   set_restrictions(model = XYmodel, node_restrict = list(X = "0", Y = "00"))
-
-
+model <- make_model("X->Y") \%>\%
+set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
+get_parameter_matrix(model)
+# Restrict to a single type
+model <- make_model("X->Y") \%>\%
+set_restrictions(node_restrict = list(X = "X0", Y = c("Y00", "Y01", "Y11")))
+get_parameter_matrix(model)
+model <- make_model("X->Y") \%>\%
+set_restrictions(node_restrict = list(Y = "Y11"), action = "keep")
+get_parameter_matrix(model)
 # Restrictions can be  with wildcards
-my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))
-get_parameter_matrix(my_model)
+model <- make_model("X->Y") \%>\%
+set_restrictions(node_restrict = list(Y = "Y?0"))
+get_parameter_matrix(model)
+# Running example: there are only four causal types
+model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
+set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+get_parameter_matrix(model)
 }

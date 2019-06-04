@@ -45,6 +45,12 @@ get_data_probs <- function(model, data, parameters = NULL){
 #'   set_restrictions(node_restrict = list(M = "10", Y = "10")) %>%
 #'   set_parameters(type = "flat")
 #' conditional_inferences(model, query = "Y[X=1]>Y[X=0]", given = "Y==1")
+#'
+#' # Running example
+#' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#'    set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
+#' conditional_inferences(model, query = list(COE = "(Y[S=0] > Y[S=1])"), given = "Y==1 & S==0")
+
 
 conditional_inferences <- function(model, query, parameters=NULL,  given = NULL){
 
@@ -55,7 +61,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	vars <- model$variables
 
 	# Possible data
-	vals <- data.frame(perm(rep(3,length(model$variables)))) - 1
+	vals <- data.frame(perm(rep(2,length(model$variables)))) - 1
 	vals[vals ==-1] <- NA
 	names(vals) <- vars
 	if(!is.null(given)) vals <- dplyr::filter(vals, eval(parse(text = given)))
@@ -65,11 +71,12 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	conds[is.na(vals)] <- NA
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
 	subsets[subsets==""] <- TRUE
-	estimands <- get_estimands(
+	estimands <- gbiqq::get_estimands(
 		model   = model,
 		parameters  = parameters,
+		using = "parameters",
 		queries = query,
-		subsets = subsets)[1,]
+		subsets = subsets)$mean
 
 	probs <- unlist(get_data_probs(model, vals))
 
@@ -78,7 +85,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	p[p] <- 1
 	p[!p] <- probs
 
-	out <- data.frame(cbind(vals, t(estimands), p))
+	out <- data.frame(cbind(vals, estimands, p))
 
 	names(out) <- c(vars, "posterior", "prob")
 	rownames(out) <- NULL
@@ -117,6 +124,14 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #' # No givens
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
+#'
+#'
+#' library(dplyr)
+#'  model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#'  set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
+#' expected_learning(model, query = list(COE = "(Y[S=0] > Y[S=1])"), strategy = "C", given = "Y==1 & S==0")
+#' expected_learning(model, query = list(COE = "(Y[X=1] > Y[X=0])"), strategy = "S", given = "X==0 & Y==0")
+
 
 
 expected_learning <- function(model, query, strategy = NULL, given = NULL, parameters = NULL){
@@ -150,17 +165,18 @@ expected_learning <- function(model, query, strategy = NULL, given = NULL, param
 	results_table <-
 		conditional_inferences(model = model, query = query,
 													 given = given, parameters = parameters)
-
+  results_table <- filter(results_table, prob !=0)
 	# Clean up
 	results_table <- mutate(results_table,  prob = prob/sum(prob), var = posterior*(1-posterior))
 
 	# Summarize
   out <- with(results_table,
   						data.frame(
-  							given = given0, strategy = paste(strategy, collapse = ", "),
+  							strategy = paste(strategy, collapse = ", "),
+  							given = given0,
   							prior_estimand = prob%*%posterior,
   							prior_var  = (prob%*%posterior)*(1- prob%*%posterior),
-  							E_post_var = (prob%*%var)))
+  							E_post_var = (prob%*%var), stringsAsFactors = FALSE))
 
 #  print(query)
 #  print(out)

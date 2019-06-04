@@ -11,26 +11,27 @@ make_priors(model, prior_distribution = "uniform", alphas = NULL)
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 
-\item{alphas}{the hyperparameters of the dirichlet distribution.}
+\item{by_nodes}{the hyperparameters of the dirichlet distribution.}
+
+\item{by_causal_types}{Stipulated alpha values override prior_distribution}
 }
 \description{
 Set priors
 }
 \examples{
-XYdag <- make_model("X -> Y")
+XYmodel <- make_model("X -> Y")
 #  Default sets all priors to 1
-make_priors(model = XYdag)
+make_priors(model = XYmodel)
 #  Set all priors to 0.5
-make_priors(model = XYdag, prior_distribution = "jeffreys")
+make_priors(model = XYmodel, prior_distribution = "jeffreys")
 #  Set all priors to infinity
-make_priors(model = XYdag, prior_distribution = "certainty")
+make_priors(model = XYmodel, prior_distribution = "certainty")
 
 #  set all priors to 1 except for prior of nodal_type X0
-make_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
+make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #  specify priors for each of the nodal_types in model
-make_priors(model = XYdag, prior_distribution = "uniform" ,
-           alpha = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
+make_priors(model = XYmodel,
+           alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
 # set all priors to 10
-make_priors(model = XYdag, prior_distribution = NULL,
-           alpha =  10)
+make_priors(model = XYmodel, alphas =  10)
 }

@@ -92,11 +92,12 @@ get_types <- function(model, query, join_by = "|"){
 		# and evaulates each expression when possible
 		for (j in 1:length(.query)) {
 			do <- unlist(strsplit( .query[j], ""))
+		  stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
+			var_name <-  paste0(do[1:stop], collapse = "")
+			var_name <- gsub(" ", "", var_name)
 			value <- c(eval(parse(text = paste0(do, collapse = "") ), envir =  eval_var))
 			vars  <-  model$variables
-			v_cond  <- paste0(vars, collapse = "|")
-			i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
-			var_name <- do[i_var]
+			if(!var_name %in% vars) 	stop(paste("Variable", var_name ,"is not part of the model."))
 			dos[[j]] <- value
 			names(dos)[[j]] <- var_name
 		}
@@ -147,7 +148,8 @@ get_types <- function(model, query, join_by = "|"){
 
 	names(types) <- attr(eval_var, "type_names")
 
-	type_list <- names(types)[types]
+	if(is.logical(types))  type_list <- names(types)[types]
+	if(!is.logical(types)) type_list <- NULL
 
   return_list <- 	list(types = types,
   										 query = query,

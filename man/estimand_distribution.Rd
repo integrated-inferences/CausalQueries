@@ -4,8 +4,8 @@
 \alias{estimand_distribution}
 \title{Calculate estimand distribution}
 \usage{
-estimand_distribution(model, query, subset = TRUE, parameters = NULL,
-  posterior = FALSE, type_distribution = NULL, verbose = TRUE)
+estimand_distribution(model, query, subset = TRUE, using = "priors",
+  parameters = NULL, type_distribution = NULL, verbose = FALSE)
 }
 \arguments{
 \item{model}{A  model}
@@ -14,9 +14,9 @@ estimand_distribution(model, query, subset = TRUE, parameters = NULL,
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
-\item{parameters}{A  true parameter vector, if available}
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 
-\item{posterior}{if true use a posterior distribution, otherwise use the prior}
+\item{parameters}{A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`}
 
 \item{type_distribution}{if provided saves calculation, otherwise clculated from model; may be based on prior or posterior}
 }
@@ -26,6 +26,8 @@ Calculated from a prior or posterior distribution
 \examples{
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
- estimand_1  <- estimand_distribution(model, query = "Y[X=1] - Y[X=0]")
- estimand_2  <- estimand_distribution(model, query = "Y[X=1] > Y[X=0]")
+ estimand_1  <- estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
+ estimand_2  <- estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 }

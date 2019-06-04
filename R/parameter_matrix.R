@@ -14,7 +14,7 @@ make_parameter_matrix  <- function(model){
 
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
-	types           <- causal_type_names(get_causal_types(model))
+	types           <- gbiqq:::causal_type_names(get_causal_types(model))
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type
@@ -98,8 +98,7 @@ print.summary.parameter_matrix <- function(x, ...){
 
 # Names for causal types
 
-causal_type_names <- function(causal_types)
-          data.frame(sapply(1:ncol(causal_types),
-														function(j) paste0(names(causal_types)[j], causal_types[,j])),
-										stringsAsFactors = FALSE)
+causal_type_names <- function(causal_types) {
+          for(j in (1:ncol(causal_types))) causal_types[,j] <- paste0(names(causal_types)[j], causal_types[,j])
+					data.frame(causal_types, stringsAsFactors = FALSE)}
 

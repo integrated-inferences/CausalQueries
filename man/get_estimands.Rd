@@ -5,8 +5,8 @@
 \title{Calculate multiple estimands}
 \usage{
 get_estimands(model, parameters = NULL, queries = list(NULL),
-  subsets = list(TRUE), posteriors = list(FALSE),
-  estimand_labels = NULL, stats = NULL)
+  subsets = list(TRUE), using = list(FALSE), stats = NULL,
+  digits = 3)
 }
 \arguments{
 \item{model}{A  model}
@@ -27,6 +27,25 @@ model <- make_model("X -> Y") \%>\%
 get_estimands(
       model,
       queries = list(ATE = "Y[X=1] - Y[X=0]",
-                     Share_positive = "Y[X=1] > Y[X=0]"))
+                     Share_positive = "Y[X=1] > Y[X=0]"),
+      using = c("parameters", "priors"))
 
+get_estimands(
+      model,
+      queries = list(ATE = "Y[X=1] - Y[X=0]",
+                     Share_positive = "Y[X=1] > Y[X=0]"),
+      using = "priors")
+
+get_estimands(
+      model,
+      queries = list(ATE = "Y[X=1] - Y[X=0]"),
+      using = list("priors", "parameters"),
+      digits = 3)
+
+get_estimands(
+      model,
+      using = "priors",
+      queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+      subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+      digits = 3)
 }
