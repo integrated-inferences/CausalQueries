@@ -34,7 +34,7 @@
 #' get_types(model, query)
 
 
-
+get_nodal_types()
 get_types <- function(model, query, join_by = "|"){
 
 	if(grepl(".", query, fixed = TRUE))
