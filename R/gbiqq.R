@@ -4,7 +4,7 @@
 #' Takes a model and data and returns a model object with data attached and a posterior model
 #' @param model A model as created by \code{make_model}
 #' @param data A data frame with observations
-#' @importFrom rstan stan sampling
+#' @importFrom rstan sampling
 #' @import rstantools
 #' @importFrom Rcpp cpp_object_initializer
 #' @export
