@@ -2,7 +2,8 @@ Package: gbiqq
 Type: Package
 Title: Generalized BIQQ
 Version: 0.0.2
-Authors@R: c(person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
+Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
+             person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
              person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
              person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut", "cre")),
              person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("aut")))
@@ -18,8 +19,11 @@ Imports:
     gtools,
     rstan,
     dplyr,
-    DeclareDesign
+    DeclareDesign,
+    Rcpp (>= 0.12.16),
+    rlang (>= 0.2.0)
 Suggests: 
 		testthat
+		
 
 
