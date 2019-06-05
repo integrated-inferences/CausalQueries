@@ -106,7 +106,7 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 
 			apply(type_values, 1, function(s){
 				to_sub <- paste0(colnames(type_values), "(\\s)*=(\\s)*$")
-				subbed <- gbiqq:::gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
+				subbed <- gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
 				paste0(subbed, collapse = "")
 			})
 		}

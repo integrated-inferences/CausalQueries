@@ -99,7 +99,7 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	}
 
 	# If there are wild cards, spell them out
-	restriction_list <- lapply(restriction, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+	restriction_list <- lapply(restriction, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
 	# If "keep" specified, reverse meaning of restricted types -- only stipulated types to be kept
 	if(!(action %in% c("remove", "keep"))) stop("action should be either 'remove' to 'keep'")
@@ -152,9 +152,9 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	#	model$restrictions <- restrictions_out
 
 	# Subset priors
-	type_names          <- gbiqq:::get_type_names(nodal_types)
+	type_names          <- get_type_names(nodal_types)
 	model$priors <- model$priors[type_names]
-	model$causal_types  <- gbiqq:::update_causal_types(model)
+	model$causal_types  <- update_causal_types(model)
 	if(!is.null(model$parameters)) model$parameters <-
 		reduce_parameters(model, model$parameters)
 	return(model)
@@ -189,7 +189,7 @@ reduce_parameters <- function(model, parameters = model$parameters){
 
 	variables   <- model$variables
 	nodal_types <- get_nodal_types(model)
-	type_names  <- gbiqq:::get_type_names(nodal_types)
+	type_names  <- get_type_names(nodal_types)
 	parameters  <- parameters[type_names]
 
 	parameters <-

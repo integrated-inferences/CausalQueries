@@ -159,6 +159,22 @@ get_causal_types <- function(model){
 	}
 
 
+#' Get variable names from a DAG
+#' @param A probabilistic causal model created by make_model()
+#'
+#'
+#' @return A vector of variable names
+get_variables <- function(model){
+
+	return(
+		c(attr(model, "exogenous_variables"), attr(model, "endogenous_variables"))
+	)
+}
+
+
+
+
+
 #' #' Get values of types according to a query
 #' #'
 #' #' @param model A model  created by \code{make_model}
@@ -236,7 +252,7 @@ get_causal_types <- function(model){
 #'
 #' 			} else{
 #' 				value <- c(eval(parse(text = paste0(do, collapse = ""), eval_var ), eval_var))
-#' 				vars  <- gbiqq:::get_variables(model)
+#' 				vars  <- get_variables(model)
 #' 				v_cond  <- paste0(vars, collapse = "|")
 #' 				i_var <- grepl(v_cond, do) ## throw error if not var found ... also need to process comas
 #' 				var_name <- do[i_var]

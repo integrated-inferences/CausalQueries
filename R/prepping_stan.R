@@ -65,7 +65,7 @@ get_data_events <- function(data, model){
 																						the data you provided.\nPlease double-check variable
 																						names and try again.")}
 
-	revealed_data <- gbiqq:::reveal_outcomes(model)
+	revealed_data <- reveal_outcomes(model)
 	data <- data[,variables]
 
 
@@ -119,7 +119,7 @@ get_data_events <- function(data, model){
 #'
 get_possible_data_internal <- function(model, collapse = TRUE){
 
-	revealed_data <- gbiqq:::reveal_outcomes(model)
+	revealed_data <- reveal_outcomes(model)
 	variables <- get_variables(model)
 	parents <- get_parents(model)
 
@@ -164,7 +164,7 @@ get_max_possible_data <- function(model) {
 	dag <- model$dag
 	max_possible_data <-
 		Reduce(f = merge,
-					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
+					 x = get_possible_data_internal(model, collapse = FALSE))
 	variables <- 	c(attr(model, "exogenous_variables"),
 									attr(model, "endogenous_variables"))
 	max_possible_data <- max_possible_data[variables]

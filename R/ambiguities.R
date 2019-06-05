@@ -20,15 +20,15 @@ get_ambiguities_matrix <- function(model){
 	dag <- model$dag
 	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
 	possible_data <-	get_possible_data(model)
-	nodal_types   <-  gbiqq:::get_nodal_types(model)
+	nodal_types   <-  get_nodal_types(model)
 	type_labels   <-  expand.grid(nodal_types)
 	type_labels   <-  apply(type_labels, 1, paste0, collapse = "")
 
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types <- gbiqq:::get_causal_types(model)
+	types <- get_causal_types(model)
 
   # 3. Map types to data realizations. This is done in reveal_outcomes
-  data_realizations   <- gbiqq:::reveal_outcomes(model)
+  data_realizations   <- reveal_outcomes(model)
   types$revealed_data <- apply(data_realizations , 1, paste0, collapse = "")
 
   # 4.  Create and return matrix A
