@@ -12,7 +12,7 @@ for(dag in dags){
 
 	testthat::test_that(
 		desc = "Model returns the correct object class.",
-		code = expect_identical(class(model), "probabilistic_causal_model")
+		code = expect_identical(class(make_model(dag)), "probabilistic_causal_model")
 	)
 
 }
@@ -22,11 +22,11 @@ testthat::test_that(
 	code = {
 
 		XY_noconf <- make_model("X -> Y")
-		expect_identical(dim(get_parameter_matrix(XY_noconf)), c(6,8))
+		expect_equal(dim(get_parameter_matrix(XY_noconf)), c(6,8))
 		data <- simulate_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
 		expect_equal(dim(data), c(1,2))
 
-		posterior <- gbiqq(XY_noconf, data, refresh = 0)
+		updated <- posterior <- gbiqq(XY_noconf, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
 		ATE <- "Y[X=1] - Y[X=0]"
@@ -49,7 +49,7 @@ testthat::test_that(
 																 X = "(Y[X=1]<Y[X=0])",
 																 X = "(Y[X=1] ==1)"))
 
-		expect_identical(dim(get_parameter_matrix(XY_conf)), c(12,8))
+		expect_equal(dim(get_parameter_matrix(XY_conf)), c(12,8))
 
 		parameters <- c(.5, .5, .5, .5, .5, .5, .5, .5, .1, .7, .1, .1)
 		data <- simulate_data(XY_conf, n = 1, parameters = parameters)
@@ -61,10 +61,10 @@ testthat::test_that(
 		prior_ate <- estimand_distribution(posterior, "c(Y[X=1] - Y[X=0])", using = "priors")
 		post_ate <- estimand_distribution(posterior, "c(Y[X=1] - Y[X=0])", using = "posteriors")
 
-		result <- get_estimands(
+		results <- get_estimands(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),
-			subsets = c("X==1 & Y==1", "X==1 & Y==1 & M==0", "X==1 & Y==1 & M==1"),
+			subsets = c("X==1 & Y==1"),
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))
@@ -110,7 +110,7 @@ testthat::test_that(
 		posterior <- gbiqq(XY_moderator, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
-		result <- get_estimands(
+		results <- get_estimands(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),
 			subsets = c("X==1 & Y==1", "X==1 & Y==1 & Z==0", "X==1 & Y==1 & Z==1"),
