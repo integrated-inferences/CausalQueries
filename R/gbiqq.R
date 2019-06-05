@@ -4,6 +4,7 @@
 #' Takes a model and data and returns a model object with data attached and a posterior model
 #' @param model A model as created by \code{make_model}
 #' @param data A data frame with observations
+#' @param ... Arguments passed to \code{rstan::sampling} (e.g. iter, chains).
 #' @importFrom rstan sampling
 #' @import rstantools
 #' @importFrom Rcpp cpp_object_initializer
@@ -22,19 +23,7 @@
 gbiqq <- function(model, data, ...){
 	stan_data <- make_gbiqq_data(model = model, data = data)
 	model$posterior_distribution <- rstan::sampling(object =
-		stanmodels$simplexes, data = stan_data,
-		pars = NA, chains = 4, iter = 2000,
-		warmup = floor(iter/2), thin = 1,
-		init = "random", seed = sample.int(.Machine$integer.max, 1),
-		algorithm = c("NUTS", "HMC", "Fixed_param"),
-		control = NULL, check_data = TRUE,
-		sample_file = NULL,
-		diagnostic_file = NA, verbose = FALSE,
-		algorithm = match.arg(algorithm), control = NULL,
-		check_unknown_args = FALSE, cores = getOption("mc.cores", 1L),
-		open_progress = interactive() && !isatty(stdout()) &&
-			!identical(Sys.getenv("RSTUDIO"), "1"),
-		include = TRUE)
+		stanmodels$simplexes, data = stan_data, ...)
 	model$data <- data
 	model
 }
