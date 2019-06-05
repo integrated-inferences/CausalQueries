@@ -57,7 +57,7 @@ get_data_events <- function(data, model){
 	likelihood_helpers  <- get_likelihood_helpers(model)
 	possible_events     <- likelihood_helpers$possible_events
 	possible_strategies <- names(likelihood_helpers$w_starts)
-	variables           <- get_variables(model)
+	variables           <- model$variables
 	i_strategy          <- likelihood_helpers$w_ends - likelihood_helpers$w_starts +1
 
 
@@ -77,7 +77,8 @@ get_data_events <- function(data, model){
 	})
 
 	if(any(inconsistencies)){
-		stop("Observations are not consistent with restrictions")
+		message(paste("Observations are not consistent with restrictions in", sum(!inconsistencies), "cases"))
+		data <- data[!inconsistencies, ]
 	}
 
 	# replace "" with na and remove rows where all values are na

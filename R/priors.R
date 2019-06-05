@@ -2,32 +2,34 @@
 #'
 #' @param model A model created by make_model()
 #' @param prior_distribution A character indicating the prior distribuiton
-#' @param alphas the hyperparameters of the dirichlet distribution.
-#'
+#' @param by_nodes the hyperparameters of the dirichlet distribution.
+#' @param by_causal_types
+#' Stipulated alpha values override prior_distribution
 #' @export
 #' @examples
-#' XYdag <- make_model("X -> Y")
+#' XYmodel <- make_model("X -> Y")
 #' #  Default sets all priors to 1
-#' make_priors(model = XYdag)
+#' make_priors(model = XYmodel)
 #' #  Set all priors to 0.5
-#' make_priors(model = XYdag, prior_distribution = "jeffreys")
+#' make_priors(model = XYmodel, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
-#' make_priors(model = XYdag, prior_distribution = "certainty")
+#' make_priors(model = XYmodel, prior_distribution = "certainty")
 #'
 #'#  set all priors to 1 except for prior of nodal_type X0
-#' make_priors(model = XYdag, alpha = list(X = c(X0 = 2)))
+#' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
-#' make_priors(model = XYdag, prior_distribution = "uniform" ,
-#'            alpha = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
+#' make_priors(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
 #' # set all priors to 10
-#' make_priors(model = XYdag, prior_distribution = NULL,
-#'            alpha =  10)
+#' make_priors(model = XYmodel, alphas =  10)
 make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 
-	if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty"))) stop(
-		"prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.
-		 Stipulated alpha values override prior_distribution")
+	if(!is.null(prior_distribution)){
+		if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty")))
+			stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
+	}
 
+	# parameter housekeeping
 	# parameter housekeeping
 	P                  <- get_parameter_matrix(model)
 	n_params           <- nrow(P)
@@ -43,6 +45,13 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 		"if prior_distribution is not specified, alphas must contain either a value
 		for each parameter or a single value to be assigned to all parameters.")
 	alpha_names   <- names(alphas_vector)
+
+
+	if(n_alphas == 1 & is.null(alpha_names)){
+		alphas_vector <- rep(alphas, n_params)
+		names(alphas_vector) <- alpha_names   <- par_names
+	}
+
 
 	# Check that alpha names match par names
 	not_in_dag <- !alpha_names %in% par_names
@@ -77,7 +86,9 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 	# result
 	names(priors)       <- par_names
 	priors
+
 }
+
 
 
 #' Set prior distribution
@@ -101,6 +112,7 @@ set_priors  <- function(model,
    model$priors  <- priors
 #   message(paste("Priors attached to model"))
    model
+
 }
 
 
@@ -133,13 +145,15 @@ get_priors  <- function(model,  priors = NULL, prior_distribution = "uniform", a
 #' @export
 #'
 set_prior_distribution <- function(model, n_draws = 4000) {
+
   if(is.null(model$priors)) model <- set_priors(model)
   if(is.null(model$P)) model <- set_parameter_matrix(model)
 
   model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
 #  message(paste("Prior distribution based on", n_draws, "draws attached to model"))
+
 	return(model)
-	}
+}
 
 
 

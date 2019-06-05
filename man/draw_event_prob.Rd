@@ -15,6 +15,8 @@ draw_event_prob(model, P = NULL, A = NULL, parameters = NULL,
 \item{A}{Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations}
 
 \item{parameters}{A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors}
+
+\item{vector}{of type probabilities; usually not required}
 }
 \description{
 Draw event probabilities
