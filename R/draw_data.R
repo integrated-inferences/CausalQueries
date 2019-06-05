@@ -291,7 +291,7 @@ data_strategy <- function(model,
 	if(!is.null(n) && length(n)!=length(vars)) stop("If specified, n should be the same length as vars")
 	if(!is.null(n) && !is.null(probs)) warning("Both `n` and `prob` specified. `n` overrides `probs`.")
 
-	complete_data <- observed <- simulate_data(model, n = n_obs, parameter = parameters)
+	complete_data <- observed <- simulate_data(model, n = n_obs, parameters = parameters)
 	observed[,] <- FALSE
 
 	# Default behavior is to return complete data -- triggered if first strategy step has vars =  null
