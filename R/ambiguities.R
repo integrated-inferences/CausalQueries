@@ -53,7 +53,7 @@ get_ambiguities_matrix <- function(model){
 #' Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables.
 #' If a do operator is applied to any variable then it takes the given value and all its descendents are generated accordingly.
 #'
-#' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{gbiq:::get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
+#' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.
 #'
 #' @param model A model created by \code{make_model}
 #' @param dos  A list of do actions  e.g. \code{list(X = 0, M = 1)}
