@@ -21,4 +21,6 @@ gbiqq <- function(model, data,   ...) {
 
 	model
 
-	}
+}
+
+globalVariables(names = c( "posterior", "prob"))

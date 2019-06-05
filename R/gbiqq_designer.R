@@ -5,6 +5,7 @@
 #' @param model A model created by make_model()
 #' @param data_strat should be of the form "list(n_obs = n_obs, vars = list("X", "Y"), probs = list(...), n = NULL, subsets = list(...))
 #' @import DeclareDesign
+#' @importFrom dplyr %>%
 #' @export
 #' @examples
 #' require("DeclareDesign")
@@ -47,7 +48,7 @@ gbiqq_designer <- function(
 
 	# Estimand given parameters
 	estimand <- declare_estimand(handler = function(data) {
-		value <- gbiqq::get_estimands(model,
+		value <- get_estimands(model,
 													 using = "parameters",
 													 parameters = parameters,
 													 queries = queries)
@@ -58,7 +59,7 @@ gbiqq_designer <- function(
 	# Estimator runs gbiqq
 	 estimate <- declare_estimator(handler = function(data) {
 		updated <- gbiqq(model = model,  data = data)
-		value   <- gbiqq::get_estimands(updated, using = "posteriors", queries = queries)
+		value   <- get_estimands(updated, using = "posteriors", queries = queries)
 		data.frame(estimate_label = paste0("est_", names(queries)),
 							 estimand = names(queries),
 							 estimate = value["mean",],

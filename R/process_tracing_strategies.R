@@ -71,7 +71,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	conds[is.na(vals)] <- NA
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
 	subsets[subsets==""] <- TRUE
-	estimands <- gbiqq::get_estimands(
+	estimands <- get_estimands(
 		model   = model,
 		parameters  = parameters,
 		using = "parameters",
@@ -103,6 +103,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #' @param strategy A set of variables to be sought
 #' @param given A conditioning set as a character string that evaluates to a logical, for example 'Y==1'
 #' @importFrom  stringr str_extract_all boundary
+#' @importFrom dplyr mutate filter
 #' @export
 #' @examples
 #' # Reduction in variance given monotonic X -> M1 -> M2 -> Y model

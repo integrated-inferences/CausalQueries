@@ -83,6 +83,7 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 #'
 #' @param to_expand A character vector of length 1L.
 #' @param join_by A character vector of length 1L.
+#' @importFrom rlang expr
 #' @export
 #'
 expand_wildcard <- function(to_expand, join_by = "|"){

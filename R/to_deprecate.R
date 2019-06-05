@@ -180,7 +180,7 @@
 #' #' @examples
 #' #' \dontrun{
 #' #' test_dag <-
-#' #' gbiqq::make_model(add_edges(parent = "X",children = c("K", "Y1")),
+#' #' make_model(add_edges(parent = "X",children = c("K", "Y1")),
 #' #' 								add_edges(parent = "K", children = c("Y1","Y2")),
 #' #' 								add_edges(parent = "Z", children = c("K")))
 #' #'
@@ -265,8 +265,8 @@
 #' #' @return A list of the numbers of endogenous types
 #' get_n_endogenous_types <- function(model){
 #'
-#' 	types <- sapply(gbiqq::get_types(model), FUN = function(types) dim(types)[1])
-#' 	types <- types[gbiqq::get_endogenous_vars(model)]
+#' 	types <- sapply(get_types(model), FUN = function(types) dim(types)[1])
+#' 	types <- types[get_endogenous_vars(model)]
 #' 	return(types)
 #' }
 #'
@@ -279,9 +279,9 @@
 #' #' @return A list of the children of exogenous variables
 #' get_children_of_exogenous <- function(model){
 #' 	dag <- model$dag
-#' 	sapply(gbiqq::get_exogenous_vars(model),
+#' 	sapply(get_exogenous_vars(model),
 #' 				 FUN = function(exogenous_variable) {
-#' 				 	names(gbiqq::get_parents(model))[sapply(X = gbiqq::get_parents(model),
+#' 				 	names(get_parents(model))[sapply(X = get_parents(model),
 #' 				 																					FUN = function(parents) exogenous_variable %in% parents ) ] },
 #' 				 simplify = FALSE
 #' 	)

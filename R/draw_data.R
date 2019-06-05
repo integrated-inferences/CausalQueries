@@ -145,7 +145,9 @@ draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_p
 #' @param A Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
 #'
+#' @importFrom stats rmultinom
 #' @export
+#'
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_data_events(model = model)
