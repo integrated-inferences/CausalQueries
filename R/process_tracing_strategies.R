@@ -102,7 +102,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #' @param query A query as a character string, for example 'Y[X=1]>Y[X=0]'
 #' @param strategy A set of variables to be sought
 #' @param given A conditioning set as a character string that evaluates to a logical, for example 'Y==1'
-#'
+#' @importFrom  stringr str_extract_all boundary
 #' @export
 #' @examples
 #' # Reduction in variance given monotonic X -> M1 -> M2 -> Y model
@@ -142,7 +142,7 @@ expected_learning <- function(model, query, strategy = NULL, given = NULL, param
 		# Figure out which variables are given
 		given_vars <- NULL
 		if(!is.null(given)) {
-			given_vars <- stringr::str_extract_all(given, stringr::boundary("word"))[[1]]
+			given_vars <- str_extract_all(given, boundary("word"))[[1]]
 			given_vars <- given_vars[(given_vars %in% vars)]}
 
 		# All strategy vars need to be seen

@@ -213,7 +213,7 @@ simulate_data <- function(model, n = 1, data_events = NULL, parameters = NULL){
 #' @param prob    Observation probability
 #' @param n    Number of units to observe; if specified, \code{n} overrides \code{prob}
 #' @param subset  A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!
-#'
+#' @importFrom randomizr strata_rs
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -253,7 +253,7 @@ observe <- function(complete_data,
 
   if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
 
-  show <- randomizr::strata_rs(strata = strata,
+  show <-   strata_rs(strata = strata,
   									strata_prob = c(0, prob)) == 1
   observed[show, vars_to_observe] <- TRUE
   }}
