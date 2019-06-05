@@ -30,9 +30,8 @@ translate_dagitty <- function(model){
 #' Plot your dag using dagitty
 #'
 #' @param model A dag created by make_model()
-#'
+#' @importFrom graphics plot
 #' @export
-#'
 #' @return dagitty translation of DAG
 #'
 #' @examples

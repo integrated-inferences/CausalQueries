@@ -13,5 +13,6 @@ draw_lambda(model)
 Draw parameters
 }
 \examples{
+model <- make_model("X -> Y")
 draw_lambda(model = model)
 }

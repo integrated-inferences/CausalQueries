@@ -22,6 +22,10 @@ Draw matrix of type probabilities, before or after estimation
 \examples{
 model <- make_model("X -> Y")
 draw_type_prob_multiple(model, using = "priors", n_draws = 3)
-draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
 draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
+\dontrun{
+data <- simulate_data(model)
+model <- gbiqq(model = model, data = data)
+draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
+}
 }

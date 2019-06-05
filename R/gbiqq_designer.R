@@ -5,6 +5,7 @@
 #' @param model A model created by make_model()
 #' @param data_strat should be of the form "list(n_obs = n_obs, vars = list("X", "Y"), probs = list(...), n = NULL, subsets = list(...))
 #' @import DeclareDesign
+#' @importFrom magrittr %>%
 #' @export
 #' @examples
 #' require("DeclareDesign")

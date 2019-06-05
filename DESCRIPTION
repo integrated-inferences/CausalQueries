@@ -21,7 +21,9 @@ Imports:
     dagitty,
     gtools,
     dplyr,
-    DeclareDesign
+    DeclareDesign,
+    rlang,
+    magrittr
 LinkingTo: 
     BH (>= 1.69.0-1),
     Rcpp (>= 1.0.1),

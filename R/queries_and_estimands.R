@@ -9,6 +9,7 @@
 #' @param query A query on potential otcomes such as "Y[X=1] - Y[X=0]"
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
+#' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
@@ -66,6 +67,7 @@ estimand_distribution <- function(model,
 #' @param parameters A  true parameter vector, if available
 #' @param posterior if true use a posterior distribution, otherwise use the prior
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
+#' @importFrom stats sd
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%

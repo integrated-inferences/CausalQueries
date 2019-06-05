@@ -102,7 +102,8 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #' @param query A query as a character string, for example 'Y[X=1]>Y[X=0]'
 #' @param strategy A set of variables to be sought
 #' @param given A conditioning set as a character string that evaluates to a logical, for example 'Y==1'
-#'
+#' @importFrom stats filter
+#' @importFrom dplyr mutate
 #' @export
 #' @examples
 #' # Reduction in variance given monotonic X -> M1 -> M2 -> Y model

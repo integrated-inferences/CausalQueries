@@ -175,8 +175,8 @@ get_pi_expanders <- function(pi,model){
 #' FUNCTION_DESCRIPTION
 #'
 #' @param model DESCRIPTION.
-#'
 #' @return RETURN_DESCRIPTION
+#' @importFrom stats setNames
 #' @examples
 #' \dontrun{
 #' test_dag <-

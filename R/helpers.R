@@ -4,7 +4,7 @@
 #' @param max A vector of integers indicating the maximum value of an integer value starting at 0. Defaults to 1. The number of permutation is defined by \code{max}'s length
 #' @export
 #' @return A matrix of permutations
-#' @importFrom rlang exprs
+#' @importFrom rlang exprs !!
 #' @examples
 #'
 #' \dontrun{
@@ -84,7 +84,6 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 #' @param to_expand A character vector of length 1L.
 #' @param join_by A character vector of length 1L.
 #' @export
-#' @importFrom rlang expr
 #'
 expand_wildcard <- function(to_expand, join_by = "|"){
 	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
@@ -101,8 +100,7 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 			matcha <- trimws(unlist(regmatches(orig[i], a)))
 			rep_n <- sapply(unique(matcha), function(e) sum(matcha == e))
 			n_types <- length(unique(matcha))
-			grid <- replicate(n_types, expr(c(0,1)))
-			type_values <- do.call(expand.grid, grid)
+			type_values <- perm(rep(1, n_types))
 			colnames(type_values) <- unique(matcha)
 
 			apply(type_values, 1, function(s){

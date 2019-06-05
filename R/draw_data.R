@@ -7,6 +7,7 @@
 #' @importFrom gtools rdirichlet
 #' @export
 #' @examples
+#' model <- make_model("X -> Y")
 #' draw_lambda(model = model)
 
 draw_lambda <- function(model){
@@ -67,8 +68,12 @@ draw_type_prob <- function(model, P = NULL,  parameters = NULL){
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_type_prob_multiple(model, using = "priors", n_draws = 3)
-#' draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
 #' draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
+#' \dontrun{
+#' data <- simulate_data(model)
+#' model <- gbiqq(model = model, data = data)
+#' draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
+#' }
 
 
 draw_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000){
@@ -144,7 +149,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_p
 #' @param P Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param A Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
-#'
+#' @importFrom stats rmultinom
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
