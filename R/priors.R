@@ -2,8 +2,7 @@
 #'
 #' @param model A model created by make_model()
 #' @param prior_distribution A character indicating the prior distribuiton
-#' @param by_nodes the hyperparameters of the dirichlet distribution.
-#' @param by_causal_types
+#' @param alphas the hyperparameters of the dirichlet distribution.
 #' Stipulated alpha values override prior_distribution
 #' @export
 #' @examples
