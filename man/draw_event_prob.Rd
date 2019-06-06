@@ -4,7 +4,7 @@
 \alias{draw_event_prob}
 \title{Draw event probabilities}
 \usage{
-draw_event_prob(model, P = NULL, A = NULL, lambda = NULL,
+draw_event_prob(model, P = NULL, A = NULL, parameters = NULL,
   type_prob = NULL)
 }
 \arguments{
@@ -14,7 +14,9 @@ draw_event_prob(model, P = NULL, A = NULL, lambda = NULL,
 
 \item{A}{Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations}
 
-\item{lambda}{A specific parameter vector, lambda; if not  provided,  lambda is drawn from priors}
+\item{parameters}{A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors}
+
+\item{vector}{of type probabilities; usually not required}
 }
 \description{
 Draw event probabilities

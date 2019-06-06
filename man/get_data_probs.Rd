@@ -4,7 +4,7 @@
 \alias{get_data_probs}
 \title{Get data probabilities}
 \usage{
-get_data_probs(model, data, lambda = NULL)
+get_data_probs(model, data, parameters = NULL)
 }
 \arguments{
 \item{model}{A  model}

@@ -4,14 +4,14 @@
 \alias{draw_type_prob}
 \title{Draw type probabilities}
 \usage{
-draw_type_prob(model, P = NULL, lambda = NULL)
+draw_type_prob(model, P = NULL, parameters = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{P}{Parameter matrix, not required but may be provided to avoide repeated computation for simulations}
 
-\item{lambda}{A specific parameter vector, lambda, may be provided, otherwise lambda is drawn from priors}
+\item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
 }
 \description{
 Draw type probabilities

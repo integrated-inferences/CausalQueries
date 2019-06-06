@@ -5,30 +5,36 @@
 #' @param model A model created by make_model().
 #' @param node_restrict A named list of character vectors. List elements specify nodal types to remove from the model. Names refer to variables. Use \code{get_nodal_types()} on a model to see syntax.
 #' @param causal_type_restrict A character vector of length 1L. An expression in string format defining causal types to restrict.
+#' @param action  either `remove` or `keep`: for nodal type restrictions, indicate whether type to be removed or kept
 #' @export
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
 #' # Restrictions can be specified in of the the three following ways:
 #' # 1. Using nodal_types syntax:
+#' require(dplyr)
 #' XYmodel <- make_model("X->Y") %>%
 #'   set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
-#'
 #' # 2. Using types without variable names:
 #' require(dplyr)
 #' XYmodel <- make_model("X->Y") %>%
 #'    set_restrictions(node_restrict = list(X = "0", Y = "00"))
-#'
-#' # 3. Using wildcards:
+#  # 3. Using causal types:
+#' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#' set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+#' get_parameter_matrix(model)
+#' # 4. Using wildcards:
 #' my_model <-  set_restrictions(model = XYmodel, node_restrict = list(Y = "?0"))
 #' get_parameter_matrix(my_model)
 
-set_restrictions <- function(model, node_restrict = NULL, causal_type_restrict = NULL ){
+set_restrictions <- function(model, node_restrict = NULL, causal_type_restrict = NULL, action = "remove"){
 
 	if(is.null(node_restrict) & is.null(causal_type_restrict)) {message("No restrictions provided"); return(model)}
 
 	if(!is.null(node_restrict)){
-    model <- restrict_nodal_types(model, node_restrict)
+    model <- restrict_nodal_types(model,
+    															restriction = node_restrict,
+    															action = action)
 	}
 	if(!is.null(causal_type_restrict)){
 		model <- restrict_causal_types(model, causal_type_restrict)
@@ -56,16 +62,25 @@ restrict_causal_types <- function(model, restriction){
 	current_nodal_types <- get_nodal_types(model)
 	model$nodal_types <- sapply(model$variables, function(v) intersect(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ))
 
+	# Subset priors and update
+	type_names          <- get_type_names(model$nodal_types)
+	if(!is.null(model$priors)) model$priors <- model$priors[type_names]
+	if(!is.null(model$parameters)) model$parameters <- model$parameters[type_names]
+
+	model$causal_types  <- update_causal_types(model)
+
 	return(model)
 
 }
 
-#' Reduce causal types
+#' Reduce nodal types
 #' @param model a model created by make_model()
 #' @param restriction a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
+#' @param action either `remove` or `keep`
 #' @export
-restrict_nodal_types <- function(model, restriction){
-	variables   <- c(attr(model, "exogenous_variables"), attr(model, "endogenous_variables"))
+restrict_nodal_types <- function(model, restriction, action = "remove"){
+
+	variables   <- model$variables
 	nodal_types <- get_nodal_types(model)
 
 	# Stop if none of the names of the restrictions vector matches variables in dag
@@ -75,25 +90,36 @@ restrict_nodal_types <- function(model, restriction){
 	if(!any(matches)){
 		stop("Restrictions don't match variables in DAG")
 	} else if(any(!matches)){
-		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the DAG."))
+		stop("Variables ", paste(names(restriction[!matches ]) ,"are not part of the model."))
 	}
 
 	# If there are wild cards, spell them out
-	restriction <- lapply(restriction, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+	restriction_list <- lapply(restriction, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
 
+	# If "keep" specified, reverse meaning of restricted types -- only stipulated types to be kept
+	if(!(action %in% c("remove", "keep"))) stop("action should be either 'remove' to 'keep'")
+	if(action == "keep") for(j in names(restriction)){
 
+	restriction_list <-
+		sapply(names(restriction_list), function(j){
+  	  nodal_types[[j]][!(nodal_types[[j]] %in% restriction_list[[j]])]
+		}, simplify = FALSE)
+
+	}
 	nodal_types_restrictions <- nodal_types[restricted_vars]
+
 
 	# Paste vars to restrictions when needed
 	# For flexibility, restrictions can be written as "0" or "X0" for an exogenous var X
 	# Though, we'd write its nodal_types as "X0" or "X1"
 	# length(restrictions) = n_vars for which restrictions were specified
-	restrictions_out <- lapply(1:length(restriction), function(i){
+	restrictions_out <- lapply(1:length(restriction_list), function(i){
+
 
 		#Identify nodal_types, var name and actual restriction statement for the current restriction
 		ntr <- nodal_types_restrictions[[i]]
 		restricted_var <- restricted_vars[i]
-		restrictions_i <- restriction[[i]]
+		restrictions_i <- restriction_list[[i]]
 		if(length(ntr) == length(restrictions_i)) {
 			stop(paste0("nodal_types can't be entirely reduced. Revise restrictions for variable ", restricted_var))
 		}
@@ -120,10 +146,12 @@ restrict_nodal_types <- function(model, restriction){
 
 	#	model$restrictions <- restrictions_out
 
-	# Subset lambda_priors
-	type_names          <- get_type_names(nodal_types)
-	model$lambda_priors <- model$lambda_priors[type_names]
-	model$causal_types  <- update_causal_types(model)
+	# Subset priors
+	type_names          <- gbiqq:::get_type_names(nodal_types)
+	model$priors <- model$priors[type_names]
+	model$causal_types  <- gbiqq:::update_causal_types(model)
+	if(!is.null(model$parameters)) model$parameters <-
+		reduce_parameters(model, model$parameters)
 	return(model)
 }
 
@@ -133,33 +161,38 @@ restrict_nodal_types <- function(model, restriction){
 update_causal_types <- function(model){
 
 		possible_types <-	get_nodal_types(model)
-		variables <- names(possible_types)
+		variables      <- names(possible_types)
+
+		# Remove var names from nodal types
 		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
 		names(possible_types) <- variables
+
 		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-		return_df <- expand.grid(possible_types, stringsAsFactors = FALSE)
+		return_df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 
 	return(return_df)
 }
 
 
-#' Reduce lambda
-#' If lambda is longer than nodel types, because of a model restriction, subset lambda and renormalize
+#' Reduce parameters
+#' If parameters is longer than nodel types, because of a model restriction, subset lambda and renormalize
 #' @param model a model created by make_model()
-#' @param lambda a parameter vector possibly longer than the parameter length expected by model
+#' @param parameters a parameter vector possibly longer than the parameter length expected by model
 #' @export
 
-reduce_lambda <- function(model, lambda){
+reduce_parameters <- function(model, parameters = model$parameters){
 
-	variables <-  	c(attr(model, "exogenous_variables"),
-									  attr(model, "endogenous_variables"))
+	variables   <- model$variables
 	nodal_types <- get_nodal_types(model)
-	type_names  <- get_type_names(nodal_types)
-	lambda      <- lambda[type_names]
+	type_names  <- gbiqq:::get_type_names(nodal_types)
+	parameters  <- parameters[type_names]
 
-	unlist(sapply(variables, function(v){
-		i <- which(startsWith(names(lambda), paste0(v, ".")))
-		lambda[i]/sum(lambda[i])}))
+	parameters <-
+		unlist(sapply(variables, function(v){
+		i <- which(startsWith(names(parameters), paste0(v, ".")))
+		parameters[i]/sum(parameters[i])}, USE.NAMES = FALSE))
+
+	parameters
 	 }
 
 
@@ -179,7 +212,7 @@ unpack_wildcard <- function(x) {
 	splitstring <- strsplit(x, "")[[1]]
 	n_wild <- sum(splitstring=="?")
 	if(n_wild ==0) return(x)
-	variations <- perm(rep(2, n_wild))
+	variations <- perm(rep(1, n_wild))
 	apply(variations, 1, function(j)  {
 		z <- splitstring
 		z[z=="?"] <- j

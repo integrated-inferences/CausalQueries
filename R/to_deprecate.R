@@ -1,3 +1,4 @@
+
 ### FROM PREPPING STAN
 #' Higher level function that returns all of the type ambiguities for all possible patterns of evidence
 #'
