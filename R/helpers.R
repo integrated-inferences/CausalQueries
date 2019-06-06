@@ -157,7 +157,7 @@ lookup_type <- function(model, condition = NULL, position = NULL){
 
 	if(!is.null(condition)){
 		conditions <- sapply(condition, clean_condition)
-		interpret <- lapply(interpret, function(i){
+		interpret_ <- lapply(interpret, function(i){
 			slct <- sapply(conditions, function(cond){
 				a <- trimws(strsplit(cond, "&|\\|")[[1]])
 				sapply(i$interpretation, function(bi){
@@ -165,11 +165,11 @@ lookup_type <- function(model, condition = NULL, position = NULL){
 					all(a %in% b)
 				})
 			})
-			i <- i[slct,]
+			i <- i[rowSums(slct) > 0,]
 			if(nrow(i)==0) i <- NULL
 			i
 		})
-		interpret <- interpret[!sapply(interpret, is.null)]
+		interpret <- interpret_[!sapply(interpret_, is.null)]
 	}
 
 	return(interpret)
