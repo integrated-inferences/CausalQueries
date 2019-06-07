@@ -24,6 +24,8 @@ get_nodal_types_dep <- function(model){
 }
 
 
+
+
 #' Get list of types for variables in a DAG
 #'
 #' As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
@@ -43,24 +45,7 @@ get_nodal_types_dep <- function(model){
 #'    set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") %>%
 #'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
 #' unlist(get_nodal_types(model))
-get_nodal_types <- function(model, query = NULL, collapse = TRUE){
-
-	if(!is.null(query)){
-		nodal_types <- types_to_nodes(model, query)
-		if(is_empty(nodal_types))
-			stop(paste("There are no nodal types that satisfy the query condition \n", query))
-
-	} else{
-		nodal_types <- get_nodal_types_model(model, collapse)
-	}
-
-	return(nodal_types)
-
-}
-
-#' Get nodal types of model
-#'
-get_nodal_types_model <- function(model, collapse = TRUE) {
+get_nodal_types <- function(model, collapse = TRUE) {
 
 	#	if(!is.null(model$nodal_types)) return(nodal_types) ## Placeholder -- check why this was previously not here
 

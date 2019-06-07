@@ -18,24 +18,83 @@
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
+#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y01 = 2, Y11 = 1)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
-make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
+#'
+make_priors <- function(model,  prior_distribution = "uniform", alphas = NULL ){
+
+
+	par_names <- get_parameter_names( model)
+	alpha_names <- names(unlist(alphas))
+	in_par_names <- alpha_names %in% par_names
+
+  translate_expression <- function(model, alphas){
+  	if(length(alphas) == 1){
+  		translated_alphas <-  gbiqq:::types_to_nodes(model, names(alphas))
+  		names(translated_alphas[[1]])[1] <- translated_alphas[[1]][1]
+  		translated_alphas[[1]][1] <- as.numeric(alphas)
+  	} else{
+		nodal_types <- gbiqq:::types_to_nodes(model, names(alphas))
+		sapply(names(nodal_types), function(v){
+			v_nodal_types <- nodal_types[[v]]
+			unlist(sapply(1:length(v_nodal_types), function(j){
+				query <- names(v_nodal_types)[j]
+				nt <- v_nodal_types[[j]]
+				value <- alphas[query]
+				translated_alphas <- rep(value, length(nt))
+				names(translated_alphas) <- nt
+				translated_alphas
+			}))
+		})
+  	}
+		return(translated_alphas)
+  }
+
+
+
+  if(is.numeric(alphas) & !is.null(alpha_names)){
+  	alphas <-   translate_expression(model, alphas)
+  }
+
+
+ if(is.list(alphas)  & any(! in_par_names )){
+ 	i_queries <- which(!in_par_names)
+ 	a <- unlist(alphas)[i_queries]
+ 	queries <- names(a)
+  names(a) <- 	sapply(queries, function(q){
+  	stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+  	substr(q, stop + 1, nchar(q))
+  })
+
+ 	translated_alphas  <-  translate_expression(model, a)
+
+ 	repeated_parameters <- names(unlist(translated_alphas)) %in% names(unlist(alphas))
+ 	if(any(repeated_parameters){
+ 		whic
+
+ 	}
+
+
+ }
+
+
+
+
+}
+#'
+#'
+make_priors_internal  <- function(model,  prior_distribution, alphas = NULL){
 
 	if(!is.null(prior_distribution)){
 		if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty")))
 			stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
 	}
+  if(is.numeric(alphas) & !is.null(names(alphas))){
 
-	# parameter housekeeping
-	# parameter housekeeping
-	P                  <- get_parameter_matrix(model)
-	n_params           <- nrow(P)
-	param_set          <- attr(P, "param_set")
-	param_sets         <- unique(param_set)
-	n_param_sets       <- length(param_sets)
-	par_names          <- paste0(param_set, ".", rownames(P))
+
+
+  }
 
 	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
@@ -215,4 +274,4 @@ set_parameters <- function(model,
 		model$parameters <- parameters
 
 		return(model)
-	}
+}

@@ -134,3 +134,21 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 }
 
 
+
+#' get_parameter_names
+#'
+get_parameter_names <- function(model){
+	P                  <- get_parameter_matrix(model)
+	n_params           <- nrow(P)
+	param_set          <- attr(P, "param_set")
+	param_sets         <- unique(param_set)
+	n_param_sets       <- length(param_sets)
+	par_names          <- paste0(param_set, ".", rownames(P))
+	par_names
+}
+
+#'Split and unlist
+#'
+
+
+
