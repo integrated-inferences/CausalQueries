@@ -277,8 +277,8 @@ observe <- function(complete_data,
 
 data_strategy <- function(model,
 													parameters = NULL,
-													n_obs = NULL,
-													n       = list(NULL),
+													n_obs   = NULL,
+													n       = NULL,  # n at each step
 													vars    = list(NULL),
 													probs   = list(NULL),
 													subsets = list(NULL)){
@@ -304,8 +304,8 @@ data_strategy <- function(model,
 		ifelse(!is.null(n) && !is.null(probs),
 					 {name <- "n"; value = n[[j]]},
 					 {name <- "prob"; value = probs[[j]]})
-		if(!is.null(subsets[[j]])) given <- paste0(", given ", subsets[[j]])
-		else given <- NULL
+		if(!is.null(subsets[[j]])) {given <- paste0(", given ", subsets[[j]])
+		} else { given <- NULL}
 	description <- paste0("Step ", j, ": Observe ",
 												paste(vars[[j]], collapse = ", "),
 												" (", name, " = ", value, ")", given, ".\n")

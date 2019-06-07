@@ -5,13 +5,15 @@
 \title{Integrate gbiqq with DeclareDesign}
 \usage{
 gbiqq_designer(model = make_model("X -> Y"), restrictions = NULL,
-  priors = "uniform", parameters = NULL, data_strat = NULL,
-  queries = list(ATE = "Y[X=1] - Y[X=0]"))
+  priors = "uniform", parameters = NULL, inquiry = list(ATE =
+  "Y[X=1] - Y[X=0]"), data_strategy = NULL, answer_strategy = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{data_strat}{should be of the form "list(n_obs = n_obs, vars = list("X", "Y"), probs = list(...), n = NULL, subsets = list(...))}
+\item{data_strategy}{should be of the form "list(n_obs = n_obs, vars = list("X", "Y"), probs = list(...), n = NULL, subsets = list(...))}
+
+\item{answer_strategy}{priors used at the analysis stage, if different}
 }
 \description{
 Define a model, estimand, and answer strategy
