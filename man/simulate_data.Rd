@@ -5,7 +5,7 @@
 \title{Generate full dataset, possibly from compact data}
 \usage{
 simulate_data(model, n = 1, data_events = NULL, parameters = NULL,
-  using = NULL)
+  using = "parameters")
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -16,7 +16,7 @@ simulate_data(model, n = 1, data_events = NULL, parameters = NULL,
 
 \item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
 
-\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`. Defaults here to "parameters."}
 }
 \description{
 Generate full dataset, possibly from compact data

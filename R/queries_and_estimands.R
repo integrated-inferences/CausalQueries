@@ -34,7 +34,7 @@ estimand_distribution <- function(model,
 	# if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
 	#																			 eval(parse(text = subset)))
 
-	if(!is.logical(subset)) subset <- get_types(model)$types
+	if(!is.logical(subset)) subset <- get_types(model, subset)$types
 
 	if(all(!subset)) {message("No units in subset"); return() }
 
@@ -62,7 +62,7 @@ estimand_distribution <- function(model,
 }
 
 
-#' Calculate multiple estimands
+#' Generate estimands dataframe
 #'
 #' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'

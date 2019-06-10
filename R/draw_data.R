@@ -204,7 +204,7 @@ draw_data_events <- function(model,
 #' @param n Number of observations
 #' @param data_events A compact dataframe compatible with model
 #' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
-#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`. Defaults here to "parameters."
 #'
 #' @export
 #' @examples
@@ -216,9 +216,9 @@ simulate_data <- function(model,
 													n = 1,
 													data_events = NULL,
 													parameters = NULL,
-													using = NULL){
+													using = "parameters"){
 
-	if(is.null(parameters)) {
+	if(using == "parameters" & is.null(parameters)) {
 		if(is.null(model$parameters)) stop("parameters not provided")}
 
 	# Data drawn here
