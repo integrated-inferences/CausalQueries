@@ -18,14 +18,19 @@
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y01 = 2, Y11 = 1)))
+#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 1)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #'
 make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NULL ){
 
+	P                  <- get_parameter_matrix(model)
+	n_params           <- nrow(P)
+	param_set          <- attr(P, "param_set")
+	param_sets         <- unique(param_set)
+	n_param_sets       <- length(param_sets)
+	par_names          <- paste0(param_set, ".", rownames(P))
 
-	par_names <- gbiqq:::get_parameter_names( model)
 	alpha_names <- names(unlist(alphas))
 	in_par_names <- alpha_names %in% par_names
 
@@ -36,7 +41,7 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
   		translated_a[[1]][1] <- as.numeric(a)
   	} else{
 		nodal_types <- gbiqq:::types_to_nodes(model, names(a))
-		sapply(names(nodal_types), function(v){
+		translated_a <- 	sapply(names(nodal_types), function(v){
 			v_nodal_types <- nodal_types[[v]]
 			unlist(sapply(1:length(v_nodal_types), function(j){
 				query <- names(v_nodal_types)[j]
