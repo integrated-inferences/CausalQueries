@@ -18,7 +18,7 @@
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 1)))
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #'
@@ -43,7 +43,7 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 		nodal_types <- gbiqq:::types_to_nodes(model, names(a))
 		translated_a <- 	sapply(names(nodal_types), function(v){
 			v_nodal_types <- nodal_types[[v]]
-			unlist(sapply(1:length(v_nodal_types), function(j){
+			out <- unlist(sapply(1:length(v_nodal_types), function(j){
 				query <- names(v_nodal_types)[j]
 				nt <- v_nodal_types[[j]]
 				value <- a[query]
@@ -51,8 +51,11 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 				names(translated_a) <- nt
 				translated_a
 			}))
-		})
-  	}
+
+
+		}, simplify = FALSE)
+		attr(translated_a, "query") <- 	nodal_types
+		}
 		return(translated_a)
   }
 
@@ -76,11 +79,47 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
  	repeated_parameters <- names(unlist(translated_alphas)) %in% names(unlist(alphas))
  	if(any(repeated_parameters)){
+   query_alpha <- attr(translated_alphas, "query")
+   i_repeated  <-	which(repeated_parameters)
+   q_repeated  <- unlist(translated_alphas)[i_repeated]
+   names(q_repeated) <- names(unlist(translated_alphas))[i_repeated]
+   names(q_repeated) <- sapply(  names(q_repeated) , function(q){
+   	stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+   	substr(q, stop + 1, nchar(q))
+   })
+   q_repeated <- q_repeated[order(names(q_repeated))]
 
- 	 i_repeated <-	which(repeated_parameters)
- 	 names(unlist(alphas))[translated_alphas[i_repeated]]
-   names(a)[i_repeated]
- 	 which(names(unlist(alphas)) %in% names(unlist(translated_alphas)))
+   i_alphas_repeated <- names(unlist(alphas)) %in% names(unlist(translated_alphas))
+   alphas_repeated <-  unlist(alphas)[i_alphas_repeated]
+   names(alphas_repeated)  <-  names(unlist(alphas))[i_alphas_repeated]
+
+   names(alphas_repeated) <- sapply(  names(alphas_repeated) , function(q){
+   	stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+   	substr(q, stop + 1, nchar(q))
+   })
+   alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
+
+   if(!identical(alphas_repeated, q_repeated)){
+   error_message <- ""
+   a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
+   q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
+   nnn <- names(alphas_repeated)[alphas_repeated != q_repeated]
+
+   qqq <- names(unlist(query_alpha))[q_repeated]
+   unlist(sapply(query_alpha, function(q){
+   	sapply(1:length(q), function(j){
+   		r <- q[[j]] %in%  nnn
+   	   if(r){
+   	   	# Please resolve the following dicrepancies
+   	   	error_message <- paste(error_message, names(q)[j] , " = ", q_discrepancies[ q[[j]][r]],   "and", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+
+
+   	   }
+   	})
+   }))
+
+   }
+
 
  	}
 
