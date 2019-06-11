@@ -91,7 +91,7 @@ get_types <- function(model, query, join_by = "|"){
 		# and evaulates each expression when possible
 		for (j in 1:length(.query)) {
 			do <- unlist(strsplit( .query[j], ""))
-		  stop <- gregexpr("=", .query[j], perl = TRUE) - 1
+		  stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1]  - 1
 			var_name <-  paste0(do[1:stop], collapse = "")
 			var_name <- gsub(" ", "", var_name)
 			value <- c(eval(parse(text = paste0(do, collapse = "") ), envir =  eval_var))
