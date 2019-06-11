@@ -16,6 +16,7 @@ A list of parents in a DAG
 As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
 }
 \examples{
+require("dplyr")
 model <- make_model("X -> K -> Y")
 get_nodal_types(model)
 

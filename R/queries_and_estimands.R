@@ -13,8 +13,10 @@
 #' @examples
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  estimand_1  <- estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
-#'  estimand_2  <- estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
+#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+#'  estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
 #'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 #'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 
@@ -29,8 +31,11 @@ estimand_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
-																				 eval(parse(text = subset)))
+	# if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
+	#																			 eval(parse(text = subset)))
+
+	if(!is.logical(subset)) subset <- get_types(model, subset)$types
+
 	if(all(!subset)) {message("No units in subset"); return() }
 
   if(using == "parameters" & is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
@@ -57,7 +62,7 @@ estimand_distribution <- function(model,
 }
 
 
-#' Calculate multiple estimands
+#' Generate estimands dataframe
 #'
 #' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'
@@ -94,6 +99,13 @@ estimand_distribution <- function(model,
 #'       using = "priors",
 #'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
 #'       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+#'       digits = 3)
+#'
+#' get_estimands(
+#'       model,
+#'       using = "parameters",
+#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
 #'       digits = 3)
 
 

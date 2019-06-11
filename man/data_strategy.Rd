@@ -4,8 +4,12 @@
 \alias{data_strategy}
 \title{Data Strategy}
 \usage{
-data_strategy(model, parameters = NULL, n_obs = NULL, n = list(NULL),
-  vars = list(NULL), probs = list(NULL), subsets = list(NULL))
+data_strategy(model, parameters = NULL, n_obs = NULL, n = NULL,
+  vars = list(NULL), probs = list(NULL), subsets = list(NULL),
+  using = "priors")
+}
+\arguments{
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 }
 \description{
 Data Strategy

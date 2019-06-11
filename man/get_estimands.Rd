@@ -48,4 +48,11 @@ get_estimands(
       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
       digits = 3)
+
+get_estimands(
+      model,
+      using = "parameters",
+      queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+      subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
+      digits = 3)
 }
