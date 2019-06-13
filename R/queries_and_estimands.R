@@ -24,7 +24,7 @@ estimand_distribution <- function(model,
 															 query,
 															 subset = TRUE,
 															 using  = "priors",
-															 parameters = NULL, # Use if true parameters known
+															 parameters = NULL, # Use for example if true parameters known
 															 type_distribution = NULL,
 															 verbose = FALSE) {
 
@@ -115,10 +115,11 @@ get_estimands <- function(model,
 													subsets = list(TRUE),
 													using   = list(FALSE),
 													stats = NULL,
-													digits = 3){
+													digits = 3,
+													n_draws = 4000){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
-		model <- set_prior_distribution(model)}
+		model <- set_prior_distribution(model, n_draws = n_draws)}
 
 	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
