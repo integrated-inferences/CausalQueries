@@ -94,13 +94,11 @@ get_types <- function(model, query, join_by = "|"){
 		  stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1]  - 1
 			var_name <-  paste0(do[1:stop], collapse = "")
 			var_name <- gsub(" ", "", var_name)
-			print(var_name)
 			value <- c(eval(parse(text = paste0(do, collapse = "") ), envir =  eval_var))
 			vars  <-  model$variables
 			if(!var_name %in% vars) 	stop(paste("Variable", var_name ,"is not part of the model."))
 			dos[[j]] <- value
 			names(dos)[[j]] <- var_name
-			manipulated_outcomes <- c(manipulated_outcomes, var_name )
 		}
 
 
