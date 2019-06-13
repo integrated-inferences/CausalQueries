@@ -2,11 +2,11 @@
 % Please edit documentation in R/queries_and_estimands.R
 \name{get_estimands}
 \alias{get_estimands}
-\title{Calculate multiple estimands}
+\title{Generate estimands dataframe}
 \usage{
 get_estimands(model, parameters = NULL, queries = list(NULL),
   subsets = list(TRUE), using = list(FALSE), stats = NULL,
-  digits = 3)
+  digits = 3, n_draws = 4000)
 }
 \arguments{
 \item{model}{A  model}
