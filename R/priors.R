@@ -18,7 +18,7 @@
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 2, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #'
@@ -77,7 +77,7 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
  	translated_alphas  <-  translate_expression(model, a)
 
- 	repeated_parameters <- names(unlist(translated_alphas)) %in% names(unlist(alphas))
+ 	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
  	if(any(repeated_parameters)){
    query_alpha <- attr(translated_alphas, "query")
    i_repeated  <-	which(repeated_parameters)
@@ -100,23 +100,21 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
    alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
 
    if(!identical(alphas_repeated, q_repeated)){
-   error_message <- ""
    a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
    q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
    nnn <- names(alphas_repeated)[alphas_repeated != q_repeated]
 
    qqq <- names(unlist(query_alpha))[q_repeated]
-   unlist(sapply(query_alpha, function(q){
-   	sapply(1:length(q), function(j){
+   error_message <- unlist(sapply(query_alpha, function(q){
+  			sapply(1:length(q), function(j){
    		r <- q[[j]] %in%  nnn
-   	   if(r){
-   	   	# Please resolve the following dicrepancies
-   	   	error_message <- paste(error_message, names(q)[j] , " = ", q_discrepancies[ q[[j]][r]],   "and", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+   	   if(any(r)){
+       paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+   	   } })}))
 
 
-   	   }
-   	})
-   }))
+   stop("\n Please solve the following discrepancies \n", paste(error_message))
+
 
    }
 
