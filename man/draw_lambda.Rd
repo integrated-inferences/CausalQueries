@@ -4,10 +4,12 @@
 \alias{draw_lambda}
 \title{Draw parameters}
 \usage{
-draw_lambda(model)
+draw_lambda(model, using = "priors")
 }
 \arguments{
 \item{model}{A model created by make_model()}
+
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 }
 \description{
 Draw parameters

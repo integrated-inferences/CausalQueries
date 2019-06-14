@@ -5,7 +5,7 @@
 \title{Draw event probabilities}
 \usage{
 draw_event_prob(model, P = NULL, A = NULL, parameters = NULL,
-  type_prob = NULL)
+  type_prob = NULL, using = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -15,6 +15,8 @@ draw_event_prob(model, P = NULL, A = NULL, parameters = NULL,
 \item{A}{Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations}
 
 \item{parameters}{A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors}
+
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 
 \item{vector}{of type probabilities; usually not required}
 }
