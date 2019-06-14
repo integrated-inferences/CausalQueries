@@ -36,16 +36,16 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
   translate_expression <- function(model, a){
   	if(length(a) == 1){
-  		translated_a <-  gbiqq:::types_to_nodes(model, names(a))
+  		translated_a <-  gbiqq:::types_to_rows(model, names(a))
   		names(translated_a[[1]])[1] <- translated_a[[1]][1]
   		translated_a[[1]][1] <- as.numeric(a)
   	} else{
-		nodal_types <- gbiqq:::types_to_nodes(model, names(a))
-		translated_a <- 	sapply(names(nodal_types), function(v){
-			v_nodal_types <- nodal_types[[v]]
-			out <- unlist(sapply(1:length(v_nodal_types), function(j){
-				query <- names(v_nodal_types)[j]
-				nt <- v_nodal_types[[j]]
+		rows <- gbiqq:::types_to_rows(model, names(a))
+		translated_a <- 	sapply(names(rows), function(v){
+			v_rows <- rows[[v]]
+			out <- unlist(sapply(1:length(v_rows), function(j){
+				query <- names(v_rows)[j]
+				nt <- v_rows[[j]]
 				value <- a[query]
 				translated_a <- rep(value, length(nt))
 				names(translated_a) <- nt
@@ -54,7 +54,7 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
 
 		}, simplify = FALSE)
-		attr(translated_a, "query") <- 	nodal_types
+		attr(translated_a, "query") <- 	rows
 		}
 		return(translated_a)
   }

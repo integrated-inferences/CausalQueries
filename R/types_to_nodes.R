@@ -2,7 +2,7 @@
 #' Sapply multiple query conditions
 #'
 types_to_nodes <- function(model, query){
-	return_nodal_types <-list()
+
 	if (length(query) == 1){
 		return_nodal_types <- types_to_nodes_single(model, query)
 
