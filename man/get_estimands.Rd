@@ -6,7 +6,7 @@
 \usage{
 get_estimands(model, parameters = NULL, queries = list(NULL),
   subsets = list(TRUE), using = list(FALSE), stats = NULL,
-  digits = 3)
+  digits = 3, n_draws = 4000)
 }
 \arguments{
 \item{model}{A  model}
