@@ -7,7 +7,7 @@
 make_priors(model, prior_distribution = "uniform", alphas = NULL)
 }
 \arguments{
-\item{model}{A model created by make_model()}
+\item{model}{A model created by \code{make_model()}}
 
 \item{prior_distribution}{A character indicating the prior distribuiton}
 
@@ -28,10 +28,24 @@ make_priors(model = XYmodel, prior_distribution = "certainty")
 
 #  set all priors to 1 except for prior of nodal_type X0
 make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
+# Specify priors by query
+ make_priors(model = XYmodel,
+             alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #  specify priors for each of the nodal_types in model
 make_priors(model = XYmodel,
            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 # set all priors to 10
 make_priors(model = XYmodel, alphas =  10)
+# If the prior for a given parameter is duplicated, \\code{make_prior} throws an informative error.
+\dontrun{
+make_priors(model = XYmodel,
+           alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+}
 
+# Priors of confounded models
+model <- make_model("X -> Y") \%>\%
+set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+
+# set prior for all parameter that correspond to query
+make_priors(model, alphas = c(`X == 1` =2))
 }

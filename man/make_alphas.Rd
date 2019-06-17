@@ -32,4 +32,5 @@ make_priors(model = XYmodel,
 # set all priors to 10
 make_priors(model = XYmodel, alphas =  10)
 
+
 }
