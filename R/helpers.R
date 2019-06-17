@@ -147,8 +147,27 @@ get_parameter_names <- function(model){
 	par_names
 }
 
-#'Split and unlist
+#'combine two lists by names
 #'
+combine_lists <- function(list1, list2){
 
+		matches <- names(list1) %in% names(list2)
+		matching_names <- names(list1)[matches]
+		matches2 <- names(list2) %in% names(list1)
+
+		if(any(matches)){
+			combined_list <- sapply(matching_names, function(nam){
+				out <- c(list1[[nam]], list2[[nam]])
+				out[!duplicated(out)]
+			}, simplify = FALSE)
+
+			combined_list <- c(combined_list, list1[!matches])
+			combined_list <- c(combined_list, list2[!matches2])
+		} else{
+			combined_list <- c(list1, list2)
+		}
+
+		combined_list
+}
 
 

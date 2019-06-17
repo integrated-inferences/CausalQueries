@@ -1,7 +1,6 @@
-#' Set priors
+#' Make alphas
 #'
 #' @param model A model created by make_model()
-#' @param prior_distribution A character indicating the prior distribuiton
 #' @param alphas the hyperparameters of the dirichlet distribution.
 #' Stipulated alpha values override prior_distribution
 #' @export
@@ -22,38 +21,38 @@
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #'
-make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NULL ){
+make_alphas <- function(model,   alphas = NULL ){
 
+
+	# n_params           <- nrow(P)
+	# param_set          <- attr(P, "param_set")
+	# param_sets         <- unique(param_set)
+	# n_param_sets       <- length(param_sets)
 	P                  <- get_parameter_matrix(model)
-	n_params           <- nrow(P)
-	param_set          <- attr(P, "param_set")
-	param_sets         <- unique(param_set)
-	n_param_sets       <- length(param_sets)
-	par_names          <- paste0(param_set, ".", rownames(P))
+	model$P            <- P
+	return_alphas      <- alphas
+	par_names          <- get_parameter_names(model)
+	alpha_names        <- names(unlist(alphas))
+	pars_in_alpha      <- alpha_names %in% par_names
 
-	alpha_names <- names(unlist(alphas))
-	in_par_names <- alpha_names %in% par_names
-
-  translate_expression <- function(model, a){
-  	if(length(a) == 1){
-  		translated_a <-  gbiqq:::types_to_rows(model, names(a))
+  translate_alpha_query <- function(model, alpha_query){
+  	if(length(alpha_query) == 1){
+  		translated_a                <-  gbiqq:::types_to_rows(model, names(alpha_query))
   		names(translated_a[[1]])[1] <- translated_a[[1]][1]
-  		translated_a[[1]][1] <- as.numeric(a)
+  		translated_a[[1]][1]        <- as.numeric(alpha_query)
   	} else{
-		rows <- gbiqq:::types_to_rows(model, names(a))
-		translated_a <- 	sapply(names(rows), function(v){
-			v_rows <- rows[[v]]
-			out <- unlist(sapply(1:length(v_rows), function(j){
-				query <- names(v_rows)[j]
-				nt <- v_rows[[j]]
-				value <- a[query]
-				translated_a <- rep(value, length(nt))
-				names(translated_a) <- nt
-				translated_a
-			}))
-
-
-		}, simplify = FALSE)
+		rows         <- types_to_rows(model, names(alpha_query))
+		translated_a <- sapply(names(rows), function(var){
+	    v_rows <- rows[[var]]
+			unlist(sapply(1:length(v_rows), function(j){
+				query               <- names(v_rows)[j]
+				v_row               <- v_rows[[j]]
+				value               <- alpha_query[query]
+				translated_a        <- rep(value, length(v_row))
+				names(translated_a) <- v_row
+				translated_a}))
+		},
+		simplify = FALSE)
 		attr(translated_a, "query") <- 	rows
 		}
 		return(translated_a)
@@ -62,12 +61,10 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
 
   if(is.numeric(alphas) & !is.null(alpha_names)){
-  	alphas <-   translate_expression(model, alphas)
+  	return_alphas <-   translate_alpha_query(model, alphas)
   }
-
-
- if(is.list(alphas)  & any(! in_par_names )){
- 	i_queries <- which(!in_par_names)
+  if(is.list(alphas)  & any(! pars_in_alpha)){
+ 	i_queries <- which(!pars_in_alpha)
  	a <- unlist(alphas)[i_queries]
  	queries <- names(a)
   names(a) <- 	sapply(queries, function(q){
@@ -75,7 +72,7 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
   	substr(q, stop + 1, nchar(q))
   })
 
- 	translated_alphas  <-  translate_expression(model, a)
+ 	translated_alphas  <-  translate_alpha_query(model, a)
 
  	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
  	if(any(repeated_parameters)){
@@ -114,20 +111,47 @@ make_priors_temp <- function(model,  prior_distribution = "uniform", alphas = NU
 
 
    stop("\n Please solve the following discrepancies \n", paste(error_message))
-
-
    }
-
-
  	}
+ 	alpha_param <- sapply(alphas, function(a){
+ 		a[names(a) %in% rownames(P)]
 
 
+ 	}, simplify = FALSE)
+
+ 	return_alphas <- combine_lists(alpha_param, translated_alphas)
  }
-
-
-
+  return_alphas
 }
+
+
+#' Make priors
 #'
+#' @param model A model created by \code{make_model()}
+#' @param prior_distribution A character indicating the prior distribuiton
+#' @param alphas the hyperparameters of the dirichlet distribution.
+#' Stipulated alpha values override prior_distribution
+#' @export
+#' @examples
+#' XYmodel <- make_model("X -> Y")
+#' #  Default sets all priors to 1
+#' make_priors(model = XYmodel)
+#' #  Set all priors to 0.5
+#' make_priors(model = XYmodel, prior_distribution = "jeffreys")
+#' #  Set all priors to infinity
+#' make_priors(model = XYmodel, prior_distribution = "certainty")
+#'
+#'#  set all priors to 1 except for prior of nodal_type X0
+#' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#'#  specify priors for each of the nodal_types in model
+#'
+#' # set all priors to 10
+#' make_priors(model = XYmodel, alphas =  10)
+#' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
+#' \dontrun{
+#' make_priors(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#' }
 #'
 make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL ){
 
@@ -143,7 +167,7 @@ make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL
 	n_param_sets       <- length(param_sets)
 	par_names          <- paste0(param_set, ".", rownames(P))
 
-
+  alphas <- make_alphas(model, alphas)
 	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
 	n_alphas      <- length(alphas_vector)
@@ -187,6 +211,7 @@ make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL
 		if(n_alphas == n_params)              priors <- alphas}
 
 	# Substitute alpha vector when provided
+	names(priors)       <- par_names
 	priors[alpha_names] <- alphas_vector
 
 	# result

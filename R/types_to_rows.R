@@ -1,41 +1,59 @@
+#' types_to_rows
+#'
+#' @param model A model created by make_model()
+#' @param query a query
+#' @export
 types_to_rows <- function(model, query){
+	P <- model$P
+	param_set <- attr(P,"param_set")
+
+	if(is.null(P)){
+		return_rows <- gbiqq:::types_to_nodes(model, query)
+	} else{
+		if(is.null(attr(P, "confounds"))){
+			return_rows <- types_to_nodes(model, query)
+		} else{
 
 	if (length(query) == 1){
-		return_rows <- types_to_nodes_single(model, query)
+		return_rows <- gbiqq:::types_to_nodes_single(model, query)
 
-	} else 	if (length(query) > 1){
-
-		return_rows <- sapply(query, function(q) types_to_rows_single(model, q), USE.NAMES = FALSE)
-		vars <- 	model$variables[model$variables %in% names(return_rows)]
+	} else if (length(query) > 1){
+    P <- model$P
+		return_rows <- lapply(query, function(q) types_to_rows_single(model, q))
+	  return_rows <- unlist(return_rows, recursive = FALSE)
+		vars <- unique(attr(P,"param_set"))
+		vars <- vars[vars %in% names(return_rows)]
 		return_rows <- sapply(vars, function(v){
 			i <- which(names(return_rows) == v)
-			out <- return_rows[i]
-			names(out) <- query[i]
-			out}, simplify = FALSE)
-	}
+			out <- unlist(return_rows[i], recursive = FALSE)
+			names(out ) <- sapply(names(out), function(x) {
+				dots <- gregexpr("\\.", x, perl = TRUE)[[1]]
+				start <- dots[length(dots)]
+				substr(x, start + 1 , nchar(x))
+			})
 
+			out}, simplify = FALSE)
+	}}
+
+
+
+	}
 
 	return(return_rows)
 }
 
 
 
-
-
-
-#' Identify nodes that satisfy a causal type query
+#' types_to_rows_single
 #'
-#' @importFrom  rlang is_empty
+#' @param model A model created by make_model()
+#' @param query a query
+#' @export
 types_to_rows_single <- function(model, query){
 	P <- model$P
-	if(is.null(P)){
-		out <- types_to_nodes(model, query)
-	} else{
-		if(is.null(attr(P, "confounds"))){
-	  	out <- types_to_nodes(model, query)
-		} else{
+	param_set <- attr(P,"param_set")
 
-			nodal_types <- gbiqq:::types_to_nodes(model, query)
+			nodal_types <- types_to_nodes(model, query)
 			if(length(nodal_types) > 0 ){
 				par_names <- rownames(P)
 			  names_temp <- sapply(par_names, function(x) {
@@ -44,7 +62,10 @@ types_to_rows_single <- function(model, query){
 			  	substr(x, 1 , stop -1)
 			  })
 			  names_temp[names_temp == ""] <- par_names[names_temp == ""]
-			  out <- names_temp[names_temp %in% nodal_types]
+			  out <- names(names_temp)[names_temp %in% unlist(nodal_types)]
+        names(out) <- param_set[rownames(P) %in% out]
+        out <- as.list(out)
+        out <- lapply(out, function(o) {names(o) <- query; as.list(o)})
 
 			} else{
 				matching_types <- get_types(model, query)
@@ -59,12 +80,12 @@ types_to_rows_single <- function(model, query){
 
 
 
-
-		}
-
-	}
-
+			return(out)
 }
+
+
+
+
 
 
 
