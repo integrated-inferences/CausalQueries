@@ -168,7 +168,7 @@ combine_lists <- function(list1, list2){
 		}
 
 		combined_list
-
+}
 #' Whether a query contains an exact string
 includes_var <- function(var, query)
 	length(grep (paste0("\\<", var, "\\>"), query))>0
