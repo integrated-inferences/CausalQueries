@@ -21,59 +21,39 @@
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #'
+#'
 make_alphas <- function(model,   alphas = NULL ){
 
-
-	# n_params           <- nrow(P)
-	# param_set          <- attr(P, "param_set")
-	# param_sets         <- unique(param_set)
-	# n_param_sets       <- length(param_sets)
 	P                  <- get_parameter_matrix(model)
 	model$P            <- P
 	return_alphas      <- alphas
-	par_names          <- get_parameter_names(model)
+	par_names          <- gbiqq:::get_parameter_names(model)
 	alpha_names        <- names(unlist(alphas))
 	pars_in_alpha      <- alpha_names %in% par_names
 
-  translate_alpha_query <- function(model, alpha_query){
-  	if(length(alpha_query) == 1){
-  		translated_a                <-  gbiqq:::types_to_rows(model, names(alpha_query))
-  		names(translated_a[[1]])[1] <- translated_a[[1]][1]
-  		translated_a[[1]][1]        <- as.numeric(alpha_query)
-  	} else{
-		rows         <- types_to_rows(model, names(alpha_query))
-		translated_a <- sapply(names(rows), function(var){
-	    v_rows <- rows[[var]]
-			unlist(sapply(1:length(v_rows), function(j){
-				query               <- names(v_rows)[j]
-				v_row               <- v_rows[[j]]
-				value               <- alpha_query[query]
-				translated_a        <- rep(value, length(v_row))
-				names(translated_a) <- v_row
-				translated_a}))
-		},
-		simplify = FALSE)
-		attr(translated_a, "query") <- 	rows
-		}
-		return(translated_a)
-  }
-
-
-
+  # if alpha is defined as vector of queries alphas <- c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  )
   if(is.numeric(alphas) & !is.null(alpha_names)){
-  	return_alphas <-   translate_alpha_query(model, alphas)
+  	return_alphas  <-   gbiqq:::query_to_parameters(model,	 alphas)
+
   }
+
+
+	# if alpha contain other than parameter names e.g alphas = list(X = c(X0 = 2, `X == 1` = 3))
   if(is.list(alphas)  & any(! pars_in_alpha)){
+  # Prep and translate alpha
  	i_queries <- which(!pars_in_alpha)
- 	a <- unlist(alphas)[i_queries]
- 	queries <- names(a)
-  names(a) <- 	sapply(queries, function(q){
+ 	alpha_query <- unlist(alphas)[i_queries]
+ 	queries <- names(alpha_query)
+  names(alpha_query) <- 	sapply(queries, function(q){
   	stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
   	substr(q, stop + 1, nchar(q))
   })
 
- 	translated_alphas  <-  translate_alpha_query(model, a)
+ 	translated_alphas  <-  query_to_parameters(model, alpha_query)
 
+ 	# Lines below check for discrepancies
+ 	# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
+ 	# error  alphas(Y = c(Y00 = 2, `(Y[X=1] == Y[X=0])` = 1) --two arguments pointing at the same parameter
  	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
  	if(any(repeated_parameters)){
    query_alpha <- attr(translated_alphas, "query")
@@ -99,12 +79,11 @@ make_alphas <- function(model,   alphas = NULL ){
    if(!identical(alphas_repeated, q_repeated)){
    a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
    q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
-   nnn <- names(alphas_repeated)[alphas_repeated != q_repeated]
+   adicrepancy_names <- names(alphas_repeated)[alphas_repeated != q_repeated]
 
-   qqq <- names(unlist(query_alpha))[q_repeated]
    error_message <- unlist(sapply(query_alpha, function(q){
   			sapply(1:length(q), function(j){
-   		r <- q[[j]] %in%  nnn
+   		r <- q[[j]] %in%  adicrepancy_names
    	   if(any(r)){
        paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
    	   } })}))
@@ -113,12 +92,13 @@ make_alphas <- function(model,   alphas = NULL ){
    stop("\n Please solve the following discrepancies \n", paste(error_message))
    }
  	}
+
+ 	# Get alphas that were specificied as par_names as opposed to queries
  	alpha_param <- sapply(alphas, function(a){
  		a[names(a) %in% rownames(P)]
-
-
  	}, simplify = FALSE)
 
+ 	# combine translated alphas and alpha_parameters by parameter set
  	return_alphas <- combine_lists(alpha_param, translated_alphas)
  }
   return_alphas
@@ -143,8 +123,12 @@ make_alphas <- function(model,   alphas = NULL ){
 #'
 #'#  set all priors to 1 except for prior of nodal_type X0
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#' # Specify priors by query
+#'  make_priors(model = XYmodel,
+#'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model
-#'
+#' make_priors(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
@@ -153,6 +137,12 @@ make_alphas <- function(model,   alphas = NULL ){
 #'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' }
 #'
+#' # Priors of confounded models
+#' model <- make_model("X -> Y") %>%
+#' set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+#'
+#' # set prior for all parameter that correspond to query
+#' make_priors(model, alphas = c(`X == 1` =2))
 make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL ){
 
 	if(!is.null(prior_distribution)){

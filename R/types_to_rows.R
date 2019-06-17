@@ -4,21 +4,19 @@
 #' @param query a query
 #' @export
 types_to_rows <- function(model, query){
-	P <- model$P
+	P <- get_parameter_matrix(model)
+	model$P <- P
 	param_set <- attr(P,"param_set")
-
-	if(is.null(P)){
-		return_rows <- gbiqq:::types_to_nodes(model, query)
-	} else{
+  # 	If no confounds in model use nodal types to get at parameters
 		if(is.null(attr(P, "confounds"))){
 			return_rows <- types_to_nodes(model, query)
 		} else{
 
 	if (length(query) == 1){
-		return_rows <- gbiqq:::types_to_nodes_single(model, query)
+		return_rows <- gbiqq:::types_to_rows_single(model, query)
 
 	} else if (length(query) > 1){
-    P <- model$P
+
 		return_rows <- lapply(query, function(q) types_to_rows_single(model, q))
 	  return_rows <- unlist(return_rows, recursive = FALSE)
 		vars <- unique(attr(P,"param_set"))
@@ -37,7 +35,7 @@ types_to_rows <- function(model, query){
 
 
 
-	}
+
 
 	return(return_rows)
 }
@@ -53,7 +51,7 @@ types_to_rows_single <- function(model, query){
 	P <- model$P
 	param_set <- attr(P,"param_set")
 
-			nodal_types <- types_to_nodes(model, query)
+			nodal_types <- gbiqq:::types_to_nodes(model, query)
 			if(length(nodal_types) > 0 ){
 				par_names <- rownames(P)
 			  names_temp <- sapply(par_names, function(x) {
@@ -70,7 +68,7 @@ types_to_rows_single <- function(model, query){
 			} else{
 				matching_types <- get_types(model, query)
 				matching_types <- names(matching_types$types[	matching_types$types])
-				sapply(matching_types, function(type){
+				out <- sapply(matching_types, function(type){
 				 rows <- 	rownames(P)[P[,type ] == 1]
 				 rows[rowSums(P[rows,])	 == 1]
 				})
@@ -85,8 +83,44 @@ types_to_rows_single <- function(model, query){
 
 
 
+#' Function to translate queries into parameter names
+#'
+query_to_parameters <- function(model, query){
+	if(length(query) == 1){
+		# For alpha containing only one query expression
+		# 	1. get row in the parameter matrix that correspond to query
+		# 	2. name output vector as paramater name
+		#   3. assigns numeric value of alpha as specified in query
 
+		translated_a  <-  gbiqq:::types_to_rows(model, names(query))
+		translated_a  <- 	sapply(translated_a, function(a){
+			a_temp <- query
+			names(a_temp) <- a
+			a_temp
+		}, simplify = FALSE)
 
+	} else{
+		# For alpha containing multiple query expressions
+		#   1. get rows in P that correspond to queries
+		#   2. sapply combines objects in list by paramater set
+		#
+		rows           <- types_to_rows(model, names(query))
+		param_set      <- names(rows)
+		translated_a <- sapply(param_set, function(var){
+			v_rows <- rows[[var]]
+			unlist(sapply(1:length(v_rows), function(j){
+				.query               <- names(v_rows)[j]
+				v_row               <- v_rows[[j]]
+				value               <- query[.query] # assign value as specified in query
+				translated_a        <- rep(value, length(v_row))
+				names(translated_a) <- v_row
+				translated_a}, simplify = FALSE))
+		},
+		simplify = FALSE)
+		attr(translated_a, "query") <- 	rows
+	}
+	return(translated_a)
+}
 
 
 
