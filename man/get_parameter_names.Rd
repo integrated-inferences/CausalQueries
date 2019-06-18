@@ -4,7 +4,7 @@
 \alias{get_parameter_names}
 \title{get_parameter_names}
 \usage{
-get_parameter_names(model)
+get_parameter_names(P)
 }
 \description{
 get_parameter_names

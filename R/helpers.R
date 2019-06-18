@@ -235,12 +235,9 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 
 #' get_parameter_names
 #'
-get_parameter_names <- function(model){
-	P                  <- get_parameter_matrix(model)
-	n_params           <- nrow(P)
+get_parameter_names <- function(P){
 	param_set          <- attr(P, "param_set")
 	param_sets         <- unique(param_set)
-	n_param_sets       <- length(param_sets)
 	par_names          <- paste0(param_set, ".", rownames(P))
 	par_names
 }
@@ -278,3 +275,44 @@ var_in_query <- function(model, query){
 }
 
 
+#' Check for discrepancies
+#' Used in make_alphas
+any_discrepancies <- function(alphas, translated_alphas, query_alpha = attr(translated_alphas, "query")){
+	error_message <- NULL
+	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
+	if(any(repeated_parameters)){
+		query_alpha <- attr(translated_alphas, "query")
+		i_repeated  <-	which(repeated_parameters)
+		q_repeated  <- unlist(translated_alphas)[i_repeated]
+		names(q_repeated) <- names(unlist(translated_alphas))[i_repeated]
+		names(q_repeated) <- sapply(  names(q_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		q_repeated <- q_repeated[order(names(q_repeated))]
+
+		i_alphas_repeated <- names(unlist(alphas)) %in% names(unlist(translated_alphas))
+		alphas_repeated <-  unlist(alphas)[i_alphas_repeated]
+		names(alphas_repeated)  <-  names(unlist(alphas))[i_alphas_repeated]
+
+		names(alphas_repeated) <- sapply(  names(alphas_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
+
+		if(!identical(alphas_repeated, q_repeated)){
+			a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
+			q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
+			adicrepancy_names <- names(alphas_repeated)[alphas_repeated != q_repeated]
+
+			error_message <- unlist(sapply(query_alpha, function(q){
+				sapply(1:length(q), function(j){
+					r <- q[[j]] %in%  adicrepancy_names
+					if(any(r)){
+						paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+					} })}))
+		}
+	}
+	return(error_message)
+}

@@ -25,7 +25,6 @@ make_priors(model = XYmodel)
 make_priors(model = XYmodel, prior_distribution = "jeffreys")
 #  Set all priors to infinity
 make_priors(model = XYmodel, prior_distribution = "certainty")
-
 #  set all priors to 1 except for prior of nodal_type X0
 make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 # Specify priors by query
@@ -33,7 +32,7 @@ make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #  specify priors for each of the nodal_types in model
 make_priors(model = XYmodel,
-           alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+           alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 # set all priors to 10
 make_priors(model = XYmodel, alphas =  10)
 # If the prior for a given parameter is duplicated, \\code{make_prior} throws an informative error.
@@ -46,6 +45,9 @@ make_priors(model = XYmodel,
 model <- make_model("X -> Y") \%>\%
 set_confound(list(X = "(Y[X=1]>Y[X=0])"))
 
+# Simultaneously set priors for confound and nonconfound parameters.
+#' make_priors(model = model,  alphas =  c(`(X == 0)  = 2))
+# To target variable modeling confound, specify the condition that determines the confounded relationship between X and Y
+make_priors(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
 # set prior for all parameter that correspond to query
-make_priors(model, alphas = c(`X == 1` =2))
 }

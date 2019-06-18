@@ -3,8 +3,7 @@
 #' Adjust parameter matrix to allow confounding
 #'
 #' @param model A model created by make_model()
-#' @param confound A named list relating nodes to statements that identify causal types with which they are  confounded
-#'plot_dag
+#' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
