@@ -4,12 +4,24 @@
 # `draw_lambda` draws a parameters vector given model priors
 #'
 #' @param model A model created by make_model()
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @importFrom gtools rdirichlet
 #' @export
 #' @examples
 #' draw_lambda(model = model)
 
-draw_lambda <- function(model){
+draw_lambda <- function(model, using = "priors"){
+
+	if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
+		"`using` should be one of `priors`, `posteriors`, or `parameters`")
+
+	if(using == "parameters") {if(is.null(model$parameters)) stop("No parameters provided")
+		                         return(model$parameters)}
+
+	if(using == "posteriors") {if(is.null(model$posterior)) stop("No posterior provided")
+		param_dist <- rstan::extract(model$posterior, pars= "lambdas")$lambdas
+		return(param_dist[sample(nrow(param_dist),1),])
+	}
 
 	if(is.null(model$priors)) {model <- set_priors(model)
 	                                  message(paste("Priors missing from model. Generated on the fly."))
@@ -39,16 +51,21 @@ draw_lambda <- function(model){
 #'
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
-#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
+#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn using `using` (either from priors, poseriors, or from model$parameters)
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_type_prob(model = model)
 
-draw_type_prob <- function(model, P = NULL,  parameters = NULL){
+draw_type_prob <- function(model,
+													 P = NULL,
+													 parameters = NULL,
+													 using = NULL ){
 
-	if(is.null(parameters)) parameters <- draw_lambda(model)
+	if(!is.null(parameters)) using <- "parameters"
+	if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
@@ -63,6 +80,7 @@ draw_type_prob <- function(model, P = NULL,  parameters = NULL){
 #' @param using Character string indicating whether to use `priors`, `posteriors` or `parameters`
 #' @param parameters A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param n_draws If no prior distribution provided, generate prior distribution with n_draws draws
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -71,13 +89,15 @@ draw_type_prob <- function(model, P = NULL,  parameters = NULL){
 #' draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
 
 
-draw_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000){
+draw_type_prob_multiple <- function(model,
+																		parameters = NULL,
+																		n_draws = 4000,
+																		using = "priors"){
 
 	if(using == "parameters") {
 		if(is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
 		if(is.null(parameters)) parameters <- model$parameters
-
-		return(draw_type_prob(model, parameters = parameters))
+		return(draw_type_prob(model, parameters = parameters, using = using))
 	  }
 
 	if(using == "priors"){
@@ -101,22 +121,28 @@ draw_type_prob_multiple <- function(model, using = "priors", parameters = NULL, 
 
 #' Draw event probabilities
 #'
-# `draw_event_prob` draws event probability vector `w`  given a single realization of parameters, drawn from model priors
+# `draw_event_prob` draws event probability vector `w`  given a single realization of parameters
 #'
 #' @param model A model created by make_model()
 #' @param P Parameter matrix, not required but may be provided to avoid repeated computation for simulations
 #' @param A Ambiguity matrix, not required but may be provided to avoid repeated computation for simulations
 #' @param parameters A specific parameter vector, parameters; if not  provided,  parameters is drawn from priors
 #' @param vector of type probabilities; usually not required
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
-draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL){
+draw_event_prob <- function(model,
+														P = NULL,
+														A = NULL,
+														parameters = NULL,
+														type_prob = NULL,
+														using = NULL){
 
 		if(is.null(parameters)) {
-		if(is.null(model$parameters)) stop("parameters not provided")
+		if(is.null(model$parameters)) stop("Parameters not provided")
 		parameters <- model$parameters }
 
 	# Ambiguity matrix
@@ -124,7 +150,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_p
 
 	# Type probabilities
 	if(is.null(type_prob)) {
-	type_prob <- draw_type_prob(model = model, P = P, parameters = parameters)}
+	type_prob <- draw_type_prob(model = model, P = P, parameters = parameters, using = using)}
 
 	# Event probabilities  ## FLAG this is a hack for cases with only one possible data type
 	if(ncol(A)==1) {out <- matrix(1); rownames(out) <- colnames(A); return(out)}
@@ -144,6 +170,7 @@ draw_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_p
 #' @param P Optional parameter matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param A Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations
 #' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #'
 #' @export
 #' @examples
@@ -155,13 +182,14 @@ draw_data_events <- function(model,
 											w = NULL,
                       P = NULL,
 											A = NULL,
-											parameters = NULL
+											parameters = NULL,
+											using = NULL
 											){
 
  if(is.null(w)){
  	if(is.null(P)) 	P <- get_parameter_matrix(model)
  	if(is.null(A)) 	A <- get_ambiguities_matrix(model)
- 	w <- draw_event_prob(model, P, A, parameters = parameters)
+ 	w <- draw_event_prob(model, P, A, parameters = parameters, using = using)
  }
 
 	# Draw events (Compact dataframe)
@@ -176,6 +204,7 @@ draw_data_events <- function(model,
 #' @param n Number of observations
 #' @param data_events A compact dataframe compatible with model
 #' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`. Defaults here to "parameters."
 #'
 #' @export
 #' @examples
@@ -183,13 +212,17 @@ draw_data_events <- function(model,
 #' data_events <- draw_data_events(model = model, n = 4)
 #' draw_data(model, data_events = data_events)
 
-simulate_data <- function(model, n = 1, data_events = NULL, parameters = NULL){
+simulate_data <- function(model,
+													n = 1,
+													data_events = NULL,
+													parameters = NULL,
+													using = "parameters"){
 
-	if(is.null(parameters)) {
+	if(using == "parameters" & is.null(parameters)) {
 		if(is.null(model$parameters)) stop("parameters not provided")}
 
 	# Data drawn here
-	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters)
+	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters, using = using)
 
 	# The rest is reshaping
 	df <- get_max_possible_data(model)
@@ -262,6 +295,7 @@ observe <- function(complete_data,
 }
 
 #' Data Strategy
+#' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @export
 #' @examples
 #' # A strategy in which X, Y are observed for sure and M is observed with 50% probability for X=1, Y=0 cases
@@ -277,14 +311,16 @@ observe <- function(complete_data,
 
 data_strategy <- function(model,
 													parameters = NULL,
-													n_obs = NULL,
-													n       = list(NULL),
+													n_obs   = NULL,
+													n       = NULL,  # n at each step
 													vars    = list(NULL),
 													probs   = list(NULL),
-													subsets = list(NULL)){
+													subsets = list(NULL),
+													using = "priors"){
+
 	if(is.null(parameters)) {
-		if(is.null(model$parameters)) stop("parameters not provided")
-		parameters <- model$parameters }
+		if(is.null(model$parameters)) message("parameters not provided")
+		parameters <- draw_lambda(model, using = using)}
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
@@ -304,8 +340,8 @@ data_strategy <- function(model,
 		ifelse(!is.null(n) && !is.null(probs),
 					 {name <- "n"; value = n[[j]]},
 					 {name <- "prob"; value = probs[[j]]})
-		if(!is.null(subsets[[j]])) given <- paste0(", given ", subsets[[j]])
-		else given <- NULL
+		if(!is.null(subsets[[j]])) {given <- paste0(", given ", subsets[[j]])
+		} else { given <- NULL}
 	description <- paste0("Step ", j, ": Observe ",
 												paste(vars[[j]], collapse = ", "),
 												" (", name, " = ", value, ")", given, ".\n")
