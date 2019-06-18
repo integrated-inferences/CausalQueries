@@ -158,7 +158,7 @@ combine_lists <- function(list1, list2){
 		if(any(matches)){
 			combined_list <- sapply(matching_names, function(nam){
 				out <- c(list1[[nam]], list2[[nam]])
-				out[!duplicated(out)]
+				out[!duplicated(names(out))]
 			}, simplify = FALSE)
 
 			combined_list <- c(combined_list, list1[!matches])

@@ -68,10 +68,16 @@ types_to_rows_single <- function(model, query){
 			} else{
 				matching_types <- get_types(model, query)
 				matching_types <- names(matching_types$types[	matching_types$types])
-				out <- sapply(matching_types, function(type){
-				 rows <- 	rownames(P)[P[,type ] == 1]
-				 rows[rowSums(P[rows,])	 == 1]
-				})
+
+				 rows <- P[,	matching_types ] == 1
+				 if(!is.null(dim(rows))) {
+				 rows <- apply(rows, 1, all)
+
+				 } else{
+				 	rows <- rows & (rowSums(P) ==1)
+				 }
+				out <- rownames(P)[rows]
+				names(out) <- param_set[rownames(P) %in% out]
 
 			}
 

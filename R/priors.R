@@ -49,7 +49,7 @@ make_alphas <- function(model,   alphas = NULL ){
   	substr(q, stop + 1, nchar(q))
   })
 
- 	translated_alphas  <-  query_to_parameters(model, alpha_query)
+ 	translated_alphas  <-  gbiqq:::query_to_parameters(model, alpha_query)
 
  	# Lines below check for discrepancies
  	# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
@@ -99,7 +99,7 @@ make_alphas <- function(model,   alphas = NULL ){
  	}, simplify = FALSE)
 
  	# combine translated alphas and alpha_parameters by parameter set
- 	return_alphas <- combine_lists(alpha_param, translated_alphas)
+ 	return_alphas <- gbiqq:::combine_lists(list1 = alpha_param, list2 =translated_alphas)
  }
   return_alphas
 }
@@ -120,7 +120,6 @@ make_alphas <- function(model,   alphas = NULL ){
 #' make_priors(model = XYmodel, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
 #' make_priors(model = XYmodel, prior_distribution = "certainty")
-#'
 #'#  set all priors to 1 except for prior of nodal_type X0
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
 #' # Specify priors by query
@@ -128,7 +127,7 @@ make_alphas <- function(model,   alphas = NULL ){
 #'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
 #' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
