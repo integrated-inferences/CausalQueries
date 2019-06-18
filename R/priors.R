@@ -34,10 +34,8 @@
 #'
 #' # Simultaneously set priors for confound and nonconfound parameters.
 #'#' make_alphas(model = model,  alphas =  c(`(X == 0)  = 2))
-#' # To target variable modeling confound, specify the condition that determines the confounded relationship between X and Y
+#' # To target variable modeling confound, specify the condition that determines the confounded relationship between variables
 #' make_alphas(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
-#' # set prior for all parameter that correspond to query
-#'
 make_alphas <- function(model,   alphas = NULL ){
 
 	P                  <- get_parameter_matrix(model)
@@ -64,13 +62,15 @@ make_alphas <- function(model,   alphas = NULL ){
   	substr(q, stop + 1, nchar(q))
   })
 
- 	translated_alphas  <-  gbiqq:::query_to_parameters(model, alpha_query)
+ 	translated_alphas  <-  query_to_parameters(model, alpha_query)
 
  	# Lines below check for discrepancies
  	# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
  	# error  alphas(Y = c(Y00 = 2, `(Y[X=1] == Y[X=0])` = 1) --two arguments pointing at the same parameter
  	error_message <- any_discrepancies(alpha, translated_alphas,  attr(translated_alphas, "query")  )
- 	stop("\n Please solve the following discrepancies \n", paste(error_message))
+  if(!is.null(error_message))	{
+  	stop("\n Please solve the following discrepancies \n", paste(error_message))
+  }
  	# Get alphas that were specificied as par_names as opposed to queries
  	alpha_param <- sapply(alphas, function(a){
  		a[names(a) %in% rownames(P)]
@@ -120,9 +120,8 @@ make_alphas <- function(model,   alphas = NULL ){
 #'
 #' # Simultaneously set priors for confound and nonconfound parameters.
 #'#' make_priors(model = model,  alphas =  c(`(X == 0)  = 2))
-#' # To target variable modeling confound, specify the condition that determines the confounded relationship between X and Y
+#' # To target variable modeling confound, specify the condition that determines the confounded relationship between variables
 #' make_priors(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
-#' # set prior for all parameter that correspond to query
 make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL ){
 
 	if(!is.null(prior_distribution)){
