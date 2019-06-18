@@ -2,11 +2,11 @@
 % Please edit documentation in R/queries_and_estimands.R
 \name{get_estimands}
 \alias{get_estimands}
-\title{Calculate multiple estimands}
+\title{Generate estimands dataframe}
 \usage{
 get_estimands(model, parameters = NULL, queries = list(NULL),
   subsets = list(TRUE), using = list(FALSE), stats = NULL,
-  digits = 3)
+  digits = 3, n_draws = 4000)
 }
 \arguments{
 \item{model}{A  model}
@@ -47,5 +47,12 @@ get_estimands(
       using = "priors",
       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+      digits = 3)
+
+get_estimands(
+      model,
+      using = "parameters",
+      queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+      subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
       digits = 3)
 }

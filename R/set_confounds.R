@@ -20,6 +20,8 @@
 #' confound = list(X = "(Y[X=1] == 1")
 #' model <- set_confound(model = model, confound = confound)
 #' confound2 = list(X = "(Y[X=1]>Y[X=0])")
+#' model <- make_model("X -> Y <- S; S -> W") %>% set_confound(list(X = "S==1", S = "W[S=1]==1"))
+#' attr(model$P, "confounds")
 
 
 set_confound <-  function(model, confound = NULL){
@@ -37,9 +39,6 @@ set_confound <-  function(model, confound = NULL){
 
 	# Descendent types
 	D <-lapply(confound, function(x) {get_types(model, x)$type_list})
-
-	# Descendent vars
-	V <-lapply(confound, function(x) {get_types(model, x)$manipulated_outcomes})
 
 	# Ds <- lapply(D, function(k)
 	# 	unique(sapply(k[[1]], function(j) strsplit(j, "[.]")[[1]][2])))
@@ -83,10 +82,14 @@ set_confound <-  function(model, confound = NULL){
 	P <- P[apply(P, 1, sum)!=0,]
 	attr(P, "param_set") <- param_set
 
+
 	# Make a dataset of ancestor to descendent confound relations
+	V <- lapply(confound, var_in_query, model= model)
 	confounds_df <- data.frame(
 		ancestor = rep(as.vector(names(V)), times = as.vector(unlist(lapply(V, length)))),
-	  descendent = unlist(lapply(V, unlist)))
+	  descendent = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
+	confounds_df <- confounds_df[confounds_df$ancestor != confounds_df$descendent,]
+	rownames(confounds_df) <- NULL
 
 	if(!is.null(attr(P, "confounds"))) confounds_df <- rbind(attr(P, "confounds"), confounds_df)
 	confounds_df <- confounds_df[!duplicated(confounds_df),]

@@ -4,14 +4,16 @@
 \alias{draw_type_prob}
 \title{Draw type probabilities}
 \usage{
-draw_type_prob(model, P = NULL, parameters = NULL)
+draw_type_prob(model, P = NULL, parameters = NULL, using = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{P}{Parameter matrix, not required but may be provided to avoide repeated computation for simulations}
 
-\item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
+\item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn using `using` (either from priors, poseriors, or from model$parameters)}
+
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 }
 \description{
 Draw type probabilities

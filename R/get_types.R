@@ -38,13 +38,12 @@ get_types <- function(model, query, join_by = "|"){
 
 	# Global Variables
 	eval_var <-  reveal_outcomes(model)
-	list_names <- colnames(eval_var)   #NEEDED?
+#	list_names <- colnames(eval_var)   #NEEDED?
 	k <- 1
 	i <- 0
 	list_names <- ""
 	continue <- TRUE
   manipulated_outcomes <- NULL # keep a list of the manipulated outcomes for dagitty plotting
-
 	# strip whitespaces
 	# split query into single characters
 	# locate opening brackets and reverse oder
@@ -124,7 +123,7 @@ get_types <- function(model, query, join_by = "|"){
 		if(!any(grep("\\[|\\]", w_query))){
 			continue <- FALSE
     }
-	}
+	}        # end of [] application
 
 	w_query <- paste0(w_query, collapse = "")
 	w_query <- gsub(" ", "", w_query)

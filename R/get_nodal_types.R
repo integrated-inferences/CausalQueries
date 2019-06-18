@@ -40,19 +40,55 @@ get_nodal_types_dep <- function(model){
 #'    set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") %>%
 #'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
 #' unlist(get_nodal_types(model))
-get_nodal_types <- function(model, query = NULL, collapse = TRUE){
+get_nodal_types <- function(model, collapse = TRUE) {
+	nodal_types <- model$nodal_types
+	variables   <- c(attr(model, "exogenous_variables"),
+									 attr(model, "endogenous_variables"))
+	parents     <- get_parents(model)
+	dag         <- model$dag
+	types       <- lapply(lapply(parents, length), type_matrix)
 
-	if(!is.null(query)){
-		nodal_types <- types_to_nodes(model, query)
-		if(is_empty(nodal_types))
-			stop(paste("There are no nodal types that satisfy the query condition \n", query))
+	types_interpret <- lookup_type(model)
 
-	} else{
-		nodal_types <- get_nodal_types_model(model, collapse)
+	types_labels <- lapply(1:length(types), function(i){
+		var <- names(types)[i]
+		mat <- types[[i]]
+		labels <- apply(mat,1,paste,collapse = "")
+		paste0(var, labels)
+	})
+
+	names(types_labels )<- var_names <- names(types)
+	types <- lapply(variables, function(v){
+		rownames(types[[v]]) <- types_labels[[v]]
+		types[[v]]
+	})
+	names(types)  <- var_names
+	if(!is.null(nodal_types)){
+		types <- lapply(variables, function(v){
+			mat <- types[[v]]
+			cn <- colnames(mat)
+			nt <- nodal_types[[v]]
+			mat <- mat[nt, ]
+			colnames(mat) <- cn
+			mat
+		})
+	}
+	names(types)  <- var_names
+	if(collapse){
+
+		types <-	sapply(1:length(types), function(i){
+			var <- names(types)[i]
+			mat <- as.matrix(types[[i]])
+			labels <- apply(mat,1,paste,collapse = "")
+			paste0(var, labels)
+		})
+
 	}
 
-	return(nodal_types)
+	names(types)  <- var_names
 
+	attr(types, "interpret") <- types_interpret
+	return(types)
 }
 
 #' Get nodal types of model

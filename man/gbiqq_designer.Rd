@@ -5,13 +5,15 @@
 \title{Integrate gbiqq with DeclareDesign}
 \usage{
 gbiqq_designer(model = make_model("X -> Y"), restrictions = NULL,
-  priors = "uniform", parameters = NULL, data_strat = NULL,
-  queries = list(ATE = "Y[X=1] - Y[X=0]"))
+  priors = "uniform", parameters = NULL, inquiry = list(ATE =
+  "Y[X=1] - Y[X=0]"), data_strat = NULL, answer_strat = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{data_strat}{should be of the form "list(n_obs = n_obs, vars = list("X", "Y"), probs = list(...), n = NULL, subsets = list(...))}
+
+\item{answer_strat}{priors used at the analysis stage, if different}
 }
 \description{
 Define a model, estimand, and answer strategy
@@ -28,4 +30,19 @@ draw_data(my_design)
 draw_estimands(my_design)
 draw_estimates(my_design)
 # diagnose_design(my_design, sims = 2)
+my_design <- gbiqq_designer(
+
+	model           = make_model("X -> M -> Y"),
+	inquiry         = list(ATE = "Y[X=1] - Y[X=0]"),
+	data_strat      = list(n_obs = 5,
+												 vars = list(c("X", "Y"), "M"),
+												 probs = list(1, .5),
+												 n = NULL,
+												 subsets = list(NULL, "X==1 & Y==0")),
+	answer_strat  = NULL
+)
+
+df <- draw_data(my_design)
+draw_estimands(my_design)
+get_estimates(my_design, df)
 }
