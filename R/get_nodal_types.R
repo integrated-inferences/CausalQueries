@@ -50,38 +50,12 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	#	if(!is.null(model$nodal_types)) return(nodal_types) ## Placeholder -- check why this was previously not here
 
 	nodal_types <- model$nodal_types
-	variables   <- model$variables
+	variables   <- c(attr(model, "exogenous_variables"),
+									 attr(model, "endogenous_variables"))
 	parents     <- get_parents(model)
 	dag         <- model$dag
-
-	types       <- lapply(
-		X = lapply(parents, length),
-		FUN = function(parent_n){
-
-			type_mat <- perm(rep(1,2^parent_n))
-			if(parent_n == 0){
-				labels <- NULL
-			} else {
-				input_mat <- perm(rep(1, parent_n))
-				labels <- apply(input_mat,1,paste,collapse = "")
-			}
-			colnames(type_mat) <- labels
-
-			return(type_mat)
-		})
-
-	types_interpret       <-
-		lapply(parents,
-					 FUN = function(parent){
-					 	parent_n <- length(parent)
-					 	if(parent_n == 0){
-					 		labels <- "exogeneous"
-					 	} else {
-					 		input_mat <- perm(rep(1, parent_n))
-					 		labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
-					 	}
-					 	labels
-					 })
+	types       <- lapply(lapply(parents, length), type_matrix)
+	types_interpret <- lookup_type(model)
 
 	types_labels <- lapply(1:length(types), function(i){
 		var <- names(types)[i]
