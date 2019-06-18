@@ -47,14 +47,13 @@ get_nodal_types_dep <- function(model){
 #' unlist(get_nodal_types(model))
 get_nodal_types <- function(model, collapse = TRUE) {
 
-	#	if(!is.null(model$nodal_types)) return(nodal_types) ## Placeholder -- check why this was previously not here
-
 	nodal_types <- model$nodal_types
 	variables   <- c(attr(model, "exogenous_variables"),
 									 attr(model, "endogenous_variables"))
 	parents     <- get_parents(model)
 	dag         <- model$dag
 	types       <- lapply(lapply(parents, length), type_matrix)
+
 	types_interpret <- lookup_type(model)
 
 	types_labels <- lapply(1:length(types), function(i){
@@ -69,14 +68,12 @@ get_nodal_types <- function(model, collapse = TRUE) {
 		rownames(types[[v]]) <- types_labels[[v]]
 		types[[v]]
 	})
-
 	names(types)  <- var_names
-
 	if(!is.null(nodal_types)){
 		types <- lapply(variables, function(v){
 			mat <- types[[v]]
-			cn  <- colnames(mat)
-			nt  <- nodal_types[[v]]
+			cn <- colnames(mat)
+			nt <- nodal_types[[v]]
 			mat <- mat[nt, ]
 			colnames(mat) <- cn
 			mat
@@ -99,4 +96,3 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	attr(types, "interpret") <- types_interpret
 	return(types)
 }
-
