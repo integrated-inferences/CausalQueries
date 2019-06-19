@@ -14,7 +14,7 @@
 #' make_alphas(model = XYmodel, prior_distribution = "certainty")
 #'#  set all priors to 1 except for prior of nodal_type X0
 #' make_alphas(model = XYmodel, alphas = list(X = c(X0 = 2)))
-#' # Specify priors by query
+#' # Specify priors using query
 #'  make_alphas(model = XYmodel,
 #'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model

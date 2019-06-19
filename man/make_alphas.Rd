@@ -45,8 +45,6 @@ set_confound(list(X = "(Y[X=1]>Y[X=0])"))
 
 # Simultaneously set priors for confound and nonconfound parameters.
 #' make_alphas(model = model,  alphas =  c(`(X == 0)  = 2))
-# To target variable modeling confound, specify the condition that determines the confounded relationship between X and Y
+# To target variable modeling confound, specify the condition that determines the confounded relationship between variables
 make_alphas(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
-# set prior for all parameter that correspond to query
-
 }

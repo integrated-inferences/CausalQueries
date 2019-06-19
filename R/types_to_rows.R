@@ -2,7 +2,7 @@
 #'
 #' @param model A model created by make_model()
 #' @param query a query
-#' @export
+#' @keywords internal
 types_to_rows <- function(model, query){
 	P <- get_parameter_matrix(model)
 	model$P <- P
@@ -46,7 +46,7 @@ types_to_rows <- function(model, query){
 #'
 #' @param model A model created by make_model()
 #' @param query a query
-#' @export
+#' @keywords internal
 types_to_rows_single <- function(model, query){
 	P <- model$P
 	param_set <- attr(P,"param_set")
