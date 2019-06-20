@@ -1,6 +1,9 @@
 #' Wrapper of types_to_nodes_single
 #' Sapply multiple query conditions
 #'
+#' @param model A model created by make_model()
+#' @param query a query
+#' @keywords internal
 types_to_nodes <- function(model, query){
 
 	if (length(query) == 1){
@@ -29,6 +32,9 @@ types_to_nodes <- function(model, query){
 
 #' Identify nodes that satisfy a causal type query
 #'
+#' @param model A model created by make_model()
+#' @param query a query
+#' @keywords internal
 #' @importFrom  rlang is_empty
 types_to_nodes_single <- function(model, query){
 

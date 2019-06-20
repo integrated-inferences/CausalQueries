@@ -4,17 +4,21 @@
 #' @param query a query
 #' @keywords internal
 types_to_rows <- function(model, query){
+
 	P <- get_parameter_matrix(model)
 	model$P <- P
 	param_set <- attr(P,"param_set")
+
   # 	If no confounds in model use nodal types to get at parameters
 		if(is.null(attr(P, "confounds"))){
 			return_rows <- types_to_nodes(model, query)
 		} else{
 
-	if (length(query) == 1){
-		return_rows <- gbiqq:::types_to_rows_single(model, query)
 
+	if (length(query) == 1){
+		return_rows <- types_to_rows_single(model, query)
+
+		  # if multiple queries
 	} else if (length(query) > 1){
 
 		return_rows <- lapply(query, function(q) types_to_rows_single(model, q))
@@ -91,11 +95,14 @@ types_to_rows_single <- function(model, query){
 
 #' Function to translate queries into parameter names
 #'
+#' @param model A model created by make_model()
+#' @param query a query
+#' @keywords internal
 query_to_parameters <- function(model, query){
 	if(length(query) == 1){
 		# For alpha containing only one query expression
-		# 	1. get row in the parameter matrix that correspond to query
-		# 	2. name output vector as paramater name
+		# 	1. get the row(s) in the parameter matrix that map to query
+		# 	2. name output vector as paramater names
 		#   3. assigns numeric value of alpha as specified in query
 
 		translated_a  <-  gbiqq:::types_to_rows(model, names(query))
@@ -107,7 +114,7 @@ query_to_parameters <- function(model, query){
 
 	} else{
 		# For alpha containing multiple query expressions
-		#   1. get rows in P that correspond to queries
+		#   1. get rows in P that map to queries
 		#   2. sapply combines objects in list by paramater set
 		#
 		rows           <- types_to_rows(model, names(query))

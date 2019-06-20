@@ -5,6 +5,7 @@
 #' Stipulated alpha values override prior_distribution
 #' @export
 #' @examples
+#' require(dplyr)
 #' XYmodel <- make_model("X -> Y")
 #' #  Default sets all priors to 1
 #' make_alphas(model = XYmodel)
@@ -132,7 +133,6 @@ make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL
 	P          <- get_parameter_matrix(model)
 	n_params   <- nrow(P)
 	par_names  <- get_parameter_names(P)
-	par_names  <- paste0(param_set, ".", rownames(P))
   alphas     <- make_alphas(model, alphas)
 
 
