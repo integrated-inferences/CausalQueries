@@ -14,3 +14,4 @@ types_to_rows_single(model, query)
 \description{
 types_to_rows_single
 }
+\keyword{internal}

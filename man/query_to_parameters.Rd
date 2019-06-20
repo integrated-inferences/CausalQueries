@@ -6,6 +6,12 @@
 \usage{
 query_to_parameters(model, query)
 }
+\arguments{
+\item{model}{A model created by make_model()}
+
+\item{query}{a query}
+}
 \description{
 Function to translate queries into parameter names
 }
+\keyword{internal}

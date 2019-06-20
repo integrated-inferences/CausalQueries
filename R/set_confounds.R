@@ -97,7 +97,11 @@ set_confound <-  function(model, confound = NULL){
 
 
 	model$P <- P
+	old_priors <- get_priors(model)
+	priors <- make_priors(model)
+  priors[names(old_priors)] = old_priors
 
+  model$priors <- priors
 	model
 
 	}

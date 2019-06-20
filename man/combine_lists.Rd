@@ -6,6 +6,11 @@
 \usage{
 combine_lists(list1, list2)
 }
+\arguments{
+\item{list1}{a list}
+
+\item{list2}{a list typically different than list1}
+}
 \description{
 combine two lists by names
 }

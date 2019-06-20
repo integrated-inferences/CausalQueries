@@ -6,6 +6,12 @@
 \usage{
 types_to_nodes_single(model, query)
 }
+\arguments{
+\item{model}{A model created by make_model()}
+
+\item{query}{a query}
+}
 \description{
 Identify nodes that satisfy a causal type query
 }
+\keyword{internal}

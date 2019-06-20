@@ -14,3 +14,4 @@ types_to_rows(model, query)
 \description{
 types_to_rows
 }
+\keyword{internal}

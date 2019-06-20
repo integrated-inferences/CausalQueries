@@ -5,8 +5,12 @@
 \title{Check for discrepancies
 Used in make_alphas}
 \usage{
-any_discrepancies(alphas, translated_alphas,
-  query_alpha = attr(translated_alphas, "query"))
+any_discrepancies(alphas, translated_alphas)
+}
+\arguments{
+\item{alphas}{alphas provided by the user in set_priors/make_priors}
+
+\item{translated_alphas}{alphas that were expressed as a causal query.}
 }
 \description{
 Check for discrepancies

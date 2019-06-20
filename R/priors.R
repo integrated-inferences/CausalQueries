@@ -68,7 +68,7 @@ make_alphas <- function(model,   alphas = NULL ){
  	# Lines below check for discrepancies
  	# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
  	# error  alphas(Y = c(Y00 = 2, `(Y[X=1] == Y[X=0])` = 1) --two arguments pointing at the same parameter
- 	error_message <- any_discrepancies(alpha, translated_alphas,  attr(translated_alphas, "query")  )
+ 	error_message <- gbiqq:::any_discrepancies(alphas, translated_alphas)
   if(!is.null(error_message))	{
   	stop("\n Please solve the following discrepancies \n", paste(error_message))
   }

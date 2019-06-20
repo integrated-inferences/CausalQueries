@@ -7,6 +7,11 @@ Sapply multiple query conditions}
 \usage{
 types_to_nodes(model, query)
 }
+\arguments{
+\item{model}{A model created by make_model()}
+
+\item{query}{a query}
+}
 \description{
 Wrapper of types_to_nodes_single
 Sapply multiple query conditions

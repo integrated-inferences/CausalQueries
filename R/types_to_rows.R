@@ -11,7 +11,7 @@ types_to_rows <- function(model, query){
 
   # 	If no confounds in model use nodal types to get at parameters
 		if(is.null(attr(P, "confounds"))){
-			return_rows <- types_to_nodes(model, query)
+			return_rows <- gbiqq:::types_to_nodes(model, query)
 		} else{
 
 
@@ -21,10 +21,29 @@ types_to_rows <- function(model, query){
 		  # if multiple queries
 	} else if (length(query) > 1){
 
+		# 1. return rows that map to each of the queries
 		return_rows <- lapply(query, function(q) types_to_rows_single(model, q))
 	  return_rows <- unlist(return_rows, recursive = FALSE)
+
+	  # 2. Identify variable in the parameter set that correspond to the rows found in lines above
 		vars <- unique(attr(P,"param_set"))
 		vars <- vars[vars %in% names(return_rows)]
+
+		# Prepare named list for output.
+		# First level names correspond to variables names in param set (step 2.)
+		# Second level names are queries/statements
+		# The values in second-level vectors represent rows in P that map to the query saved as name of the vector that contains them. if that makes sense
+		# eg. for query = "(X == 1) & (Y[X=1] > Y[X=0])"
+    #   return_rows
+		# $X
+		# $X$`X == 1`
+		# [1] "X1"
+		#
+		# $Y
+		# $Y$`(Y[X=1] > Y[X=0])`
+		# [1] "Y01"
+
+
 		return_rows <- sapply(vars, function(v){
 			i <- which(names(return_rows) == v)
 			out <- unlist(return_rows[i], recursive = FALSE)
@@ -55,6 +74,9 @@ types_to_rows_single <- function(model, query){
 	P <- model$P
 	param_set <- attr(P,"param_set")
 
+  # Note that types_to_rows is only called for confounded models
+	    # If type_to_nodes returns a non_empty object (i.e if it actually finds nodal types that map to query)
+	    # preps par_names so that values can be matched to nodal_types returned by query
 			nodal_types <- gbiqq:::types_to_nodes(model, query)
 			if(length(nodal_types) > 0 ){
 				par_names <- rownames(P)
@@ -69,7 +91,12 @@ types_to_rows_single <- function(model, query){
         out <- as.list(out)
         out <- lapply(out, function(o) {names(o) <- query; as.list(o)})
 
-			} else{
+			} # if no  nodal types returned by types_to_node
+			  # look for causal types that map to query, and subsequently determine
+			  # whether there are rows in P that model exclusevely the given causal type.
+			  # return those rows if any
+
+			  else{
 				matching_types <- get_types(model, query)
 				matching_types <- names(matching_types$types[	matching_types$types])
 
@@ -105,14 +132,21 @@ query_to_parameters <- function(model, query){
 		# 	2. name output vector as paramater names
 		#   3. assigns numeric value of alpha as specified in query
 
-		translated_a  <-  gbiqq:::types_to_rows(model, names(query))
-		translated_a  <- 	sapply(translated_a, function(a){
-			a_temp <- query
-			names(a_temp) <- a
-			a_temp
-		}, simplify = FALSE)
+		rows  <-  gbiqq:::types_to_rows(model, names(query))
+		translated_a  <- 	sapply(rows, function(r){
 
-	} else{
+			r_temp <- rep(query, length(r))
+			names(r_temp) <-r
+			r_temp
+		}, simplify = FALSE)
+   attr(translated_a, "query") <-
+   	sapply(rows, function(r){
+   		out <- list(r)
+   		names(out) <- names(query)
+   		out
+   	}, simplify = FALSE)
+
+	} else 	if(length(query) > 1){
 		# For alpha containing multiple query expressions
 		#   1. get rows in P that map to queries
 		#   2. sapply combines objects in list by paramater set

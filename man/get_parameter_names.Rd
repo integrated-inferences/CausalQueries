@@ -6,6 +6,9 @@
 \usage{
 get_parameter_names(P)
 }
+\arguments{
+\item{P}{P matrix}
+}
 \description{
 get_parameter_names
 }
