@@ -4,7 +4,7 @@
 \alias{get_nodal_types}
 \title{Get list of types for variables in a DAG}
 \usage{
-get_nodal_types(model, query = NULL, collapse = TRUE)
+get_nodal_types(model, collapse = TRUE)
 }
 \arguments{
 \item{model}{A model created by make_model()}
