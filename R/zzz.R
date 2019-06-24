@@ -21,11 +21,11 @@
 } # nocov end
 
 .onAttach <- function(...) {
-  rstanarmLib <- dirname(system.file(package = "rstanarm"))
-  pkgdesc <- suppressWarnings(utils::packageDescription("rstanarm", lib.loc = rstanarmLib))
+  gbiqqLib <- dirname(system.file(package = "rstanarm"))
+  pkgdesc <- suppressWarnings(utils::packageDescription("rstanarm", lib.loc = gbiqqLib))
   if (length(pkgdesc) > 1) {
     builddate <- gsub(';.*$', '', pkgdesc$Packaged)
-    packageStartupMessage(paste("rstanarm (Version ", pkgdesc$Version, ", packaged: ", builddate, ")", sep = ""))
+    packageStartupMessage(paste("gbiqq (Version ", pkgdesc$Version, ", packaged: ", builddate, ")", sep = ""))
   }
 
   packageStartupMessage("- For execution on a local, multicore CPU with excess RAM we recommend calling")
