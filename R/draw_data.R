@@ -11,7 +11,9 @@
 #' model <- make_model("X -> Y")
 #' draw_lambda(model = model)
 
-draw_lambda <- function(model, using = "priors"){
+draw_lambda <- function(model, using = NULL){
+
+	if(is.null(using)) using <- "priors"
 
 	if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
 		"`using` should be one of `priors`, `posteriors`, or `parameters`")
@@ -65,8 +67,11 @@ draw_type_prob <- function(model,
 													 parameters = NULL,
 													 using = NULL ){
 
+	if(is.null(parameters) & is.null(using)) using <- "parameters"
+
 	if(!is.null(parameters)) using <- "parameters"
-	if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
+
+	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
