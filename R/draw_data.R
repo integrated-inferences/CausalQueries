@@ -235,8 +235,16 @@ simulate_data <- function(model,
  }
 
 #' Data type names
+#'
 #' Provides names to data types
-
+#' @param model A model created by make_model()
+#' @param data Data in long form
+#' @export
+#' @examples
+#' model <- make_model("X -> Y")
+#' data <- simulate_data(model, n = 2)
+#' data_type_names(model, data)
+#'
 data_type_names <- function(model, data){
 	vars <- model$variables
   data <- data[vars]
@@ -246,13 +254,21 @@ data_type_names <- function(model, data){
   out}
 
 #' All data types
+#'
+#' Creates dataframe with all data types, including NA types possible from a model
+#'
+#' @param model A model created by make_model()
+#' @export
+#' @examples
+#' all_data_types(make_model("X -> Y"))
+
 all_data_types <- function(model) {
 	variables <- model$variables
 	m <- length(model$variables)
 	df <- data.frame(gbiqq::perm(rep(2, m))) - 1
 	df[df==-1] <- NA
 	names(df) <-  variables
-  cbind(event = data_type_names(model, df), df)
+  data.frame(cbind(event = data_type_names(model, df), df))
 }
 
 

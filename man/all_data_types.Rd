@@ -6,6 +6,12 @@
 \usage{
 all_data_types(model)
 }
+\arguments{
+\item{model}{A model created by make_model()}
+}
 \description{
-All data types
+Creates dataframe with all data types, including NA types possible from a model
+}
+\examples{
+all_data_types(make_model("X -> Y"))
 }

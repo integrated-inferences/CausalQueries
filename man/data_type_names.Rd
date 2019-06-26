@@ -2,12 +2,21 @@
 % Please edit documentation in R/draw_data.R
 \name{data_type_names}
 \alias{data_type_names}
-\title{Data type names
-Provides names to data types}
+\title{Data type names}
 \usage{
 data_type_names(model, data)
 }
+\arguments{
+\item{model}{A model created by make_model()}
+
+\item{data}{Data in long form}
+}
 \description{
-Data type names
 Provides names to data types
+}
+\examples{
+model <- make_model("X -> Y")
+data <- simulate_data(model, n = 2)
+data_type_names(model, data)
+
 }
