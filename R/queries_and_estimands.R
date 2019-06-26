@@ -108,8 +108,6 @@ estimand_distribution <- function(model,
 #'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
 #'       digits = 3)
 
-get_estimands(updated, queries = list(Is_B = "Y[X=1] > Y[X=0]"), using = "posteriors")
-
 
 get_estimands <- function(model,
 													parameters = NULL,

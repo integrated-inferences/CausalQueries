@@ -161,11 +161,12 @@ get_possible_data_internal <- function(model, collapse = TRUE){
 #' @return A data frame
 #'
 get_max_possible_data <- function(model) {
-
+	dag <- model$dag
 	max_possible_data <-
 		Reduce(f = merge,
 					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
-	variables <- 	model$variables
+	variables <- 	c(attr(model, "exogenous_variables"),
+									attr(model, "endogenous_variables"))
 	max_possible_data <- max_possible_data[variables]
 
 	max_possible_data <-

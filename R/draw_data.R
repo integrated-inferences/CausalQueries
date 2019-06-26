@@ -93,6 +93,7 @@ draw_type_prob <- function(model,
 #' draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
 #' draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
 
+
 draw_type_prob_multiple <- function(model,
 																		parameters = NULL,
 																		n_draws = 4000,
@@ -214,7 +215,7 @@ draw_data_events <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' data_events <- draw_data_events(model = model, n = 4)
-#' simulate_data(model, data_events = data_events)
+#' draw_data(model, data_events = data_events)
 
 simulate_data <- function(model,
 													n = 1,
@@ -222,43 +223,24 @@ simulate_data <- function(model,
 													parameters = NULL,
 													using = "parameters"){
 
-	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) {
-	if(is.null(model$parameters)) stop("parameters not provided")}
+	if(using == "parameters" & is.null(parameters)) {
+		if(is.null(model$parameters)) stop("parameters not provided")}
 
 	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters, using = using)
 
 	# The rest is reshaping
-	vars <- model$variables
-	df <- merge(all_data_types(model), data_events, by.x = "event")
-	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(df[i,ncol(df)], df[i, vars])))
-	out <- data.frame(matrix(xx, ncol = length(vars), byrow = TRUE))
-	names(out) <- vars
+	df <- get_max_possible_data(model)
+
+	if(nrow(df) != nrow(data_events)) stop("nrow(df) is not equal to nrow(data_events)")
+
+	xx  <- unlist(sapply(1:nrow(df), function(i) replicate(data_events[i, 2],df[i,])))
+	out <- data.frame(matrix(xx, ncol = ncol(df), byrow = TRUE))
+	names(out) <- names(df)
 
 	out
 
  }
-
-#' Data type names
-#' Provides names to data types
-
-data_type_names <- function(model, data){
-	vars <- model$variables
-  data <- data[vars]
-	data[data==""] <- NA
-  out <- apply(data, 1, function(j) paste(paste0(vars[!is.na(j)], j[!is.na(j)]), collapse = ""))
-  out[out == ""] <- "None"
-  out}
-
-#' All data types
-all_data_types <- function(model) {
-	variables <- model$variables
-	m <- length(model$variables)
-	df <- data.frame(gbiqq::perm(rep(2, m))) - 1
-	df[df==-1] <- NA
-	names(df) <-  variables
-  cbind(event = data_type_names(model, df), df)
-}
 
 
 #' Observe data, given a strategy
