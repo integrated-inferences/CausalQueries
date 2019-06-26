@@ -4,12 +4,14 @@
 \alias{gbiqq}
 \title{Fit stan model}
 \usage{
-gbiqq(model, data, ...)
+gbiqq(model, data, stan_model = NULL, ...)
 }
 \arguments{
-\item{model}{A model as created by \code{make_model}}
+\item{model}{A causal model as created by \code{make_model}}
 
 \item{data}{A data frame with observations}
+
+\item{stan_model}{A fitted stan model: if not provided a gbiqq model is compiled from stan file "simplexes.stan"}
 }
 \description{
 Takes a model and data and returns a model object with data attached and a posterior model
