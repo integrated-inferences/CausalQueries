@@ -1,7 +1,6 @@
 
 #' Draw parameters
-#'
-# `draw_lambda` draws a parameters vector given model priors
+#' Default behavior takes a random draw of parameters from priors; can also draw from posteriors, or return pre defined parameters.
 #'
 #' @param model A model created by make_model()
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
@@ -66,11 +65,8 @@ draw_type_prob <- function(model,
 													 parameters = NULL,
 													 using = NULL ){
 
-	if(is.null(parameters) & is.null(using)) using <- "parameters"
-
 	if(!is.null(parameters)) using <- "parameters"
-
-	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
+	if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
@@ -138,6 +134,7 @@ draw_type_prob_multiple <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
+#' draw_event_prob(model = model, using = "parameters")
 draw_event_prob <- function(model,
 														P = NULL,
 														A = NULL,
@@ -145,9 +142,7 @@ draw_event_prob <- function(model,
 														type_prob = NULL,
 														using = NULL){
 
-		if(is.null(parameters)) {
-		if(is.null(model$parameters)) stop("Parameters not provided")
-		parameters <- model$parameters }
+	if(is.null(parameters)) {parameters <- draw_lambda(model, using = using)}
 
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
@@ -240,8 +235,16 @@ simulate_data <- function(model,
  }
 
 #' Data type names
+#'
 #' Provides names to data types
-
+#' @param model A model created by make_model()
+#' @param data Data in long form
+#' @export
+#' @examples
+#' model <- make_model("X -> Y")
+#' data <- simulate_data(model, n = 2)
+#' data_type_names(model, data)
+#'
 data_type_names <- function(model, data){
 	vars <- model$variables
   data <- data[vars]
@@ -251,13 +254,21 @@ data_type_names <- function(model, data){
   out}
 
 #' All data types
+#'
+#' Creates dataframe with all data types, including NA types possible from a model
+#'
+#' @param model A model created by make_model()
+#' @export
+#' @examples
+#' all_data_types(make_model("X -> Y"))
+
 all_data_types <- function(model) {
 	variables <- model$variables
 	m <- length(model$variables)
 	df <- data.frame(gbiqq::perm(rep(2, m))) - 1
 	df[df==-1] <- NA
 	names(df) <-  variables
-  cbind(event = data_type_names(model, df), df)
+  data.frame(cbind(event = data_type_names(model, df), df))
 }
 
 

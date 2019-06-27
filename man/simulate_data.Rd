@@ -24,5 +24,5 @@ Generate full dataset, possibly from compact data
 \examples{
 model <- make_model("X -> Y")
 data_events <- draw_data_events(model = model, n = 4)
-draw_data(model, data_events = data_events)
+simulate_data(model, data_events = data_events)
 }

@@ -17,26 +17,26 @@ Make alphas
 }
 \examples{
 require(dplyr)
-XYmodel <- make_model("X -> Y")
+model <- make_model("X -> Y")
 #  Default sets all priors to 1
-make_alphas(model = XYmodel)
+make_alphas(model = model)
 #  Set all priors to 0.5
-make_alphas(model = XYmodel, prior_distribution = "jeffreys")
+make_alphas(model = model, prior_distribution = "jeffreys")
 #  Set all priors to infinity
-make_alphas(model = XYmodel, prior_distribution = "certainty")
+make_alphas(model = model, prior_distribution = "certainty")
 #  set all priors to 1 except for prior of nodal_type X0
-make_alphas(model = XYmodel, alphas = list(X = c(X0 = 2)))
+make_alphas(model = model, alphas = list(X = c(X0 = 2)))
 # Specify priors using query
- make_alphas(model = XYmodel,
+ make_alphas(model = model,
              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #  specify priors for each of the nodal_types in model
-make_alphas(model = XYmodel,
+make_alphas(model = model,
            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 # set all priors to 10
-make_alphas(model = XYmodel, alphas =  10)
+make_alphas(model = model, alphas =  10)
 # If the prior for a given parameter is duplicated, \\code{make_prior} throws an informative error.
 \dontrun{
-make_alphas(model = XYmodel,
+make_alphas(model = model,
            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 }
 

@@ -2,9 +2,10 @@
 % Please edit documentation in R/draw_data.R
 \name{draw_lambda}
 \alias{draw_lambda}
-\title{Draw parameters}
+\title{Draw parameters
+Default behavior takes a random draw of parameters from priors; can also draw from posteriors, or return pre defined parameters.}
 \usage{
-draw_lambda(model, using = "priors")
+draw_lambda(model, using = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -13,6 +14,7 @@ draw_lambda(model, using = "priors")
 }
 \description{
 Draw parameters
+Default behavior takes a random draw of parameters from priors; can also draw from posteriors, or return pre defined parameters.
 }
 \examples{
 draw_lambda(model = model)
