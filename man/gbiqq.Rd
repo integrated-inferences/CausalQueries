@@ -10,8 +10,6 @@ gbiqq(model, data, ...)
 \item{model}{A model as created by \code{make_model}}
 
 \item{data}{A data frame with observations}
-
-\item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }
 \description{
 Takes a model and data and returns a model object with data attached and a posterior model
