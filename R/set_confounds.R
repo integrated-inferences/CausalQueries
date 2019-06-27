@@ -3,8 +3,7 @@
 #' Adjust parameter matrix to allow confounding
 #'
 #' @param model A model created by make_model()
-#' @param confound A named list relating nodes to statements that identify causal types with which they are  confounded
-#'plot_dag
+#' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
@@ -98,7 +97,11 @@ set_confound <-  function(model, confound = NULL){
 
 
 	model$P <- P
+	old_priors <- get_priors(model)
+	priors <- make_priors(model)
+  priors[names(old_priors)] = old_priors
 
+  model$priors <- priors
 	model
 
 	}

@@ -1,9 +1,94 @@
-#' Set priors
+#' Make alphas
 #'
 #' @param model A model created by make_model()
+#' @param alphas the hyperparameters of the dirichlet distribution.
+#' Stipulated alpha values override prior_distribution
+#' @export
+#' @examples
+#' require(dplyr)
+#' XYmodel <- make_model("X -> Y")
+#' #  Default sets all priors to 1
+#' make_alphas(model = XYmodel)
+#' #  Set all priors to 0.5
+#' make_alphas(model = XYmodel, prior_distribution = "jeffreys")
+#' #  Set all priors to infinity
+#' make_alphas(model = XYmodel, prior_distribution = "certainty")
+#'#  set all priors to 1 except for prior of nodal_type X0
+#' make_alphas(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#' # Specify priors using query
+#'  make_alphas(model = XYmodel,
+#'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
+#'#  specify priors for each of the nodal_types in model
+#' make_alphas(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#' # set all priors to 10
+#' make_alphas(model = XYmodel, alphas =  10)
+#' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
+#' \dontrun{
+#' make_alphas(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#' }
+#'
+#' # Priors of confounded models
+#' model <- make_model("X -> Y") %>%
+#' set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+#'
+#' # Simultaneously set priors for confound and nonconfound parameters.
+#'#' make_alphas(model = model,  alphas =  c(`(X == 0)  = 2))
+#' # To target variable modeling confound, specify the condition that determines the confounded relationship between variables
+#' make_alphas(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
+make_alphas <- function(model,   alphas = NULL ){
+
+	P                  <- get_parameter_matrix(model)
+	model$P            <- P
+	return_alphas      <- alphas
+	par_names          <- get_parameter_names(P)
+	alpha_names        <- names(unlist(alphas))
+	pars_in_alpha      <- alpha_names %in% par_names
+
+  # if alpha is defined as vector of queries alphas <- c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  )
+  if(is.numeric(alphas) & !is.null(alpha_names)){
+  	return_alphas  <-   query_to_parameters(model,	 alphas)
+  }
+
+
+	# if alpha contain other than parameter names e.g alphas = list(X = c(X0 = 2, `X == 1` = 3))
+  if(is.list(alphas)  & any(! pars_in_alpha)){
+  # Prep and translate alpha
+ 	i_queries <- which(!pars_in_alpha)
+ 	alpha_query <- unlist(alphas)[i_queries]
+ 	queries <- names(alpha_query)
+  names(alpha_query) <- 	sapply(queries, function(q){
+  	stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+  	substr(q, stop + 1, nchar(q))
+  })
+
+ 	translated_alphas  <-  query_to_parameters(model, alpha_query)
+
+ 	# Lines below check for discrepancies
+ 	# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
+ 	# error  alphas(Y = c(Y00 = 2, `(Y[X=1] == Y[X=0])` = 1) --two arguments pointing at the same parameter
+ 	error_message <- gbiqq:::any_discrepancies(alphas, translated_alphas)
+  if(!is.null(error_message))	{
+  	stop("\n Please solve the following discrepancies \n", paste(error_message))
+  }
+ 	# Get alphas that were specificied as par_names as opposed to queries
+ 	alpha_param <- sapply(alphas, function(a){
+ 		a[names(a) %in% rownames(P)]
+ 	}, simplify = FALSE)
+
+ 	# combine translated alphas and alpha_parameters by parameter set
+ 	return_alphas <- gbiqq:::combine_lists(list1 = alpha_param, list2 =translated_alphas)
+ }
+  return_alphas
+}
+
+
+#' Make priors
+#'
+#' @param model A model created by \code{make_model()}
 #' @param prior_distribution A character indicating the prior distribuiton
-#' @param by_nodes the hyperparameters of the dirichlet distribution.
-#' @param by_causal_types
+#' @param alphas the hyperparameters of the dirichlet distribution.
 #' Stipulated alpha values override prior_distribution
 #' @export
 #' @examples
@@ -14,37 +99,51 @@
 #' make_priors(model = XYmodel, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
 #' make_priors(model = XYmodel, prior_distribution = "certainty")
-#'
 #'#  set all priors to 1 except for prior of nodal_type X0
 #' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#' # Specify priors by query
+#'  make_priors(model = XYmodel,
+#'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model
 #' make_priors(model = XYmodel,
-#'            alphas = list(X = c(X0 = 2, X1 = 1),  Y = c(Y00 = 1, Y01 = 2, Y10 = 2, Y11 = 1)))
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
 #' make_priors(model = XYmodel, alphas =  10)
-make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
+#' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
+#' \dontrun{
+#' make_priors(model = XYmodel,
+#'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+#' }
+#'
+#' # Priors of confounded models
+#' model <- make_model("X -> Y") %>%
+#' set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+#'
+#' # Simultaneously set priors for confound and nonconfound parameters.
+#'#' make_priors(model = model,  alphas =  c(`(X == 0)  = 2))
+#' # To target variable modeling confound, specify the condition that determines the confounded relationship between variables
+#' make_priors(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
+make_priors  <- function(model,    prior_distribution = "uniform", alphas = NULL ){
 
 	if(!is.null(prior_distribution)){
 		if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty")))
 			stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
 	}
 
-	# parameter housekeeping
-	# parameter housekeeping
-	P                  <- get_parameter_matrix(model)
-	n_params           <- nrow(P)
-	param_set          <- attr(P, "param_set")
-	param_sets         <- unique(param_set)
-	n_param_sets       <- length(param_sets)
-	par_names          <- paste0(param_set, ".", rownames(P))
+	P          <- get_parameter_matrix(model)
+	n_params   <- nrow(P)
+	par_names  <- get_parameter_names(P)
+  alphas     <- make_alphas(model, alphas)
+
 
 	# alpha housekeeping
 	alphas_vector <- unlist(alphas)
 	n_alphas      <- length(alphas_vector)
+	alpha_names   <- names(alphas_vector)
+
 	if(is.null(prior_distribution) & ((n_alphas!=1 & n_alphas!=n_params)))	stop(
 		"if prior_distribution is not specified, alphas must contain either a value
 		for each parameter or a single value to be assigned to all parameters.")
-	alpha_names   <- names(alphas_vector)
 
 
 	if(n_alphas == 1 & is.null(alpha_names)){
@@ -60,9 +159,10 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 		error_text	<- sapply(index, function(i){
 
 			reversed_name <- sapply(lapply(strsplit(alpha_names[i], NULL), rev), paste, collapse = "")
-			splitted_name <- unlist(  strsplit(sub("[.]", ";", reversed_name), ";"))
+			splitted_name <- unlist( strsplit(sub("[.]", ";", reversed_name), ";"))
 
-			paste0("\n variable ", splitted_name[2], " and corresponding nodal_type ",  splitted_name[1], " must match variables in dag and nodal_types syntax")
+			paste0("\n variable ", splitted_name[2], " and corresponding nodal_type ",
+						 splitted_name[1], " must match variables in dag and nodal_types syntax")
 
 		})
 		stop(	error_text )}
@@ -81,6 +181,7 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 		if(n_alphas == n_params)              priors <- alphas}
 
 	# Substitute alpha vector when provided
+	names(priors)       <- par_names
 	priors[alpha_names] <- alphas_vector
 
 	# result
@@ -216,4 +317,4 @@ set_parameters <- function(model,
 		model$parameters <- parameters
 
 		return(model)
-	}
+}

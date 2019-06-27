@@ -232,6 +232,42 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 }
 
 
+
+#' get_parameter_names
+#' @param P P matrix
+#' @export
+#'
+get_parameter_names <- function(P){
+	param_set          <- attr(P, "param_set")
+	param_sets         <- unique(param_set)
+	par_names          <- paste0(param_set, ".", rownames(P))
+	par_names
+}
+
+#'combine two lists by names
+#'
+#' @param list1 a list
+#' @param list2 a list typically different than list1
+combine_lists <- function(list1, list2){
+
+		matches <- names(list1) %in% names(list2)
+		matching_names <- names(list1)[matches]
+		matches2 <- names(list2) %in% names(list1)
+
+		if(any(matches)){
+			combined_list <- sapply(matching_names, function(nam){
+				out <- c(list1[[nam]], list2[[nam]])
+				out[!duplicated(names(out))]
+			}, simplify = FALSE)
+
+			combined_list <- c(combined_list, list1[!matches])
+			combined_list <- c(combined_list, list2[!matches2])
+		} else{
+			combined_list <- c(list1, list2)
+		}
+
+		combined_list
+}
 #' Whether a query contains an exact string
 includes_var <- function(var, query)
 	length(grep (paste0("\\<", var, "\\>"), query))>0
@@ -243,3 +279,46 @@ var_in_query <- function(model, query){
 }
 
 
+#' Check for discrepancies
+#' Used in make_alphas
+#' @param alphas alphas provided by the user in set_priors/make_priors
+#' @param translated_alphas alphas that were expressed as a causal query.
+any_discrepancies <- function(alphas, translated_alphas){
+	error_message <- NULL
+	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
+	if(any(repeated_parameters)){
+		query_alpha <- attr(translated_alphas, "query")
+		i_repeated  <-	which(repeated_parameters)
+		q_repeated  <- unlist(translated_alphas)[i_repeated]
+		names(q_repeated) <- names(unlist(translated_alphas))[i_repeated]
+		names(q_repeated) <- sapply(  names(q_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		q_repeated <- q_repeated[order(names(q_repeated))]
+
+		i_alphas_repeated <- names(unlist(alphas)) %in% names(unlist(translated_alphas))
+		alphas_repeated <-  unlist(alphas)[i_alphas_repeated]
+		names(alphas_repeated)  <-  names(unlist(alphas))[i_alphas_repeated]
+
+		names(alphas_repeated) <- sapply(  names(alphas_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
+
+		if(!identical(alphas_repeated, q_repeated)){
+			a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
+			q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
+			adicrepancy_names <- names(alphas_repeated)[alphas_repeated != q_repeated]
+
+			error_message <- unlist(sapply(query_alpha, function(q){
+				sapply(1:length(q), function(j){
+					r <- q[[j]] %in%  adicrepancy_names
+					if(any(r)){
+						paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+					} })}))
+		}
+	}
+	return(error_message)
+}
