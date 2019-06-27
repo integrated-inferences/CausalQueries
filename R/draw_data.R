@@ -1,7 +1,6 @@
 
 #' Draw parameters
-#'
-# `draw_lambda` draws a parameters vector given model priors
+#' Default behavior takes a random draw of parameters from priors; can also draw from posteriors, or return pre defined parameters.
 #'
 #' @param model A model created by make_model()
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
@@ -10,7 +9,9 @@
 #' @examples
 #' draw_lambda(model = model)
 
-draw_lambda <- function(model, using = "priors"){
+draw_lambda <- function(model, using = NULL){
+
+	if(is.null(using)) using <- "priors"
 
 	if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
 		"`using` should be one of `priors`, `posteriors`, or `parameters`")
@@ -133,6 +134,7 @@ draw_type_prob_multiple <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
+#' draw_event_prob(model = model, using = "parameters")
 draw_event_prob <- function(model,
 														P = NULL,
 														A = NULL,
@@ -140,9 +142,7 @@ draw_event_prob <- function(model,
 														type_prob = NULL,
 														using = NULL){
 
-		if(is.null(parameters)) {
-		if(is.null(model$parameters)) stop("Parameters not provided")
-		parameters <- model$parameters }
+	if(is.null(parameters)) {parameters <- draw_lambda(model, using = using)}
 
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
