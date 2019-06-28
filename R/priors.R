@@ -250,7 +250,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
   if(is.null(model$priors)) model <- set_priors(model)
   if(is.null(model$P)) model <- set_parameter_matrix(model)
 
-  model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
+  model$prior_distribution <- t(replicate(n_draws, draw_parameters(model)))
 #  message(paste("Prior distribution based on", n_draws, "draws attached to model"))
 
 	return(model)
@@ -300,7 +300,7 @@ set_parameters <- function(model,
 		if (type == "prior_draw") {
 			if (is.null(model$prior)) stop("Prior distribution required")
 
-			parameters <- draw_lambda(model)}
+			parameters <- draw_parameters(model)}
 
 		if (type == "posterior_mean") {
 			if (is.null(model$posterior)) stop("Posterior distribution required")

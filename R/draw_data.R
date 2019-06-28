@@ -7,9 +7,9 @@
 #' @importFrom gtools rdirichlet
 #' @export
 #' @examples
-#' draw_lambda(model = model)
+#' draw_parameters(model = model)
 
-draw_lambda <- function(model, using = NULL){
+draw_parameters <- function(model, using = NULL){
 
 	if(is.null(using)) using <- "priors"
 
@@ -66,7 +66,7 @@ draw_type_prob <- function(model,
 													 using = NULL ){
 
 	if(!is.null(parameters)) using <- "parameters"
-	if(using == "parameters" & is.null(parameters)) parameters <- draw_lambda(model, using = using)
+	if(using == "parameters" & is.null(parameters)) parameters <- draw_parameters(model, using = using)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
@@ -142,7 +142,7 @@ draw_event_prob <- function(model,
 														type_prob = NULL,
 														using = NULL){
 
-	if(is.null(parameters)) {parameters <- draw_lambda(model, using = using)}
+	if(is.null(parameters)) {parameters <- draw_parameters(model, using = using)}
 
 	# Ambiguity matrix
 	if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
@@ -354,7 +354,7 @@ data_strategy <- function(model,
 
 	if(is.null(parameters)) {
 		if(is.null(model$parameters)) message("parameters not provided")
-		parameters <- draw_lambda(model, using = using)}
+		parameters <- draw_parameters(model, using = using)}
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
 		"vars, probs, subsets, should have the same length")
