@@ -6,7 +6,7 @@
 #' @importFrom gtools rdirichlet
 #' @export
 #' @examples
-#' draw_parameters(model = model)
+#' draw_parameters(model = make_model("X->Y"))
 #'
 draw_parameters <- function(model, using = NULL){
 
