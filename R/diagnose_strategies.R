@@ -1,7 +1,7 @@
 #' Produces list of possible data given model and data strategy
 #'
 #' THIS IS CURRENTLY NOT AT ALL GENERALY AND NEEDS TO BE MADE GENERAL FOR A DATA STRATEGY FO THE FORM:
-#'  "GATHER DATA ON X,M,Y FOR N MORE CASES.... or GATHER DATA ON M in N OF THE X=Y=1 CASES....
+#' "GATHER DATA ON X,M,Y FOR N MORE CASES.... or GATHER DATA ON M in N OF THE X=Y=1 CASES....
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
@@ -74,7 +74,7 @@ make_data_probabilities <- function(model, given, data_strat = NULL, pars) {
 }
 
 
-#' Generates a databse of results from giqq over possible data
+#' Generates a database of results using gbiqq over possible data
 #'
 #' This function runs many models and can take a long time depending on the size of possible data.
 #'
