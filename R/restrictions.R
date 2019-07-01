@@ -11,6 +11,8 @@
 #'
 #' @examples
 #' require(dplyr)
+#'
+#' # Restrict parameter space using nodal types
 #' model <- make_model("X->Y") %>%
 #' set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 #' get_parameter_matrix(model)
@@ -30,8 +32,20 @@
 #' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
 #' set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
 #' get_parameter_matrix(model)
-
-
+#'
+#' # Restrict parameter space using casual types
+#' model <- make_model("X->Y") %>%
+#' set_restrictions(causal_type_restrict = c("X == 0", "Y==0"))
+#' get_parameter_matrix(model)
+#' # Restrict to define a model with monotonicity
+#' model <- make_model("X->Y") %>%
+#' set_restrictions(causal_type_restrict = c("Y[X=1] < Y[X=0]"))
+#' get_parameter_matrix(model)
+#' # Restriction with a wildcard
+#' model <- make_model("X->Y<-M") %>%
+#' set_restrictions(causal_type_restrict = c("(Y[X=1, M=.] < Y[X=0, M=.])"))
+#' get_parameter_matrix(model)
+#'
 set_restrictions <- function(model, node_restrict = NULL, causal_type_restrict = NULL, action = "remove"){
 
 	if(is.null(node_restrict) & is.null(causal_type_restrict)) {message("No restrictions provided"); return(model)}
@@ -49,6 +63,9 @@ set_restrictions <- function(model, node_restrict = NULL, causal_type_restrict =
 
 
 
+
+
+
 #' Reduce causal types
 #' @param model a model created by make_model()
 #' @param restriction a quoted expressions defining the restriction
@@ -56,11 +73,19 @@ set_restrictions <- function(model, node_restrict = NULL, causal_type_restrict =
 restrict_causal_types <- function(model, restriction){
 
 	causal_types <- get_causal_types(model)
-	restricted_causal_types <- get_types(model, query = restriction)
-	model$causal_types <- causal_types[!restricted_causal_types$types,]
+	if(length(restriction) == 1L){
+		restricted_causal_types <- get_types(model, query = restriction)
+		model$causal_types <- causal_types[!restricted_causal_types$types,]
+	} else{
+		restricted_causal_types_mat <- sapply(1:length(restriction), function(i){
+			out <-  get_types(model, query = restriction[i])
+			out$types
+		})
+		restricted_causal_types <- apply(restricted_causal_types_mat, 1, any)
+		model$causal_types <- causal_types[!restricted_causal_types,]
+
+	}
 	rownames(model$causal_types) <- 1:nrow(model$causal_types)
-
-
 	type_names  <- sapply(1:ncol(model$causal_types), function(j) paste0(names(model$causal_types)[j], model$causal_types[,j]))
 	unrestricted_nodal_types <- apply(type_names, 2, unique)
 	names(unrestricted_nodal_types) <- model$variables

@@ -16,7 +16,7 @@ revealed_data
 }
 \description{
 Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables.
-If a do operator is applied to any variable then it takes the given value and all its descendents are generated accordingly.
+If a do operator is applied to any variable then it takes the given value and all its descendants are generated accordingly.
 }
 \details{
 \code{reveal_outcomes} starts off by creating types (via \code{\link{get_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous variables outcomes correspond to their type.

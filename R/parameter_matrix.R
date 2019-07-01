@@ -82,8 +82,10 @@ summary.parameter_matrix <- function(object, ...) {
 
 #' @export
 print.summary.parameter_matrix <- function(x, ...){
-
-  print.table(x)
+  print("Rows are parameters, grouped in parameter sets")
+	print("Columns are causal types")
+	print("Cell entries indicate whether a parameter probability is used in the calculation of causal type probability")
+	print.table(x)
 	param_set <- attr(x,"param_set")
 
   cat("\n parameter set  (P)\n ")

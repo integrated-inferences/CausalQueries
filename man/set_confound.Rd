@@ -9,8 +9,7 @@ set_confound(model, confound = NULL)
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{confound}{A named list relating nodes to statements that identify causal types with which they are  confounded
-plot_dag}
+\item{confound}{A named list relating nodes to statements that identify causal types with which they are confounded}
 }
 \description{
 Adjust parameter matrix to allow confounding
@@ -28,4 +27,6 @@ model <- make_model("X -> Y")
 confound = list(X = "(Y[X=1] == 1")
 model <- set_confound(model = model, confound = confound)
 confound2 = list(X = "(Y[X=1]>Y[X=0])")
+model <- make_model("X -> Y <- S; S -> W") \%>\% set_confound(list(X = "S==1", S = "W[S=1]==1"))
+attr(model$P, "confounds")
 }

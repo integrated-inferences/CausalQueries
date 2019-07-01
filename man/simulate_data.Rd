@@ -4,7 +4,8 @@
 \alias{simulate_data}
 \title{Generate full dataset, possibly from compact data}
 \usage{
-simulate_data(model, n = 1, data_events = NULL, parameters = NULL)
+simulate_data(model, n = 1, data_events = NULL, parameters = NULL,
+  using = "parameters")
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -14,6 +15,8 @@ simulate_data(model, n = 1, data_events = NULL, parameters = NULL)
 \item{data_events}{A compact dataframe compatible with model}
 
 \item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
+
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`. Defaults here to "parameters."}
 }
 \description{
 Generate full dataset, possibly from compact data
@@ -21,5 +24,5 @@ Generate full dataset, possibly from compact data
 \examples{
 model <- make_model("X -> Y")
 data_events <- draw_data_events(model = model, n = 4)
-draw_data(model, data_events = data_events)
+simulate_data(model, data_events = data_events)
 }

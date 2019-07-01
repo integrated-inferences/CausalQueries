@@ -24,6 +24,8 @@ get_nodal_types_dep <- function(model){
 }
 
 
+
+
 #' Get list of types for variables in a DAG
 #'
 #' As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
@@ -43,60 +45,16 @@ get_nodal_types_dep <- function(model){
 #'    set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") %>%
 #'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
 #' unlist(get_nodal_types(model))
-get_nodal_types <- function(model, query = NULL, collapse = TRUE){
-
-	if(!is.null(query)){
-		nodal_types <- types_to_nodes(model, query)
-		if(is_empty(nodal_types))
-			stop(paste("There are no nodal types that satisfy the query condition \n", query))
-
-	} else{
-		nodal_types <- get_nodal_types_model(model, collapse)
-	}
-
-	return(nodal_types)
-
-}
-
-#' Get nodal types of model
-#'
-get_nodal_types_model <- function(model, collapse = TRUE) {
-
-	#	if(!is.null(model$nodal_types)) return(nodal_types) ## Placeholder -- check why this was previously not here
+get_nodal_types <- function(model, collapse = TRUE) {
 
 	nodal_types <- model$nodal_types
-	variables   <- model$variables
+	variables   <- c(attr(model, "exogenous_variables"),
+									 attr(model, "endogenous_variables"))
 	parents     <- get_parents(model)
 	dag         <- model$dag
+	types       <- lapply(lapply(parents, length), type_matrix)
 
-	types       <- lapply(
-		X = lapply(parents, length),
-		FUN = function(parent_n){
-
-			type_mat <- perm(rep(1,2^parent_n))
-			if(parent_n == 0){
-				labels <- NULL
-			} else {
-				input_mat <- perm(rep(1, parent_n))
-				labels <- apply(input_mat,1,paste,collapse = "")
-			}
-			colnames(type_mat) <- labels
-
-			return(type_mat)
-		})
-
-	types_interpret       <-
-		lapply(parents,
-					 FUN = function(parent){
-					 	parent_n <- length(parent)
-					 	if(parent_n == 0){
-					 		labels <- "exogeneous"
-					 	} else {
-					 		input_mat <- perm(rep(1, parent_n))
-					 		labels <-    apply(input_mat,1,function(j) paste0(parent, " <- ", j ,collapse = " & "))
-					 	}
-					 	labels
-					 })
+	types_interpret <- lookup_type(model)
 
 	types_labels <- lapply(1:length(types), function(i){
 		var <- names(types)[i]
@@ -110,14 +68,12 @@ get_nodal_types_model <- function(model, collapse = TRUE) {
 		rownames(types[[v]]) <- types_labels[[v]]
 		types[[v]]
 	})
-
 	names(types)  <- var_names
-
 	if(!is.null(nodal_types)){
 		types <- lapply(variables, function(v){
 			mat <- types[[v]]
-			cn  <- colnames(mat)
-			nt  <- nodal_types[[v]]
+			cn <- colnames(mat)
+			nt <- nodal_types[[v]]
 			mat <- mat[nt, ]
 			colnames(mat) <- cn
 			mat
@@ -139,39 +95,4 @@ get_nodal_types_model <- function(model, collapse = TRUE) {
 
 	attr(types, "interpret") <- types_interpret
 	return(types)
-}
-
-#' Wrapper of types_to_nodes_single
-#' Sapply multiple query conditions
-#'
-types_to_nodes <- function(model, query){
-
-	if (length(query) == 1){
-		return_nodal_types <- types_to_nodes_single(model, query)
-	} else{
-		return_nodal_types <- sapply(query, function(q) types_to_nodes_single(model, q) , USE.NAMES = FALSE)
-	}
-	return(return_nodal_types)
-}
-
-
-#' Identify nodes that satisfy a causal type query
-#'
-types_to_nodes_single <- function(model, query){
-
-	causal_types <- get_causal_types(model)
-	restricted_causal_types <- get_types(model, query = query)
-	causal_types <- causal_types[!restricted_causal_types$types,]
-	rownames(causal_types) <- 1:nrow(causal_types)
-
-	type_names  <- sapply(1:ncol(causal_types), function(j) paste0(names(causal_types)[j], causal_types[,j]))
-	unrestricted_nodal_types <- apply(type_names, 2, unique)
-	names(unrestricted_nodal_types) <- model$variables
-	current_nodal_types <- get_nodal_types(model)
-
-	return_nodal_types <- sapply(model$variables, function(v) setdiff(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ))
-
-
-	unlist(return_nodal_types)
-
 }

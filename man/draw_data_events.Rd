@@ -5,7 +5,7 @@
 \title{Draw compact data}
 \usage{
 draw_data_events(model, n = 1, w = NULL, P = NULL, A = NULL,
-  parameters = NULL)
+  parameters = NULL, using = NULL)
 }
 \arguments{
 \item{model}{A model created by make_model()}
@@ -19,6 +19,8 @@ draw_data_events(model, n = 1, w = NULL, P = NULL, A = NULL,
 \item{A}{Optional ambiguity matrix: not required but may be provided to avoide repeated computation for simulations}
 
 \item{parameters}{A specific parameter vector, parameters, may be provided, otherwise parameters is drawn from priors}
+
+\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 }
 \description{
 Draw compact data

@@ -26,8 +26,10 @@ Calculated from a prior or posterior distribution
 \examples{
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
- estimand_1  <- estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
- estimand_2  <- estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+ estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 }
