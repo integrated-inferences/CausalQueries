@@ -1,4 +1,3 @@
-
 #' Fit stan model
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
@@ -38,5 +37,5 @@ gbiqq <- function(model, data, stan_model = NULL,  ...) {
 #'
 fitted_model <- function() {
 	model <- make_model("X->Y")
-	gbiqq(model, simulate_data(model, n = 1))$posterior_distribution
+	gbiqq(model, simulate_data(model, n = 1), refresh = 0)$posterior_distribution
 }

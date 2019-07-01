@@ -18,4 +18,5 @@ Default behavior takes a random draw of parameters from priors; can also draw fr
 }
 \examples{
 draw_parameters(model = model)
+
 }
