@@ -5,7 +5,8 @@
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
-#' @param data_strat data strategy
+#' @param data_strat data strategy. If NULL it gathers data for all possible cases.
+#' @param seek Variables to be sought or NA. If NA make_possible_data gathers data on all variables containing NA for the specified data strategy.
 #' @export
 #' @return A dataset
 #' @examples
@@ -13,31 +14,74 @@
 #' model <- make_model("X->M->Y")  %>%
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
-#'
-#' given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' # Look for data on M for all possible cases in the given data
+#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 #' make_possible_data(model, given)
+#'
+#' # Look for data on M  when  X = Y = 1
+#' make_possible_data(model, given, data_strat = X == 1 & Y == 1)
+#'
+#'# Look for data on M  when X=1 or Y==1
+#' make_possible_data(model, given, data_strat = X == 1 | Y == 1)
+#'
+#' # Look for data on K and M
+#' model <- make_model("X->M->Y <-K")   %>%
+#'    set_parameter_matrix()
+#' given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
+#' make_possible_data(model, given)
+#' # Look for data only on M
+#' make_possible_data(model, given, seek = "M")
+#' # Look for data only on M when  X = 1 and Y = 0
+#' make_possible_data(model, given, data_strat =  X == 1 & Y == 0, seek = "M")
+make_possible_data <- function(model, given, data_strat = NULL, seek = NA) {
 
-make_possible_data <- function(model, given, data_strat = NULL) {
-
-	possible0 <- sapply(1:nrow(given), function(j) {W2 <- given;
-	W2[j, 2] <- 0;
-	as.numeric(trim_strategies(model, W2)[,3])})
-	possible0 <- possible0[,!duplicated(t(possible0))]
-
-	possible1 <- sapply(1:nrow(given), function(j) {W2 <- given;
-	W2[j, 2] <- 1;
-	as.numeric(trim_strategies(model, W2)[,3])})
-	possible1 <- possible1[,!duplicated(t(possible1))]
-
-	W2 <- given; W2[1, 2] <- 0
-
+	#
+	#  possible0 <- sapply(1:nrow(given), function(j) {W2 <- given;
+	#  W2[j, 2] <- 0;
+	#  as.numeric(trim_strategies(model, W2)[,3])})
+	#  possible0 <- possible0[,!duplicated(t(possible0))]
+	#
+	#  possible1 <- sapply(1:nrow(given), function(j) {W2 <- given;
+	#  W2[j, 2] <- 1;
+	#  as.numeric(trim_strategies(model, W2)[,3])})
+	#  possible1 <- possible1[,!duplicated(t(possible1))]
+	#
+	#  W2 <- given; W2[1, 2] <- 0
 	#  none <- c(rep(0, 8), trim_strategies(model, given)$count)
+	data_strat_expr = enexpr(data_strat)
+	W2 <- w_given <- given
+	variables <- seek
+	if(!eval_bare(is_null(data_strat_expr))){
+	w_given <-  eval_tidy(dplyr::filter(given, !!data_strat_expr))
+	}
 
-	possible_data <- cbind(trim_strategies(model, W2)[,1:2],
+ possible_value <- function(given, value, seek, variables){
+  W2 <- given
+  	possible <- sapply(1:nrow(given), function(j) {
+  		if(is.na(seek)){
+  			variables <- which(is.na(W2[j,]))}
+  		W2[j, variables] <- value;
+  		as.numeric(trim_strategies(model, W2)[,3])})
+
+    possible[,!duplicated(t(possible))]
+  }
+
+  possible0 <- possible_value(given = w_given, value = 0, seek, variables)
+  possible1 <- possible_value(given = w_given, value = 1, seek, variables)
+
+  if(is.na(seek)){
+  	W2[apply(W2,2, is.na)] <- 0
+  } else{
+   W2[, variables] <- 0
+  }
+
+  w_given <- rbind(w_given, W2)
+
+	possible_data <- cbind(trim_strategies(model, w_given)[,1:2],
 												possible0, possible1
 												#, none = none
 	)
-	colnames(possible_data)[3:10] <-1:8
+	colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
 	possible_data
 }
 
