@@ -115,7 +115,7 @@ restrict_causal_types <- function(model, restriction, join_by = NULL, action = "
 	if(!is.null(model$priors)) model$priors <- model$priors[type_names]
 	if(!is.null(model$parameters)) model$parameters <- model$parameters[type_names]
 
-	model$causal_types  <- update_causal_types(model)
+	# model$causal_types  <- update_causal_types(model)
 
 	return(model)
 
@@ -205,20 +205,20 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 #' Update causal types based on nodal types
 #' Do not export
 #'
-update_causal_types <- function(model){
-
-		possible_types <-	get_nodal_types(model)
-		variables      <- names(possible_types)
-
-		# Remove var names from nodal types
-		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
-		names(possible_types) <- variables
-
-		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-		return_df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
-
-	return(return_df)
-}
+# update_causal_types <- function(model){
+#
+# 		possible_types <-	get_nodal_types(model)
+# 		variables      <- names(possible_types)
+#
+# 		# Remove var names from nodal types
+# 		possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
+# 		names(possible_types) <- variables
+#
+# 		# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+# 		return_df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
+#
+# 	return(return_df)
+# }
 
 
 #' Reduce parameters
