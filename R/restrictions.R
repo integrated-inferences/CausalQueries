@@ -104,13 +104,14 @@ restrict_causal_types <- function(model, restriction, join_by = NULL, action = "
 	}
 
 	rownames(model$causal_types) <- 1:nrow(model$causal_types)
-	type_names  <- sapply(1:ncol(model$causal_types), function(j) paste0(names(model$causal_types)[j], model$causal_types[,j]))
-	unrestricted_nodal_types <- apply(type_names, 2, unique)
-	names(unrestricted_nodal_types) <- model$variables
+	type_names <- as.data.frame(type_names,   stringsAsFactors = FALSE)
+	colnames(type_names) <- colnames(model$causal_types)
+	unrestricted_nodal_types <- lapply(type_names, unique)
+	unrestricted_nodal_types <- lapply(	unrestricted_nodal_types, as.character)
 	current_nodal_types <- get_nodal_types(model)
-	model$nodal_types <- sapply(model$variables, function(v) intersect(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ))
+	model$nodal_types <- sapply(model$variables, function(v) intersect(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ), simplify = FALSE)
 
-	# Subset priors and update
+		# Subset priors and update
 	type_names          <- get_type_names(model$nodal_types)
 	if(!is.null(model$priors)) model$priors <- model$priors[type_names]
 	if(!is.null(model$parameters)) model$parameters <- model$parameters[type_names]
