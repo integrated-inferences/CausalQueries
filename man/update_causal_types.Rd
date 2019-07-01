@@ -2,10 +2,12 @@
 % Please edit documentation in R/restrictions.R
 \name{update_causal_types}
 \alias{update_causal_types}
-\title{Update causal types based on nodal types}
+\title{Update causal types based on nodal types
+Do not export}
 \usage{
 update_causal_types(model)
 }
 \description{
 Update causal types based on nodal types
+Do not export
 }
