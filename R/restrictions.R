@@ -104,6 +104,7 @@ restrict_causal_types <- function(model, restriction, join_by = NULL, action = "
 	}
 
 	rownames(model$causal_types) <- 1:nrow(model$causal_types)
+	type_names  <- sapply(1:ncol(model$causal_types), function(j) paste0(names(model$causal_types)[j], model$causal_types[,j]))
 	type_names <- as.data.frame(type_names,   stringsAsFactors = FALSE)
 	colnames(type_names) <- colnames(model$causal_types)
 	unrestricted_nodal_types <- lapply(type_names, unique)
