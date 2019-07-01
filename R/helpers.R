@@ -114,7 +114,7 @@ clean_condition <- function(condition){
 #' #Example using digit position
 #' lookup_type(model, position = list(X = c(3,4), Y = 1))
 #' #Example using condition
-#' condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
+#' lookup_type(model, condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
 #' #Return interpretation of all digit positions of all nodes
 #' lookup_type(model)
 #' @export
