@@ -182,9 +182,15 @@ lookup_type <- function(model, condition = NULL, position = NULL){
 #' @param to_expand A character vector of length 1L.
 #' @param join_by A character vector of length 1L.
 #' @export
+#' @examples
+#' expand_wildcard("(Y[X=1, M=.] > Y[X=1, M=.])")
 #'
 expand_wildcard <- function(to_expand, join_by = "|"){
 	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
+	if(is.list(orig)){
+		if(is.null(orig[[1]]))
+			stop("The character expressions to be expanded must be contained within parentheses")
+	}
 	skeleton <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)),
 												fixed = TRUE)
 	expand_it <- grepl("\\.", orig)
