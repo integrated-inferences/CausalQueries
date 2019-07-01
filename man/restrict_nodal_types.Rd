@@ -11,7 +11,7 @@ restrict_nodal_types(model, restriction, action = "remove")
 
 \item{restriction}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
 
-\item{action}{either `remove` or `keep`}
+\item{action}{A string. Either `remove` or `keep` to indicate whether to remove or keep only nodal types specified by \code{restriction}.}
 }
 \description{
 Reduce nodal types

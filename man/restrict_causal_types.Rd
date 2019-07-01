@@ -4,12 +4,17 @@
 \alias{restrict_causal_types}
 \title{Reduce causal types}
 \usage{
-restrict_causal_types(model, restriction)
+restrict_causal_types(model, restriction, join_by = NULL,
+  action = "remove")
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
 \item{restriction}{a quoted expressions defining the restriction}
+
+\item{join_by}{A string. The logical operator joining expanded restriction types when restriction contains wildcard. Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
+
+\item{action}{A string. Either `remove` or `keep` to indicate whether to remove or keep only causal types specified by \code{restriction}.}
 }
 \description{
 Reduce causal types
