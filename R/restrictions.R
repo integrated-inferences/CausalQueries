@@ -2,9 +2,9 @@
 #'
 #' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
 #'
-#' @param model a model created by make_model()
-#' @param node_restrict a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
-#' @param causal_type_restrict  a quoted expressions defining the restriction
+#' @param model A model created by make_model()
+#' @param node_restrict A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax.
+#' @param causal_type_restrict  A quoted expressions defining the restriction
 #' @param join_by A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param action A string. Either `remove` or `keep` to indicate whether to remove or keep only types specified by \code{causal_type_restrict} or \code{node_restrict}.
 #' @export
@@ -46,7 +46,10 @@
 #' model <- make_model("X->Y<-M") %>%
 #' set_restrictions(causal_type_restrict = c("(Y[X=1, M=.] < Y[X=0, M=.])"), join_by = "&")
 #' get_parameter_matrix(model)
-#'
+#' # Restrict to a single type in endogenous variable
+#' model <- make_model("X->Y") %>%
+#' set_restrictions(causal_type_restrict =  "(Y[X=.] == 1)", join_by = "&", action = "keep")
+#' get_parameter_matrix(model)
 set_restrictions <- function(model,
 														 node_restrict = NULL,
 														 causal_type_restrict = NULL,
@@ -198,7 +201,8 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	# Subset priors
 	type_names          <- gbiqq:::get_type_names(nodal_types)
 	model$priors <- model$priors[type_names]
-	model$causal_types  <- gbiqq:::update_causal_types(model)
+	# needed for when user is restriciting nodes and causal types in the same call.
+	model$causal_types  <- update_causal_types(model)
 	if(!is.null(model$parameters)) model$parameters <-
 		reduce_parameters(model, model$parameters)
 	return(model)

@@ -8,11 +8,11 @@ set_restrictions(model, node_restrict = NULL,
   causal_type_restrict = NULL, join_by = NULL, action = "remove")
 }
 \arguments{
-\item{model}{a model created by make_model()}
+\item{model}{A model created by make_model()}
 
-\item{node_restrict}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+\item{node_restrict}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax.}
 
-\item{causal_type_restrict}{a quoted expressions defining the restriction}
+\item{causal_type_restrict}{A quoted expressions defining the restriction}
 
 \item{join_by}{A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 
@@ -60,5 +60,8 @@ get_parameter_matrix(model)
 model <- make_model("X->Y<-M") \%>\%
 set_restrictions(causal_type_restrict = c("(Y[X=1, M=.] < Y[X=0, M=.])"), join_by = "&")
 get_parameter_matrix(model)
-
+# Restrict to a single type in endogenous variable
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict =  "(Y[X=.] == 1)", join_by = "&", action = "keep")
+get_parameter_matrix(model)
 }
