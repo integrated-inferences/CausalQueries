@@ -24,6 +24,8 @@ Restrict causal types. If priors exist prior probabilities are redistributed ove
 }
 \examples{
 require(dplyr)
+
+# Restrict parameter space using nodal types
 model <- make_model("X->Y") \%>\%
 set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 get_parameter_matrix(model)
@@ -42,4 +44,18 @@ get_parameter_matrix(model)
 model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
 set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
 get_parameter_matrix(model)
+
+# Restrict parameter space using casual types
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict = c("X == 0", "Y==0"))
+get_parameter_matrix(model)
+# Restrict to define a model with monotonicity
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict = c("Y[X=1] < Y[X=0]"))
+get_parameter_matrix(model)
+# Restriction with a wildcard
+model <- make_model("X->Y<-M") \%>\%
+set_restrictions(causal_type_restrict = c("(Y[X=1, M=.] < Y[X=0, M=.])"))
+get_parameter_matrix(model)
+
 }

@@ -9,8 +9,7 @@ set_confound(model, confound = NULL)
 \arguments{
 \item{model}{A model created by make_model()}
 
-\item{confound}{A named list relating nodes to statements that identify causal types with which they are  confounded
-plot_dag}
+\item{confound}{A named list relating nodes to statements that identify causal types with which they are confounded}
 }
 \description{
 Adjust parameter matrix to allow confounding

@@ -138,8 +138,10 @@ get_estimands <- function(model,
 	}
 	 # FLAG: if needed because shape depends on length of stats -- must be better way
 
-	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
-	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
+	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)),
+																				 stringsAsFactors = FALSE)
+	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)),
+																				 stringsAsFactors = FALSE)
 
 	## mapply again for identifiers
 	h <- function(qname, subset, using){ c(qname, paste(subset), using)}

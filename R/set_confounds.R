@@ -3,8 +3,7 @@
 #' Adjust parameter matrix to allow confounding
 #'
 #' @param model A model created by make_model()
-#' @param confound A named list relating nodes to statements that identify causal types with which they are  confounded
-#'plot_dag
+#' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
@@ -37,7 +36,7 @@ set_confound <-  function(model, confound = NULL){
 	# Ancestors
 	A  <- names(confound)
 
-	# Descendent types
+	# Descendant types
 	D <-lapply(confound, function(x) {get_types(model, x)$type_list})
 
 	# Ds <- lapply(D, function(k)
@@ -83,12 +82,12 @@ set_confound <-  function(model, confound = NULL){
 	attr(P, "param_set") <- param_set
 
 
-	# Make a dataset of ancestor to descendent confound relations
+	# Make a dataset of ancestor to descendant confound relations
 	V <- lapply(confound, var_in_query, model= model)
 	confounds_df <- data.frame(
 		ancestor = rep(as.vector(names(V)), times = as.vector(unlist(lapply(V, length)))),
-	  descendent = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
-	confounds_df <- confounds_df[confounds_df$ancestor != confounds_df$descendent,]
+	  descendant = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
+	confounds_df <- confounds_df[confounds_df$ancestor != confounds_df$descendant,]
 	rownames(confounds_df) <- NULL
 
 	if(!is.null(attr(P, "confounds"))) confounds_df <- rbind(attr(P, "confounds"), confounds_df)
@@ -98,7 +97,11 @@ set_confound <-  function(model, confound = NULL){
 
 
 	model$P <- P
+	old_priors <- get_priors(model)
+	priors <- make_priors(model)
+  priors[names(old_priors)] = old_priors
 
+  model$priors <- priors
 	model
 
 	}
