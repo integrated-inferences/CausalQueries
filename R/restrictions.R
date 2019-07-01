@@ -1,15 +1,17 @@
 #' Restrict a model
 #'
-#' Restrict causal types. If priors exist prior probabilities are redistributed over remaining types.
+#' Restrict causal types. If priors exist, prior probabilities are redistributed over remaining types.
 #'
-#' @param model a model created by make_model()
-#' @param node_restrict a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
-#' @param causal_type_restrict  a quoted expressions defining the restriction
+#' @param model A model created by make_model().
+#' @param node_restrict A named list of character vectors. List elements specify nodal types to remove from the model. Names refer to variables. Use \code{get_nodal_types()} on a model to see syntax.
+#' @param causal_type_restrict A character vector of length 1L. An expression in string format defining causal types to restrict.
 #' @param action  either `remove` or `keep`: for nodal type restrictions, indicate whether type to be removed or kept
 #' @export
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
 #' @examples
+#' # Restrictions can be specified in of the the three following ways:
+#' # 1. Using nodal_types syntax:
 #' require(dplyr)
 #'
 #' # Restrict parameter space using nodal types

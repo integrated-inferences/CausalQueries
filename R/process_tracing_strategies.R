@@ -1,6 +1,6 @@
 #' Get data probabilities
 #'
-#' Takes in a matrix of possible (single case) observations and returns the probability of each
+#' Takes in a matrix of possible (single case) observations and returns the probability of each.
 #'
 #' @param model A  model
 #' @param data Data in long format
@@ -27,10 +27,10 @@ get_data_probs <- function(model, data, parameters = NULL){
 #' Conditional inferences
 #'
 #' Calculate estimands condition on observed data (currently for single case process tracing) together with data realization probabilities
-#' Realization probabilities are the probability of the observed data given data is sought onb observed variables
+#' Realization probabilities are the probability of the observed data given data is sought on observed variables.
 #' @param model A  model
-#' @param parameters a parameter vector
-#' @param query A query as a character string, for example 'Y[X=1]>Y[X=0]'
+#' @param parameters A numeric vector. Values of parameters may be specified. By default, it is drawn from priors.
+#' @param query A character vector of length 1L. Query for example 'Y[X=1]>Y[X=0]'
 #' @param given A conditioning set as a character string that evaluates to a logical, for example 'Y==1'
 #'
 #' @export
