@@ -106,7 +106,7 @@ make_possible_data_single <- function(model,
 
  if(cases == "within"){
 
- 	# to fix: it gathers data on any variable specified via vars even if variable observed if given. should throw error or warning
+ 	# to fix: it gathers data on any variable specified via vars even if variable observed in given. should throw error or warning
 
  	if(!is.null(N) & (N > nrow(given)) )
  		stop("N must be less or equal than the number of rows in given when case equals `within`.")
