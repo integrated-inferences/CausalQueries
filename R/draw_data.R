@@ -64,8 +64,10 @@ draw_type_prob <- function(model,
 													 parameters = NULL,
 													 using = NULL ){
 
+	if(!is.null(parameters) & !is.null(using)) if(using!="parameters") stop("Parameters provided but using is not set to parameters")
 	if(!is.null(parameters)) using <- "parameters"
-	if(using == "parameters" & is.null(parameters)) parameters <- draw_parameters(model, using = using)
+	if(is.null(using)) {using <- "priors"; message("using not provided, priors assumed")}
+	if(is.null(parameters))  parameters <- draw_parameters(model, using = using)
 	if(is.null(P)) 	    P      <- get_parameter_matrix(model)
 
 	# Type probabilities
