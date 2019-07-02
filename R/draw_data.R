@@ -50,8 +50,8 @@ draw_parameters <- function(model, using = NULL){
 # `draw_type_prob` draws probability of vector of causal types  given a single realization of parameters, possibly drawn from model priors
 #'
 #' @param model A model created by make_model()
-#' @param P Parameter matrix, not required but may be provided to avoide repeated computation for simulations
-#' @param parameters A specific parameter vector, parameters, may be provided, otherwise parameters is drawn using `using` (either from priors, poseriors, or from model$parameters)
+#' @param P Parameter matrix. Not required but can avoid repeated computation for simulations
+#' @param parameters A specific parameter vector may be provided, otherwise parameters are drawn using `using` and `draw_parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #'
 #' @export
