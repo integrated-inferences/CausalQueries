@@ -16,7 +16,7 @@ conditional_inferences(model, query, parameters = NULL, given = NULL)
 \item{given}{A conditioning set as a character string that evaluates to a logical, for example 'Y==1'}
 }
 \description{
-Calculate estimands condition on observed data (currently for single case process tracing) together with data realization probabilities
+Calculate estimands conditional on observed data (currently, for single-case process tracing) together with data realization probabilities
 Realization probabilities are the probability of the observed data given data is sought onb observed variables
 }
 \examples{
