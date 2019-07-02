@@ -11,7 +11,7 @@ set_parameters(model, parameters = NULL, type = "prior_mean", ...)
 
 \item{parameters}{parameter vector to add to model}
 
-\item{type}{An element of ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw"). Indicates type of parameters to set.}
+\item{type}{An element of ("flat", "new", prior_mean", "posterior_mean", "prior_draw", "posterior_draw"). Indicates type of parameters to set.}
 }
 \description{
 Add a vector of true parameters -- can be use to draw data, rather than true vector
@@ -19,6 +19,8 @@ Add a vector of true parameters -- can be use to draw data, rather than true vec
 \examples{
 model <- set_parameters(make_model("X -> Y"),
           type = "flat")
-model <- set_parameters(make_model("X -> Y"),
-                        alphas = list(Y = c(`(Y[X=1] != Y[X=0])` = 3)))
+# Use make_alpha to define specific parameters
+model <- set_parameters(make_model("X -> Y"), type = "new",
+                        alphas = list(Y = c(`(Y[X=1] > Y[X=0])` = 3)))
+model$parameters
 }
