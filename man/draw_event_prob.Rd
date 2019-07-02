@@ -26,4 +26,5 @@ Draw event probabilities
 \examples{
 model <- make_model("X -> Y")
 draw_event_prob(model = model)
+draw_event_prob(model = model, using = "parameters")
 }

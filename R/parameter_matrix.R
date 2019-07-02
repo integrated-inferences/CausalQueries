@@ -13,7 +13,7 @@
 make_parameter_matrix  <- function(model){
 
 	nodal_types     <- get_nodal_types(model)
-	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length)))
+	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length), SIMPLIFY = FALSE))
 	types           <- gbiqq:::causal_type_names(get_causal_types(model))
 	pars            <- unlist(nodal_types)
 
@@ -82,8 +82,10 @@ summary.parameter_matrix <- function(object, ...) {
 
 #' @export
 print.summary.parameter_matrix <- function(x, ...){
-
-  print.table(x)
+  print("Rows are parameters, grouped in parameter sets")
+	print("Columns are causal types")
+	print("Cell entries indicate whether a parameter probability is used in the calculation of causal type probability")
+	print.table(x)
 	param_set <- attr(x,"param_set")
 
   cat("\n parameter set  (P)\n ")

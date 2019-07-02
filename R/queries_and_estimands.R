@@ -108,9 +108,6 @@ estimand_distribution <- function(model,
 #'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
 #'       digits = 3)
 
-get_estimands(updated, queries = list(Is_B = "Y[X=1] > Y[X=0]"), using = "posteriors")
-
-
 get_estimands <- function(model,
 													parameters = NULL,
 													queries = list(NULL),
@@ -141,8 +138,10 @@ get_estimands <- function(model,
 	}
 	 # FLAG: if needed because shape depends on length of stats -- must be better way
 
-	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
-	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)), stringsAsFactors = FALSE)
+	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)),
+																				 stringsAsFactors = FALSE)
+	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)),
+																				 stringsAsFactors = FALSE)
 
 	## mapply again for identifiers
 	h <- function(qname, subset, using){ c(qname, paste(subset), using)}

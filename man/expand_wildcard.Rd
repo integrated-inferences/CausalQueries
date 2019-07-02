@@ -14,3 +14,7 @@ expand_wildcard(to_expand, join_by = "|")
 \description{
 Expand statement containing wildcard
 }
+\examples{
+expand_wildcard("(Y[X=1, M=.] > Y[X=1, M=.])")
+
+}

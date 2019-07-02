@@ -5,16 +5,18 @@
 \title{Restrict a model}
 \usage{
 set_restrictions(model, node_restrict = NULL,
-  causal_type_restrict = NULL, action = "remove")
+  causal_type_restrict = NULL, join_by = NULL, action = "remove")
 }
 \arguments{
-\item{model}{a model created by make_model()}
+\item{model}{A model created by make_model()}
 
-\item{node_restrict}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+\item{node_restrict}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax.}
 
-\item{causal_type_restrict}{a quoted expressions defining the restriction}
+\item{causal_type_restrict}{A quoted expressions defining the restriction}
 
-\item{action}{either `remove` or `keep`: for nodal type restrictions, indicate whether type to be removed or kept}
+\item{join_by}{A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
+
+\item{action}{A string. Either `remove` or `keep` to indicate whether to remove or keep only types specified by \code{causal_type_restrict} or \code{node_restrict}.}
 }
 \value{
 A model with restrictions and nodal types saved as attributes.
@@ -24,6 +26,8 @@ Restrict causal types. If priors exist prior probabilities are redistributed ove
 }
 \examples{
 require(dplyr)
+
+# Restrict parameter space using nodal types
 model <- make_model("X->Y") \%>\%
 set_restrictions(node_restrict = list(X = "X0", Y = "Y00"))
 get_parameter_matrix(model)
@@ -31,6 +35,7 @@ get_parameter_matrix(model)
 model <- make_model("X->Y") \%>\%
 set_restrictions(node_restrict = list(X = "X0", Y = c("Y00", "Y01", "Y11")))
 get_parameter_matrix(model)
+# Restrict to a single type
 model <- make_model("X->Y") \%>\%
 set_restrictions(node_restrict = list(Y = "Y11"), action = "keep")
 get_parameter_matrix(model)
@@ -41,5 +46,22 @@ get_parameter_matrix(model)
 # Running example: there are only four causal types
 model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
 set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+get_parameter_matrix(model)
+
+# Restrict parameter space using casual types
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict = c("X == 0", "Y==0"))
+get_parameter_matrix(model)
+# Restrict to define a model with monotonicity
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict = c("Y[X=1] < Y[X=0]"))
+get_parameter_matrix(model)
+# Restriction with a wildcard
+model <- make_model("X->Y<-M") \%>\%
+set_restrictions(causal_type_restrict = c("(Y[X=1, M=.] < Y[X=0, M=.])"), join_by = "&")
+get_parameter_matrix(model)
+# Restrict to a single type in endogenous variable
+model <- make_model("X->Y") \%>\%
+set_restrictions(causal_type_restrict =  "(Y[X=.] == 1)", join_by = "&", action = "keep")
 get_parameter_matrix(model)
 }

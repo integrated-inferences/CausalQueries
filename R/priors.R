@@ -6,26 +6,26 @@
 #' @export
 #' @examples
 #' require(dplyr)
-#' XYmodel <- make_model("X -> Y")
+#' model <- make_model("X -> Y")
 #' #  Default sets all priors to 1
-#' make_alphas(model = XYmodel)
+#' make_alphas(model = model)
 #' #  Set all priors to 0.5
-#' make_alphas(model = XYmodel, prior_distribution = "jeffreys")
+#' make_alphas(model = model, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
-#' make_alphas(model = XYmodel, prior_distribution = "certainty")
+#' make_alphas(model = model, prior_distribution = "certainty")
 #'#  set all priors to 1 except for prior of nodal_type X0
-#' make_alphas(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#' make_alphas(model = model, alphas = list(X = c(X0 = 2)))
 #' # Specify priors using query
-#'  make_alphas(model = XYmodel,
+#'  make_alphas(model = model,
 #'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model
-#' make_alphas(model = XYmodel,
+#' make_alphas(model = model,
 #'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
-#' make_alphas(model = XYmodel, alphas =  10)
+#' make_alphas(model = model, alphas =  10)
 #' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
 #' \dontrun{
-#' make_alphas(model = XYmodel,
+#' make_alphas(model = model,
 #'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' }
 #'
@@ -92,26 +92,26 @@ make_alphas <- function(model,   alphas = NULL ){
 #' Stipulated alpha values override prior_distribution
 #' @export
 #' @examples
-#' XYmodel <- make_model("X -> Y")
+#' model <- make_model("X -> Y")
 #' #  Default sets all priors to 1
-#' make_priors(model = XYmodel)
+#' make_priors(model = model)
 #' #  Set all priors to 0.5
-#' make_priors(model = XYmodel, prior_distribution = "jeffreys")
+#' make_priors(model = model, prior_distribution = "jeffreys")
 #' #  Set all priors to infinity
-#' make_priors(model = XYmodel, prior_distribution = "certainty")
+#' make_priors(model = model, prior_distribution = "certainty")
 #'#  set all priors to 1 except for prior of nodal_type X0
-#' make_priors(model = XYmodel, alphas = list(X = c(X0 = 2)))
+#' make_priors(model = model, alphas = list(X = c(X0 = 2)))
 #' # Specify priors by query
-#'  make_priors(model = XYmodel,
+#'  make_priors(model = model,
 #'              alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  ))
 #'#  specify priors for each of the nodal_types in model
-#' make_priors(model = XYmodel,
+#' make_priors(model = model,
 #'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(`(Y[X=1] > Y[X=0])` = 3, Y10 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' # set all priors to 10
-#' make_priors(model = XYmodel, alphas =  10)
+#' make_priors(model = model, alphas =  10)
 #' # If the prior for a given parameter is duplicated, \code{make_prior} throws an informative error.
 #' \dontrun{
-#' make_priors(model = XYmodel,
+#' make_priors(model = model,
 #'            alphas = list(X = c(X0 = 2, `X == 1` = 3),  Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3, Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' }
 #'
@@ -250,7 +250,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
   if(is.null(model$priors)) model <- set_priors(model)
   if(is.null(model$P)) model <- set_parameter_matrix(model)
 
-  model$prior_distribution <- t(replicate(n_draws, draw_lambda(model)))
+  model$prior_distribution <- t(replicate(n_draws, draw_parameters(model)))
 #  message(paste("Prior distribution based on", n_draws, "draws attached to model"))
 
 	return(model)
@@ -300,7 +300,7 @@ set_parameters <- function(model,
 		if (type == "prior_draw") {
 			if (is.null(model$prior)) stop("Prior distribution required")
 
-			parameters <- draw_lambda(model)}
+			parameters <- draw_parameters(model)}
 
 		if (type == "posterior_mean") {
 			if (is.null(model$posterior)) stop("Posterior distribution required")

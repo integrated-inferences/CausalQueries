@@ -70,6 +70,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	conds <- t(apply(vals, 1, function(j) paste(vars, j, sep = "==")))
 	conds[is.na(vals)] <- NA
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
+	subsets <- as.list(subsets)
 	subsets[subsets==""] <- TRUE
 	estimands <- gbiqq::get_estimands(
 		model   = model,
