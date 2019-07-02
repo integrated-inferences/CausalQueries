@@ -55,12 +55,19 @@ observe <- function(complete_data,
 }
 
 #' Data Strategy
+#' @param model A causal model as created by \code{make_model}
+#' @param n_obs Scalar giving number of observations in \code{complete_data}
+#' @param parameters A specific parameter vector. If not provided parameters are drawn using `using` and `draw_parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
+#' @param n List indicating number of observations to be observed at each step
+#' @param vars List indicating number which variables to be observed at each step
+#' @param probs List indicating observation probabilities at each step
+#' @param subsets List indicating strata within which observations are to be observed at each step
+#' @param complete_data A dataset with complete observations. Optional.
 #' @export
 #' @examples
 #' # A strategy in which X, Y are observed for sure and M is observed with 50% probability for X=1, Y=0 cases
 #' model <- make_model("X -> M -> Y")
-#' model <- set_parameters(model, type = "flat")
 #' data_strategy(
 #'   model,
 #'   n_obs = 8,
@@ -71,13 +78,13 @@ observe <- function(complete_data,
 
 data_strategy <- function(model,
 													complete_data = NULL,
-													parameters = NULL,
 													n_obs   = NULL,
+													parameters = NULL,
+													using = "priors",
 													n       = NULL,  # n at each step
 													vars    = list(NULL),
 													probs   = list(NULL),
-													subsets = list(NULL),
-													using = "priors"){
+													subsets = list(NULL)){
 
 
 	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(

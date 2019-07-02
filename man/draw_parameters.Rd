@@ -17,6 +17,6 @@ Draw parameters
 Default behavior takes a random draw of parameters from priors; can also draw from posteriors, or return pre defined parameters.
 }
 \examples{
-draw_parameters(model = model)
+draw_parameters(model = make_model("X->Y"))
 
 }

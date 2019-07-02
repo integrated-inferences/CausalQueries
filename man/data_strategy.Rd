@@ -4,12 +4,28 @@
 \alias{data_strategy}
 \title{Data Strategy}
 \usage{
-data_strategy(model, complete_data = NULL, parameters = NULL,
-  n_obs = NULL, n = NULL, vars = list(NULL), probs = list(NULL),
-  subsets = list(NULL), using = "priors")
+data_strategy(model, complete_data = NULL, n_obs = NULL,
+  parameters = NULL, using = "priors", n = NULL, vars = list(NULL),
+  probs = list(NULL), subsets = list(NULL))
 }
 \arguments{
+\item{model}{A causal model as created by \code{make_model}}
+
+\item{complete_data}{A dataset with complete observations. Optional.}
+
+\item{n_obs}{Scalar giving number of observations in \code{complete_data}}
+
+\item{parameters}{A specific parameter vector. If not provided parameters are drawn using `using` and `draw_parameters`}
+
 \item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
+
+\item{n}{List indicating number of observations to be observed at each step}
+
+\item{vars}{List indicating number which variables to be observed at each step}
+
+\item{probs}{List indicating observation probabilities at each step}
+
+\item{subsets}{List indicating strata within which observations are to be observed at each step}
 }
 \description{
 Data Strategy
@@ -17,7 +33,6 @@ Data Strategy
 \examples{
 # A strategy in which X, Y are observed for sure and M is observed with 50\% probability for X=1, Y=0 cases
 model <- make_model("X -> M -> Y")
-model <- set_parameters(model, type = "flat")
 data_strategy(
   model,
   n_obs = 8,
