@@ -4,14 +4,14 @@
 \alias{make_data_probabilities}
 \title{Generates a probability distribution over possible data outcomes}
 \usage{
-make_data_probabilities(model, given, data_strat = NULL, pars)
+make_data_probabilities(model, given, subset = NULL, pars)
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}
 
 \item{given}{A data frame with observations}
 
-\item{data_strat}{data strategy}
+\item{subset}{data strategy}
 }
 \value{
 A dataset
@@ -29,6 +29,6 @@ model <- make_model("X->M->Y")  \%>\%
 
 given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 pars <- draw_parameters(model)
-make_data_probabilities(model, given, data_strat = c(1,3), pars = pars)
+make_data_probabilities(model, given, subset = c(1,3), pars = pars)
 
 }

@@ -5,8 +5,9 @@
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
-#' @param data_strat data strategy. If NULL it gathers data for all possible cases.
-#' @param vars_to_seek Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
+#' @param cases  A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
+#'  @param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
+#' @param direction. . It gets overridden by \code{subset} when \code{subset} is not NULL.
 #' @export
 #' @return A dataset
 #' @examples
@@ -17,107 +18,124 @@
 #' # Look for data on M for all possible cases in the given data
 #' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 #' make_possible_data(model, given)
-#'
+#'  # Gather data on X and Y
+#' make_possible_data(model,  N = list(4), vars = list(c("X", "Y")))
 #' # Look for data on M  when  X = Y = 1
-#' make_possible_data(model, given, data_strat = X == 1 & Y == 1)
+#' make_possible_data(model, given, cases = list("X == 1 & Y == 1"))
 #'
 #'# Look for data on M  when X=1 or Y==1
-#' make_possible_data(model, given, data_strat = X == 1 | Y == 1)
+#' make_possible_data(model, given, cases = "X == 1 | Y == 1")
 #'
 #' # Look for data on K and M
 #' model <- make_model("X->M->Y <-K")   %>%
 #'    set_parameter_matrix()
 #' given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
 #' make_possible_data(model, given)
-#' # Look for data only on M
-#' make_possible_data(model, given, vars_to_seek = "M")
-#' # Look for data only on M when  X = 1 and Y = 0
-#' make_possible_data(model, given, data_strat =  X == 1 & Y == 0, vars_to_seek = "M")
+#' # Look for data only on M for all within-cases
+#' make_possible_data(model, given, vars = list("M"), cases = list("within"), N = list(nrow(given)))
+#' # Look for data on M when X = 1 and Y = 0
+#' make_possible_data(model, given, cases =  "X == 1 & Y == 0", vars = list("M"))
 make_possible_data <- function(model,
-															 given,
-															 data_strat   = list(NULL),
-															 vars_to_seek = list(NA)){
-	data_strat_expr <- as.list(substitute(data_strat))
-	data_strat_expr <- data_strat_expr[2:length(data_strat_expr)]
-	n <- max(length(data_strat_expr), length(vars_to_seek))
-	#data_strat   <- as.list(data_strat)
-	vars_to_seek <- as.list(vars_to_seek)
-
-	if(!identical(length(	data_strat_expr), length(vars_to_seek))){
-	  if (length(	data_strat_expr) != 1 & length(vars_to_seek) !=1)
-	  	stop("data_strat and vars_to seek should either have the same length or one of them must be of legnth 1L")
-	  if(length(vars_to_seek) > length(	data_strat_expr)) {
-	  	data_strat <- as.list(rep(	data_strat_expr, n))
-	  } else{
-	  	vars_to_seek <- as.list(rep(vars_to_seek , n))
-	  }
-	}
+															 given = NULL,
+															 N = list(1),
+															 cases   = list("any"),
+															 vars = list(NA)
+															 ){
 
 
+	if(!identical(length(	cases), length(vars), length(N)) )
+	  	stop("N, cases and vars must have the same length")
 
-	possible_datasets <- lapply(1:n, function(i){
-		make_possible_data_single(model, given, data_strat = 	expr(!!data_strat_expr[[i]]), vars_to_seek = vars_to_seek[[i]])
+	# to do: combine given with possible data sets produced for N and use combined ds in subsequent steps.
+	# main complication is that the shapes of the datasets are long and wide
+	out_possible_data <- possible_datasets <- lapply(1:length(cases), function(i){
+			make_possible_data_single(model,
+															given,
+															N     = N[[i]],
+															cases = cases[[i]],
+															vars  = vars[[i]])
 	})
 
- out_possible_data <- do.call(possible_datasets, merge, by = "event")
- out_possible_data <- possible[,!duplicated(t(out_possible_data))]
+
 
  return(out_possible_data)
 }
-#' Make possible data for a single strategy
+#' Make possible data for a single strategy step
 #'
 make_possible_data_single <- function(model,
-															 given,
-															 data_strat = NULL, vars_to_seek = NA) {
+															 given = NULL,
+															 N = NULL,
+															 cases = NULL,
+															 vars = NA) {
 
-	#
-	#  possible0 <- sapply(1:nrow(given), function(j) {W2 <- given;
-	#  W2[j, 2] <- 0;
-	#  as.numeric(trim_strategies(model, W2)[,3])})
-	#  possible0 <- possible0[,!duplicated(t(possible0))]
-	#
-	#  possible1 <- sapply(1:nrow(given), function(j) {W2 <- given;
-	#  W2[j, 2] <- 1;
-	#  as.numeric(trim_strategies(model, W2)[,3])})
-	#  possible1 <- possible1[,!duplicated(t(possible1))]
-	#
-	#  W2 <- given; W2[1, 2] <- 0
-	#  none <- c(rep(0, 8), trim_strategies(model, given)$count)
-	W2 <- w_given   <- given
-	data_strat_expr <- enexpr(data_strat)
-	variables       <- vars_to_seek
-	if(!eval_bare(is_null(data_strat_expr))){
-	w_given <- eval_tidy(dplyr::filter(given, !!!data_strat))
-	}
 
- possible_value <- function(given, value, vars_to_seek, variables){
-  W2 <- given
-  	possible <- sapply(1:nrow(given), function(j) {
-  		if(is.na(vars_to_seek)){
+	# The script inside the conditional below gets the max possible data
+	# when N obs of correlation data are collected on "vars"
+	# each col in possible_data represents a possible dataset that might be observed
+	# if we were to gather N obs on vars
+	if(cases == "any"){
+ 	possible <- get_max_possible_data(model)
+ 	if(!all(is.na(vars))) possible[, !names(possible) %in% vars] <- NA
+ 	d.frame  <- trim_strategies(model, possible)[,1:2]
+ 	possible_data_perm <- perm(rep(N, length(d.frame$event)))
+ 	n_tot <- rowSums(possible_data_perm)
+  possible_data <- 	possible_data_perm[n_tot==(N),]
+  possible_data <-  as.data.frame(t(possible_data))
+  possible_data <-  cbind(d.frame  ,possible_data)
+  colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
+
+
+ # The script inside the else below gets the max possible data
+ # when cases == "within" or when cases specifies a subset
+ }else {
+
+ # Function to assign possible 0 or 1
+ possible_value <- function(given, value, vars,  i_cases = NULL){
+  W2 <<- given
+  variables <- vars
+  i_cases <- ifelse(is.null(i_cases), 1:nrow(given), i_cases )
+  	possible <- sapply(i_cases, function(j) {
+  		if(length(vars) == 1){
+  			if(is.na(vars))
   			variables <- which(is.na(W2[j,]))}
-  		W2[j, variables] <- value;
+  		W2[j, variables] <<- value;
   		as.numeric(trim_strategies(model, W2)[,3])})
 
     possible[,!duplicated(t(possible))]
+ }
+
+ if(cases == "within"){
+
+ 	# to fix: it gathers data on any variable specified via vars even if variable observed if given. should throw error or warning
+
+ 	if(!is.null(N) & (N > nrow(given)) )
+ 		stop("N must be less or equal than the number of rows in given when case equals `within`.")
+
+ 	combinations <- data.frame(1:nrow(given))
+ 	# Possible combinations of cases for which one could gather data
+ 	if(!is.null(N)) combinations <- combn(1:nrow(given), N)
+  possible0 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 0, vars,combinations[,x]))
+  possible1 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 1, vars,combinations[,x]))
+  possible0 <- possible0[,!duplicated(t(possible0))]
+  possible1 <- possible1[,!duplicated(t(possible1))]
+
+
+  possible_data <- cbind(trim_strategies(model,W2)[,1:2],
+  											 possible0, possible1)
+
+  colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
+	} else {
+    # if cases specifies a subset
+		w_given <- subset(given, eval(parse(text = cases)))
+		possible0 <- possible_value(given = w_given, value = 0, vars)
+		possible1 <- possible_value(given = w_given, value = 1, vars)
+		possible_data <- cbind(trim_strategies(model,W2)[,1:2],
+													 possible0, possible1)
+		colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
   }
+ }
 
-  possible0 <- possible_value(given = w_given, value = 0, vars_to_seek, variables)
-  possible1 <- possible_value(given = w_given, value = 1, vars_to_seek, variables)
-
-  if(is.na(vars_to_seek)){
-  	W2[apply(W2,2, is.na)] <- 0
-  } else{
-   W2[, variables] <- 0
-  }
-
- # w_given <- rbind(w_given, W2)
-
-	possible_data <- cbind(trim_strategies(model,W2)[,1:2],
-												possible0, possible1
-												#, none = none
-	)
-	colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
-	possible_data
+	return(possible_data)
 }
 
 
@@ -129,7 +147,7 @@ make_possible_data_single <- function(model,
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
-#' @param data_strat data strategy
+#' @param subset data strategy
 #' @export
 #' @return A dataset
 #' @examples
@@ -141,9 +159,9 @@ make_possible_data_single <- function(model,
 #'
 #' given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 #' pars <- draw_parameters(model)
-#' make_data_probabilities(model, given, data_strat = c(1,3), pars = pars)
+#' make_data_probabilities(model, given, subset = c(1,3), pars = pars)
 #'
-make_data_probabilities <- function(model, given, data_strat = NULL, pars) {
+make_data_probabilities <- function(model, given, subset = NULL, pars) {
 
 	event_prob <- draw_event_prob(model, parameters = pars)
 

@@ -2,11 +2,11 @@
 % Please edit documentation in R/diagnose_strategies.R
 \name{make_possible_data_single}
 \alias{make_possible_data_single}
-\title{Make possible data for a single strategy}
+\title{Make possible data for a single strategy step}
 \usage{
-make_possible_data_single(model, given, data_strat = NULL,
-  vars_to_seek = NA)
+make_possible_data_single(model, given = NULL, N = NULL,
+  cases = NULL, vars = NA)
 }
 \description{
-Make possible data for a single strategy
+Make possible data for a single strategy step
 }

@@ -4,17 +4,18 @@
 \alias{make_possible_data}
 \title{Produces list of possible data given model and data strategy}
 \usage{
-make_possible_data(model, given, data_strat = list(NULL),
-  vars_to_seek = list(NA))
+make_possible_data(model, given = NULL, N = list(1),
+  cases = list("any"), vars = list(NA))
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}
 
 \item{given}{A data frame with observations}
 
-\item{data_strat}{data strategy. If NULL it gathers data for all possible cases.}
+\item{cases}{A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
+@param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.}
 
-\item{vars_to_seek}{Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.}
+\item{direction.}{. It gets overridden by \code{subset} when \code{subset} is not NULL.}
 }
 \value{
 A dataset
@@ -31,20 +32,21 @@ model <- make_model("X->M->Y")  \%>\%
 # Look for data on M for all possible cases in the given data
 given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 make_possible_data(model, given)
-
+ # Gather data on X and Y
+make_possible_data(model,  N = list(4), vars = list(c("X", "Y")))
 # Look for data on M  when  X = Y = 1
-make_possible_data(model, given, data_strat = X == 1 & Y == 1)
+make_possible_data(model, given, cases = list("X == 1 & Y == 1"))
 
 # Look for data on M  when X=1 or Y==1
-make_possible_data(model, given, data_strat = X == 1 | Y == 1)
+make_possible_data(model, given, cases = "X == 1 | Y == 1")
 
 # Look for data on K and M
 model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
 given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
 make_possible_data(model, given)
-# Look for data only on M
-make_possible_data(model, given, vars_to_seek = "M")
-# Look for data only on M when  X = 1 and Y = 0
-make_possible_data(model, given, data_strat =  X == 1 & Y == 0, vars_to_seek = "M")
+# Look for data only on M for all within-cases
+make_possible_data(model, given, vars = list("M"), cases = list("within"), N = list(nrow(given)))
+# Look for data on M when X = 1 and Y = 0
+make_possible_data(model, given, cases =  "X == 1 & Y == 0", vars = list("M"))
 }
