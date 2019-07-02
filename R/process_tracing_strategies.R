@@ -26,7 +26,7 @@ get_data_probs <- function(model, data, parameters = NULL){
 
 #' Conditional inferences
 #'
-#' Calculate estimands condition on observed data (currently for single case process tracing) together with data realization probabilities
+#' Calculate estimands conditional on observed data (currently, for single-case process tracing) together with data realization probabilities
 #' Realization probabilities are the probability of the observed data given data is sought onb observed variables
 #' @param model A  model
 #' @param parameters a parameter vector
