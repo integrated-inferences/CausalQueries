@@ -6,7 +6,7 @@
 #' @param prob    Observation probability
 #' @param n    Number of units to observe; if specified, \code{n} overrides \code{prob}
 #' @param subset  A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!
-#'
+#' @details A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -18,9 +18,6 @@
 #'      observed = observe(complete_data = df, vars_to_observe = "X"),
 #'      vars_to_observe = "Y", prob = .5,
 #'      subset = "X==1")
-
-# A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them
-
 observe <- function(complete_data,
 										observed = NULL,
 										vars_to_observe = NULL,

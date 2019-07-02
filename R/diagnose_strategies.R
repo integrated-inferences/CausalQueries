@@ -6,7 +6,7 @@
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
 #' @param data_strat data strategy. If NULL it gathers data for all possible cases.
-#' @param seek Variables to be sought or NA. If NA make_possible_data gathers data on all variables containing NA for the specified data strategy.
+#' @param vars_to_seek Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
 #' @export
 #' @return A dataset
 #' @examples
@@ -30,10 +30,45 @@
 #' given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
 #' make_possible_data(model, given)
 #' # Look for data only on M
-#' make_possible_data(model, given, seek = "M")
+#' make_possible_data(model, given, vars_to_seek = "M")
 #' # Look for data only on M when  X = 1 and Y = 0
-#' make_possible_data(model, given, data_strat =  X == 1 & Y == 0, seek = "M")
-make_possible_data <- function(model, given, data_strat = NULL, seek = NA) {
+#' make_possible_data(model, given, data_strat =  X == 1 & Y == 0, vars_to_seek = "M")
+make_possible_data <- function(model,
+															 given,
+															 data_strat   = list(NULL),
+															 vars_to_seek = list(NA)){
+	data_strat_expr <- as.list(substitute(data_strat))
+	data_strat_expr <- data_strat_expr[2:length(data_strat_expr)]
+	n <- max(length(data_strat_expr), length(vars_to_seek))
+	#data_strat   <- as.list(data_strat)
+	vars_to_seek <- as.list(vars_to_seek)
+
+	if(!identical(length(	data_strat_expr), length(vars_to_seek))){
+	  if (length(	data_strat_expr) != 1 & length(vars_to_seek) !=1)
+	  	stop("data_strat and vars_to seek should either have the same length or one of them must be of legnth 1L")
+	  if(length(vars_to_seek) > length(	data_strat_expr)) {
+	  	data_strat <- as.list(rep(	data_strat_expr, n))
+	  } else{
+	  	vars_to_seek <- as.list(rep(vars_to_seek , n))
+	  }
+	}
+
+
+
+	possible_datasets <- lapply(1:n, function(i){
+		make_possible_data_single(model, given, data_strat = 	expr(!!data_strat_expr[[i]]), vars_to_seek = vars_to_seek[[i]])
+	})
+
+ out_possible_data <- do.call(possible_datasets, merge, by = "event")
+ out_possible_data <- possible[,!duplicated(t(out_possible_data))]
+
+ return(out_possible_data)
+}
+#' Make possible data for a single strategy
+#'
+make_possible_data_single <- function(model,
+															 given,
+															 data_strat = NULL, vars_to_seek = NA) {
 
 	#
 	#  possible0 <- sapply(1:nrow(given), function(j) {W2 <- given;
@@ -48,17 +83,17 @@ make_possible_data <- function(model, given, data_strat = NULL, seek = NA) {
 	#
 	#  W2 <- given; W2[1, 2] <- 0
 	#  none <- c(rep(0, 8), trim_strategies(model, given)$count)
-	data_strat_expr = enexpr(data_strat)
-	W2 <- w_given <- given
-	variables <- seek
+	W2 <- w_given   <- given
+	data_strat_expr <- enexpr(data_strat)
+	variables       <- vars_to_seek
 	if(!eval_bare(is_null(data_strat_expr))){
-	w_given <-  eval_tidy(dplyr::filter(given, !!data_strat_expr))
+	w_given <- eval_tidy(dplyr::filter(given, !!!data_strat))
 	}
 
- possible_value <- function(given, value, seek, variables){
+ possible_value <- function(given, value, vars_to_seek, variables){
   W2 <- given
   	possible <- sapply(1:nrow(given), function(j) {
-  		if(is.na(seek)){
+  		if(is.na(vars_to_seek)){
   			variables <- which(is.na(W2[j,]))}
   		W2[j, variables] <- value;
   		as.numeric(trim_strategies(model, W2)[,3])})
@@ -66,18 +101,18 @@ make_possible_data <- function(model, given, data_strat = NULL, seek = NA) {
     possible[,!duplicated(t(possible))]
   }
 
-  possible0 <- possible_value(given = w_given, value = 0, seek, variables)
-  possible1 <- possible_value(given = w_given, value = 1, seek, variables)
+  possible0 <- possible_value(given = w_given, value = 0, vars_to_seek, variables)
+  possible1 <- possible_value(given = w_given, value = 1, vars_to_seek, variables)
 
-  if(is.na(seek)){
+  if(is.na(vars_to_seek)){
   	W2[apply(W2,2, is.na)] <- 0
   } else{
    W2[, variables] <- 0
   }
 
-  w_given <- rbind(w_given, W2)
+ # w_given <- rbind(w_given, W2)
 
-	possible_data <- cbind(trim_strategies(model, w_given)[,1:2],
+	possible_data <- cbind(trim_strategies(model,W2)[,1:2],
 												possible0, possible1
 												#, none = none
 	)

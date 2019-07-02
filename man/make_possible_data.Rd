@@ -4,14 +4,17 @@
 \alias{make_possible_data}
 \title{Produces list of possible data given model and data strategy}
 \usage{
-make_possible_data(model, given, data_strat = NULL)
+make_possible_data(model, given, data_strat = list(NULL),
+  vars_to_seek = list(NA))
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}
 
 \item{given}{A data frame with observations}
 
-\item{data_strat}{data strategy}
+\item{data_strat}{data strategy. If NULL it gathers data for all possible cases.}
+
+\item{vars_to_seek}{Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.}
 }
 \value{
 A dataset
@@ -25,7 +28,23 @@ library(dplyr)
 model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
-
-given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+# Look for data on M for all possible cases in the given data
+given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 make_possible_data(model, given)
+
+# Look for data on M  when  X = Y = 1
+make_possible_data(model, given, data_strat = X == 1 & Y == 1)
+
+# Look for data on M  when X=1 or Y==1
+make_possible_data(model, given, data_strat = X == 1 | Y == 1)
+
+# Look for data on K and M
+model <- make_model("X->M->Y <-K")   \%>\%
+   set_parameter_matrix()
+given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
+make_possible_data(model, given)
+# Look for data only on M
+make_possible_data(model, given, vars_to_seek = "M")
+# Look for data only on M when  X = 1 and Y = 0
+make_possible_data(model, given, data_strat =  X == 1 & Y == 0, vars_to_seek = "M")
 }

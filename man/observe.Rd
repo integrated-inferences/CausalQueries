@@ -23,6 +23,9 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
 \description{
 Observe data, given a strategy
 }
+\details{
+A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them.
+}
 \examples{
 model <- make_model("X -> Y")
 df <- simulate_data(model, n = 8)
