@@ -1,12 +1,13 @@
 #' Produces list of possible data given model and data strategy
 #'
-#' THIS IS CURRENTLY NOT AT ALL GENERAL.
-#' Aim is for a function to createa a databse of possible data from a data strategy.
+#' Creates a databse of possible data from a data strategy.
+#' Users can gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"). Or they can
+#' gather data in all cases within a given dataset ("within"). Or they can specify  the subset of cases for which within-case data should be collected (e.g. "Y == 1").
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
 #' @param cases  A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
-#'  @param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
+#' @param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
 #' @param direction. . It gets overridden by \code{subset} when \code{subset} is not NULL.
 #' @export
 #' @return A dataset
@@ -18,7 +19,9 @@
 #' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 #'
 #' # Look for data on M for all possible cases in the given data
-#' make_possible_data(model, given)
+#' make_possible_data(model, N = 2)
+#' make_possible_data(model, given = given, cases = "within")
+#' make_possible_data(model, given = given, cases = "X==1 & Y==1")
 #'
 #'  # Gather data on X and Y
 #' make_possible_data(model,  N = list(4), vars = list(c("X", "Y")))
@@ -58,17 +61,18 @@ make_possible_data <- function(model,
 
 	# to do: combine given with possible data sets produced for N and use combined ds in subsequent steps.
 	# main complication is that the shapes of the datasets are long and wide
-	out_possible_data <- possible_datasets <- lapply(1:length(cases), function(i){
+	out_possible_data <- possible_datasets <-
+		lapply(1:length(cases), function(i){
 			make_possible_data_single(model,
-															given,
-															N     = N[[i]],
-															cases = cases[[i]],
-															vars  = vars[[i]])
+  															given,
+ 	  														N     = N[[i]],
+		  													cases = cases[[i]],
+			  												vars  = vars[[i]])
 	})
 
 
 
- return(out_possible_data)
+ return(out_possible_data[[1]])
 }
 #' Make possible data for a single strategy step
 #'
@@ -110,7 +114,7 @@ make_possible_data_single <- function(model,
   			variables <- which(is.na(W2[j,]))}
   		W2[j, variables] <<- value;
   		as.numeric(trim_strategies(model, W2)[,3])})
-
+    ## NOTE -- SEEMS A LITTLE INEFFICIENT TO GENERATE AND DELETE DUPLICATES
     possible[,!duplicated(t(possible))]
  }
 
@@ -122,13 +126,13 @@ make_possible_data_single <- function(model,
  		stop("N must be less or equal than the number of rows in given when case equals `within`.")
 
  	combinations <- data.frame(1:nrow(given))
+
  	# Possible combinations of cases for which one could gather data
  	if(!is.null(N)) combinations <- combn(1:nrow(given), N)
   possible0 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 0, vars,combinations[,x]))
   possible1 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 1, vars,combinations[,x]))
   possible0 <- possible0[,!duplicated(t(possible0))]
   possible1 <- possible1[,!duplicated(t(possible1))]
-
 
   possible_data <- cbind(trim_strategies(model,W2)[,1:2],
   											 possible0, possible1)
@@ -152,8 +156,7 @@ make_possible_data_single <- function(model,
 
 #' Generates a probability distribution over possible data outcomes
 #'
-#' THIS IS NOT GENERAL AT ALL YET. THE BASIC IDEA THOUGH IS TO USE draw_event_prob
-#' THOUGH IN PRACTICE WE WILL LIKELY NEED dmultinom
+#' NOTE: This needs to be checked for whether it is taking account of strategy probabilities properly
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
@@ -167,18 +170,33 @@ make_possible_data_single <- function(model,
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
 #'
-#' given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 #' pars <- draw_parameters(model)
-#' make_data_probabilities(model, given, subset = c(1,3), pars = pars)
+#' possible_data <- make_possible_data(model, N= 2)
+#' make_data_probabilities(model, pars = pars, possible_data)
 #'
-make_data_probabilities <- function(model, given, subset = NULL, pars) {
+#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' possible_data <- make_possible_data(model, given = given, cases = "X==1 & Y==1")
+#' make_data_probabilities(model, pars = pars, possible_data)
+#'
+make_data_probabilities <- function(model, pars,  possible_data) {
 
-	event_prob <- draw_event_prob(model, parameters = pars)
+	A_w <- (get_likelihood_helpers(model)$A_w)[possible_data$event, ]
+	w   <-  draw_event_prob(model, parameters = pars, using = "parameters")
+  w_full = A_w %*% w
 
-	x <- rep(0, length(event_prob))
-	x[data_strat] <- event_prob[data_strat]
-	x / sum(x)
-}
+  strategy   <- possible_data$strategy
+  strat_set <- unique(strategy)
+
+  # Probability of outcomes within each strategy set
+	x <- apply(possible_data[,-(1:2)], 2, function(d)
+	sapply(strat_set, function(j) dmultinom(d[strategy==j],
+																					prob = w_full[strategy==j])
+				 ))
+	if(!is.null(nrow(x))) x <- apply(x, 2, prod)
+
+	# Normalization
+	x/sum(x)
+	}
 
 
 #' Generates a database of results using gbiqq over possible data

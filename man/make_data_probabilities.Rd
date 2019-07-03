@@ -4,7 +4,7 @@
 \alias{make_data_probabilities}
 \title{Generates a probability distribution over possible data outcomes}
 \usage{
-make_data_probabilities(model, given, subset = NULL, pars)
+make_data_probabilities(model, pars, possible_data)
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}
@@ -17,8 +17,7 @@ make_data_probabilities(model, given, subset = NULL, pars)
 A dataset
 }
 \description{
-THIS IS NOT GENERAL AT ALL YET. THE BASIC IDEA THOUGH IS TO USE draw_event_prob
-THOUGH IN PRACTICE WE WILL LIKELY NEED dmultinom
+NOTE: This needs to be checked for whether it is taking account of strategy probabilities properly
 }
 \examples{
 
@@ -27,8 +26,12 @@ model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
 
-given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
 pars <- draw_parameters(model)
-make_data_probabilities(model, given, subset = c(1,3), pars = pars)
+possible_data <- make_possible_data(model, N= 2)
+make_data_probabilities(model, pars = pars, possible_data)
+
+given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+possible_data <- make_possible_data(model, given = given, cases = "X==1 & Y==1")
+make_data_probabilities(model, pars = pars, possible_data)
 
 }

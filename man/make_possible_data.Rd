@@ -12,8 +12,9 @@ make_possible_data(model, given = NULL, N = list(1),
 
 \item{given}{A data frame with observations}
 
-\item{cases}{A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
-@param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.}
+\item{cases}{A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").}
+
+\item{vars}{Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.}
 
 \item{direction.}{. It gets overridden by \code{subset} when \code{subset} is not NULL.}
 }
@@ -21,17 +22,22 @@ make_possible_data(model, given = NULL, N = list(1),
 A dataset
 }
 \description{
-THIS IS CURRENTLY NOT AT ALL GENERALY AND NEEDS TO BE MADE GENERAL FOR A DATA STRATEGY FO THE FORM:
-"GATHER DATA ON X,M,Y FOR N MORE CASES.... or GATHER DATA ON M in N OF THE X=Y=1 CASES....
+Creates a databse of possible data from a data strategy.
+Users can gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"). Or they can
+gather data in all cases within a given dataset ("within"). Or they can specify  the subset of cases for which within-case data should be collected (e.g. "Y == 1").
 }
 \examples{
 library(dplyr)
 model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
-# Look for data on M for all possible cases in the given data
 given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-make_possible_data(model, given)
+
+# Look for data on M for all possible cases in the given data
+make_possible_data(model, N = 1)
+make_possible_data(model, given = given, cases = "within")
+make_possible_data(model, given = given, cases = "X==1 & Y==1")
+
  # Gather data on X and Y
 make_possible_data(model,  N = list(4), vars = list(c("X", "Y")))
 # Look for data on M  when  X = Y = 1
@@ -43,10 +49,18 @@ make_possible_data(model, given, cases = "X == 1 | Y == 1")
 # Look for data on K and M
 model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
-given <- data.frame(X = c(0,0,0,1,1,1), K = NA, M = NA, Y = c(0,0,1,0,1,1))
+given <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
 make_possible_data(model, given)
+
 # Look for data only on M for all within-cases
-make_possible_data(model, given, vars = list("M"), cases = list("within"), N = list(nrow(given)))
+make_possible_data(model, given, vars = list("M"),
+   cases = list("within"),
+   N = list(nrow(given)))
+
 # Look for data on M when X = 1 and Y = 0
-make_possible_data(model, given, cases =  "X == 1 & Y == 0", vars = list("M"))
+make_possible_data(model,
+                   given,
+                   cases =  "X == 1 & Y == 0",
+                   vars = list("M"))
+
 }
