@@ -22,6 +22,7 @@ get_ambiguities_matrix <- function(model){
 
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	types <- get_causal_types(model)
+	# cbind(types, type_labels)  # A check
 
   # 3. Map types to data realizations. This is done in reveal_outcomes
   data_realizations   <- reveal_outcomes(model)

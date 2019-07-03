@@ -12,7 +12,7 @@ get_priors(model, priors = NULL, prior_distribution = "uniform",
 
 \item{priors}{Vector of Dirichlet hyperparameters}
 
-\item{prior_distribution}{A character indicating the prior distribuiton}
+\item{prior_distribution}{A character indicating the prior distribuiton. One of "jeffreys", "certainty", "uniform".}
 
 \item{alphas}{the hyperparameters of the dirichlet distribution.}
 }

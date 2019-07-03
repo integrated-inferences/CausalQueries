@@ -12,10 +12,19 @@ set_priors(model, priors = NULL, prior_distribution = "uniform",
 
 \item{priors}{Existing vector of Dirichlet hyperparameters}
 
-\item{prior_distribution}{A character indicating the prior distribuiton}
+\item{prior_distribution}{A character indicating the prior distribuiton. One of "jeffreys", "certainty", "uniform".}
 
 \item{alphas}{Vector of hyperparameters of the dirichlet distribution to be passed to \code{make_priors}.}
 }
 \description{
-Set prior distribution
+Set a prior distribution. Use \code{make_alphas} to use causal types to indicate priors.
+}
+\examples{
+
+model <- gbiqq::make_model("X -> Y")
+set_priors(model = model,
+           alphas = list(
+             X = c(`X == 1` = 3),
+             Y = c(`(Y[X=1] != Y[X=0])` = 3)))
+
 }

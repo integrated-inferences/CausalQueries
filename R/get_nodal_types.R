@@ -79,7 +79,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	names(types)  <- var_names
 	if(collapse){
 
-		types <-	sapply(1:length(types), function(i){
+		types <-	lapply(1:length(types), function(i){
 			var <- names(types)[i]
 			mat <- as.matrix(types[[i]])
 			labels <- apply(mat,1,paste,collapse = "")
