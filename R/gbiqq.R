@@ -28,12 +28,9 @@ gbiqq <- function(model, data, stan_model = NULL, ...) {
 }
 
 
-#' Make fitted stan model
+#' Generate a fitted stan model
 #'
-#' generates a fitted model
 #' @export
-#' @examples
-#' fit <- fitted_model()
 #'
 fitted_model <- function() {
 	model <- make_model("X->Y")

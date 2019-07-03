@@ -2,14 +2,10 @@
 % Please edit documentation in R/gbiqq.R
 \name{fitted_model}
 \alias{fitted_model}
-\title{Make fitted stan model}
+\title{Generate a fitted stan model}
 \usage{
 fitted_model()
 }
 \description{
-generates a fitted model
-}
-\examples{
-fit <- fitted_model()
-
+Generate a fitted stan model
 }

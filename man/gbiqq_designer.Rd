@@ -34,24 +34,27 @@ my_design <- gbiqq_designer(
   data_strat = list(n_obs = 5, vars = list(NULL), probs = list(NULL),
                     ns = NULL,
      subsets = list(NULL)),
-  queries = list(ATE = "Y[X=1] - Y[X=0]"))
-draw_data(my_design)
-draw_estimands(my_design)
-draw_estimates(my_design)
-# diagnose_design(my_design, sims = 2)
-my_design <- gbiqq_designer(
+  inquiry = list(ATE = "Y[X=1] - Y[X=0]"))
 
-	model           = make_model("X -> M -> Y"),
-	inquiry         = list(ATE = "Y[X=1] - Y[X=0]"),
-	data_strat      = list(n_obs = 5,
-												 vars = list(c("X", "Y"), "M"),
-												 probs = list(1, .5),
-												 n = NULL,
-												 subsets = list(NULL, "X==1 & Y==0")),
-	answer_strat  = NULL
+\dontrun{draw_data(my_design)}
+\dontrun{draw_estimands(my_design)}
+\dontrun{draw_estimates(my_design)}
+\dontrun{diagnose_design(my_design, sims = 2)}
+
+my_design <- gbiqq_designer(
+model = make_model("X -> M -> Y"),
+inquiry = list(ATE = "Y[X=1] - Y[X=0]"),
+data_strat = list(n_obs = 5,
+vars = list(c("X", "Y"), "M"),
+probs = list(1, .5),
+n = NULL,
+subsets = list(NULL, "X==1 & Y==0")),
+answer_strat  = NULL
 )
 
 df <- draw_data(my_design)
 draw_estimands(my_design)
+\dontrun{
 get_estimates(my_design, df)
+}
 }
