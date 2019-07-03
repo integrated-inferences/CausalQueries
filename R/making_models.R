@@ -5,6 +5,7 @@
 #'
 #' @param statement A character vector of length 1L. Statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
 #' @param add_priors A logical scalar. If \code{TRUE} sets default priors for the model.
+#' @param add_parameters A logical scalar. If \code{TRUE} sets "true" parameters to the model.
 #' @export
 #'
 #' @return An object of class probabilistic_causal_model containing a DAG.

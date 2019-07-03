@@ -31,7 +31,8 @@ data_strategy(model, complete_data = NULL, n_obs = NULL,
 Data Strategy
 }
 \examples{
-# A strategy in which X, Y are observed for sure and M is observed with 50\% probability for X=1, Y=0 cases
+# A strategy in which X, Y are observed for sure and M is observed
+# with 50\% probability for X=1, Y=0 cases
 model <- make_model("X -> M -> Y")
 data_strategy(
   model,

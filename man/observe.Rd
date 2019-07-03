@@ -8,17 +8,17 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
   prob = 1, m = NULL, subset = NULL)
 }
 \arguments{
-\item{complete_data}{Data observed and unobserved}
+\item{complete_data}{A data.frame. Data observed and unobserved.}
 
-\item{vars_to_observe}{A list of variables to observe}
+\item{observed}{A data.frame. Data observed.}
 
-\item{prob}{Observation probability}
+\item{vars_to_observe}{A list of variables to observe.}
+
+\item{prob}{A scalar. Observation probability.}
+
+\item{m}{Number of units to observe; if specified, \code{m} overrides \code{prob}.}
 
 \item{subset}{A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!}
-
-\item{observed_data}{Data observed so far}
-
-\item{n}{Number of units to observe; if specified, \code{n} overrides \code{prob}}
 }
 \description{
 Observe data, given a strategy

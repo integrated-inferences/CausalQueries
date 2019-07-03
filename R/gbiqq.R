@@ -4,12 +4,13 @@
 #' @param model A causal model as created by \code{make_model}
 #' @param data A data frame with observations
 #' @param stan_model A fitted stan model: if not provided a gbiqq model is compiled from stan file "simplexes.stan"
+#' @param ... Options passed onto \code{rstan::stan} call.
 #' @importFrom rstan stan
 #' @importFrom Rcpp cpp_object_initializer
 #' @export
 #'
 #'
-gbiqq <- function(model, data, stan_model = NULL,  ...) {
+gbiqq <- function(model, data, stan_model = NULL, ...) {
 
 	stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
 

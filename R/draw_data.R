@@ -55,7 +55,7 @@ draw_parameters <- function(model, using = NULL){
 #' @param parameters A numeric vector. Optionally specify parameters. By default, parameters is drawn from `using` argument (either from priors, posteriors, or from model$parameters)
 #' @param using A string taking value "priors", "posteriors" or "parameters".
 #' @export
-#' @examples
+#'
 
 draw_type_prob <- function(model,
 													 P = NULL,
@@ -85,7 +85,6 @@ draw_type_prob <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' draw_type_prob_multiple(model, using = "priors", n_draws = 3)
-#' draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
 #' draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
 
 draw_type_prob_multiple <- function(model,
@@ -232,41 +231,3 @@ simulate_data <- function(model,
 
 	out
  }
-
-#' Data type names
-#'
-#' Provides names to data types
-#' @param model A model created by make_model()
-#' @param data Data in long form
-#' @export
-#' @examples
-#' model <- make_model("X -> Y")
-#' data <- simulate_data(model, n = 2)
-#' data_type_names(model, data)
-#'
-data_type_names <- function(model, data){
-	vars <- model$variables
-  data <- data[vars]
-	data[data==""] <- NA
-  out <- apply(data, 1, function(j) paste(paste0(vars[!is.na(j)], j[!is.na(j)]), collapse = ""))
-  out[out == ""] <- "None"
-  out}
-
-#' All data types
-#'
-#' Creates dataframe with all data types, including NA types possible from a model
-#'
-#' @param model A model created by make_model()
-#' @export
-#' @examples
-#' all_data_types(make_model("X -> Y"))
-
-all_data_types <- function(model) {
-	variables <- model$variables
-	m <- length(model$variables)
-	df <- data.frame(gbiqq::perm(rep(2, m))) - 1
-	df[df==-1] <- NA
-	names(df) <-  variables
-  data.frame(cbind(event = data_type_names(model, df), df))
-}
-

@@ -11,7 +11,7 @@ types_to_nodes <- function(model, query){
 
 	} else 	if (length(query) > 1){
 
-		return_nodal_types <- sapply(query, function(q) gbiqq:::types_to_nodes_single(model, q), USE.NAMES = FALSE)
+		return_nodal_types <- sapply(query, function(q) types_to_nodes_single(model, q), USE.NAMES = FALSE)
 		vars <- 	model$variables[model$variables %in% names(return_nodal_types)]
 		return_nodal_types <- sapply(vars, function(v){
 			i <- which(names(return_nodal_types) == v)

@@ -10,8 +10,6 @@ make_gbiqq_data(model, data)
 \item{model}{A model created by \code{make_model}}
 
 \item{data}{A data frame with observations}
-
-\item{P}{A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.}
 }
 \value{
 a list

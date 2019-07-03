@@ -4,6 +4,7 @@
 #'
 #' @param model A  model
 #' @param data Data in long format
+#' @param parameters A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.
 #' @export
 #' @examples
 #' model <- make_model("X->Y")
@@ -48,8 +49,10 @@ get_data_probs <- function(model, data, parameters = NULL){
 #'
 #' # Running example
 #' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
-#'    set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
-#' conditional_inferences(model, query = list(COE = "(Y[S=0] > Y[S=1])"), given = "Y==1 & S==0")
+#'    set_restrictions(node_restrict =
+#'    list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
+#' conditional_inferences(model, query = list(COE = "(Y[S=0] > Y[S=1])"),
+#' given = "Y==1 & S==0")
 
 
 conditional_inferences <- function(model, query, parameters=NULL,  given = NULL){
@@ -117,22 +120,32 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 #'                   strategy = c("X", "M2"), given = "Y==1")
 #' attr(el, "results_table")
 #' el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
-#'                   strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
+#'                   strategy = c("M1"),
+#'                   given = "Y==1 & X==1 & M2==1")
 #' attr(el2, "results_table")
 #'
 #' # No strategy
 #' expected_learning(model, query = "Y[X=1]>Y[X=0]")
 #'
 #' # No givens
-#' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
-#' expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
-#'
+#' expected_learning(model, query = "Y[X=1]>Y[X=0]",
+#' strategy = c("M1"))
+#' expected_learning(model, query = "Y[X=1]>Y[X=0]",
+#' strategy = c("M1"), given = "Y==1")
 #'
 #' library(dplyr)
-#'  model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
-#'  set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
-#' expected_learning(model, query = list(COE = "(Y[S=0] > Y[S=1])"), strategy = "C", given = "Y==1 & S==0")
-#' expected_learning(model, query = list(COE = "(Y[X=1] > Y[X=0])"), strategy = "S", given = "X==0 & Y==0")
+#' model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
+#' set_restrictions(node_restrict =
+#' list(C = "C1110", R = "R0001", Y = "Y0001"),
+#' action = "keep")
+#'
+#' expected_learning(model,
+#' query = list(COE = "(Y[S=0] > Y[S=1])"),
+#' strategy = "C", given = "Y==1 & S==0")
+#'
+#' expected_learning(model,
+#' query = list(COE = "(Y[X=1] > Y[X=0])"),
+#' strategy = "S", given = "X==0 & Y==0")
 
 
 

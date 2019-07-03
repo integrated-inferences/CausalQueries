@@ -3,8 +3,6 @@
 #' Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
 #' @param model A model created by make_model()
-#' @param confound A list relating nodes to types with whihc  they are confounded
-#'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")

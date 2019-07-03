@@ -11,7 +11,7 @@
 get_possible_data <- function(model,
 															collapse = TRUE){
 
-	variables <- get_variables(model)
+	variables <- model$variables
 	parents <- get_parents(model)
 
 	possible_data_list <- list()
@@ -120,7 +120,7 @@ get_data_events <- function(data, model){
 get_possible_data_internal <- function(model, collapse = TRUE){
 
 	revealed_data <- reveal_outcomes(model)
-	variables <- get_variables(model)
+	variables <- model$variables
 	parents <- get_parents(model)
 
 	possible_data <- lapply(variables, function(variable){
@@ -154,17 +154,15 @@ get_possible_data_internal <- function(model, collapse = TRUE){
 
 #' Get data frame with all possible data combinations
 #'
-#' @param A model created by make_model()
-#'
+#' @param model A model created by make_model()
 #' @export
-#'
 #' @return A data frame
 #'
 get_max_possible_data <- function(model) {
 
 	max_possible_data <-
 		Reduce(f = merge,
-					 x = gbiqq:::get_possible_data_internal(model, collapse = FALSE))
+					 x = get_possible_data_internal(model, collapse = FALSE))
 	variables <- 	model$variables
 	max_possible_data <- max_possible_data[variables]
 
@@ -183,7 +181,6 @@ get_max_possible_data <- function(model) {
 #'
 #' @param model A model created by \code{make_model}
 #' @param data A data frame with observations
-#' @param P A matrix mapping parameters (rows) to types (columns). If not provided, defaults one parameter per nodal type.
 #' @return a list
 #' @export
 #' @examples

@@ -211,7 +211,7 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 }
 
 #' Update causal types based on nodal types
-#' Do not export
+#' @param model A model object generated with \code{make_model}
 #'
 update_causal_types <- function(model){
 
@@ -252,6 +252,7 @@ reduce_parameters <- function(model, parameters = model$parameters){
 
 
 #' Get type names
+#' @param nodal_types Nodal types of a model. See \code{get_nodal_types()}.
 #'
 get_type_names <- function(nodal_types) {
 	unlist(sapply(1:length(nodal_types), function(i){
@@ -262,7 +263,8 @@ get_type_names <- function(nodal_types) {
 
 
 #' Unpack a wild card
-#'
+#' @param x A string of length 1L. A nodal type containing one or more wildcard characters "." to be unpacked.
+
 unpack_wildcard <- function(x) {
 	splitstring <- strsplit(x, "")[[1]]
 	n_wild <- sum(splitstring=="?")
