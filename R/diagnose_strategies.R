@@ -146,6 +146,13 @@ make_possible_data <- function(model,
 #'                           condition = "X==1 & Y==1",
 #'                           vars = c("M", "K"))
 #'
+#'model <- make_model("X->M->Y")  %>%
+#' set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0]") %>%
+#' set_parameter_matrix()
+#' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' given <- trim_strategies(model, df)[, -2]
+#' make_possible_data_single(model, given = given, within = TRUE, vars = "M", N = 1, condition = "X==1 & Y==1")
+
 make_possible_data_single <- function(model,
 																			given = NULL,
 																			N = 1,
@@ -248,7 +255,9 @@ allocations <- function(N, n) {
 #' # Find different data that might result from looking at "M" in 2 out of 3 X0Y0 data types
 #' fill_bucket(model, buckets, vars = "M")
 fill_bucket <- function(model, buckets, vars, row = 1, column = 4){
+
 	if(!(all(vars %in% model$variables))) stop("Vars not in model$variables")
+
 	# Figure out set of possible finer units
 	df <- simulate_data(model,
 											data_events = data.frame(
