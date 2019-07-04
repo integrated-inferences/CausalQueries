@@ -153,7 +153,7 @@ get_weights_ambiguities <- function(model, data){
 #'
 #' @export
 trim_strategies <- function(model, data){
-	# 1. Get data and delete all rows from estrategies that contained no observed data
+	# 1. Get data and delete all rows from strategies that contained no observed data
 	data_events <- get_data_events(data = data, model = model)$data_events
 	data_events_split <- split(data_events, as.factor(data_events$strategy))
 	data_events_w_NA <- do.call(rbind,lapply(data_events_split, function(df){

@@ -1,14 +1,15 @@
-#' Produces list of possible data given model and data strategy
+#' Make  data for multi-step strategy
 #'
-#' Creates a databse of possible data from a data strategy.
+#' Creates a database of possible data from a data strategy.
 #' Users can gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"). Or they can
 #' gather data in all cases within a given dataset ("within"). Or they can specify  the subset of cases for which within-case data should be collected (e.g. "Y == 1").
 #'
 #' @param model A causal model as created by \code{make_model}
 #' @param given A data frame with observations
-#' @param cases  A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
+#' @param N Number of variables to seek
+#' @param within logical Whether to seek variables within existing data
+#' @param condition  A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
 #' @param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
-#' @param direction. . It gets overridden by \code{subset} when \code{subset} is not NULL.
 #' @export
 #' @return A dataset
 #' @examples
@@ -16,143 +17,213 @@
 #' model <- make_model("X->M->Y")  %>%
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
-#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' given <- trim_strategies(model, df)[, -2]
 #'
 #' # Look for data on M for all possible cases in the given data
 #' make_possible_data(model, N = 2)
-#' make_possible_data(model, given = given, cases = "within")
-#' make_possible_data(model, given = given, cases = "X==1 & Y==1")
+#' make_possible_data(model, given, within = TRUE, N = 2)
 #'
-#'  # Gather data on X and Y
-#' make_possible_data(model,  N = list(4), vars = list(c("X", "Y")))
-#' # Look for data on M  when  X = Y = 1
-#' make_possible_data(model, given, cases = list("X == 1 & Y == 1"))
+#' # Not possible:
+#' make_possible_data(model, given, within = TRUE, N = 7)
 #'
-#'# Look for data on M  when X=1 or Y==1
-#' make_possible_data(model, given, cases = "X == 1 | Y == 1")
+#' # Within conditions
+#' make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
+#' make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1")
+#' make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
 #'
-#' # Look for data on K and M
+#' # Look for data on K but not M
+#' # THIS IS NOT WORKING YET
 #' model <- make_model("X->M->Y <-K")   %>%
 #'    set_parameter_matrix()
-#' given <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
-#' make_possible_data(model, given)
-#'
-#' # Look for data only on M for all within-cases
-#' make_possible_data(model, given, vars = list("M"),
-#'    cases = list("within"),
-#'    N = list(nrow(given)))
+#' df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
+#' given <- trim_strategies(model, df)[, -2]
+#' #make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 #'
 #' # Look for data on M when X = 1 and Y = 0
 #' make_possible_data(model,
 #'                    given,
-#'                    cases =  "X == 1 & Y == 0",
+#'                    condition =  "X == 1 & Y == 0",
 #'                    vars = list("M"))
 #'
+#' model <- make_model("X->M->Y")   %>%
+#'    set_parameter_matrix()
+#'make_possible_data(model,
+#'                    given = NULL,
+#'                    N = list(3,1),
+#'                    within = FALSE,
+#'                    condition =  list(TRUE, "X == 1 & Y == 0"),
+#'                    vars = list(NULL, NULL))
+
 make_possible_data <- function(model,
 															 given = NULL,
 															 N = list(1),
-															 cases   = list("any"),
-															 vars = list(NA)
-															 ){
+															 within = FALSE,
+															 condition = list(TRUE),
+															 vars = list(NULL)) {
 
+	if(!is.null(given)) if(!identical(names(given), c("event", "count"))){
+		stop("'given' df should have two columns: event and count")}
 
-	if(!identical(length(	cases), length(vars), length(N)) )
-	  	stop("N, cases and vars must have the same length")
+	if(!identical(length(condition), length(vars), length(N)) )
+		stop("N, cases and vars must have the same length")
 
-	# to do: combine given with possible data sets produced for N and use combined ds in subsequent steps.
-	# main complication is that the shapes of the datasets are long and wide
-	out_possible_data <- possible_datasets <-
-		lapply(1:length(cases), function(i){
+	given <- gbiqq:::make_possible_data_single(model,
+																		 given = given,
+																		 within = within,
+																		 N = N[[1]],
+																		 condition = condition[[1]],
+																		 vars = vars[[1]] )
+
+	if(length(N) == 1) return(given)
+
+	for(i in 2:length(N)) {
+		out <- sapply(3:ncol(given), function(s) {
+			g_df <- given[,c(1,s)]
+			names(g_df) <- c("event", "count")
 			make_possible_data_single(model,
-  															given,
- 	  														N     = N[[i]],
-		  													cases = cases[[i]],
-			  												vars  = vars[[i]])
-	})
+																given = g_df,
+																within = TRUE,
+																N     = N[[i]],
+																condition = condition[[i]],
+																vars  = vars[[i]])[, -1]
+			})
+		# rbind not working yet since output is of different length
+			x <- do.call("rbind", out)
+			x <- t(t(x)[!duplicated(t(x)),])
+			given <- cbind(given[,1:2], x)
+	}
+	given
+	}
 
 
 
- return(out_possible_data[[1]])
-}
+
 #' Make possible data for a single strategy step
 #'
+#' Creates a database of possible data from a data strategy.
+#' Users can gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"). Or they can
+#' gather data in all cases within a given dataset ("within"). Or they can specify  the subset of cases for which within-case data should be collected (e.g. "Y == 1").
+#'
+#' @param model A causal model as created by \code{make_model}
+#' @param given A data frame in compact form with first column indicating event type and second column indicating number of events of that type.
+#' @param N Number of variables to seek
+#' @param within logical Whether to seek variables within existing data
+#' @param condition  A list of character strings indicating for which cases data should be gathered. Options are: (i) to gather additional data on variables specified via \code{vars} for any possible cases in the model ("any"), (ii) to gather data in all cases within a given dataset ("within"), or (iii) to specify the subset of cases for which within-case data should be collected (e.g. "Y == 1").
+#' @param vars Variables to be sought or NA. If NA \code{make_possible_data} gathers data on all variables containing NA for the specified data strategy.
+#' @export
+#' @return A dataset
+#' @examples
+#' library(dplyr)
+#' model <- make_model("X->M->Y")  %>%
+#'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
+#'    set_parameter_matrix()
+#' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' given <- trim_strategies(model, df)[, -2]
+#'
+#' # Look for data on M for all possible cases in the given data
+#' make_possible_data_single(model, N = 2)
+#' make_possible_data_single(model, given = given, within = TRUE, N = 2)
+#' make_possible_data_single(model, given = given,
+#'                           within = TRUE,
+#'                           N = 2,
+#'                           condition = "X==1 & Y==1")
+#'
+#'
 make_possible_data_single <- function(model,
-															 given = NULL,
-															 N = NULL,
-															 cases = NULL,
-															 vars = NA) {
+																			given = NULL,
+																			N = 1,
+																			within = FALSE,
+																			condition = TRUE,
+																			vars = NULL) {
 
+  if(within & is.null(given)) stop("If 'within' is specified 'given' must be provided")
 
-	# The script inside the conditional below gets the max possible data
-	# when N obs of correlation data are collected on "vars"
-	# each col in possible_data represents a possible dataset that might be observed
-	# if we were to gather N obs on vars
-	if(cases == "any"){
- 	possible <- get_max_possible_data(model)
- 	if(!all(is.na(vars))) possible[, !names(possible) %in% vars] <- NA
- 	d.frame  <- trim_strategies(model, possible)[,1:2]
- 	possible_data_perm <- perm(rep(N, length(d.frame$event)))
- 	n_tot <- rowSums(possible_data_perm)
-  possible_data <- 	possible_data_perm[n_tot==(N),]
-  possible_data <-  as.data.frame(t(possible_data))
-  possible_data <-  cbind(d.frame  ,possible_data)
-  colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
+	if(!within){possible_data <-  gbiqq:::all_possible(model, N, vars)}
 
+	if(within){
 
- # The script inside the else below gets the max possible data
- # when cases == "within" or when cases specifies a subset
- }else {
+		if(is.null(given)) stop("given not provided, but 'within' requested")
 
- # Function to assign possible 0 or 1
- possible_value <- function(given, value, vars,  i_cases = NULL){
-  W2 <<- given
-  variables <- vars
-  i_cases <- ifelse(is.null(i_cases), 1:nrow(given), i_cases )
-  	possible <- sapply(i_cases, function(j) {
-  		if(length(vars) == 1){
-  			if(is.na(vars))
-  			variables <- which(is.na(W2[j,]))}
-  		W2[j, variables] <<- value;
-  		as.numeric(trim_strategies(model, W2)[,3])})
-    ## NOTE -- SEEMS A LITTLE INEFFICIENT TO GENERATE AND DELETE DUPLICATES
-    possible[,!duplicated(t(possible))]
- }
+		possible_data <-
+		gbiqq:::all_possible(model, N, vars = vars, condition = condition)[, -2]
 
- if(cases == "within"){
+		# Need to figure out if these are consistent with `given`` and if so, merge
+		A_w           <- get_likelihood_helpers(model)$A_w
 
- 	# to fix: it gathers data on any variable specified via vars even if variable observed in given. should throw error or warning
+		# given in long form
+		# make_long <- function(model, given){
+		# 	A_w           <- get_likelihood_helpers(model)$A_w
+		# 	long_given <- data.frame(event = rownames(A_w))
+		# 	long_given <- merge(long_given, given, by = "event", all.x = TRUE)
+		# 	long_given$count[is.na(long_given$count)] <-0
+		# 	long_given
+		# }
+		# make_long(model, given)
 
- 	if(!is.null(N) & (N > nrow(given)) )
- 		stop("N must be less or equal than the number of rows in given when case equals `within`.")
+		# Reclassify sampled data as different data types
+		poss_types    <- A_w%*%as.matrix(possible_data[,-1])
 
- 	combinations <- data.frame(1:nrow(given))
+		# Check consistency
+		consistent   <- poss_types[rownames(poss_types) %in%	given$event,]
+		admissible   <- apply(consistent, 2, function(j) all(j <= given$count))
+		if(!any(admissible)) {message("N too large given constraints"); return(given)}
+		within_cases <- possible_data[, c(TRUE, admissible)]
 
- 	# Possible combinations of cases for which one could gather data
- 	if(!is.null(N)) combinations <- combn(1:nrow(given), N)
-  possible0 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 0, vars,combinations[,x]))
-  possible1 <- sapply(1:ncol(combinations),function(x) possible_value(given, value = 1, vars,combinations[,x]))
-  possible0 <- possible0[,!duplicated(t(possible0))]
-  possible1 <- possible1[,!duplicated(t(possible1))]
+		# Data types for which further within-case data is not sought
+		residual_cases <- apply(consistent, 2, function(j) given$count - j)[, admissible]
+		residual_cases <- data.frame(event = given$event, residual_cases)
+		names(residual_cases) <- names(within_cases)
 
-  possible_data <- cbind(trim_strategies(model,W2)[,1:2],
-  											 possible0, possible1)
+		# Combine within cases with residual cases
+		possible_data <- rbind(within_cases, residual_cases)
+		rownames(possible_data) <- NULL
+		colnames(possible_data) <- c("event", 1:(ncol(possible_data)-1))
 
-  colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
-	} else {
-    # if cases specifies a subset
-		w_given <- subset(given, eval(parse(text = cases)))
-		possible0 <- possible_value(given = w_given, value = 0, vars)
-		possible1 <- possible_value(given = w_given, value = 1, vars)
-		possible_data <- cbind(trim_strategies(model,W2)[,1:2],
-													 possible0, possible1)
-		colnames(possible_data)[3:ncol(possible_data)] <-1:length(3:ncol(possible_data))
-  }
- }
+	}
 
 	return(possible_data)
 }
 
 
+
+
+
+#' helper for ways to allocate N units into n data types
+#'
+#' @param N Number of observations to be distributed
+#' @param n Number of possible values observations could take
+#' @examples
+#' allocations(4,2)
+allocations <- function(N, n) {
+	x <- gtools::combinations(n,N, repeats.allowed = TRUE)
+	x <- data.frame(apply(x, 1, function(j) sapply(1:n, function(k) sum(k==j))))
+	colnames(x) <- 1:ncol(x)
+	x
+ }
+
+
+#' helper for getting all data on variables with N observed
+#'
+#' @examples
+#' model <- make_model("X->M->Y")
+#' gbiqq:::all_possible(model, N=2, vars = c("X", "M"))
+#' gbiqq:::all_possible(model, N=2, vars = c("X", "Y"), condition = "Y==0")
+all_possible <- function(model, N, vars = NULL, condition = TRUE){
+
+	if(is.null(vars)) vars <- model$variables
+	possible               <- get_max_possible_data(model)
+	if(!all(is.na(vars))) possible[, !names(possible) %in% vars] <- NA
+  possible <- possible[with(possible, eval(parse(text = condition))),]
+
+	d.frame   <- trim_strategies(model, possible)
+	df        <- trim_strategies(model, possible)[d.frame$count >0 ,1:2]
+
+	possible_data <- gbiqq:::allocations(N, length(df$event))
+	out <- matrix(0, nrow(d.frame), ncol(possible_data))
+	out[d.frame$count >0,] <- as.matrix(possible_data)
+	cbind(d.frame[,1:2], out)
+  }
 
 #' Generates a probability distribution over possible data outcomes
 #'
