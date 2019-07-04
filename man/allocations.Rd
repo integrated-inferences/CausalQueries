@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagnose_strategies.R
 \name{allocations}
 \alias{allocations}
-\title{helper for ways to allocate N units into n data types}
+\title{helper for ways to allocate N units into n data types: tidies partition::composition output}
 \usage{
 allocations(N, n)
 }
@@ -12,7 +12,7 @@ allocations(N, n)
 \item{n}{Number of possible values observations could take}
 }
 \description{
-helper for ways to allocate N units into n data types
+helper for ways to allocate N units into n data types: tidies partition::composition output
 }
 \examples{
 allocations(4,2)

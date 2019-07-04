@@ -44,5 +44,16 @@ make_possible_data_single(model, given = given,
                           N = 2,
                           condition = "X==1 & Y==1")
 
+model <- make_model("X->M->Y <- K")  \%>\%
+   set_restrictions(causal_type_restrict = "(Y[M=1, K= .]<Y[M=0, K= .]) | M[X=1]<M[X=0] ") \%>\%
+   set_parameter_matrix()
+df <- data.frame(X = c(0,0,0,1,1,1), K = NA,  M = NA, Y = c(0,0,1,0,1,1))
+given <- trim_strategies(model, df)[, -2]
+make_possible_data_single(model, given = given,
+                          within = TRUE,
+                          N = 2,
+                          condition = "X==1 & Y==1",
+                          vars = "M")
+
 
 }

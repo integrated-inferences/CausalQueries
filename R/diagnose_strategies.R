@@ -137,9 +137,14 @@ make_possible_data <- function(model,
 #' make_possible_data_single(model, given = given,
 #'                           within = TRUE,
 #'                           N = 2,
-#'                           condition = "X==1 & Y==1",
+#'                           condition = "X==1",
 #'                           vars = "M")
 #'
+#' make_possible_data_single(model, given = given,
+#'                           within = TRUE,
+#'                           N = 2,
+#'                           condition = "X==1 & Y==1",
+#'                           vars = c("M", "K"))
 #'
 make_possible_data_single <- function(model,
 																			given = NULL,
@@ -163,57 +168,55 @@ make_possible_data_single <- function(model,
 		#				paste0("(", condition, ") & (", paste0("is.na(", vars, ")", collapse = "|"), ")")
 
 		possible <- possible[with(possible, eval(parse(text = condition))),]
-		possible <- collapse_data(possible, model)
+		possible <- gbiqq:::collapse_data(possible, model)
 		A_w           <- get_likelihood_helpers(model)$A_w
 
 		# What is the set of types in which we can seek new data
 		acceptable_bucket <- (A_w %*% possible[,2])>0
 		acceptable_bucket <-rownames(acceptable_bucket)[acceptable_bucket]
 
-		buckets <- given
+		buckets          <- given
 		buckets$capacity <- buckets$count
 		buckets$capacity[!(given$event %in% acceptable_bucket)] <-0
 
 		if(sum(buckets$capacity) < N) {message("Not enough space to allocate N"); return(given)}
+    strategies <- as.matrix(partitions::blockparts(buckets$capacity, N))
+    colnames(strategies) <- 1:ncol(strategies)
+		buckets <- cbind(buckets, strategies)
 
-		buckets <- cbind(buckets, as.matrix(partitions::blockparts(buckets$capacity, N)))
+		# This function goes through a bucket strategy and generates all possible datasets that could be produced by the strategy
+		get_results_from_strategy <- function(strategy){
+			data_list  <- sapply(1:nrow(buckets), function(j)  fill_bucket(model, buckets, vars, row = j, column = strategy))
+	    variations <- unlist(lapply(data_list, ncol))-1
+	    addresses  <- 1 + data.frame(perm(variations-1))
+	    strategy_results <- apply(addresses, 1, function(add) {
+	    	one_set <- sapply(1:length(add),
+	    										function(j)  {
+	    											x <- data.frame(data_list[[j]][, c(1, 1+add[[j]][1])],
+	    																						stringsAsFactors = FALSE )
+	    											names(x) <- c("event", paste0(strategy-3, "-", paste0(add, collapse = ".")))
+	    											x
+	    											}, simplify = FALSE)
+	    	do.call("rbind", one_set)
+	    	})
+	    # Combine all results from a single strategy: HACK: is "while" really needed? "for" not working
+	    result <- given
+	    j = 1
+	    while(j <= length(strategy_results)) {
+	    	result <- merge(result, strategy_results[[j]], by = "event", all = TRUE)
+	    	j <- j+1}
 
-		## STOP HERE
+			result
+		}
 
-		possible_data <-
-		gbiqq:::all_possible(model, N, vars = vars, condition = condition)[, -2]
-
-		# Need to figure out if these are consistent with `given`` and if so, merge
-		A_w           <- get_likelihood_helpers(model)$A_w
-
-		# given in long form
-		# make_long <- function(model, given){
-		# 	A_w           <- get_likelihood_helpers(model)$A_w
-		# 	long_given <- data.frame(event = rownames(A_w))
-		# 	long_given <- merge(long_given, given, by = "event", all.x = TRUE)
-		# 	long_given$count[is.na(long_given$count)] <-0
-		# 	long_given
-		# }
-		# make_long(model, given)
-
-		# Reclassify sampled data as different data types
-		poss_types    <- A_w%*%as.matrix(possible_data[,-1])
-
-		# Check consistency
-		consistent   <- poss_types[rownames(poss_types) %in%	given$event,]
-		admissible   <- apply(consistent, 2, function(j) all(j <= given$count))
-		if(!any(admissible)) {message("N too large given constraints"); return(given)}
-		within_cases <- possible_data[, c(TRUE, admissible)]
-
-		# Data types for which further within-case data is not sought
-		residual_cases <- apply(consistent, 2, function(j) given$count - j)[, admissible]
-		residual_cases <- data.frame(event = given$event, residual_cases)
-		names(residual_cases) <- names(within_cases)
-
-		# Combine within cases with residual cases
-		possible_data <- rbind(within_cases, residual_cases)
-		rownames(possible_data) <- NULL
-		colnames(possible_data) <- c("event", 1:(ncol(possible_data)-1))
+		# Run over all strategies
+		all_strategies <- sapply(4:ncol(buckets), function(s) 		get_results_from_strategy(s), simplify = FALSE)
+		possible_data <- select(given, event)
+		j = 1
+		while(j <= length(all_strategies)) {
+			possible_data <- merge(possible_data, all_strategies[[j]][,-2], by = "event", all = TRUE)
+			j <- j+1}
+		possible_data
 
 	}
 
@@ -235,6 +238,34 @@ allocations <- function(N, n) {
 	x
  }
 
+#' helper to fill buckets dataframe
+#' @param buckets dataframe with columns event, count and capacity vars plus strategy allocation var
+#' @param vars vars to be observed
+#' @export
+#' @examples
+#' model <- make_model("X->M->Y")
+#' buckets = data.frame(event = "X0Y0", count = 3, capacity = 3, strategy = 2)
+#' # Find different data that might result from looking at "M" in 2 out of 3 X0Y0 data types
+#' fill_bucket(model, buckets, vars = "M")
+fill_bucket <- function(model, buckets, vars, row = 1, column = 4){
+	if(!(all(vars %in% model$variables))) stop("Vars not in model$variables")
+	# Figure out set of possible finer units
+	df <- simulate_data(model,
+											data_events = data.frame(
+												event = buckets$event[row], count = 1))
+	possible_findings <- perm(rep(1, length(vars)))
+	df <- df %>% slice(rep(1:n(), each = nrow(possible_findings)))
+	df[vars] <- possible_findings
+	df <- collapse_data(df, model)
+	# Assign n across new possible finer events
+	new_events <- cbind(event = df[df$count ==1, 1],
+											gbiqq:::allocations(buckets[row, column], sum(df$count)))
+
+	# tidy up
+	remaining  <- data.frame(event = buckets[row, 1], matrix(buckets$count[row] - buckets[row, column], ncol = ncol(new_events)-1, nrow = 1))
+	names(remaining) <- names(new_events)
+	rbind(new_events,remaining)
+}
 
 #' helper for getting all data on variables with N observed
 #'

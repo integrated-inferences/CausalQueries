@@ -38,12 +38,14 @@ given <- trim_strategies(model, df)[, -2]
 
 # Look for data on M for all possible cases in the given data
 make_possible_data(model, N = 2)
-make_possible_data(model, given = given, within = TRUE, N = 2)
-make_possible_data(model, given = given, within = TRUE, N = 2, condition = "X==1 & Y==1")
-make_possible_data(model, given = given, within = TRUE, N = 3, condition = "Y==1")
+make_possible_data(model, given, within = TRUE, N = 2)
 
+# Not possible:
+make_possible_data(model, given, within = TRUE, N = 7)
 
-# Look for data on M  when X=1 or Y==1
+# Within conditions
+make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
+make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1")
 make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
 
 # Look for data on K but not M
@@ -52,7 +54,7 @@ model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
 given <- trim_strategies(model, df)[, -2]
-make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
+#make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 
 # Look for data on M when X = 1 and Y = 0
 make_possible_data(model,
@@ -60,4 +62,12 @@ make_possible_data(model,
                    condition =  "X == 1 & Y == 0",
                    vars = list("M"))
 
+model <- make_model("X->M->Y")   \%>\%
+   set_parameter_matrix()
+make_possible_data(model,
+                   given = NULL,
+                   N = list(3,1),
+                   within = FALSE,
+                   condition =  list(TRUE, "X == 1 & Y == 0"),
+                   vars = list(NULL, NULL))
 }

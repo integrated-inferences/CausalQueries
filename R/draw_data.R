@@ -279,7 +279,7 @@ all_data_types <- function(model) {
 #' @param model A model
 #' @export
 collapse_data <- function(data, model, remove_family = TRUE){
-	x <- trim_strategies(model = model, possible)
+	x <- trim_strategies(model = model, data)
 	if(remove_family) x <- x[, -2]
 	x
 	}
