@@ -13,7 +13,7 @@
 #' modelXKY <- make_model("X -> K -> Y; X -> Y")
 #'
 #' # Example where cyclicaly dag attempted
-#' modelXKX <- make_model("X -> K -> X")
+#' \dontrun{modelXKX <- make_model("X -> K -> X")}
 
 
 make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){

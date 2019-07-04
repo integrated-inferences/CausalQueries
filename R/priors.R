@@ -87,7 +87,7 @@ make_alphas <- function(model, alphas = NULL ){
 #'     Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3,
 #'     Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
 #' }
-#'
+#' library(dplyr)
 #' # Priors of confounded models
 #' model <- make_model("X -> Y") %>%
 #' set_confound(list(X = "(Y[X=1]>Y[X=0])"))

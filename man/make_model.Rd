@@ -24,5 +24,5 @@ Models can be updated with specification of a parameter matrix, P, by providing 
 modelXKY <- make_model("X -> K -> Y; X -> Y")
 
 # Example where cyclicaly dag attempted
-modelXKX <- make_model("X -> K -> X")
+\dontrun{modelXKX <- make_model("X -> K -> X")}
 }
