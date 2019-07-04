@@ -176,7 +176,7 @@ make_possible_data_single <- function(model,
 
 		possible <- possible[with(possible, eval(parse(text = condition))),]
 		possible <- gbiqq:::collapse_data(possible, model)
-		A_w           <- get_likelihood_helpers(model)$A_w
+		A_w      <- get_likelihood_helpers(model)$A_w
 
 		# What is the set of types in which we can seek new data
 		acceptable_bucket <- (A_w %*% possible[,2])>0
@@ -225,6 +225,9 @@ make_possible_data_single <- function(model,
 			j <- j+1}
 		possible_data
 
+		# Add strategies: HACK -- Needlessly going from short to long to short to get family
+    fm <- collapse_data(simulate_data(model, data_events = possible_data[,c(1:2)]), model, remove_family = FALSE)[, - 3]
+    possible_data <- merge(fm, possible_data, by = "event", all = TRUE)
 	}
 
 	return(possible_data)
@@ -314,13 +317,14 @@ all_possible <- function(model, N, vars = NULL, condition = TRUE){
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
 #'
-#' pars <- draw_parameters(model)
+#' model <- set_parameters(model, type = "flat")
 #' possible_data <- make_possible_data(model, N= 2)
-#' make_data_probabilities(model, pars = pars, possible_data)
+#' make_data_probabilities(model, pars = model$parameters, possible_data)
 #'
-#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-#' possible_data <- make_possible_data(model, given = given, cases = "X==1 & Y==1")
-#' make_data_probabilities(model, pars = pars, possible_data)
+#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1)) %>%
+#'   collapse_data(model)
+#' possible_data <- make_possible_data(model, given = given, condition = "X==1 & Y==1", vars = "M", within = TRUE )
+#' make_data_probabilities(model, pars = model$parameters, possible_data)
 #'
 make_data_probabilities <- function(model, pars,  possible_data) {
 
@@ -328,8 +332,8 @@ make_data_probabilities <- function(model, pars,  possible_data) {
 	w   <-  draw_event_prob(model, parameters = pars, using = "parameters")
   w_full = A_w %*% w
 
-  strategy   <- possible_data$strategy
-  strat_set <- unique(strategy)
+  strategy    <- possible_data$strategy
+  strat_set   <- unique(strategy)
 
   # Probability of outcomes within each strategy set
 	x <- apply(possible_data[,-(1:2)], 2, function(d)
@@ -373,10 +377,10 @@ make_estimates_database <- function(model,
 																		given,
 																		possible_data = NULL,
 																		queries = "Y[X=1]>Y[X=0]",
-																		data_strat = NULL) {
+																		...) {
 
 	if(!exists("fit")) fit  <- fitted_model()
-	if(is.null(possible_data)) possible_data <- make_possible_data(model, given, data_strat)
+	if(is.null(possible_data)) possible_data <- make_possible_data(model, given, ...)
 
 	## HACK: 3 here only because of particular shape of possible data
 	out <- sapply(3:ncol(possible_data), function(j) {
