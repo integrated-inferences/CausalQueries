@@ -1,19 +1,18 @@
 #' Fit stan model
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
-#' @param model A causal model as created by \code{make_model}
+#' @param model A causal model as created by \code{make_model}.
 #' @param data A data frame with observations
-#' @param stan_model A fitted stan model: if not provided a gbiqq model is compiled from stan file "simplexes.stan"
+#' @param stan_model A fitted stan model. If not provided a gbiqq model is compiled from stan file "simplexes.stan"
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @importFrom rstan stan
-#' @importFrom Rcpp cpp_object_initializer
+#' @importFrom Rcpp cpp_object_initializer evalCpp
 #' @export
 #'
 #'
 gbiqq <- function(model, data, stan_model = NULL, ...) {
 
 	stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
-
 	stan_data    <- make_gbiqq_data(model = model, data = data)
 
 	if(is.null(stan_model)) {

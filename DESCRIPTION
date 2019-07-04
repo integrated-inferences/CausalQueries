@@ -23,9 +23,10 @@ Imports:
     Rcpp (>= 0.12.16),
     rlang (>= 0.2.0),
     stringr,
-    randomizr
+    randomizr,
+    knitr
 Suggests: 
 		testthat
-		
+VignetteBuilder: knitr
 
 
