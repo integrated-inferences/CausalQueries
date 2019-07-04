@@ -129,6 +129,17 @@ make_possible_data <- function(model,
 #'                           N = 2,
 #'                           condition = "X==1 & Y==1")
 #'
+#' model <- make_model("X->M->Y <- K")  %>%
+#'    set_restrictions(causal_type_restrict = "(Y[M=1, K= .]<Y[M=0, K= .]) | M[X=1]<M[X=0] ") %>%
+#'    set_parameter_matrix()
+#' df <- data.frame(X = c(0,0,0,1,1,1), K = NA,  M = NA, Y = c(0,0,1,0,1,1))
+#' given <- trim_strategies(model, df)[, -2]
+#' make_possible_data_single(model, given = given,
+#'                           within = TRUE,
+#'                           N = 2,
+#'                           condition = "X==1 & Y==1",
+#'                           vars = "M")
+#'
 #'
 make_possible_data_single <- function(model,
 																			given = NULL,
@@ -144,6 +155,30 @@ make_possible_data_single <- function(model,
 	if(within){
 
 		if(is.null(given)) stop("given not provided, but 'within' requested")
+
+		possible <- get_max_possible_data(model)
+		#		possible <- all_data_types(model)  # LM--use this instead to condition on NA values
+		#                                      #We can look in a bin if it satisfied condition *and* we do not already have data on at least some vars
+		#		if(!is.null(vars)) condition <-
+		#				paste0("(", condition, ") & (", paste0("is.na(", vars, ")", collapse = "|"), ")")
+
+		possible <- possible[with(possible, eval(parse(text = condition))),]
+		possible <- collapse_data(possible, model)
+		A_w           <- get_likelihood_helpers(model)$A_w
+
+		# What is the set of types in which we can seek new data
+		acceptable_bucket <- (A_w %*% possible[,2])>0
+		acceptable_bucket <-rownames(acceptable_bucket)[acceptable_bucket]
+
+		buckets <- given
+		buckets$capacity <- buckets$count
+		buckets$capacity[!(given$event %in% acceptable_bucket)] <-0
+
+		if(sum(buckets$capacity) < N) {message("Not enough space to allocate N"); return(given)}
+
+		buckets <- cbind(buckets, as.matrix(partitions::blockparts(buckets$capacity, N)))
+
+		## STOP HERE
 
 		possible_data <-
 		gbiqq:::all_possible(model, N, vars = vars, condition = condition)[, -2]
@@ -187,17 +222,15 @@ make_possible_data_single <- function(model,
 
 
 
-
-
-#' helper for ways to allocate N units into n data types
+#' helper for ways to allocate N units into n data types: tidies partition::composition output
 #'
 #' @param N Number of observations to be distributed
 #' @param n Number of possible values observations could take
 #' @examples
 #' allocations(4,2)
 allocations <- function(N, n) {
-	x <- gtools::combinations(n,N, repeats.allowed = TRUE)
-	x <- data.frame(apply(x, 1, function(j) sapply(1:n, function(k) sum(k==j))))
+	x <- partitions::compositions(N,n)
+	x <- data.frame(as.matrix(x))
 	colnames(x) <- 1:ncol(x)
 	x
  }
