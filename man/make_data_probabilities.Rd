@@ -26,12 +26,13 @@ model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
 
-pars <- draw_parameters(model)
+model <- set_parameters(model, type = "flat")
 possible_data <- make_possible_data(model, N= 2)
-make_data_probabilities(model, pars = pars, possible_data)
+make_data_probabilities(model, pars = model$parameters, possible_data)
 
-given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-possible_data <- make_possible_data(model, given = given, cases = "X==1 & Y==1")
-make_data_probabilities(model, pars = pars, possible_data)
+given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1)) \%>\%
+  collapse_data(model)
+possible_data <- make_possible_data(model, given = given, condition = "X==1 & Y==1", vars = "M", within = TRUE )
+make_data_probabilities(model, pars = model$parameters, possible_data)
 
 }

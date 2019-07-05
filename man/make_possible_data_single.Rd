@@ -52,8 +52,19 @@ given <- trim_strategies(model, df)[, -2]
 make_possible_data_single(model, given = given,
                           within = TRUE,
                           N = 2,
-                          condition = "X==1 & Y==1",
+                          condition = "X==1",
                           vars = "M")
 
+make_possible_data_single(model, given = given,
+                          within = TRUE,
+                          N = 2,
+                          condition = "X==1 & Y==1",
+                          vars = c("M", "K"))
 
+model <- make_model("X->M->Y")  \%>\%
+set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0]") \%>\%
+set_parameter_matrix()
+df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+given <- trim_strategies(model, df)[, -2]
+make_possible_data_single(model, given = given, within = TRUE, vars = "M", N = 1, condition = "X==1 & Y==1")
 }
