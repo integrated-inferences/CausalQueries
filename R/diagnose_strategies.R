@@ -179,7 +179,7 @@ make_possible_data_single <- function(model,
 		A_w      <- get_likelihood_helpers(model)$A_w
 
 		# What is the set of types in which we can seek new data
-		acceptable_bucket <- (A_w %*% possible[,2])>0
+		acceptable_bucket <- (A_w %*% possible[,"count"])>0
 		acceptable_bucket <-rownames(acceptable_bucket)[acceptable_bucket]
 
 		buckets          <- given
@@ -206,24 +206,32 @@ make_possible_data_single <- function(model,
 	    											}, simplify = FALSE)
 	    	do.call("rbind", one_set)
 	    	})
-	    # Combine all results from a single strategy: HACK: is "while" really needed? "for" not working
-	    result <- given
-	    j = 1
-	    while(j <= length(strategy_results)) {
-	    	result <- merge(result, strategy_results[[j]], by = "event", all = TRUE)
-	    	j <- j+1}
 
-			result
+	    strategy_results <- Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE), strategy_results	)
+	    result           <- merge(given, strategy_results,  by = "event", all = TRUE )
+
+	# Combine all results from a single strategy: HACK: is "while" really needed? "for" not working
+	#   result           <- given
+	#     j = 1
+	#     while(j <= length(strategy_results)) {
+	#     	result <- merge(result, strategy_results[[j]], by = "event", all = TRUE)
+	#     	j <- j+1}
+	#
+	 		result
 		}
 
 		# Run over all strategies
 		all_strategies <- sapply(4:ncol(buckets), function(s) 		get_results_from_strategy(s), simplify = FALSE)
-		possible_data <- select(given, event)
-		j = 1
-		while(j <= length(all_strategies)) {
-			possible_data <- merge(possible_data, all_strategies[[j]][,-2], by = "event", all = TRUE)
-			j <- j+1}
-		possible_data
+		all_strategies <-	Reduce(function(x, y) merge(x[,-2], y[,-2],  by = "event", all = TRUE), 	all_strategies)
+		possible_data  <- merge(select(given, event), all_strategies,  by = "event", all = TRUE)
+
+		# possible_data <-  select(given, event)
+		# j = 1
+		#
+		# while(j <= length(all_strategies)) {
+		# 	possible_data <- merge(possible_data, all_strategies[[j]][,-2], by = "event", all = TRUE)
+		# 	j <- j+1}
+		# possible_data
 
 		# Add strategies: HACK -- Needlessly going from short to long to short to get family
     fm <- collapse_data(simulate_data(model, data_events = possible_data[,c(1:2)]), model, remove_family = FALSE)[, - 3]
