@@ -278,7 +278,7 @@ fill_bucket <- function(model, buckets, vars, row = 1, column = 4){
 	df[vars] <- possible_findings
 	df <- collapse_data(df, model)
 	# Assign n across new possible finer events
-	new_events <- cbind(event = df[df$count ==1, 1],
+	new_events <- cbind(event = df[df$count ==1, "event"],
 											gbiqq:::allocations(buckets[row, column], sum(df$count)))
 
 	# tidy up
