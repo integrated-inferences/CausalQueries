@@ -2,5 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+vignettes/*.html
 
-*.csv
+vignettes/*.R
+
+.DS_Store
+
+inst/doc
