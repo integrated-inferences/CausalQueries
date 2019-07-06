@@ -23,9 +23,10 @@
 #' # Look for data on M for all possible cases in the given data
 #' make_possible_data(model, N = 2)
 #' make_possible_data(model, given, within = TRUE, N = 2)
+#' make_possible_data(model, given, vars = list("M"), within = TRUE, N = 2)
 #'
 #' # Not possible:
-#' make_possible_data(model, given, within = TRUE, N = 7)
+#' make_possible_data(model, given, vars = "M", within = TRUE, N = 7)
 #'
 #' # Within conditions
 #' make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
@@ -33,7 +34,6 @@
 #' make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
 #'
 #' # Look for data on K but not M
-#' # THIS IS NOT WORKING YET
 #' model <- make_model("X->M->Y <-K")   %>%
 #'    set_parameter_matrix()
 #' df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
@@ -125,15 +125,15 @@ make_possible_data <- function(model,
 #' make_possible_data_single(model, N = 2)
 #' make_possible_data_single(model, given = given, within = TRUE, N = 2)
 #' make_possible_data_single(model, given = given,
-#'                           within = TRUE,
+#'                           within = TRUE, vars = "M",
 #'                           N = 2,
 #'                           condition = "X==1 & Y==1")
 #'
-#' model <- make_model("X->M->Y <- K")  %>%
+#' model <- make_model("X -> M -> Y <- K")  %>%
 #'    set_restrictions(causal_type_restrict = "(Y[M=1, K= .]<Y[M=0, K= .]) | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
-#' df <- data.frame(X = c(0,0,0,1,1,1), K = NA,  M = NA, Y = c(0,0,1,0,1,1))
-#' given <- trim_strategies(model, df)[, -2]
+#' given <- data.frame(X = c(0,0,0,1,1,1), K = NA,  M = NA, Y = c(0,0,1,0,1,1)) %>%
+#'          collapse_data(model = model)
 #' make_possible_data_single(model, given = given,
 #'                           within = TRUE,
 #'                           N = 2,
@@ -149,9 +149,20 @@ make_possible_data <- function(model,
 #'model <- make_model("X->M->Y")  %>%
 #' set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0]") %>%
 #' set_parameter_matrix()
-#' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-#' given <- trim_strategies(model, df)[, -2]
-#' make_possible_data_single(model, given = given, within = TRUE, vars = "M", N = 1, condition = "X==1 & Y==1")
+#' given <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1)) %>%
+#'          collapse_data(model)
+#' make_possible_data_single(model,
+#'                           given = given,
+#'                           within = TRUE,
+#'                           vars = "M",
+#'                           N = 1,
+#'                           condition = "X==1 & Y==1")
+#' make_possible_data_single(model,
+#'                           given = given,
+#'                           within = TRUE,
+#'                           vars = "M",
+#'                           N = 1,
+#'                           condition = "X==1")
 
 make_possible_data_single <- function(model,
 																			given = NULL,
@@ -159,6 +170,8 @@ make_possible_data_single <- function(model,
 																			within = FALSE,
 																			condition = TRUE,
 																			vars = NULL) {
+
+	if(is.null(vars) & within) stop("Please specify vars to be examined")
 
   if(within & is.null(given)) stop("If 'within' is specified 'given' must be provided")
 
@@ -168,13 +181,10 @@ make_possible_data_single <- function(model,
 
 		if(is.null(given)) stop("given not provided, but 'within' requested")
 
-		possible <- get_max_possible_data(model)
-		#		possible <- all_data_types(model)  # LM--use this instead to condition on NA values
-		#                                      #We can look in a bin if it satisfied condition *and* we do not already have data on at least some vars
-		#		if(!is.null(vars)) condition <-
-		#				paste0("(", condition, ") & (", paste0("is.na(", vars, ")", collapse = "|"), ")")
+		all_event_types <- dplyr::select(trim_strategies(model, all_data_types(model)), event, strategy)
 
-		possible <- possible[with(possible, eval(parse(text = condition))),]
+		possible <- get_max_possible_data(model)
+	  possible <- possible[with(possible, eval(parse(text = condition))),]
 		possible <- gbiqq:::collapse_data(possible, model)
 		A_w      <- get_likelihood_helpers(model)$A_w
 
@@ -193,6 +203,7 @@ make_possible_data_single <- function(model,
 
 		# This function goes through a bucket strategy and generates all possible datasets that could be produced by the strategy
 		get_results_from_strategy <- function(strategy){
+
 			data_list  <- sapply(1:nrow(buckets), function(j)  fill_bucket(model, buckets, vars, row = j, column = strategy))
 	    variations <- unlist(lapply(data_list, ncol))-1
 	    addresses  <- 1 + data.frame(perm(variations-1))
@@ -207,37 +218,22 @@ make_possible_data_single <- function(model,
 	    	do.call("rbind", one_set)
 	    	})
 
-	    strategy_results <- Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE), strategy_results	)
-	    result           <- merge(given, strategy_results,  by = "event", all = TRUE )
+	    strategy_results <- Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE),
+	    													 strategy_results	)
 
-	# Combine all results from a single strategy: HACK: is "while" really needed? "for" not working
-	#   result           <- given
-	#     j = 1
-	#     while(j <= length(strategy_results)) {
-	#     	result <- merge(result, strategy_results[[j]], by = "event", all = TRUE)
-	#     	j <- j+1}
-	#
-	 		result
+	    merge(given, strategy_results,  by = "event", all = TRUE )
+
 		}
 
 		# Run over all strategies
-		all_strategies <- sapply(4:ncol(buckets), function(s) 		get_results_from_strategy(s), simplify = FALSE)
-		all_strategies <-	Reduce(function(x, y) merge(x[,-2], y[,-2],  by = "event", all = TRUE), 	all_strategies)
+		all_strategies <- sapply(4:ncol(buckets), function(s) get_results_from_strategy(s), simplify = FALSE)
+ 		all_strategies <-	Reduce(function(x, y) merge(x[,-2], y[,-2],  by = "event", all = TRUE), 	all_strategies)
 		possible_data  <- merge(select(given, event), all_strategies,  by = "event", all = TRUE)
 
-		# possible_data <-  select(given, event)
-		# j = 1
-		#
-		# while(j <= length(all_strategies)) {
-		# 	possible_data <- merge(possible_data, all_strategies[[j]][,-2], by = "event", all = TRUE)
-		# 	j <- j+1}
-		# possible_data
-
-		# Add strategies: HACK -- Needlessly going from short to long to short to get family
-    fm <- collapse_data(simulate_data(model, data_events = possible_data[,c(1:2)]), model, remove_family = FALSE)[, - 3]
-    possible_data <- merge(fm, possible_data, by = "event", all = TRUE)
+		# Add strategies
+		possible_data <- merge(all_event_types, possible_data, by = "event")
+		if("count" %in% names(possible_data))	  {possible_data <- dplyr::select(possible_data, -count)}
 	}
-
 	return(possible_data)
 }
 
