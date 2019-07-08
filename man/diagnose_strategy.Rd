@@ -55,5 +55,5 @@ diagnose_strategy(reference_model = reference_model,
                   queries = queries,
                   estimates_database = estimates_database,
                   possible_data = possible_data,
-                  sims = 100)
+                  sims = 10)
 }
