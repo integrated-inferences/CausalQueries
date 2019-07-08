@@ -39,9 +39,10 @@ given <- trim_strategies(model, df)[, -2]
 # Look for data on M for all possible cases in the given data
 make_possible_data(model, N = 2)
 make_possible_data(model, given, within = TRUE, N = 2)
+make_possible_data(model, given, vars = list("M"), within = TRUE, N = 2)
 
 # Not possible:
-make_possible_data(model, given, within = TRUE, N = 7)
+make_possible_data(model, given, vars = "M", within = TRUE, N = 7)
 
 # Within conditions
 make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
@@ -49,7 +50,6 @@ make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1")
 make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
 
 # Look for data on K but not M
-# THIS IS NOT WORKING YET
 model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))

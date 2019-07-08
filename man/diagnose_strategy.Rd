@@ -5,8 +5,7 @@
 \title{Diagnosis a data strategy}
 \usage{
 diagnose_strategy(reference_model, analysis_model, given, queries,
-  data_strat = NULL, estimates_database = NULL, possible_data = NULL,
-  sims = 1000)
+  estimates_database = NULL, possible_data = NULL, sims = 1000)
 }
 \arguments{
 \item{reference_model}{A causal model as created by \code{make_model}}
@@ -31,11 +30,30 @@ reference_model <- analysis_model <-
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
 
-given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+df    <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+given <- collapse_data(df, reference_model)
 
-diagnose_strategy(reference_model, analysis_model,
-                  given = given, queries = "Y[X=1]>Y[X=0]",
-                  data_strat = c(1,3),
+reference_model <- gbiqq(reference_model, df)
+
+possible_data <- make_possible_data(model = reference_model,
+                                    given = given,
+                                    within = TRUE,
+                                    condition = "X==1 & Y==1",
+                                    N = 1,
+                                    vars = "M")
+
+queries <- "Y[X=1]>Y[X=0]"
+
+estimates_database <- make_estimates_database(analysis_model,
+                                 given,
+                                 possible_data,
+                                 queries = queries)
+
+diagnose_strategy(reference_model = reference_model,
+                  analysis_model = analysis_model,
+                  given = given,
+                  queries = queries,
                   estimates_database = estimates_database,
-                  sims = 10)
+                  possible_data = possible_data,
+                  sims = 100)
 }

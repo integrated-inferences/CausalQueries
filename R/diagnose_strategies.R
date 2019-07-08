@@ -425,44 +425,61 @@ make_estimates_database <- function(model,
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
 #'
-#' given = data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' df    <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
+#' given <- collapse_data(df, reference_model)
 #'
-#' diagnose_strategy(reference_model, analysis_model,
-#'                   given = given, queries = "Y[X=1]>Y[X=0]",
-#'                   data_strat = c(1,3),
+#' reference_model <- gbiqq(reference_model, df)
+#'
+#' possible_data <- make_possible_data(model = reference_model,
+#'                                     given = given,
+#'                                     within = TRUE,
+#'                                     condition = "X==1 & Y==1",
+#'                                     N = 1,
+#'                                     vars = "M")
+#'
+#' queries <- "Y[X=1]>Y[X=0]"
+#'
+#' estimates_database <- make_estimates_database(analysis_model,
+#'                                  given,
+#'                                  possible_data,
+#'                                  queries = queries)
+#'
+#' diagnose_strategy(reference_model = reference_model,
+#'                   analysis_model = analysis_model,
+#'                   given = given,
+#'                   queries = queries,
 #'                   estimates_database = estimates_database,
+#'                   possible_data = possible_data,
 #'                   sims = 10)
 
 diagnose_strategy <- function(reference_model,
 															analysis_model,
 															given,
 															queries,
-															data_strat = NULL,
 															estimates_database = NULL,
 															possible_data = NULL,
 															sims = 1000) {
 	# Houskeeping
 
-	if(!exists("fit")) fit  <- fitted_model()
-
 	if(is.null(possible_data)) possible_data <-
-			make_possible_data(reference_model, given, data_strat)
+			make_possible_data(model = reference_model, given = given, N = 1)
 
 	if(is.null(estimates_database)) {
-		fit  <- fitted_model()
-		estimates_database <- make_estimates_database(model, possible_data, queries = queries)
-	  }
+		estimates_database <- make_estimates_database(analysis_model,
+																									given = given,
+																									possible_data = possible_data,
+																									queries = queries)}
 
 	# The magic: Draw multiple parameters and get mean squared error over possible data observations as well as posterior variance.
 
-	replicate(sims,
+	out <- replicate(sims,
 		{
-		# draw parameters
+		# draw parameters: use posteriors if available
 		using <- ifelse(is.null(reference_model$posterior_distribution), "priors", "posteriors")
 		pars   <- draw_parameters(reference_model, using = using)
 
 		# implied data probabilities
-		probs <- make_data_probabilities(reference_model, given, data_strat, pars)
+		probs <- make_data_probabilities(reference_model, pars = pars, possible_data = possible_data)
 
 		# implied estimand
 		estimand <- gbiqq::get_estimands(reference_model,
@@ -481,4 +498,5 @@ diagnose_strategy <- function(reference_model,
 			MSE      = squared_error%*%probs,
 			post_var = post_var%*%probs)
 		})
+	data.frame(t(as.matrix(c(apply(out, 1, mean), sims = sims), nrow = 1)))
 	}
