@@ -31,7 +31,7 @@ testthat::test_that(
 
 		ATE <- "Y[X=1] - Y[X=0]"
 		COE <- "Y[X=1] > Y[X=0]"
-		results <- get_estimands(
+		results <- gbiqq::get_estimands(
 			updated,
 			queries = list(ATE = ATE, ATE = ATE, COE = COE, COE = COE),
 			using = list("priors", "posteriors"))
