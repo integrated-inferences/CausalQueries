@@ -23,12 +23,12 @@
 #'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 
 estimand_distribution <- function(model,
-															 query,
-															 subset = TRUE,
-															 using  = "priors",
-															 parameters = NULL, # Use for example if true parameters known
-															 type_distribution = NULL,
-															 verbose = FALSE) {
+																	query,
+																	subset = TRUE,
+																	using  = "priors",
+																	parameters = NULL, # Use for example if true parameters known
+																	type_distribution = NULL,
+																	verbose = FALSE) {
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")

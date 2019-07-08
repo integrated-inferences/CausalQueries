@@ -21,7 +21,7 @@ get_ambiguities_matrix <- function(model){
 	# type_labels   <-  apply(type_labels, 1, paste0, collapse = "")
 
 	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	types       <- gbiqq:::get_causal_types(model)
+	types       <- get_causal_types(model)
 	var_names   <- colnames(types)
 	type_labels <- sapply(1:nrow(types), function(i) paste0(var_names, types[i,], collapse = "" ))
 	# cbind(types, type_labels)  # A check

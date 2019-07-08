@@ -11,6 +11,7 @@
 #' @param answer_strat priors used at the analysis stage, if different
 #' @import DeclareDesign
 #' @importFrom dplyr %>%
+#' @import Rcpp
 #' @export
 #' @examples
 #' require("DeclareDesign")
@@ -55,9 +56,9 @@ gbiqq_designer <- function(
 ) {
 
 	answer_model <- model <- 	model %>%
-			set_restrictions(restrictions) %>%
-			set_priors(prior_distribution = priors) %>%
-	   	set_prior_distribution()
+		set_restrictions(restrictions) %>%
+		set_priors(prior_distribution = priors) %>%
+		set_prior_distribution()
 
 	if(!is.null(answer_strat)) answer_model <- set_priors(prior_distribution = answer_strat) %>% # Need to be generalized
 			set_prior_distribution()
@@ -66,14 +67,14 @@ gbiqq_designer <- function(
 	if(is.null(parameters)) {message("No true parameters provided; parameters drawn from prior on each run")}
 
 	data_step <- declare_population(data =
-									data_strategy(
-						    				model,
-						    				parameters = parameters,
-										    n_obs =      data_strat$n_obs,
-										    vars =       data_strat$vars,
-										    probs =      data_strat$probs,
-										    n =          data_strat$n,
-										    subsets =    data_strat$subsets))
+																		data_strategy(
+																			model,
+																			parameters = parameters,
+																			n_obs =      data_strat$n_obs,
+																			vars =       data_strat$vars,
+																			probs =      data_strat$probs,
+																			n =          data_strat$n,
+																			subsets =    data_strat$subsets))
 
 	# Estimand given parameters
 	estimand <- declare_estimand(handler = function(data) {
@@ -86,14 +87,14 @@ gbiqq_designer <- function(
 							 stringsAsFactors = FALSE)})
 
 	# Estimator runs gbiqq assuming answer-strategy model
-	 estimate <- declare_estimator(handler = function(data) {
+	estimate <- declare_estimator(handler = function(data) {
 		updated <- gbiqq(model = answer_model,  data = data)
 		value   <- gbiqq::get_estimands(updated, using = "posteriors", queries = inquiry)
 		data.frame(estimate_label = paste0("est_", names(inquiry)),
 							 estimand = names(inquiry),
 							 estimate = value$mean,
 							 sd_estimate = value$sd, stringsAsFactors = FALSE)
-	 })
+	})
 
 	# Declare design
 	data_step + estimand + estimate

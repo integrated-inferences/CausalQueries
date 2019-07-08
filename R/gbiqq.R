@@ -2,11 +2,11 @@
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
 #' @param model A causal model as created by \code{make_model}.
+#' @param stan_model A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"
 #' @param data A data frame with observations
-#' @param stan_model A fitted stan model. If not provided a gbiqq model is compiled from stan file "simplexes.stan"
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @importFrom rstan stan
-#' @importFrom Rcpp cpp_object_initializer evalCpp
+#' @import Rcpp
 #' @export
 #'
 #'

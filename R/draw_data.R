@@ -25,8 +25,9 @@ draw_parameters <- function(model, using = NULL){
 	}
 
 	if(is.null(model$priors)) {model <- set_priors(model)
-	                                  message(paste("Priors missing from model. Generated on the fly."))
+	message(paste("Priors missing from model. Generated on the fly."))
 	}
+
 	if(is.null(model$P)) {model <- set_parameter_matrix(model)
 	message(paste("Parameter matrix missing from model. Generated on the fly."))
 	}
@@ -62,7 +63,8 @@ draw_type_prob <- function(model,
 													 parameters = NULL,
 													 using = NULL ){
 
-	if(!is.null(parameters) & !is.null(using)) if(using!="parameters") stop("Parameters provided but using is not set to parameters")
+	if(!is.null(parameters) & !is.null(using)) if(using!="parameters")
+		stop("Parameters provided but using is not set to parameters")
 	if(!is.null(parameters)) using <- "parameters"
 	if(is.null(using)) {using <- "priors"; message("using not provided, priors assumed")}
 	if(is.null(parameters))  parameters <- draw_parameters(model, using = using)
