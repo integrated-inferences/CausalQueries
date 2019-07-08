@@ -7,11 +7,13 @@
 gbiqq(model, data, stan_model = NULL, ...)
 }
 \arguments{
-\item{model}{A causal model as created by \code{make_model}}
+\item{model}{A causal model as created by \code{make_model}.}
 
 \item{data}{A data frame with observations}
 
-\item{stan_model}{A fitted stan model: if not provided a gbiqq model is compiled from stan file "simplexes.stan"}
+\item{stan_model}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
+
+\item{...}{Options passed onto \code{rstan::stan} call.}
 }
 \description{
 Takes a model and data and returns a model object with data attached and a posterior model

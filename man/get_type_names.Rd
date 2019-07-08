@@ -6,6 +6,9 @@
 \usage{
 get_type_names(nodal_types)
 }
+\arguments{
+\item{nodal_types}{Nodal types of a model. See \code{get_nodal_types()}.}
+}
 \description{
 Get type names
 }

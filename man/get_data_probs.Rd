@@ -10,9 +10,11 @@ get_data_probs(model, data, parameters = NULL)
 \item{model}{A  model}
 
 \item{data}{Data in long format}
+
+\item{parameters}{A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.}
 }
 \description{
-Takes in a matrix of possible (single case) observations and returns the probability of each
+Takes in a matrix of possible (single case) observations and returns the probability of each.
 }
 \examples{
 model <- make_model("X->Y")

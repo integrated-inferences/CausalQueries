@@ -1,11 +1,11 @@
 #' Observe data, given a strategy
 #'
-#' @param complete_data   Data observed and unobserved
-#' @param observed_data   Data observed so far
-#' @param vars_to_observe  A list of variables to observe
-#' @param prob    Observation probability
-#' @param n    Number of units to observe; if specified, \code{n} overrides \code{prob}
-#' @param subset  A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!
+#' @param complete_data A data.frame. Data observed and unobserved.
+#' @param observed A data.frame. Data observed.
+#' @param vars_to_observe A vector of strings. Names of variables to observe.
+#' @param prob A scalar. Observation probability.
+#' @param m Number of units to observe; if specified, \code{m} overrides \code{prob}.
+#' @param subset A logical statement that can be applied to rows of complete data. For instance observation fo some variables might depend on observed values of other variables; or observation may only be sought if data not already observed!
 #' @details A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them.
 #' @export
 #' @examples
@@ -63,7 +63,8 @@ observe <- function(complete_data,
 #' @param complete_data A dataset with complete observations. Optional.
 #' @export
 #' @examples
-#' # A strategy in which X, Y are observed for sure and M is observed with 50% probability for X=1, Y=0 cases
+#' # A strategy in which X, Y are observed for sure and M is observed
+#' # with 50% probability for X=1, Y=0 cases
 #' model <- make_model("X -> M -> Y")
 #' data_strategy(
 #'   model,
@@ -93,7 +94,7 @@ data_strategy <- function(model,
 		if(is.null(parameters)) {
 			if(is.null(model$parameters)) message("parameters not provided")
 			parameters <- draw_parameters(model, using = using)}
-	    complete_data <- simulate_data(model, n = n_obs, parameter = parameters)}
+	    complete_data <- simulate_data(model, n = n_obs, parameters = parameters)}
 
 	observed <- complete_data
 

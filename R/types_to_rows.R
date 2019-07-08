@@ -11,7 +11,7 @@ types_to_rows <- function(model, query){
 
   # 	If no confounds in model use nodal types to get at parameters
 		if(is.null(attr(P, "confounds"))){
-			return_rows <- gbiqq:::types_to_nodes(model, query)
+			return_rows <- types_to_nodes(model, query)
 		} else{
 
 
@@ -77,7 +77,7 @@ types_to_rows_single <- function(model, query){
   # Note that types_to_rows is only called for confounded models
 	    # If type_to_nodes returns a non_empty object (i.e if it actually finds nodal types that map to query)
 	    # preps par_names so that values can be matched to nodal_types returned by query
-			nodal_types <- gbiqq:::types_to_nodes(model, query)
+			nodal_types <- types_to_nodes(model, query)
 			if(length(nodal_types) > 0 ){
 				par_names <- rownames(P)
 			  names_temp <- sapply(par_names, function(x) {
@@ -132,7 +132,7 @@ query_to_parameters <- function(model, query){
 		# 	2. name output vector as paramater names
 		#   3. assigns numeric value of alpha as specified in query
 
-		rows  <-  gbiqq:::types_to_rows(model, names(query))
+		rows  <-  types_to_rows(model, names(query))
 		translated_a  <- 	sapply(rows, function(r){
 
 			r_temp <- rep(query, length(r))

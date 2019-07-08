@@ -32,20 +32,30 @@ el <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
                   strategy = c("X", "M2"), given = "Y==1")
 attr(el, "results_table")
 el2 <- expected_learning(model, query = "Y[X=1]>Y[X=0]",
-                  strategy = c("M1"), given = "Y==1 & X==1 & M2==1")
+                  strategy = c("M1"),
+                  given = "Y==1 & X==1 & M2==1")
 attr(el2, "results_table")
 
 # No strategy
 expected_learning(model, query = "Y[X=1]>Y[X=0]")
 
 # No givens
-expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"))
-expected_learning(model, query = "Y[X=1]>Y[X=0]", strategy = c("M1"), given = "Y==1")
-
+expected_learning(model, query = "Y[X=1]>Y[X=0]",
+strategy = c("M1"))
+expected_learning(model, query = "Y[X=1]>Y[X=0]",
+strategy = c("M1"), given = "Y==1")
 
 library(dplyr)
- model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
- set_restrictions(node_restrict = list(C = "C1110", R = "R0001", Y = "Y0001"), action = "keep")
-expected_learning(model, query = list(COE = "(Y[S=0] > Y[S=1])"), strategy = "C", given = "Y==1 & S==0")
-expected_learning(model, query = list(COE = "(Y[X=1] > Y[X=0])"), strategy = "S", given = "X==0 & Y==0")
+model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
+set_restrictions(node_restrict =
+list(C = "C1110", R = "R0001", Y = "Y0001"),
+action = "keep")
+
+expected_learning(model,
+query = list(COE = "(Y[S=0] > Y[S=1])"),
+strategy = "C", given = "Y==1 & S==0")
+
+expected_learning(model,
+query = list(COE = "(Y[X=1] > Y[X=0])"),
+strategy = "S", given = "X==0 & Y==0")
 }

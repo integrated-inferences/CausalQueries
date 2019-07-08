@@ -25,9 +25,8 @@ We will walk through a simple model in which $X$ causes $Y$. We will assume unin
 # Define the model
 
 ```{r}
-model    <- make_model("X -> Y") %>%
-	
-	          set_priors(prior_distribution = "jeffreys")
+model <- make_model("X -> Y") %>%
+	set_priors(prior_distribution = "jeffreys")
 ```
 
 # Graph it
@@ -73,7 +72,7 @@ We first calculate a posterior distribution for the  average causal effect of $X
 ```{r} 
 estimand <- estimand_distribution(
                    model = updated_model, 
-                   posterior = TRUE,
+                   using = "posteriors",
                    query = "Y[X=1] - Y[X=0]"
                    )
 
@@ -88,13 +87,13 @@ How do our inferences look given the uninformative prior?
 ```{r} 
 prior_estimand <- estimand_distribution(
                    model = updated_model, 
-                   posterior = FALSE,
+                   using = "priors",
                    query = "Y[X=1] > Y[X=0]",
                    subset = "X==1 & Y==1"
                    )
 posterior_estimand <- estimand_distribution(
                    model = updated_model, 
-                   posterior = TRUE,
+                   using = "posteriors",
                    query = "Y[X=1] > Y[X=0]",
                    subset = "X==1 & Y==1"
                    )
