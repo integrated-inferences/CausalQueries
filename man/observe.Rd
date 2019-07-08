@@ -12,7 +12,7 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
 
 \item{observed}{A data.frame. Data observed.}
 
-\item{vars_to_observe}{A list of variables to observe.}
+\item{vars_to_observe}{A vector of strings. Names of variables to observe.}
 
 \item{prob}{A scalar. Observation probability.}
 

@@ -55,3 +55,14 @@ encode_data <- function(model, data){
 	apply(data, MARGIN = 1, FUN = function(row){
 		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
 }
+
+#' Make data compact with data as first argument
+#'
+#' @param data A data.frame.
+#' @param model A model
+#' @export
+collapse_data <- function(data, model, remove_family = TRUE){
+	x <- trim_strategies(model = model, data)
+	if(remove_family) x <- x[, -2]
+	x
+}
