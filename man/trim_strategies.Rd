@@ -12,7 +12,7 @@ trim_strategies(model, data)
 \item{data}{A data.frame of variables that can take three values: 0, 1, and NA.}
 }
 \value{
-Returns indices and ambiguity matrix
+Returns data events without strategies containing no observed data
 }
 \description{
 Trim strategies
