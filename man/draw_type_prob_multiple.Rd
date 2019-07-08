@@ -8,15 +8,16 @@ draw_type_prob_multiple(model, parameters = NULL, n_draws = 4000,
   using = "priors")
 }
 \arguments{
-\item{model}{A model, normally containing a prior or a posterior distribution}
+\item{model}{A model, normally containing a prior or a posterior distribution.}
 
-\item{parameters}{A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`}
+\item{parameters}{A numeric vector. True parameters to be used instead of parameters attached to the model in case `using` specifies `parameters`.}
 
-\item{n_draws}{If no prior distribution provided, generate prior distribution with n_draws draws}
+\item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 
-\item{using}{Character string indicating whether to use `priors`, `posteriors` or `parameters`}
-
-\item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
+\item{using}{A character string indicating whether to use "priors", "posteriors" or "parameters".}
+}
+\value{
+A matrix of type probabilities.
 }
 \description{
 Draw matrix of type probabilities, before or after estimation
@@ -24,6 +25,5 @@ Draw matrix of type probabilities, before or after estimation
 \examples{
 model <- make_model("X -> Y")
 draw_type_prob_multiple(model, using = "priors", n_draws = 3)
-draw_type_prob_multiple(model, using = "posteriors", n_draws = 3)
 draw_type_prob_multiple(model, using = "parameters", n_draws = 3)
 }

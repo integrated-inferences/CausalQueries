@@ -2,10 +2,11 @@
 title: "Inference from a mediator"
 author: "Macartan"
 date: "April 27, 2019"
-output:
-  html_document:
-    toc: true
-    number_sections: true
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{X-causes-Y}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -17,14 +18,15 @@ library(dplyr)
 
 # A model with possible confounding
 
-We explore a model where a front door type criterion is satisfied. Causal relations are given by  $X\rightarrow M \rightarrow Y$. However there is confounding:  $X$ is less likely in cases where $Y=1$.
+We explore a model where a front door type criterion is satisfied. Causal relations are given by  $X\rightarrow M \rightarrow Y$. However there is confounding: $X$ is less likely in cases where $Y=1$.
 
-In this setting,  because of confounding, we greatly underestimate the effect of $X$ on $Y$ with simple $X,Y$ data; with full data on $M$ we do very well; but we also do well even with quite partial data on $M$, e.g. for 50 out of 50,000 cases.
+In this setting, because of confounding, we greatly underestimate the effect of $X$ on $Y$ with simple $X,Y$ data; with full data on $M$ we do very well; but we also do well even with quite partial data on $M$, e.g. for 50 out of 50,000 cases.
 
 ```{r, message = FALSE}
 model <- 
 	make_model("X -> M -> Y") %>%
-	set_parameter_matrix(confound = list(c(X="X"), list( Y = "11" )))%>%
+	set_confound(confound = list(X="Y[X=1]==1")) %>%
+	set_parameter_matrix() %>%
 	set_priors()
 ```
 
@@ -50,8 +52,8 @@ Generate three data frames: full XMY data, XY data only, XY and small M data
 ```{r}
 n <- 50000
 
-data       <- dataXY <- data_partial <- simulate_data(model, n = n, parameters = true_lambda)
-dataXY$M   <- NA
+data <- dataXY <- data_partial <- simulate_data(model, n = n, parameters = true_lambda)
+dataXY$M <- NA
 data_partial$M[sample(1:n, n - 50)] <- NA
 
 ```
@@ -62,7 +64,6 @@ A naive analysis might regress $Y$ on $X$.
 
 ```{r}
 with(data, lm(Y~X)$coef)
-
 ```
 
 Note that the the estimated ATE is too low -- about half of what it should be.
@@ -101,20 +102,20 @@ updated_partial  <- gbiqq(model, data_partial)
 
 Here are  graphs of  posteriors over the effect of $X$ on $Y$. 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = FALSE}
 
 plot_posterior <- function(updated, main = "", prior = FALSE) {
-  if(prior) {lambdas <- data.frame(t(replicate(4000, draw_lambda(model)))) 
-  } else {
-  lambdas <- data.frame(rstan::extract(updated$posterior, pars= "lambdas")$lambdas)
-  names(lambdas) <- names(model$priors)}
-  lambdas$ATE      <- with(lambdas, M.M01*(Y.Y01 - Y.Y10) + M.M10*(Y.Y10 - Y.Y01))
-  lambdas$confound <- with(lambdas, XY11.X1Y11 - X.X1)
-  with(lambdas, plot(confound, ATE, xlim = c(-1,1), ylim = c(-.5, .5), main = main))
-  abline(v = -.3, col = "red")
-  abline(a = .25, b = 0, col = "red")
-  abline(v = mean(lambdas$confound))
-  abline(a = mean(lambdas$ATE), b = 0)
+	if(prior) {lambdas <- data.frame(t(replicate(4000, draw_parameters(model)))) 
+	} else {
+		lambdas <- data.frame(rstan::extract(updated$posterior, pars= "lambdas")$parameters)
+		names(lambdas) <- names(model$priors)}
+	lambdas$ATE      <- with(lambdas, M.M01*(Y.Y01 - Y.Y10) + M.M10*(Y.Y10 - Y.Y01))
+	lambdas$confound <- with(lambdas, XY11.X1Y11 - X.X1)
+	with(lambdas, plot(confound, ATE, xlim = c(-1,1), ylim = c(-.5, .5), main = main))
+	abline(v = -.3, col = "red")
+	abline(a = .25, b = 0, col = "red")
+	abline(v = mean(lambdas$confound))
+	abline(a = mean(lambdas$ATE), b = 0)
 }
 
 par(mfrow = c(2,2))

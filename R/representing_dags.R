@@ -34,7 +34,7 @@ translate_dagitty <- function(model){
 #' @export
 #'
 #' @return dagitty translation of DAG
-#'
+#' @importFrom graphics plot
 #' @examples
 #' \dontrun{
 #' model <- make_model("X -> K -> Y; X -> Y")

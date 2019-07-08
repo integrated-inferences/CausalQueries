@@ -13,6 +13,10 @@ st_within(x, left = "[[:punct:]]|\\\\b", right = "\\\\[",
 \item{left}{A regular expression to serve as look ahead.}
 
 \item{right}{A regular expression to serve as a look behind.}
+
+\item{rm_left}{An integer. Number of bites after left-side match to remove from result. Defaults to -1.}
+
+\item{rm_right}{An integer. Number of bites after right-side match to remove from result. Defaults to 0.}
 }
 \value{
 A character vector.
