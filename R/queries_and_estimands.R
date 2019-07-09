@@ -16,15 +16,15 @@
 #' library(dplyr)
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
-#'  estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
-#'  estimand_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 
-estimand_distribution <- function(model,
+query_distribution <- function(model,
 															 query,
 															 subset = TRUE,
 															 using  = "priors",
@@ -139,7 +139,7 @@ query_model <- function(model,
 
 	# Function for mapply
 	f <- function(query, subset, using){
-		v <- estimand_distribution(model,
+		v <- query_distribution(model,
 															 query = query,
 															 subset = subset,
 															 parameters = parameters,
