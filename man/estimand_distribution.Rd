@@ -5,12 +5,13 @@
 \title{Calculate estimand distribution}
 \usage{
 estimand_distribution(model, query, subset = TRUE, using = "priors",
-  parameters = NULL, type_distribution = NULL, verbose = FALSE)
+  parameters = NULL, type_distribution = NULL, verbose = FALSE,
+  join_by = "|")
 }
 \arguments{
 \item{model}{A model}
 
-\item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]"}
+\item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]" or "Y[X=1] > Y[X=0]"}
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
@@ -33,5 +34,7 @@ model <- make_model("X -> Y") \%>\%
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
  estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
+ estimand_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+ estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 }

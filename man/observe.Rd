@@ -12,7 +12,7 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
 
 \item{observed}{A data.frame. Data observed.}
 
-\item{vars_to_observe}{A list of variables to observe.}
+\item{vars_to_observe}{A vector of strings. Names of variables to observe.}
 
 \item{prob}{A scalar. Observation probability.}
 
@@ -22,6 +22,9 @@ observe(complete_data, observed = NULL, vars_to_observe = NULL,
 }
 \description{
 Observe data, given a strategy
+}
+\details{
+A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them.
 }
 \examples{
 model <- make_model("X -> Y")
