@@ -42,7 +42,7 @@ draw_parameters <- function(model, using = NULL){
 	# Draw parameters, given priors
 	parameters <- unlist(sapply(param_sets, function(v){
 		i <- which(startsWith(names(lambdas_prior), paste0(v,".")))
-		rdirichlet(1, lambdas_prior[i])}))
+		gtools::rdirichlet(1, lambdas_prior[i])}))
 	names(parameters) <- names(lambdas_prior)
 	parameters
 }
