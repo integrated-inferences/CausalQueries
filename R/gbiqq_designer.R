@@ -78,7 +78,7 @@ gbiqq_designer <- function(
 
 	# Estimand given parameters
 	estimand <- declare_estimand(handler = function(data) {
-		value <- get_estimands(model,
+		value <- query_model(model,
 													 using = "parameters",
 													 parameters = parameters,
 													 queries = inquiry)
@@ -89,7 +89,7 @@ gbiqq_designer <- function(
 	# Estimator runs gbiqq assuming answer-strategy model
 	estimate <- declare_estimator(handler = function(data) {
 		updated <- gbiqq(model = answer_model,  data = data)
-		value   <- gbiqq::get_estimands(updated, using = "posteriors", queries = inquiry)
+		value   <- gbiqq::query_model(updated, using = "posteriors", queries = inquiry)
 		data.frame(estimate_label = paste0("est_", names(inquiry)),
 							 estimand = names(inquiry),
 							 estimate = value$mean,

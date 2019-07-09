@@ -75,7 +75,7 @@ conditional_inferences <- function(model, query, parameters=NULL,  given = NULL)
 	subsets <- apply(conds, 1, function(j) paste(j[!is.na(j)], collapse = " & "))
 	subsets <- as.list(subsets)
 	subsets[subsets==""] <- TRUE
-	estimands <- get_estimands(
+	estimands <- query_model(
 		model   = model,
 		parameters  = parameters,
 		using = "parameters",

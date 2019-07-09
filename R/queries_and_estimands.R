@@ -87,39 +87,39 @@ estimand_distribution <- function(model,
 #' model <- make_model("X -> Y") %>%
 #'            set_prior_distribution(n_draws = 10000)
 #'
-#' get_estimands(
+#' query_model(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]",
 #'                      Share_positive = "Y[X=1] > Y[X=0]"),
 #'       using = c("parameters", "priors"))
 #'
-#' get_estimands(
+#' query_model(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]",
 #'                      Share_positive = "Y[X=1] > Y[X=0]"),
 #'       using = "priors")
 #'
-#' get_estimands(
+#' query_model(
 #'       model,
 #'       queries = list(ATE = "Y[X=1] - Y[X=0]"),
 #'       using = list("priors", "parameters"),
 #'       digits = 3)
 #'
-#' get_estimands(
+#' query_model(
 #'       model,
 #'       using = "priors",
 #'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
 #'       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
 #'       digits = 3)
 #'
-#' get_estimands(
+#' query_model(
 #'       model,
 #'       using = "parameters",
 #'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
 #'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
 #'       digits = 3)
 
-get_estimands <- function(model,
+query_model <- function(model,
 													parameters = NULL,
 													queries = list(NULL),
 													subsets = list(TRUE),

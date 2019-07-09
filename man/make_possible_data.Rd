@@ -44,16 +44,16 @@ make_possible_data(model, given, vars = list("M"), within = TRUE, N = 2)
 make_possible_data(model, given, vars = "M", within = TRUE, N = 7)
 
 # Within conditions
-make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
-make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1")
-make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
+make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1", vars = "M")
+make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1", vars = "M")
+make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1", vars = "M")
 
 # Look for data on K but not M
 model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
 given <- trim_strategies(model, df)[, -2]
-#make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
+make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 
 # Look for data on M when X = 1 and Y = 0
 make_possible_data(model,

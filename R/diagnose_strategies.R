@@ -425,7 +425,7 @@ make_estimates_database <- function(model,
 
 		updated <- gbiqq::gbiqq(model = model, data = data, stan_model = fit)
 
-		gbiqq::get_estimands(updated,
+		gbiqq::query_model(updated,
 												 queries = queries,
 												 using = "posteriors",
 												 subset = TRUE)
@@ -512,7 +512,7 @@ diagnose_strategy <- function(reference_model,
 		probs <- make_data_probabilities(reference_model, pars = pars, possible_data = possible_data)
 
 		# implied estimand
-		estimand <- gbiqq::get_estimands(reference_model,
+		estimand <- gbiqq::query_model(reference_model,
 																		 parameters = pars,
 																		 queries = queries,
 																		 using = "parameters",
