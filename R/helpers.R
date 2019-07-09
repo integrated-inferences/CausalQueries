@@ -359,18 +359,17 @@ make_nodal_types <- function(mat){
 	apply(type_names, 2, unique)
 }
 
-# before we remove, we want to check what nodal types remain
-# if for a given causal type, all nodal types are false, then perform `remove`
-exclude_node_from_causal_type <- function(var_name,
-																					causal_types,
-																					in_restriction){
+#' Exclude node from causal type restriction
+#' Returns updated vector of rows in causal type matrix to be excluded, taking into account nodal types affected by restriction.
+#' @param var_name A string. Variable name in a model.
+#' @param causal_types A data.frame of causal types of a model.
+#' @param in_restriction A logical vector. Rows of \code{causal_type} in restriction query.
+#' @return A logical vector
+#' @importFrom dplyr %>% group_by_at n() mutate
+exclude_node_from_causal_type <- function(var_name, causal_types, in_restriction){
 	types <- causal_types[var_name] %>%
 		mutate(restrict = in_restriction$types) %>%
 		group_by_at(.vars = var_name) %>%
 		mutate(rm_node = sum(restrict)==n())
-	# ifelse(remove,
-	# 			 ret <- types[!types$rm_node, var_name],
-	# 			 ret <- types[types$rm_node, var_name])
-	# lapply(ret, function(s) paste0(var_name, s))
 	types$rm_node
 }
