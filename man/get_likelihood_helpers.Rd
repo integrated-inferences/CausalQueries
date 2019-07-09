@@ -7,7 +7,7 @@
 get_likelihood_helpers(model)
 }
 \arguments{
-\item{model}{A probabilistic causal model created by make_model()}
+\item{model}{A probabilistic causal model created by make_model().}
 }
 \value{
 Returns indices and ambiguity matrix

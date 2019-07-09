@@ -21,9 +21,11 @@ Imports:
     dplyr,
     DeclareDesign,
     Rcpp (>= 0.12.16),
-    rlang (>= 0.2.0)
+    rlang (>= 0.2.0),
+    stringr,
+    randomizr
 Suggests: 
-		testthat
-		
-
-
+    testthat,
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr

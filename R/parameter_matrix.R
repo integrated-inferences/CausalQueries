@@ -3,8 +3,6 @@
 #' Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
 #' @param model A model created by make_model()
-#' @param confound A list relating nodes to types with whihc  they are confounded
-#'
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -14,7 +12,7 @@ make_parameter_matrix  <- function(model){
 
 	nodal_types     <- get_nodal_types(model)
 	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length), SIMPLIFY = FALSE))
-	types           <- gbiqq:::causal_type_names(get_causal_types(model))
+	types           <- causal_type_names(get_causal_types(model))
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type

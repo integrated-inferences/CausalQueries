@@ -6,6 +6,11 @@
 \usage{
 includes_var(var, query)
 }
+\arguments{
+\item{var}{Variable name}
+
+\item{query}{An expression in string format.}
+}
 \description{
 Whether a query contains an exact string
 }

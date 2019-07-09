@@ -2,16 +2,18 @@
 % Please edit documentation in R/likelihood.R
 \name{trim_strategies}
 \alias{trim_strategies}
-\title{trim_strategies}
+\title{Trim strategies}
 \usage{
 trim_strategies(model, data)
 }
 \arguments{
 \item{model}{A probabilistic causal model created by make_model()}
+
+\item{data}{A data.frame of variables that can take three values: 0, 1, and NA.}
 }
 \value{
-Returns indices and ambiguity matrix
+Returns data events without strategies containing no observed data
 }
 \description{
-trim_strategies
+Trim strategies
 }

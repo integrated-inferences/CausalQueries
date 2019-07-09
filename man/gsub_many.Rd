@@ -12,6 +12,8 @@ gsub_many(x, pattern_vector, replacement_vector, ...)
 \item{pattern_vector}{A character vector.}
 
 \item{replacement_vector}{A character vector.}
+
+\item{...}{Options passed onto \code{gsub()} call.}
 }
 \description{
 Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.

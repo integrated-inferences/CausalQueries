@@ -6,6 +6,9 @@
 \usage{
 unpack_wildcard(x)
 }
+\arguments{
+\item{x}{A string of length 1L. A nodal type containing one or more wildcard characters "." to be unpacked.}
+}
 \description{
 Unpack a wild card
 }

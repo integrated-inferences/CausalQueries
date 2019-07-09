@@ -15,6 +15,7 @@ set_confound(model, confound = NULL)
 Adjust parameter matrix to allow confounding
 }
 \examples{
+library(dplyr)
 model <- make_model("X -> Y") \%>\%
   set_confound(list(X = "(Y[X=1]>Y[X=0])",
                     X = "(Y[X=1]<Y[X=0])"))
@@ -23,10 +24,12 @@ model <- make_model("A -> B -> C -> D; B -> D")
 confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
 set_confound(model = model, confound = confound)
 
+#To do -- handle confound spread over previous allocations such as
 model <- make_model("X -> Y")
 confound = list(X = "(Y[X=1] == 1")
-model <- set_confound(model = model, confound = confound)
+\dontrun{model <- set_confound(model = model, confound = confound)}
 confound2 = list(X = "(Y[X=1]>Y[X=0])")
-model <- make_model("X -> Y <- S; S -> W") \%>\% set_confound(list(X = "S==1", S = "W[S=1]==1"))
+model <- make_model("X -> Y <- S; S -> W") \%>\%
+set_confound(list(X = "S==1", S = "W[S=1]==1"))
 attr(model$P, "confounds")
 }

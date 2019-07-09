@@ -9,9 +9,11 @@ estimand_distribution(model, query, subset = TRUE, using = "priors",
   join_by = "|")
 }
 \arguments{
-\item{model}{A  model}
+\item{model}{A model}
+
 
 \item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]" or "Y[X=1] > Y[X=0]"}
+
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
@@ -20,11 +22,14 @@ estimand_distribution(model, query, subset = TRUE, using = "priors",
 \item{parameters}{A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`}
 
 \item{type_distribution}{if provided saves calculation, otherwise clculated from model; may be based on prior or posterior}
+
+\item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the consule.}
 }
 \description{
 Calculated from a prior or posterior distribution
 }
 \examples{
+library(dplyr)
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
