@@ -365,7 +365,7 @@ make_nodal_types <- function(mat){
 #' @param causal_types A data.frame of causal types of a model.
 #' @param in_restriction A logical vector. Rows of \code{causal_type} in restriction query.
 #' @return A logical vector
-#' @importFrom dplyr %>% group_by_at n() mutate
+#' @importFrom dplyr %>% group_by_at mutate
 exclude_node_from_causal_type <- function(var_name, causal_types, in_restriction){
 	types <- causal_types[var_name] %>%
 		mutate(restrict = in_restriction$types) %>%
