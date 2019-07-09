@@ -349,7 +349,7 @@ any_discrepancies <- function(alphas, translated_alphas){
 }
 
 #' Make nodes from matrix
-#' @param matrix A character matrix. For each variable contained in a model, matrix contains named columns with nodal values.
+#' @param mat A character matrix. For each variable contained in a model, matrix contains named columns with nodal values.
 #' @return A named list of causal types for each variable
 #'
 make_nodal_types <- function(mat){
