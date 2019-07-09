@@ -11,9 +11,7 @@ estimand_distribution(model, query, subset = TRUE, using = "priors",
 \arguments{
 \item{model}{A model}
 
-
 \item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]" or "Y[X=1] > Y[X=0]"}
-
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 

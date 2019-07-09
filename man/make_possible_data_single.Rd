@@ -38,6 +38,7 @@ given <- trim_strategies(model, df)[, -2]
 
 # Look for data on M for all possible cases in the given data
 make_possible_data_single(model, N = 2)
+make_possible_data_single(model, given = given, vars = "M", within = TRUE, N = 2)
 make_possible_data_single(model, given = given,
                           within = TRUE, vars = "M",
                           N = 2,
