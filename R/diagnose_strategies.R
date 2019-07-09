@@ -86,7 +86,7 @@ make_possible_data <- function(model,
   	use_this <- g_df[g_df$event %in% possible$event[possible$count>0],] > 0
   	use_data <-  g_df[,use_this]
   	skip   <-  data.frame(dplyr::select(g_df, event, strategy), g_df[,!use_this ])
-  	names(skip)[3:ncol(skip)] <-  names(g_df)[!use_this]
+  	if(ncol(skip)>2) names(skip)[3:ncol(skip)] <-  names(g_df)[!use_this]
 		out <- lapply(3:ncol(use_data), function(s) {
 			use_data <-  use_data[,c(1,s)]
 			names(use_data)  <- c("event", "count")
