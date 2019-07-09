@@ -28,16 +28,16 @@
 #' make_possible_data(model, given, vars = "M", within = TRUE, N = 7)
 #'
 #' # Within conditions
-#' make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1")
-#' make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1")
-#' make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1")
+#' make_possible_data(model, given, within = TRUE, N = 2, condition = "X==1 & Y==1", vars = "M")
+#' make_possible_data(model, given, within = TRUE, N = 3, condition = "Y==1", vars = "M")
+#' make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1", vars = "M")
 #'
 #' # Look for data on K but not M
 #' model <- make_model("X->M->Y <-K")   %>%
 #'    set_parameter_matrix()
 #' df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
 #' given <- trim_strategies(model, df)[, -2]
-#' #make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
+#' make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 #'
 #' # Look for data on M when X = 1 and Y = 0
 #' make_possible_data(model,
@@ -78,44 +78,56 @@ make_possible_data <- function(model,
 
 
 
-  out2 <- lapply(2:length(N), function(i){
+  for (i in 2:length(N)){
   	possible <- data.frame(select(g_df, event), count = 1)
   	possible <- simulate_data(model, data_events = possible)
   	possible<-  possible[with(possible, eval(parse(text = condition[[i]]))),]
   	possible <- gbiqq:::collapse_data(possible, model)
-  	use_this <- g_df[g_df$event %in% possible$event[possible$count>0],] > 0
+  	use_this <- g_df[g_df$event %in% possible$event[possible$count>0],] >= N[[i]]
+  	if(nrow(use_this) > 1) use_this <- apply(use_this, 2, any)
   	use_data <-  g_df[,use_this]
   	skip   <-  data.frame(dplyr::select(g_df, event, strategy), g_df[,!use_this ])
   	if(ncol(skip)>2) names(skip)[3:ncol(skip)] <-  names(g_df)[!use_this]
+
+  	# Avoid running make_possible_single if there are possible data with enough space to alocate N
+    if(all(!use_this[3:ncol(g_df)])){
+    	message(paste0("Not enough space to allocate N = ",N[[i]], " in step ",i))
+    	return(g_df)
+    }
+
 		out <- lapply(3:ncol(use_data), function(s) {
 			use_data <-  use_data[,c(1,s)]
 			names(use_data)  <- c("event", "count")
-			 make_possible_data_single(model,
+			data_single <- make_possible_data_single(model,
 																given = 	use_data,
 																within = TRUE,
 																N     = N[[i]],
 																condition = condition[[i]],
 																vars  = vars[[i]])
+
+			colnames(data_single)[3:ncol(data_single)] <- paste0(s-2, "-", colnames(data_single)[3:ncol(data_single)])
+			data_single
 			})
-		out <- lapply(1:length(out), function(n_s){ out1 <- out[[n_s]]
-			                                          colnames(out1)[3:ncol(out1)] <- paste0(n_s, "-", colnames(out1)[3:ncol( out1)])
-			                                          out1 })
+		# out <- lapply(1:length(out), function(n_s){ out1 <- out[[n_s]]
+		# 	                                          colnames(out1)[3:ncol(out1)] <- paste0(n_s, "-", colnames(out1)[3:ncol( out1)])
+		# 	                                          out1 })
 		# rbind not working yet since output is of different length
 			# x <- do.call("rbind", out)
 			# x <- t(t(x)[!duplicated(t(x)),])
 			# given <- cbind(given[,1:2], x)
 	 out   <- Reduce(function(x, y) merge(x, y,  by = c("event", "strategy"), all = TRUE), 	out)
 	 out   <- merge( skip, out,  by = c("event", "strategy"), all = TRUE)
-	 g_df  <<- dplyr:::mutate_if(out, is.numeric, ~replace(., is.na(.), 0))
+	 g_df  <- dplyr:::mutate_if(out, is.numeric, ~replace(., is.na(.), 0))
 
-	})
-  out2 <- lapply(1:length(out2), function(n_s){
-  	out1 <- out2[[n_s]]
-  colnames(out1)[3:ncol(out1)] <- paste0(n_s, "-", colnames(out1)[3:ncol( out1)])
-  out1 })
-  given <- Reduce(function(x, y) merge(x, y,  by = c("event", "strategy"), all = TRUE), 	out2, right = TRUE)
-  given <- given[,!duplicated(t(given))]
-	given
+	}
+  # out2 <- lapply(1:length(out2), function(n_s){
+  # 	out1 <- out2[[n_s]]
+  # colnames(out1)[3:ncol(out1)] <- paste0(n_s, "-", colnames(out1)[3:ncol( out1)])
+  # out1 })
+  #given <- Reduce(function(x, y) merge(x, y,  by = c("event", "strategy"), all = TRUE), 	out2, right = TRUE)
+  #given <- given[,!duplicated(t(given))]
+	#given
+	g_df
 
 }
 
