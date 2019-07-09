@@ -233,7 +233,7 @@ make_possible_data_single <- function(model,
 			b_names          <- sapply(1:nrow(buckets), function(b_i) (all_buckets$event %in% buckets$event[b_i])*(ncol(data_list[[b_i]])-2))
 			addresses        <- do.call(rbind, lapply(apply(b_names, 2, perm),function(b)data.frame(b)+1))
 			addresses        <- apply(addresses, 1, paste, collapse = ".")
-			strategy_results <- Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE), data_list,)
+			strategy_results <- Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE), data_list)
 			out              <- merge(given, strategy_results,  by = "event", all = TRUE )
 			out              <- dplyr::mutate_at(out, vars(-c("event", "count")),  list(~ dplyr::coalesce(., count)))
 			colnames(out)[3:ncol(out)] <- paste0(strategy-3, "-",addresses)
@@ -248,6 +248,7 @@ make_possible_data_single <- function(model,
 
 		# Add strategies
 		possible_data <- merge(all_event_types, possible_data, by = "event")
+		possible_data <- dplyr:::mutate_if(possible_data, is.numeric, ~replace(., is.na(.), 0))
 		if("count" %in% names(possible_data))	  {possible_data <- dplyr::select(possible_data, -count)}
 
 	}
