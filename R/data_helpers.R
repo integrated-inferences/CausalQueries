@@ -62,7 +62,7 @@ encode_data <- function(model, data){
 #' @param model A model
 #' @export
 collapse_data <- function(data, model, remove_family = TRUE){
-	x <- trim_strategies(model = model, data)
+	x <- summarize_data(model = model, data)
 	if(remove_family) x <- x[, -2]
 	x
 }

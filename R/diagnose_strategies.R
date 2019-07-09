@@ -18,7 +18,7 @@
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
 #' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-#' given <- trim_strategies(model, df)[, -2]
+#' given <- summarize_data(model, df)[, -2]
 #'
 #' # Look for data on M for all possible cases in the given data
 #' make_possible_data(model, N = 2)
@@ -36,7 +36,7 @@
 #' model <- make_model("X->M->Y <-K")   %>%
 #'    set_parameter_matrix()
 #' df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
-#' given <- trim_strategies(model, df)[, -2]
+#' given <- summarize_data(model, df)[, -2]
 #' make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 #'
 #' # Look for data on M when X = 1 and Y = 0
@@ -154,7 +154,7 @@ make_possible_data <- function(model,
 #'    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") %>%
 #'    set_parameter_matrix()
 #' df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-#' given <- trim_strategies(model, df)[, -2]
+#' given <- summarize_data(model, df)[, -2]
 #'
 #' # Look for data on M for all possible cases in the given data
 #' make_possible_data_single(model, N = 2)
@@ -217,7 +217,7 @@ make_possible_data_single <- function(model,
 
 		if(is.null(given)) stop("given not provided, but 'within' requested")
 
-		all_event_types <- dplyr::select(trim_strategies(model, all_data_types(model)), event, strategy)
+		all_event_types <- dplyr::select(summarize_data(model, all_data_types(model)), event, strategy)
 
 		possible <- get_max_possible_data(model)
 	  possible <- possible[with(possible, eval(parse(text = condition))),]
@@ -326,8 +326,8 @@ all_possible <- function(model, N, vars = NULL, condition = TRUE){
 	if(!all(is.na(vars))) possible[, !names(possible) %in% vars] <- NA
   possible <- possible[with(possible, eval(parse(text = condition))),]
 
-	d.frame   <- trim_strategies(model, possible)
-	df        <- trim_strategies(model, possible)[d.frame$count >0 ,1:2]
+	d.frame   <- summarize_data(model, possible)
+	df        <- summarize_data(model, possible)[d.frame$count >0 ,1:2]
 
 	possible_data <- gbiqq:::allocations(N, length(df$event))
 	out <- matrix(0, nrow(d.frame), ncol(possible_data))

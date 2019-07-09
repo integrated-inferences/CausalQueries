@@ -199,7 +199,7 @@ make_gbiqq_data <- function(model, data){
 	if(length(model$priors) != length(param_set)) stop("priors should have same length as parameter set")
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
-	data_events        <- trim_strategies(model, data)
+	data_events        <- summarize_data(model, data)
 	inverted_P         <- 1-P
 	A_w                <- (get_likelihood_helpers(model)$A_w)[data_events$event, ]
 	strategies         <- data_events$strategy

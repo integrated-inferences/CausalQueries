@@ -34,7 +34,7 @@ model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-given <- trim_strategies(model, df)[, -2]
+given <- summarize_data(model, df)[, -2]
 
 # Look for data on M for all possible cases in the given data
 make_possible_data(model, N = 2)
@@ -52,7 +52,7 @@ make_possible_data(model, given, within = TRUE, condition = "X == 1 | Y == 1", v
 model <- make_model("X->M->Y <-K")   \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,1,1,1), K = NA, M = NA, Y = c(0,0,0,1,1))
-given <- trim_strategies(model, df)[, -2]
+given <- summarize_data(model, df)[, -2]
 make_possible_data(model, given, within = TRUE, N = 1, vars = "K")
 
 # Look for data on M when X = 1 and Y = 0

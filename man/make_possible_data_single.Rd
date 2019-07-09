@@ -34,7 +34,7 @@ model <- make_model("X->M->Y")  \%>\%
    set_restrictions(causal_type_restrict = "Y[M=1]<Y[M=0] | M[X=1]<M[X=0] ") \%>\%
    set_parameter_matrix()
 df <- data.frame(X = c(0,0,0,1,1,1), M = NA, Y = c(0,0,1,0,1,1))
-given <- trim_strategies(model, df)[, -2]
+given <- summarize_data(model, df)[, -2]
 
 # Look for data on M for all possible cases in the given data
 make_possible_data_single(model, N = 2)
