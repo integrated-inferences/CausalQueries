@@ -6,7 +6,7 @@
 #' @param node_restrict A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param causal_type_restrict  A quoted expressions defining the restriction
 #' @param join_by A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param action A string. Either `remove` or `keep` to indicate whether to remove or keep only types specified by \code{causal_type_restrict} or \code{node_restrict}.
+#' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{causal_type_restrict} and/or \code{node_restrict}.
 #' @export
 #' @return A model with restrictions and nodal types saved as attributes.
 #'
@@ -25,7 +25,7 @@
 #' get_parameter_matrix(model)
 #' # Restrict to a single type
 #' model <- make_model("X->Y") %>%
-#' set_restrictions(node_restrict = list(Y = "Y11"), action = "keep")
+#' set_restrictions(node_restrict = list(Y = "Y11"), keep = TRUE)
 #' get_parameter_matrix(model)
 #' # Restrictions can be  with wildcards
 #' model <- make_model("X->Y") %>%
@@ -33,7 +33,7 @@
 #' get_parameter_matrix(model)
 #' # Running example: there are only four causal types
 #' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
-#' set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), action = "keep")
+#' set_restrictions(node_restrict = list(C = "C1000", R = "R0001", Y = "Y0001"), keep = TRUE)
 #' get_parameter_matrix(model)
 #'
 #' # Restrict parameter space using casual types
@@ -50,23 +50,24 @@
 #' get_parameter_matrix(model)
 #' # Restrict to a single type in endogenous variable
 #' model <- make_model("X->Y") %>%
-#' set_restrictions(causal_type_restrict =  "(Y[X=.] == 1)", join_by = "&", action = "keep")
+#' set_restrictions(causal_type_restrict =  "(Y[X=.] == 1)", join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
 set_restrictions <- function(model,
 														 node_restrict = NULL,
 														 causal_type_restrict = NULL,
 														 join_by = NULL,
-														 action = "remove"){
+														 keep = FALSE){
 
-	if(is.null(node_restrict) & is.null(causal_type_restrict)) {message("No restrictions provided"); return(model)}
+	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
+	if(is.null(node_restrict) & is.null(causal_type_restrict)) {message("No restrictions provided."); return(model)}
 
 	if(!is.null(node_restrict)){
     model <- restrict_nodal_types(model,
     															restriction = node_restrict,
-    															action = action)
+    															keep = keep)
 	}
 	if(!is.null(causal_type_restrict)){
-		model <- restrict_causal_types(model, causal_type_restrict, join_by = join_by, action = action)
+		model <- restrict_causal_types(model, causal_type_restrict, join_by = join_by, keep = keep)
 	}
 	return(model)
 }
@@ -80,60 +81,57 @@ set_restrictions <- function(model,
 #' @param model a model created by make_model()
 #' @param restriction a quoted expressions defining the restriction
 #' @param join_by A string. The logical operator joining expanded restriction types when restriction contains wildcard. Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param action A string. Either `remove` or `keep` to indicate whether to remove or keep only causal types specified by \code{restriction}.
+#' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @export
-restrict_causal_types <- function(model, restriction, join_by = NULL, action = "remove"){
+restrict_causal_types <- function(model, restriction, join_by = NULL, keep = FALSE){
 	if(any(grepl(".", restriction, fixed = TRUE)) && is.null(join_by)) join_by <- "|"
+	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 
 	causal_types <- get_causal_types(model)
+
 	if(length(restriction) == 1L){
 		restricted_causal_types <- get_types(model, query = restriction, join_by = join_by)
-		if(action == "remove"){
-			model$causal_types <- causal_types[!restricted_causal_types$types,]
-		} else {
-			model$causal_types <- causal_types[restricted_causal_types$types,]
-		}
-	} else {
+	}else{
 		restricted_causal_types_mat <- sapply(1:length(restriction), function(i){
 			out <-  get_types(model, query = restriction[i], join_by = join_by)
 			out$types
-			})
-		if(action == "remove"){
-			restricted_causal_types <- apply(restricted_causal_types_mat, 1, any)
-			model$causal_types <- causal_types[!restricted_causal_types,]
-		} else {
-			model$causal_types <- causal_types[restricted_causal_types$types,]
-		}
-		restricted_causal_types <- apply(restricted_causal_types_mat, 1, all)
-		model$causal_types <- causal_types[restricted_causal_types,]
+		})
+		restricted_causal_types <- apply(restricted_causal_types_mat, 1, any)
 	}
 
-	rownames(model$causal_types) <- 1:nrow(model$causal_types)
-	type_names  <- sapply(1:ncol(model$causal_types), function(j) paste0(names(model$causal_types)[j], model$causal_types[,j]))
-	type_names <- as.data.frame(type_names,   stringsAsFactors = FALSE)
-	colnames(type_names) <- colnames(model$causal_types)
-	unrestricted_nodal_types <- lapply(type_names, unique)
-	unrestricted_nodal_types <- lapply(	unrestricted_nodal_types, as.character)
-	current_nodal_types <- get_nodal_types(model)
-	model$nodal_types <- sapply(model$variables, function(v) intersect(current_nodal_types[[v]], 	unrestricted_nodal_types[[v]] ), simplify = FALSE)
+	# Only apply restriction to causal type if its nodal type is removed
+	remove_causal <- sapply(names(causal_types), function(var){
+		exclude_node_from_causal_type(var,
+																	causal_types,
+																	restricted_causal_types)
+	})
 
-		# Subset priors and update
-	type_names          <- get_type_names(model$nodal_types)
+	remove_causal <- apply(remove_causal, 1, any)
+
+	#remove or keep `restrictions`
+	if(keep) remove_causal <- !remove_causal
+	model$causal_types <- causal_types[!remove_causal,]
+
+	nodes_from_causal  <- make_nodal_types(model$causal_types)
+	current_nodal_types <- get_nodal_types(model)
+	model$nodal_types <- sapply(model$variables, function(v){
+		intersect(current_nodal_types[[v]], nodes_from_causal[[v]])
+	}, simplify = FALSE)
+
+	# Update priors and parameters matrix based on nodal types
+	type_names <- get_type_names(model$nodal_types)
 	if(!is.null(model$priors)) model$priors <- model$priors[type_names]
 	if(!is.null(model$parameters)) model$parameters <- model$parameters[type_names]
 
-	# model$causal_types  <- update_causal_types(model)
-
 	return(model)
-
 }
 
 #' Reduce nodal types
 #' @param model a model created by make_model()
 #' @param restriction a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
-#' @param action A string. Either `remove` or `keep` to indicate whether to remove or keep only nodal types specified by \code{restriction}.
+#' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @export
-restrict_nodal_types <- function(model, restriction, action = "remove"){
+restrict_nodal_types <- function(model, restriction, keep = FALSE){
 
 	variables   <- model$variables
 	nodal_types <- get_nodal_types(model)
@@ -152,8 +150,8 @@ restrict_nodal_types <- function(model, restriction, action = "remove"){
 	restriction_list <- lapply(restriction, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
 	# If "keep" specified, reverse meaning of restricted types -- only stipulated types to be kept
-	if(!(action %in% c("remove", "keep"))) stop("action should be either 'remove' to 'keep'")
-	if(action == "keep") for(j in names(restriction)){
+	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
+	if(keep) for(j in names(restriction)){
 
 	restriction_list <-
 		sapply(names(restriction_list), function(j){
