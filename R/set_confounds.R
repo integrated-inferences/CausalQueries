@@ -48,10 +48,12 @@ set_confound <-  function(model, confound = NULL){
 
 
     # Get a name for the new parameter: using dot separator
+		existing_ancestor <- startsWith(param_set, paste0(a, "-"))
+
 		top_digit <- ifelse(
-			!any(startsWith(param_set, paste0(a, "."))), 0,
-			max(as.numeric(sapply(param_set[startsWith(param_set, paste0(a, "."))],
-							 function(j) strsplit(j, "[.]")[[1]][2])))
+			!any(existing_ancestor), 0,
+			max(as.numeric(sapply(param_set[existing_ancestor],
+							 function(j) strsplit(j, "[-]")[[1]][2])))
 			)
 
 		# Extend priors and parameters
