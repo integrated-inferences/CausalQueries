@@ -107,6 +107,11 @@ restrict_causal_types <- function(model, restriction, join_by = NULL, keep = FAL
 
 	remove_causal <- apply(remove_causal, 1, any)
 
+	if(all(remove_causal) && keep == FALSE)   stop("`causal_type_restrict` restricted all nodal types.")
+	if(all(remove_causal) && keep == TRUE)    warning("No restrictions applied with `set_restrictions`")
+	if(!any(remove_causal) && keep == FALSE)  warning("No restrictions applied with `set_restrictions`")
+	if(!any(remove_causal) && keep == TRUE)   stop("`causal_type_restrict` restricted all nodal types.")
+
 	#remove or keep `restrictions`
 	if(keep) remove_causal <- !remove_causal
 	model$causal_types <- causal_types[!remove_causal,]
