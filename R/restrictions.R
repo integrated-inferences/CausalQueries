@@ -101,8 +101,7 @@ restrict_causal_types <- function(model, restriction, join_by = NULL, keep = FAL
 
 	# Only apply restriction to causal type if its nodal type is removed
 	remove_causal <- sapply(names(causal_types), function(var){
-		exclude_node_from_causal_type(var,
-																	causal_types,
+		exclude_node_from_causal_type(var, causal_types,
 																	restricted_causal_types)
 	})
 

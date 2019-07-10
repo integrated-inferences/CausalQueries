@@ -367,8 +367,9 @@ make_nodal_types <- function(mat){
 #' @return A logical vector
 #' @importFrom dplyr %>% group_by_at mutate
 exclude_node_from_causal_type <- function(var_name, causal_types, in_restriction){
+	if("types" %in% names(in_restriction)) in_restriction <- in_restriction$types
 	types <- causal_types[var_name] %>%
-		mutate(restrict = in_restriction$types) %>%
+		mutate(restrict = in_restriction) %>%
 		group_by_at(.vars = var_name) %>%
 		mutate(rm_node = sum(restrict)==n())
 	types$rm_node
