@@ -254,6 +254,10 @@ make_possible_data_single <- function(model,
 			out              <- merge(given, strategy_results,  by = "event", all = TRUE )
 			out              <- dplyr::mutate_at(out, vars(-c("event", "count")),  list(~ dplyr::coalesce(., count)))
 			colnames(out)[3:ncol(out)] <- paste0(strategy-3, "-",addresses)
+			# Hack --avoid column names duplicates
+			dups <- colnames(out)[duplicated(colnames(out))]
+			l_dups <- length(dups)
+			if(l_dups > 0) colnames(out)[duplicated(colnames(out))] <- paste0(dups, "_",seq_len(l_dups))
 			out
 		}
 
