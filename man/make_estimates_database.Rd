@@ -5,7 +5,7 @@
 \title{Generates a database of results using gbiqq over possible data}
 \usage{
 make_estimates_database(model, given, possible_data = NULL,
-  queries = "Y[X=1]>Y[X=0]", ...)
+  queries = "Y[X=1]>Y[X=0]")
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}

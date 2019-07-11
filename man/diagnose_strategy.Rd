@@ -5,7 +5,9 @@
 \title{Diagnosis a data strategy}
 \usage{
 diagnose_strategy(reference_model, analysis_model, given, queries,
-  estimates_database = NULL, possible_data = NULL, sims = 1000)
+  estimates_database = NULL, possible_data = NULL,
+  possible_data_args = list(N = list(1), within = FALSE, condition =
+  list(TRUE), vars = list(NULL)), sims = 1000)
 }
 \arguments{
 \item{reference_model}{A causal model as created by \code{make_model}}
