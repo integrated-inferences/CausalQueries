@@ -246,7 +246,7 @@ make_possible_data_single <- function(model,
 		get_results_from_strategy <- function(strategy){
 			buckets          <- all_buckets[all_buckets$capacity>0 ,]
 			buckets          <- buckets[buckets[,strategy]>0,]
-			data_list        <- lapply(1:nrow(buckets), function(j)  fill_bucket(model, buckets, vars, row = j, column = strategy))
+			data_list        <- lapply(1:nrow(buckets), function(j)   fill_bucket(model, buckets, vars, row = j, column = strategy))
 			b_names          <- sapply(1:nrow(buckets), function(b_i) (all_buckets$event %in% buckets$event[b_i])*(ncol(data_list[[b_i]])-2))
 			addresses        <- do.call(rbind, lapply(apply(b_names, 2, perm),function(b)data.frame(b)+1))
 			addresses        <- apply(addresses, 1, paste, collapse = ".")
@@ -258,19 +258,19 @@ make_possible_data_single <- function(model,
 			dups <- colnames(out)[duplicated(colnames(out))]
 			l_dups <- length(dups)
 			if(l_dups > 0) colnames(out)[duplicated(colnames(out))] <- paste0(dups, "_",seq_len(l_dups))
-			out
+			out[,-2]
 		}
 
 		# Run over all strategies
 		all_strategies <- sapply(4:ncol(all_buckets), function(s) get_results_from_strategy(s), simplify = FALSE)
- 		all_strategies <-	Reduce(function(x, y) merge(x[,-2], y[,-2],  by = "event", all = TRUE), 	all_strategies, right = TRUE)
+ 		all_strategies <-	Reduce(function(x, y) merge(x, y,  by = "event", all = TRUE), all_strategies)
  		all_strategies <- dplyr:::mutate_if(all_strategies, is.numeric, ~replace(., is.na(.), 0))
 		possible_data  <- merge(select(given, event), all_strategies,  by = "event", all = TRUE)
 
 		# Add strategies
 		possible_data <- merge(all_event_types, possible_data, by = "event")
 		possible_data <- dplyr:::mutate_if(possible_data, is.numeric, ~replace(., is.na(.), 0))
-		if("count" %in% names(possible_data))	  {possible_data <- dplyr::select(possible_data, -count)}
+
 
 	}
 	return(possible_data)
