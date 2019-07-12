@@ -46,11 +46,10 @@ get_nodal_types_dep <- function(model){
 get_nodal_types <- function(model, collapse = TRUE) {
 
 	nodal_types <- model$nodal_types
-	variables   <- c(attr(model, "exogenous_variables"),
-									 attr(model, "endogenous_variables"))
+	variables   <- model$variables
 	parents     <- get_parents(model)
 	dag         <- model$dag
-	types       <- lapply(lapply(parents, length), type_matrix)
+	types       <- lapply(lapply(parents, length), gbiqq:::type_matrix)
 
 	types_interpret <- lookup_type(model)
 
