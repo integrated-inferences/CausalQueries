@@ -49,7 +49,7 @@ library(dplyr)
 model <-  make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
 set_restrictions(node_restrict =
 list(C = "C1110", R = "R0001", Y = "Y0001"),
-action = "keep")
+keep = TRUE)
 
 expected_learning(model,
 query = list(COE = "(Y[S=0] > Y[S=1])"),
