@@ -30,7 +30,6 @@ Calculated from a prior or posterior distribution
 library(dplyr)
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
-
  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
@@ -38,5 +37,4 @@ model <- make_model("X -> Y") \%>\%
  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-
 }
