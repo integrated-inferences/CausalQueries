@@ -347,3 +347,30 @@ any_discrepancies <- function(alphas, translated_alphas){
 	}
 	return(error_message)
 }
+
+#' Make nodes from matrix
+#' @param mat A character matrix. For each variable contained in a model, matrix contains named columns with nodal values.
+#' @return A named list of causal types for each variable
+#'
+make_nodal_types <- function(mat){
+	type_names  <- sapply(1:ncol(mat), function(j)
+		paste0(names(mat)[j], mat[,j]))
+	colnames(type_names) <- colnames(mat)
+	apply(type_names, 2, unique)
+}
+
+#' Exclude node from causal type restriction
+#' Returns updated vector of rows in causal type matrix to be excluded, taking into account nodal types affected by restriction.
+#' @param var_name A string. Variable name in a model.
+#' @param causal_types A data.frame of causal types of a model.
+#' @param in_restriction A logical vector. Rows of \code{causal_type} in restriction query.
+#' @return A logical vector
+#' @importFrom dplyr %>% group_by_at mutate
+exclude_node_from_causal_type <- function(var_name, causal_types, in_restriction){
+	if("types" %in% names(in_restriction)) in_restriction <- in_restriction$types
+	types <- causal_types[var_name] %>%
+		mutate(restrict = in_restriction) %>%
+		group_by_at(.vars = var_name) %>%
+		mutate(rm_node = sum(restrict)==n())
+	types$rm_node
+}

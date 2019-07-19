@@ -56,6 +56,7 @@ encode_data <- function(model, data){
 		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
 }
 
+
 #' Make data compact with data as first argument
 #'
 #' @param data A data.frame.
@@ -66,3 +67,4 @@ collapse_data <- function(data, model, remove_family = TRUE){
 	if(remove_family) x <- x[, -2]
 	x
 }
+

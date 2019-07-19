@@ -10,5 +10,7 @@
 
 globalVariables(names = c(
 	"posterior",
-	"prob"
+	"prob",
+	"restrict",
+	"n"
 	))

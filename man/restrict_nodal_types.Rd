@@ -4,14 +4,14 @@
 \alias{restrict_nodal_types}
 \title{Reduce nodal types}
 \usage{
-restrict_nodal_types(model, restriction, action = "remove")
+restrict_nodal_types(model, restriction, keep = FALSE)
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
 \item{restriction}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
 
-\item{action}{A string. Either `remove` or `keep` to indicate whether to remove or keep only nodal types specified by \code{restriction}.}
+\item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \description{
 Reduce nodal types

@@ -11,7 +11,7 @@ query_distribution(model, query, subset = TRUE, using = "priors",
 \arguments{
 \item{model}{A model}
 
-\item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]" or "Y[X=1] > Y[X=0]"}
+\item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]"}
 
 \item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
 
@@ -30,6 +30,7 @@ Calculated from a prior or posterior distribution
 library(dplyr)
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
+
  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
@@ -37,4 +38,5 @@ model <- make_model("X -> Y") \%>\%
  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
+
 }

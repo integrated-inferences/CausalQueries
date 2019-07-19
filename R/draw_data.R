@@ -232,7 +232,6 @@ simulate_data <- function(model,
 	names(out) <- vars
 
 	out
-
  }
 
 
@@ -285,5 +284,3 @@ collapse_data <- function(data, model, remove_family = TRUE){
 	if(remove_family) x <- x[, -2]
 	x
 	}
-
-

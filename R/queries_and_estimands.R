@@ -6,7 +6,7 @@
 #' @param model A model
 #' @param parameters A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
-#' @param query A query on potential outcomes such as "Y[X=1] - Y[X=0]" or "Y[X=1] > Y[X=0]"
+#' @param query A query on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
@@ -37,10 +37,14 @@ query_distribution <- function(model,
 	if(using == "posterior") using <- "posteriors"
 	if(using == "prior")     using <- "priors"
 
+
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(subset)) subset <- get_types(model, subset, join_by = join_by)$types
+	# if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
+	#																			 eval(parse(text = subset)))
+
+	if(!is.logical(subset)) subset <- get_types(model, subset)$types
 
 	if(all(!subset)) {message("No units in subset"); return() }
 
@@ -48,7 +52,7 @@ query_distribution <- function(model,
 
 
 		# Evaluation of query on vector of causal types
-	  x <- (get_types(model, query = query, join_by = join_by)$types)[subset]
+	x <- (get_types(model, query = query)$types)[subset]
 
 
 	if(using =="parameters"){
@@ -126,8 +130,7 @@ query_model <- function(model,
 													using   = list(FALSE),
 													stats = NULL,
 													digits = 3,
-													n_draws = 4000,
-													join_by = "|"){
+													n_draws = 4000){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
@@ -144,8 +147,7 @@ query_model <- function(model,
 															 subset = subset,
 															 parameters = parameters,
 															 using = using,
-															 verbose = FALSE,
-															 join_by = join_by)
+															 verbose = FALSE)
 		# FLAG: if needed for cases where evaluation sough on impossible subsets
 		if(is.null(v)) {rep(NA, length(stats))} else {c(round(sapply(stats, function(g) g(v)), digits))}
 	}
