@@ -260,6 +260,7 @@ set_parameters <- function(model,
 													 type = "prior_mean",
 													 ...) {
 
+	if(!is.null()parameters) if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
 	if (!is.null(parameters)) {
 		model$parameters <- parameters
 		return(model)}
