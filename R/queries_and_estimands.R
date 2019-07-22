@@ -17,14 +17,18 @@
 #' library(dplyr)
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
-#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])")
-#'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "posteriors")
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-
+#'
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
+#' \dontrun{
+#'  df    <- simulate_data(model, n = 3)
+#'  updated_model <- gbiqq(model, df)
+#'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+#' }
 query_distribution <- function(model,
 															 query,
 															 subset = TRUE,
@@ -92,37 +96,37 @@ query_distribution <- function(model,
 #' model <- make_model("X -> Y") %>%
 #'            set_prior_distribution(n_draws = 10000)
 #'
-#' query_model(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                      Share_positive = "Y[X=1] > Y[X=0]"),
-#'       using = c("parameters", "priors"))
+#' estimands_df <-query_model(
+#'                model,
+#'                queries = list(ATE = "Y[X=1] - Y[X=0]",
+#'                Share_positive = "Y[X=1] > Y[X=0]"),
+#'                using = c("parameters", "priors"))
 #'
-#' query_model(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                      Share_positive = "Y[X=1] > Y[X=0]"),
-#'       using = "priors")
+#' estimands_df <- query_model(
+#'                 model,
+#'                 queries = list(ATE = "Y[X=1] - Y[X=0]",
+#'                 Share_positive = "Y[X=1] > Y[X=0]"),
+#'                 using = "priors")
 #'
-#' query_model(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]"),
-#'       using = list("priors", "parameters"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 queries = list(ATE = "Y[X=1] - Y[X=0]"),
+#'                 using = list("priors", "parameters"),
+#'                 digits = 3)
 #'
-#' query_model(
-#'       model,
-#'       using = "priors",
-#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-#'       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 using = "priors",
+#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'                 subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+#'                 digits = 3)
 #'
-#' query_model(
-#'       model,
-#'       using = "parameters",
-#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-#'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 using = "parameters",
+#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'                 subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
+#'                 digits = 3)
 
 query_model <- function(model,
 													parameters = NULL,

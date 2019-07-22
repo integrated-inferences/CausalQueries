@@ -5,8 +5,8 @@
 #' @keywords internal
 types_to_rows <- function(model, query){
 
-	P <- get_parameter_matrix(model)
-	model$P <- P
+	if(is.null(model$P)) 	model  <- set_parameter_matrix(model)
+	P         <- model$P
 	param_set <- attr(P,"param_set")
 
   # 	If no confounds in model use nodal types to get at parameters
@@ -71,7 +71,9 @@ types_to_rows <- function(model, query){
 #' @param query a query
 #' @keywords internal
 types_to_rows_single <- function(model, query){
-	P <- model$P
+
+	if(is.null(model$P)) 	{model  <- set_parameter_matrix(model)}
+	P                  <- model$P
 	param_set <- attr(P,"param_set")
 
   # Note that types_to_rows is only called for confounded models
@@ -104,12 +106,13 @@ types_to_rows_single <- function(model, query){
 				 if(!is.null(dim(rows))) {
 				 rows <- apply(rows, 1, all)
 
-				 } else{
-				 	rows <- rows & (rowSums(P) ==1)
 				 }
+				 # else{
+				 # 	rows <- rows & (rowSums(P) ==1)
+				 # }
 				out <- rownames(P)[rows]
-				names(out) <- param_set[rownames(P) %in% out]
-
+				names(out) <- param_set[rows]
+        out
 			}
 
 
@@ -126,6 +129,11 @@ types_to_rows_single <- function(model, query){
 #' @param query a query
 #' @keywords internal
 query_to_parameters <- function(model, query){
+
+	if(is.null(model$P)) model <- set_parameter_matrix(model)
+	P <- model$P
+
+
 	if(length(query) == 1){
 		# For alpha containing only one query expression
 		# 	1. get the row(s) in the parameter matrix that map to query

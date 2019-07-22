@@ -73,7 +73,7 @@ testthat::test_that(
 
 		model <- set_priors(model ,  alphas =  c(`(X == 0)`   = 2))
 		priors <- model$priors
-		updated_parameters <- c("X.1.X0.1", "X.X0")
+		updated_parameters <- c("X-1.X0", "X.X0")
 		expect_true(all(priors[names(priors) %in% 		updated_parameters] == c(2, 2)))
 		expect_true(all(priors[!names(priors) %in% updated_parameters] == rep(1, n_params - 2) ))
 
@@ -82,9 +82,9 @@ testthat::test_that(
 		model <- set_priors(model = model,
 												alphas = c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
 		priors <- model$priors
-		updated_parameters <- c("X.1.X0.1")
+		updated_parameters <- c("X-1.X0", "Y.Y01")
 		expect_true(all(priors[names(priors) %in% 		updated_parameters] == 2))
-		expect_true(all(priors[!names(priors) %in% updated_parameters] == rep(1, n_params - 1) ))
+		expect_true(all(priors[!names(priors) %in% updated_parameters] == rep(1, n_params - 2) ))
 
 
 		model <- set_priors(model = model,

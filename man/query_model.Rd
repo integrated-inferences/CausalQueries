@@ -33,35 +33,35 @@ library(dplyr)
 model <- make_model("X -> Y") \%>\%
            set_prior_distribution(n_draws = 10000)
 
-query_model(
-      model,
-      queries = list(ATE = "Y[X=1] - Y[X=0]",
-                     Share_positive = "Y[X=1] > Y[X=0]"),
-      using = c("parameters", "priors"))
+estimands_df <-query_model(
+               model,
+               queries = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
+               using = c("parameters", "priors"))
 
-query_model(
-      model,
-      queries = list(ATE = "Y[X=1] - Y[X=0]",
-                     Share_positive = "Y[X=1] > Y[X=0]"),
-      using = "priors")
+estimands_df <- query_model(
+                model,
+                queries = list(ATE = "Y[X=1] - Y[X=0]",
+                Share_positive = "Y[X=1] > Y[X=0]"),
+                using = "priors")
 
-query_model(
-      model,
-      queries = list(ATE = "Y[X=1] - Y[X=0]"),
-      using = list("priors", "parameters"),
-      digits = 3)
+estimands_df <- query_model(
+                model,
+                queries = list(ATE = "Y[X=1] - Y[X=0]"),
+                using = list("priors", "parameters"),
+                digits = 3)
 
-query_model(
-      model,
-      using = "priors",
-      queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-      subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
-      digits = 3)
+estimands_df <- query_model(
+                model,
+                using = "priors",
+                queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+                subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+                digits = 3)
 
-query_model(
-      model,
-      using = "parameters",
-      queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-      subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
-      digits = 3)
+estimands_df <- query_model(
+                model,
+                using = "parameters",
+                queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+                subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
+                digits = 3)
 }

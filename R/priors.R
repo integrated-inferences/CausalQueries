@@ -7,8 +7,8 @@
 
 make_alphas <- function(model, alphas = NULL ){
 
-	P                  <- get_parameter_matrix(model)
-	model$P            <- P
+	if(is.null(model$P)) 	{model  <- set_parameter_matrix(model)}
+	P                  <- model$P
 	return_alphas      <- alphas
 	par_names          <- get_parameter_names(P)
 	alpha_names        <- names(unlist(alphas))
