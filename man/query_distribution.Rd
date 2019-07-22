@@ -22,6 +22,8 @@ query_distribution(model, query, subset = TRUE, using = "priors",
 \item{type_distribution}{if provided saves calculation, otherwise clculated from model; may be based on prior or posterior}
 
 \item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the consule.}
+
+\item{join_by}{A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 }
 \description{
 Calculated from a prior or posterior distribution

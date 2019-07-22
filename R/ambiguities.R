@@ -16,7 +16,7 @@ get_ambiguities_matrix <- function(model){
 	dag <- model$dag
 	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
 	possible_data <-	get_possible_data(model)
-	# nodal_types   <-  gbiqq:::get_nodal_types(model)
+	# nodal_types   <-  get_nodal_types(model)
 	# type_labels   <-  expand.grid(nodal_types)
 	# type_labels   <-  apply(type_labels, 1, paste0, collapse = "")
 

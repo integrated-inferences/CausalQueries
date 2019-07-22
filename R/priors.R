@@ -176,7 +176,7 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 #' @export
 #' @examples
 #'
-#' model <- gbiqq::make_model("X -> Y")
+#' model <- make_model("X -> Y")
 #' set_priors(model = model,
 #'            alphas = list(
 #'              X = c(`X == 1` = 3),

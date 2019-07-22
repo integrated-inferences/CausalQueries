@@ -7,6 +7,7 @@
 #' @param parameters A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @param query A query on potential outcomes such as "Y[X=1] - Y[X=0]"
+#' @param join_by A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
