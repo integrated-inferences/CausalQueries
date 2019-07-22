@@ -25,11 +25,10 @@ data_type_names <- function(model, data){
 #' @export
 #' @examples
 #' all_data_types(make_model("X -> Y"))
-
 all_data_types <- function(model) {
 	variables <- model$variables
 	m <- length(model$variables)
-	df <- data.frame(gbiqq::perm(rep(2, m))) - 1
+	df <- data.frame(perm(rep(2, m))) - 1
 	df[df==-1] <- NA
 	names(df) <-  variables
 	data.frame(cbind(event = data_type_names(model, df), df))
@@ -55,3 +54,17 @@ encode_data <- function(model, data){
 	apply(data, MARGIN = 1, FUN = function(row){
 		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
 }
+
+
+#' Make data compact with data as first argument
+#'
+#' @param data A data.frame.
+#' @param model A model
+#' @param remove_family Logical. If `FALSE`, removes column "family" from the output.
+#' @export
+collapse_data <- function(data, model, remove_family = TRUE){
+	x <- summarize_data(model = model, data)
+	if(remove_family) x <- x[, -2]
+	x
+}
+

@@ -7,6 +7,7 @@
 #' @param parameters A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @param query A query on potential outcomes such as "Y[X=1] - Y[X=0]"
+#' @param join_by A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param subset quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
@@ -16,19 +17,31 @@
 #' library(dplyr)
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
-#'  estimand_distribution(model, query = "(Y[X=1] > Y[X=0])")
-#'  estimand_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
+#'
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
+#' \dontrun{
+#'  df    <- simulate_data(model, n = 3)
+#'  updated_model <- gbiqq(model, df)
+#'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+#' }
+query_distribution <- function(model,
+															 query,
+															 subset = TRUE,
+															 using  = "priors",
+															 parameters = NULL, # Use for example if true parameters known
+															 type_distribution = NULL,
+															 verbose = FALSE,
+															 join_by = "|") {
 
-estimand_distribution <- function(model,
-																	query,
-																	subset = TRUE,
-																	using  = "priors",
-																	parameters = NULL, # Use for example if true parameters known
-																	type_distribution = NULL,
-																	verbose = FALSE) {
+	# forgive the user:
+	if(using == "posterior") using <- "posteriors"
+	if(using == "prior")     using <- "priors"
+
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
@@ -83,39 +96,39 @@ estimand_distribution <- function(model,
 #' model <- make_model("X -> Y") %>%
 #'            set_prior_distribution(n_draws = 10000)
 #'
-#' get_estimands(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                      Share_positive = "Y[X=1] > Y[X=0]"),
-#'       using = c("parameters", "priors"))
+#' estimands_df <-query_model(
+#'                model,
+#'                queries = list(ATE = "Y[X=1] - Y[X=0]",
+#'                Share_positive = "Y[X=1] > Y[X=0]"),
+#'                using = c("parameters", "priors"))
 #'
-#' get_estimands(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                      Share_positive = "Y[X=1] > Y[X=0]"),
-#'       using = "priors")
+#' estimands_df <- query_model(
+#'                 model,
+#'                 queries = list(ATE = "Y[X=1] - Y[X=0]",
+#'                 Share_positive = "Y[X=1] > Y[X=0]"),
+#'                 using = "priors")
 #'
-#' get_estimands(
-#'       model,
-#'       queries = list(ATE = "Y[X=1] - Y[X=0]"),
-#'       using = list("priors", "parameters"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 queries = list(ATE = "Y[X=1] - Y[X=0]"),
+#'                 using = list("priors", "parameters"),
+#'                 digits = 3)
 #'
-#' get_estimands(
-#'       model,
-#'       using = "priors",
-#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-#'       subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 using = "priors",
+#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'                 subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+#'                 digits = 3)
 #'
-#' get_estimands(
-#'       model,
-#'       using = "parameters",
-#'       queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-#'       subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
-#'       digits = 3)
+#' estimands_df <- query_model(
+#'                 model,
+#'                 using = "parameters",
+#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'                 subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
+#'                 digits = 3)
 
-get_estimands <- function(model,
+query_model <- function(model,
 													parameters = NULL,
 													queries = list(NULL),
 													subsets = list(TRUE),
@@ -134,7 +147,7 @@ get_estimands <- function(model,
 
 	# Function for mapply
 	f <- function(query, subset, using){
-		v <- estimand_distribution(model,
+		v <- query_distribution(model,
 															 query = query,
 															 subset = subset,
 															 parameters = parameters,

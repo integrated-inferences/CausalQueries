@@ -21,7 +21,7 @@ Set prior distribution. Use \code{make_alphas} to use causal types to indicate p
 }
 \examples{
 
-model <- gbiqq::make_model("X -> Y")
+model <- make_model("X -> Y")
 set_priors(model = model,
            alphas = list(
              X = c(`X == 1` = 3),

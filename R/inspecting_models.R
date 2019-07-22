@@ -10,7 +10,7 @@
 
 get_parents <- function(model) {
 	dag <- model$dag
-	sapply(paste(unique(unlist(dag))), function(j) paste(dag$parent)[paste(dag$children) == j])
+	sapply(model$variables, function(j) paste(dag$parent)[paste(dag$children) == j])
 }
 
 #' Get causal types

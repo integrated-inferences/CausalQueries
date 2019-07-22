@@ -140,7 +140,7 @@ get_likelihood_helpers <- function(model){
 #'
 #'
 get_weights_ambiguities <- function(model, data){
-	data_events <- trim_strategies(model, data)
+	data_events <- summarize_data(model, data)
 }
 
 #' Trim strategies
@@ -150,7 +150,7 @@ get_weights_ambiguities <- function(model, data){
 #' @return Returns data events without strategies containing no observed data
 #'
 #' @export
-trim_strategies <- function(model, data){
+summarize_data <- function(model, data){
 	# 1. Get data and delete all rows from strategies that contained no observed data
 	data_events <- get_data_events(data = data, model = model)$data_events
 	if(all(is.na(data))) return(data_events)

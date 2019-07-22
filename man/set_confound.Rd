@@ -26,7 +26,7 @@ set_confound(model = model, confound = confound)
 
 #To do -- handle confound spread over previous allocations such as
 model <- make_model("X -> Y")
-confound = list(X = "(Y[X=1] == 1")
+confound = list(X = "(Y[X=1] == 1)")
 \dontrun{model <- set_confound(model = model, confound = confound)}
 confound2 = list(X = "(Y[X=1]>Y[X=0])")
 model <- make_model("X -> Y <- S; S -> W") \%>\%

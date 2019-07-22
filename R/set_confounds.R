@@ -17,13 +17,12 @@
 #'
 #' #To do -- handle confound spread over previous allocations such as
 #' model <- make_model("X -> Y")
-#' confound = list(X = "(Y[X=1] == 1")
+#' confound = list(X = "(Y[X=1] == 1)")
 #' \dontrun{model <- set_confound(model = model, confound = confound)}
 #' confound2 = list(X = "(Y[X=1]>Y[X=0])")
 #' model <- make_model("X -> Y <- S; S -> W") %>%
 #' set_confound(list(X = "S==1", S = "W[S=1]==1"))
 #' attr(model$P, "confounds")
-
 
 set_confound <-  function(model, confound = NULL){
 
@@ -49,10 +48,12 @@ set_confound <-  function(model, confound = NULL){
 
 
     # Get a name for the new parameter: using dot separator
+		existing_ancestor <- startsWith(param_set, paste0(a, "-"))
+
 		top_digit <- ifelse(
-			!any(startsWith(param_set, paste0(a, "."))), 0,
-			max(as.numeric(sapply(param_set[startsWith(param_set, paste0(a, "."))],
-							 function(j) strsplit(j, "[.]")[[1]][2])))
+			!any(existing_ancestor), 0,
+			max(as.numeric(sapply(param_set[existing_ancestor],
+							 function(j) strsplit(j, "[-]")[[1]][2])))
 			)
 
 		# Extend priors and parameters
@@ -65,11 +66,13 @@ set_confound <-  function(model, confound = NULL){
 
 		new_param_name <- paste0(a,".", top_digit +1)
 
-		new_params    <- paste0(pars[param_set == a], ".", top_digit +1)
+#		new_params    <- paste0(pars[param_set == a], "-", top_digit +1)
+		new_params    <- pars[param_set == a]
 		pars          <- c(new_params, pars)
-    row.names(P) <- pars
+		names(pars)   <- param_set
+    row.names(P)  <- pars
 
-    new_param_set <-  paste0(param_set[param_set == a], ".", top_digit +1)
+    new_param_set <-  paste0(param_set[param_set == a], "-", top_digit +1)
 		param_set     <- c(new_param_set,param_set)
 
 		# Zero out duplicated entries

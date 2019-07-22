@@ -7,8 +7,8 @@
 
 make_alphas <- function(model, alphas = NULL ){
 
-	P                  <- get_parameter_matrix(model)
-	model$P            <- P
+	if(is.null(model$P)) 	{model  <- set_parameter_matrix(model)}
+	P                  <- model$P
 	return_alphas      <- alphas
 	par_names          <- get_parameter_names(P)
 	alpha_names        <- names(unlist(alphas))
@@ -176,7 +176,7 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 #' @export
 #' @examples
 #'
-#' model <- gbiqq::make_model("X -> Y")
+#' model <- make_model("X -> Y")
 #' set_priors(model = model,
 #'            alphas = list(
 #'              X = c(`X == 1` = 3),
@@ -260,6 +260,7 @@ set_parameters <- function(model,
 													 type = "prior_mean",
 													 ...) {
 
+	if(!is.null(parameters)) if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
 	if (!is.null(parameters)) {
 		model$parameters <- parameters
 		return(model)}
