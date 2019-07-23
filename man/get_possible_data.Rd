@@ -11,9 +11,6 @@ get_possible_data(model, collapse = TRUE)
 
 \item{collapse}{whether to collapse possible data}
 }
-\value{
-A list of all data realizations possible
-}
 \description{
 Creates a list of all possible data realizations for each node given each possible parent value
 }

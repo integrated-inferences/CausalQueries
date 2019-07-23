@@ -2,12 +2,12 @@
 % Please edit documentation in R/likelihood.R
 \name{summarize_data}
 \alias{summarize_data}
-\title{Trim strategies}
+\title{Summarize Data}
 \usage{
 summarize_data(model, data)
 }
 \arguments{
-\item{model}{A probabilistic causal model created by make_model()}
+\item{model}{A probabilistic causal model created by  \code{make_model()}}
 
 \item{data}{A data.frame of variables that can take three values: 0, 1, and NA.}
 }
@@ -15,5 +15,5 @@ summarize_data(model, data)
 Returns data events without strategies containing no observed data
 }
 \description{
-Trim strategies
+Summarize Data
 }

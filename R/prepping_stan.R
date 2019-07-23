@@ -1,4 +1,5 @@
 
+
 #' Get Possible Data
 #'
 #' Creates a list of all possible data realizations for each node given each possible parent value
@@ -6,40 +7,38 @@
 #' @param collapse whether to collapse possible data
 #'
 #' @export
-#'
-#' @return A list of all data realizations possible
-get_possible_data <- function(model,
-															collapse = TRUE){
+get_possible_data <- function(model, collapse = TRUE){
 
+	revealed_data <- reveal_outcomes(model)
 	variables <- model$variables
 	parents <- get_parents(model)
 
-	possible_data_list <- list()
-	for (variable in variables) {
+	possible_data <- lapply(variables, function(variable){
 		var_parents <- parents[variable][[1]]
 		var_variables <- c(var_parents,variable)
-		possible_data <- do.call(
-			what = "expand.grid",
-			args = lapply(
-				X = var_variables,
-				FUN = function(x) 0:1
-			)
-		)
-		names(possible_data) <- var_variables
-
-		if (collapse) {
-			possible_data <- apply(possible_data,1,paste,collapse = "")
+		out <- revealed_data[,var_variables]
+		duplicates <- duplicated(out)
+		if(length(	var_variables) == 1) {
+			out <- matrix(as.double(out[!duplicates]), ncol = length(var_variables))
 		} else {
-			names(possible_data) <- var_variables
+			out <- out[!duplicates, ]
 		}
-
-		possible_data_list[variable][[1]] <- possible_data
-
+		colnames(out) <- var_variables
+		out
+	})
+	names(possible_data) <- variables
+	if(collapse){
+		possible_data <- lapply(variables, function(variable){
+			mat <- possible_data[[variable]]
+			apply(mat, 1, function(x) paste0(variable, x, collapse = ""))
+		})
 	}
 
-	names(possible_data_list) <- variables
-	return(possible_data_list)
+	names(possible_data) <- variables
+	possible_data
 }
+
+
 
 
 #' Summarize data events
@@ -110,46 +109,6 @@ get_data_events <- function(data, model){
 }
 
 
-#'
-#' get_possible_data_internal
-#'
-#' @param model A model created by \code{make_model}
-#' @return a list
-#' @keywords internal
-#'
-get_possible_data_internal <- function(model, collapse = TRUE){
-
-	revealed_data <- reveal_outcomes(model)
-	variables <- model$variables
-	parents <- get_parents(model)
-
-	possible_data <- lapply(variables, function(variable){
-		var_parents <- parents[variable][[1]]
-		var_variables <- c(var_parents,variable)
-		out <- revealed_data[,var_variables]
-		duplicates <- duplicated(out)
-		if(length(	var_variables) == 1) {
-			out <- matrix(as.double(out[!duplicates]), ncol = length(var_variables))
-		} else {
-			out <- out[!duplicates, ]
-		}
-		colnames(out) <- var_variables
-		out
-	})
-	names(possible_data) <- variables
-	if(collapse){
-		possible_data <- lapply(variables, function(variable){
-			mat <- possible_data[[variable]]
-			apply(mat, 1, function(x) paste0(variable, x, collapse = ""))
-		})
-	}
-
-	names(possible_data) <- variables
-	possible_data
-}
-
-
-
 
 
 #' Get data frame with all possible data combinations
@@ -162,7 +121,7 @@ get_max_possible_data <- function(model) {
 
 	max_possible_data <-
 		Reduce(f = merge,
-					 x = get_possible_data_internal(model, collapse = FALSE))
+					 x = get_possible_data(model, collapse = FALSE))
 	variables <- 	model$variables
 	max_possible_data <- max_possible_data[variables]
 
