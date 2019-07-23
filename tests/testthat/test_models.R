@@ -72,7 +72,7 @@ testthat::test_that(
 
 		expect_true(is.data.frame(results))
 
-		expect_error(set_confound(XY_conf))
+		expect_message(set_confound(XY_conf))
 	}
 )
 
