@@ -13,31 +13,24 @@
 #'
 get_ambiguities_matrix <- function(model){
 
-	dag <- model$dag
-	# 1. Get nodal types. e.g. for X->Y: X0, X1, Y00, Y01..
-	possible_data <-	get_possible_data(model)
-	# nodal_types   <-  get_nodal_types(model)
-	# type_labels   <-  expand.grid(nodal_types)
-	# type_labels   <-  apply(type_labels, 1, paste0, collapse = "")
-
-	# 2. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
+	# 1. Get types as the combination of possible data. e.g. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	types       <- get_causal_types(model)
 	var_names   <- colnames(types)
 	type_labels <- sapply(1:nrow(types), function(i) paste0(var_names, types[i,], collapse = "" ))
 	# cbind(types, type_labels)  # A check
 
-  # 3. Map types to data realizations. This is done in reveal_outcomes
+  # 2. Map types to data realizations. This is done in reveal_outcomes
   data_realizations   <- reveal_outcomes(model)
   types$revealed_data <- apply(data_realizations , 1, paste0, collapse = "")
 
-  # 4.  Create and return matrix A
+  # 3.  Create and return matrix A
   max_possible_data <- get_max_possible_data(model)
   data_names <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
   data_names <- matrix(data_names, ncol = ncol(max_possible_data))
   data_names <- apply(data_names, 1, paste0, collapse = "")
   fundamental_data	<- apply(max_possible_data, 1, paste0, collapse = "")
 
-  # 5. Generate A
+  # 4. Generate A
   A <- sapply(1:nrow(types), function(i)(types$revealed_data[i] == fundamental_data)*1)
   A <- matrix(A, ncol = length(type_labels))
   colnames(A) <- type_labels

@@ -55,6 +55,7 @@ testthat::test_that(
 		data <- simulate_data(XY_conf, n = 1, parameters = parameters)
 		expect_equal(c(1, 2), dim(data))
 
+
 		posterior <- gbiqq(XY_conf, data, refresh = 0, stan_model = fitted_model)
 		expect_true(!is.null(posterior))
 
@@ -70,6 +71,8 @@ testthat::test_that(
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))
+
+		expect_error(set_confound(XY_conf))
 	}
 )
 
