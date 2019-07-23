@@ -69,7 +69,7 @@ updated_model <- gbiqq(model, data)
 Finally you can calculate an estimand of interest like this:
 
 ``` 
-CoE <- estimand_distribution(
+CoE <- query_distribution(
                    model = updated_model, 
                    using = "posteriors",
                    query = "Y[X=0] == 0",
