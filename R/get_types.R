@@ -30,14 +30,14 @@
 #' get_types(model, query)
 
 
-get_types <- function(model, query, join_by = "|"){
+get_types <- function(model, query, join_by = "|", node = NULL){
 
 	if(grepl(".", query, fixed = TRUE))
 		query <- expand_wildcard(query, join_by = join_by)
 	if(length(query)>1L) stop("Please specify a query of length 1L.")
 
 	# Global Variables
-	eval_var <-  reveal_outcomes(model)
+	eval_var <-  reveal_outcomes(model, node = node)
 #	list_names <- colnames(eval_var)   #NEEDED?
 	k <- 1
 	i <- 0

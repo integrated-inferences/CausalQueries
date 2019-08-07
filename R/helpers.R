@@ -115,13 +115,13 @@ clean_condition <- function(condition){
 #' @examples
 #' model <- make_model("R -> X; Z -> X; X -> Y")
 #' #Example using digit position
-#' lookup_type(model, position = list(X = c(3,4), Y = 1))
+#' interpret_type(model, position = list(X = c(3,4), Y = 1))
 #' #Example using condition
-#' lookup_type(model, condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
+#' interpret_type(model, condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
 #' #Return interpretation of all digit positions of all nodes
-#' lookup_type(model)
+#' interpret_type(model)
 #' @export
-lookup_type <- function(model, condition = NULL, position = NULL){
+interpret_type <- function(model, condition = NULL, position = NULL){
 	if(sum(!is.null(condition) & !is.null(position))>1)
 		stop("Must specify either `query` or `nodal_position`, but not both.")
 	parents <- get_parents(model)

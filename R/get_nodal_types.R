@@ -25,7 +25,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	dag         <- model$dag
 	types       <- lapply(lapply(parents, length), type_matrix)
 
-	types_interpret <- lookup_type(model)
+	types_interpret <- interpret_type(model)
 
 	types_labels <- lapply(1:length(types), function(i){
 		var <- names(types)[i]

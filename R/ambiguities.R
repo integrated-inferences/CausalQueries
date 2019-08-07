@@ -58,7 +58,7 @@ get_ambiguities_matrix <- function(model){
 #' reveal_outcomes(model, dos = list(X1 = 1, M = 0))
 #'
 
-reveal_outcomes <- function(model, dos = NULL){
+reveal_outcomes <- function(model, dos = NULL, node = NULL){
 
 	types           <- get_causal_types(model)
 	nodal_types     <- get_nodal_types(model, collapse = FALSE)
@@ -72,8 +72,27 @@ reveal_outcomes <- function(model, dos = NULL){
 	parents_list      <- get_parents(model)
 	in_dos <- names(dos) # vars in do list
 
+
+
 	# Fill in values for dos
-	if(!is.null(dos))for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
+	if(!is.null(dos)){
+
+		for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
+
+		if(!is.null(node)){
+
+			parents           <- parents_list[[node]]
+			endogenous_vars   <- 	node
+			unique_types      <- !duplicated(data_realizations[,c( parents, node)])
+			data_realizations <- data_realizations[unique_types , c( parents, node)]
+			rownames(data_realizations) <- 1:nrow(data_realizations)
+			types_of_endogenous   <- data.frame( types = data_realizations[, node], stringsAsFactors = FALSE)
+			types           <- 	data_realizations
+
+		}
+
+	}
+
 
 
 	# Work though each endogeneous variable in sequence and substitute its implied values
@@ -96,11 +115,14 @@ reveal_outcomes <- function(model, dos = NULL){
 				})
 				data_realizations[, endogenous_vars[j]] <- J
 		}}
+    if(is.null(node)){
+    	rownames(data_realizations) <- rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
+    	type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
+    	attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
+    	} else{
+    		attr(data_realizations, "type_names") <-  rownames(data_realizations) <- apply(types_of_endogenous, 1, FUN = function(x)paste0(node,x))
+    }
 
-	  rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
-	  type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
-
-	  attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
 	  data_realizations
 
 }
