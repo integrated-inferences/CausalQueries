@@ -30,15 +30,14 @@
 #' get_types(model, query)
 
 
-get_types <- function(model, query, join_by = "|", node = NULL){
+get_types <- function(model, query, join_by = "|"){
 
 	if(grepl(".", query, fixed = TRUE))
 		query <- expand_wildcard(query, join_by = join_by)
 	if(length(query)>1L) stop("Please specify a query of length 1L.")
 
 	# Global Variables
-	eval_var <-  reveal_outcomes(model, node = node)
-#	list_names <- colnames(eval_var)   #NEEDED?
+	eval_var <-  reveal_outcomes(model)
 	k <- 1
 	i <- 0
 	list_names <- ""
@@ -130,16 +129,7 @@ get_types <- function(model, query, join_by = "|", node = NULL){
 	w_query <- paste0("q <- ", w_query)
 	types <- c(eval(parse(text = w_query),  eval_var))
 
-	# p <- length(list_names)
-	# for (i in 1:p) {
-	# 	for(j in 1:p){
-	# 		list_names[i] <- gsub(names(list_names)[j], list_names[j], list_names[i])
-	# 	}
-	# }
-
 	names(eval_var) <- list_names
-
-
 	names(types) <- attr(eval_var, "type_names")
 
 	if(is.logical(types))  type_list <- names(types)[types]

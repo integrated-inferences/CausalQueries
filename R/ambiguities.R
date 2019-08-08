@@ -108,7 +108,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 				J <- sapply(1:length(child_type), function(i){
 					type        <- child_type[i]
 					parents_val <- data_realizations[i, parents]
-					parents_val <- paste(parents_val, collapse = "")
+					parents_val <- trimws(paste(parents_val, collapse = ""))
 					row         <- which(nodal_label == type )
 					outcome     <- nodal_type_var[row, parents_val]
 					outcome

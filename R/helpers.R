@@ -54,8 +54,8 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, r
 
 	# find the closest punctuation or space
 	starts <- sapply(stops, function(s){
-		dif <- s - puncts
-		dif <- dif[dif>0]
+		dif  <- s - puncts
+		dif  <- dif[dif>0]
 		ifelse(length(dif) == 0, ret <- NA, ret <- puncts[which(dif==min(dif))])
 		return(ret)
 	})
