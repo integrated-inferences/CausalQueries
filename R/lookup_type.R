@@ -43,7 +43,7 @@ lookup_type <- function(model, query, join_by = "|"){
 
  if(grepl(".", .query, fixed = TRUE)){
  	.query <- expand_wildcard(.query, join_by = join_by)
-  query2 <- suppressMessages( expand_wildcard(query2, join_by = join_by))
+  query2 <- capture.output( expand_wildcard(query2, join_by = join_by))[2]
   }
   .w_query <- gsub("\\(|\\)", "",   .query )
   .w_query <- str_split(	.w_query, "\\==|>|<|>=|<=|\\&|\\|")
