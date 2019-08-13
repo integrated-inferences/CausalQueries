@@ -5,96 +5,171 @@
 #' @param query A character vector of length 1L. An expression in string format defining causal types to interrogate \code{reveal_outcomes()}
 #' @param join_by A string. The logical expression connecting expanded types, _AND_ ("&") or _OR_ ("|"). Defaults to "|".
 #' @export
+#' @importFrom stringr str_split str_detect
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the variables on the left of a [] expression
 #' @examples
 #' model <- make_model("X -> M -> Y; X->Y")
-#' query <- "(Y[X= 1] > Y[X=0])"
-#' x <- get_types(model, query)
-#' summary(x)
-#'
-#'
-#'
+#' query <- "(Y[X=0, M = .] > Y[X=1, M = 0])"
+#' x <- lookup_type(model, query)
+#' query <- "(Y == 1)"
+#' x <- lookup_type(model, query)
+#' query <- "(Y[] == 1)"
+#' x <- lookup_type(model, query)
+#' query <- "(X == 1)"
+#' x <- lookup_type(model, query)
+#' query <- "(M[X=1] == M[X=0])"
+#' x <- lookup_type(model, query)
 lookup_type <- function(model, query, join_by = "|"){
 
-	# Add
+	# Housekeeping
+	# 1. remove (), split by logical symbol and trim
 	w_query <- gsub("\\(|\\)", "", query)
-	w_query <- str_split(	w_query, "\\==|>|<|>=|<=|\\&|\\|")
+	w_query <- str_split(w_query, "\\==|>|<|>=|<=|\\&|\\|")
 	w_query <- sapply(unlist(w_query), function(x) trimws(x))
-  w_query <- sapply(w_query,function(q){
+	dos         <- TRUE
+	# 2. Grab outcome variables in query, and stop if there are more than one var in query
+	# allowed: Y[X =1] == 1 & Y[X=0] ==1
+	# not allowed: M[X=1] == 1 & Y[X=0] ==1
+	var <- node <- st_within(query)
+	if(length(var) > 1 & sum(!duplicated(var)) > 1)
+		stop(paste0("Can't lookup types for variables " , paste0(var[!duplicated(var)], collapse = ", "), " simultaneously. Please write expression as separate queries"))
 
- 	var <- st_within(q)
- 	if(!var %in% model$variables)
- 		stop(paste0("Variable "), var, " not in model")
- 	v_parents <- get_parents(model)[[var]]
- 	nnn <- !str_detect(q, v_parents)
- 	not_in <- v_parents[nnn]
- 	q <- gsub("\\]", paste0(",",  	not_in , " = .\\]"), q)
- 	})
-  qqq <- names(w_query) != w_query
-  to_rep <- w_query[qqq]
-  .query <-  query2 <- query
-  for (i in 1:length(to_rep)) {
+	# If there are any do operations
+	if(grepl("\\[|\\]",  query)){
 
-  	ytt <-trimws(gsub(paste0("\\[|\\]|",var), "", names(to_rep)[i]))
-  	ytt <- paste0(var, "\\[", ytt, "\\]" )
-  	.query <- gsub(	ytt,to_rep[i], .query)
-  	query2 <- gsub(	ytt,paste0("`",to_rep[i],"`"), query2)
+		# Sapply to add parents no specified
+		# e.g model = "X->Y<-M"; query = Y[M=0] ->Y[M=0, X=.]
+	  w_query <- sapply(w_query, function(q){
+
+		  # Skip numeric strings-------------------------------
+		  # "query = `Y[] == 1`  would be splitted as c(`Y[]`, 1)
+		  # and 1 doesn't need to be processed "
+		  if(!grepl("\\D", q)) return(q)
+
+		 	var <- st_within(q)
+		 	if(!var %in% model$variables)
+		 		stop(paste0("Variable "), var, " not in model")
+
+		 	# Identify parents not specified in query and paste them as "parent = ."
+		 	v_parents        <- get_parents(model)[[var]]
+		 	not_in_query     <- !str_detect(q, v_parents)
+		 	missing_parents  <- v_parents[not_in_query]
+
+		 	if(all(!not_in_query)){
+		 		return(q)
+		 	} else if(all(missing_parents == v_parents)) {
+		 		q <- paste0(var,"\\[", paste0(missing_parents, "= .", collapse = ", "), "\\]")
+		 	} else if(length(missing_parents) >0){
+		   	q <- gsub("\\]", paste0(",", missing_parents , " = .\\]"), q)
+		 	}
+		 	return(q)})
+
+	  names(w_query) <- trimws(names(w_query))
+	  .w_query       <- quoted_query <- query
+
+	  # Substitute expressions in original query for modified expression in w_query
+	  # paste backslashes \\ and
+	  # ` ` for matching (quoted_query)
+	  for (i in 1:length(w_query)) {
+	  	var              <- st_within(names(w_query)[i])
+	  	string_i         <- trimws(gsub(paste0("\\[|\\]|",var), "", names(w_query)[i]))
+	  	string_i         <- paste0(var, "\\[", string_i, "\\]" )
+	  	.w_query     <- gsub(string_i, w_query[i], .w_query)
+	  	quoted_query <- gsub(string_i ,paste0("`",w_query[i],"`"), quoted_query)
+	  }
+
+	 if(grepl(".", .w_query, fixed = TRUE)){
+	 	.w_query      <- expand_wildcard(.w_query, join_by = join_by)
+	 	 quoted_query <- capture.output( expand_wildcard(quoted_query, join_by = join_by))[2]
+	 }
+
+	  w_query <- gsub("\\(|\\)", "",   .w_query )
+	  w_query <- str_split(w_query, "\\==|>|<|>=|<=|\\&|\\|")
+	  w_query <- sapply(unlist(w_query), function(x) trimws(x))
+
+	} else{
+		# If there are no do operations in query
+		quoted_query <- w_query <- query
+		dos <- FALSE
+	}
+
+  .query_df <- lapply(w_query, function(wq) gbiqq:::lookup_type_internal(model, query = wq))
+  query_df  <- do.call(cbind, .query_df)
+  if(dos) colnames(query_df) <- sapply(names(.query_df), trimws)
+
+
+  if(ncol(query_df)>1){
+  	keep     <- !sapply(1:ncol(query_df),
+  														function(x) all(colnames(query_df)[x] == query_df[,x]  ))
+  	query_df <- query_df[, keep]
   }
 
- if(grepl(".", .query, fixed = TRUE)){
- 	.query <- expand_wildcard(.query, join_by = join_by)
-  query2 <- capture.output( expand_wildcard(query2, join_by = join_by))[2]
-  }
-  .w_query <- gsub("\\(|\\)", "",   .query )
-  .w_query <- str_split(	.w_query, "\\==|>|<|>=|<=|\\&|\\|")
-  .w_query <- sapply(unlist(.w_query), function(x) trimws(x))
+  value <- c(eval(parse(text = quoted_query), envir = query_df))
+  names(value) <- rownames(query_df)
 
-
-
-  revealed_outcomes <- lapply(.w_query, function(wq)  lookup_type_single(model, query = wq))
-  df <- do.call(cbind, revealed_outcomes)
-  colnames(df) <- sapply(names(revealed_outcomes), trimws)
-  value <- c(eval(parse(text = query2), envir =  df))
+  return_list <- list(types = value,
+								  		query = query,
+  										expanded_query = .w_query,
+								  		evaluated_variables = query_df,
+  										node  = node)
+  class(return_list) <- "nodal_types"
+  return(return_list)
 }
 
 
+#' Reveal nodal types according to a query
+#'
+lookup_type_internal <- function(model, query){
+	if(!grepl("\\D", query)) return(as.numeric(query))
+
+	# The presence of [] indicate a do operation
+	if(grepl("\\[|\\]", query)){
+		w_query     <- gsub(" ", "", query)
+		w_query     <- unlist(strsplit(query, ""))
+		bracket_starts  <- grep( "\\[", w_query)
+		bracket_ends    <- grep( "\\]", w_query)
+		.query     	<- w_query[(bracket_starts):bracket_ends]
+
+		brackets        <- grepl("\\[|\\]",  .query)
+		.query      <- .query[!brackets]
+		.query      <-  paste0(.query, collapse = "")
+		.query      <- unlist(strsplit(.query, ","))
 
 
-lookup_type_single <- function(model, query){
+		dos <- sapply(.query, function(q) {
 
-	w_query         <- gsub(" ", "", query)
-	w_query         <- unlist(strsplit(query, ""))
-	bracket_starts  <- grep( "\\[", w_query)
-	bracket_ends    <- grep( "\\]", w_query)
-	.query        	<- w_query[(bracket_starts):bracket_ends]
-	brackets <- grepl("\\[|\\]",  .query)
-	.query   <- .query[!brackets]
-	.query   <-  paste0(.query, collapse = "")
-	.query   <- unlist(strsplit(.query, ","))
+			do         <- unlist(strsplit( q, ""))
+			stop       <- gregexpr("=", q, perl = TRUE)[[1]][1]  - 1
+			var_name   <- paste0(do[1:stop], collapse = "")
+			var_name   <- gsub(" ", "", var_name)
+			value      <- paste0(do[(stop +2):nchar(q)], collapse = "")
+			vars       <- model$variables
+			if(!var_name %in% vars)
+				stop(paste("Variable", var_name ,"is not part of the model."))
+		  out        <- value
+		  names(out) <- var_name
+		  out
+		}, USE.NAMES = FALSE)
 
-	dos <- sapply(.query, function(q) {
-		do <- unlist(strsplit( q, ""))
-		stop <- gregexpr("=", q, perl = TRUE)[[1]][1]  - 1
-		var_name <-  paste0(do[1:stop], collapse = "")
-		var_name <- gsub(" ", "", var_name)
-		value <- paste0(do[(stop +2):nchar(q)], collapse = "")
-		vars  <-  model$variables
-		if(!var_name %in% vars) 	stop(paste("Variable", var_name ,"is not part of the model."))
-	  out <- value
-	  names(out) <- var_name
-	  out
-	}, USE.NAMES = FALSE)
+		dos <- sapply(dos, trimws)
+		# Identify variables
+		b             <- 1:bracket_starts
+		var           <- paste0(w_query[b], collapse = "")
+		var           <- st_within(var)
+		revealed_vars <- reveal_outcomes(model, dos, node = var)[var]
+	} else{
+	# If no dos check whether variable in query is exogenous and error if otherwise.
+	 variables    <-	model$variables
+	 wv           <- sapply(variables, function(v) grepl(v, query))
+	 if(sum(wv) > 1)
+	 	stop(paste0("Can't lookup types for variables " , paste0(variables[!duplicated(variables)], collapse = ", "), " simultaneously. Please write expression as separate statements"))
+	 if(variables[wv] %in% attributes(model)$endogenous_variables)
+	 	stop( "Restrictions on observational quantities not allowed. No nodal types restricted")
+	 revealed_vars        <- get_nodal_types(model, collapse = FALSE)[[variables[wv] ]]
+	 names(revealed_vars) <- variables[wv]
+	}
 
-	b <- 1:bracket_starts
-	var <- paste0(w_query[b], collapse = "")
-	var <- st_within(var)
-
-
-	revaled_variables <- reveal_outcomes(model, dos, node = var)[var]
-
-
-  return(revaled_variables)
-
+  return(revealed_vars)
 
 }
 
@@ -109,28 +184,30 @@ print.nodal_types <- function(x, ...) {
 
 #' @export
 summary.nodal_types <- function(object, ...) {
-	structure(object, class = c("summary.causal_types", "data.frame"))
+	structure(object, class = c("summary.nodal_types", "data.frame"))
 
 }
 
 #' @export
 print.summary.nodal_types <- function(x, ...){
-	output_type <- class(x$types)
+	output_type  <- class(x$types)
   types_labels <- names(x$types)[x$types]
-		cat(paste("\nNodal types satisfying query's condition(s)  \n\n query = ", x$query,  "\n\n"))
-
-		if(length(types1) %% 2 != 0){
-			types_labels[length(types_labels ) + 1] <- ""
+  nt           <- length(types_labels)
+		cat(paste("\nNodal types satisfying query's query(s)  \n\n query : ", x$query,  "\n\n"))
+		if(x$query != x$expanded_query)
+    cat("Expanded query:",x$expanded_query,  "\n\n")
+		if(length(types_labels) %% 2 != 0){
+			types_labels[length(types_labels) + 1] <- ""
 		}
 		counter <- 2
 		while (counter <= length(types_labels ) ) {
-			cat(paste0(names(types_labels [(counter -1):counter]), collapse = "  "))
-			cat("\n")
+			cat(paste0(" ",types_labels [(counter -1):counter], collapse = "  "))
+      cat("\n")
 			counter <- counter + 2
 		}
 
-		cat(paste("\n\n Number of nodal types that meet condition(s) = ", length(types_labels)))
-		cat(paste("\n Total number of nodal types related to", node,"= ", length(x$types)))
+		cat(paste("\n\n Number of nodal types that meet query = ",nt ))
+		cat(paste("\n Total number of nodal types related to", x$node,"= ", length(x$types)))
 
 }
 

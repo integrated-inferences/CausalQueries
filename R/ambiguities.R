@@ -60,6 +60,31 @@ get_ambiguities_matrix <- function(model){
 
 reveal_outcomes <- function(model, dos = NULL, node = NULL){
 
+	if(!is.null(node)){
+		if(!is.null(dos)){
+
+		nodal_types       <- get_nodal_types(model, collapse = FALSE)
+		parents_list      <- get_parents(model)
+		parents           <- parents_list[[node]]
+		nodal_type_var    <- nodal_types[[node]]
+		nodal_label       <- apply(nodal_type_var, 1,paste, collapse ="")
+		dos_rep           <- sapply(dos, function(d) rep(d, length(	nodal_label   )))
+		data_realizations <- data.frame(	dos_rep, nodal_label, stringsAsFactors = FALSE)
+		names(data_realizations) <- c(parents, node)
+		types <- data_realizations
+		endogenous_vars   <- 	node
+		types_of_endogenous        <- data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
+		names(types_of_endogenous) <- endogenous_vars
+		in_dos <- names(dos) # vars in do list
+		# unique_types      <- !duplicated(data_realizations[,c( parents, node)])
+		# data_realizations <- data_realizations[unique_types , c( parents, node)]
+		# rownames(data_realizations) <- 1:nrow(data_realizations)
+		# types_of_endogenous   <- data.frame( types = data_realizations[, node], stringsAsFactors = FALSE)
+		# types           <- 	data_realizations
+		} else
+			stop("Do actions must be specified when node is not NULL")
+	} else{
+
 	types           <- get_causal_types(model)
 	nodal_types     <- get_nodal_types(model, collapse = FALSE)
 	exogenous_vars  <- attr(model, "exogenous_variables")
@@ -79,19 +104,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 
 		for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
 
-		if(!is.null(node)){
-
-			parents           <- parents_list[[node]]
-			endogenous_vars   <- 	node
-			unique_types      <- !duplicated(data_realizations[,c( parents, node)])
-			data_realizations <- data_realizations[unique_types , c( parents, node)]
-			rownames(data_realizations) <- 1:nrow(data_realizations)
-			types_of_endogenous   <- data.frame( types = data_realizations[, node], stringsAsFactors = FALSE)
-			types           <- 	data_realizations
-
-		}
-
-	}
+	}}
 
 
 
@@ -116,7 +129,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 				data_realizations[, endogenous_vars[j]] <- J
 		}}
     if(is.null(node)){
-    	rownames(data_realizations) <- rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
+    	rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
     	type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
     	attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
     	} else{
