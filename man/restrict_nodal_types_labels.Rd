@@ -9,9 +9,9 @@ restrict_nodal_types_labels(model, labels, keep = FALSE)
 \arguments{
 \item{model}{a model created by make_model()}
 
-\item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
+\item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
 
-\item{restriction}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+\item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \description{
 Reduce nodal types

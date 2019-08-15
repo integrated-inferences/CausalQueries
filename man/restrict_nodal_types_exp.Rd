@@ -4,14 +4,19 @@
 \alias{restrict_nodal_types_exp}
 \title{Reduce nodal types}
 \usage{
-restrict_nodal_types_exp(model, statement, join_by = "|", keep = FALSE)
+restrict_nodal_types_exp(model, statement, join_by = "|", keep = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{model}{a model created by make_model()}
 
+\item{statement}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+
+\item{join_by}{A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
+
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 
-\item{restriction}{a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.}
+\item{verbose}{Logical. Whether to print expanded query on the consule.}
 }
 \description{
 Reduce nodal types

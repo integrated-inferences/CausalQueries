@@ -4,12 +4,14 @@
 \alias{expand_wildcard}
 \title{Expand wildcard}
 \usage{
-expand_wildcard(to_expand, join_by = "|")
+expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 }
 \arguments{
 \item{to_expand}{A character vector of length 1L.}
 
 \item{join_by}{A character vector of length 1L.}
+
+\item{verbose}{Logical. Whether to print expanded query on the consule.}
 }
 \description{
 Expand statement containing wildcard
