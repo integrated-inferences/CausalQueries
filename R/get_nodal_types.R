@@ -67,3 +67,19 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	attr(types, "interpret") <- types_interpret
 	return(types)
 }
+
+
+#' Generate type matrix
+#' @param parent_n An integer. Number of parents of a given child.
+#'
+type_matrix <- function(parent_n){
+	type_mat <- perm(rep(1, 2^parent_n))
+	if(parent_n == 0){
+		labels <- NULL
+	} else {
+		input_mat <- perm(rep(1, parent_n))
+		labels <- apply(input_mat,1,paste,collapse = "")
+	}
+	colnames(type_mat) <- labels
+	return(type_mat)
+}
