@@ -5,8 +5,6 @@
 #' @param model A probabilistic causal model created by make_model().
 #' @return Returns indices and ambiguity matrix
 #' @export
-
-
 get_likelihood_helpers <- function(model){
 
 	# Get variables in order of exogeneity
@@ -129,33 +127,3 @@ get_likelihood_helpers <- function(model){
 
 }
 
-
-
-#' Summarize Data
-#'
-#' @param model A probabilistic causal model created by  \code{make_model()}
-#' @param data A data.frame of variables that can take three values: 0, 1, and NA.
-#' @return Returns data events without strategies containing no observed data
-#'
-#' @export
-summarize_data <- function(model, data){
-	# 1. Get data and delete all rows from strategies that contained no observed data
-	data_events <- get_data_events(data = data, model = model)$data_events
-	if(all(is.na(data))) return(data_events)
-	data_events_split <- split(data_events, as.factor(data_events$strategy))
-	data_events_w_NA <- do.call(rbind,lapply(data_events_split, function(df){
-		out <- df
-		if(sum(df$count) == 0){
-			out[,] <- NA
-		}
-
-		out
-	}))
-
-	delete_strategies <- !apply(data_events_w_NA, 1, function(x) all(is.na(x)))
-	r_names <- rownames(data_events)
-	trimmed_data_events <- data_events_w_NA[delete_strategies, ]
-  rownames(trimmed_data_events) <- 1:nrow(trimmed_data_events)
-	trimmed_data_events
-
-}

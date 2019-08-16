@@ -80,21 +80,6 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...){
 	x
 }
 
-#' Generate type matrix
-#' @param parent_n An integer. Number of parents of a given child.
-#'
-type_matrix <- function(parent_n){
-	type_mat <- perm(rep(1, 2^parent_n))
-	if(parent_n == 0){
-		labels <- NULL
-	} else {
-		input_mat <- perm(rep(1, parent_n))
-		labels <- apply(input_mat,1,paste,collapse = "")
-	}
-	colnames(type_mat) <- labels
-	return(type_mat)
-}
-
 #' Clean condition
 #'
 #' Takes string specifying condition and returns properly spaced string.
@@ -304,76 +289,4 @@ includes_var <- function(var, query)
 var_in_query <- function(model, query){
 	v <- 	model$variables
 	v[sapply(v, 	includes_var, query = query)]
-}
-
-
-#' Check for discrepancies
-#' Used in make_alphas
-#' @param alphas alphas provided by the user in set_priors/make_priors
-#' @param translated_alphas alphas that were expressed as a causal query.
-any_discrepancies <- function(alphas, translated_alphas){
-	error_message <- NULL
-	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
-	if(any(repeated_parameters)){
-		query_alpha <- attr(translated_alphas, "query")
-		i_repeated  <-	which(repeated_parameters)
-		q_repeated  <- unlist(translated_alphas)[i_repeated]
-		names(q_repeated) <- names(unlist(translated_alphas))[i_repeated]
-		names(q_repeated) <- sapply(  names(q_repeated) , function(q){
-			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
-			substr(q, stop + 1, nchar(q))
-		})
-		q_repeated <- q_repeated[order(names(q_repeated))]
-
-		i_alphas_repeated <- names(unlist(alphas)) %in% names(unlist(translated_alphas))
-		alphas_repeated <-  unlist(alphas)[i_alphas_repeated]
-		names(alphas_repeated)  <-  names(unlist(alphas))[i_alphas_repeated]
-
-		names(alphas_repeated) <- sapply(  names(alphas_repeated) , function(q){
-			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
-			substr(q, stop + 1, nchar(q))
-		})
-		alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
-
-		if(!identical(alphas_repeated, q_repeated)){
-			a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
-			q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
-			adicrepancy_names <- names(alphas_repeated)[alphas_repeated != q_repeated]
-
-			error_message <- unlist(sapply(query_alpha, function(q){
-				sapply(1:length(q), function(j){
-					r <- q[[j]] %in%  adicrepancy_names
-					if(any(r)){
-						paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
-					} })}))
-		}
-	}
-	return(error_message)
-}
-
-#' Make nodes from matrix
-#' @param mat A character matrix. For each variable contained in a model, matrix contains named columns with nodal values.
-#' @return A named list of causal types for each variable
-#'
-make_nodal_types <- function(mat){
-	type_names  <- sapply(1:ncol(mat), function(j)
-		paste0(names(mat)[j], mat[,j]))
-	colnames(type_names) <- colnames(mat)
-	apply(type_names, 2, unique)
-}
-
-#' Exclude node from causal type restriction
-#' Returns updated vector of rows in causal type matrix to be excluded, taking into account nodal types affected by restriction.
-#' @param var_name A string. Variable name in a model.
-#' @param causal_types A data.frame of causal types of a model.
-#' @param in_restriction A logical vector. Rows of \code{causal_type} in restriction query.
-#' @return A logical vector
-#' @importFrom dplyr %>% group_by_at mutate
-exclude_node_from_causal_type <- function(var_name, causal_types, in_restriction){
-	if("types" %in% names(in_restriction)) in_restriction <- in_restriction$types
-	types <- causal_types[var_name] %>%
-		mutate(restrict = in_restriction) %>%
-		group_by_at(.vars = var_name) %>%
-		mutate(rm_node = sum(restrict)==n())
-	types$rm_node
 }

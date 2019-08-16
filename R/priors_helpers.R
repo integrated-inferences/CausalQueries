@@ -244,3 +244,48 @@ query_to_parameters <- function(model, query){
 }
 
 
+
+#' Check for discrepancies
+#' Used in make_alphas
+#' @param alphas alphas provided by the user in set_priors/make_priors
+#' @param translated_alphas alphas that were expressed as a causal query.
+any_discrepancies <- function(alphas, translated_alphas){
+	error_message <- NULL
+	repeated_parameters <- names(unlist( 	translated_alphas  )) %in% names(unlist(alphas))
+	if(any(repeated_parameters)){
+		query_alpha <- attr(translated_alphas, "query")
+		i_repeated  <-	which(repeated_parameters)
+		q_repeated  <- unlist(translated_alphas)[i_repeated]
+		names(q_repeated) <- names(unlist(translated_alphas))[i_repeated]
+		names(q_repeated) <- sapply(  names(q_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		q_repeated <- q_repeated[order(names(q_repeated))]
+
+		i_alphas_repeated <- names(unlist(alphas)) %in% names(unlist(translated_alphas))
+		alphas_repeated <-  unlist(alphas)[i_alphas_repeated]
+		names(alphas_repeated)  <-  names(unlist(alphas))[i_alphas_repeated]
+
+		names(alphas_repeated) <- sapply(  names(alphas_repeated) , function(q){
+			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
+			substr(q, stop + 1, nchar(q))
+		})
+		alphas_repeated <-  alphas_repeated[order(names(alphas_repeated))]
+
+		if(!identical(alphas_repeated, q_repeated)){
+			a_discrepancies  <- 	alphas_repeated[alphas_repeated != q_repeated]
+			q_discrepancies  <- 	q_repeated[alphas_repeated != q_repeated]
+			adicrepancy_names <- names(alphas_repeated)[alphas_repeated != q_repeated]
+
+			error_message <- unlist(sapply(query_alpha, function(q){
+				sapply(1:length(q), function(j){
+					r <- q[[j]] %in%  adicrepancy_names
+					if(any(r)){
+						paste0( names(q)[j] , " = ", q_discrepancies[ q[[j]][r]] ,", ", q[[j]][r], " = ", a_discrepancies[ q[[j]][r]], "\n")
+					} })}))
+		}
+	}
+	return(error_message)
+}
+
