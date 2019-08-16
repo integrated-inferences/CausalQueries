@@ -39,7 +39,7 @@ perm <- function(max = rep(1, 2)){
 #' b <- "(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)"
 #' st_within(b)
 
-st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, rm_right=-1){
+st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0, rm_right=-1){
 	if(!is.character(x)) stop("`x` must be a string.")
 	puncts <- gregexpr(left, x, perl = TRUE)[[1]]
 	stops <- gregexpr(right, x, perl = TRUE)[[1]]
@@ -54,8 +54,8 @@ st_within <- function(x, left = "[[:punct:]]|\\b", right = "\\[", rm_left = 0, r
 
 	# find the closest punctuation or space
 	starts <- sapply(stops, function(s){
-		dif <- s - puncts
-		dif <- dif[dif>0]
+		dif  <- s - puncts
+		dif  <- dif[dif>0]
 		ifelse(length(dif) == 0, ret <- NA, ret <- puncts[which(dif==min(dif))])
 		return(ret)
 	})
@@ -115,13 +115,13 @@ clean_condition <- function(condition){
 #' @examples
 #' model <- make_model("R -> X; Z -> X; X -> Y")
 #' #Example using digit position
-#' lookup_type(model, position = list(X = c(3,4), Y = 1))
+#' interpret_type(model, position = list(X = c(3,4), Y = 1))
 #' #Example using condition
-#' lookup_type(model, condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
+#' interpret_type(model, condition = c("X | Z=0 & R=1", "X | Z=0 & R=0"))
 #' #Return interpretation of all digit positions of all nodes
-#' lookup_type(model)
+#' interpret_type(model)
 #' @export
-lookup_type <- function(model, condition = NULL, position = NULL){
+interpret_type <- function(model, condition = NULL, position = NULL){
 	if(sum(!is.null(condition) & !is.null(position))>1)
 		stop("Must specify either `query` or `nodal_position`, but not both.")
 	parents <- get_parents(model)
@@ -193,12 +193,13 @@ lookup_type <- function(model, condition = NULL, position = NULL){
 #'
 #' @param to_expand A character vector of length 1L.
 #' @param join_by A character vector of length 1L.
+#' @param verbose Logical. Whether to print expanded query on the consule.
 #' @importFrom rlang expr
 #' @export
 #' @examples
 #' expand_wildcard("(Y[X=1, M=.] > Y[X=1, M=.])")
 #'
-expand_wildcard <- function(to_expand, join_by = "|"){
+expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE){
 	orig <- st_within(to_expand, left= "\\(", right="\\)", rm_left = 1)
 	if(is.list(orig)){
 		if(is.null(orig[[1]]))
@@ -245,8 +246,10 @@ expand_wildcard <- function(to_expand, join_by = "|"){
 		oper_return <- apply(oper, 1, function(i) gsub_many(skeleton,
 																												paste0("%expand%", 1:length(orig)),i))
 	}
+	if(verbose){
 	cat("Generated expanded expression:\n")
 	cat(unlist(oper_return), sep = "\n")
+	}
 	oper_return
 }
 
