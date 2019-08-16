@@ -23,7 +23,7 @@ model <- make_model("X -> K -> Y")
 get_nodal_types(model)
 
 model <- make_model("X -> K -> Y") \%>\%
-   set_restrictions(causal_type_restrict= "K[X=1]>K[X=0]") \%>\%
+   set_restrictions(statement = "K[X=1]>K[X=0]") \%>\%
    set_confound(list(K = "Y[K=1]>Y[K=0]"))
 unlist(get_nodal_types(model))
 }

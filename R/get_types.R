@@ -38,7 +38,6 @@ get_types <- function(model, query, join_by = "|"){
 
 	# Global Variables
 	eval_var <-  reveal_outcomes(model)
-#	list_names <- colnames(eval_var)   #NEEDED?
 	k <- 1
 	i <- 0
 	list_names <- ""
@@ -130,16 +129,7 @@ get_types <- function(model, query, join_by = "|"){
 	w_query <- paste0("q <- ", w_query)
 	types <- c(eval(parse(text = w_query),  eval_var))
 
-	# p <- length(list_names)
-	# for (i in 1:p) {
-	# 	for(j in 1:p){
-	# 		list_names[i] <- gsub(names(list_names)[j], list_names[j], list_names[i])
-	# 	}
-	# }
-
 	names(eval_var) <- list_names
-
-
 	names(types) <- attr(eval_var, "type_names")
 
 	if(is.logical(types))  type_list <- names(types)[types]
