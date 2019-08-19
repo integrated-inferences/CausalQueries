@@ -35,7 +35,8 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 			}
 			nodal_type_var    <- nodal_types[[node]]
 			nodal_label       <- apply(nodal_type_var, 1,paste, collapse ="")
-			dos_rep           <- sapply(dos, function(d) rep(d, length(	nodal_label   )))
+
+			dos_rep           <- sapply(parents, function(p) rep(dos[p], length(nodal_label)))
 			data_realizations <- data.frame(	dos_rep, nodal_label, stringsAsFactors = FALSE)
 			names(data_realizations) <- c(parents, node)
 			types <- data_realizations
