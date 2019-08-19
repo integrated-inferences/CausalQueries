@@ -121,10 +121,11 @@ restrict_nodal_types_exp <- function(model,
 
 		for(node in unique_nodes)
 			if(keep){
-				nodal_types[[node]]<- selected_types[[node]]
+				kept_types   <- (nodal_types[[node]] %in% selected_types[[node]])
+				nodal_types[[node]]   <- nodal_types[[node]][kept_types]
 			} else{
-        selected_types_node   <- types_node %in% selected_types[[node]]
-        nodal_types[[node]]   <- nodal_types[[node]][!selected_types_node]
+        excluded_types   <- !(nodal_types[[node]] %in% selected_types[[node]])
+        nodal_types[[node]]   <- nodal_types[[node]][excluded_types]
 			}
 
 
