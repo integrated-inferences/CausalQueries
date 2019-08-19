@@ -98,20 +98,6 @@ restrict_nodal_types_exp <- function(model,
 
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 
-
-	# if(n_restrictions == 1){
-	# 	selected_types   <- lookup_type(model, statement, join_by, verbose = verbose)
-	# 	types_labels     <- names(selected_types$types)[selected_types$types]
-	# 	node             <- selected_types$node
-	# 	nodal_types_node <- nodal_types[[node]]
-	#
-	# 	if(keep){
-	# 		nodal_types[[node]] <- types_labels
-	# 	} else{
-	# 		nodal_types[[node]] <- nodal_types_node[!nodal_types_node %in% types_labels  ]
-	# 	}
-
-	# } else if(	n_restrictions > 1){
 		if(length(join_by) == 1){
 			join_by <- rep(join_by, n_restrictions)
 		} else if(length(join_by) != n_restrictions){
@@ -140,7 +126,6 @@ restrict_nodal_types_exp <- function(model,
 				nodal_types[[node]] <- nodal_types[[node]][!nodal_types[[node]] %in% types_labels [[node]] ]
 			}
 
-	#}
 
 	model$nodal_types  <- nodal_types
 
