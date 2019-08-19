@@ -113,7 +113,7 @@ restrict_nodal_types_exp <- function(model,
 			names(restrictions_list2) <- 	nodes_list
 		unique_nodes <- unique(nodes_list)
 
-		types_labels <- sapply(unique_nodes, function(node){
+		selected_types <- sapply(unique_nodes, function(node){
 			i <- which(nodes_list == node)
 			rl <- restrictions_list[i]
 			unique(unlist(c(sapply(rl, function(x) names(x$types)[x$types]))))
@@ -121,9 +121,10 @@ restrict_nodal_types_exp <- function(model,
 
 		for(node in unique_nodes)
 			if(keep){
-				nodal_types[[node]]<- types_labels [[node]]
+				nodal_types[[node]]<- selected_types[[node]]
 			} else{
-				nodal_types[[node]] <- nodal_types[[node]][!nodal_types[[node]] %in% types_labels [[node]] ]
+        selected_types_node   <- types_node %in% selected_types[[node]]
+        nodal_types[[node]]   <- nodal_types[[node]][!selected_types_node]
 			}
 
 
