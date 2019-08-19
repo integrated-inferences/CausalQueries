@@ -76,7 +76,7 @@ set_restrictions <- function(model,
 																			keep = keep,
 																			verbose = verbose)
 	}
-
+	model$causal_types <- update_causal_types(model)
 	return(model)
 }
 #' Reduce nodal types
@@ -98,20 +98,6 @@ restrict_nodal_types_exp <- function(model,
 
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 
-
-	if(n_restrictions == 1){
-		selected_types   <- lookup_type(model, statement, join_by, verbose = verbose)
-		types_labels     <- names(selected_types$types)[selected_types$types]
-		node             <- selected_types$node
-		nodal_types_node <- nodal_types[[node]]
-
-		if(keep){
-			nodal_types[[node]] <- types_labels
-		} else{
-			nodal_types[[node]] <- nodal_types_node[!nodal_types_node %in% types_labels  ]
-		}
-
-	} else if(	n_restrictions > 1){
 		if(length(join_by) == 1){
 			join_by <- rep(join_by, n_restrictions)
 		} else if(length(join_by) != n_restrictions){
@@ -121,23 +107,28 @@ restrict_nodal_types_exp <- function(model,
 			lookup_type(model, statement[i], join_by[i], verbose = verbose)})
 
 		nodes_list   <- sapply(restrictions_list, function(r) r$node)
+
+		restrictions_list2 <- lapply(restrictions_list,  function(x) names(x$types)[x$types])
+
+			names(restrictions_list2) <- 	nodes_list
 		unique_nodes <- unique(nodes_list)
 
-	  types_labels <- sapply(unique_nodes, function(node){
-	   	i <- which(nodes_list == node)
+		selected_types <- sapply(unique_nodes, function(node){
+			i <- which(nodes_list == node)
 			rl <- restrictions_list[i]
-			unique(sapply(rl, function(x) names(x$types)[x$types]))
-		})
-	   for(node in unique_nodes)
-	   if(keep){
-	   	nodal_types[[node]]<- types_labels [[node]]
-	   	} else{
-	   	nodal_types[[node]] <- nodal_types[[node]][!nodal_types[[node]] %in% types_labels [[node]] ]
-	   }
+			unique(unlist(c(sapply(rl, function(x) names(x$types)[x$types]))))
+		}, simplify = FALSE)
 
-	}
+		for(node in unique_nodes)
+			if(keep){
+				nodal_types[[node]]<- selected_types[[node]]
+			} else{
+        selected_types_node   <- types_node %in% selected_types[[node]]
+        nodal_types[[node]]   <- nodal_types[[node]][!selected_types_node]
+			}
 
-	model$nodal_types <- nodal_types
+
+	model$nodal_types  <- nodal_types
 
 	# Subset priors
 	type_names          <- get_type_names(nodal_types)
@@ -217,7 +208,8 @@ restrict_nodal_types_labels <- function(model, labels, keep = FALSE){
 	})
 
 	names(labels_out)   <- restricted_vars
-	model$nodal_types         <- nodal_types
+	model$nodal_types   <- nodal_types
+	model$causal_types  <- update_causal_types(model)
 
 	# Subset priors
 	type_names          <- get_type_names(nodal_types)
