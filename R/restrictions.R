@@ -122,9 +122,15 @@ restrict_nodal_types_exp <- function(model,
 		for(node in unique_nodes)
 			if(keep){
 				kept_types   <- (nodal_types[[node]] %in% selected_types[[node]])
+				if(sum(kept_types) == 0) {
+					stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
+				}
 				nodal_types[[node]]   <- nodal_types[[node]][kept_types]
 			} else{
         excluded_types   <- !(nodal_types[[node]] %in% selected_types[[node]])
+        if(sum(excluded_types) == 0) {
+        	stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
+        }
         nodal_types[[node]]   <- nodal_types[[node]][excluded_types]
 			}
 
@@ -132,6 +138,10 @@ restrict_nodal_types_exp <- function(model,
 	model$nodal_types  <- nodal_types
 
 	# Subset priors
+
+	# Subset priors
+
+
 	type_names          <- get_type_names(nodal_types)
 	if(!is.null(model$priors))
 		model$priors <- model$priors[type_names]
@@ -212,7 +222,6 @@ restrict_nodal_types_labels <- function(model, labels, keep = FALSE){
 	model$nodal_types   <- nodal_types
 	model$causal_types  <- update_causal_types(model)
 
-	# Subset priors
 	type_names          <- get_type_names(nodal_types)
 	if(!is.null(model$priors))
 		model$priors <- model$priors[type_names]

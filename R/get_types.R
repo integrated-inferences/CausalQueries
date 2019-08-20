@@ -37,8 +37,6 @@ get_types <- function(model, query, join_by = "|"){
 	if(length(query)>1L) stop("Please specify a query of length 1L.")
 
 	# Global Variables
-	eval_var <-  reveal_outcomes(model)
-	k <- 1
 	i <- 0
 	list_names <- ""
 	continue <- TRUE
