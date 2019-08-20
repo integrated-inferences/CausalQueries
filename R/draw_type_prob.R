@@ -15,18 +15,18 @@ draw_type_prob <- function(model,
                            P = NULL,
                            parameters = NULL,
                            using = NULL ){
-  
-  if(!is.null(parameters) & !is.null(using)) if(using!="parameters")
-    stop("Parameters provided but using is not set to parameters")
+
+#  if(!is.null(parameters) & !is.null(using)) if(using!="parameters")
+#    message("Parameters provided but using is not set to parameters")
   if(!is.null(parameters)) using <- "parameters"
   if(is.null(using)) {using <- "priors"; message("using not provided, priors assumed")}
   if(is.null(parameters))  parameters <- draw_parameters(model, using = using)
-  if(is.null(P)) 	    P      <- get_parameter_matrix(model)
-  
+  if(is.null(P)) 	             P      <- get_parameter_matrix(model)
+
   # Type probabilities
   P.lambdas     <- P*parameters +	1 - P
   apply(P.lambdas, 2, prod)
-  
+
 }
 
 #' Draw matrix of type probabilities, before or after estimation
@@ -46,13 +46,13 @@ draw_type_prob_multiple <- function(model,
                                     parameters = NULL,
                                     n_draws = 4000,
                                     using = "priors"){
-  
+
   if(using == "parameters") {
     if(is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
     if(is.null(parameters)) parameters <- model$parameters
     return(draw_type_prob(model, parameters = parameters, using = using))
   }
-  
+
   if(using == "priors"){
     if(is.null(model$prior_distribution)) {
       message("Prior distribution added to model")
@@ -60,13 +60,13 @@ draw_type_prob_multiple <- function(model,
     }
     param_dist <- model$prior_distribution
   }
-  
+
   if(using == "posteriors"){
     if(is.null(model$posterior_distribution)) {
       stop("Model does not contain a posterior distribution")}
     param_dist <- rstan::extract(model$posterior, pars= "lambdas")$lambdas
   }
-  
+
   apply(param_dist, 1, function(j) draw_type_prob(model, parameters = j))
 }
 

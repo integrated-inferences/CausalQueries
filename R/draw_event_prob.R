@@ -25,7 +25,8 @@ draw_event_prob <- function(model,
   if(is.null(parameters)) {parameters <- draw_parameters(model, using = using)}
 
   # Ambiguity matrix
-  if(is.null(A)) 	    A <- get_ambiguities_matrix(model)
+  if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
+  A <- get_ambiguities_matrix(model)
 
   # Type probabilities
   if(is.null(type_prob)) {
