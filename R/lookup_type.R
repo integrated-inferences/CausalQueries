@@ -29,7 +29,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 	# Housekeeping
 	# 1. remove (), split by logical symbol and trim
 	w_query <- gsub("\\(|\\)", "", query)
-	w_query <- str_split(w_query, "\\==|>|<|>=|<=|\\&|\\|")
+	w_query <- str_split(w_query, "\\==|>|<|>=|<=|!=|\\&|\\|")
 	w_query <- sapply(unlist(w_query), function(x) trimws(x))
 	dos         <- TRUE
 	# 2. Grab outcome variables in query, and stop if there are more than one var in query
@@ -103,7 +103,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 	 }
 
 	  w_query <- gsub("\\(|\\)", "",   .w_query )
-	  w_query <- str_split(w_query, "\\==|>|<|>=|<=|\\&|\\|")
+	  w_query <- str_split(w_query, "\\==|>|<|>=|<=|!=|\\&|\\|")
 	  w_query <- sapply(unlist(w_query), function(x) trimws(x))
 
 	} else{
