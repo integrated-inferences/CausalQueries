@@ -129,13 +129,13 @@ query_distribution <- function(model,
 #'                 digits = 3)
 
 query_model <- function(model,
-													parameters = NULL,
-													queries = list(NULL),
-													subsets = list(TRUE),
-													using   = list(FALSE),
-													stats = NULL,
-													digits = 3,
-													n_draws = 4000){
+												parameters = NULL,
+												queries    = list(NULL),
+												subsets    = list(TRUE),
+												using      = list("priors"),
+												stats      = NULL,
+												digits     = 3,
+												n_draws    = 4000){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
@@ -148,15 +148,15 @@ query_model <- function(model,
 	# Function for mapply
 	f <- function(query, subset, using){
 		v <- query_distribution(model,
-															 query = query,
-															 subset = subset,
-															 parameters = parameters,
-															 using = using,
-															 verbose = FALSE)
+														query   = query,
+														subset  = subset,
+														parameters = parameters,
+														using   = using,
+														verbose = FALSE)
 		# FLAG: if needed for cases where evaluation sough on impossible subsets
 		if(is.null(v)) {rep(NA, length(stats))} else {c(round(sapply(stats, function(g) g(v)), digits))}
 	}
-	 # FLAG: if needed because shape depends on length of stats -- must be better way
+	 # FLAG: if used here only because shape depends on length of stats
 
 	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)),
 																				 stringsAsFactors = FALSE)
