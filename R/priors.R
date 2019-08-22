@@ -261,10 +261,10 @@ set_parameters <- function(model,
 													 ...) {
 
 	if(!is.null(parameters)) if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
-	if (!is.null(parameters)) {
-		model$parameters <- parameters
-		return(model)}
 
+	if (!is.null(parameters)) {
+	 type = "define"
+	}
 	# Flat lambda
 	if (type == "flat")  {
 		parameters <- make_priors(model, prior_distribution = "uniform")
@@ -277,9 +277,19 @@ set_parameters <- function(model,
 
 		parameters <- make_priors(model, ...)
 
-		for (j in model$variables) {
+		if(is.null(attr(model$P, "confounds"))){
+			param_set <- model$variables
+		} else{
+			param_set <- unique(attr(model$P,"param_set"))
+		}
+
+		for (j in param_set) {
 			x <- startsWith(names(parameters), paste0(j, "."))
-			parameters[x] <- parameters[x] / sum(parameters[x])}}
+			parameters[x] <- parameters[x] / sum(parameters[x])
+		}
+
+   }
+
 
 	# Prior mean
 	if (type == "prior_mean") {
