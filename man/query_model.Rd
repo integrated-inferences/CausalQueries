@@ -5,7 +5,7 @@
 \title{Generate estimands dataframe}
 \usage{
 query_model(model, parameters = NULL, queries = list(NULL),
-  subsets = list(TRUE), using = list(FALSE), stats = NULL,
+  subsets = list(TRUE), using = list("priors"), stats = NULL,
   digits = 3, n_draws = 4000)
 }
 \arguments{
