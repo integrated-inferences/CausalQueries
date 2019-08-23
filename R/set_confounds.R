@@ -1,6 +1,30 @@
 #' Set confound
 #'
-#' Adjust parameter matrix to allow confounding
+#' Adjust parameter matrix to allow confounding.
+#'
+#'
+#' Confounding between X and Y arises when the nodal types for X and Y are not independently distributed. In the X -> Y graph, for instance, there are 2 nodal types for X and 4 for Y. There are thus 8 joint nodal types:
+#' \preformatted{
+#' |          | t^X                |                    |           |
+#' |-----|----|--------------------|--------------------|-----------|
+#' |     |    | 0                  | 1                  | Sum       |
+#' |-----|----|--------------------|--------------------|-----------|
+#' | t^Y | 00 | Pr(t^X=0 & t^Y=00) | Pr(t^X=1 & t^Y=00) | Pr(t^Y=00)|
+#' |     | 10 | .                  | .                  | .         |
+#' |     | 01 | .                  | .                  | .         |
+#' |     | 11 | .                  | .                  | .         |
+#' |-----|----|--------------------|--------------------|-----------|
+#' |     |Sum | Pr(t^X=0)          | Pr(t^X=1)          | 1         |
+#' }
+#'
+#' This table has 8 interior elements and so an unconstrained joint distribution would have 7 degrees of freedom.
+#' A no confounding assumption means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y) = Pr(t^X)Pr(t^Y). In this case there would be 3 degrees of freedom for Y and 1 for X, totalling 4 rather than 7.
+#'
+#' \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
+#'
+#' A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as: "Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1. In this case nodal types for Y would continue to have 3 degrees of freedom. But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of an unconstrained distribution, though an  unconstrained distribution can be achieved with repeated application of statements of this form, for instance via  \code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
+#'
+#' Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as: "Allow Y to have a distinct conditional distribution when X=1. In this case there would be two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom. Nodal types for X would continue to have 1 degree of freedom. Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 #'
 #' @param model A model created by make_model()
 #' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
