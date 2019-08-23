@@ -18,10 +18,11 @@ list_non_parents <- function(model, node){
 #'#' Adds a wildcard for every missing parent
 #'@param node A quoted name of a node
 #'@param statement A quoted causal statement.
-#'@param parents
+#'@param parents node's parents
+#'@param missing_parents node's missing parents
 #'@keywords internal
 add_wildcard <- function(node, statement, parents, missing_parents){
- if(all(missing_parents %in% parents)) {
+ if(all(parents %in% missing_parents)) {
  	q <-
  		paste0(node,"\\[", paste0(missing_parents, "= .", collapse = ", "), "\\]")
 } else if(length(missing_parents) >0){

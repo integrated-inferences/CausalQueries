@@ -10,6 +10,10 @@ add_wildcard(node, statement, parents, missing_parents)
 \item{node}{A quoted name of a node}
 
 \item{statement}{A quoted causal statement.}
+
+\item{parents}{node's parents}
+
+\item{missing_parents}{node's missing parents}
 }
 \description{
 #' Adds a wildcard for every missing parent
