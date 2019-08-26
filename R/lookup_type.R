@@ -58,11 +58,10 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 
 		 	# Identify parents not specified in query and paste them as "parent = ."
 		 	v_parents        <- get_parents(model)[[var]]
-		 	parents_in_q     <- gbiqq:::nodes_in_statement(v_parents, q)
-		 	not_parents      <- gbiqq:::list_non_parents(model, var)
-		 	not_parents_q    <- gbiqq:::nodes_in_statement(not_parents, q)
+		 	parents_in_q     <- nodes_in_statement(v_parents, q)
+		 	not_parents      <- list_non_parents(model, var)
+		 	not_parents_q    <- nodes_in_statement(not_parents, q)
 		  missing_parents  <- v_parents [!v_parents%in% parents_in_q]
-
 
 		 	if(length(not_parents_q) >0 ){
 		 	conjugation <- ifelse(length(not_parents_q)>1, "are not parents of", "is not a parent of")
@@ -70,16 +69,15 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		 	stop(paste(subjects, conjugation, var))
 		 	}
 
-		 	if(length(v_parents) ==  length(parents_in_q)){
-		 		return(q)
-		 	} else {
-		 	 q <- gbiqq:::add_wildcard(node, statement = q, parents = v_parents, missing_parents)
+		 	if(length(v_parents) ==  length(parents_in_q)) return(q)
+		 	 else {
+		 	 q <- add_wildcard(node, statement = q, parents = v_parents, missing_parents)
 		 	 return(q)
-		 	}
-		 	})
+		 	 }})
 
 	  names(w_query) <- trimws(names(w_query))
 	  .w_query       <- quoted_query <- query
+
 
 	  # Substitute expressions in original query for modified expression in w_query
 	  # paste backslashes \\ and
@@ -109,7 +107,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		node <- variables[sapply(variables, function(v) grepl(v, query))]
 	}
 
-  .query_df <- lapply(w_query, function(wq) gbiqq:::lookup_type_internal(model, query = wq))
+  .query_df <- lapply(w_query, function(wq) lookup_type_internal(model, query = wq))
   query_df  <- do.call(cbind, .query_df)
   if(dos) colnames(query_df) <- sapply(names(.query_df), trimws)
 
