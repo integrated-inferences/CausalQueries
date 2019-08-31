@@ -25,6 +25,6 @@
   - Open a pull request
   
   
-  Note: members of the `gbiqq`community can skip the first two bullet points above and branch out instead.
+  Note: members of the `gbiqq` community can skip the first two bullet points above and branch out instead.
   
   
