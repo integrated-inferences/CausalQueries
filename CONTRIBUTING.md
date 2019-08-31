@@ -13,7 +13,7 @@
   
   ### Contributing code
   You have had a look at our [issues on GitHub](https://github.com/macartan/gbiqq/issues) and would like fix one of them? or you would like develop a feature? 
-  That's great and we gladly welcome that. Now, we suggest you make sure to follow these simple guidelines:
+  That's great and we gladly welcome that. Now, we suggest you follow these simple guidelines:
   
   - Fork the [gbiqq repository](https://github.com/macartan/gbiqq) 
   - Clone your fork locally 
@@ -24,5 +24,7 @@
   - Add yourself as a contributor in the `DESCRIPTION` file
   - Open a pull request
   
+  
+  Note: members of the `gbiqq`community can skip the first two bullet points above and branch out instead.
   
   
