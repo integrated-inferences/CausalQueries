@@ -12,8 +12,8 @@
   - If the bug you're reporting crashes your R session, please mention that in the tittle
   
   ### Contributing code
-  You have had a look at our [issues on GitHub](https://github.com/macartan/gbiqq/issues) and would like fix one of them? or you would like develop a feature? 
-  That's great and we gladly welcome that. Now, we suggest you follow these simple guidelines:
+  You have had a look at our [issues on GitHub](https://github.com/macartan/gbiqq/issues) and would like to solve one of them? or you would like to develop a feature? 
+  That's great and we gladly welcome that. We just would like to suggest you follow these simple guidelines:
   
   - Fork the [gbiqq repository](https://github.com/macartan/gbiqq) 
   - Clone your fork locally 
