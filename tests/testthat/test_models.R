@@ -12,7 +12,7 @@ for(dag in dags){
 
 	testthat::test_that(
 		desc = "Model returns the correct object class.",
-		code = expect_identical(class(make_model(dag)), "probabilistic_causal_model")
+		code = expect_identical(class(make_model(dag)), "causal_model")
 	)
 
 }
