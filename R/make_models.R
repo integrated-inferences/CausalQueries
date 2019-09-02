@@ -76,7 +76,7 @@ summary.causal_model <- function(object, ...) {
 }
 
 #' @export
-print.causal_model <- function(x,  ...){
+print.summary.causal_model <- function(x,  ...){
 
 	cat("\nDAG: \n")
 	print(x$dag)
