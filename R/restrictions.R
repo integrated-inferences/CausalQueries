@@ -61,7 +61,7 @@ set_restrictions <- function(model,
 														 labels = NULL,
 														 keep = FALSE,
 														 verbose = FALSE){
-
+  nodal_types0 <- get_nodal_types(model)
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 	if(is.null(labels) & is.null(statement) ) {message("No restrictions provided."); return(model)}
 
@@ -76,7 +76,27 @@ set_restrictions <- function(model,
 																			keep = keep,
 																			verbose = verbose)
 	}
+
+
+
 	model$causal_types <- update_causal_types(model)
+	nodal_types1 <- get_nodal_types(model)
+
+	# Keep restricted types as attributes
+	restrictions <- sapply(model$variables, function(node){
+		restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
+		nodal_types0[[node]][restricted]
+	}, simplify = FALSE, USE.NAMES = TRUE)
+
+	if(is.null(attr(model,"restrictions"))){
+		attr(model,"restrictions") <- restrictions
+	}else{
+		restrictions0 <- attr(model,"restrictions")
+		attr(model,"restrictions") <- sapply(model$variables, function(node){
+			c(restrictions[[node]], restrictions0[[node]])
+		}, simplify = FALSE, USE.NAMES = TRUE)
+	}
+
 	return(model)
 }
 #' Reduce nodal types
