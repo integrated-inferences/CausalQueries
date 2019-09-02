@@ -70,7 +70,7 @@ print.causal_model <- function(x, ...) {
 
 
 #' @export
-summary.causal_model <- function(object, verbose = TRUE...) {
+summary.causal_model <- function(object, ...) {
 	structure(object, class = c("summary.causal_model", "data.frame"))
 
 }
@@ -82,7 +82,7 @@ print.causal_model <- function(x,  ...){
 	print(x$dag)
 	cat("\n ------------------------------------------------------------------------------------------\n")
 	cat("\nNodal types: \n")
-
+	nodal_types <- get_nodal_types(x)
 		nodes <- x$variables
 		sapply(nodes, function(n){
 			nt <- nodal_types[[n]]
@@ -98,15 +98,15 @@ print.causal_model <- function(x,  ...){
 			cat("\n")
 		})
 		cat("\nNumber of types by node\n")
-		nodal_types <- get_nodal_types(x)
+
 		print(sapply(nodal_types , length, USE.NAMES = TRUE))
 
   if(!is.null(x$P)){
   	cat("\n ------------------------------------------------------------------------------------------\n")
   	cat("\nParameter matrix: \n")
   	P <- x$P
-  	cat(paste0("Number of parameters (rows):", nrow(P), "\n"))
-  	cat(paste0("Number of unit types (columns):", ncol(P), "\n"))
+  	cat(paste0("Number of parameters (rows): ", nrow(P), "\n"))
+  	cat(paste0("Number of unit types (columns): ", ncol(P), "\n"))
   	if(!is.null(attr(P, "confounds") )){
   	cat("\nConfounds: \n")
   	print(attr(P, "confounds") )
