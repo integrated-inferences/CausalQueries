@@ -55,7 +55,7 @@ make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){
 	if(add_priors)     model <- set_priors(model)
 	if(add_parameters) model <- set_parameters(model, type = "flat")
 
-	class(model) <- "probabilistic_causal_model"
+	class(model) <- "causal_model"
 
 	return(model)
 }
@@ -63,31 +63,77 @@ make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){
 
 
 #' @export
-print.probabilistic_causal_model <- function(x, ...) {
+print.causal_model <- function(x, ...) {
 	print(summary(x))
 	invisible(x)
 }
 
 
 #' @export
-summary.probabilistic_causal_model <- function(object, ...) {
-	structure(object, class = c("summary.compared_diagnoses", "data.frame"))
+summary.causal_model <- function(object, verbose = TRUE...) {
+	structure(object, class = c("summary.causal_model", "data.frame"))
 
 }
 
 #' @export
-print.probabilistic_causal_model <- function(x, ...){
+print.causal_model <- function(x,  ...){
 
-	cat("\n DAG: \n")
+	cat("\nDAG: \n")
 	print(x$dag)
+	cat("\n ------------------------------------------------------------------------------------------\n")
+	cat("\nNodal types: \n")
+
+		nodes <- x$variables
+		sapply(nodes, function(n){
+			nt <- nodal_types[[n]]
+			interpret <- attr(nodal_types, "interpret")[[n]]
+			stop_at <- min(length(nt), 16)
+			cat(paste0("$", n,"\n"))
+
+			cat(paste0(nt[1:stop_at], collapse = "  ") )
+
+			if(stop_at != length(nt)) cat(paste0(length(nt) - 16, " nodal types omitted"))
+			cat("\n\n")
+			print(interpret)
+			cat("\n")
+		})
+		cat("\nNumber of types by node\n")
+		nodal_types <- get_nodal_types(x)
+		print(sapply(nodal_types , length, USE.NAMES = TRUE))
+
   if(!is.null(x$P)){
-  	cat("\n\n Parameter matrix: \n ")
-  	print(x$P)
+  	cat("\n ------------------------------------------------------------------------------------------\n")
+  	cat("\nParameter matrix: \n")
+  	P <- x$P
+  	cat(paste0("Number of parameters (rows):", nrow(P), "\n"))
+  	cat(paste0("Number of unit types (columns):", ncol(P), "\n"))
+  	if(!is.null(attr(P, "confounds") )){
+  	cat("\nConfounds: \n")
+  	print(attr(P, "confounds") )
+  	}
+
+  } else{
+
+  	cat("\nNumber of unit types:")
+    cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+
   }
-	if(!is.null(x$priors)){
-		cat("\n\n lambda priors: \n")
-		print(x$priors)
+
+	if(!is.null(attr(model,"restrictions"))){
+
+		restrictions <- attr(model,"restrictions")
+		cat("\n ------------------------------------------------------------------------------------------\n")
+		cat("\nRestrictions: \n")
+		sapply(model$variables, function(node){
+			cat(paste0(node, ": ", length(restrictions[[node]]), " restricted types \n")  )
+		})
+
 	}
+
+
+
+
+
 
 
 }
