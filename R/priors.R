@@ -240,11 +240,11 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 
 #' Check parameters sum to 1 in paramset and normalize
 
-check_params <- function(parameters, param_set){
+check_params <- function(parameters, param_set, warning = FALSE){
 	for (j in param_set) {
 		x <- startsWith(names(parameters), paste0(j, "."))
 		if(sum(parameters[x]) != 1){
-			message(paste0("Parameters within set ", parameters[x], "sum up to more than 1. \n Using normalized parameters"))
+			if(warning) message(paste0("Parameters within set ", parameters[x], "sum up to more than 1. \n Using normalized parameters"))
 			parameters[x] <- parameters[x] / sum(parameters[x])
 		}
 	}
@@ -285,56 +285,41 @@ set_parameters <- function(model,
 		 if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
 	   if(!is.null(parameters)) if(length(parameters) != length(param_names)) stop("Parameters incorrect length")
      names(parameters)	<- param_names
-     model$parameters   <- check_params(parameters, param_set)
+     model$parameters   <- check_params(parameters, param_set, warning = TRUE)
      return(model)
      }
 
 	# Flat lambda
 	if (type == "flat")  {
 		parameters <- make_priors(model, prior_distribution = "uniform")
-		for (j in model$variables) {
-			x <- startsWith(names(parameters), paste0(j, "."))
-			parameters[x] <- parameters[x] / sum(parameters[x])}}
+		parameters <- check_params(paramaters, param_set)
+	 }
 
 	# new (from alpha)
 	if (type == "define") {
-
 		parameters <- make_priors(model, ...)
-
-		for (j in param_set) {
-			x <- startsWith(names(parameters), paste0(j, "."))
-			if(sum(parameters[x] != 1)){
-				message(paste0("Parameters within set ", parameters[x], "sum up to more than 1. \n Using normalized parameters"))
-				parameters[x] <- parameters[x] / sum(parameters[x])
-			}
-		}
-
+		parameters <- check_params(paramaters, param_set)
    }
-
 
 	# Prior mean
 	if (type == "prior_mean") {
 		if (is.null(model$prior)) stop("Prior distribution required")
-
 		parameters <- model$priors
-
-		for (j in model$variables) {
-			x <- startsWith(names(parameters), paste0(j, "."))
-			parameters[x] <- parameters[x] / sum(parameters[x])}}
+		parameters  <- check_params(paramaters, param_set)
+		}
 
 	# Prior draw
 	if (type == "prior_draw") {
 			if (is.null(model$prior)) stop("Prior distribution required")
+			parameters <- draw_parameters(model)
+			}
 
-			parameters <- draw_parameters(model)}
-
-		if (type == "posterior_mean") {
+	if (type == "posterior_mean") {
 			if (is.null(model$posterior)) stop("Posterior distribution required")
-			parameters <-
-				apply(rstan::extract(model$posterior, pars = "lambdas")$lambdas,
-							2, mean)}
+			parameters <- apply(rstan::extract(model$posterior, pars = "lambdas")$lambdas, 2, mean)
+			}
 
-		if (type == "posterior_draw") {
+	if (type == "posterior_draw") {
 			if (is.null(model$posterior))
 				stop("Posterior distribution required")
 			df <- rstan::extract(model$posterior, pars = "lambdas")$lambdas
