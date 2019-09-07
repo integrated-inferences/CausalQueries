@@ -238,6 +238,18 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 }
 
 
+#' Check parameters sum to 1 in paramset and normalize
+
+check_params <- function(parameters, param_set){
+	for (j in param_set) {
+		x <- startsWith(names(parameters), paste0(j, "."))
+		if(sum(parameters[x]) != 1){
+			message(paste0("Parameters within set ", parameters[x], "sum up to more than 1. \n Using normalized parameters"))
+			parameters[x] <- parameters[x] / sum(parameters[x])
+		}
+	}
+	parameters
+	}
 
 #' Add a true parameter vector
 #'
@@ -260,11 +272,23 @@ set_parameters <- function(model,
 													 type = "prior_mean",
 													 ...) {
 
-	if(!is.null(parameters)) if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
-
-	if (!is.null(parameters)) {
-	 type = "define"
+	# param_set
+	if(is.null(attr(model$P, "confounds"))){
+		param_set <- model$variables
+	} else{
+		param_set <- unique(attr(model$P,"param_set"))
 	}
+
+  # If parameters provided
+	if(!is.null(parameters)){
+		 param_names <- names(get_priors(model))
+		 if(max(parameters >1) | min(parameters < 0)) stop("Parameters should be betweeen 0 and 1")
+	   if(!is.null(parameters)) if(length(parameters) != length(param_names)) stop("Parameters incorrect length")
+     names(parameters)	<- param_names
+     model$parameters   <- check_params(parameters, param_set)
+     return(model)
+     }
+
 	# Flat lambda
 	if (type == "flat")  {
 		parameters <- make_priors(model, prior_distribution = "uniform")
@@ -276,12 +300,6 @@ set_parameters <- function(model,
 	if (type == "define") {
 
 		parameters <- make_priors(model, ...)
-
-		if(is.null(attr(model$P, "confounds"))){
-			param_set <- model$variables
-		} else{
-			param_set <- unique(attr(model$P,"param_set"))
-		}
 
 		for (j in param_set) {
 			x <- startsWith(names(parameters), paste0(j, "."))

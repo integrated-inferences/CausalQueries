@@ -140,6 +140,8 @@ query_model <- function(model,
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
 
+	if(using == "parameters" & is.null(stats)) stats <- c(mean = mean)
+
 	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
 	if(!is.null(names(queries))) query_names <- names(queries)
