@@ -292,20 +292,19 @@ set_parameters <- function(model,
 	# Flat lambda
 	if (type == "flat")  {
 		parameters <- make_priors(model, prior_distribution = "uniform")
-		parameters <- check_params(paramaters, param_set)
+		parameters <- check_params(parameters, param_set)
 	 }
 
 	# new (from alpha)
 	if (type == "define") {
 		parameters <- make_priors(model, ...)
-		parameters <- check_params(paramaters, param_set)
+		parameters <- check_params(parameters, param_set)
    }
 
 	# Prior mean
 	if (type == "prior_mean") {
 		if (is.null(model$prior)) stop("Prior distribution required")
 		parameters <- model$priors
-		parameters  <- check_params(paramaters, param_set)
 		}
 
 	# Prior draw
