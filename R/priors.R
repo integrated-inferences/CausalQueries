@@ -304,7 +304,7 @@ set_parameters <- function(model,
 	# Prior mean
 	if (type == "prior_mean") {
 		if (is.null(model$prior)) stop("Prior distribution required")
-		parameters <- model$priors
+		parameters <- check_params(model$priors, param_set)
 		}
 
 	# Prior draw
