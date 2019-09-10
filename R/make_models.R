@@ -119,9 +119,9 @@ print.summary.causal_model <- function(x,  ...){
 
   }
 
-	if(!is.null(attr(model,"restrictions"))){
+	if(!is.null(attr(x,"restrictions"))){
 
-		restrictions <- attr(model,"restrictions")
+		restrictions <- attr(x,"restrictions")
 		cat("\n ------------------------------------------------------------------------------------------\n")
 		cat("\nRestrictions: \n")
 		sapply(model$variables, function(node){

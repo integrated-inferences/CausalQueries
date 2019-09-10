@@ -19,8 +19,9 @@ set_parameters(model, parameters = NULL, type = "prior_mean", ...)
 Add a vector of "true" parameters to a model.
 }
 \examples{
-model <- set_parameters(make_model("X -> Y"),
-          type = "flat")
+get_parameters(make_model("X -> Y"), parameters = c(.5, .5, .25,.25, .25, .25))
+model <- set_parameters(make_model("X -> Y"), type = "flat")
+
 # Use make_alpha to define specific parameters
 model <- set_parameters(make_model("X -> Y"), type = 'define',
                         alphas = list(Y = c(`(Y[X=1] > Y[X=0])` = 3)))

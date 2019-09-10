@@ -20,10 +20,16 @@ simulate_data <- function(model,
 													parameters = NULL,
 													using = "parameters"){
 
-	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) {
-	if(is.null(model$parameters)) stop("Using set to 'parameters' (perhaps by default) but parameters not provided. Please provide parameters or set `using` to `priors` or `posteriors`")}
+	# Check that parameters sum to 1 in each param_set
+	if(!is.null(parameters)) parameters <- check_params(parameters, get_param_set_names(model), warning = TRUE)
 
-	if(using == "priors" & is.null(model$priors)) {model <- set_priors(model); message("Priors missing; flat priors assumed")}
+	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) {
+	if(is.null(model$parameters)) stop(
+		"Using is set to 'parameters' (perhaps by default) but parameters not provided.
+		Please provide parameters or set `using` to `priors` or `posteriors`")}
+
+	if(using == "priors" & is.null(model$priors)) {
+		model <- set_priors(model); message("Priors missing; flat priors assumed")}
 
 	# Data drawn here
 	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters, using = using)

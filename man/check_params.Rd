@@ -4,7 +4,8 @@
 \alias{check_params}
 \title{Check parameters sum to 1 in paramset and normalize}
 \usage{
-check_params(parameters, param_set, warning = FALSE)
+check_params(parameters, param_set_names, warning = FALSE,
+  model = NULL)
 }
 \description{
 Check parameters sum to 1 in paramset and normalize
