@@ -130,10 +130,4 @@ print.summary.causal_model <- function(x,  ...){
 
 	}
 
-
-
-
-
-
-
 }

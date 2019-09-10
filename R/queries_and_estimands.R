@@ -90,43 +90,30 @@ query_distribution <- function(model,
 #' @param stats Functions be applied to estimand distribution. If `NULL`, defaults to mean and standard deviation.
 #' @param digits An integer. Decimal digits in output table.
 #' @param n_draws An integer. Number of draws.
+#' @param expand_grid logical If TRUE then all combinations of provided lists are examined. If not then each list is cycled through separately.
 #' @export
 #' @examples
 #' library(dplyr)
-#' model <- make_model("X -> Y") %>%
-#'            set_prior_distribution(n_draws = 10000)
+#' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
 #' estimands_df <-query_model(
 #'                model,
-#'                queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                Share_positive = "Y[X=1] > Y[X=0]"),
+#'                queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
 #'                using = c("parameters", "priors"))
 #'
-#' estimands_df <- query_model(
-#'                 model,
-#'                 queries = list(ATE = "Y[X=1] - Y[X=0]",
-#'                 Share_positive = "Y[X=1] > Y[X=0]"),
-#'                 using = "priors")
+#' estimands_df <-query_model(
+#'                model,
+#'                queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'                using = c("parameters", "priors"),
+#'                expand_grid = FALSE)
 #'
 #' estimands_df <- query_model(
 #'                 model,
-#'                 queries = list(ATE = "Y[X=1] - Y[X=0]"),
-#'                 using = list("priors", "parameters"),
-#'                 digits = 3)
-#'
-#' estimands_df <- query_model(
-#'                 model,
-#'                 using = "priors",
-#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
+#'                 using = list( "parameters", "priors"),
+#'                 queries = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
 #'                 subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
 #'                 digits = 3)
 #'
-#' estimands_df <- query_model(
-#'                 model,
-#'                 using = "parameters",
-#'                 queries = list(Is_B = "Y[X=1] > Y[X=0]"),
-#'                 subsets = list(TRUE, "Y[X=1]==1", "Y==1"),
-#'                 digits = 3)
 
 query_model <- function(model,
 												parameters = NULL,
@@ -135,17 +122,27 @@ query_model <- function(model,
 												using      = list("priors"),
 												stats      = NULL,
 												digits     = 3,
-												n_draws    = 4000){
+												n_draws    = 4000,
+												expand_grid = TRUE){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
 
 	if(all(using == "parameters") & is.null(stats)) stats <- c(mean = mean)
-
 	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
-	if(!is.null(names(queries))) query_names <- names(queries)
-	if(is.null(names(queries)))  query_names <- "not named"
+	# Make complete vector of names, with imputation if needed
+	if(is.null(names(queries)))  names(queries) <- paste("Q", 1:length(queries))
+	for(j in 1:length(queries)) if(names(queries[j])=="") names(queries)[j] <- paste("Q", j)
+	query_names <- names(queries)
+
+	# Cross product of conditions to be examined
+	if(expand_grid){
+		query_names <- expand.grid(using, subsets, query_names, stringsAsFactors = FALSE)[,3]
+		grid <- expand.grid(using, subsets, queries, stringsAsFactors = FALSE)
+		queries <- grid[,3]
+		subsets <- grid[,2]
+		using   <- grid[,1]}
 
 	# Function for mapply
 	f <- function(query, subset, using){
