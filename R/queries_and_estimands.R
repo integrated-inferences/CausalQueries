@@ -41,13 +41,10 @@ query_distribution <- function(model,
 	# forgive the user:
 	if(using == "posterior") using <- "posteriors"
 	if(using == "prior")     using <- "priors"
-
+	if(subset %in% c("TRUE", "All", "all", "ALL", "None", "none", "NONE")) subset <- TRUE
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
-
-	# if(!is.logical(subset)) subset <- with(reveal_outcomes(model),
-	#																			 eval(parse(text = subset)))
 
 	if(!is.logical(subset)) subset <- get_types(model, subset)$types
 
@@ -58,7 +55,6 @@ query_distribution <- function(model,
 
 		# Evaluation of query on vector of causal types
 	x <- (get_types(model, query = query)$types)[subset]
-
 
 	if(using =="parameters"){
 		if(is.null(parameters)) parameters <- model$parameters
@@ -99,7 +95,8 @@ query_distribution <- function(model,
 #' estimands_df <-query_model(
 #'                model,
 #'                queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-#'                using = c("parameters", "priors"))
+#'                using = c("parameters", "priors"),
+#'                expand_grid = TRUE)
 #'
 #' estimands_df <-query_model(
 #'                model,
@@ -123,7 +120,7 @@ query_model <- function(model,
 												stats      = NULL,
 												digits     = 3,
 												n_draws    = 4000,
-												expand_grid = TRUE){
+												expand_grid = FALSE){
 
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
