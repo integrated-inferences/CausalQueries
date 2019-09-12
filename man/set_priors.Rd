@@ -21,10 +21,17 @@ Set prior distribution. Use \code{make_alphas} to use causal types to indicate p
 }
 \examples{
 
-model <- make_model("X -> Y")
-set_priors(model = model,
+library(dplyr)
+model <- make_model("X -> Y") \%>\%
+  set_priors(
            alphas = list(
              X = c(`X == 1` = 3),
              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
+model$priors
 
+model <- make_model("X -> Y") \%>\% set_priors(prior_distribution = "jeffreys")
+model$priors
+
+model <- make_model("X -> Y") \%>\% set_priors(1:6)
+model$priors
 }

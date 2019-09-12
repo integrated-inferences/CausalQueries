@@ -11,7 +11,7 @@ make_model(statement, add_priors = TRUE, add_parameters = TRUE)
 
 \item{add_priors}{A logical scalar. If \code{TRUE} sets default priors for the model.}
 
-\item{add_parameters}{A logical scalar. If \code{TRUE} sets "true" parameters to the model.}
+\item{add_parameters}{A logical scalar. If \code{TRUE} sets "true" parameters to the model using a flat distribution.}
 }
 \value{
 An object of class probabilistic_causal_model containing a DAG.

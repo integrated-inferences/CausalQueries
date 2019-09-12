@@ -24,7 +24,7 @@ draw_event_prob(model, P = NULL, A = NULL, parameters = NULL,
 Draw event probabilities
 }
 \examples{
-model <- make_model("X -> Y")
+model <- make_model("X -> Y", add_parameters = FALSE)
 draw_event_prob(model = model)
 draw_event_prob(model = model, parameters = rep(1, 6))
 draw_event_prob(model = model, using = "priors")

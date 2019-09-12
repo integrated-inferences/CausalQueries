@@ -23,7 +23,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	variables   <- model$variables
 	parents     <- get_parents(model)
 	dag         <- model$dag
-	types       <- lapply(lapply(parents, length), type_matrix)
+	types       <- lapply(lapply(parents, length), gbiqq:::type_matrix)
 
 	types_interpret <- interpret_type(model)
 
@@ -59,7 +59,6 @@ get_nodal_types <- function(model, collapse = TRUE) {
 			labels <- apply(mat,1,paste,collapse = "")
 			paste0(var, labels)
 		})
-
 	}
 
 	names(types)  <- var_names

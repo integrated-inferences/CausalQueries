@@ -241,14 +241,36 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE){
 
 
 #' get_parameter_names
+#'
+#' Parameter names taken from P matrix or model if no P matrix provided
 #' @param P P matrix
+#' @param model A model
 #' @export
 #'
-get_parameter_names <- function(P){
+get_parameter_names <- function(P = NULL, model = NULL){
+
+	if(is.null(P) & is.null(model)) stop("Please provide either a P matrix or a model")
+
+	if(is.null(P) & !is.null(model$P)) P <- model$P
+
+	if(!is.null(P)){
 	param_set          <- attr(P, "param_set")
 	param_sets         <- unique(param_set)
 	par_names          <- paste0(param_set, ".", rownames(P))
-	par_names
+	return(par_names)}
+
+  # Create from types in cases with no P matrix (and no confounding)
+	nodal_types <- get_nodal_types(model)
+	par_names   <- unlist(sapply(1:length(nodal_types), function(i)  paste0(names(nodal_types[i]), ".", nodal_types[i][[1]])))
+
+	return(par_names)
+ }
+
+#' get_initial_parameter_names if no confounding
+#' @param model A model
+#' @export
+#'
+get_inital_parameter_names <- function(model){
 }
 
 #'combine two lists by names

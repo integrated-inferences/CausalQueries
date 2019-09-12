@@ -35,9 +35,10 @@
 #'   set_confound(list(X = "(Y[X=1]>Y[X=0])",
 #'                     X = "(Y[X=1]<Y[X=0])"))
 #' plot_dag(model)
-#' model <- make_model("A -> B -> C -> D; B -> D")
+#'
 #' confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
-#' set_confound(model = model, confound = confound)
+#' model <- make_model("A -> B -> C -> D; B -> D") %>%
+#'  set_confound(confound = confound)
 #'
 #' #To do -- handle confound spread over previous allocations such as
 #' model <- make_model("X -> Y")
@@ -71,7 +72,7 @@ set_confound <-  function(model, confound = NULL){
 		a <- A[j]   # param_name
 
 
-    # Get a name for the new parameter: using dot separator
+    # Get a name for the new parameter: using hyphen separator to recognize previous confounding
 		existing_ancestor <- startsWith(param_set, paste0(a, "-"))
 
 		top_digit <- ifelse(
@@ -81,14 +82,17 @@ set_confound <-  function(model, confound = NULL){
 			)
 
 		# Extend priors and parameters
-		if(!is.null(model$priors)) model$priors <- 	c(model$priors[param_set == a], model$priors)
-		if(!is.null(model$parameters)) model$parameters <- 	c(model$parameters[param_set == a], model$parameters)
+		if(!is.null(model$priors)) model$priors <-
+			c(model$priors[param_set == a], model$priors)
+
+		if(!is.null(model$parameters)) model$parameters <-
+			c(model$parameters[param_set == a], model$parameters)
 
 		# Extend P: Make duplicate block of rows for each ancestor
 
 		P             <- rbind(P[param_set == a,], P)
 
-		new_param_name <- paste0(a,".", top_digit +1)
+		new_param_name <- paste0(a,"-", top_digit +1)
 
 #		new_params    <- paste0(pars[param_set == a], "-", top_digit +1)
 		new_params    <- pars[param_set == a]
@@ -102,7 +106,6 @@ set_confound <-  function(model, confound = NULL){
 		# Zero out duplicated entries
 		P[param_set == A[j],            types %in% D[[j]]]    <- 0
 		P[param_set %in% new_param_set, !(types %in% D[[j]])] <- 0
-
 
 	}
 
@@ -123,14 +126,15 @@ set_confound <-  function(model, confound = NULL){
 	confounds_df <- confounds_df[!duplicated(confounds_df),]
 
 	attr(P, "confounds") <- confounds_df
+	model$P     <- P
 
-
-	model$P <- P
-	old_priors <- get_priors(model)
-	priors <- make_priors(model)
-  priors[names(old_priors)] = old_priors
-
+	# Clean up priors: Use flat priors for new parameters
+	# and retain any previously specified priors
+	old_priors  <- get_priors(model)
+	priors      <- make_priors(model)
+  priors[names(old_priors)] <- old_priors
   model$priors <- priors
+
 	model
 
 	}

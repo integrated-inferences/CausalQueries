@@ -101,12 +101,13 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 
 	if(!is.null(prior_distribution)){
 		if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty")))
-			stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
+				stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
 	}
 
-	P          <- get_parameter_matrix(model)
-	n_params   <- nrow(P)
-	par_names  <- get_parameter_names(P)
+	#if(is.null(model$P)) {model  <- set_parameter_matrix(model)}
+	# P          <- get_parameter_matrix(model)
+	par_names  <- get_parameter_names(model = model)
+	n_params   <- length(par_names)
   alphas     <- make_alphas(model, alphas)
 
 
@@ -176,12 +177,21 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 #' @export
 #' @examples
 #'
-#' model <- make_model("X -> Y")
-#' set_priors(model = model,
+#' library(dplyr)
+#' model <- make_model("X -> Y") %>%
+#'   set_priors(
 #'            alphas = list(
 #'              X = c(`X == 1` = 3),
 #'              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
+#'model$priors
 #'
+#'model <- make_model("X -> Y") %>% set_priors(prior_distribution = "jeffreys")
+#'model$priors
+#'
+#'model <- make_model("X -> Y") %>% set_priors(1:6)
+#'model$priors
+
+
 set_priors  <- function(model,
 												priors = NULL,
 												prior_distribution = "uniform",
@@ -191,8 +201,8 @@ set_priors  <- function(model,
 			                            					prior_distribution = prior_distribution,
 																						alphas = alphas)
 
-   model$priors  <- priors
-#   message(paste("Priors attached to model"))
+   model$priors  <- check_priors(priors) # Checks non negativity and adds names if missing
+
    model
 
 }
@@ -254,7 +264,7 @@ check_params <- function(parameters, param_set_names, warning = FALSE, model = N
 	# Add param names if missing
 	if(is.null(names(parameters))){
 		if(is.null(model)) stop("Parameter names missing, please provide model to check_params")
-		param_names <- names(get_priors(model))
+		param_names <- get_parameter_names(model = model)
 		if(length(parameters) != length(param_names)) stop("Parameters incorrect length")
 	  names(parameters)	<- param_names}
 
@@ -268,6 +278,23 @@ check_params <- function(parameters, param_set_names, warning = FALSE, model = N
 	}
 	parameters
 	}
+
+
+#' Check parameters sum to 1 in paramset and normalize
+
+check_priors <- function(priors, model = NULL){
+
+	if(min(priors) < 0 ) stop("Negative alpha arguments for priors are not allowed")
+
+	# Add names if missing
+	if(is.null(names(priors))){
+		if(is.null(model)) stop("Priors names missing, please provide model to check_priors")
+		priors_names <- get_parameter_names(model = model)
+		if(length(priors) != length(priors_names)) stop("Priors incorrect length")
+		names(priors)	<- priors_names}
+
+	priors
+}
 
 #' Add a true parameter vector
 #'
