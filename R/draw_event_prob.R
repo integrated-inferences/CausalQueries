@@ -11,8 +11,10 @@
 #'
 #' @export
 #' @examples
-#' model <- make_model("X -> Y")
+#' model <- make_model("X -> Y", add_parameters = FALSE)
 #' draw_event_prob(model = model)
+#' draw_event_prob(model = model, parameters = rep(1, 6))
+#' draw_event_prob(model = model, using = "priors")
 #' draw_event_prob(model = model, using = "parameters")
 draw_event_prob <- function(model,
                             P = NULL,
@@ -21,11 +23,20 @@ draw_event_prob <- function(model,
                             type_prob = NULL,
                             using = NULL){
 
+  # draw_event uses a parameter vector that is either provided directly or else drawn from priors or posteriors
+  # a directly provided parameter vector is used instead of parameters contained in the model
+  # if parameters is NULL but using  parameters is specified then model$parameters is used if available
+  if(is.null(parameters)) if(!is.null(using)) if(using =="parameters") {
+        if(is.null(model$parameters)) stop("No parameters provided")
+        parameters <- model$parameters}
 
-  if(is.null(parameters)) {parameters <- draw_parameters(model, using = using)}
+  if(is.null(parameters)) parameters <- draw_parameters(model, using = using)
+
+
+  parameters <- gbiqq:::check_params(parameters, gbiqq:::get_param_set_names(model), warning = TRUE, model = model)
 
   # Ambiguity matrix
-  if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
+  # if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
   A <- get_ambiguities_matrix(model)
 
   # Type probabilities
@@ -36,6 +47,8 @@ draw_event_prob <- function(model,
   if(ncol(A)==1) {out <- matrix(1); rownames(out) <- colnames(A); return(out)}
 
   out <- t(A) %*% type_prob
+
+  if(!isTRUE(all.equal(sum(out), 1))) warning("Event probabilities not summing to 1")
   colnames(out) <- "event_prob"
   return(out)
 

@@ -7,18 +7,29 @@
 #' @param data_events A compact data frame compatible with \code{model}.
 #' @param parameters A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.
 #' @param using String indicating whether to use "priors", "posteriors" or "parameters". Defaults to "parameters".
+#' @param w Vector of event probabilities can be provided directly. This is useful for speed for repeated data draws.
 #' @return A data frame of simulated data.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
+#'  # Simplest behavior uses by default the parameter vector contained in model, which is flat by default:
+#' simulate_data(model, n = 5)
+#'
+#' # Simulate multiple datasets is fastest if w is provided
+#' w <- draw_event_prob(model, using = "parameters")
+#' replicate(5, simulate_data(model, n = 5, w = w))
+#'
+#' # Convert from data events
 #' data_events <- draw_data_events(model = model, n = 4)
 #' simulate_data(model, data_events = data_events)
+
 
 simulate_data <- function(model,
 													n = 1,
 													data_events = NULL,
 													parameters = NULL,
-													using = "parameters"){
+													using = "parameters",
+													w = NULL, P = NULL, A = NULL){
 
 	# Check that parameters sum to 1 in each param_set
 	if(!is.null(parameters)) parameters <- check_params(parameters, get_param_set_names(model), warning = TRUE, model = model)
@@ -31,8 +42,14 @@ simulate_data <- function(model,
 	if(using == "priors" & is.null(model$priors)) {
 		model <- set_priors(model); message("Priors missing; flat priors assumed")}
 
+	# Generate event probabilities w if missing
+	if(is.null(w)){
+		if(is.null(P)) 	P <- get_parameter_matrix(model)
+		if(is.null(A)) 	A <- get_ambiguities_matrix(model)
+		w <- draw_event_prob(model, P, A, parameters = parameters, using = using)}
+
 	# Data drawn here
-	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters, using = using)
+	if(is.null(data_events)) data_events <- draw_data_events(model, n = n, parameters = parameters, using = using, w = w)
 
 	# The rest is reshaping
 	vars <- model$variables
