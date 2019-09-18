@@ -185,11 +185,13 @@ make_priors  <- function(model,  prior_distribution = "uniform", alphas = NULL){
 #'              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
 #'model$priors
 #'
-#'model <- make_model("X -> Y") %>% set_priors(prior_distribution = "jeffreys")
-#'model$priors
+#'model <- make_model("X -> Y") %>%
+#' set_priors(prior_distribution = "jeffreys")
+#' model$priors
 #'
-#'model <- make_model("X -> Y") %>% set_priors(1:6)
-#'model$priors
+#'model <- make_model("X -> Y") %>%
+#' set_priors(1:6)
+#' model$priors
 
 
 set_priors  <- function(model,
@@ -201,7 +203,7 @@ set_priors  <- function(model,
 			                            					prior_distribution = prior_distribution,
 																						alphas = alphas)
 
-   model$priors  <- check_priors(priors) # Checks non negativity and adds names if missing
+   model$priors  <- check_priors(priors, model = model) # Checks non negativity and adds names if missing
 
    model
 
@@ -272,7 +274,7 @@ check_params <- function(parameters, param_set_names, warning = FALSE, model = N
 	for (j in param_set_names) {
 		x <- startsWith(names(parameters), paste0(j, "."))
 		if(sum(parameters[x]) != 1){
-			if(warning) message(paste0("Parameters in set ", j, "  do not sum to 1. Using normalized parameters"))
+			if(warning) message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
 			parameters[x] <- parameters[x] / sum(parameters[x])
 		}
 	}
@@ -304,6 +306,7 @@ check_priors <- function(priors, model = NULL){
 #' @param parameters A numeric vector. Parameters to add to model.
 #' @param type A character string specifying type of parameters to set ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
 #' @param ... Options passed onto \code{make_priors()}.
+#' @importFrom rstan extract
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -321,11 +324,11 @@ set_parameters <- function(model,
 													 ...) {
 
 	# param_set names
-	param_set_names <- gbiqq:::get_param_set_names(model)
+	param_set_names <- get_param_set_names(model)
 
   # If parameters provided, clean and use these and then exit
 	if(!is.null(parameters)){
-     parameters   <- gbiqq:::check_params(parameters, param_set_names, warning = TRUE, model = model)
+     parameters   <- check_params(parameters, param_set_names, warning = TRUE, model = model)
      model$parameters <- parameters
      return(model)
      }
@@ -356,12 +359,12 @@ set_parameters <- function(model,
 
 	if (type == "posterior_mean") {
 			if (is.null(model$posterior)) stop("Posterior distribution required")
-			parameters <- apply(rstan::extract(model$posterior, pars = "lambdas")$lambdas, 2, mean)
+			parameters <- apply(extract(model$posterior, pars = "lambdas")$lambdas, 2, mean)
 			}
 
 	if (type == "posterior_draw") {
 			if (is.null(model$posterior)) stop("Posterior distribution required")
-			df <- rstan::extract(model$posterior, pars = "lambdas")$lambdas
+			df <- extract(model$posterior, pars = "lambdas")$lambdas
 			parameters <- df[sample(nrow(df), 2),]
 			}
 

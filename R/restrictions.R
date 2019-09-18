@@ -88,6 +88,7 @@ set_restrictions <- function(model,
 		nodal_types0[[node]][restricted]
 	}, simplify = FALSE, USE.NAMES = TRUE)
 
+	restrictions <- Filter(length, restrictions)
 	if(is.null(attr(model,"restrictions"))){
 		attr(model,"restrictions") <- restrictions
 	}else{
@@ -114,7 +115,7 @@ restrict_nodal_types_exp <- function(model,
 
 	nodal_types    <- get_nodal_types(model)
 	n_restrictions <- length(statement)
-
+  exclude_rows   <- NULL
 
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 
@@ -142,31 +143,59 @@ restrict_nodal_types_exp <- function(model,
 		for(node in unique_nodes)
 			if(keep){
 				kept_types   <- (nodal_types[[node]] %in% selected_types[[node]])
+
 				if(sum(kept_types) == 0) {
 					stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
 				}
+
+				exclude_rows <- c(exclude_rows, nodal_types[[node]][!kept_types]) # to be used for P
+
 				nodal_types[[node]]   <- nodal_types[[node]][kept_types]
 			} else{
         excluded_types   <- !(nodal_types[[node]] %in% selected_types[[node]])
         if(sum(excluded_types) == 0) {
         	stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
         }
+        exclude_rows <- c(exclude_rows, nodal_types[[node]][!excluded_types]) # to be used for P
         nodal_types[[node]]   <- nodal_types[[node]][excluded_types]
+
 			}
 
 
-	model$nodal_types  <- nodal_types
+	model$nodal_types   <- nodal_types
+	#model$causal_types  <- update_causal_types(model)
+
+  type_names          <- get_type_names(nodal_types)
+
+	if(!is.null(model$parameters))
+		model$parameters <- reduce_parameters(model, model$parameters)
+
+	if(!is.null(model$P)){
+		P <- model$P
+		param_set <- attr(P,"param_set")
+		if(!is.null(attr(P,"confounds")))
+	  	confounds <- attr(P,"confounds")
+
+		cnames <- do.call(paste, c( nodal_types, sep ="."))
+		rnames <- rownames(P)
+	  P <- P[!rnames %in% exclude_rows, cnames]
+	  model$P <- P
+	  attr(model$P,"param_set")     <- param_set[!rnames %in% exclude_rows]
+
+
+	  if(!is.null(confounds))
+	   attr(model$P,"confounds")     <- confounds
+		if(!is.null(model$priors))
+			model$priors <- model$priors[!rnames %in% exclude_rows]
+
+	} else{
+		if(!is.null(model$priors))
+			model$priors <- model$priors[type_names]
+
+	}
 
 	# Subset priors
 
-	# Subset priors
-
-
-	type_names          <- get_type_names(nodal_types)
-	if(!is.null(model$priors))
-		model$priors <- model$priors[type_names]
-	if(!is.null(model$parameters)) model$parameters <-
-		reduce_parameters(model, model$parameters)
 	return(model)
 }
 

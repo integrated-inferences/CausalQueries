@@ -4,11 +4,13 @@
 \alias{get_parameter_names}
 \title{get_parameter_names}
 \usage{
-get_parameter_names(P)
+get_parameter_names(P = NULL, model = NULL)
 }
 \arguments{
 \item{P}{P matrix}
+
+\item{model}{A model}
 }
 \description{
-get_parameter_names
+Parameter names taken from P matrix or model if no P matrix provided
 }

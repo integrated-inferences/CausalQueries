@@ -28,7 +28,9 @@ Generate full dataset, possibly from compact data
 }
 \examples{
 model <- make_model("X -> Y")
- # Simplest behavior uses by default the parameter vector contained in model, which is flat by default:
+ # Simplest behavior uses by default
+ # the parameter vector contained in model,
+ # which is flat by default:
 simulate_data(model, n = 5)
 
 # Simulate multiple datasets is fastest if w is provided
