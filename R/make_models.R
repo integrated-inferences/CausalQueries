@@ -82,6 +82,7 @@ print.summary.causal_model <- function(x,  ...){
 	print(x$dag)
 	cat("\n ------------------------------------------------------------------------------------------\n")
 	cat("\nNodal types: \n")
+
 	nodal_types <- get_nodal_types(x)
 		nodes <- x$variables
 		sapply(nodes, function(n){
@@ -124,7 +125,7 @@ print.summary.causal_model <- function(x,  ...){
 		restrictions <- attr(x,"restrictions")
 		cat("\n ------------------------------------------------------------------------------------------\n")
 		cat("\nRestrictions: \n")
-		sapply(model$variables, function(node){
+		sapply(x$variables, function(node){
 			cat(paste0(node, ": ", length(restrictions[[node]]), " restricted types \n")  )
 		})
 

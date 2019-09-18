@@ -29,9 +29,11 @@ model <- make_model("X -> Y") \%>\%
              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
 model$priors
 
-model <- make_model("X -> Y") \%>\% set_priors(prior_distribution = "jeffreys")
+model <- make_model("X -> Y") \%>\%
+set_priors(prior_distribution = "jeffreys")
 model$priors
 
-model <- make_model("X -> Y") \%>\% set_priors(1:6)
+model <- make_model("X -> Y") \%>\%
+set_priors(1:6)
 model$priors
 }

@@ -44,9 +44,10 @@ model <- make_model("X -> Y") \%>\%
   set_confound(list(X = "(Y[X=1]>Y[X=0])",
                     X = "(Y[X=1]<Y[X=0])"))
 plot_dag(model)
-model <- make_model("A -> B -> C -> D; B -> D")
+
 confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
-set_confound(model = model, confound = confound)
+model <- make_model("A -> B -> C -> D; B -> D") \%>\%
+ set_confound(confound = confound)
 
 #To do -- handle confound spread over previous allocations such as
 model <- make_model("X -> Y")

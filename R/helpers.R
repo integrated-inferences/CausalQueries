@@ -301,6 +301,7 @@ combine_lists <- function(list1, list2){
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
+#' Used in \code{lookup_types}
 includes_var <- function(var, query)
 	length(grep (paste0("\\<", var, "\\>"), query))>0
 
