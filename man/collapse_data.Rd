@@ -21,7 +21,7 @@ collapse_data(data, model, removeNA = TRUE, remove_family = FALSE,
 \value{
 A vector of data events
 
-When \code{summary = TRUE} collapse_data returns a list with the following components:
+If \code{summary = TRUE} `collapse_data` returns a list containing the following components:
 \item{data_events}{A compact data.frame of event types and strategies.}
    \item{observed_events}{A vector of character strings specifying the events observed in the data}
    \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
