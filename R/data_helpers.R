@@ -1,14 +1,36 @@
 #' Make compact data with data strategies
 #'
-#' Take a dataframe and return compact dataframe of event types and strategies.
+#' Take a `data.frame` and return compact `data.frame`` of event types and strategies.
 #'
 #' @param data A data.frame of variables that can take three values: 0, 1, and NA
 #' @param model A model created by make_model()
-#'
+#' @param removeNA Logical. Whether to exclude strategy families that contain no observed data
+#' @param remove_family Logical. If `FALSE`, removes column \code{strategy} from the output.
+#' @param summary Logical. Whether to return summary of the data. See details.
 #' @export
 #'
 #' @return A vector of data events
-get_data_events <- function(data, model){
+#'
+#' When \code{summary = TRUE} collapse_data returns a list with the following components:
+#' \item{data_events}{A compact data.frame of event types and strategies.}
+#'    \item{observed_events}{A vector of character strings specifying the events observed in the data}
+#'    \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
+#'    \item{used_strategies}{A vector of character strings specifying the strategies with observed data}
+#'    \item{unused_strategies}{A vector of character strings specifying the strategies containing no observed data}
+#' @examples
+#'
+#' model <- make_model("X -> Y")
+#' data <- simulate_data(model, n = 10)
+#' data[1,1] <- ""
+#' collapse_data(data, model)
+#'
+#' collapse_data(data, model, removeNA = FALSE)
+#'
+#' collapse_data(data, model, remove_family = TRUE)
+#'
+#' collapse_data(data, model, summary = TRUE)
+#'
+collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, summary = FALSE){
 
 	likelihood_helpers  <- get_likelihood_helpers(model)
 	possible_events     <- likelihood_helpers$possible_events
@@ -53,36 +75,40 @@ get_data_events <- function(data, model){
 
 	data_events$count <- sapply(data_events$event, function(j) sum(data_type == paste(j)))
 
-	# Output
-	list(
-		data_events       = data_events,
-		observed_events   = with(data_events, unique(event[count>0])),
-		unobserved_events = with(data_events, unique(event[count==0])),
-		used_strategies   = with(data_events, unique(strategy[count>0])),
-		unused_strategies = with(data_events, unique(strategy[count==0]))
-	)
+	# Output varies according to args
+	if(removeNA){
+		data_events <- trim_strategies(data_events)
+	}
+	if(remove_family){
+		data_events <- data_events[, c("event", "count")]
+	}
+	if(summary){
+		return(list(
+			data_events       = data_events,
+			observed_events   = with(data_events, unique(event[count>0])),
+			unobserved_events = with(data_events, unique(event[count==0])),
+			used_strategies   = with(data_events, unique(strategy[count>0])),
+			unused_strategies = with(data_events, unique(strategy[count==0]))))
+	} else{
+  	return(data_events)
+  }
 
 }
 
 
-#' Summarize Data
+#' Trim strategies
 #'
-#' @param model A probabilistic causal model created by  \code{make_model()}
-#' @param data A data.frame of variables that can take three values: 0, 1, and NA.
-#' @return Returns data events wtih strategies (excluding  strategy families that contain no observed data)
+#' @param data_events A data.frame whose columns are \code{event}, \code{strategy} and \code{count}
+#' @return Returns data events with strategies (excluding  strategy families that contain no observed data)
 #'
-#' @export
 #' @examples
 #' model <- make_model("X -> Y")
 #' data <- simulate_data(model, n = 10)
 #' data[1,1] <- ""
 #' summarize_data(model, data)
-#'
-summarize_data <- function(model, data){
-	if(!all(model$variables %in% names(data))) stop("All model variables should be in data provided (even if these take value NA only)")
+trim_strategies <- function(data_events){
 
 	# 1. Get data and delete all rows from strategies that contained no observed data
-	data_events <- get_data_events(data = data, model = model)$data_events
 	if(all(is.na(data))) return(data_events)
 	data_events_split <- split(data_events, as.factor(data_events$strategy))
 	data_events_w_NA <- do.call(rbind,lapply(data_events_split, function(df){
@@ -100,47 +126,6 @@ summarize_data <- function(model, data){
 	out
 }
 
-
-#' Encode data
-#'
-#' Takes data in long format, including NA values or blanks and returns vector with each row encoded as a data type.
-#'
-#' @param model A  model
-#' @param data Data in long format
-#' @export
-#' @examples
-#' model <- make_model("X -> Y")
-#' data <- simulate_data(model, n = 10)
-#' data[1,1] <- ""
-#' data[3,2] <- NA
-#'
-#' encode_data(model, data)
-#' table(encode_data(model, data))
-encode_data <- function(model, data){
-	data[is.na(data)] <- ""
-	data[data ==""] <- NA
-	vars <- model$variables
-	apply(data, MARGIN = 1, FUN = function(row){
-		paste0(vars[!(is.na(row))],row[!(is.na(row))], collapse = "")})
-}
-
-
-#' Make data compact with data as first argument
-#'
-#' @param data A data.frame.
-#' @param model A model
-#' @param remove_family Logical. If `FALSE`, removes column "family" from the output.
-#' @export
-#' @examples
-#' model <- make_model("X -> Y")
-#' data <- simulate_data(model, n = 10)
-#' collapse_data(data, model)
-#'
-collapse_data <- function(data, model, remove_family = TRUE){
-	x <- summarize_data(model = model, data)
-	if(remove_family) x <- x[, c("event", "count")]
-	x
-}
 
 #' Expand compact data object to data frame
 #'

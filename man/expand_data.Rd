@@ -16,6 +16,6 @@ Expand compact data object to data frame
 }
 \examples{
 model <- make_model("X->M->Y")
-draw_data_events(model) \%>\%
+draw_data_events(model, n = 5) \%>\%
   expand_data(model)
 }
