@@ -3,29 +3,26 @@
 #' Create a list containing the data to be passed to stan
 #'
 #' @param model A model created by \code{make_model}
-#' @param data A data frame with observations
+#' @param data A  "compact" data frame (as made by `draw_data_events()``)
 #' @return a list
 #' @export
 #' @examples
 #' model <- make_model("X->Y")
-#' data <- simulate_data(model, n = 6)
+#' data  <-  summarize_data(model, simulate_data(model, n = 6))
 #' make_gbiqq_data(model, data)
-#' data[1,1]  <- NA
-#' make_gbiqq_data(model, data)
-#'
 #'
 make_gbiqq_data <- function(model, data){
 
+	if(!all(c("event", "strategy", "count") %in% names(data))) stop("Data should contain columns `event`, `strategy` and `count`")
+
 	P                  <- get_parameter_matrix(model)
 	param_set          <- attr(P, "param_set")
-	model$priors <- get_priors(model)
-	if(length(model$priors) != length(param_set)) stop("priors should have same length as parameter set")
+	model$priors       <- get_priors(model)
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
-	data_events        <- summarize_data(model, data)
 	inverted_P         <- 1-P
-	A_w                <- (get_likelihood_helpers(model)$A_w)[data_events$event, ]
-	strategies         <- data_events$strategy
+	A_w                <- (get_likelihood_helpers(model)$A_w)[data$event, ]
+	strategies         <- data$strategy
 	n_strategies       <- length(unique(strategies))
 	w_starts           <- which(!duplicated(strategies))
 	k                  <- length(strategies)
@@ -50,6 +47,6 @@ make_gbiqq_data <- function(model, data){
 			inverted_P      = inverted_P,
 			A               = get_ambiguities_matrix(model),
 			A_w             = A_w,
-			Y               = data_events$count)
+			Y               = data$count)
 }
 

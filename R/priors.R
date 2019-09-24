@@ -250,6 +250,13 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 }
 
 #' Get names of groups in param_set
+#'
+#' @param model A model
+#' @examples
+#' library(dplyr)
+#' make_model("X -> Y") %>%
+#'  set_confound(list(X = "Y[X=1]>Y[X=0]"))  %>%
+#'  gbiqq:::get_param_set_names()
 
 get_param_set_names <- function(model){
 
@@ -259,7 +266,14 @@ get_param_set_names <- function(model){
 	}
 
 
-#' Check parameters sum to 1 in paramset and normalize
+#' Check parameters sum to 1 in paramset; normalize if needed; add names if needed
+#'
+#' @param parameters A vector of probabilities, summing to 1 within each parameter set.
+#' @param param_set_names Names of parameter sets. Param names begin with param_set_names followed by a period. For instaicen "X.X0".
+#' @examples
+#' gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), model = make_model("X->Y"))
+#' gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), model = make_model("X->Y"), warning = TRUE)
+#' gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), warning = TRUE)
 
 check_params <- function(parameters, param_set_names, warning = FALSE, model = NULL){
 
@@ -273,7 +287,7 @@ check_params <- function(parameters, param_set_names, warning = FALSE, model = N
 	# Normalize
 	for (j in param_set_names) {
 		x <- startsWith(names(parameters), paste0(j, "."))
-		if(sum(parameters[x]) != 1){
+		if(!isTRUE(all.equal(sum(parameters[x]), 1)) ){
 			if(warning) message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
 			parameters[x] <- parameters[x] / sum(parameters[x])
 		}
@@ -282,7 +296,12 @@ check_params <- function(parameters, param_set_names, warning = FALSE, model = N
 	}
 
 
-#' Check parameters sum to 1 in paramset and normalize
+#' Check priors are non negative and adds names if needed
+#' @param priors a prior vector; one non negative scalar per parameter
+#' @param model a model; required if priors are missing names
+#' @examples
+#' check_priors(make_model("X->Y")$priors)
+#' check_priors(rep(1,6), make_model("X->Y"))
 
 check_priors <- function(priors, model = NULL){
 
@@ -380,6 +399,8 @@ set_parameters <- function(model,
 #' @param ... Arguments taken by set_parameters
 #'
 #' @export
+#' @examples
+#' get_parameters(make_model("X -> Y"))
 
 get_parameters  <- function(model,  ...) {
 

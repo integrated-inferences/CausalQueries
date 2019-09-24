@@ -2,10 +2,19 @@
 % Please edit documentation in R/priors.R
 \name{check_priors}
 \alias{check_priors}
-\title{Check parameters sum to 1 in paramset and normalize}
+\title{Check priors are non negative and adds names if needed}
 \usage{
 check_priors(priors, model = NULL)
 }
+\arguments{
+\item{priors}{a prior vector; one non negative scalar per parameter}
+
+\item{model}{a model; required if priors are missing names}
+}
 \description{
-Check parameters sum to 1 in paramset and normalize
+Check priors are non negative and adds names if needed
+}
+\examples{
+check_priors(make_model("X->Y")$priors)
+check_priors(rep(1,6), make_model("X->Y"))
 }

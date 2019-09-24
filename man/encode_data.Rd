@@ -16,9 +16,10 @@ Takes data in long format, including NA values or blanks and returns vector with
 }
 \examples{
 model <- make_model("X -> Y")
-data <- simulate_data(model, n = 4)
+data <- simulate_data(model, n = 10)
 data[1,1] <- ""
 data[3,2] <- NA
 
 encode_data(model, data)
+table(encode_data(model, data))
 }

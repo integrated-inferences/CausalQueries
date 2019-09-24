@@ -9,7 +9,7 @@ make_gbiqq_data(model, data)
 \arguments{
 \item{model}{A model created by \code{make_model}}
 
-\item{data}{A data frame with observations}
+\item{data}{A  "compact" data frame (as made by `draw_data_events()``)}
 }
 \value{
 a list
@@ -19,10 +19,7 @@ Create a list containing the data to be passed to stan
 }
 \examples{
 model <- make_model("X->Y")
-data <- simulate_data(model, n = 6)
+data  <-  summarize_data(model, simulate_data(model, n = 6))
 make_gbiqq_data(model, data)
-data[1,1]  <- NA
-make_gbiqq_data(model, data)
-
 
 }

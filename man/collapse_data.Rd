@@ -16,3 +16,9 @@ collapse_data(data, model, remove_family = TRUE)
 \description{
 Make data compact with data as first argument
 }
+\examples{
+model <- make_model("X -> Y")
+data <- simulate_data(model, n = 10)
+collapse_data(data, model)
+
+}

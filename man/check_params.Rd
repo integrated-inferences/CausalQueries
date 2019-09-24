@@ -2,11 +2,21 @@
 % Please edit documentation in R/priors.R
 \name{check_params}
 \alias{check_params}
-\title{Check parameters sum to 1 in paramset and normalize}
+\title{Check parameters sum to 1 in paramset; normalize if needed; add names if needed}
 \usage{
 check_params(parameters, param_set_names, warning = FALSE,
   model = NULL)
 }
+\arguments{
+\item{parameters}{A vector of probabilities, summing to 1 within each parameter set.}
+
+\item{param_set_names}{Names of parameter sets. Param names begin with param_set_names followed by a period. For instaicen "X.X0".}
+}
 \description{
-Check parameters sum to 1 in paramset and normalize
+Check parameters sum to 1 in paramset; normalize if needed; add names if needed
+}
+\examples{
+gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), model = make_model("X->Y"))
+gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), model = make_model("X->Y"), warning = TRUE)
+gbiqq:::check_params(rep(1,6), param_set_names = c("X", "Y"), warning = TRUE)
 }
