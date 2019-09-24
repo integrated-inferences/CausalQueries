@@ -32,7 +32,7 @@ data_strategy <- function(model,
 													subsets = list(NULL)){
 
 
-	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
+	if(sum(duplicated(c(length(vars), length(probs),  length(subsets)))) != 1) stop(
 		"vars, probs, subsets, should have the same length")
 	if(!is.null(n) && length(n)!=length(vars)) stop("If specified, n should be the same length as vars")
 	if(!is.null(n) && !is.null(probs)) warning("Both `n` and `prob` specified. `n` overrides `probs`.")
