@@ -55,9 +55,8 @@ testthat::test_that(
 )
 
 testthat::test_that(
-	desc = "m overrides p",
+	desc = "m overrides p (observe)",
 	code = {
-
 		obs <- observe(complete_data    = df,
 								  	observed        = observe(complete_data = df, vars_to_observe = "X"),
 									  vars_to_observe = "Y",
@@ -65,9 +64,7 @@ testthat::test_that(
 										m               = 2,
 										subset          = "X==1")
 
-
 		expect_equal(sum(obs$Y), 2)
-
 	}
 )
 
