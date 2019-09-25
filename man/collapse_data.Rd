@@ -2,23 +2,46 @@
 % Please edit documentation in R/data_helpers.R
 \name{collapse_data}
 \alias{collapse_data}
-\title{Make data compact with data as first argument}
+\title{Make compact data with data strategies}
 \usage{
-collapse_data(data, model, remove_family = TRUE)
+collapse_data(data, model, removeNA = TRUE, remove_family = FALSE,
+  summary = FALSE)
 }
 \arguments{
-\item{data}{A data.frame.}
+\item{data}{A data.frame of variables that can take three values: 0, 1, and NA}
 
-\item{model}{A model}
+\item{model}{A model created by make_model()}
 
-\item{remove_family}{Logical. If `FALSE`, removes column "family" from the output.}
+\item{removeNA}{Logical. Whether to exclude strategy families that contain no observed data}
+
+\item{remove_family}{Logical. If `FALSE`, removes column \code{strategy} from the output.}
+
+\item{summary}{Logical. Whether to return summary of the data. See details.}
+}
+\value{
+A vector of data events
+
+If \code{summary = TRUE} `collapse_data` returns a list containing the following components:
+\item{data_events}{A compact data.frame of event types and strategies.}
+   \item{observed_events}{A vector of character strings specifying the events observed in the data}
+   \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
+   \item{used_strategies}{A vector of character strings specifying the strategies with observed data}
+   \item{unused_strategies}{A vector of character strings specifying the strategies containing no observed data}
 }
 \description{
-Make data compact with data as first argument
+Take a `data.frame` and return compact `data.frame`` of event types and strategies.
 }
 \examples{
+
 model <- make_model("X -> Y")
 data <- simulate_data(model, n = 10)
+data[1,1] <- ""
 collapse_data(data, model)
+
+collapse_data(data, model, removeNA = FALSE)
+
+collapse_data(data, model, remove_family = TRUE)
+
+collapse_data(data, model, summary = TRUE)
 
 }

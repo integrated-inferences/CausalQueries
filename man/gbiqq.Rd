@@ -13,7 +13,7 @@ gbiqq(model, data, stan_model = NULL, data_type = "long", ...)
 
 \item{stan_model}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
 
-\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact" (as made by `summarize_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
+\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact" (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
 
 \item{...}{Options passed onto \code{rstan::stan} call.}
 }
@@ -23,7 +23,7 @@ Takes a model and data and returns a model object with data attached and a poste
 \examples{
 model <- make_model("X->Y")
 data_long   <- simulate_data(model, n = 4)
-data_short  <- summarize_data(model,data_long)
+data_short  <- collapse_data(data_long, model)
 fit <- fitted_model()
 model_1 <- gbiqq(model, data_long)
 model_2 <- gbiqq(model, data_long, stan_model = fit)

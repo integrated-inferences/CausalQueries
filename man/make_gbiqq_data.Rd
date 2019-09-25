@@ -19,7 +19,7 @@ Create a list containing the data to be passed to stan
 }
 \examples{
 model <- make_model("X->Y")
-data  <-  summarize_data(model, simulate_data(model, n = 6))
+data  <-  collapse_data(simulate_data(model, n = 6), model)
 make_gbiqq_data(model, data)
 
 }
