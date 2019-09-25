@@ -4,7 +4,7 @@
 \alias{gbiqq}
 \title{Fit stan model}
 \usage{
-gbiqq(model, data, stan_model = NULL, ...)
+gbiqq(model, data, stan_model = NULL, data_type = "long", ...)
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}.}
@@ -13,8 +13,21 @@ gbiqq(model, data, stan_model = NULL, ...)
 
 \item{stan_model}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
 
+\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact" (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
+
 \item{...}{Options passed onto \code{rstan::stan} call.}
 }
 \description{
 Takes a model and data and returns a model object with data attached and a posterior model
+}
+\examples{
+model <- make_model("X->Y")
+data_long   <- simulate_data(model, n = 4)
+data_short  <- collapse_data(data_long, model)
+fit <- fitted_model()
+model_1 <- gbiqq(model, data_long)
+model_2 <- gbiqq(model, data_long, stan_model = fit)
+model_3 <- gbiqq(model, data_short) # Throws error unless compact data indicated
+model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
+
 }

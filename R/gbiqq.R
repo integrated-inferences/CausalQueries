@@ -4,17 +4,37 @@
 #' @param model A causal model as created by \code{make_model}.
 #' @param stan_model A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"
 #' @param data A data frame with observations
+#' @param data_type Either "long" (as made by `simulate_data()`) or "compact" (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan stan
 #' @export
+#' @examples
+#' model <- make_model("X->Y")
+#' data_long   <- simulate_data(model, n = 4)
+#' data_short  <- collapse_data(data_long, model)
+#' fit <- fitted_model()
+#' model_1 <- gbiqq(model, data_long)
+#' model_2 <- gbiqq(model, data_long, stan_model = fit)
+#' model_3 <- gbiqq(model, data_short) # Throws error unless compact data indicated
+#' model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
 #'
-#'
-gbiqq <- function(model, data, stan_model = NULL, ...) {
+
+
+gbiqq <- function(model, data, stan_model = NULL, data_type = "long", ...) {
+
+	if(data_type == "long") {
+		if(!all(model$variables %in% names(data))) stop("All model variables should be in data provided (even if these take value NA only)")
+		data_events <- collapse_data(data, model)
+		}
+
+	if(data_type == "compact") {if(!all(c("event", "strategy", "count") %in% names(data))) stop("Compact data should contain columnes `event`, `strategy` and `count`")
+		data_events <- data
+		}
 
 	stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
-	stan_data    <- make_gbiqq_data(model = model, data = data)
+	stan_data <- make_gbiqq_data(model = model, data = data_events)
 
 	if(is.null(stan_model)) {
 		model$posterior_distribution <-	rstan::stan(file = stan_file, data = stan_data,  ...)

@@ -14,3 +14,6 @@ get_parameters(model, ...)
 \description{
 Get parameters
 }
+\examples{
+get_parameters(make_model("X -> Y"))
+}

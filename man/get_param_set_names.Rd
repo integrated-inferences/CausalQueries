@@ -6,6 +6,15 @@
 \usage{
 get_param_set_names(model)
 }
+\arguments{
+\item{model}{A model}
+}
 \description{
 Get names of groups in param_set
+}
+\examples{
+library(dplyr)
+make_model("X -> Y") \%>\%
+ set_confound(list(X = "Y[X=1]>Y[X=0]"))  \%>\%
+ gbiqq:::get_param_set_names()
 }
