@@ -1,3 +1,6 @@
+
+context(desc = "Testing data_strategy")
+
 model <- make_model("X -> M -> Y")
 
 testthat::test_that(
