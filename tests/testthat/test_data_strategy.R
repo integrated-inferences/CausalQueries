@@ -20,6 +20,8 @@ testthat::test_that(
 	  subsetM <- strat[!is.na(strat$M), ]
 	  expect_equal(subsetM$X, rep(1, nrow(subsetM)))
 	  expect_equal(subsetM$Y, rep(0, nrow(subsetM)))
+
+
 })
 
 testthat::test_that(
@@ -34,5 +36,15 @@ testthat::test_that(
 		#"parameters not provided"
 		expect_message(data_strategy(no_p, n_obs = 8))
 
+
+		expect_warning(data_strategy(
+			model,
+			n_obs = 8,
+			n = c(2,2),
+			vars = list(c("X", "Y"), "M"),
+			probs = list(1, .5),
+			subsets = list(NULL, "X==1 & Y==0")))
+
 	}
 )
+

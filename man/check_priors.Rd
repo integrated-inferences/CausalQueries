@@ -15,6 +15,6 @@ check_priors(priors, model = NULL)
 Check priors are non negative and adds names if needed
 }
 \examples{
-check_priors(make_model("X->Y")$priors)
-check_priors(rep(1,6), make_model("X->Y"))
+\dontrun{check_priors(make_model("X->Y")$priors)
+check_priors(rep(1,6), make_model("X->Y"))}
 }

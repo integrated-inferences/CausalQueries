@@ -90,6 +90,8 @@ testthat::test_that(
 		posterior <- gbiqq(XY_mediator, data, refresh = 0, stan_model = fitted_model)
 		expect_true(!is.null(posterior))
 
+		expect_equal(nrow(simulate_data(posterior , n = 5, using = "posteriors")), 5)
+
 		results <- query_model(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),

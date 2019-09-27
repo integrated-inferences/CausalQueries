@@ -19,5 +19,5 @@ Trim strategies
 model <- make_model("X -> Y")
 data <- simulate_data(model, n = 10)
 data[1,1] <- ""
-summarize_data(model, data)
+\dontrun{trim_strategies(model, data)}
 }
