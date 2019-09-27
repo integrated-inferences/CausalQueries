@@ -254,9 +254,10 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 #' @param model A model
 #' @examples
 #' library(dplyr)
+#' \dontrun{
 #' make_model("X -> Y") %>%
 #'  set_confound(list(X = "Y[X=1]>Y[X=0]"))  %>%
-#'  get_param_set_names()
+#'  get_param_set_names()}
 
 get_param_set_names <- function(model){
 

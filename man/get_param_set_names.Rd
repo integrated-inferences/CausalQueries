@@ -14,7 +14,8 @@ Get names of groups in param_set
 }
 \examples{
 library(dplyr)
+\dontrun{
 make_model("X -> Y") \%>\%
  set_confound(list(X = "Y[X=1]>Y[X=0]"))  \%>\%
- get_param_set_names()
+ get_param_set_names()}
 }
