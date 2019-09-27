@@ -79,7 +79,7 @@ set_restrictions <- function(model,
 
 
 
-	model$causal_types <- update_causal_types(model)
+	#model$causal_types <- update_causal_types(model)
 	nodal_types1 <- get_nodal_types(model)
 
 	# Keep restricted types as attributes
@@ -163,7 +163,7 @@ restrict_nodal_types_exp <- function(model,
 
 
 	model$nodal_types   <- nodal_types
-	#model$causal_types  <- update_causal_types(model)
+
 
   type_names          <- get_type_names(nodal_types)
 

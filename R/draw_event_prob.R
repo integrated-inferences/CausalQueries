@@ -34,7 +34,7 @@ draw_event_prob <- function(model,
   if(is.null(parameters)) parameters <- draw_parameters(model, using = using)
 
 
-  parameters <- gbiqq:::check_params(parameters, gbiqq:::get_param_set_names(model), warning = TRUE, model = model)
+  parameters <- check_params(parameters, get_param_set_names(model), warning = TRUE, model = model)
 
   # Ambiguity matrix
   # if(is.null(A)) 	    model <- set_ambiguities_matrix(model)

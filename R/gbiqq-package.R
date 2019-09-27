@@ -13,5 +13,6 @@ globalVariables(names = c(
 	"prob",
 	"restrict",
 	"n",
-	"model"
+	"model",
+	"data"
 	))

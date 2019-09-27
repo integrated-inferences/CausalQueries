@@ -31,9 +31,13 @@ data_strategy <- function(model,
 													probs   = list(NULL),
 													subsets = list(NULL)){
 
+	if(!is.null(vars[[1]])){
+	 l_probs <- ifelse(!is.null(probs[[1]]), length(probs), length(vars))
+	 l_subsets <- ifelse(!is.null(subsets[[1]]), length(subsets), length(vars))
+	 if(any(!duplicated(c(length(vars), length(vars), l_probs,  l_subsets))[2:4]))
+	 	stop("If specified, vars, probs, subsets, should have the same length")
+  }
 
-	if(!all.equal(length(vars), length(probs),  length(subsets))) stop(
-		"vars, probs, subsets, should have the same length")
 	if(!is.null(n) && length(n)!=length(vars)) stop("If specified, n should be the same length as vars")
 	if(!is.null(n) && !is.null(probs)) warning("Both `n` and `prob` specified. `n` overrides `probs`.")
 
