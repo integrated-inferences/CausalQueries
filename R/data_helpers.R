@@ -20,15 +20,15 @@
 #' @examples
 #'
 #' model <- make_model("X -> Y")
-#' data <- simulate_data(model, n = 10)
-#' data[1,1] <- ""
-#' collapse_data(data, model)
+#' df <- simulate_data(model, n = 10)
+#' df[1,1] <- ""
+#' collapse_data(df, model)
 #'
-#' collapse_data(data, model, removeNA = FALSE)
+#' collapse_data(df, model, removeNA = FALSE)
 #'
-#' collapse_data(data, model, remove_family = TRUE)
+#' collapse_data(df, model, remove_family = TRUE)
 #'
-#' collapse_data(data, model, summary = TRUE)
+#' collapse_data(df, model, summary = TRUE)
 #'
 collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, summary = FALSE){
 
@@ -77,7 +77,7 @@ collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, s
 
 	# Output varies according to args
 	if(removeNA){
-		data_events <- trim_strategies(data_events)
+		data_events <- gbiqq:::trim_strategies(data_events)
 	}
 	if(remove_family){
 		data_events <- data_events[, c("event", "count")]
@@ -108,8 +108,8 @@ collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, s
 #' \dontrun{trim_strategies(model, data)}
 trim_strategies <- function(data_events){
 
-	# 1. Get data and delete all rows from strategies that contained no observed data
-	if(all(is.na(data))) return(data_events)
+	# 1. Get data and delete all rows from strategies that contain no observed data
+	if(all(is.na(data_events))) return(data_events)
 	data_events_split <- split(data_events, as.factor(data_events$strategy))
 	data_events_w_NA <- do.call(rbind,lapply(data_events_split, function(df){
 		out <- df
