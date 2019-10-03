@@ -34,14 +34,15 @@ Take a `data.frame` and return compact `data.frame`` of event types and strategi
 \examples{
 
 model <- make_model("X -> Y")
-data <- simulate_data(model, n = 10)
-data[1,1] <- ""
-collapse_data(data, model)
+df <- simulate_data(model, n = 10)
+df[1,1] <- ""
+collapse_data(df, model)
 
-collapse_data(data, model, removeNA = FALSE)
+collapse_data(df, model, removeNA = FALSE)
 
-collapse_data(data, model, remove_family = TRUE)
+collapse_data(df, model, remove_family = TRUE)
 
-collapse_data(data, model, summary = TRUE)
+collapse_data(df, model, summary = TRUE)
+
 
 }

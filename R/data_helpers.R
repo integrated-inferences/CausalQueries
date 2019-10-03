@@ -30,7 +30,10 @@
 #'
 #' collapse_data(df, model, summary = TRUE)
 #'
+#'
 collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, summary = FALSE){
+
+	if(nrow(data) ==0 | all(is.na(data))) stop("Empty data cannot be collapsed")
 
 	likelihood_helpers  <- get_likelihood_helpers(model)
 	possible_events     <- likelihood_helpers$possible_events
@@ -141,6 +144,7 @@ trim_strategies <- function(data_events){
 expand_data <- function(data_events, model) {
 
 	if(class(model) != "causal_model") stop("model should be a model generated with make_model")
+	if(is.null(data_events)) data_events <- minimal_event_data(model)
 	if(!is.data.frame(data_events)) stop("data_events should be a data frame with columns `event` and `count`")
 
 	vars <- model$variables
@@ -187,3 +191,14 @@ all_data_types <- function(model) {
 	names(df) <-  variables
 	data.frame(cbind(event = data_type_names(model, df), df))
 }
+
+#' Creates a compact data frame for case with no data
+#'
+#' FLAG: In principle this might produce conflicts with node reduction
+
+minimal_event_data <- function(model)
+data.frame(event = paste0(rep(model$variables[1], 2), 0:1),
+					 strategy = rep(model$variables[1],  2),
+					 count = 0,
+					 stringsAsFactors = FALSE,
+					 row.names = NULL)

@@ -20,14 +20,28 @@
 #' \dontrun{model_3 <- gbiqq(model, data_short)} # Throws error unless compact data indicated
 #' model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
 #'
+#' # It is possible to implement updating without datain which case the posterior is a stan object that reflects the prior
+#' \dontrun{gbiqq (model)}
 
 
-gbiqq <- function(model, data, stan_model = NULL, data_type = "long", ...) {
+gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...) {
 
 	if(data_type == "long") {
+
+		if(is.null(data)) {
+
+			message("No data provided"); data_events <- minimal_event_data(model)
+
+		} else {
+
+		if(nrow(data) ==0 | all(is.na(data))) {message("No data provided");   data_events <- minimal_event_data(model)
+
+		} else {
+
 		if(!all(model$variables %in% names(data))) stop("All model variables should be in data provided (even if these take value NA only)")
-		data_events <- collapse_data(data, model)
-		}
+		data_events <- collapse_data(data, model)}
+
+		}}
 
 	if(data_type == "compact") {if(!all(c("event", "strategy", "count") %in% names(data))) stop("Compact data should contain columnes `event`, `strategy` and `count`")
 		data_events <- data
