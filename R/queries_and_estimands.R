@@ -56,16 +56,17 @@ query_distribution <- function(model,
 		# Evaluation of query on vector of causal types
 	x <- (get_types(model, query = query)$types)[subset]
 
+	# Parameters specified
 	if(using =="parameters"){
 		if(is.null(parameters)) parameters <- model$parameters
-
 		type_distribution <- draw_type_prob(model, parameters = parameters)[subset]
 		return(weighted.mean(x, type_distribution))
 		}
 
-	if(is.null(type_distribution)) type_distribution <-
-		draw_type_prob_multiple(model, using = using)[subset,]
-  	estimand <- apply(type_distribution, 2, function(wt) weighted.mean(x, wt))
+	if(is.null(type_distribution)) type_distribution <- draw_type_prob_multiple(model, using = using)
+
+	# Subsetting implemented on type_distribution prior to taking weighted mean
+  estimand <- apply(type_distribution[subset,], 2, function(wt) weighted.mean(x, wt))
 
   if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
 
