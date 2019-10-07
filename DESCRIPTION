@@ -15,6 +15,7 @@ RoxygenNote: 6.1.1
 Depends:
 		R (>= 3.3.0),
 		Rcpp (>= 0.12.0),
+		dplyr,
 		methods
 Imports:
     dagitty,

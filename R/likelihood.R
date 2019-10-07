@@ -7,15 +7,13 @@
 #' @export
 get_likelihood_helpers <- function(model){
 
-	# Get variables in order of exogeneity
-	variables <- c(
-		attr(model, "exogenous_variables"),
-		attr(model, "endogenous_variables")
-	)
+	# Get variables
+	variables <- model$variables
+
 	variables_reversed <- variables[length(variables):1]
 
 	# Get all possible data realizations, given strategies in which some data
-	# is not sought (NA)
+	# is not sought (NA). FLAG: replace with all_data_types(model)
 	observable <- lapply(
 		variables,
 		function(x) c(0,1,NA)

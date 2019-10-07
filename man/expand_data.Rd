@@ -19,4 +19,7 @@ library(dplyr)
 model <- make_model("X->M->Y")
 draw_data_events(model, n = 5) \%>\%
   expand_data(model)
+draw_data_events(model, n = 0) \%>\%
+  expand_data(model)
+
 }
