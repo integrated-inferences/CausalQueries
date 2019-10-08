@@ -156,6 +156,7 @@ expand_data <- function(data_events, model) {
 
 	if(class(model) != "causal_model") stop("model should be a model generated with make_model")
 	if(is.null(data_events)) data_events <- minimal_event_data(model)
+	if("strategy" %in% names(given)) given <- dplyr::select(given, - strategy)
 	if(!is.data.frame(data_events) & ncol(data_events !=2)) stop("data_events should be a data frame with columns `event` and `count`")
 
 	if(sum(data_events[,2])==0)  return(minimal_data(model))  # Special case with no data

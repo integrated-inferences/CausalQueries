@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbiqq.R
 \name{gbiqq}
 \alias{gbiqq}
-\title{Fit stan model}
+\title{Fit causal model using stan}
 \usage{
 gbiqq(model, data = NULL, stan_model = NULL, data_type = "long", ...)
 }
@@ -13,7 +13,8 @@ gbiqq(model, data = NULL, stan_model = NULL, data_type = "long", ...)
 
 \item{stan_model}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
 
-\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact" (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
+\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact"
+(as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
 
 \item{...}{Options passed onto \code{rstan::stan} call.}
 }
@@ -27,9 +28,11 @@ data_short  <- collapse_data(data_long, model)
 fit <- fitted_model()
 model_1 <- gbiqq(model, data_long)
 model_2 <- gbiqq(model, data_long, stan_model = fit)
-\dontrun{model_3 <- gbiqq(model, data_short)} # Throws error unless compact data indicated
+\dontrun{model_3 <- gbiqq(model, data_short)}
+# Throws error unless compact data indicated
 model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
 
-# It is possible to implement updating without datain which case the posterior is a stan object that reflects the prior
+# It is possible to implement updating without data, in which case the posterior
+# is a stan object that reflects the prior
 \dontrun{gbiqq (model)}
 }

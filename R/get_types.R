@@ -93,6 +93,8 @@ get_types <- function(model, query, join_by = "|"){
 			names(dos)[[j]] <- var_name
 		}
 
+
+
     b <- 1:bracket_starts[i]
 		var <- paste0(w_query[b], collapse = "")
 		var <- st_within(var)
@@ -103,7 +105,7 @@ get_types <- function(model, query, join_by = "|"){
 		# Save result from last iteration
 		# and remove corresponding expression w_query
 		var_length <- nchar(var)
-		data <- reveal_outcomes(model, dos)
+		data <- reveal_outcomes(model, dos )
 		eval_var[,k] <-  as.numeric(data[, var])
 
 
