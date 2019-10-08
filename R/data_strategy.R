@@ -44,8 +44,10 @@ data_strategy <- function(model,
 	if(is.null(complete_data)) {
 		if(is.null(parameters)) {
 			if(is.null(model$parameters)) message("parameters not provided")
-			parameters <- draw_parameters(model, using = using)}
-	    complete_data <- simulate_data(model, n = n_obs, parameters = parameters)}
+			parameters <- draw_parameters(model, using = using)
+			}
+	    complete_data <- simulate_data(model, n = n_obs, parameters = parameters)
+	 }
 
 	observed <- complete_data
 

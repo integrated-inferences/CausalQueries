@@ -31,7 +31,8 @@ simulate_data <- function(model,
 													w = NULL, P = NULL, A = NULL){
 
 	# Check that parameters sum to 1 in each param_set
-	if(!is.null(parameters)) parameters <- check_params(parameters, get_param_set_names(model), warning = TRUE, model = model)
+	if(!is.null(parameters)) parameters <- gbiqq:::check_params(parameters,
+																															gbiqq:::get_param_set_names(model), warning = TRUE, model = model)
 
 	if(!is.null(using)) if(using == "parameters" & is.null(parameters)) {
 	if(is.null(model$parameters)) stop(
