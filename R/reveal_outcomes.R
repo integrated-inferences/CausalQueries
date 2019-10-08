@@ -70,7 +70,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 		# Fill in values for dos
 		if(!is.null(dos)){
 
-			for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]][1]
+			for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]] # [1] mh 20191008 Commented out this "[1]" as it was stopping filling in a vector of dos for nested expression
 
 		}}
 
