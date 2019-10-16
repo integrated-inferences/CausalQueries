@@ -58,14 +58,17 @@ query_distribution <- function(model,
 
 	# Parameters specified
 	if(using =="parameters"){
-		if(is.null(parameters)) parameters <- model$parameters
-		type_distribution <- draw_type_prob(model, parameters = parameters)[subset]
-		return(weighted.mean(x, type_distribution))
+
+		if(is.null(type_distribution)){
+			if(is.null(parameters)) parameters <- model$parameters
+			type_distribution <- draw_type_prob(model, parameters = parameters)}
+
+		return(weighted.mean(x, type_distribution[subset]))
 		}
 
 	if(is.null(type_distribution)) type_distribution <- draw_type_prob_multiple(model, using = using)
 
-	# Subsetting implemented on type_distribution prior to taking weighted mean
+	# Magic: Subsetting implemented on type_distribution prior to taking weighted mean
   estimand <- apply(type_distribution[subset,], 2, function(wt) weighted.mean(x, wt))
 
   if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
@@ -88,9 +91,10 @@ query_distribution <- function(model,
 #' @param digits An integer. Decimal digits in output table.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid logical If TRUE then all combinations of provided lists are examined. If not then each list is cycled through separately.
+#' @param query alias for queries
+#' @param subset alias for subsets
 #' @export
 #' @examples
-#' library(dplyr)
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
 #' estimands_df <-query_model(
@@ -109,20 +113,36 @@ query_distribution <- function(model,
 #'                 model,
 #'                 using = list( "parameters", "priors"),
 #'                 queries = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
-#'                 subsets = list(TRUE, "Y==1 & X==1", "Y==0 & X==1"),
+#'                 subsets = list(TRUE,  "Y==0 & X==1"),
+#'                 expand_grid = TRUE,
 #'                 digits = 3)
+#'
+#' # An example: a stat representing uncertainty of token causation
+#' token_var <- function(x) mean(x)*(1-mean(x))
+#' estimands_df <- query_model(
+#'                 model,
+#'                 using = list( "parameters", "priors"),
+#'                 queries = "Y[X=1] > Y[X=0]",
+#'                 stats = c(mean = mean, sd = sd, token_var = token_var))
 #'
 
 query_model <- function(model,
-												parameters = NULL,
 												queries    = list(NULL),
 												subsets    = list(TRUE),
 												using      = list("priors"),
+												parameters = NULL,
 												stats      = NULL,
 												digits     = 3,
 												n_draws    = 4000,
-												expand_grid = FALSE){
+												expand_grid = FALSE,
+												query = NULL,
+												subset = NULL){
 
+	# Forgive user
+	if(is.null(queries) & !is.null(query))  queries <- query
+	if(is.null(subsets) & !is.null(subset)) subsets <- subset
+
+	# Housekeeping
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
 		model <- set_prior_distribution(model, n_draws = n_draws)}
 
@@ -142,33 +162,47 @@ query_model <- function(model,
 		subsets <- grid[,2]
 		using   <- grid[,1]}
 
+	# Type distribution: Calculated once for speed
+  using_used <- unique(unlist(using))
+	dists <- lapply(using_used, function(j) draw_type_prob_multiple(model, using = j))
+  names(dists) <- using_used
+
 	# Function for mapply
 	f <- function(query, subset, using){
+
 		v <- query_distribution(model,
 														query   = query,
 														subset  = subset,
-														parameters = parameters,
 														using   = using,
+														type_distribution = dists[[using]], # select the right one by name
+														parameters = parameters,
 														verbose = FALSE)
-		# FLAG: if needed for cases where evaluation sough on impossible subsets
-		if(is.null(v)) {rep(NA, length(stats))} else {c(round(sapply(stats, function(g) g(v)), digits))}
+
+		# for cases in which evaluation sought on impossible subsets
+		if(is.null(v)) return(rep(NA, length(stats)))
+
+		# return
+		round(sapply(stats, function(g) g(v)), digits)
+
 	}
-	 # FLAG: if used here only because shape depends on length of stats
 
-	if(length(stats)==1) out <- data.frame(mean = as.vector(mapply(f, queries, subsets, using)),
-																				 stringsAsFactors = FALSE)
-	if(length(stats)> 1) out <- data.frame(t(mapply(f, queries, subsets, using)),
-																				 stringsAsFactors = FALSE)
+  # Implementation
+	out <- mapply(f, queries, subsets, using)
 
-	## mapply again for identifiers
-	h <- function(qname, subset, using){ c(qname, paste(subset), using)}
+	## Clean up: 'if' used here only because shape depends on length of stats
+	if(length(stats)==1) out <- data.frame(mean = as.vector(out), stringsAsFactors = FALSE)
+	if(length(stats)> 1) out <- data.frame(t(out), stringsAsFactors = FALSE)
+
+	## Clean up: mapply again for identifiers
+	h    <- function(qname, subset, using){ c(qname, paste(subset), using)}
 	cols <- data.frame(t(mapply(h, query_names, subsets, using)), stringsAsFactors = FALSE)
 
+	## Clean up: formatting
 	out <- cbind(cols, out)
-
-	# Clean up
 	names(out) <- c( "Query", "Subset", "Using", paste(names(stats)))
 	out$Subset[out$Subset == "TRUE"] <- "All"
 	rownames(out) <- NULL
+
 	data.frame(out)
+
 }
