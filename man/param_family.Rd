@@ -4,7 +4,7 @@
 \alias{param_family}
 \title{Get parameter family}
 \usage{
-param_family(P, model = NULL)
+param_family(P, model)
 }
 \description{
 Get parameter family

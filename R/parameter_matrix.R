@@ -30,18 +30,25 @@ make_parameter_matrix  <- function(model){
 	attr(P, "param_set") <- param_set
 
 	# Add the parameter family as attribute
-	attr(P, "param_family") <- param_family(P)
+	attr(P, "param_family") <- param_family(P, model)
 
 	P
 }
 
 #' Get parameter family
 #'
-param_family <- function(P, model = NULL)
-	get_parameter_names(P = P) %>%
-	strsplit("[.]") %>%
-	lapply(function(x) x[1]) %>%
-	unlist
+param_family <- function(P, model)
+{
+	vars  <- model$variables
+	parameters <- get_parameter_names(P = P, model = model)
+	p_family <- vector(mode="character", length=length(parameters))
+	lapply(vars, function(var)
+	{
+		regular_expression <- paste0("\\b", var, "\\b")
+		p_family[grep(regular_expression, parameters)] <<- var
+	})
+	unlist(p_family)
+}
 
 #' Get parameter matrix
 #'

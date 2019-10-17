@@ -126,6 +126,10 @@ set_confound <-  function(model, confound = NULL){
 	confounds_df <- confounds_df[!duplicated(confounds_df),]
 
 	attr(P, "confounds") <- confounds_df
+
+	attr(P, "param_family") <- param_family(P, model)
+
+
 	model$P     <- P
 
 	# Clean up priors: Use flat priors for new parameters
