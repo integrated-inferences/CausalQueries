@@ -29,8 +29,19 @@ make_parameter_matrix  <- function(model){
 	names(param_set) <- NULL
 	attr(P, "param_set") <- param_set
 
+	# Add the parameter family as attribute
+	attr(P, "param_family") <- param_family(P)
+
 	P
 }
+
+#' Get parameter family
+#'
+param_family <- function(P, model = NULL)
+	get_parameter_names(P = P) %>%
+	strsplit("[.]") %>%
+	lapply(function(x) x[1]) %>%
+	unlist
 
 #' Get parameter matrix
 #'
@@ -85,9 +96,15 @@ print.summary.parameter_matrix <- function(x, ...){
 	print("Cell entries indicate whether a parameter probability is used in the calculation of causal type probability")
 	print.table(x)
 	param_set <- attr(x,"param_set")
+	param_family <- attr(x, "param_family")
 
   cat("\n parameter set  (P)\n ")
   cat(paste0(param_set, collapse = "  "))
+
+  cat("\n parameter family \n ")
+  cat(paste0(param_family, collapse = "  "))
+
+
 	if(!is.null(attr(x,"confounds"))){
 		cat("\n\n confounds (P)\n")
 		print(attr(x,"confounds"))
