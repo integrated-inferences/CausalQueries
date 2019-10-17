@@ -8,9 +8,9 @@ make_priors2(model, prior_distribution = NA, parameter_set = NA,
   statement = NA, confound = NA, alphas = NULL, label = NA)
 }
 \arguments{
-\item{model}{A mode created with make_model}
+\item{model}{A mode created with \code{make_model}}
 
-\item{prior_distribution}{A common priors distribution (uniform, jeffreys or certainty)}
+\item{prior_distribution}{A common prior distribution (uniform, jeffreys or certainty)}
 
 \item{parameter_set}{A node}
 
@@ -18,13 +18,42 @@ make_priors2(model, prior_distribution = NA, parameter_set = NA,
 
 \item{confound}{A confound statement}
 
-\item{alphas}{Hyperparamenters of the Dirichlet distribution}
+\item{alphas}{Hyperparameters of the Dirichlet distribution}
 
 \item{label}{The name of a nodal type}
 }
 \description{
-This function creates the priors to be passed on nodal types
+This function creates the priors to be passed on nodal types with \code{set_priors}
 }
 \details{
+Forbidden statements include:
+\itemize{
+  \item Setting \code{prior_distribution} and \code{alphas} at the same time.
+  \item Setting a \code{prior_distribution} other than uniform, jeffreys or certainty.
+  \item Declaring two of these arguments at the same time: \code{statement}, \code{confound} and \code{label}.
+  \item Setting negative priors.
+}
+
+\code{parameter_set} may be passed along with either \code{statement} or \code{confound} but not with \code{label}.
+In either case, the parameter_set should refer to the same node as the query or the confound statement.
 Function takes as arguments the following:
+}
+\examples{
+model <- make_model("X -> M -> Y; X->Y")
+
+make_priors2(model, prior_distribution = "jeffreys")
+make_priors2(model, alphas = 111)
+
+make_priors2(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = "666")
+make_priors2(model, parameter_set = "Y", statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 777)
+
+make_priors2(model, parameter_set = "M", alphas = 888)
+
+make_priors2(model, label = "X0", alphas = 999)
+
+model <- make_model("X->Y")
+model <- set_confound(model, list(X = "Y[X=1] > Y[X=0]"))
+model <- set_confound(model, list(X = "Y[X=1] < Y[X=0]"))
+make_priors2(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
+make_priors2(model, parameter_set = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
 }
