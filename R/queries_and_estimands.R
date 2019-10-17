@@ -164,7 +164,11 @@ query_model <- function(model,
 
 	# Type distribution: Calculated once for speed
   using_used <- unique(unlist(using))
-	dists <- lapply(using_used, function(j) draw_type_prob_multiple(model, using = j))
+
+	dists <- lapply(using_used, function(j) {
+		param_dist <- get_param_dist(model, j)  # parameter distribution extracted just once
+		draw_type_prob_multiple(model, using = j, param_dist = param_dist)}
+		)
   names(dists) <- using_used
 
 	# Function for mapply
