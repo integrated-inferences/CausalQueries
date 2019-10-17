@@ -4,17 +4,19 @@
 \alias{draw_type_prob_multiple}
 \title{Draw matrix of type probabilities, before or after estimation}
 \usage{
-draw_type_prob_multiple(model, parameters = NULL, n_draws = 4000,
-  using = "priors")
+draw_type_prob_multiple(model, using = "priors", parameters = NULL,
+  n_draws = 4000, param_dist = NULL)
 }
 \arguments{
 \item{model}{A model, normally containing a prior or a posterior distribution.}
+
+\item{using}{A character string indicating whether to use "priors", "posteriors" or "parameters".}
 
 \item{parameters}{A numeric vector. True parameters to be used instead of parameters attached to the model in case `using` specifies `parameters`.}
 
 \item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 
-\item{using}{A character string indicating whether to use "priors", "posteriors" or "parameters".}
+\item{param_dist}{A matrix with a distribution of parameters. Optional for speed.}
 }
 \value{
 A matrix of type probabilities.
