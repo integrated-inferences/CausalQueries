@@ -44,7 +44,7 @@ model <- make_model("X -> M -> Y; X->Y")
 make_priors2(model, prior_distribution = "jeffreys")
 make_priors2(model, alphas = 111)
 
-make_priors2(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = "666")
+make_priors2(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 666)
 make_priors2(model, parameter_set = "Y", statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 777)
 
 make_priors2(model, parameter_set = "M", alphas = 888)

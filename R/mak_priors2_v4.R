@@ -29,7 +29,7 @@
 #' make_priors2(model, prior_distribution = "jeffreys")
 #' make_priors2(model, alphas = 111)
 #'
-#' make_priors2(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = "666")
+#' make_priors2(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 666)
 #' make_priors2(model, parameter_set = "Y", statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 777)
 #'
 #' make_priors2(model, parameter_set = "M", alphas = 888)
@@ -107,7 +107,9 @@ make_priors2 <- function(model,
     t_types <- Filter(function(types_in_statement) types_in_statement == TRUE, l_types$types)
     names_types <- names(t_types)
     to_alter <- paste(node,names_types, sep = ".")
-    return(rep(v, length.out=length(to_alter)))
+    priors <- model$priors
+    priors[to_alter] <- rep(v, length.out=length(to_alter))
+    return(priors)
   }
 
 
@@ -123,7 +125,9 @@ make_priors2 <- function(model,
     {
       stop("statement and parameter set refer to different node")
     }else
-      return(rep(v, length.out=length(to_alter)))
+      priors <- model$priors
+      priors[to_alter] <- rep(v, length.out=length(to_alter))
+      return(priors)
   }
 
   #6. Set priors given a parameter set
@@ -134,7 +138,9 @@ make_priors2 <- function(model,
   if (!is.null(my_node))
   {
     to_alter <- paste(parameter_set,my_node, sep = ".")
-    return(rep(v, length.out=length(to_alter)))
+    priors <- model$priors
+    priors[to_alter] <- rep(v, length.out=length(to_alter))
+    return(priors)
   }else
     stop("parameter is not included in model")
   }
@@ -149,7 +155,9 @@ make_priors2 <- function(model,
     nom <- row.names(P_short)
     t <- paste(param_set, nom, sep = ".")
     to_alter <- t[apply(P_short, 1, sum) != 0 & param_family == parameter_set]
-    return(rep(v, length.out=length(to_alter)))
+    priors <- model$priors
+    priors[to_alter] <- rep(v, length.out=length(to_alter))
+    return(priors)
   }
 
   #7.2. Set priors with confound statement
@@ -161,7 +169,9 @@ make_priors2 <- function(model,
     nom <- row.names(P_short)
     t <- paste(param_set, nom, sep = ".")
     to_alter <- t[apply(P_short, 1, sum) != 0]
-    return(rep(v, length.out=length(to_alter)))
+    priors <- model$priors
+    priors[to_alter] <- rep(v, length.out=length(to_alter))
+    return(priors)
   }
 
   #8. Set priors with labels
@@ -179,7 +189,9 @@ make_priors2 <- function(model,
       stop("label does not correspond to any parameter in model")
     }else
     {
-      return(rep(v, length.out=length(to_alter)))
+      priors <- model$priors
+      priors[to_alter] <- rep(v, length.out=length(to_alter))
+      return(priors)
     }
   }
 }
