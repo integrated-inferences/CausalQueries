@@ -382,14 +382,14 @@ set_parameters <- function(model,
 
 	# Flat lambda
 	if (type == "flat")  {
-		parameters <- make_priors(model, prior_distribution = "uniform")
-		parameters <- check_params(parameters, param_set_names)
+		parameters <- make_priors2(model, prior_distribution = "uniform")
+		parameters <- check_params(parameters, param_set_names, model = model)
 	 }
 
-	# New (from alpha)
+	# With make_priors2 options
 	if (type == "define") {
-		parameters <- make_priors(model, ...)
-		parameters <- check_params(parameters, param_set_names)
+		parameters <- make_priors2(model, ...)
+		parameters <- check_params(parameters, param_set_names, model = model)
    }
 
 	# Prior mean
