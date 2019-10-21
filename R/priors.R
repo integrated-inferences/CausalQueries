@@ -228,12 +228,25 @@ set_priors  <- function(model,
 #'
 #' @export
 
-get_priors  <- function(model,  priors = NULL, prior_distribution = "uniform", alphas = NULL) {
+get_priors  <- function(model,
+												priors = NULL,
+												prior_distribution=NA,
+												parameter_set=NA,
+												statement=NA,
+												confound=NA,
+												alphas=NULL,
+												label=NA) {
 
 	if(!is.null(model$priors)) return(model$priors)
 
 	message(paste("Priors missing from model. Generated on the fly."))
-	make_priors(model, prior_distribution = prior_distribution, alphas = alphas)
+	make_priors2(model,
+							 prior_distribution=prior_distribution,
+							 parameter_set=parameter_set,
+							 statement=statement,
+							 confound=confound,
+							 alphas=alphas,
+							 label=label)
 
 }
 
