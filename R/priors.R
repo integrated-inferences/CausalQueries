@@ -273,6 +273,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 #' Get names of groups in param_set
 #'
 #' @param model A model
+#' @export
 #' @examples
 #' library(dplyr)
 #' \dontrun{
