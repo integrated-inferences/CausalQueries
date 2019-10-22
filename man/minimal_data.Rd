@@ -6,6 +6,9 @@
 \usage{
 minimal_data(model)
 }
+\arguments{
+\item{model}{A causal model}
+}
 \description{
-FLAG: In principle this might produce conflicts with node reduction
+Creates a data frame for case with no data
 }

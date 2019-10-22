@@ -27,15 +27,12 @@ testthat::test_that(
 testthat::test_that(
 	desc = "data_strategy errors and messages when it should",
 	code = {
-		no_p <- make_model("X -> M -> Y", add_parameters = FALSE)
+		no_p <- make_model("X -> M -> Y")
 
      # "If specified, vars, probs, subsets, should have the same length"
 		expect_error(data_strategy(model, vars = c("X","M","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
 		#"If specified, n should be the same length as vars"
 		expect_error(data_strategy(model, vars = c("X","M","Y"), n = 1))
-		#"parameters not provided"
-		expect_message(data_strategy(no_p, n_obs = 8))
-
 
 		expect_warning(data_strategy(
 			model,

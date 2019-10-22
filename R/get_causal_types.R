@@ -7,11 +7,9 @@
 #' @export
 #'
 get_causal_types <- function(model){
-  if(!is.null(model$causal_types)){
-    return_df <- model$causal_types
-  } else {
-    return_df <- update_causal_types(model)
-  }
-  return(return_df)
+
+  if(!is.null(model$causal_types)) return(model$causal_types)
+
+  update_causal_types(model)
 }
 

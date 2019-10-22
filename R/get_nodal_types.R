@@ -17,29 +17,32 @@
 #'    set_restrictions(statement = "K[X=1]>K[X=0]") %>%
 #'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
 #' unlist(get_nodal_types(model))
+#'
 get_nodal_types <- function(model, collapse = TRUE) {
 
 	nodal_types <- model$nodal_types
+
+	# Create and interpret list of nodal types
 	variables   <- model$variables
 	parents     <- get_parents(model)
-	dag         <- model$dag
-	types       <- lapply(lapply(parents, length), type_matrix)
+	types       <- lapply(lapply(parents, length), gbiqq:::type_matrix)
 
-	types_interpret <- interpret_type(model)
 
 	types_labels <- lapply(1:length(types), function(i){
-		var <- names(types)[i]
-		mat <- types[[i]]
-		labels <- apply(mat,1,paste,collapse = "")
-		paste0(var, labels)
+		labels <- apply(types[[i]], 1, paste, collapse = "")
+		paste0(names(types)[i], labels)
 	})
 
-	names(types_labels )<- var_names <- names(types)
+	names(types_labels)<- variables
+
+	# Add row labels
 	types <- lapply(variables, function(v){
 		rownames(types[[v]]) <- types_labels[[v]]
 		types[[v]]
 	})
-	names(types)  <- var_names
+
+	names(types)  <- variables
+
 	if(!is.null(nodal_types)){
 		types <- lapply(variables, function(v){
 			mat <- types[[v]]
@@ -50,7 +53,9 @@ get_nodal_types <- function(model, collapse = TRUE) {
 			mat
 		})
 	}
-	names(types)  <- var_names
+
+	names(types)  <- variables
+
 	if(collapse){
 
 		types <-	lapply(1:length(types), function(i){
@@ -61,11 +66,14 @@ get_nodal_types <- function(model, collapse = TRUE) {
 		})
 	}
 
-	names(types)  <- var_names
+	names(types)  <- variables
 
-	attr(types, "interpret") <- types_interpret
-	return(types)
+	attr(types, "interpret") <- interpret_type(model)
+
+	types
+
 }
+
 
 
 #' Generate type matrix

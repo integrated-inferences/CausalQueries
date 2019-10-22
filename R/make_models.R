@@ -2,10 +2,9 @@
 #'
 #' \code{make_model} uses dagitty syntax and functionality to specify nodes and edges of a graph. Implied causal types are calculated and default priors are provided under the assumption of no confounding.
 #' Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters.
+#' The default setting for a causal model have flat (uniform) priors and parameters putting equal weight on each parameter within each parameter set. These can be adjust with \code{set_priors} and \code{set_parameters}
 #'
 #' @param statement A character vector of length 1L. Statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
-#' @param add_priors A logical scalar. If \code{TRUE} sets default priors for the model.
-#' @param add_parameters A logical scalar. If \code{TRUE} sets "true" parameters to the model using a flat distribution.
 #' @export
 #'
 #' @return An object of class probabilistic_causal_model containing a DAG.
@@ -15,17 +14,15 @@
 #' # Example where cyclicaly dag attempted
 #' \dontrun{modelXKX <- make_model("X -> K -> X")}
 
-
-make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){
+make_model <- function(statement){
 
 	dag <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}")))
 	if(!all(dag$e == "->")) stop("Please provide directed edges only")
 	dag  <- dag[,1:2]
 	names(dag) <- c("parent", "children")
-	dag
 
+	# Procedure for unique ordering of variables
 
-	# Procedure to order dag
 	if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
 
 	gen <- rep(NA, nrow(dag))
@@ -39,25 +36,42 @@ make_model <- function(statement, add_priors = TRUE, add_parameters = TRUE){
   	gen[!x & is.na(gen)] <- j
   	}
 
+  dag <- dag[order(gen, dag[,1], dag[,2]),]
 
-	# Model is a list
-	model <- list(dag = dag[order(gen, dag[,1], dag[,2]),],
-								step = "dag" )
+ endog_node <- as.character(rev(unique(rev(dag$children))))
+ .exog_node <- as.character(rev(unique(rev(dag$parent))))
+ exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
-	# Add a unique ordering of variables such that no earlier variables are caused by later variables
-	endog_node <- as.character(rev(unique(rev(model$dag$children))))
-	.exog_node <- as.character(rev(unique(rev(model$dag$parent))))
-	exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
-	model$variables  <- c(exog_node, endog_node)
-	attr(model, "endogenous_variables") <- endog_node
-	attr(model, "exogenous_variables")  <- exog_node
 
-	if(add_priors)     model <- set_priors(model)
-	if(add_parameters) model <- set_parameters(model, type = "flat")
+ # Model is a list
+ model <- list(dag = dag, step = "dag", variables = c(exog_node, endog_node))
 
-	class(model) <- "causal_model"
+ # Nodal types
+ nodal_types <- get_nodal_types(model)
+ model$nodal_types <- nodal_types
 
-	return(model)
+ # Parameters dataframe
+ m  <- length(nodal_types)
+ model$parameters_df <- data.frame(
+
+ 	param_family = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+ 	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+  param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
+  param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
+  node         = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
+  parameters   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
+  priors       = 1,
+  stringsAsFactors = FALSE
+
+  )
+
+ # Prep for export
+ attr(model, "endogenous_variables") <- endog_node
+ attr(model, "exogenous_variables")  <- exog_node
+ class(model) <- "causal_model"
+
+ model
+
 }
 
 

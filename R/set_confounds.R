@@ -22,28 +22,48 @@
 #'
 #' \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
 #'
-#' A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as: "Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1. In this case nodal types for Y would continue to have 3 degrees of freedom. But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of an unconstrained distribution, though an  unconstrained distribution can be achieved with repeated application of statements of this form, for instance via  \code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
+#' A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as:
+#' "Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1."
+#' In this case nodal types for Y would continue to have 3 degrees of freedom.
+#' But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and
+#' other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of
+#' an unconstrained distribution, though an  unconstrained distribution can be achieved with
+#' repeated application of statements of this form, for instance via
+#' \code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
 #'
-#' Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as: "Allow Y to have a distinct conditional distribution when X=1. In this case there would be two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom. Nodal types for X would continue to have 1 degree of freedom. Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
+#' Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as:
+#' "Allow Y to have a distinct conditional distribution when X=1." In this case there would be
+#' two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom.
+#' Nodal types for X would continue to have 1 degree of freedom.
+#' Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 #'
 #' @param model A model created by make_model()
 #' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
 #' @export
 #' @examples
-#' library(dplyr)
+#'
 #' model <- make_model("X -> Y") %>%
-#'   set_confound(list(X = "(Y[X=1]>Y[X=0])",
-#'                     X = "(Y[X=1]<Y[X=0])"))
-#' plot_dag(model)
+#'   set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+#'
+#' confound <- list(X = "(Y[X=1]>Y[X=0])",
+#'                  X = "(Y[X=1]<Y[X=0])")
+#'
+#' model <- make_model("X -> Y") %>% set_confound(confound)
 #'
 #' confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
 #' model <- make_model("A -> B -> C -> D; B -> D") %>%
 #'  set_confound(confound = confound)
 #'
-#' #To do -- handle confound spread over previous allocations such as
+#' # Example where two parents are qwasconfounded
+#' model <- make_model("A -> B <- C") %>%
+#'   set_confound(list(A = "C==1")) %>%
+#'   set_parameters(c(0,1,1,0, .5, .5, rep(.0625, 16)))
+#' cor(simulate_data(model, n = 20))
+#'
 #' model <- make_model("X -> Y")
-#' confound = list(X = "(Y[X=1] == 1)")
-#' \dontrun{model <- set_confound(model = model, confound = confound)}
+#' confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
+#' model <- set_confound(model = model, confound = confound)
+#'
 #' confound2 = list(X = "(Y[X=1]>Y[X=0])")
 #' model <- make_model("X -> Y <- S; S -> W") %>%
 #' set_confound(list(X = "S==1", S = "W[S=1]==1"))
@@ -55,9 +75,11 @@ set_confound <-  function(model, confound = NULL){
 	if(is.null(model$P)) model <- set_parameter_matrix(model)
 
   P         <- model$P
-	param_set <- attr(P, "param_set")
 	pars      <- rownames(P)
 	types     <- colnames(P)
+
+	# Check to see if any statements involve full confounding and redefine lists
+	# checks <- lapply(confound, function(x) x %in% model$variables)
 
 	# Ancestors
 	A  <- names(confound)
@@ -65,53 +87,76 @@ set_confound <-  function(model, confound = NULL){
 	# Descendant types
 	D <-lapply(confound, function(x) {get_types(model, x)$type_list})
 
-	# Ds <- lapply(D, function(k)
-	# 	unique(sapply(k[[1]], function(j) strsplit(j, "[.]")[[1]][2])))
+	# Squeeze in exploded lists if needed
+	# if(any(checks)){
+	# 	D <-lapply(confound[checks], function(x) {
+	# 		if(x %in% model$variables) {explode(x)
+	# 		} else {
+	# 	get_types(model, x)$type_list
+	# 		}})}
+	# This figure out which causal types contain nodal types
+	# ct <- get_causal_types(model)
+	# causal_type_names <- colnames(P)
+	# nt <- get_nodal_types(model, collapse = FALSE)
+	# yt <- apply(nt$Y, 1, paste, collapse = "")
+	# x <- lapply(yt, function (t) causal_type_names[ct$Y %in% t])
+	# names(x) <- rep("X", length(x))
 
 	for(j in 1:length(A)) {
+
 		a <- A[j]   # param_name
 
-
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
-		existing_ancestor <- startsWith(param_set, paste0(a, "-"))
+		existing_ancestor <- startsWith(model$parameters_df$param_set, paste0(a, "-"))
 
-		top_digit <- ifelse(
-			!any(existing_ancestor), 0,
-			max(as.numeric(sapply(param_set[existing_ancestor],
-							 function(j) strsplit(j, "[-]")[[1]][2])))
-			)
+
+		if(!any(existing_ancestor)) {
+			model$parameters_df$param_set[model$parameters_df$param_set == a] <- paste0(a, "-", 1)
+			top_digit = 1
+		} else {
+			top_digit <- max(as.numeric(sapply(model$parameters$param_set[existing_ancestor],
+																						function(j) strsplit(j, "[-]")[[1]][2])))
+		}
+
+		# last param_set_name
+		a1 <- paste0(a, "-", top_digit)
+
+		# new param_set_name
+		a2 <- paste0(a, "-", top_digit + 1)
 
 		# Extend priors and parameters
-		if(!is.null(model$priors)) model$priors <-
-			c(model$priors[param_set == a], model$priors)
 
-		if(!is.null(model$parameters)) model$parameters <-
-			c(model$parameters[param_set == a], model$parameters)
+		to_add <- model$parameters_df %>%
+			dplyr::filter(param_set == a1) %>%
+			dplyr::mutate(param_set  = a2,
+									 param_names = paste(param_set, param, sep = "."))
 
 		# Extend P: Make duplicate block of rows for each ancestor
+		# Should contain all values from parameter family
+		P_new <- data.frame(P[, ]) %>%
+			filter(model$parameters_df$param_family == a) %>%
+			group_split(model$parameters_df$param_set[model$parameters_df$param_family==a], keep = FALSE)
+		P_new <- 	1*(Reduce(f = "+", P_new) >0)
+		# Zero out duplicated entries: 1
+		P_new[, !(types %in% D[[j]])] <- 0
+		P   <- rbind(P_new, P)
 
-		P             <- rbind(P[param_set == a,], P)
+		# Extend parameter_df
+		model$parameters_df <- rbind(to_add,
+																 mutate(model$parameters_df,
+																 			 param_names = paste(param_set, param, sep = ".")))
 
-		new_param_name <- paste0(a,"-", top_digit +1)
-
-#		new_params    <- paste0(pars[param_set == a], "-", top_digit +1)
-		new_params    <- pars[param_set == a]
-		pars          <- c(new_params, pars)
-		names(pars)   <- param_set
-    row.names(P)  <- pars
-
-    new_param_set <-  paste0(param_set[param_set == a], "-", top_digit +1)
-		param_set     <- c(new_param_set,param_set)
-
-		# Zero out duplicated entries
-		P[param_set == A[j],            types %in% D[[j]]]    <- 0
-		P[param_set %in% new_param_set, !(types %in% D[[j]])] <- 0
+		# Zero out duplicated entries: 2
+		P[(model$parameters_df$param_family  == a) & (model$parameters_df$param_set!= a2),
+			types %in% D[[j]]]    <- 0
 
 	}
 
 	# Clean up for export
-	P <- P[apply(P, 1, sum)!=0,]
-	attr(P, "param_set") <- param_set
+	rownames(P) <- model$parameters_df$param_names
+	to_keep <- apply(P, 1, sum)!=0
+	model$parameters_df <- dplyr::filter(model$parameters_df, to_keep)
+	P <- P[to_keep,]
 
 
 	# Make a dataset of ancestor to descendant confound relations
@@ -126,15 +171,19 @@ set_confound <-  function(model, confound = NULL){
 	confounds_df <- confounds_df[!duplicated(confounds_df),]
 
 	attr(P, "confounds") <- confounds_df
+
 	model$P     <- P
-
-	# Clean up priors: Use flat priors for new parameters
-	# and retain any previously specified priors
-	old_priors  <- get_priors(model)
-	priors      <- make_priors(model)
-  priors[names(old_priors)] <- old_priors
-  model$priors <- priors
-
 	model
 
 	}
+
+
+#' #' explode confound
+#' #'
+#' #' Helper to turn a confound of the form Y="X" into a list of type statements
+#' #'
+#' explode_confound <- function(W) {
+#' 	new_list <-	lapply(unlist(model$nodal_types[W[[1]]]), function(j) j)
+#' 	names(new_list) <- rep(names(W), length(new_list))
+#' 	new_list
+#' }

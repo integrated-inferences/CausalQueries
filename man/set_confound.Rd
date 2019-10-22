@@ -34,25 +34,45 @@ A no confounding assumption means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y)
 
 \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
 
-A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as: "Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1. In this case nodal types for Y would continue to have 3 degrees of freedom. But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of an unconstrained distribution, though an  unconstrained distribution can be achieved with repeated application of statements of this form, for instance via  \code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
+A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as:
+"Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1."
+In this case nodal types for Y would continue to have 3 degrees of freedom.
+But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and
+other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of
+an unconstrained distribution, though an  unconstrained distribution can be achieved with
+repeated application of statements of this form, for instance via
+\code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
 
-Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as: "Allow Y to have a distinct conditional distribution when X=1. In this case there would be two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom. Nodal types for X would continue to have 1 degree of freedom. Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
+Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as:
+"Allow Y to have a distinct conditional distribution when X=1." In this case there would be
+two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom.
+Nodal types for X would continue to have 1 degree of freedom.
+Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 }
 \examples{
-library(dplyr)
+
 model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "(Y[X=1]>Y[X=0])",
-                    X = "(Y[X=1]<Y[X=0])"))
-plot_dag(model)
+  set_confound(list(X = "(Y[X=1]>Y[X=0])"))
+
+confound <- list(X = "(Y[X=1]>Y[X=0])",
+                 X = "(Y[X=1]<Y[X=0])")
+
+model <- make_model("X -> Y") \%>\% set_confound(confound)
 
 confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
 model <- make_model("A -> B -> C -> D; B -> D") \%>\%
  set_confound(confound = confound)
 
-#To do -- handle confound spread over previous allocations such as
+# Example where two parents are qwasconfounded
+model <- make_model("A -> B <- C") \%>\%
+  set_confound(list(A = "C==1")) \%>\%
+  set_parameters(c(0,1,1,0, .5, .5, rep(.0625, 16)))
+cor(simulate_data(model, n = 20))
+
 model <- make_model("X -> Y")
-confound = list(X = "(Y[X=1] == 1)")
-\dontrun{model <- set_confound(model = model, confound = confound)}
+confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
+model <- set_confound(model = model, confound = confound)
+
 confound2 = list(X = "(Y[X=1]>Y[X=0])")
 model <- make_model("X -> Y <- S; S -> W") \%>\%
 set_confound(list(X = "S==1", S = "W[S=1]==1"))

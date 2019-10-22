@@ -14,3 +14,8 @@ set_prior_distribution(model, n_draws = 4000)
 \description{
 Add n_param x n_draws database of possible lambda draws to the model.
 }
+\examples{
+model <- make_model("X -> Y") \%>\% set_prior_distribution(5)
+model$prior_distribution
+
+}

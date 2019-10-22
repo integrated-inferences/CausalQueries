@@ -16,3 +16,7 @@ types_to_nodes(model, query)
 Wrapper of types_to_nodes_single
 Sapply multiple query conditions
 }
+\examples{
+types_to_nodes(make_model("X->Y"), "Y[X=1]==1")
+types_to_nodes(make_model("X->Y"), "Y==1")
+}

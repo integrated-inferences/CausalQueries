@@ -21,11 +21,11 @@ Add a vector of "true" parameters to a model.
 \examples{
 model <- make_model("X -> Y")
 get_parameters(model)
-set_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))$parameters
+set_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))$parameters_df
 set_parameters(make_model("X -> Y"), type = "flat")$parameters
 
 # Use make_alpha to define specific parameters using causal syntax
 model <- set_parameters(make_model("X -> Y"), type = 'define',
                         alphas = list(Y = c(`(Y[X=1] > Y[X=0])` = 3)))
-model$parameters
+model$parameters_df
 }

@@ -4,13 +4,18 @@
 \alias{get_parameter_names}
 \title{get_parameter_names}
 \usage{
-get_parameter_names(P = NULL, model = NULL)
+get_parameter_names(model, include_paramset = TRUE)
 }
 \arguments{
-\item{P}{P matrix}
-
 \item{model}{A model}
+
+\item{include_paramset}{Logical, whether to include the param set prefix as part of the name.}
 }
 \description{
 Parameter names taken from P matrix or model if no P matrix provided
+}
+\examples{
+
+get_parameter_names(make_model("X->Y"))
+
 }

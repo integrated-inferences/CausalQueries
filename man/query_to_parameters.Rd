@@ -14,4 +14,7 @@ query_to_parameters(model, query)
 \description{
 Function to translate queries into parameter names
 }
+\examples{
+
+}
 \keyword{internal}

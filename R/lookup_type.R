@@ -107,7 +107,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		node <- variables[sapply(variables, function(v) grepl(v, query))]
 	}
 
-  .query_df <- lapply(w_query, function(wq) lookup_type_internal(model, query = wq))
+  .query_df <- lapply(w_query, function(wq) gbiqq:::lookup_type_internal(model, query = wq))
   query_df  <- do.call(cbind, .query_df)
   if(dos) colnames(query_df) <- sapply(names(.query_df), trimws)
 
@@ -130,6 +130,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 #'@param query A character vector of length 1L. An expression in string format defining causal types to interrogate \code{reveal_outcomes()}
 
 lookup_type_internal <- function(model, query){
+
 	if(!grepl("\\D", query)) return(as.numeric(query))
 
 	# The presence of [] indicate a do operation

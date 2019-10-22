@@ -27,11 +27,10 @@ A restricted model with nodal types saved as attributes.
 Restrict a model's parameter space. If priors exist, prior probabilities are redistributed over remaining types.
 }
 \examples{
-require("dplyr")
 
 # 1. Restrict parameter space using statements
 model <- make_model("X->Y") \%>\%
-set_restrictions(statement = c("X == 0"))
+  set_restrictions(statement = c("X == 0"))
 
 # Restrict to define a model with monotonicity
 model <- make_model("X->Y") \%>\%
@@ -44,13 +43,14 @@ set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 get_parameter_matrix(model)
 
 # Restrict multiple nodes
+# FLAG: CHECK PERFORMANCE
 model <- make_model("X->Y<-M; X -> M" ) \%>\%
 set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
 get_parameter_matrix(model)
 
 # Restrictions on levels for endogenous variables aren't allowed
 \dontrun{
-#' model <- make_model("X->Y") \%>\%
+model <- make_model("X->Y") \%>\%
 set_restrictions(statement =  "(Y == 1)")
 }
 

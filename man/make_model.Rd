@@ -4,14 +4,10 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(statement, add_priors = TRUE, add_parameters = TRUE)
+make_model(statement)
 }
 \arguments{
 \item{statement}{A character vector of length 1L. Statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
-
-\item{add_priors}{A logical scalar. If \code{TRUE} sets default priors for the model.}
-
-\item{add_parameters}{A logical scalar. If \code{TRUE} sets "true" parameters to the model using a flat distribution.}
 }
 \value{
 An object of class probabilistic_causal_model containing a DAG.
@@ -19,6 +15,7 @@ An object of class probabilistic_causal_model containing a DAG.
 \description{
 \code{make_model} uses dagitty syntax and functionality to specify nodes and edges of a graph. Implied causal types are calculated and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters.
+The default setting for a causal model have flat (uniform) priors and parameters putting equal weight on each parameter within each parameter set. These can be adjust with \code{set_priors} and \code{set_parameters}
 }
 \examples{
 modelXKY <- make_model("X -> K -> Y; X -> Y")

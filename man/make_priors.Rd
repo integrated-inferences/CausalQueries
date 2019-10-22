@@ -41,11 +41,11 @@ make_priors(model = model, alphas =  10)
 # make_prior() throws an informative error.
 \dontrun{
 make_priors(model = model,
-  alphas = list(X = c(X0 = 2, `X == 1` = 3),
-    Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3,
-    Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
-}
-library(dplyr)
+ alphas = list(X = c(X0 = 2, `X == 1` = 3),
+ Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3,
+ Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
+ }
+
 # Priors of confounded models
 model <- make_model("X -> Y") \%>\%
 set_confound(list(X = "(Y[X=1]>Y[X=0])"))

@@ -51,15 +51,15 @@ draw_type_prob_multiple <- function(model,
   P <- get_parameter_matrix(model)
 
   if(using == "parameters") {
-    if(is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
-    if(is.null(parameters)) parameters <- model$parameters
+    if(is.null(parameters)) parameters <- get_parameters(model)
     return(draw_type_prob(model, parameters = parameters, using = using, P = P))
   }
 
-  if(is.null(param_dist)) param_dist <- get_param_dist(model, using)
+  if(is.null(param_dist)) param_dist <- get_param_dist(model, using, n_draws = n_draws)
 
   apply(param_dist, 1, function(j) draw_type_prob(model, parameters = j, P = P))
-}
+
+  }
 
 
 #' Get a distribution of model parameters

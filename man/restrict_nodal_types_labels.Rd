@@ -2,7 +2,7 @@
 % Please edit documentation in R/restrictions.R
 \name{restrict_nodal_types_labels}
 \alias{restrict_nodal_types_labels}
-\title{Reduce nodal types}
+\title{Reduce nodal types using labels}
 \usage{
 restrict_nodal_types_labels(model, labels, keep = FALSE)
 }
@@ -14,5 +14,5 @@ restrict_nodal_types_labels(model, labels, keep = FALSE)
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \description{
-Reduce nodal types
+Reduce nodal types using labels
 }

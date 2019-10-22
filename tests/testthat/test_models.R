@@ -47,7 +47,7 @@ testthat::test_that(
 		XY_conf <- set_confound(XY_conf,
 														list(X = "(Y[X=1]>Y[X=0])",
 																 X = "(Y[X=1]<Y[X=0])",
-																 X = "(Y[X=1]==1)"))
+																 X = "(Y[X=1]==1) & (Y[X=0]==1)"))
 
 		expect_equal(dim(get_parameter_matrix(XY_conf)), c(12,8))
 

@@ -18,33 +18,22 @@ draw_parameters <- function(model, using = NULL){
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
     "`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-  if(using == "parameters") {if(is.null(model$parameters)) stop("No parameters provided")
-    return(model$parameters)}
+  if(using == "parameters")  parameters <- model$parameters_df$parameters
 
   if(using == "posteriors") {if(is.null(model$posterior)) stop("No posterior provided")
     param_dist <- extract(model$posterior, pars= "lambdas")$lambdas
-    return(param_dist[sample(nrow(param_dist),1),])
-  }
+    parameters <- param_dist[sample(nrow(param_dist),1),]}
 
-  if(is.null(model$priors)) {model <- set_priors(model)
-  message(paste("Priors missing from model. Generated on the fly."))
-  }
+  if(using == "priors") {
+    priors     <- model$parameters_df$priors
+    param_sets <- unique(model$parameters_df$param_set)
 
-  if(is.null(model$P)) {model <- set_parameter_matrix(model)
-  # message(paste("Parameter matrix missing from model. Generated on the fly."))
-  }
+    parameters <- unlist(sapply(unique(param_sets), function(v){
+      rdirichlet(1, priors[model$parameters_df$param_set == v])}))}
 
-  lambdas_prior <- model$priors
-  param_set     <- attr(model$P, "param_set")
+  # Clean up for export
+  names(parameters) <- model$parameters_df$param_names
 
-  if(length(lambdas_prior) != length(param_set)) stop("parameters priors should have same length as parameter set")
-
-  param_sets         <- unique(param_set)
-
-  # Draw parameters, given priors
-  parameters <- unlist(sapply(param_sets, function(v){
-    i <- which(startsWith(names(lambdas_prior), paste0(v,".")))
-    rdirichlet(1, lambdas_prior[i])}))
-  names(parameters) <- names(lambdas_prior)
   parameters
+
 }

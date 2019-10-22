@@ -6,6 +6,10 @@
 \usage{
 minimal_event_data(model)
 }
+\arguments{
+\item{model}{A causal model made by make_model
+FLAG: In principle this might produce conflicts with node reduction}
+}
 \description{
-FLAG: In principle this might produce conflicts with node reduction
+Creates a compact data frame for case with no data
 }

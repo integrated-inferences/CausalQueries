@@ -16,7 +16,7 @@ restrict_nodal_types_exp(model, statement, join_by = "|", keep = FALSE,
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 
-\item{verbose}{Logical. Whether to print expanded query on the consule.}
+\item{verbose}{Logical. Whether to print expanded query on the console.}
 }
 \description{
 Reduce nodal types

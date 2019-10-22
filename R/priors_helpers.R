@@ -4,6 +4,9 @@
 #' @param model A model created by make_model()
 #' @param query a query
 #' @export
+#' @examples
+#' types_to_nodes(make_model("X->Y"), "Y[X=1]==1")
+#' types_to_nodes(make_model("X->Y"), "Y==1")
 types_to_nodes <- function(model, query){
 
 	if (length(query) == 1){
@@ -20,7 +23,8 @@ types_to_nodes <- function(model, query){
 			out}, simplify = FALSE)
 
 	}
-	return(return_nodal_types)
+
+	return_nodal_types
 }
 
 
@@ -34,7 +38,6 @@ types_to_nodes <- function(model, query){
 #' @keywords internal
 #' @importFrom  rlang is_empty
 types_to_nodes_single <- function(model, query){
-
 
 	causal_types <- get_causal_types(model)
 	mapped_causal_types <- get_types(model, query = query)
@@ -52,16 +55,9 @@ types_to_nodes_single <- function(model, query){
 	# get those nodal types that are in the model but not in the unlinked
 	return_nodal_types <- sapply(variables, function(v) setdiff(model_nodal_types[[v]], 	unlinked_nodal_types[[v]] ))
 
-
-	return_nodal_types <- return_nodal_types[lengths(	return_nodal_types) > 0L]
-
-
-	return_nodal_types
+  return_nodal_types[lengths(	return_nodal_types) > 0L]
 
 }
-
-
-
 
 
 #' types_to_rows
@@ -73,16 +69,17 @@ types_to_rows <- function(model, query){
 
 	if(is.null(model$P)) 	model  <- set_parameter_matrix(model)
 	P         <- model$P
-	param_set <- attr(P,"param_set")
+	param_set <- model$parameters_df$param_set
 
 	# 	If no confounds in model use nodal types to get at parameters
 	if(is.null(attr(P, "confounds"))){
-		return_rows <- types_to_nodes(model, query)
-	} else{
 
+		return_rows <- types_to_nodes(model, query)
+
+	} else {
 
 		if (length(query) == 1){
-			return_rows <- types_to_rows_single(model, query)
+			return_rows <- gbiqq:::types_to_rows_single(model, query)
 
 			# if multiple queries
 		} else if (length(query) > 1){
@@ -92,7 +89,7 @@ types_to_rows <- function(model, query){
 			return_rows <- unlist(return_rows, recursive = FALSE)
 
 			# 2. Identify variable in the parameter set that correspond to the rows found in lines above
-			vars <- unique(attr(P,"param_set"))
+			vars <- unique(model$parameters_df$param_set)
 			vars <- vars[vars %in% names(return_rows)]
 
 			# Prepare named list for output.
@@ -109,7 +106,6 @@ types_to_rows <- function(model, query){
 			# $Y$`(Y[X=1] > Y[X=0])`
 			# [1] "Y01"
 
-
 			return_rows <- sapply(vars, function(v){
 				i <- which(names(return_rows) == v)
 				out <- unlist(return_rows[i], recursive = FALSE)
@@ -123,10 +119,7 @@ types_to_rows <- function(model, query){
 		}}
 
 
-
-
-
-	return(return_rows)
+	return_rows
 }
 
 
@@ -140,7 +133,7 @@ types_to_rows_single <- function(model, query){
 
 	if(is.null(model$P)) 	{model  <- set_parameter_matrix(model)}
 	P                  <- model$P
-	param_set <- attr(P,"param_set")
+	param_set <-  model$parameters_df$param_set
 
 	# Note that types_to_rows is only called for confounded models
 	# If type_to_nodes returns a non_empty object (i.e if it actually finds nodal types that map to query)
@@ -181,9 +174,6 @@ types_to_rows_single <- function(model, query){
 
 	}
 
-
-
-
 	return(out)
 }
 
@@ -194,25 +184,28 @@ types_to_rows_single <- function(model, query){
 #' @param model A model created by make_model()
 #' @param query a query
 #' @keywords internal
+#' @examples
+#'
 query_to_parameters <- function(model, query){
 
 	if(is.null(model$P)) model <- set_parameter_matrix(model)
 	P <- model$P
 
-
-	if(length(query) == 1){
+	if(length(query)== 1){
 		# For alpha containing only one query expression
 		# 	1. get the row(s) in the parameter matrix that map to query
 		# 	2. name output vector as paramater names
 		#   3. assigns numeric value of alpha as specified in query
 
-		rows  <-  types_to_rows(model, names(query))
+		rows  <-  gbiqq:::types_to_rows(model, names(query))
+
 		translated_a  <- 	sapply(rows, function(r){
 
 			r_temp <- rep(query, length(r))
 			names(r_temp) <-r
 			r_temp
 		}, simplify = FALSE)
+
 		attr(translated_a, "query") <-
 			sapply(rows, function(r){
 				out <- list(r)
@@ -240,7 +233,7 @@ query_to_parameters <- function(model, query){
 		simplify = FALSE)
 		attr(translated_a, "query") <- 	rows
 	}
-	return(translated_a)
+ translated_a
 }
 
 

@@ -24,7 +24,7 @@
 #'
 #' # It is possible to implement updating without data, in which case the posterior
 #' # is a stan object that reflects the prior
-#' \dontrun{gbiqq (model)}
+#' model5 <- gbiqq(model)
 
 
 gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...) {

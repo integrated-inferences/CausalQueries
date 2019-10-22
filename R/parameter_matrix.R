@@ -11,7 +11,8 @@
 make_parameter_matrix  <- function(model){
 
 	nodal_types     <- get_nodal_types(model)
-	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length), SIMPLIFY = FALSE))
+#	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length), SIMPLIFY = FALSE))
+#	param_set       <- 	model$parameters_df$param_set
 	types           <- causal_type_names(get_causal_types(model))
 	pars            <- unlist(nodal_types)
 
@@ -23,11 +24,11 @@ make_parameter_matrix  <- function(model){
 
   # Tidy up
 	colnames(P) <- do.call(paste, c(types, sep ="."))
-	rownames(P) <- pars
+	rownames(P) <- model$parameters_df$param_names
 
 	# Add the parameter set as attribute
-	names(param_set) <- NULL
-	attr(P, "param_set") <- param_set
+	# names(param_set) <- NULL
+	# attr(P, "param_set") <- param_set
 
 	P
 }

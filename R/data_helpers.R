@@ -208,17 +208,17 @@ all_data_types <- function(model) {
 
 #' Creates a compact data frame for case with no data
 #'
+#' @param model A causal model made by make_model
 #' FLAG: In principle this might produce conflicts with node reduction
 minimal_event_data <- function(model)
-data.frame(event = paste0(rep(model$variables[1], 2), 0:1),
-					 strategy = rep(model$variables[1],  2),
-					 count = 0,
-					 stringsAsFactors = FALSE,
-					 row.names = NULL)
+	simulate_data(model, n = 1) %>%
+	collapse_data(model) %>%
+	mutate(count = 0)
+
 
 #' Creates a data frame for case with no data
 #'
-#' FLAG: In principle this might produce conflicts with node reduction
+#'@param model A causal model
 minimal_data <- function(model){
 	vars <- model$variables
 	df <- data.frame(t(rep(NA, length(vars))))

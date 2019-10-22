@@ -16,7 +16,9 @@
 get_ambiguities_matrix  <- function(model){
 
 	if(!is.null(model$A)) return(model$A)
-	return(make_ambiguities_matrix(model))
+
+	make_ambiguities_matrix(model)
+
 }
 
 #' Make ambiguities matrix
@@ -76,6 +78,7 @@ set_ambiguities_matrix <- function(model, A = NULL){
 	model$A <- A
 	class(model$A) <- c("ambiguities_matrix")
 	model
+
 }
 
 

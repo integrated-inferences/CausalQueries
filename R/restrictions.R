@@ -14,11 +14,10 @@
 #' @return A restricted model with nodal types saved as attributes.
 #'
 #' @examples
-#' require("dplyr")
 #'
 #' # 1. Restrict parameter space using statements
 #' model <- make_model("X->Y") %>%
-#' set_restrictions(statement = c("X == 0"))
+#'   set_restrictions(statement = c("X == 0"))
 #'
 #' # Restrict to define a model with monotonicity
 #' model <- make_model("X->Y") %>%
@@ -31,13 +30,14 @@
 #' get_parameter_matrix(model)
 #'
 #' # Restrict multiple nodes
+#' # FLAG: CHECK PERFORMANCE
 #' model <- make_model("X->Y<-M; X -> M" ) %>%
 #' set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
 #'
 #' # Restrictions on levels for endogenous variables aren't allowed
 #' \dontrun{
-#' #' model <- make_model("X->Y") %>%
+#' model <- make_model("X->Y") %>%
 #' set_restrictions(statement =  "(Y == 1)")
 #' }
 #'
@@ -61,17 +61,21 @@ set_restrictions <- function(model,
 														 labels = NULL,
 														 keep = FALSE,
 														 verbose = FALSE){
-  nodal_types0 <- get_nodal_types(model)
+
+  # nodal_types0 <- get_nodal_types(model)
+	nodal_types0 <- model$nodal_types
+
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
-	if(is.null(labels) & is.null(statement) ) {message("No restrictions provided."); return(model)}
+
+	if(is.null(labels) & is.null(statement) ) {message("No restrictions provided: provide either a causal statement or nodal type labels."); return(model)}
 
 	if(is.null(statement)){
 		model <- restrict_nodal_types_labels(model,
 																				 labels = labels,
 																				 keep = keep)
-	} else{
-		model <- restrict_nodal_types_exp(model,
-																			statement =statement,
+	} else {
+		model <- gbiqq:::restrict_nodal_types_exp(model,
+																			statement = statement,
 																			join_by = join_by,
 																			keep = keep,
 																			verbose = verbose)
@@ -80,7 +84,8 @@ set_restrictions <- function(model,
 
 
 	#model$causal_types <- update_causal_types(model)
-	nodal_types1 <- get_nodal_types(model)
+	#nodal_types1 <- get_nodal_types(model)
+  nodal_types1 <- model$nodal_types
 
 	# Keep restricted types as attributes
 	restrictions <- sapply(model$variables, function(node){
@@ -91,7 +96,7 @@ set_restrictions <- function(model,
 	restrictions <- Filter(length, restrictions)
 	if(is.null(attr(model,"restrictions"))){
 		attr(model,"restrictions") <- restrictions
-	}else{
+	} else {
 		restrictions0 <- attr(model,"restrictions")
 		attr(model,"restrictions") <- sapply(model$variables, function(node){
 			c(restrictions[[node]], restrictions0[[node]])
@@ -100,12 +105,15 @@ set_restrictions <- function(model,
 
 	return(model)
 }
+
+
 #' Reduce nodal types
+#'
 #' @param model a model created by make_model()
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#' @param verbose Logical. Whether to print expanded query on the consule.
+#' @param verbose Logical. Whether to print expanded query on the console.
 #'
 restrict_nodal_types_exp <- function(model,
 																		 statement,
@@ -113,102 +121,83 @@ restrict_nodal_types_exp <- function(model,
 																		 keep = FALSE,
 																		 verbose = FALSE){
 
-	nodal_types    <- get_nodal_types(model)
+	# nodal_types    <- get_nodal_types(model)
+	nodal_types    <- model$nodal_types
+
 	n_restrictions <- length(statement)
-  exclude_rows   <- NULL
 
 	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
 
-		if(length(join_by) == 1){
+	if(length(join_by) == 1){
 			join_by <- rep(join_by, n_restrictions)
 		} else if(length(join_by) != n_restrictions){
 			stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
 		}
-		restrictions_list <- lapply(1:n_restrictions, function(i){
-			lookup_type(model, statement[i], join_by[i], verbose = verbose)})
 
-		nodes_list   <- sapply(restrictions_list, function(r) r$node)
+	restrictions_list <- lapply(1:n_restrictions, function(i){
+			lookup_type(model, query = statement[i], join_by = join_by[i], verbose = verbose)})
 
-		restrictions_list2 <- lapply(restrictions_list,  function(x) names(x$types)[x$types])
+	nodes_list   <- sapply(restrictions_list, function(r) r$node)
 
-			names(restrictions_list2) <- 	nodes_list
-		unique_nodes <- unique(nodes_list)
+	restrictions_list2 <- lapply(restrictions_list,  function(x) names(x$types)[x$types])
 
-		selected_types <- sapply(unique_nodes, function(node){
+	names(restrictions_list2) <- 	nodes_list
+	unique_nodes <- unique(nodes_list)
+
+	# Run through unique nodes and get all restricted types for the node
+	selected_types <- sapply(unique_nodes, function(node){
 			i <- which(nodes_list == node)
 			rl <- restrictions_list[i]
 			unique(unlist(c(sapply(rl, function(x) names(x$types)[x$types]))))
 		}, simplify = FALSE)
 
-		for(node in unique_nodes)
-			if(keep){
-				kept_types   <- (nodal_types[[node]] %in% selected_types[[node]])
+	# Clean up: Go through each node; figure out what to drop
+	# Remove from parameters_df and P matrix
+	for(node in unique_nodes){
 
-				if(sum(kept_types) == 0) {
-					stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
-				}
+			kept_types   <- (nodal_types[[node]] %in% selected_types[[node]])
 
-				exclude_rows <- c(exclude_rows, nodal_types[[node]][!kept_types]) # to be used for P
+			if(!keep){ kept_types <- !kept_types }
 
-				nodal_types[[node]]   <- nodal_types[[node]][kept_types]
-			} else{
-        excluded_types   <- !(nodal_types[[node]] %in% selected_types[[node]])
-        if(sum(excluded_types) == 0) {
-        	stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))
-        }
-        exclude_rows <- c(exclude_rows, nodal_types[[node]][!excluded_types]) # to be used for P
-        nodal_types[[node]]   <- nodal_types[[node]][excluded_types]
+			if(sum(kept_types) == 0) {
+						stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))}
 
-			}
+			# What to keep in nodal_types
+			kept_labels <- nodal_types[[node]][kept_types] # to be used for P
+			drop_labels <- nodal_types[[node]][!kept_types] # to be used for P
 
+      # Adjust nodal_types
+			nodal_types[[node]]   <- kept_labels
+			model$nodal_types   <- nodal_types
 
-	model$nodal_types   <- nodal_types
+			# Adjust P: What to drop
+			drop_rows <- model$parameters_df$node %in% drop_labels
 
+      # Now drop
+			model$parameters_df <- model$parameters_df %>%
+				filter(!drop_rows)  %>%
+				gbiqq:::check_params(warning = FALSE)
 
-  type_names          <- get_type_names(nodal_types)
+			if(!is.null(model$P)) model$P <- model$P[!drop_rows,]
 
-	if(!is.null(model$parameters))
-		model$parameters <- reduce_parameters(model, model$parameters)
-
-	if(!is.null(model$P)){
-		P <- model$P
-		param_set <- attr(P,"param_set")
-		if(!is.null(attr(P,"confounds")))
-	  	confounds <- attr(P,"confounds")
-
-		cnames <- do.call(paste, c( nodal_types, sep ="."))
-		rnames <- rownames(P)
-	  P <- P[!rnames %in% exclude_rows, cnames]
-	  model$P <- P
-	  attr(model$P,"param_set")     <- param_set[!rnames %in% exclude_rows]
-
-
-	  if(!is.null(confounds))
-	   attr(model$P,"confounds")     <- confounds
-		if(!is.null(model$priors))
-			model$priors <- model$priors[!rnames %in% exclude_rows]
-
-	} else{
-		if(!is.null(model$priors))
-			model$priors <- model$priors[type_names]
 
 	}
 
-	# Subset priors
-
-	return(model)
+	model
 }
 
 
-#' Reduce nodal types
+#' Reduce nodal types using labels
+#'
 #' @param model a model created by make_model()
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
+#'
 restrict_nodal_types_labels <- function(model, labels, keep = FALSE){
 
 	variables   <- model$variables
-	nodal_types <- get_nodal_types(model)
-
+	# nodal_types <- get_nodal_types(model)
+	nodal_types <- model$nodal_types
 
 	# Stop if none of the names of the labels vector matches variables in dag
 	# Stop if there's any labels name that doesn't match any of the variables in the dag
@@ -272,34 +261,18 @@ restrict_nodal_types_labels <- function(model, labels, keep = FALSE){
 	model$causal_types  <- update_causal_types(model)
 
 	type_names          <- get_type_names(nodal_types)
-	if(!is.null(model$priors))
-		model$priors <- model$priors[type_names]
-	if(!is.null(model$parameters)) model$parameters <-
-		reduce_parameters(model, model$parameters)
+
+	# if(!is.null(model$parameters_df$priors))
+	# 	model$parameters_df$priors <- model$parameters_df$priors[type_names]
+	# if(!is.null(model$parameters)) model$parameters <-
+	# 	reduce_parameters(model, model$parameters)
+
+	model$parameters_df <- dplyr::filter(model$parameters_df, param_names%in% type_names) %>%
+		gbiqq:::check_params(warning = FALSE)
+
 	return(model)
-}
 
-
-#' Reduce parameters
-#' If parameters is longer than nodel types, because of a model restriction, subset lambda and renormalize
-#' @param model a model created by make_model()
-#' @param parameters a parameter vector possibly longer than the parameter length expected by model
-#' @export
-
-reduce_parameters <- function(model, parameters = model$parameters){
-
-	variables   <- model$variables
-	nodal_types <- get_nodal_types(model)
-	type_names  <- get_type_names(nodal_types)
-	parameters  <- parameters[type_names]
-
-	parameters <-
-		unlist(sapply(variables, function(v){
-			i <- which(startsWith(names(parameters), paste0(v, ".")))
-			parameters[i]/sum(parameters[i])}, USE.NAMES = FALSE))
-
-	parameters
-}
+	}
 
 
 #' Get type names

@@ -34,5 +34,5 @@ model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
 
 # It is possible to implement updating without data, in which case the posterior
 # is a stan object that reflects the prior
-\dontrun{gbiqq (model)}
+model5 <- gbiqq(model)
 }

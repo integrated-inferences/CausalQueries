@@ -11,11 +11,11 @@
 #'
 #' @export
 #' @examples
-#' model <- make_model("X -> Y", add_parameters = FALSE)
+#' model <- make_model("X -> Y")
 #' draw_event_prob(model = model)
 #' draw_event_prob(model = model, parameters = rep(1, 6))
+#' draw_event_prob(model = model, parameters = 1:6)
 #' draw_event_prob(model = model, using = "priors")
-#' model <- make_model("X -> Y", add_parameters = TRUE)
 #' draw_event_prob(model = model, using = "parameters")
 draw_event_prob <- function(model,
                             P = NULL,
@@ -27,14 +27,18 @@ draw_event_prob <- function(model,
   # draw_event uses a parameter vector that is either provided directly or else drawn from priors or posteriors
   # a directly provided parameter vector is used instead of parameters contained in the model
   # if parameters is NULL but using  parameters is specified then model$parameters is used if available
-  if(is.null(parameters)) if(!is.null(using)) if(using =="parameters") {
-        if(is.null(model$parameters)) stop("No parameters provided")
-        parameters <- model$parameters}
+
+  if(!is.null(parameters)) parameters <- {
+    model$parameters_df$parameters <- parameters
+    gbiqq:::check_params(model$parameters_df)$parameters}
+
+  # Parameters called but not provided
+  if(!(is.null(using))) {
+    if(using == "parameters" & is.null(parameters)) parameters <- get_parameters(model)
+    }
+
 
   if(is.null(parameters)) parameters <- draw_parameters(model, using = using)
-
-
-  parameters <- check_params(parameters, get_param_set_names(model), warning = TRUE, model = model)
 
   # Ambiguity matrix
   # if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
