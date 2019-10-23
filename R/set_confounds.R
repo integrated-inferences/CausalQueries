@@ -135,7 +135,8 @@ set_confound <-  function(model, confound = NULL){
 	# Clean up priors: Use flat priors for new parameters
 	# and retain any previously specified priors
 	old_priors  <- get_priors(model)
-	priors      <- make_priors(model)
+	priors      <- make_priors2(model) %>%
+		check_priors(model = model)
   priors[names(old_priors)] <- old_priors
   model$priors <- priors
 
