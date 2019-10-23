@@ -27,13 +27,13 @@ model <- make_model("X -> Y") \%>\%
            alphas = list(
              X = c(`X == 1` = 3),
              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
-model$priors
+get_priors(model)
 
 model <- make_model("X -> Y") \%>\%
 set_priors(prior_distribution = "jeffreys")
-model$priors
+get_priors(model)
 
 model <- make_model("X -> Y") \%>\%
 set_priors(1:6)
-model$priors
+get_priors(model)
 }
