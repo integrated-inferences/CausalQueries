@@ -140,22 +140,22 @@ make_priors <- function(model,
 #' gbiqq:::make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
 #'
 #' # By nodal type label
-#' make_priors_single(model, label = "X0", alphas = 9)
+#' gbiqq:::make_priors_single(model, label = "X0", alphas = 9)
 #'
 #' # By confound query: Applies only to types that are sometimes involved on confounding
 #' # Safest to apply together with node to pick out specific sets
 #' model <- make_model("X->Y") %>% set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
-#' make_priors_single(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
-#' make_priors_single(model, node = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
+#' gbiqq:::make_priors_single(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
+#' gbiqq:::make_priors_single(model, node = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
 #'
 #' # make_priors_single can also be used for some vector valued statements
 #' model <- make_model("X -> M -> Y")
-#' make_priors_single(model, node = c("X", "Y"), alphas = 2)
-#' make_priors_single(model, label = c("X1", "Y01"), alphas = 2)
+#' gbiqq:::make_priors_single(model, node = c("X", "Y"), alphas = 2)
+#' gbiqq:::make_priors_single(model, label = c("X1", "Y01"), alphas = 2)
 #'
 #' # Incompatible conditions produce no change
 #' # Such cases best handled by  make_priors
-#' make_priors_single(model, node = "X", label = "Y01", alphas = 2)
+#' gbiqq:::make_priors_single(model, node = "X", label = "Y01", alphas = 2)
 #'
 #' # Problematic example
 #' \dontrun{
