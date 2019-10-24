@@ -10,6 +10,8 @@ set_priors(model, priors = NULL, distribution = NA, alphas = NA,
 \arguments{
 \item{model}{A model created with \code{make_model}}
 
+\item{priors}{A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df}
+
 \item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
 \item{alphas}{Real positive numbers giving hyperparameters of the Dirichlet distribution}

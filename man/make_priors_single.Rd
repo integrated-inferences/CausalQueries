@@ -36,16 +36,16 @@ Forbidden statements include:
 \examples{
 model <- make_model("X -> M -> Y; X->Y")
 
-make_priors_single(model, distribution = "jeffreys")
+gbiqq:::make_priors_single(model, distribution = "jeffreys")
 
-make_priors_single(model, alphas = 3)
+gbiqq:::make_priors_single(model, alphas = 3)
 
 # Examples of selecting subsets
 # By node
-make_priors_single(model, node = "M", alphas = 8)
+gbiqq:::make_priors_single(model, node = "M", alphas = 8)
 
 # By nodal type statement
-make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
+gbiqq:::make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
 
 # By nodal type label
 make_priors_single(model, label = "X0", alphas = 9)
@@ -65,9 +65,9 @@ make_priors_single(model, label = c("X1", "Y01"), alphas = 2)
 # Such cases best handled by  make_priors
 make_priors_single(model, node = "X", label = "Y01", alphas = 2)
 
-# Problematic cases
+# Problematic example
 \dontrun{
-make_priors_single(model, alphas = 1:2)
+gbiqq:::make_priors_single(model, alphas = 1:2)
 }
 
 }

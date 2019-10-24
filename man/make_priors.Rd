@@ -62,4 +62,9 @@ make_priors(model,
             node = "X",
             confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
             alphas = list(3, 6))
+make_model("X -> Y") \%>\%
+  set_confound(list(X = "Y[X=1]>Y[X=0]"))\%>\%
+  make_priors(statement = "X==1",
+              confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
+              alphas = c(2, .5))
 }
