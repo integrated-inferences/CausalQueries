@@ -2,57 +2,69 @@
 % Please edit documentation in R/priors.R
 \name{make_priors}
 \alias{make_priors}
-\title{Make priors}
+\title{Make Priors}
 \usage{
-make_priors(model, prior_distribution = "uniform", alphas = NULL)
+make_priors(model, distribution = NA, alphas = NA, node = NA,
+  label = NA, statement = NA, confound = NA)
 }
 \arguments{
-\item{model}{A model created by \code{make_model()}}
+\item{model}{A model created with \code{make_model}}
 
-\item{prior_distribution}{A character indicating the prior distribuiton}
+\item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
-\item{alphas}{the hyperparameters of the dirichlet distribution.
-Stipulated alpha values override prior_distribution}
+\item{alphas}{Real positive numbers giving hyperparameters of the Dirichlet distribution}
+
+\item{node}{A string (or list of strings) indicating variables for which priors are to be altered}
+
+\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+
+\item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
+
+\item{confound}{A confound statement (or list of statements) that restricts nodal types for which priors are to be altered}
 }
 \description{
-Make priors
+A flexible function to generate priors for a model.
+}
+\details{
+Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
+
+* \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+
+* \code{node}, which restricts for example to parameters associated with node "X"
+
+* \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+
+* \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+
+Two arguments govern what values to apply:
+
+* alphas is one or more non negative numbers and
+
+* "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+
+Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 }
 \examples{
-model <- make_model("X -> Y")
-# Default sets all priors to 1
-make_priors(model = model)
-# Set all priors to 0.5
-make_priors(model = model, prior_distribution = "jeffreys")
-# Set all priors to infinity
-make_priors(model = model, prior_distribution = "certainty")
-# Set all priors to 1 except for prior of nodal_type X0
-make_priors(model = model, alphas = list(X = c(X0 = 2)))
-# Specify priors by query
- make_priors(model = model,
-             alphas = c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3))
-# Specify priors for each of the nodal_types in model
-make_priors(model = model,
- alphas = list(X = c(X0 = 2, `X == 1` = 3),
- Y = c(`(Y[X=1] > Y[X=0])` = 3,
- Y10 = 2, `(Y[X=1] == Y[X=0])` = 3)))
-# set all priors to 10
-make_priors(model = model, alphas =  10)
-# If the prior for a given parameter is duplicated,
-# make_prior() throws an informative error.
+model <- make_model("X -> M -> Y")
+make_priors(model, node = "X", alphas = 3)
+make_priors(model, node = c("X", "Y"), alphas = 3)
+make_priors(model, node = list("X", "Y"), alphas = list(3, 6))
+make_priors(model, node = c("X", "Y"), distribution = c("certainty", "jeffreys"))
+make_priors(model, statement = "Y[M=1] > Y[M=0]", alphas = 3)
+make_priors(model, statement = c("Y[M=1] > Y[M=0]", "M[X=1]== M[X=0]"), alphas = c(3, 2))
 \dontrun{
-make_priors(model = model,
- alphas = list(X = c(X0 = 2, `X == 1` = 3),
- Y = c(Y00 = 1, `(Y[X=1] > Y[X=0])` = 3,
- Y01 = 2, `(Y[X=1] == Y[X=0])`  = 3)))
- }
-
-# Priors of confounded models
-model <- make_model("X -> Y") \%>\%
-set_confound(list(X = "(Y[X=1]>Y[X=0])"))
-
-# Simultaneously set priors for confound and nonconfound parameters.
-make_priors(model = model,  alphas =  c(`(X == 0)`  = 2))
-# To target variable modeling confound, specify the condition
-# that determines the confounded relationship between variables
-make_priors(model = model,  alphas =  c(`(X == 0) & (Y[X=1]>Y[X=0])` = 2))
+# Error if statement seeks to
+make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3)
+}
+model <- make_model("X->Y") \%>\%
+ set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
+make_priors(model,
+            node = "X",
+            confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
+            alphas = list(3, 6))
+make_model("X -> Y") \%>\%
+  set_confound(list(X = "Y[X=1]>Y[X=0]"))\%>\%
+  make_priors(statement = "X==1",
+              confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
+              alphas = c(2, .5))
 }

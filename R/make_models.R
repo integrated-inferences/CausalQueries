@@ -44,7 +44,7 @@ make_model <- function(statement){
 
 
  # Model is a list
- model <- list(dag = dag, step = "dag", variables = c(exog_node, endog_node))
+ model <- list(dag = dag, step = "dag", variables = c(exog_node, endog_node), statement = statement)
 
  # Nodal types
  nodal_types <- get_nodal_types(model)
@@ -92,6 +92,8 @@ summary.causal_model <- function(object, ...) {
 #' @export
 print.summary.causal_model <- function(x,  ...){
 
+	cat("\nStatement: \n")
+	print(x$statement)
 	cat("\nDAG: \n")
 	print(x$dag)
 	cat("\n ------------------------------------------------------------------------------------------\n")

@@ -11,10 +11,14 @@
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the variables on the left of a [] expression
 #' @examples
 #' model <- make_model("X -> M -> Y; X->Y")
+#' query <- "(Y[X=0] > Y[X=1])"
+#' x <- lookup_type(model, query)
+#'
 #' query <- "(Y[X=0, M = .] > Y[X=1, M = 0])"
 #' x <- lookup_type(model, query)
 #'
 #'
+#' #
 #' query <- "(Y[] == 1)"
 #' x <- lookup_type(model, query)
 #'
@@ -58,12 +62,12 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 
 		 	# Identify parents not specified in query and paste them as "parent = ."
 		 	v_parents        <- get_parents(model)[[var]]
-		 	parents_in_q     <- nodes_in_statement(v_parents, q)
-		 	not_parents      <- list_non_parents(model, var)
-		 	not_parents_q    <- nodes_in_statement(not_parents, q)
+		 	parents_in_q     <- gbiqq:::nodes_in_statement(v_parents, q)
+		 	not_parents      <- gbiqq:::list_non_parents(model, var)
+		 	not_parents_q    <- gbiqq:::nodes_in_statement(not_parents, q)
 		  missing_parents  <- v_parents [!v_parents%in% parents_in_q]
 
-		 	if(length(not_parents_q) >0 ){
+		 	if(length(not_parents_q) > 0 ){
 		 	conjugation <- ifelse(length(not_parents_q)>1, "are not parents of", "is not a parent of")
 		 	subjects <- paste0(not_parents_q, collapse = ", ")
 		 	stop(paste(subjects, conjugation, var))

@@ -50,8 +50,6 @@ query_distribution <- function(model,
 
 	if(all(!subset)) {message("No units in subset"); return() }
 
-  if(using == "parameters" & is.null(model$parameters) & is.null(parameters)) stop("please provide parameters")
-
 
 		# Evaluation of query on vector of causal types
 	x <- (get_types(model, query = query)$types)[subset]
@@ -60,7 +58,7 @@ query_distribution <- function(model,
 	if(using =="parameters"){
 
 		if(is.null(type_distribution)){
-			if(is.null(parameters)) parameters <- model$parameters
+			if(is.null(parameters)) parameters <- get_parameters(model)
 			type_distribution <- draw_type_prob(model, parameters = parameters)}
 
 		return(weighted.mean(x, type_distribution[subset]))
