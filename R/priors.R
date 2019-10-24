@@ -48,7 +48,7 @@
 #' make_priors(model,
 #'             confound = list(X="Y[X=1] > Y[X=0]",
 #'                             X="Y[X=1] < Y[X=0]"),
-#'             alphas = list(3, 6))
+#'             alphas = c(3, 6))
 #' make_model("X -> Y") %>%
 #'   set_confound(list(X = "Y[X=1]>Y[X=0]"))%>%
 #'   make_priors(statement = "X==1",
@@ -85,10 +85,16 @@ make_priors <- function(model,
 
 	# Function uses mapply to generate task_list
 	f <- function(distribution, alphas, node, label, statement, confound, confound_names){
-		confound <- list(confound)
-		names(confound) <- confound_names
+
+		# Non NA confounds need to be in a named list
+		if(!is.na(confound)) {
+			confound <- list(confound)
+		  names(confound) <- confound_names}
+
 		list(distribution = distribution, alphas = alphas,
-				 node = node, label = label, statement = statement, confound = confound)}
+				 node = node, label = label, statement = statement, confound = confound)
+		}
+	if(is.null(names(confound))) names(confound) <- NA
 
 	task_list <- mapply(f, distribution = distribution, alphas = alphas,
 											node = node, label = label, statement = statement, confound = confound,

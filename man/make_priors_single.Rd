@@ -50,11 +50,15 @@ gbiqq:::make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])",
 # By nodal type label
 gbiqq:::make_priors_single(model, label = "X0", alphas = 9)
 
-# By confound query: Applies only to types that are sometimes involved on confounding
-# Safest to apply together with node to pick out specific sets
-model <- make_model("X->Y") \%>\% set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
-gbiqq:::make_priors_single(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
-gbiqq:::make_priors_single(model, node = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
+# By confound query: Applies only to types that are involved in confounding
+# Only alters named node in confound, even if other nodes are listed in "nodes"
+confounds <- list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]")
+model     <- make_model("X->Y") \%>\% set_confound(confounds)
+gbiqq:::make_priors_single(model, confound = confounds[1], alphas = 3)
+
+# A residual  confound condition can also be defined
+gbiqq:::make_priors_single(model, confound = list(X = "!(Y[X=1] > Y[X=0])"), alphas = 3)
+gbiqq:::make_priors_single(model, confound = list(X = "(Y[X=1] == Y[X=0])"), alphas = 3)
 
 # make_priors_single can also be used for some vector valued statements
 model <- make_model("X -> M -> Y")

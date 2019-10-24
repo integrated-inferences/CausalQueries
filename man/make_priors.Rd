@@ -20,7 +20,8 @@ make_priors(model, distribution = NA, alphas = NA, node = NA,
 
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
-\item{confound}{A confound statement (or list of statements) that restricts nodal types for which priors are to be altered}
+\item{confound}{A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
+For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 }
 \description{
 A flexible function to generate priors for a model.
@@ -59,12 +60,12 @@ make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3)
 model <- make_model("X->Y") \%>\%
  set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
 make_priors(model,
-            node = "X",
-            confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
-            alphas = list(3, 6))
+            confound = list(X="Y[X=1] > Y[X=0]",
+                            X="Y[X=1] < Y[X=0]"),
+            alphas = c(3, 6))
 make_model("X -> Y") \%>\%
   set_confound(list(X = "Y[X=1]>Y[X=0]"))\%>\%
   make_priors(statement = "X==1",
-              confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
+              confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
               alphas = c(2, .5))
 }
