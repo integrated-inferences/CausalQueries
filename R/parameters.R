@@ -24,8 +24,7 @@
 #'    get_parameters
 #' make_model("X -> Y") %>%
 #'   set_confound(list(X = "Y[X=1]>Y[X=0]"))  %>%
-#'   set_parameters(node = "X",
-#'                  confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<=Y[X=0]"),
+#'   set_parameters(confound = list(X="Y[X=1]>Y[X=0]", X="Y[X=1]<=Y[X=0]"),
 #'                  alphas = list(c(.2, .8), c(.8, .2))) %>%
 #'   set_parameters(statement = "Y[X=1]>Y[X=0]", alphas = .5) %>%
 #'   get_parameters
@@ -60,8 +59,9 @@ set_parameters <- function(model,
 	# New (from alpha)
 	if (type == "define") {
 		# This is needed so that use of make_priors adjust parameters, not priors
-		model$parameters_df$priors <- model$parameters_df$parameters
-		parameters <- make_priors(model, ...)
+		model_temp <- model
+		model_temp$parameters_df$priors <- model_temp$parameters_df$parameters
+		parameters <- make_priors(model_temp, ...)
 	}
 
 	# Prior mean
