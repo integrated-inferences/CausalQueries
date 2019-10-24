@@ -4,40 +4,62 @@
 \alias{make_priors}
 \title{Make Priors}
 \usage{
-make_priors(model = list(model), prior_distribution = NA,
-  alphas = NULL, node = NA, statement = NA, confound = NA,
-  label = NA)
+make_priors(model, distribution = NA, alphas = NA, node = NA,
+  label = NA, statement = NA, confound = NA)
 }
 \arguments{
-\item{model}{A mode created with \code{make_model}}
+\item{model}{A model created with \code{make_model}}
 
-\item{prior_distribution}{A common prior distribution (uniform, jeffreys or certainty)}
+\item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
-\item{alphas}{Hyperparameters of the Dirichlet distribution}
+\item{alphas}{Real positive numbers giving hyperparameters of the Dirichlet distribution}
 
-\item{node}{A node}
+\item{node}{A string (or list of strings) indicating variables for which priors are to be altered}
 
-\item{statement}{A query}
+\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{confound}{A confound statement}
+\item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
+
+\item{confound}{A confound statement (or list of statements) that restricts nodal types for which priors are to be altered}
 }
 \description{
-A flexible function to add priors to a model.
+A flexible function to generate priors for a model.
 }
 \details{
 Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
-* \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y000
+
+* \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+
 * \code{node}, which restricts for example to parameters associated with node "X"
+
 * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+
 * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 
-Two arguments govern what values to apply: alphas is one or more non negative numbers and "prior" distribution indicates one of a common class: uniform, jeffreys, or "certain"
+Two arguments govern what values to apply:
+
+* alphas is one or more non negative numbers and
+
+* "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+
+Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 }
 \examples{
-model <- make_model("X -> Y")
+model <- make_model("X -> M -> Y")
+make_priors(model, node = "X", alphas = 3)
+make_priors(model, node = c("X", "Y"), alphas = 3)
 make_priors(model, node = list("X", "Y"), alphas = list(3, 6))
-model <- make_model("X->Y")
-model <- set_confound(model, list(X = "Y[X=1] > Y[X=0]"))
-model <- set_confound(model, list(X = "Y[X=1] < Y[X=0]"))
-make_priors(model, confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"), alphas = list(3, 6))
+make_priors(model, node = c("X", "Y"), distribution = c("certainty", "jeffreys"))
+make_priors(model, statement = "Y[M=1] > Y[M=0]", alphas = 3)
+make_priors(model, statement = c("Y[M=1] > Y[M=0]", "M[X=1]== M[X=0]"), alphas = c(3, 2))
+\dontrun{
+# Error if statement seeks to
+make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3)
+}
+model <- make_model("X->Y") \%>\%
+ set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
+make_priors(model,
+            node = "X",
+            confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
+            alphas = list(3, 6))
 }

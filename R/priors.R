@@ -1,58 +1,103 @@
 
 #' Make Priors
 #'
-#' A flexible function to add priors to a model.
+#' A flexible function to generate priors for a model.
 #'
 #' Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
-#' * \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y000
+#'
+#' * \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+#'
 #' * \code{node}, which restricts for example to parameters associated with node "X"
+#'
 #' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#'
 #' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 #'
-#' Two arguments govern what values to apply: alphas is one or more non negative numbers and "prior" distribution indicates one of a common class: uniform, jeffreys, or "certain"
+#' Two arguments govern what values to apply:
+#'
+#' * alphas is one or more non negative numbers and
+#'
+#' * "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+#'
+#' Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 #'
 #' @param model A model created with \code{make_model}
-#' @param prior_distribution A common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Hyperparameters of the Dirichlet distribution
-#' @param node A node
-#' @param statement A query
-#' @param confound A confound statement
+#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param node A string (or list of strings) indicating variables for which priors are to be altered
+#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
+#' @param confound A confound statement (or list of statements) that restricts nodal types for which priors are to be altered
 #'
 #' @export
 #' @examples
-#' model <- make_model("X -> Y")
+#' model <- make_model("X -> M -> Y")
+#' make_priors(model, node = "X", alphas = 3)
+#' make_priors(model, node = c("X", "Y"), alphas = 3)
 #' make_priors(model, node = list("X", "Y"), alphas = list(3, 6))
-#' model <- make_model("X->Y")
-#' model <- set_confound(model, list(X = "Y[X=1] > Y[X=0]"))
-#' model <- set_confound(model, list(X = "Y[X=1] < Y[X=0]"))
-#' make_priors(model, confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"), alphas = list(3, 6))
+#' make_priors(model, node = c("X", "Y"), distribution = c("certainty", "jeffreys"))
+#' make_priors(model, statement = "Y[M=1] > Y[M=0]", alphas = 3)
+#' make_priors(model, statement = c("Y[M=1] > Y[M=0]", "M[X=1]== M[X=0]"), alphas = c(3, 2))
+#' \dontrun{
+#' # Error if statement seeks to
+#' make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3)
+#' }
+#' model <- make_model("X->Y") %>%
+#'  set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
+#' make_priors(model,
+#'             node = "X",
+#'             confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
+#'             alphas = list(3, 6))
 
-make_priors <- function(model=list(model),
-												prior_distribution=NA,
-												alphas=NULL,
+make_priors <- function(model,
+												distribution=NA,
+												alphas=NA,
 												node = NA,
+												label=NA,
 												statement=NA,
-												confound=NA,
-												label=NA){
+												confound=NA){
 
-	args <- list(prior_distribution, alphas, node, statement, confound, label)
+	# Housekeeping regarding argument lengths
+	args <- list(distribution = distribution, alphas = alphas, node = node,
+							 label = label, statement = statement, confound = confound)
+	arg_provided <- unlist(lapply(args, function(x) any(!is.na(x))))
+	arg_length   <- unlist(lapply(args, length))
 
-	arg_provided <- lapply(args, function(x) !is.na(x))
-	arg_length   <- lapply(args, length)
+	# Easy case: If all but node, label, or alphas are of length 1 then simply apply make_priors_single
+	for(j in c("node", "label", "alphas")) {
+		if(max(arg_length[names(args)!=j])==1) return(
+			make_priors_single(model, distribution=distribution, alphas=alphas,
+															node = node, label=label, statement=statement,
+															confound=confound)
+		)}
 
-	if(sum(arg_provided)>1) {if(sd(unlist(arg_length[arg_provided]))>0)
-		stop("Provided arguments should be of the same length") }
+	# Harder case: Otherwise all arguments turned to lists and looped through
+	# updating priors each time
 
-	for(i in 1:max(unlist(arg_length))) {
+	if(sum(arg_provided)>1) {if(sd(arg_length[arg_length>1])>0)
+		stop("Provided arguments of length >1 should be of the same length") }
+
+	# Function uses mapply to generate task_list
+	f <- function(distribution, alphas, node, label, statement, confound)
+		list(distribution = distribution, alphas = alphas,
+				 node = node, label = label, statement = statement, confound = confound)
+
+	task_list <- mapply(f, distribution = distribution, alphas = alphas,
+											node = node, label = label, statement = statement, confound = confound)
+
+
+	for(i in 1:ncol(task_list)) {
+		arguments <- task_list[,i]
 			model$parameters_df$priors <-
 					make_priors_single(model,
-		                    		 node = node[i],
-														 prior_distribution=prior_distribution[i],
-														 statement=statement[i],
-														 confound=confound[i],
-														 alphas=alphas[i],
-														 label=label[i])}
-		}
+														 distribution=arguments$distribution,
+														 alphas=arguments$alphas,
+														 node = arguments$node,
+														 label=arguments$label,
+														 statement=arguments$statement,
+														 confound=arguments$confound)}
+	get_priors(model)
+	}
 
 
 #' make_priors_single
@@ -61,25 +106,24 @@ make_priors <- function(model=list(model),
 #'
 #' Forbidden statements include:
 #' \itemize{
-#'   \item Setting \code{prior_distribution} and \code{alphas} at the same time.
-#'   \item Setting a \code{prior_distribution} other than uniform, jeffreys or certainty.
+#'   \item Setting \code{distribution} and \code{alphas} at the same time.
+#'   \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
 #'   \item Setting negative priors.
 #' }
 #'
 #'
-#' @param model A mode created with \code{make_model}
-#' @param prior_distribution A common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Hyperparameters of the Dirichlet distribution
-#' @param node A node
-#' @param statement A query
-#' @param confound A confound statement
-#' @param label The name of a nodal type
+#' @param model A model created with \code{make_model}
+#' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param node A string indicating variables for which priors are to be altered
+#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param statement A causal query that determines nodal types for which priors are to be altered
+#' @param confound A confound statement that restricts nodal types for which priors are to be altered
 #'
-#' @export
 #' @examples
 #' model <- make_model("X -> M -> Y; X->Y")
 #'
-#' make_priors_single(model, prior_distribution = "jeffreys")
+#' make_priors_single(model, distribution = "jeffreys")
 #'
 #' make_priors_single(model, alphas = 3)
 #'
@@ -116,12 +160,12 @@ make_priors <- function(model=list(model),
 
 
 make_priors_single <- function(model,
-												prior_distribution = NA,
-												alphas = NULL,
+												distribution = NA,
+												alphas = NA,
 												node = NA,
+												label = NA,
 												statement = NA,
-												confound = NA,
-												label = NA){
+												confound = NA){
 
 	#1. House keeping
 
@@ -132,21 +176,21 @@ make_priors_single <- function(model,
 	to_alter    <- rep(TRUE, length(priors))   # Subset to alter: Starts at full but can get reduced
 
 	# 1.2. If neither a distribution or alphas vector provided then return existing priors
-	if (is.na(prior_distribution) & is.null(alphas)){
-		warning("neither prior_distribution nor alphas provided; no change to priors")
+	if (is.na(distribution) & is.na(alphas)){
+		warning("neither distribution nor alphas provided; no change to priors")
 		return(priors)}
 
 	# 1.3. No prior distribution and alphas at the same time
-	if (!is.na(prior_distribution) & !is.null(alphas)){
-		warning("alphas and prior_distribution cannot be declared at the same time. try sequentially; no change to priors")
+	if (!is.na(distribution) & !is.na(alphas)){
+		warning("alphas and distribution cannot be declared at the same time. try sequentially; no change to priors")
 		return(priors)}
 
 	#1.4. Alphas negatives
-	if (!is.null(alphas)) {if(min(alphas) < 0) stop("alphas must be non-negative")}
+	if (!is.na(alphas)) {if(min(alphas) < 0) stop("alphas must be non-negative")}
 
-	# 1.5 prior_distribution should be a scalar
-	if(max(length(prior_distribution), length(confound), length(statement))>1)
-		stop("prior_distribution, statement, and confound should be scalars in make_prior_single")
+	# 1.5 distribution should be a scalar
+	if(max(length(distribution), length(confound), length(statement))>1)
+		stop("distribution, statement, and confound should be scalars in make_prior_single")
 
   # A. Where to make changes?
 	#########################################################################
@@ -180,10 +224,10 @@ make_priors_single <- function(model,
   # B. What values to provide?
 	#########################################################################
 	# Provide alphas unless a distribution is provided
-	if(!is.na(prior_distribution)) {
-		if(!(prior_distribution %in% c("uniform", "jeffreys", "certainty")))
-			stop("prior_distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
-		alphas <- switch (prior_distribution, "uniform" = 1, "jeffreys" = .5, "certainty" = 10000)}
+	if(!is.na(distribution)) {
+		if(!(distribution %in% c("uniform", "jeffreys", "certainty")))
+			stop("distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
+		alphas <- switch (distribution, "uniform" = 1, "jeffreys" = .5, "certainty" = 10000)}
 
 
 	# C MAGIC
@@ -200,95 +244,73 @@ make_priors_single <- function(model,
 	}
 
 
-
-
-
-make_alphas <- function(model, alphas = NULL ){
-
-	#	if(is.null(model$P)) 	{model  <- set_parameter_matrix(model)}
-	#	P                  <- model$P
-	return_alphas      <- alphas
-	par_names          <- get_parameter_names(model, include_paramset = FALSE)
-	alpha_names        <- names(unlist(alphas))
-	# alpha_names        <- 	unlist(lapply(alphas, names))
-	pars_in_alpha      <- alpha_names %in% par_names
-
-	# if alpha is defined as vector of queries alphas <- c(`(Y[X=1] == Y[X=0])`  = 3,  `X == 1` = 3  )
-	if(is.numeric(alphas) & !is.null(alpha_names)){
-		return_alphas  <-   query_to_parameters(model,	 alphas)
-	}
-
-
-	# if alpha contain other than parameter names e.g alphas = list(X = c(X0 = 2, `X == 1` = 3))
-	if(is.list(alphas)  & any(! pars_in_alpha)){
-		# Prep and translate alpha
-		i_queries <- which(!pars_in_alpha)
-		alpha_query <- unlist(alphas)[i_queries]
-		queries <- names(alpha_query)
-		names(alpha_query) <- 	sapply(queries, function(q){
-			stop <- gregexpr("\\.", q, perl = TRUE)[[1]][1]
-			substr(q, stop + 1, nchar(q))
-		})
-
-		translated_alphas  <-  gbiqq:::query_to_parameters(model, alpha_query)
-
-		# Lines below check for discrepancies
-		# ok alphas(Y = c(Y00 = 1, `(Y[X=1] == Y[X=0])` = 1)
-		# error  alphas(Y = c(Y00 = 2, `(Y[X=1] == Y[X=0])` = 1) --two arguments pointing at the same parameter
-		error_message <- gbiqq:::any_discrepancies(alphas, translated_alphas)
-		if(!is.null(error_message))	{
-			stop("\n Please solve the following discrepancies \n", paste(error_message))
-		}
-		# Get alphas that were specificied as par_names as opposed to queries
-		alpha_param <- sapply(alphas, function(a){
-			#	a[names(a) %in% rownames(P)]
-
-			a[names(a) %in% par_names]
-
-		}, simplify = FALSE)
-
-		# combine translated alphas and alpha_parameters by parameter set
-		return_alphas <- gbiqq:::combine_lists(list1 = alpha_param, list2 =translated_alphas)
-	}
-	return_alphas
-}
-
-
-
 #' Set prior distribution
 #'
-#' Set prior distribution. Use \code{make_alphas} to use causal types to indicate priors.
-#' @param model A model object generated by \code{make_model()}.
-#' @param priors A numeric vector. Dirichlet hyperparameters.
-#' @param prior_distribution A character string. Indicates the prior distribution to be used. Can be 'uniform', 'jeffreys', or 'certainty'.
-#' @param alphas A numeric vector. Hyperparameters of the Dirichlet distribution to be passed to \code{make_priors()}.
+#' A flexible function to add priors to a model.
+#'
+#' Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
+#'
+#' * \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+#'
+#' * \code{node}, which restricts for example to parameters associated with node "X"
+#'
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#'
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#'
+#' Two arguments govern what values to apply:
+#'
+#' * alphas is one or more non negative numbers and
+#'
+#' * "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+#'
+#' Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
+#'
+#' For more examples and details see \code{make_priors}
+#'
+#' @param model A model created with \code{make_model}
+#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param node A string (or list of strings) indicating variables for which priors are to be altered
+#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
+#' @param confound A confound statement (or list of statements) that restricts nodal types for which priors are to be altered
 #' @export
 #' @examples
 #'
 #' library(dplyr)
 #' model <- make_model("X -> Y") %>%
-#'   set_priors(
-#'            alphas = list(
-#'              X = c(`X == 1` = 3),
-#'              Y = c(`(Y[X=1] != Y[X=0])` = 3)))
+#'   set_priors(alphas = 3)
 #' get_priors(model)
 #'
 #'model <- make_model("X -> Y") %>%
-#' set_priors(prior_distribution = "jeffreys")
+#' set_priors(distribution = "jeffreys")
 #' get_priors(model)
 #'
 #'model <- make_model("X -> Y") %>%
 #' set_priors(1:6)
 #' get_priors(model)
+#' model <- make_model("X -> Y") %>%
+#' set_priors(node = "Y", alphas = 2)
+#' get_priors(model)
+
 
 set_priors  <- function(model,
-												priors = NULL,
-												prior_distribution = "uniform",
-												alphas = NULL) {
+													priors = NULL,
+													distribution=NA,
+													alphas=NA,
+													node = NA,
+												  label=NA,
+													statement=NA,
+													confound=NA) {
 
 	if(is.null(priors)) priors <- make_priors(model,
-			                            					prior_distribution = prior_distribution,
-																						alphas = alphas)
+			                            					distribution = distribution,
+																						alphas = alphas,
+																						node = node,
+																						label = label,
+																						statement = statement,
+																						confound = confound)
 
    model$parameters_df$priors  <- priors
 
@@ -310,9 +332,11 @@ set_priors  <- function(model,
 #'
 set_prior_distribution <- function(model, n_draws = 4000) {
 
+	# Add P matrix if missing
   if(is.null(model$P)) model <- set_parameter_matrix(model)
 
-  model$prior_distribution <- t(replicate(n_draws, draw_parameters(model)))
+  # Draw distribution
+  model$prior_distribution <- t(replicate(n_draws, draw_parameters(model, using = "priors")))
 
   model
 }
@@ -321,7 +345,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
 
 #' Get priors
 #'
-#' Extracts priors as a namesd vector
+#' Extracts priors as a named vector
 #'
 #' @param model A model object generated by make_model().
 #'

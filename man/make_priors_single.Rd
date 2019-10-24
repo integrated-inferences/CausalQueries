@@ -4,23 +4,23 @@
 \alias{make_priors_single}
 \title{make_priors_single}
 \usage{
-make_priors_single(model, prior_distribution = NA, alphas = NULL,
-  node = NA, statement = NA, confound = NA, label = NA)
+make_priors_single(model, distribution = NA, alphas = NA, node = NA,
+  label = NA, statement = NA, confound = NA)
 }
 \arguments{
-\item{model}{A mode created with \code{make_model}}
+\item{model}{A model created with \code{make_model}}
 
-\item{prior_distribution}{A common prior distribution (uniform, jeffreys or certainty)}
+\item{distribution}{String indicating a common prior distribution (uniform, jeffreys or certainty)}
 
-\item{alphas}{Hyperparameters of the Dirichlet distribution}
+\item{alphas}{Real positive numbers giving hyperparameters of the Dirichlet distribution}
 
-\item{node}{A node}
+\item{node}{A string indicating variables for which priors are to be altered}
 
-\item{statement}{A query}
+\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{confound}{A confound statement}
+\item{statement}{A causal query that determines nodal types for which priors are to be altered}
 
-\item{label}{The name of a nodal type}
+\item{confound}{A confound statement that restricts nodal types for which priors are to be altered}
 }
 \description{
 This is the one step function for make_priors, it creates the priors to be passed on nodal types with \code{set_priors}. See \code{make_priors} for more help.
@@ -28,27 +28,46 @@ This is the one step function for make_priors, it creates the priors to be passe
 \details{
 Forbidden statements include:
 \itemize{
-  \item Setting \code{prior_distribution} and \code{alphas} at the same time.
-  \item Setting a \code{prior_distribution} other than uniform, jeffreys or certainty.
+  \item Setting \code{distribution} and \code{alphas} at the same time.
+  \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
   \item Setting negative priors.
 }
 }
 \examples{
 model <- make_model("X -> M -> Y; X->Y")
 
-make_priors_single(model, prior_distribution = "jeffreys")
-make_priors_single(model, alphas = 1:2)
+make_priors_single(model, distribution = "jeffreys")
 
-make_priors_single(model, statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 666)
-make_priors_single(model, parameter_set = "Y", statement = "(Y[X=0, M = .] > Y[X=1, M = 0])", alphas = 777)
+make_priors_single(model, alphas = 3)
 
-make_priors_single(model, parameter_set = "M", alphas = 888)
+# Examples of selecting subsets
+# By node
+make_priors_single(model, node = "M", alphas = 8)
 
-make_priors_single(model, label = "X0", alphas = 999)
+# By nodal type statement
+make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
 
-model <- make_model("X->Y")
-model <- set_confound(model, list(X = "Y[X=1] > Y[X=0]"))
-model <- set_confound(model, list(X = "Y[X=1] < Y[X=0]"))
+# By nodal type label
+make_priors_single(model, label = "X0", alphas = 9)
+
+# By confound query: Applies only to types that are sometimes involved on confounding
+# Safest to apply together with node to pick out specific sets
+model <- make_model("X->Y") \%>\% set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
 make_priors_single(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
-make_priors_single(model, parameter_set = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
+make_priors_single(model, node = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
+
+# make_priors_single can also be used for some vector valued statements
+model <- make_model("X -> M -> Y")
+make_priors_single(model, node = c("X", "Y"), alphas = 2)
+make_priors_single(model, label = c("X1", "Y01"), alphas = 2)
+
+# Incompatible conditions produce no change
+# Such cases best handled by  make_priors
+make_priors_single(model, node = "X", label = "Y01", alphas = 2)
+
+# Problematic cases
+\dontrun{
+make_priors_single(model, alphas = 1:2)
+}
+
 }
