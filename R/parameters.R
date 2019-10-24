@@ -17,30 +17,38 @@
 #'
 #' # Use priors arguments to define specific parameters using causal syntax
 #' set_parameters(make_model("X -> Y"),
-#'                    type = 'define', statement = "Y[X=1]>Y[X=0]", alphas = 2) %>%
-#'                    get_parameters
-#' set_parameters(make_model("X -> Y"),
-#'                    type = 'define',
-#'                    statement = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"), alphas = c(2,0)) %>%
-#'                    get_parameters
-#' set_parameters(make_model("X -> Y") %>% set_confound(list(X = "Y[X=1]>Y[X=0]")),
-#'                    type = 'define',
-#'                    statement = "X==1",
-#'                    confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
-#'                    alphas = c(1,2),
-#'                    warning = FALSE) %>%
-#'                    get_parameters
+#'                statement = "Y[X=1]>Y[X=0]", alphas = 2) %>%
+#'                get_parameters
+#' make_model("X -> Y") %>%
+#'    set_parameters(statement = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"), alphas = c(2,0)) %>%
+#'    get_parameters
+#' make_model("X -> Y") %>%
+#'   set_confound(list(X = "Y[X=1]>Y[X=0]"))  %>%
+#'   set_parameters(node = "X",
+#'                  confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<=Y[X=0]"),
+#'                  alphas = list(c(.2, .8), c(.8, .2))) %>%
+#'   set_parameters(statement = "Y[X=1]>Y[X=0]", alphas = .5) %>%
+#'   get_parameters
+
 
 set_parameters <- function(model,
 													 parameters = NULL,
-													 type = "prior_mean",
+													 type = NULL,
 													 warning = TRUE,
 													 ...) {
+	# Figure out if we need to use make_priors
+  prior_args = list(...)
 
-	# If parameters provided, clean and use these and then exit
+  prior_args_provided <- sum(names(prior_args) %in% c("distribution", "alphas", "node", "label", "statement", "confound"))
+  if(prior_args_provided >0 & is.null(type)) type <- "define"
+
+  if(is.null(type)) type  <- 	"prior_mean"
+
+
+  # If parameters provided, clean and use these and then exit
 	if(!is.null(parameters)){
 		model$parameters_df$parameters <- parameters
-		model$parameters_df <- check_params(model$parameters_df, warning = TRUE)
+		model$parameters_df <- check_params(model$parameters_df, warning = warning)
 		return(model)
 	}
 
@@ -51,6 +59,8 @@ set_parameters <- function(model,
 
 	# New (from alpha)
 	if (type == "define") {
+		# This is needed so that use of make_priors adjust parameters, not priors
+		model$parameters_df$priors <- model$parameters_df$parameters
 		parameters <- make_priors(model, ...)
 	}
 
@@ -76,7 +86,7 @@ set_parameters <- function(model,
 	}
 
 	model$parameters_df$parameters <- parameters
-	model$parameters_df <- check_params(model$parameters_df, warning = warning)
+	model$parameters_df <- check_params(model$parameters_df, warning = FALSE)
 	model
 
 }

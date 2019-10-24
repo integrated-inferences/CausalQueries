@@ -71,7 +71,7 @@ make_priors <- function(model,
 	# Easy case: If all but node, label, or alphas are of length 1 then simply apply make_priors_single
 	for(j in c("node", "label", "alphas")) {
 		if(max(arg_length[names(args)!=j])==1) return(
-			make_priors_single(model, distribution=distribution, alphas=alphas,
+			gbiqq:::make_priors_single(model, distribution=distribution, alphas=alphas,
 															node = node, label=label, statement=statement,
 															confound=confound)
 		)}
@@ -181,17 +181,17 @@ make_priors_single <- function(model,
 	to_alter    <- rep(TRUE, length(priors))   # Subset to alter: Starts at full but can get reduced
 
 	# 1.2. If neither a distribution or alphas vector provided then return existing priors
-	if (is.na(distribution) & is.na(alphas)){
+	if (all(is.na(distribution)) & all(is.na(alphas))){
 		warning("neither distribution nor alphas provided; no change to priors")
 		return(priors)}
 
 	# 1.3. No prior distribution and alphas at the same time
-	if (!is.na(distribution) & !is.na(alphas)){
+	if (!all(is.na(distribution)) & !all(is.na(alphas))){
 		warning("alphas and distribution cannot be declared at the same time. try sequentially; no change to priors")
 		return(priors)}
 
 	#1.4. Alphas negatives
-	if (!is.na(alphas)) {if(min(alphas) < 0) stop("alphas must be non-negative")}
+	if (!all(is.na(alphas))) {if(min(alphas) < 0) stop("alphas must be non-negative")}
 
 	# 1.5 distribution should be a scalar
 	if(max(length(distribution), length(confound), length(statement))>1)
