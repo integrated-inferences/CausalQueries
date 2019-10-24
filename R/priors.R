@@ -27,7 +27,8 @@
 #' @param node A string (or list of strings) indicating variables for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
-#' @param confound A confound statement (or list of statements) that restricts nodal types for which priors are to be altered
+#' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
+#' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 #'
 #' @export
 #' @examples
@@ -45,13 +46,13 @@
 #' model <- make_model("X->Y") %>%
 #'  set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
 #' make_priors(model,
-#'             node = "X",
-#'             confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
+#'             confound = list(X="Y[X=1] > Y[X=0]",
+#'                             X="Y[X=1] < Y[X=0]"),
 #'             alphas = list(3, 6))
 #' make_model("X -> Y") %>%
 #'   set_confound(list(X = "Y[X=1]>Y[X=0]"))%>%
 #'   make_priors(statement = "X==1",
-#'               confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
+#'               confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
 #'               alphas = c(2, .5))
 
 make_priors <- function(model,
@@ -83,18 +84,21 @@ make_priors <- function(model,
 		stop("Provided arguments of length >1 should be of the same length") }
 
 	# Function uses mapply to generate task_list
-	f <- function(distribution, alphas, node, label, statement, confound)
+	f <- function(distribution, alphas, node, label, statement, confound, confound_names){
+		confound <- list(confound)
+		names(confound) <- confound_names
 		list(distribution = distribution, alphas = alphas,
-				 node = node, label = label, statement = statement, confound = confound)
+				 node = node, label = label, statement = statement, confound = confound)}
 
 	task_list <- mapply(f, distribution = distribution, alphas = alphas,
-											node = node, label = label, statement = statement, confound = confound)
+											node = node, label = label, statement = statement, confound = confound,
+											confound_names = names(confound))
 
 
 	for(i in 1:ncol(task_list)) {
 		arguments <- task_list[,i]
 			model$parameters_df$priors <-
-					make_priors_single(model,
+					gbiqq:::make_priors_single(model,
 														 distribution=arguments$distribution,
 														 alphas=arguments$alphas,
 														 node = arguments$node,
@@ -142,11 +146,15 @@ make_priors <- function(model,
 #' # By nodal type label
 #' gbiqq:::make_priors_single(model, label = "X0", alphas = 9)
 #'
-#' # By confound query: Applies only to types that are sometimes involved on confounding
-#' # Safest to apply together with node to pick out specific sets
-#' model <- make_model("X->Y") %>% set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
-#' gbiqq:::make_priors_single(model, confound = "Y[X=1] > Y[X=0]", alphas = 3)
-#' gbiqq:::make_priors_single(model, node = "X", confound = "Y[X=1] > Y[X=0]", alphas = 3)
+#' # By confound query: Applies only to types that are involved in confounding
+#' # Only alters named node in confound, even if other nodes are listed in "nodes"
+#' confounds <- list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]")
+#' model     <- make_model("X->Y") %>% set_confound(confounds)
+#' gbiqq:::make_priors_single(model, confound = confounds[1], alphas = 3)
+#'
+#' # A residual  confound condition can also be defined
+#' gbiqq:::make_priors_single(model, confound = list(X = "!(Y[X=1] > Y[X=0])"), alphas = 3)
+#' gbiqq:::make_priors_single(model, confound = list(X = "(Y[X=1] == Y[X=0])"), alphas = 3)
 #'
 #' # make_priors_single can also be used for some vector valued statements
 #' model <- make_model("X -> M -> Y")
@@ -197,6 +205,9 @@ make_priors_single <- function(model,
 	if(max(length(distribution), length(confound), length(statement))>1)
 		stop("distribution, statement, and confound should be scalars in make_prior_single")
 
+	# 1.6 confound is a named list and if provided only the named node is changed
+	if(!is.na(confound)) node <- names(confound)
+
   # A. Where to make changes?
 	#########################################################################
 
@@ -222,7 +233,7 @@ make_priors_single <- function(model,
 	# For instance if a condition is "Y[X=1]>Y[X=0]" then any parameter that does *not*
 	# contribute to a causal type satisfying this condition is not modified
 	if(!all(is.na(confound))){
-		P_short <- model$P[, get_types(model, confound)$types]
+		P_short <- model$P[, get_types(model, confound[[1]])$types]
 		to_alter[(apply(P_short, 1, sum) == 0)] <- FALSE
 	}
 
