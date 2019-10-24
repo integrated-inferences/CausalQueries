@@ -48,6 +48,11 @@
 #'             node = "X",
 #'             confound = list("Y[X=1] > Y[X=0]", "Y[X=1] < Y[X=0]"),
 #'             alphas = list(3, 6))
+#' make_model("X -> Y") %>%
+#'   set_confound(list(X = "Y[X=1]>Y[X=0]"))%>%
+#'   make_priors(statement = "X==1",
+#'               confound = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"),
+#'               alphas = c(2, .5))
 
 make_priors <- function(model,
 												distribution=NA,
@@ -74,7 +79,7 @@ make_priors <- function(model,
 	# Harder case: Otherwise all arguments turned to lists and looped through
 	# updating priors each time
 
-	if(sum(arg_provided)>1) {if(sd(arg_length[arg_length>1])>0)
+	if(sum(arg_length>1)>1) {if(sd(arg_length[arg_length>1])>0)
 		stop("Provided arguments of length >1 should be of the same length") }
 
 	# Function uses mapply to generate task_list
