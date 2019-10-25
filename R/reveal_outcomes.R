@@ -16,15 +16,23 @@
 #' model <- make_model("X1->Y;X2->M;M->Y")
 #' reveal_outcomes(model, dos = list(X1 = 1, M = 0))
 #'
+#'model <- make_model("X->M->Y")
+#'reveal_outcomes(model, dos = list(M = 1), node = "Y")
+
 
 reveal_outcomes <- function(model, dos = NULL, node = NULL){
 
-	if(!is.null(node)){
-		if(!is.null(dos)){
+	# Housekeeping
+	if(!is.null(node) & is.null(dos)) stop("Do actions must be specified when node is not NULL")
 
-			nodal_types       <- get_nodal_types(model, collapse = FALSE)
-			parents_list      <- get_parents(model)
-			parents           <- parents_list[[node]]
+	nodal_types <- get_nodal_types(model, collapse = FALSE)
+	parents_list      <- get_parents(model)
+
+	# Case with node specified
+	if(!is.null(node)){
+
+		parents <- parents_list[[node]]
+
 			if(any(!names(dos) %in% parents)) {
 				conjugation <- ifelse (sum(!names(dos) %in% parents)>1, "are not parents of", "is not a parent of")
 				subjects <- paste0(names(dos)[!names(dos) %in% parents], collapse = ", ")
@@ -33,13 +41,16 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 				else
 					warning(paste(subjects, conjugation, node))
 			}
-			nodal_type_var    <- nodal_types[[node]]
-			nodal_label       <- apply(nodal_type_var, 1,paste, collapse ="")
 
-			dos_rep           <- sapply(parents, function(p) rep(dos[p], length(nodal_label)))
-			data_realizations <- data.frame(	dos_rep, nodal_label, stringsAsFactors = FALSE)
+			nodal_type_var <- nodal_types[[node]]
+			nodal_label    <- apply(nodal_type_var, 1,paste, collapse ="")
+
+			dos_rep        <- sapply(parents, function(p) rep(dos[p], length(nodal_label)))
+
+			data_realizations <- data.frame(dos_rep, nodal_label, stringsAsFactors = FALSE)
 			names(data_realizations) <- c(parents, node)
 			types <- data_realizations
+
 			endogenous_vars   <- 	node
 			types_of_endogenous        <- data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
 			names(types_of_endogenous) <- endogenous_vars
@@ -49,12 +60,11 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 			# rownames(data_realizations) <- 1:nrow(data_realizations)
 			# types_of_endogenous   <- data.frame( types = data_realizations[, node], stringsAsFactors = FALSE)
 			# types           <- 	data_realizations
-		} else
-			stop("Do actions must be specified when node is not NULL")
-	} else{
+		}
+
+	if(is.null(node)) {
 
 		types           <- get_causal_types(model)
-		nodal_types     <- get_nodal_types(model, collapse = FALSE)
 		exogenous_vars  <- attr(model, "exogenous_variables")
 		endogenous_vars <- attr(model, "endogenous_variables")
 		types_of_exogenous         <- data.frame(types[, exogenous_vars])
@@ -62,19 +72,12 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 		types_of_endogenous        <- data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
 		names(types_of_endogenous) <- endogenous_vars
 		data_realizations <- types
-		parents_list      <- get_parents(model)
 		in_dos <- names(dos) # vars in do list
 
-
-
 		# Fill in values for dos
-		if(!is.null(dos)){
+		if(!is.null(dos)) for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]] # [1] mh 20191008 Commented out this "[1]" as it was stopping filling in a vector of dos for nested expression
 
-			for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]] # [1] mh 20191008 Commented out this "[1]" as it was stopping filling in a vector of dos for nested expression
-
-		}}
-
-
+		}
 
 	# Work though each endogeneous variable in sequence and substitute its implied values
 	for(j in 1:ncol(types_of_endogenous)) {
@@ -95,7 +98,8 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 				outcome
 			})
 			data_realizations[, endogenous_vars[j]] <- J
-		}}
+		}
+		}
 	if(is.null(node)){
 		rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
 		type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))

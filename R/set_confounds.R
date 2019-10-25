@@ -81,7 +81,7 @@ set_confound <-  function(model, confound = NULL){
 	# Check to see if any statements involve full confounding and redefine lists
 	# checks <- lapply(confound, function(x) x %in% model$variables)
 
-	# Ancestors
+	# Origin (Node with conditional distribution)
 	A  <- names(confound)
 
 	# Descendant types

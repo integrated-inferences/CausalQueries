@@ -69,19 +69,16 @@ set_restrictions <- function(model,
 
 	if(is.null(labels) & is.null(statement) ) {message("No restrictions provided: provide either a causal statement or nodal type labels."); return(model)}
 
-	if(is.null(statement)){
-		model <- restrict_nodal_types_labels(model,
-																				 labels = labels,
-																				 keep = keep)
-	} else {
-		model <- gbiqq:::restrict_nodal_types_exp(model,
-																			statement = statement,
-																			join_by = join_by,
-																			keep = keep,
-																			verbose = verbose)
-	}
+	if(!is.null(labels) & !is.null(statement) ) {message("Provide either a causal statement or nodal type labels, not both."); return(model)}
 
+	# Labels
+	if(!is.null(labels))		model <-
+			restrict_by_labels(model, labels = labels, keep = keep)
 
+	# Statement
+	if(!is.null(statement))		model <-
+			gbiqq:::restrict_by_query(model, statement = statement,
+																			 join_by = join_by, keep = keep, verbose = verbose)
 
 	#model$causal_types <- update_causal_types(model)
 	#nodal_types1 <- get_nodal_types(model)
@@ -115,11 +112,11 @@ set_restrictions <- function(model,
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @param verbose Logical. Whether to print expanded query on the console.
 #'
-restrict_nodal_types_exp <- function(model,
-																		 statement,
-																		 join_by = "|",
-																		 keep = FALSE,
-																		 verbose = FALSE){
+restrict_by_query <- function(model,
+															statement,
+															join_by = "|",
+															keep = FALSE,
+															verbose = FALSE){
 
 	# nodal_types    <- get_nodal_types(model)
 	nodal_types    <- model$nodal_types
@@ -182,7 +179,7 @@ restrict_nodal_types_exp <- function(model,
 
 
 	}
-
+  model$causal_types <- update_causal_types(model)
 	model
 }
 
@@ -190,10 +187,10 @@ restrict_nodal_types_exp <- function(model,
 #' Reduce nodal types using labels
 #'
 #' @param model a model created by make_model()
-#' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
+#' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #'
-restrict_nodal_types_labels <- function(model, labels, keep = FALSE){
+restrict_by_labels <- function(model, labels, keep = FALSE){
 
 	variables   <- model$variables
 	# nodal_types <- get_nodal_types(model)
@@ -307,14 +304,13 @@ update_causal_types <- function(model){
 	possible_types <-	get_nodal_types(model)
 	variables      <- names(possible_types)
 
-	# Remove var names from nodal types
+	# Remove var name prefix from nodal types (Y00 -> 00)
 	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
 	names(possible_types) <- variables
 
 	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-	return_df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
+	data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 
-	return(return_df)
 }
 
 
