@@ -68,7 +68,7 @@ make_model <- function(statement){
  model <- list(dag = dag, step = "dag", variables = variables, statement = statement)
 
  # Nodal types
- nodal_types <- get_nodal_types(model)
+ nodal_types <- get_nodal_types(model, collapse = TRUE)
  model$nodal_types <- nodal_types
 
  # Parameters dataframe

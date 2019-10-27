@@ -11,10 +11,10 @@ reveal_outcomes(model, dos = NULL, node = NULL)
 
 \item{dos}{A named list. Do actions defining variable values, e.g., \code{list(X = 0, M = 1)}.}
 
-\item{node}{An optional quoted name of the variable whose outcome should be revealed. If specified  all values of parents need to be specified via \code{dos}.}
+\item{node}{An optional quoted name of the variable whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.}
 }
 \value{
-A data.frame object of revealed data.
+A data.frame object of revealed data for each nodel (columns) given causal / nodal type (rows) .
 }
 \description{
 Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous variables.
@@ -32,4 +32,5 @@ reveal_outcomes(model, dos = list(X1 = 1, M = 0))
 
 model <- make_model("X->M->Y")
 reveal_outcomes(model, dos = list(M = 1), node = "Y")
+
 }

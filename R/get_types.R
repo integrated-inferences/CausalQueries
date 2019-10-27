@@ -25,7 +25,7 @@
 #' query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
 #' x <- get_types(model, query)
 #'
-#' query <- "(Y[X =.]==1)"
+#' query <- "(Y[X = .]==1)"
 #' get_types(model, query)
 
 
@@ -92,9 +92,7 @@ get_types <- function(model, query, join_by = "|"){
 			names(dos)[[j]] <- var_name
 		}
 
-
-
-    b <- 1:bracket_starts[i]
+    b   <- 1:bracket_starts[i]
 		var <- paste0(w_query[b], collapse = "")
 		var <- st_within(var)
 		var <- var[length(var)]
@@ -121,17 +119,22 @@ get_types <- function(model, query, join_by = "|"){
     }
 	}        # end of [] application
 
-	w_query <- paste0(w_query, collapse = "")
-	w_query <- gsub(" ", "", w_query)
-	w_query <- paste0("q <- ", w_query)
+	# Format the query as statement
+	w_query <- {w_query <- paste0(w_query, collapse = "")
+	            w_query <- gsub(" ", "", w_query)
+	            paste0("q <- ", w_query)}
+
+	# Magic
 	types <- c(eval(parse(text = w_query),  eval_var))
 
+	# Clean up
 	names(eval_var) <- list_names
-	names(types) <- attr(eval_var, "type_names")
+	names(types)    <- attr(eval_var, "type_names")
 
 	if(is.logical(types))  type_list <- names(types)[types]
 	if(!is.logical(types)) type_list <- NULL
 
+  # Return
   return_list <- 	list(types = types,
   										 query = query,
   										 evaluated_variables   = eval_var,
@@ -143,7 +146,6 @@ get_types <- function(model, query, join_by = "|"){
 	return(return_list)
 
 }
-
 
 
 #' @export

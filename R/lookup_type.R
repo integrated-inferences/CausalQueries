@@ -38,7 +38,6 @@
 #' query <- complements("X", "M", "Y")
 #' lookup_type(model, query)
 
-
 lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 
 	# Housekeeping
@@ -180,7 +179,6 @@ lookup_type_internal <- function(model, query){
   return(revealed_vars)
 
 }
-
 
 
 #' @export

@@ -94,7 +94,7 @@ set_restrictions <- function(model,
 	# Statement
 	if(!is.null(statement))		model <-
 			gbiqq:::restrict_by_query(model, statement = statement,
-																			 join_by = join_by, keep = keep, verbose = verbose)
+																join_by = join_by, keep = keep, verbose = verbose)
 
 	# Remove spare P matrix columns for causal types for which there are no component nodal types
 	if(!is.null(model$P)){
