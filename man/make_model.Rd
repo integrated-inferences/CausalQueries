@@ -22,4 +22,14 @@ modelXKY <- make_model("X -> K -> Y; X -> Y")
 
 # Example where cyclicaly dag attempted
 \dontrun{modelXKX <- make_model("X -> K -> X")}
+
+# Examples with confounding
+model <- make_model("X->Y; X <-> Y")
+model$P
+model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2")
+dim(model$P)
+model$P
+model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
+dim(model$P)
+model$parameters_df
 }

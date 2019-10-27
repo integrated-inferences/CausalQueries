@@ -35,6 +35,7 @@ for(i in length(models)){
 			expect_equal(nrow(get_causal_types(model1)), nrow(get_causal_types(model2)))
 
 
+
 		}
 	)
 }
@@ -43,3 +44,20 @@ for(i in length(models)){
 
 
 
+
+testthat::test_that(
+	desc = "Layering restrictions and P matrix",
+	code = {
+
+
+		# Removing columns from P after restrictions
+		model_a <- make_model("X->Y") %>%
+			set_parameter_matrix() %>%
+			set_restrictions("X==1")
+
+		model_b <- make_model("X->Y") %>%
+			set_restrictions("X==1") %>%
+			set_parameter_matrix()
+
+		expect_equal(ncol(model_a$P), ncol(model_b$P))
+		})

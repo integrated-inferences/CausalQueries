@@ -12,7 +12,7 @@ set_restrictions(model, statement = NULL, join_by = "|",
 
 \item{statement}{A quoted expressions defining the restriction.}
 
-\item{join_by}{A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
+\item{join_by}{A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.}
 
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
 
@@ -32,6 +32,23 @@ Restrict a model's parameter space. If priors exist, prior probabilities are red
 model <- make_model("X->Y") \%>\%
   set_restrictions(statement = c("X == 0"))
 
+model <- make_model("X -> Y <- W") \%>\%
+  set_restrictions(c(decreasing("X", "Y"), substitutes("X", "W", "Y")))
+
+model$parameters_df
+
+model <- make_model("X-> Y <- W") \%>\%
+  set_restrictions(statement = decreasing("X", "Y"))
+model$parameters_df
+
+model <- make_model("X->Y") \%>\%
+  set_restrictions(decreasing("X", "Y"))
+model$parameters_df
+
+model <- make_model("X->Y") \%>\%
+  set_restrictions(c(increasing("X", "Y"), decreasing("X", "Y")))
+model$parameters_df
+
 # Restrict to define a model with monotonicity
 model <- make_model("X->Y") \%>\%
 set_restrictions(statement = c("Y[X=1] < Y[X=0]"))
@@ -43,7 +60,6 @@ set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 get_parameter_matrix(model)
 
 # Restrict multiple nodes
-# FLAG: CHECK PERFORMANCE
 model <- make_model("X->Y<-M; X -> M" ) \%>\%
 set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
 get_parameter_matrix(model)

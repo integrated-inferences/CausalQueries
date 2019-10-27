@@ -43,10 +43,19 @@
 #' @examples
 #'
 #' model <- make_model("X -> Y") %>%
+#'   set_confound(list(X = "Y"))
+#'
+#'model <- make_model("X -> Y") %>%
 #'   set_confound(list(X = "(Y[X=1]>Y[X=0])"))
 #'
 #' confound <- list(X = "(Y[X=1]>Y[X=0])",
 #'                  X = "(Y[X=1]<Y[X=0])")
+#'
+#' model <- make_model("X -> M -> Y") %>%
+#' set_confound (list(X = "(Y[X=1]>Y[X=0])",
+#'                  M = "Y",
+#'                  X = "(Y[X=1]<Y[X=0])"))
+#'
 #'
 #' model <- make_model("X -> Y") %>% set_confound(confound)
 #'
@@ -71,39 +80,50 @@
 
 set_confound <-  function(model, confound = NULL){
 
+  # Housekeeping
+
 	if(is.null(confound)) {message("No confound provided"); return(model)}
-	if(is.null(model$P)) model <- set_parameter_matrix(model)
+	if(is.null(model$P))   model <- set_parameter_matrix(model)
 
-  P         <- model$P
-	pars      <- rownames(P)
-	types     <- colnames(P)
-
-	# Check to see if any statements involve full confounding and redefine lists
-	# checks <- lapply(confound, function(x) x %in% model$variables)
-
-	# Origin (Node with conditional distribution)
-	A  <- names(confound)
+  P            <- model$P
+	pars         <- rownames(P)
+	types_matrix <- model$causal_types
+	types_names  <- rownames(types_matrix )
 
 	# Descendant types
-	D <-lapply(confound, function(x) {get_types(model, x)$type_list})
 
-	# Squeeze in exploded lists if needed
-	# if(any(checks)){
-	# 	D <-lapply(confound[checks], function(x) {
-	# 		if(x %in% model$variables) {explode(x)
-	# 		} else {
-	# 	get_types(model, x)$type_list
-	# 		}})}
-	# This figure out which causal types contain nodal types
-	# ct <- get_causal_types(model)
-	# causal_type_names <- colnames(P)
-	# nt <- get_nodal_types(model, collapse = FALSE)
-	# yt <- apply(nt$Y, 1, paste, collapse = "")
-	# x <- lapply(yt, function (t) causal_type_names[ct$Y %in% t])
-	# names(x) <- rep("X", length(x))
+	# Check to see if any statements involve full confounding and redefine lists
+	 checks <- unlist(lapply(confound, function(x) x %in% model$variables))
+
+	 	# Function to either get types for a simple confound, or else expand to list for total confound
+	 	f <- function(i) {
+	 		x <- confound[i]
+	 		if(checks[i]){
+	 			nodes <- types_matrix[x[[1]]][[1]]
+	 			# -1 below to leave a residual nodal type
+	 			 exploded_list <- lapply(unique(nodes)[-1], function(n) types_names[n == nodes])
+	 			 #exploded_list <- lapply(unique(nodes), function(n) types_names[n == nodes])
+	 			names(exploded_list) <- rep(names(x), length(exploded_list))
+	 			return(exploded_list)
+	 		}
+	 		if(!checks[i]) {
+	 			simple_list <- list((get_types(model, x[[1]])$type_list))
+	 			names(simple_list) <- names(x)
+	 			simple_list
+	 	}}
+
+	 	D <- f(1)
+	 	if(length(confound)>1) for(j in 2:length(confound)) D <- c(D, f(j))
+
+	 	# Origin (Node with conditional distribution)
+	 	A <- names(D)
+
+
+	# Magic
 
 	for(j in 1:length(A)) {
 
+		# Housekeeping for renaming confoud vars
 		a <- A[j]   # param_name
 
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
@@ -111,8 +131,8 @@ set_confound <-  function(model, confound = NULL){
 
 
 		if(!any(existing_ancestor)) {
-			model$parameters_df$param_set[model$parameters_df$param_set == a] <- paste0(a, "-", 1)
-			top_digit = 1
+			model$parameters_df$param_set[model$parameters_df$param_set == a] <- paste0(a, "-", 0)
+			top_digit = 0
 		} else {
 			top_digit <- max(as.numeric(sapply(model$parameters$param_set[existing_ancestor],
 																						function(j) strsplit(j, "[-]")[[1]][2])))
@@ -124,7 +144,7 @@ set_confound <-  function(model, confound = NULL){
 		# new param_set_name
 		a2 <- paste0(a, "-", top_digit + 1)
 
-		# Extend priors and parameters
+		# Now extend priors and parameters
 
 		to_add <- model$parameters_df %>%
 			dplyr::filter(param_set == a1) %>%
@@ -138,7 +158,7 @@ set_confound <-  function(model, confound = NULL){
 			group_split(model$parameters_df$param_set[model$parameters_df$param_family==a], keep = FALSE)
 		P_new <- 	1*(Reduce(f = "+", P_new) >0)
 		# Zero out duplicated entries: 1
-		P_new[, !(types %in% D[[j]])] <- 0
+		P_new[, !(types_names %in% D[[j]])] <- 0
 		P   <- rbind(P_new, P)
 
 		# Extend parameter_df
@@ -148,23 +168,24 @@ set_confound <-  function(model, confound = NULL){
 
 		# Zero out duplicated entries: 2
 		P[(model$parameters_df$param_family  == a) & (model$parameters_df$param_set!= a2),
-			types %in% D[[j]]]    <- 0
+			types_names %in% D[[j]]]    <- 0
 
 	}
 
+
 	# Clean up for export
 	rownames(P) <- model$parameters_df$param_names
-	to_keep <- apply(P, 1, sum)!=0
+	to_keep     <- apply(P, 1, sum)!=0
 	model$parameters_df <- dplyr::filter(model$parameters_df, to_keep)
 	P <- P[to_keep,]
 
 
-	# Make a dataset of ancestor to descendant confound relations
+	# Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
 	V <- lapply(confound, var_in_query, model= model)
 	confounds_df <- data.frame(
-		ancestor = rep(as.vector(names(V)), times = as.vector(unlist(lapply(V, length)))),
-	  descendant = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
-	confounds_df <- confounds_df[confounds_df$ancestor != confounds_df$descendant,]
+		conditioned = rep(as.vector(names(V)), times = as.vector(unlist(lapply(V, length)))),
+	  conditioned_on = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
+	confounds_df <- confounds_df[confounds_df$conditioned != confounds_df$conditioned_on,]
 	rownames(confounds_df) <- NULL
 
 	if(!is.null(attr(P, "confounds"))) confounds_df <- rbind(attr(P, "confounds"), confounds_df)

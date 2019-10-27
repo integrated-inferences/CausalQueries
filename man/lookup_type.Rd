@@ -22,6 +22,10 @@ A list containing the types and the evaluated expression. `manipulated_outcomes`
 Lookup nodal types according to a query
 }
 \examples{
+model <- make_model("X->Y")
+query <- "(Y[X=0] > Y[X=1])"
+x <- lookup_type(model, query)
+
 model <- make_model("X -> M -> Y; X->Y")
 query <- "(Y[X=0] > Y[X=1])"
 x <- lookup_type(model, query)
@@ -33,6 +37,7 @@ x <- lookup_type(model, query)
 #
 query <- "(Y[] == 1)"
 x <- lookup_type(model, query)
+x <- lookup_type(model, query, join_by = "&")
 
 query <- "(X == 1)"
 x <- lookup_type(model, query)
@@ -40,4 +45,8 @@ x <- lookup_type(model, query)
 query <- "(M[X=1] == M[X=0])"
 x <- lookup_type(model, query)
 
+# Complements
+model <- make_model("M->Y; X->Y")
+query <- complements("X", "M", "Y")
+lookup_type(model, query)
 }

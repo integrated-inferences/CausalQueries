@@ -10,6 +10,10 @@
 #' @importFrom dplyr select
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the variables on the left of a [] expression
 #' @examples
+#' model <- make_model("X->Y")
+#' query <- "(Y[X=0] > Y[X=1])"
+#' x <- lookup_type(model, query)
+#'
 #' model <- make_model("X -> M -> Y; X->Y")
 #' query <- "(Y[X=0] > Y[X=1])"
 #' x <- lookup_type(model, query)
@@ -21,6 +25,7 @@
 #' #
 #' query <- "(Y[] == 1)"
 #' x <- lookup_type(model, query)
+#' x <- lookup_type(model, query, join_by = "&")
 #'
 #' query <- "(X == 1)"
 #' x <- lookup_type(model, query)
@@ -28,14 +33,22 @@
 #' query <- "(M[X=1] == M[X=0])"
 #' x <- lookup_type(model, query)
 #'
+#' # Complements
+#' model <- make_model("M->Y; X->Y")
+#' query <- complements("X", "M", "Y")
+#' lookup_type(model, query)
+
+
 lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 
 	# Housekeeping
 	# 1. remove (), split by logical symbol and trim
+	# w_query contains parts of query
 	w_query <- gsub("\\(|\\)", "", query)
-	w_query <- str_split(w_query, "\\==|>|<|>=|<=|!=|\\&|\\|")
+	w_query <- str_split(w_query, "\\==|\\+|\\-|>|<|>=|<=|!=|\\&|\\|")  #
 	w_query <- sapply(unlist(w_query), function(x) trimws(x))
 	dos         <- TRUE
+
 	# 2. Grab outcome variables in query, and stop if there are more than one var in query
 	# allowed: Y[X =1] == 1 & Y[X=0] ==1
 	# not allowed: M[X=1] == 1 & Y[X=0] ==1
@@ -44,48 +57,23 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		stop(paste0("Can't lookup types for variables " , paste0(var[!duplicated(var)], collapse = ", "), " simultaneously. Please write expression as separate queries"))
 
 	# If there are any do operations
+	########################################################
 	if(grepl("\\[|\\]",  query)){
 
-		# Sapply to add parents no specified
-		# e.g model = "X->Y<-M"; query = Y[M=0] ->Y[M=0, X=.]
-	  w_query <- sapply(w_query, function(q){
+		# Add any unspecified parents: e.g for model = "X->Y<-M"; query = Y[M=0] -> Y [M=0, X=.]
+		q_names <-  trimws(names(w_query))
+		w_query <- sapply(w_query, gbiqq:::add_dots, model = model)
+	  names(w_query) <- q_names
 
-		  # Skip numeric strings-------------------------------
-		  # "query = `Y[] == 1`  would be splitted as c(`Y[]`, 1)
-		  # and 1 doesn't need to be processed "
-		  if(!grepl("\\D", q)) return(q)
-
-		 	var <- st_within(q)
-		 	if(!var %in% model$variables)
-		 		stop(paste0("Variable "), var, " not in model")
-      # Only allow specification of var's parents
-
-		 	# Identify parents not specified in query and paste them as "parent = ."
-		 	v_parents        <- get_parents(model)[[var]]
-		 	parents_in_q     <- gbiqq:::nodes_in_statement(v_parents, q)
-		 	not_parents      <- gbiqq:::list_non_parents(model, var)
-		 	not_parents_q    <- gbiqq:::nodes_in_statement(not_parents, q)
-		  missing_parents  <- v_parents [!v_parents%in% parents_in_q]
-
-		 	if(length(not_parents_q) > 0 ){
-		 	conjugation <- ifelse(length(not_parents_q)>1, "are not parents of", "is not a parent of")
-		 	subjects <- paste0(not_parents_q, collapse = ", ")
-		 	stop(paste(subjects, conjugation, var))
-		 	}
-
-		 	if(length(v_parents) ==  length(parents_in_q)) return(q)
-		 	 else {
-		 	 q <- add_wildcard(node, statement = q, parents = v_parents, missing_parents)
-		 	 return(q)
-		 	 }})
-
-	  names(w_query) <- trimws(names(w_query))
-	  .w_query       <- quoted_query <- query
+	  .w_query <- quoted_query <- query
 
 
-	  # Substitute expressions in original query for modified expression in w_query
-	  # paste backslashes \\ and
-	  # ` ` for matching (quoted_query)
+   ###########################################################################
+   #  Generate a "quoted query" of the form "(`Y[X=0]` > `Y[X=1]`)".
+	 #  This can then be evaluated on a potential outcomes dataset.
+	 # Substitute expanded in w_query back into original query
+	 # paste backslashes \\ and  ` ` for matching (quoted_query)
+
 	  for (i in 1:length(w_query)) {
 	  	var              <- st_within(names(w_query)[i])
 	  	string_i         <- gsub(paste0("\\[|\\]|",var), "", names(w_query)[i])
@@ -99,8 +87,9 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 	 	 quoted_query <- expand_wildcard(quoted_query, join_by = join_by, verbose = FALSE)
 	 }
 
+	  # FLAG: Why is this repeated
 	  w_query <- gsub("\\(|\\)", "",   .w_query )
-	  w_query <- str_split(w_query, "\\==|>|<|>=|<=|!=|\\&|\\|")
+	  w_query <- str_split(w_query, "\\==|>|<|>=|\\+|\\-|<=|!=|\\&|\\|")
 	  w_query <- sapply(unlist(w_query), function(x) trimws(x))
 
 	} else{
@@ -111,12 +100,15 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		node <- variables[sapply(variables, function(v) grepl(v, query))]
 	}
 
+	# Magic
+	# The query df provide var outcomes for relevant queried conditions, rows are types, columns are conditions
   .query_df <- lapply(w_query, function(wq) gbiqq:::lookup_type_internal(model, query = wq))
   query_df  <- do.call(cbind, .query_df)
   if(dos) colnames(query_df) <- sapply(names(.query_df), trimws)
 
-
+  # The query is then evaluated on this df to see which rows satisfy the query
   value <- c(eval(parse(text = quoted_query), envir = query_df))
+
   names(value) <- rownames(query_df)
 
   return_list <- list(types = value,
@@ -124,6 +116,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
   										expanded_query = .w_query,
 								  		evaluated_variables = query_df,
   										node  = node[1])
+
   class(return_list) <- "nodal_types"
   return(return_list)
 }
@@ -231,4 +224,47 @@ print.summary.nodal_types <- function(x, ...){
 }
 
 
+#' Helper to fill in missing do operators in causal expression
+#'
+#' @param q a causal query
+#' @param model a model
+#' @examples
+#' model <- make_model("X -> Y <- M")
+#' gbiqq:::add_dots("Y[X=1]", model)
+#' # FLAG : FORMAT NOT RIGHT
+#' gbiqq:::add_dots("Y[]", model)
+#'
+add_dots <- function(q, model){
 
+	# Skip numeric strings-------------------------------
+	# "query = `Y[] == 1`  would be splitted as c(`Y[]`, 1)
+	# and 1 doesn't need to be processed "
+	if(!grepl("\\D", q)) return(q)
+
+	var <- st_within(q)
+	if(!all(var %in% model$variables))
+		stop(paste0("Outcome variable "), var, " not in model")
+	# Only allow specification of var's parents
+
+	# Identify parents not specified in query and paste them as "parent = ."
+	v_parents        <- get_parents(model)[[var]]
+	parents_in_q     <- gbiqq:::nodes_in_statement(v_parents, q)
+	not_parents      <- gbiqq:::list_non_parents(model, var)
+	not_parents_q    <- gbiqq:::nodes_in_statement(not_parents, q)
+	missing_parents  <- v_parents [!v_parents%in% parents_in_q]
+
+	if(length(not_parents_q) > 0 ){
+		conjugation <- ifelse(length(not_parents_q)>1, "are not parents of", "is not a parent of")
+		subjects <- paste0(not_parents_q, collapse = ", ")
+		stop(paste(subjects, conjugation, var))
+	}
+
+	node <- var
+
+	# Add wildcard if needed
+	if(length(v_parents) !=  length(parents_in_q))
+		q <- gbiqq:::add_wildcard(node, statement = q, parents = v_parents, missing_parents)
+
+	q
+
+	}

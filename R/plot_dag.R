@@ -15,8 +15,8 @@
 #' }
 #'
 translate_dagitty <- function(model){
-  dag <- model$dag
-	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "),collapse = " ; "),collapse = "")
+  dag   <- model$dag
+	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "), collapse = " ; "),collapse = "")
 
 	if(!is.null(model$P)) if(!is.null(attr(model$P, "confounds"))) {
 		conf_df <- attr(model$P, "confounds")

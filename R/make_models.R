@@ -13,17 +13,37 @@
 #'
 #' # Example where cyclicaly dag attempted
 #' \dontrun{modelXKX <- make_model("X -> K -> X")}
+#'
+#' # Examples with confounding
+#' model <- make_model("X->Y; X <-> Y")
+#' model$P
+#' model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2")
+#' dim(model$P)
+#' model$P
+#' model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
+#' dim(model$P)
+#' model$parameters_df
 
 make_model <- function(statement){
 
-	dag <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}")))
-	if(!all(dag$e == "->")) stop("Please provide directed edges only")
-	dag  <- dag[,1:2]
+	if(!(is.character(statement))) stop("model statement should be of type character")
+
+	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
+		data.frame(stringsAsFactors = FALSE)
+
+	dag  <- x %>%
+		dplyr::filter(e=="->") %>%
+		dplyr::select(v,w)
+
 	names(dag) <- c("parent", "children")
 
-	# Procedure for unique ordering of variables
+	# allowable names
+	node_names <- unique(c(as.character(dag$parent), as.character(dag$children)))
+	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
+	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try underscore?")
 
-	if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
+	# Procedure for unique ordering of variables
+		if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
 
 	gen <- rep(NA, nrow(dag))
 	j = 1
@@ -31,9 +51,9 @@ make_model <- function(statement){
 	gen[!(dag$parent %in% dag$children)] <- j
 	while(sum(is.na(gen))>0) {
 		j <- j+1
-		x <- (dag$parent %in% dag$children[is.na(gen)])
-		if(all(x[is.na(gen)])) stop(paste("Cycling at generation ", j))
-  	gen[!x & is.na(gen)] <- j
+		xx <- (dag$parent %in% dag$children[is.na(gen)])
+		if(all(xx[is.na(gen)])) stop(paste("Cycling at generation ", j))
+  	gen[!xx & is.na(gen)] <- j
   	}
 
   dag <- dag[order(gen, dag[,1], dag[,2]),]
@@ -42,9 +62,10 @@ make_model <- function(statement){
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
+ variables = c(exog_node, endog_node)
 
  # Model is a list
- model <- list(dag = dag, step = "dag", variables = c(exog_node, endog_node), statement = statement)
+ model <- list(dag = dag, step = "dag", variables = variables, statement = statement)
 
  # Nodal types
  nodal_types <- get_nodal_types(model)
@@ -64,6 +85,38 @@ make_model <- function(statement){
   stringsAsFactors = FALSE
 
   )
+
+ # Add causal types
+ model$causal_types <- gbiqq:::update_causal_types(model)
+
+ # Add confounds if any provided
+ # extract confounds df
+ if(any(x$e=="<->")) {
+
+	 	confounds <- NULL
+
+	 	z  <- x %>% dplyr::filter(e=="<->") %>% dplyr::select(v,w)
+	 	z$v <- as.character(z$v)
+	 	z$w <- as.character(z$w)
+
+	 	# Reorder by reverse causal order (thus in X -> Y we have type_Y conditional on type_X)
+	 	for(i in 1:nrow(z)){
+	 		z[i,] <- rev(variables[variables %in% sapply(z[i,], as.character)])
+	 	}
+	 	# Generate confounds list
+	 	confounds <- as.list(as.character(z$w))
+	 	names(confounds) <- z$v
+
+	 	# Check on ineligible confound statements
+	 	if(any(!(c(z$v, z$w) %in% variables)))
+	 	stop("Confound relations (<->) must be between nodes contained in the dag
+	 				(i.e. that also have a direct relation (->).")
+
+	 	model <- set_confound(model, confounds)
+
+	  }
+
+
 
  # Prep for export
  attr(model, "endogenous_variables") <- endog_node

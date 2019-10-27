@@ -52,10 +52,19 @@ Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint d
 \examples{
 
 model <- make_model("X -> Y") \%>\%
+  set_confound(list(X = "Y"))
+
+model <- make_model("X -> Y") \%>\%
   set_confound(list(X = "(Y[X=1]>Y[X=0])"))
 
 confound <- list(X = "(Y[X=1]>Y[X=0])",
                  X = "(Y[X=1]<Y[X=0])")
+
+model <- make_model("X -> M -> Y") \%>\%
+set_confound (list(X = "(Y[X=1]>Y[X=0])",
+                 M = "Y",
+                 X = "(Y[X=1]<Y[X=0])"))
+
 
 model <- make_model("X -> Y") \%>\% set_confound(confound)
 

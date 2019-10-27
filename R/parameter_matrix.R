@@ -13,10 +13,15 @@ make_parameter_matrix  <- function(model){
 	nodal_types     <- get_nodal_types(model)
 #	param_set       <- unlist(mapply(function(a,b) rep(a,b), names(nodal_types), lapply(nodal_types, length), SIMPLIFY = FALSE))
 #	param_set       <- 	model$parameters_df$param_set
-	types           <- causal_type_names(get_causal_types(model))
+	types           <- gbiqq:::causal_type_names(get_causal_types(model))
 	pars            <- unlist(nodal_types)
 
 	# Which nodal_types correspond to a type
+	P <- sapply(1:nrow(types), function(i){
+		type <- types[i,]
+		sapply(pars, function(nodal_type)
+			all(nodal_type %in% type) )})*1
+
 	P <- sapply(1:nrow(types), function(i){
 		type <- types[i,]
 		sapply(pars, function(nodal_type)

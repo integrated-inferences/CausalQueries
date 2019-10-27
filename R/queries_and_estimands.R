@@ -137,8 +137,8 @@ query_model <- function(model,
 												subset = NULL){
 
 	# Forgive user
-	if(is.null(queries) & !is.null(query))  queries <- query
-	if(is.null(subsets) & !is.null(subset)) subsets <- subset
+	if(is.null(unlist(queries)) & !is.null(query))  queries <- query
+	if(is.null(unlist(subsets)) & !is.null(subset)) subsets <- subset
 
 	# Housekeeping
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){

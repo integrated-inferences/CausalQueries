@@ -30,4 +30,6 @@ reveal_outcomes(model)
 model <- make_model("X1->Y;X2->M;M->Y")
 reveal_outcomes(model, dos = list(X1 = 1, M = 0))
 
+model <- make_model("X->M->Y")
+reveal_outcomes(model, dos = list(M = 1), node = "Y")
 }
