@@ -4,8 +4,9 @@ Title: Generalized BIQQ
 Version: 0.0.2
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
-             person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
-             person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut", "cre")),
+             person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut", "cre")),
+             person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut")),
+             person("Julio", "Solis", email = "juliosolisar@gmail.com", role = c("aut")),
              person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("aut")))
 Description: Define and update arbitrary binary probabilistic structural models.
 License: MIT + file LICENSE
@@ -13,21 +14,20 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 Depends:
-		R (>= 3.3.0),
-		Rcpp (>= 0.12.0),
-		dplyr,
-		methods
+	R (>= 3.3.0),
+	Rcpp (>= 0.12.0),
+	dplyr,
+	methods
 Imports:
     dagitty,
     gtools,
     rstan,
-    dplyr,
-    DeclareDesign,
     rlang (>= 0.2.0),
     stringr,
     randomizr
 Suggests: 
     testthat,
     rmarkdown,
-    knitr
+    knitr,
+    DeclareDesign
 VignetteBuilder: knitr

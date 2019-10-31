@@ -16,7 +16,7 @@ lookup_type(model, query, join_by = "|", verbose = FALSE)
 \item{verbose}{Logical. Whether to print expanded query on the consule.}
 }
 \value{
-A list containing the types and the evaluated expression. `manipulated_outcomes` are the variables on the left of a [] expression
+A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
 }
 \description{
 Lookup nodal types according to a query

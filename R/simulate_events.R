@@ -15,8 +15,8 @@
 #'
 #' @examples
 #' model <- make_model("X -> Y")
-#' draw_data_events(model = model)
-draw_data_events <- function(model, n = 1,
+#' simulate_events(model = model)
+simulate_events <- function(model, n = 1,
                              w = NULL,
                              P = NULL,
                              A = NULL,
@@ -27,7 +27,7 @@ draw_data_events <- function(model, n = 1,
   if(is.null(w)){
     if(is.null(P)) 	P <- get_parameter_matrix(model)
     if(is.null(A)) 	A <- get_ambiguities_matrix(model)
-    w <- draw_event_prob(model, P, A, parameters = parameters, using = using)
+    w <- get_event_prob(model, P, A, parameters = parameters, using = using)
   }
 
   # Draw events (Compact dataframe)

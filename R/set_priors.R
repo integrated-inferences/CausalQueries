@@ -24,7 +24,7 @@
 #' @param model A model created with \code{make_model}
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
-#' @param node A string (or list of strings) indicating variables for which priors are to be altered
+#' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
 #' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
@@ -130,7 +130,7 @@ make_priors <- function(model,
 #' @param model A model created with \code{make_model}
 #' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
-#' @param node A string indicating variables for which priors are to be altered
+#' @param node A string indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query that determines nodal types for which priors are to be altered
 #' @param confound A confound statement that restricts nodal types for which priors are to be altered
@@ -219,8 +219,8 @@ make_priors_single <- function(model,
 
 	# A1 Do not alter if node is not in listed nodes
 	if(!all(is.na(node))){
-		if(!all(node %in% model$variables))
-			stop("listed nodes must be variables in the model")
+		if(!all(node %in% model$nodes))
+			stop("listed nodes must be nodes in the model")
 		to_alter[!(model$parameters_df$param_family %in% node)] <- FALSE}
 
 	# A2 Do not alter if nodal type is not part of a given statement
@@ -239,7 +239,7 @@ make_priors_single <- function(model,
 	# For instance if a condition is "Y[X=1]>Y[X=0]" then any parameter that does *not*
 	# contribute to a causal type satisfying this condition is not modified
 	if(!all(is.na(confound))){
-		P_short <- model$P[, get_types(model, confound[[1]])$types]
+		P_short <- model$P[, get_query_types(model, confound[[1]])$types]
 		to_alter[(apply(P_short, 1, sum) == 0)] <- FALSE
 	}
 
@@ -294,7 +294,7 @@ make_priors_single <- function(model,
 #' @param priors A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
-#' @param node A string (or list of strings) indicating variables for which priors are to be altered
+#' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
 #' @param confound A confound statement (or list of statements) that restricts nodal types for which priors are to be altered
@@ -359,7 +359,7 @@ set_prior_distribution <- function(model, n_draws = 4000) {
   if(is.null(model$P)) model <- set_parameter_matrix(model)
 
   # Draw distribution
-  model$prior_distribution <- t(replicate(n_draws, draw_parameters(model, using = "priors")))
+  model$prior_distribution <- t(replicate(n_draws, make_parameters(model, using = "priors")))
 
   model
 }

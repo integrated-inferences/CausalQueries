@@ -2,8 +2,8 @@
 #'
 #' Generate a statement for Y monotonic (increasing) in X
 #'
-#' @param X input variable
-#' @param Y outcome variable
+#' @param X input node
+#' @param Y outcome node
 #' @family statements
 #' @export
 #'
@@ -26,8 +26,8 @@ increasing <- function(X, Y){
 #'
 #' Generate a statement for Y monotonic (decreasing) in X
 #'
-#' @param X input variable
-#' @param Y outcome variable
+#' @param X input node
+#' @param Y outcome node
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -50,15 +50,15 @@ decreasing <- function(X, Y){
 #'
 #' Generate a statement for X1, X1 interact in the production of Y
 #'
-#' @param X1 input variable 1
-#' @param X2 input variable 2
-#' @param Y outcome variable
+#' @param X1 input node 1
+#' @param X2 input node 2
+#' @param Y outcome node
 #' @family statements
 #' @export
 #' @return A character statement of class statement
 #' @examples
 #' interacts("A", "B", "Y")
-#' get_types(model = make_model("X-> Y <- W"),
+#' get_query_types(model = make_model("X-> Y <- W"),
 #'          query = interacts("X", "W", "Y"))
 #'
 
@@ -80,9 +80,9 @@ interacts <- function(X1, X2, Y){
 #'
 #' Generate a statement for X1, X1 complement each other in the production of Y
 #'
-#' @param X1 input variable 1
-#' @param X2 input variable 2
-#' @param Y outcome variable
+#' @param X1 input node 1
+#' @param X2 input node 2
+#' @param Y outcome node
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -107,15 +107,15 @@ complements <- function(X1, X2, Y){
 #'
 #' Generate a statement for X1, X1 substitue for each other in the production of Y
 #'
-#' @param X1 input variable 1
-#' @param X2 input variable 2
-#' @param Y outcome variable
+#' @param X1 input node 1
+#' @param X2 input node 2
+#' @param Y outcome node
 #' @export
 #' @family statements
 #' @return A character statement of class statement
 #' @examples
 #'
-#'get_types(model = make_model("A -> B <- C"),
+#'get_query_types(model = make_model("A -> B <- C"),
 #'          query = substitutes("A", "C", "B"))
 #'
 #'query_model(model = make_model("A -> B <- C"),

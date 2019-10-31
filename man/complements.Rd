@@ -7,11 +7,11 @@
 complements(X1, X2, Y)
 }
 \arguments{
-\item{X1}{input variable 1}
+\item{X1}{input node 1}
 
-\item{X2}{input variable 2}
+\item{X2}{input node 2}
 
-\item{Y}{outcome variable}
+\item{Y}{outcome node}
 }
 \value{
 A character statement of class statement

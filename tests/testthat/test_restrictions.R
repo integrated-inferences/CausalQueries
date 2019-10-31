@@ -13,7 +13,7 @@ cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 for(i in length(dags)){
 
 	testthat::test_that(
-		desc = "Simple restrictions on exogenous variables work",
+		desc = "Simple restrictions on exogenous nodes work",
 		code = {
 			model <- make_model(dags[i]) %>%
 							 set_restrictions(exogenous[i])

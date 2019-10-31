@@ -15,13 +15,13 @@ data_strategy(model, complete_data = NULL, n_obs = NULL,
 
 \item{n_obs}{Scalar giving number of observations in \code{complete_data}}
 
-\item{parameters}{A specific parameter vector. If not provided parameters are drawn using `using` and `draw_parameters`}
+\item{parameters}{A specific parameter vector. If not provided parameters are drawn using `using` and `make_parameters`}
 
 \item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 
 \item{n}{List indicating number of observations to be observed at each step}
 
-\item{vars}{List indicating number which variables to be observed at each step}
+\item{vars}{List indicating number which nodes to be observed at each step}
 
 \item{probs}{List indicating observation probabilities at each step}
 

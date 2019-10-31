@@ -8,7 +8,7 @@
 #' @export
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select
-#' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the variables on the left of a [] expression
+#' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
 #' @examples
 #' model <- make_model("X->Y")
 #' query <- "(Y[X=0] > Y[X=1])"
@@ -48,12 +48,12 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 	w_query <- sapply(unlist(w_query), function(x) trimws(x))
 	dos         <- TRUE
 
-	# 2. Grab outcome variables in query, and stop if there are more than one var in query
+	# 2. Grab outcome nodes in query, and stop if there are more than one var in query
 	# allowed: Y[X =1] == 1 & Y[X=0] ==1
 	# not allowed: M[X=1] == 1 & Y[X=0] ==1
 	var <- node <- st_within(query)
 	if(length(var) > 1 & sum(!duplicated(var)) > 1)
-		stop(paste0("Can't lookup types for variables " , paste0(var[!duplicated(var)], collapse = ", "), " simultaneously. Please write expression as separate queries"))
+		stop(paste0("Can't lookup types for nodes " , paste0(var[!duplicated(var)], collapse = ", "), " simultaneously. Please write expression as separate queries"))
 
 	# If there are any do operations
 	########################################################
@@ -95,8 +95,8 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
 		# If there are no do operations in query
 		.w_query <- quoted_query <- w_query <- query
 		dos <- FALSE
-		variables <- model$variables
-		node <- variables[sapply(variables, function(v) grepl(v, query))]
+		nodes <- model$nodes
+		node <- nodes[sapply(nodes, function(v) grepl(v, query))]
 	}
 
 	# Magic
@@ -113,7 +113,7 @@ lookup_type <- function(model, query, join_by = "|", verbose = FALSE){
   return_list <- list(types = value,
 								  		query = query,
   										expanded_query = .w_query,
-								  		evaluated_variables = query_df,
+								  		evaluated_nodes = query_df,
   										node  = node[1])
 
   class(return_list) <- "nodal_types"
@@ -150,7 +150,7 @@ lookup_type_internal <- function(model, query){
 			var_name   <- paste0(do[1:stop], collapse = "")
 			var_name   <- gsub(" ", "", var_name)
 			value      <- paste0(do[(stop +2):nchar(q)], collapse = "")
-			vars       <- model$variables
+			vars       <- model$nodes
 			if(!var_name %in% vars)
 				stop(paste("Variable", var_name ,"is not part of the model."))
 		  out        <- value
@@ -159,21 +159,21 @@ lookup_type_internal <- function(model, query){
 		}, USE.NAMES = FALSE)
 
 		dos <- sapply(dos, trimws)
-		# Identify variables
+		# Identify nodes
 		b             <- 1:bracket_starts
 		var           <- paste0(w_query[b], collapse = "")
 		var           <- st_within(var)
 		revealed_vars <- reveal_outcomes(model, dos, node = var)[var]
 	} else{
-	# If no dos check whether variable in query is exogenous and error if otherwise.
-	 variables    <-	model$variables
-	 wv           <- sapply(variables, function(v) grepl(v, query))
+	# If no dos check whether node in query is exogenous and error if otherwise.
+	 nodes    <-	model$nodes
+	 wv           <- sapply(nodes, function(v) grepl(v, query))
 	 if(sum(wv) > 1)
-	 	stop(paste0("Can't lookup types for variables " , paste0(variables[!duplicated(variables)], collapse = ", "), " simultaneously. Please write expression as separate statements"))
-	 if(variables[wv] %in% attributes(model)$endogenous_variables)
+	 	stop(paste0("Can't lookup types for nodes " , paste0(nodes[!duplicated(nodes)], collapse = ", "), " simultaneously. Please write expression as separate statements"))
+	 if(nodes[wv] %in% attributes(model)$endogenous_nodes)
 	 	stop( "Restrictions on observational quantities not allowed. No nodal types restricted")
-	 revealed_vars        <- get_nodal_types(model, collapse = FALSE)[[variables[wv] ]]
-	 names(revealed_vars) <- variables[wv]
+	 revealed_vars        <- get_nodal_types(model, collapse = FALSE)[[nodes[wv] ]]
+	 names(revealed_vars) <- nodes[wv]
 	}
 
   return(revealed_vars)
@@ -240,8 +240,8 @@ add_dots <- function(q, model){
 	if(!grepl("\\D", q)) return(q)
 
 	var <- st_within(q)
-	if(!all(var %in% model$variables))
-		stop(paste0("Outcome variable "), var, " not in model")
+	if(!all(var %in% model$nodes))
+		stop(paste0("Outcome node "), var, " not in model")
 	# Only allow specification of var's parents
 
 	# Identify parents not specified in query and paste them as "parent = ."

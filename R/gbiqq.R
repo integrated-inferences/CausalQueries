@@ -44,8 +44,8 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...
 
 		} else {
 
-		if(!all(model$variables %in% names(data))) stop(
-			"All model variables should be in data provided (even if these take value NA only)")
+		if(!all(model$nodes %in% names(data))) stop(
+			"All model nodes should be in data provided (even if these take value NA only)")
 		data_events <- collapse_data(data, model)}
 
 		}}
@@ -56,7 +56,7 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...
 		}
 
 	stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
-	stan_data <- make_gbiqq_data(model = model, data = data_events)
+	stan_data <- prep_gbiqq_data(model = model, data = data_events)
 
 	if(is.null(stan_model)) {
 		model$posterior_distribution <-	rstan::stan(file = stan_file, data = stan_data,  ...)

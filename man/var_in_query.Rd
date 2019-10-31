@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{var_in_query}
 \alias{var_in_query}
-\title{List of variables contained in query}
+\title{List of nodes contained in query}
 \usage{
 var_in_query(model, query)
 }
@@ -12,5 +12,5 @@ var_in_query(model, query)
 \item{query}{An expression in string format.}
 }
 \description{
-List of variables contained in query
+List of nodes contained in query
 }

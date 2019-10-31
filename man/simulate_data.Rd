@@ -36,7 +36,7 @@ model <- make_model("X -> Y")
 simulate_data(model, n = 5)
 
 # Simulate multiple datasets is fastest if w is provided
-w <- draw_event_prob(model, using = "parameters")
+w <- get_event_prob(model, using = "parameters")
 replicate(5, simulate_data(model, n = 5, w = w))
 
 }

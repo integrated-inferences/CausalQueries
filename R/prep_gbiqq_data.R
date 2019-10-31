@@ -3,20 +3,19 @@
 #' Create a list containing the data to be passed to stan
 #'
 #' @param model A model created by \code{make_model}
-#' @param data A  "compact" data frame (as made by `draw_data_events()``)
+#' @param data A  "compact" data frame (as made by `simulate_events()``)
 #' @return a list
 #' @export
 #' @examples
 #' model <- make_model("X->Y")
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' make_gbiqq_data(model, data)
+#' prep_gbiqq_data(model, data)
 #'
 #' model <- make_model("X->Y") %>% set_confound(list(X = "Y[X=1]>Y[X=0]"))
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' make_gbiqq_data(model, data)
-
+#' prep_gbiqq_data(model, data)
 #'
-make_gbiqq_data <- function(model, data){
+prep_gbiqq_data <- function(model, data){
 
 	if(!all(c("event", "strategy", "count") %in% names(data))) stop("Data should contain columns `event`, `strategy` and `count`")
 
@@ -26,7 +25,8 @@ make_gbiqq_data <- function(model, data){
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
 	inverted_P         <- 1-P
-	A_w                <- (get_likelihood_helpers(model)$A_w)[data$event, ]
+#	A_w                <- (get_data_families(model)$A_w)[data$event, ]
+	A_w                <- (get_data_families(model, mapping_only = TRUE))[data$event, ]
 	strategies         <- data$strategy
 	n_strategies       <- length(unique(strategies))
 	w_starts           <- which(!duplicated(strategies))
