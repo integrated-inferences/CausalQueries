@@ -15,11 +15,10 @@ expand_data(data_events, model)
 Expand compact data object to data frame
 }
 \examples{
-library(dplyr)
 model <- make_model("X->M->Y")
-draw_data_events(model, n = 5) \%>\%
+simulate_events(model, n = 5) \%>\%
   expand_data(model)
-draw_data_events(model, n = 0) \%>\%
+simulate_events(model, n = 0) \%>\%
   expand_data(model)
 
 }

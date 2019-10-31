@@ -1,10 +1,10 @@
 #' Data Strategy
 #' @param model A causal model as created by \code{make_model}
 #' @param n_obs Scalar giving number of observations in \code{complete_data}
-#' @param parameters A specific parameter vector. If not provided parameters are drawn using `using` and `draw_parameters`
+#' @param parameters A specific parameter vector. If not provided parameters are drawn using `using` and `make_parameters`
 #' @param using String indicating whether to use `priors`, `posteriors` or `parameters`
 #' @param n List indicating number of observations to be observed at each step
-#' @param vars List indicating number which variables to be observed at each step
+#' @param vars List indicating number which nodes to be observed at each step
 #' @param probs List indicating observation probabilities at each step
 #' @param subsets List indicating strata within which observations are to be observed at each step
 #' @param complete_data A dataset with complete observations. Optional.
@@ -44,7 +44,7 @@ data_strategy <- function(model,
 	if(is.null(complete_data)) {
 		if(is.null(parameters)) {
 			if(is.null(model$parameters)) message("parameters not provided")
-			parameters <- draw_parameters(model, using = using)
+			parameters <- make_parameters(model, using = using)
 			}
 	    complete_data <- simulate_data(model, n = n_obs, parameters = parameters)
 	 }
@@ -68,7 +68,8 @@ data_strategy <- function(model,
 		description <- paste0("Step ", j, ": Observe ",
 													paste(vars[[j]], collapse = ", "),
 													" (", name, " = ", value, ")", given, ".\n")
-		observed <- observe(complete_data,
+		observed <- observe_data(
+			                  complete_data,
 												observed = observed,
 												vars_to_observe = vars[[j]],
 												prob = probs[[j]],
@@ -83,3 +84,60 @@ data_strategy <- function(model,
 	observed_data
 }
 
+
+
+#' Observe data, given a strategy
+#'
+#' @param complete_data A data.frame. Data observed and unobserved.
+#' @param observed A data.frame. Data observed.
+#' @param vars_to_observe  A list of nodes to observe.
+#' @param prob A scalar. Observation probability.
+#' @param m Number of units to observe; if specified, \code{m} overrides \code{prob}.
+#' @param subset A logical statement that can be applied to rows of complete data. For instance observation fo some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
+#'
+#' @export
+#' @examples
+#' model <- make_model("X -> Y")
+#' df <- simulate_data(model, n = 8)
+#' # Observe X values only
+#' observe_data(complete_data = df, vars_to_observe = "X")
+#' # Observe half the Y values for cases with observed X = 1
+#' observe_data(complete_data = df,
+#'      observed = observe_data(complete_data = df, vars_to_observe = "X"),
+#'      vars_to_observe = "Y", prob = .5,
+#'      subset = "X==1")
+
+# A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them
+
+observe_data <- function(complete_data,
+												 observed = NULL,
+												 vars_to_observe = NULL,
+												 prob = 1,
+												 m = NULL,
+												 subset = NULL){
+
+	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
+	if(is.null(vars_to_observe)) vars_to_observe <- names(complete_data)
+
+	observed_data <- complete_data
+	observed_data[!observed] <- NA
+
+	# Handle cases with no subsetting; where condition is empty, and when the condition is satisfied
+
+	if(is.null(subset)){ observed[, vars_to_observe] <- TRUE
+
+	}  else {
+
+		strata <- with(observed_data, eval(parse(text = subset)))
+
+		if(max(strata) == 1){
+
+			if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
+
+			show <- randomizr::strata_rs(strata = strata,
+																	 strata_prob = c(0, prob)) == 1
+			observed[show, vars_to_observe] <- TRUE
+		}}
+
+	observed
+}

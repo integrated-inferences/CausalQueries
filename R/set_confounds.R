@@ -93,7 +93,7 @@ set_confound <-  function(model, confound = NULL){
 	# Descendant types
 
 	# Check to see if any statements involve full confounding and redefine lists
-	 checks <- unlist(lapply(confound, function(x) x %in% model$variables))
+	 checks <- unlist(lapply(confound, function(x) x %in% model$nodes))
 
 	 	# Function to either get types for a simple confound, or else expand to list for total confound
 	 	f <- function(i) {
@@ -107,7 +107,7 @@ set_confound <-  function(model, confound = NULL){
 	 			return(exploded_list)
 	 		}
 	 		if(!checks[i]) {
-	 			simple_list <- list((get_types(model, x[[1]])$type_list))
+	 			simple_list <- list((get_query_types(model, x[[1]])$type_list))
 	 			names(simple_list) <- names(x)
 	 			simple_list
 	 	}}

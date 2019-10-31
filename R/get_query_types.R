@@ -9,27 +9,27 @@
 #' @examples
 #' model <- make_model("X -> M -> Y; X->Y")
 #' query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
-#' x <- get_types(model, query)
+#' x <- get_query_types(model, query)
 #' summary(x)
 #'
 #' query <- "Y[M=M[X=0], X=1]==1"
-#' x <- get_types(model, query)
-#' get_types(model, query)
+#' x <- get_query_types(model, query)
+#' get_query_types(model, query)
 #'
 #' query <- "(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])"
-#' get_types(model, query)
+#' get_query_types(model, query)
 #'
 #' query <- "Y[X=1] == Y[X=0]"
-#' get_types(model, query)
+#' get_query_types(model, query)
 #'
 #' query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
-#' x <- get_types(model, query)
+#' x <- get_query_types(model, query)
 #'
 #' query <- "(Y[X = .]==1)"
-#' get_types(model, query)
+#' get_query_types(model, query)
 
 
-get_types <- function(model, query, join_by = "|"){
+get_query_types <- function(model, query, join_by = "|"){
 
 	if(grepl(".", query, fixed = TRUE))
 		query <- expand_wildcard(query, join_by = join_by)

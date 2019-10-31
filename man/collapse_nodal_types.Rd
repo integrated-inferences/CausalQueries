@@ -6,6 +6,9 @@
 \usage{
 collapse_nodal_types(nodal_types)
 }
+\arguments{
+\item{nodal_types}{A list of nodal types.}
+}
 \description{
 collapse nodal types
 }

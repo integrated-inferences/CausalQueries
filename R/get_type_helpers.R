@@ -12,8 +12,8 @@ nodes_in_statement <- function(nodes, statement)
 #'@keywords internal
 list_non_parents <- function(model, node){
 	node_parents    <- get_parents(model)[[node]]
-	not_parents     <- !model$variables %in% c(node_parents, node)
-   model$variables[not_parents]
+	not_parents     <- !model$nodes %in% c(node_parents, node)
+   model$nodes[not_parents]
 }
 #'#' Adds a wildcard for every missing parent
 #'@param node A quoted name of a node

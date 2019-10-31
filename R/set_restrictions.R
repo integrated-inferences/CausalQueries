@@ -40,7 +40,7 @@
 #' set_restrictions(statement = c("Y[X=1] < Y[X=0]"))
 #' get_parameter_matrix(model)
 #'
-#' # Restrict to a single type in endogenous variable
+#' # Restrict to a single type in endogenous node
 #' model <- make_model("X->Y") %>%
 #' set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
@@ -50,7 +50,7 @@
 #' set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
 #'
-#' # Restrictions on levels for endogenous variables aren't allowed
+#' # Restrictions on levels for endogenous nodes aren't allowed
 #' \dontrun{
 #' model <- make_model("X->Y") %>%
 #' set_restrictions(statement =  "(Y == 1)")
@@ -105,7 +105,7 @@ set_restrictions <- function(model,
 
 	# Keep restricted types as attributes
 	nodal_types1 <- model$nodal_types
-	restrictions <- sapply(model$variables, function(node){
+	restrictions <- sapply(model$nodes, function(node){
 		restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
 		nodal_types0[[node]][restricted]
 	}, simplify = FALSE, USE.NAMES = TRUE)
@@ -115,7 +115,7 @@ set_restrictions <- function(model,
 		attr(model,"restrictions") <- restrictions
 	} else {
 		restrictions0 <- attr(model,"restrictions")
-		attr(model,"restrictions") <- sapply(model$variables, function(node){
+		attr(model,"restrictions") <- sapply(model$nodes, function(node){
 			c(restrictions[[node]], restrictions0[[node]])
 		}, simplify = FALSE, USE.NAMES = TRUE)
 	}
@@ -177,7 +177,7 @@ restrict_by_query <- function(model,
 			if(!keep){ kept_types <- !kept_types }
 
 			if(sum(kept_types) == 0) {
-						stop(paste0("nodal_types can't be entirely reduced. Revise conditions for variable ", node))}
+						stop(paste0("nodal_types can't be entirely reduced. Revise conditions for node ", node))}
 
 			# What to keep in nodal_types
 			kept_labels <- nodal_types[[node]][kept_types] # to be used for P
@@ -193,7 +193,7 @@ restrict_by_query <- function(model,
       # Now drop
 			model$parameters_df <- model$parameters_df %>%
 				filter(!drop_rows)  %>%
-				gbiqq:::check_params(warning = FALSE)
+				gbiqq:::clean_params(warning = FALSE)
 
 			if(!is.null(model$P)) model$P <- model$P[!drop_rows,]
 
@@ -212,16 +212,16 @@ restrict_by_query <- function(model,
 #'
 restrict_by_labels <- function(model, labels, keep = FALSE){
 
-	variables   <- model$variables
+	nodes   <- model$nodes
 	# nodal_types <- get_nodal_types(model)
 	nodal_types <- model$nodal_types
 
-	# Stop if none of the names of the labels vector matches variables in dag
-	# Stop if there's any labels name that doesn't match any of the variables in the dag
+	# Stop if none of the names of the labels vector matches nodes in dag
+	# Stop if there's any labels name that doesn't match any of the nodes in the dag
 	restricted_vars <- names(labels)
-	matches    <- restricted_vars %in% variables
+	matches    <- restricted_vars %in% nodes
 	if(!any(matches)){
-		stop("labels don't match variables in DAG")
+		stop("labels don't match nodes in DAG")
 	} else if(any(!matches)){
 		stop("Variables ", paste(names(labels[!matches ]) ,"are not part of the model."))
 	}
@@ -253,12 +253,12 @@ restrict_by_labels <- function(model, labels, keep = FALSE){
 		restricted_var <- restricted_vars[i]
 		labels_i <- labels_list[[i]]
 		if(length(ntr) == length(labels_i)) {
-			stop(paste0("nodal_types can't be entirely reduced. Revise labels for variable ", restricted_var))
+			stop(paste0("nodal_types can't be entirely reduced. Revise labels for node ", restricted_var))
 		}
-		# Run through vector of labels for current restricted variable
+		# Run through vector of labels for current restricted node
 		labels_i <- sapply(1:length(labels_i), function(j){
 			labels_ij <- labels_i[j]
-			# if labels doesn't contain variable's name
+			# if labels doesn't contain node's name
 			# it pastes restricted var to labels
 			labels_ij <- ifelse(grepl(restricted_var, labels_ij),
 															 labels_ij,
@@ -285,7 +285,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE){
 	# 	reduce_parameters(model, model$parameters)
 
 	model$parameters_df <- dplyr::filter(model$parameters_df, param_names%in% type_names) %>%
-		gbiqq:::check_params(warning = FALSE)
+		gbiqq:::clean_params(warning = FALSE)
 
 	return(model)
 
@@ -324,11 +324,11 @@ unpack_wildcard <- function(x) {
 update_causal_types <- function(model){
 
 	possible_types <-	get_nodal_types(model)
-	variables      <- model$variables
+	nodes      <- model$nodes
 
 	# Remove var name prefix from nodal types (Y00 -> 00)
-	possible_types <- lapply(variables, function(v) gsub(v, "", possible_types[[v]]))
-	names(possible_types) <- variables
+	possible_types <- lapply(nodes, function(v) gsub(v, "", possible_types[[v]]))
+	names(possible_types) <- nodes
 
 	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))

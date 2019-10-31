@@ -7,11 +7,11 @@
 substitutes(X1, X2, Y)
 }
 \arguments{
-\item{X1}{input variable 1}
+\item{X1}{input node 1}
 
-\item{X2}{input variable 2}
+\item{X2}{input node 2}
 
-\item{Y}{outcome variable}
+\item{Y}{outcome node}
 }
 \value{
 A character statement of class statement
@@ -21,7 +21,7 @@ Generate a statement for X1, X1 substitue for each other in the production of Y
 }
 \examples{
 
-get_types(model = make_model("A -> B <- C"),
+get_query_types(model = make_model("A -> B <- C"),
          query = substitutes("A", "C", "B"))
 
 query_model(model = make_model("A -> B <- C"),

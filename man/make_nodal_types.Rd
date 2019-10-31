@@ -6,6 +6,9 @@
 \usage{
 make_nodal_types(model)
 }
+\arguments{
+\item{model}{A causal model}
+}
 \description{
 make nodal types
 }

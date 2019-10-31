@@ -7,9 +7,9 @@
 decreasing(X, Y)
 }
 \arguments{
-\item{X}{input variable}
+\item{X}{input node}
 
-\item{Y}{outcome variable}
+\item{Y}{outcome node}
 }
 \value{
 A character statement of class statement

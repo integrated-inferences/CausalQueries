@@ -46,25 +46,25 @@ query_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(subset)) subset <- get_types(model, subset)$types
+	if(!is.logical(subset)) subset <- get_query_types(model, subset)$types
 
 	if(all(!subset)) {message("No units in subset"); return() }
 
 
 		# Evaluation of query on vector of causal types
-	x <- (get_types(model, query = query)$types)[subset]
+	x <- (get_query_types(model, query = query)$types)[subset]
 
 	# Parameters specified
 	if(using =="parameters"){
 
 		if(is.null(type_distribution)){
 			if(is.null(parameters)) parameters <- get_parameters(model)
-			type_distribution <- draw_type_prob(model, parameters = parameters)}
+			type_distribution <- get_type_prob(model, parameters = parameters)}
 
 		return(weighted.mean(x, type_distribution[subset]))
 		}
 
-	if(is.null(type_distribution)) type_distribution <- draw_type_prob_multiple(model, using = using)
+	if(is.null(type_distribution)) type_distribution <- get_type_prob_multiple(model, using = using)
 
 	# Magic: Subsetting implemented on type_distribution prior to taking weighted mean
   estimand <- apply(type_distribution[subset,], 2, function(wt) weighted.mean(x, wt))
@@ -165,7 +165,7 @@ query_model <- function(model,
 
 	dists <- lapply(using_used, function(j) {
 		param_dist <- get_param_dist(model, j)  # parameter distribution extracted just once
-		draw_type_prob_multiple(model, using = j, param_dist = param_dist)}
+		get_type_prob_multiple(model, using = j, param_dist = param_dist)}
 		)
   names(dists) <- using_used
 

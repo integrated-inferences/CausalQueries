@@ -42,12 +42,12 @@ make_model <- function(statement){
 	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
 	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try underscore?")
 
-	# Procedure for unique ordering of variables
+	# Procedure for unique ordering of nodes
 		if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
 
 	gen <- rep(NA, nrow(dag))
 	j = 1
-	# assign 1 to exogenous variables
+	# assign 1 to exogenous nodes
 	gen[!(dag$parent %in% dag$children)] <- j
 	while(sum(is.na(gen))>0) {
 		j <- j+1
@@ -62,10 +62,10 @@ make_model <- function(statement){
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
- variables = c(exog_node, endog_node)
+ nodes <- c(exog_node, endog_node)
 
  # Model is a list
- model <- list(dag = dag, step = "dag", variables = variables, statement = statement)
+ model <- list(dag = dag, step = "dag", nodes = nodes, statement = statement)
 
  # Nodal types
  nodal_types <- get_nodal_types(model, collapse = TRUE)
@@ -101,14 +101,14 @@ make_model <- function(statement){
 
 	 	# Reorder by reverse causal order (thus in X -> Y we have type_Y conditional on type_X)
 	 	for(i in 1:nrow(z)){
-	 		z[i,] <- rev(variables[variables %in% sapply(z[i,], as.character)])
+	 		z[i,] <- rev(nodes[nodes %in% sapply(z[i,], as.character)])
 	 	}
 	 	# Generate confounds list
 	 	confounds <- as.list(as.character(z$w))
 	 	names(confounds) <- z$v
 
 	 	# Check on ineligible confound statements
-	 	if(any(!(c(z$v, z$w) %in% variables)))
+	 	if(any(!(c(z$v, z$w) %in% nodes)))
 	 	stop("Confound relations (<->) must be between nodes contained in the dag
 	 				(i.e. that also have a direct relation (->).")
 
@@ -119,8 +119,8 @@ make_model <- function(statement){
 
 
  # Prep for export
- attr(model, "endogenous_variables") <- endog_node
- attr(model, "exogenous_variables")  <- exog_node
+ attr(model, "endogenous_nodes") <- endog_node
+ attr(model, "exogenous_nodes")  <- exog_node
  class(model) <- "causal_model"
 
  model
@@ -153,7 +153,7 @@ print.summary.causal_model <- function(x,  ...){
 	cat("\nNodal types: \n")
 
 	nodal_types <- get_nodal_types(x)
-		nodes <- x$variables
+		nodes <- x$nodes
 		sapply(nodes, function(n){
 			nt <- nodal_types[[n]]
 			interpret <- attr(nodal_types, "interpret")[[n]]
@@ -194,7 +194,7 @@ print.summary.causal_model <- function(x,  ...){
 		restrictions <- attr(x,"restrictions")
 		cat("\n ------------------------------------------------------------------------------------------\n")
 		cat("\nRestrictions: \n")
-		sapply(x$variables, function(node){
+		sapply(x$nodes, function(node){
 			cat(paste0(node, ": ", length(restrictions[[node]]), " restricted types \n")  )
 		})
 

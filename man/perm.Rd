@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{perm}
 \alias{perm}
-\title{Produces the possible permutations of a set of variables}
+\title{Produces the possible permutations of a set of nodes}
 \usage{
 perm(max = rep(1, 2))
 }
@@ -13,7 +13,7 @@ perm(max = rep(1, 2))
 A matrix of permutations
 }
 \description{
-Produces the possible permutations of a set of variables
+Produces the possible permutations of a set of nodes
 }
 \examples{
 

@@ -17,7 +17,7 @@
 #' simulate_data(model, n = 5)
 #'
 #' # Simulate multiple datasets is fastest if w is provided
-#' w <- draw_event_prob(model, using = "parameters")
+#' w <- get_event_prob(model, using = "parameters")
 #' replicate(5, simulate_data(model, n = 5, w = w))
 #'
 
@@ -30,7 +30,7 @@ simulate_data <- function(model,
 	# Check that parameters sum to 1 in each param_set
 	if(!is.null(parameters)) parameters <- {
 		model$parameters_df$parameters <- parameters
-		gbiqq:::check_params(model$parameters_df)$parameters}
+		gbiqq:::clean_params(model$parameters_df)$parameters}
 
 
   # Parameters called but not provided
@@ -40,10 +40,10 @@ simulate_data <- function(model,
 	if(is.null(w)){
 		if(is.null(P)) 	P <- get_parameter_matrix(model)
 		if(is.null(A)) 	A <- get_ambiguities_matrix(model)
-		w <- draw_event_prob(model, P, A, parameters = parameters, using = using)}
+		w <- get_event_prob(model, P, A, parameters = parameters, using = using)}
 
 	# Data drawn here
-	draw_data_events(model, n = n,  parameters = parameters, using = using, w = w) %>%
+	simulate_events(model, n = n,  parameters = parameters, using = using, w = w) %>%
 		expand_data(model)
 
  }
