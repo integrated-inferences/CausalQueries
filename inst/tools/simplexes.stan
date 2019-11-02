@@ -15,7 +15,7 @@ int<lower=1> strategy_starts[n_strategies];
 int<lower=1> strategy_ends[n_strategies];
 
 vector[n_types] P[n_params] ;
-vector[n_types] inverted_P[n_params] ;
+vector[n_types] not_P[n_params] ;
 matrix<lower=0,upper=1>[n_types, n_data] A;
 matrix<lower=0,upper=1>[n_events,n_data] A_w;
 int<lower=0> Y[n_events];
@@ -48,7 +48,7 @@ vector[n_params] P_lambdas[n_types];
 
 for (i in 1:n_types) {
 for (j in 1:n_params) {
-P_lambdas[i, j] = P[j, i] .* lambdas[j] + inverted_P[j, i];
+P_lambdas[i, j] = P[j, i] .* lambdas[j] + not_P[j, i];
 }
 prob_of_types[i] = prod(P_lambdas[i]);
 }

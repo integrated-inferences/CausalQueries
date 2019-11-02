@@ -2,7 +2,7 @@
 context(desc = "Testing that canonical models work as they should")
 
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
-fitted_model <- fitted_model()
+fit <- fitted_model()
 for(dag in dags){
 
 	testthat::test_that(
@@ -26,7 +26,7 @@ testthat::test_that(
 		data <- simulate_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
 		expect_equal(dim(data), c(1,2))
 
-		updated <- posterior <- gbiqq(XY_noconf, data, refresh = 0, stan_model = fitted_model)
+		updated <- posterior <- gbiqq(XY_noconf, data, refresh = 0, stan_model = fit)
 		expect_true(!is.null(posterior))
 
 		ATE <- "Y[X=1] - Y[X=0]"
@@ -56,7 +56,7 @@ testthat::test_that(
 		expect_equal(c(1, 2), dim(data))
 
 
-		posterior <- gbiqq(XY_conf, data, refresh = 0, stan_model = fitted_model)
+		posterior <- gbiqq(XY_conf, data, refresh = 0, stan_model = fit)
 		expect_true(!is.null(posterior))
 
 		prior_ate <- query_distribution(model = posterior,
@@ -87,7 +87,7 @@ testthat::test_that(
 			parameters = c(.5, .5, .2, .8, 0, 0, 0, .8, 0, .2))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- gbiqq(XY_mediator, data, refresh = 0, stan_model = fitted_model)
+		posterior <- gbiqq(XY_mediator, data, refresh = 0, stan_model = fit)
 		expect_true(!is.null(posterior))
 
 		expect_equal(nrow(simulate_data(posterior , n = 5, using = "posteriors")), 5)
@@ -114,7 +114,7 @@ testthat::test_that(
 										 .02, .70, .02, .02, .02, .02, .02, .02))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- gbiqq(XY_moderator, data, refresh = 0, stan_model = fitted_model)
+		posterior <- gbiqq(XY_moderator, data, refresh = 0, stan_model = fit)
 		expect_true(!is.null(posterior))
 
 		results <- query_model(
@@ -126,3 +126,31 @@ testthat::test_that(
 		expect_true(is.data.frame(results))
 	}
 )
+
+
+
+
+testthat::test_that(
+	desc = "Test complex model",
+	code = {
+		model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2") %>%
+			       set_restrictions("Y2[X=1] > Y2[X=0]") %>%
+			       set_priors(statement = "Y1[X=1] > Y1[X=0]", alphas = 3)
+
+		data <- simulate_data(model, n = 5)
+
+		posterior <- gbiqq(model, data, refresh = 0, stan_model = fit)
+
+    posterior_parameter_draw <- make_parameters(posterior, using = "posteriors")
+    expect_true(length(posterior_parameter_draw) == 16)
+
+		results <- query_model(
+			posterior,
+			queries = list(COE = "c(Y1[X=1] > Y1[X=0])"),
+			subsets = c("X==1 & Y1==1"),
+			using = "posteriors")
+
+		expect_true(is.data.frame(results))
+	}
+)
+

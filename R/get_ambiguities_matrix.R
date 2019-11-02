@@ -46,11 +46,14 @@ make_ambiguities_matrix <- function(model){
   types$revealed_data <- apply(data_realizations , 1, paste0, collapse = "")
 
   # 3.  Create and return matrix A
-  max_possible_data <- get_max_possible_data(model)
-  data_names <- sapply(1:ncol(max_possible_data), function(i) paste0(colnames(max_possible_data)[i],max_possible_data[,i] ))
-  data_names <- matrix(data_names, ncol = ncol(max_possible_data))
-  data_names <- apply(data_names, 1, paste0, collapse = "")
-  fundamental_data	<- apply(max_possible_data, 1, paste0, collapse = "")
+#  max_possible_data <- get_max_possible_data(model)
+  full_possible_data <- all_data_types(model, possible_data = TRUE)
+  data_names <- full_possible_data$event
+  #data_names <- sapply(1:ncol(full_possible_data), function(i) paste0(colnames(full_possible_data)[i],full_possible_data[,i] ))
+  #data_names <- matrix(data_names, ncol = ncol(full_possible_data))
+  #data_names <- apply(data_names, 1, paste0, collapse = "")
+  fundamental_data	<- apply(dplyr::select(full_possible_data, -event),
+  													1, paste0, collapse = "")
 
   # 4. Generate A
   A <- sapply(1:nrow(types), function(i)(types$revealed_data[i] == fundamental_data)*1)
