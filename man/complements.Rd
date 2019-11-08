@@ -26,6 +26,6 @@ complements("A", "B", "Y")
 \seealso{
 Other statements: \code{\link{decreasing}},
   \code{\link{increasing}}, \code{\link{interacts}},
-  \code{\link{substitutes}}
+  \code{\link{substitutes}}, \code{\link{te}}
 }
 \concept{statements}

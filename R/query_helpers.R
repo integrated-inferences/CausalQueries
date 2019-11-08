@@ -1,3 +1,4 @@
+
 #' Make monotonicity statement (positive)
 #'
 #' Generate a statement for Y monotonic (increasing) in X
@@ -15,7 +16,7 @@ increasing <- function(X, Y){
 
 	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
 
-	statement = paste0("(Y", "[", X, "=1] > ", Y, "[", X, "=0])")
+	statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
 
 	class(statement) <- "statement"
 
@@ -38,7 +39,7 @@ decreasing <- function(X, Y){
 
 	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
 
-	statement = paste0("(Y", "[", X, "=1] < ", Y, "[", X, "=0])")
+	statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
 
 	class(statement) <- "statement"
 
@@ -57,7 +58,7 @@ decreasing <- function(X, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#' interacts("A", "B", "Y")
+#' interacts("A", "B", "W")
 #' get_query_types(model = make_model("X-> Y <- W"),
 #'          query = interacts("X", "W", "Y"))
 #'
@@ -87,7 +88,7 @@ interacts <- function(X1, X2, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#'complements("A", "B", "Y")
+#'complements("A", "B", "W")
 #'
 complements <- function(X1, X2, Y){
 
@@ -134,3 +135,33 @@ substitutes <- function(X1, X2, Y){
 	statement
 }
 
+#' Make treatment effect statement (positive)
+#'
+#' Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
+#'
+#' @param X input node
+#' @param Y outcome node
+#' @family statements
+#' @export
+#'
+#' @return A character statement of class statement
+#' @examples
+#' te("A", "B")
+#'
+#' model <- make_model("X->Y") %>% set_restrictions(increasing("X", "Y"))
+#' query_model(model, list(ate = te("X", "Y"),  using = "parameters")
+#'
+#'\dontrun{
+#' model <- make_model("X->Y") %>% set_restrictions(te("X", "Y"))
+#' }
+#'
+te <- function(X, Y){
+
+	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
+
+	statement = paste0("(",Y, "[", X, "=1] - ", Y, "[", X, "=0])")
+
+	class(statement) <- "statement"
+
+	statement
+}

@@ -31,6 +31,6 @@ query_model(model = make_model("A -> B <- C"),
 \seealso{
 Other statements: \code{\link{complements}},
   \code{\link{decreasing}}, \code{\link{increasing}},
-  \code{\link{interacts}}
+  \code{\link{interacts}}, \code{\link{te}}
 }
 \concept{statements}
