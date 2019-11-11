@@ -5,6 +5,7 @@
 #' @param stan_model A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"
 #' @param data A data frame with observations
 #' @param data_type Either "long" (as made by `simulate_data()`) or "compact"
+#' @param keep_stan_model Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.
 #' (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @import methods
@@ -27,7 +28,7 @@
 #' model5 <- gbiqq(model)
 
 
-gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...) {
+gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", keep_stan_model = FALSE, ...) {
 
 	if(data_type == "long") {
 
@@ -44,8 +45,8 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...
 
 		} else {
 
-		if(!all(model$nodes %in% names(data))) stop(
-			"All model nodes should be in data provided (even if these take value NA only)")
+		if(!any(model$nodes %in% names(data))) stop("Data should contain columns corresponding to model nodes")
+
 		data_events <- collapse_data(data, model)}
 
 		}}
@@ -59,11 +60,17 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...
 	stan_data <- prep_gbiqq_data(model = model, data = data_events)
 
 	if(is.null(stan_model)) {
-		model$posterior_distribution <-	rstan::stan(file = stan_file, data = stan_data,  ...)
+		fit <-	rstan::stan(file = stan_file, data = stan_data,  ...)
 	} else {
-		model$posterior_distribution <-	rstan::stan(fit = stan_model, data = stan_data,  ...)
+		fit <-	rstan::stan(fit = stan_model, data = stan_data,  ...)
 	}
 
+	if(keep_stan_model) model$stan_fit <- fit
+
+	posterior_distribution <- extract(fit, pars= "lambdas")$lambdas
+	colnames(posterior_distribution) <- get_parameter_names(model)
+
+	model$posterior_distribution <- posterior_distribution
 	model$data <- data
 
 	model
@@ -76,5 +83,5 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", ...
 #'
 fitted_model <- function() {
 	model <- make_model("X->Y")
-	gbiqq(model, simulate_data(model, n = 1), refresh = 0)$posterior_distribution
+	gbiqq(model, simulate_data(model, n = 1), refresh = 0, keep_stan_model = TRUE)$stan_fit
 }

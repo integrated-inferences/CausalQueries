@@ -21,7 +21,7 @@ make_parameters <- function(model, using = NULL){
 	if(using == "parameters")  parameters <- model$parameters_df$parameters
 
 	if(using == "posteriors") {if(is.null(model$posterior)) stop("No posterior provided")
-		param_dist <- extract(model$posterior, pars= "lambdas")$lambdas
+		param_dist <- model$posterior_distribution
 		parameters <- param_dist[sample(nrow(param_dist),1),]}
 
 	if(using == "priors") {

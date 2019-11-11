@@ -21,8 +21,9 @@ Generate a statement for (Y(1) - Y(0)). This statement when applied to a model r
 te("A", "B")
 
 model <- make_model("X->Y") \%>\% set_restrictions(increasing("X", "Y"))
-query_model(model, te("X", "Y"), using = "parameters")
+query_model(model, list(ate = te("X", "Y")),  using = "parameters")
 
+# set_restrictions  breaks with te because it requires a listing of causal types, not numeric output.
 \dontrun{
 model <- make_model("X->Y") \%>\% set_restrictions(te("X", "Y"))
 }

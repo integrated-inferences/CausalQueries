@@ -89,6 +89,6 @@ get_param_dist <- function(model, using, n_draws = 4000) {
   if(using == "posteriors"){
     if(is.null(model$posterior_distribution)) {
       stop("Model does not contain a posterior distribution")}
-    return(rstan::extract(model$posterior, pars= "lambdas")$lambdas)
+    return(model$posterior_distribution)
   }
   }

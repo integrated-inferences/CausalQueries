@@ -37,7 +37,6 @@ get_event_prob <- function(model,
     if(using == "parameters" & is.null(parameters)) parameters <- get_parameters(model)
     }
 
-
   if(is.null(parameters)) parameters <- make_parameters(model, using = using)
 
   # Ambiguity matrix
