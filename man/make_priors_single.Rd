@@ -75,3 +75,8 @@ gbiqq:::make_priors_single(model, alphas = 1:2)
 }
 
 }
+\seealso{
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_priors}}, \code{\link{set_priors}}
+}
+\concept{priors}

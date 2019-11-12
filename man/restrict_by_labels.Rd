@@ -16,3 +16,8 @@ restrict_by_labels(model, labels, keep = FALSE)
 \description{
 Reduce nodal types using labels
 }
+\seealso{
+Other restrictions: \code{\link{restrict_by_query}},
+  \code{\link{set_restrictions}}
+}
+\concept{restrictions}

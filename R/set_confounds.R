@@ -22,9 +22,16 @@
 #'
 #' \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
 #'
+#' The simplest way to allow for confounding is by adding a bidirected edge, such as via: \code{set_confound(model, list("X <-> Y"))}.
+#' In this case the descendent node has a distribution conditional on the value of the ancestor node.
+#'
+#' Ordering of conditioning can also be controlled however via  \code{set_confound(model, list(X = "Y"))}
+#' in which case \code{X} is given a distribution conditional on nodal types of \code{Y}.
+#'
+#' More specific confounding statements are also possble using causal syntax.
 #' A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as:
-#' "Allow X to have a distinct conditional distribution when Y has types that involve Y[X=1]==1."
-#' In this case nodal types for Y would continue to have 3 degrees of freedom.
+#' "Allow \code{X} to have a distinct conditional distribution when \code{Y} has types that involve Y[X=1]==1."
+#' In this case nodal types for \code{Y} would continue to have 3 degrees of freedom.
 #' But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and
 #' other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of
 #' an unconstrained distribution, though an  unconstrained distribution can be achieved with
@@ -43,6 +50,9 @@
 #' @examples
 #'
 #' model <- make_model("X -> Y") %>%
+#'   set_confound(list("X <-> Y"))
+#'
+#' model <- make_model("X -> Y") %>%
 #'   set_confound(list(X = "Y"))
 #'
 #' model <- make_model("X -> Y") %>%
@@ -58,7 +68,6 @@
 #' set_confound (list(X = "(Y[X=1]>Y[X=0])",
 #'                  M = "Y",
 #'                  X = "(Y[X=1]<Y[X=0])"))
-#'
 #'
 #' model <- make_model("X -> Y") %>% set_confound(confound)
 #'
@@ -88,7 +97,8 @@ set_confound <-  function(model, confound = NULL){
 	if(is.null(confound)) {message("No confound provided"); return(model)}
 	if(is.null(model$P))   model <- set_parameter_matrix(model)
 
-  P            <- model$P
+	nodes        <- model$nodes
+	P            <- model$P
 	pars         <- rownames(P)
 	types_matrix <- model$causal_types
 	types_names  <- rownames(types_matrix )
@@ -96,16 +106,25 @@ set_confound <-  function(model, confound = NULL){
 	# Descendant types
 
 	# Check to see if any statements involve full confounding and redefine lists
-	 checks <- unlist(lapply(confound, function(x) x %in% model$nodes))
+
+	 for(j in 1:length(confound)){
+	 	if(grepl("<->", confound[[j]])) {
+		 z <- sapply(strsplit(confound[[j]], "<->"), trimws)
+		 z <- rev(nodes[nodes %in% sapply(z, as.character)])
+		 confound[j] <- as.character(z[2])
+		 names(confound)[j] <- z[1]
+	 	}}
+
+	checks  <- unlist(lapply(confound, function(x) x %in% model$nodes))
 
 	 	# Function to either get types for a simple confound, or else expand to list for total confound
 	 	f <- function(i) {
 	 		x <- confound[i]
 	 		if(checks[i]){
-	 			nodes <- types_matrix[x[[1]]][[1]]
+	 			nod_typs <- types_matrix[x[[1]]][[1]]
 	 			# -1 below to leave a residual nodal type
-	 			 exploded_list <- lapply(unique(nodes)[-1], function(n) types_names[n == nodes])
-	 			 #exploded_list <- lapply(unique(nodes), function(n) types_names[n == nodes])
+	 			 exploded_list <- lapply(unique(nod_typs)[-1], function(n) types_names[n == nod_typs])
+	 			 #exploded_list <- lapply(unique(nod_typs), function(n) types_names[n == nod_typs])
 	 			names(exploded_list) <- rep(names(x), length(exploded_list))
 	 			return(exploded_list)
 	 		}
@@ -126,7 +145,7 @@ set_confound <-  function(model, confound = NULL){
 
 	for(j in 1:length(A)) {
 
-		# Housekeeping for renaming confoud vars
+		# Housekeeping for renaming confound vars
 		a <- A[j]   # param_name
 
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
