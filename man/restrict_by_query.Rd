@@ -21,3 +21,8 @@ restrict_by_query(model, statement, join_by = "|", keep = FALSE,
 \description{
 Reduce nodal types
 }
+\seealso{
+Other restrictions: \code{\link{restrict_by_labels}},
+  \code{\link{set_restrictions}}
+}
+\concept{restrictions}

@@ -69,3 +69,9 @@ make_model("X -> Y") \%>\%
               confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
               alphas = c(2, .5))
 }
+\seealso{
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_priors_single}},
+  \code{\link{set_priors}}
+}
+\concept{priors}

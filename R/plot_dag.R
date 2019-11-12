@@ -46,3 +46,10 @@ plot_dag <- function(model){
 	dagitty_dag <- translate_dagitty(model)
 	plot(dagitty::graphLayout(dagitty_dag))
 }
+
+
+#' @export
+plot.causal_model <- function(x, ...) {
+		plot_dag(x)
+	}
+

@@ -66,3 +66,9 @@ model <- make_model("X -> Y") \%>\%
 set_priors(node = "Y", alphas = 2)
 get_priors(model)
 }
+\seealso{
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_priors_single}},
+  \code{\link{make_priors}}
+}
+\concept{priors}

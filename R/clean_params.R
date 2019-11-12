@@ -13,7 +13,6 @@ clean_params <- function(parameters_df, warning = TRUE){
 	# Check priors
 	if(min(parameters_df$priors) < 0 ) stop("Negative alpha arguments for priors are not allowed")
 
-
 	# Normalize parameters if needed
 	for(j in unique(parameters_df$param_set)) {
 		A     <- parameters_df$param_set ==j
@@ -30,3 +29,18 @@ clean_params <- function(parameters_df, warning = TRUE){
 }
 
 
+
+#' Clean parameter vector
+#' @param model A model made by make_model
+#' @param parameters A parameter vector (real numbers in [0,1])
+#' @examples
+#' model <- make_model("X->Y")
+#' gbiqq:::clean_param_vector(model, 1:6)
+
+clean_param_vector <- function(model, parameters) {
+
+	model$parameters_df$parameters <- as.vector(parameters)
+	x <- clean_params(model$parameters_df, warning = FALSE)$parameters
+	names(x) <- model$parameters_df$param_names
+	x
+	}

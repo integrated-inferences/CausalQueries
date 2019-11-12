@@ -15,3 +15,8 @@ Extracts parameters as a named vector
 \examples{
 get_parameters(make_model("X -> Y"))
 }
+\seealso{
+Other parameters: \code{\link{make_parameters}},
+  \code{\link{set_parameters}}
+}
+\concept{parameters}

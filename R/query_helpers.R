@@ -152,7 +152,7 @@ substitutes <- function(X1, X2, Y){
 #' query_model(model, list(ate = te("X", "Y")),  using = "parameters")
 #'
 #' # set_restrictions  breaks with te because it requires a listing
-#' of causal types, not numeric output.
+#' # of causal types, not numeric output.
 #'\dontrun{
 #' model <- make_model("X->Y") %>% set_restrictions(te("X", "Y"))
 #' }

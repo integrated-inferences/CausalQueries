@@ -31,8 +31,11 @@ data_short  <- collapse_data(data_long, model)
 fit <- fitted_model()
 model_1 <- gbiqq(model, data_long)
 model_2 <- gbiqq(model, data_long, stan_model = fit)
-\dontrun{model_3 <- gbiqq(model, data_short)}
-# Throws error unless compact data indicated
+
+# Throws error unless compact data indicated:
+\dontrun{
+model_3 <- gbiqq(model, data_short)
+}
 model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
 
 # It is possible to implement updating without data, in which case the posterior
