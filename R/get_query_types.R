@@ -27,6 +27,11 @@
 #'
 #' query <- "(Y[X = .]==1)"
 #' get_query_types(model, query)
+#'
+#' model <- make_model("X -> Y")
+#' get_query_types(model, query = TRUE)
+#' get_query_types(model, query = FALSE)
+
 
 
 get_query_types <- function(model, query, join_by = "|"){
