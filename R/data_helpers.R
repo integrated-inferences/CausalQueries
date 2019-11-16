@@ -293,10 +293,10 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
 		df <- dplyr::filter(df, event %in% possible_data_types)
 	}
 
-	# exclude data not consistent with "given" (NAs are consistent with given)
+	# exclude data not consistent with "given" (NAs are *not* consistent with given)
 	if(!is.null(given)) {
 		take <- with(df, eval(parse(text = given)))
-		take[is.na(take)] <- TRUE
+		take[is.na(take)] <- FALSE
 		df <- df[take,]
 		}
   rownames(df) <- df$event
