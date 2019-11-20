@@ -3,7 +3,7 @@ context(desc = "Testing observe")
 
 set.seed(1)
 model <- make_model("X -> Y")
-df  <- simulate_data(model, n = 4)
+df  <- make_data(model, n = 4)
 
 
 testthat::test_that(

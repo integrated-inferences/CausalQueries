@@ -4,7 +4,7 @@
 \alias{make_parameters}
 \title{Make a "true" parameter vector}
 \usage{
-make_parameters(model, parameters = NULL, type = NULL,
+make_parameters(model, parameters = NULL, param_type = NULL,
   warning = TRUE, ...)
 }
 \arguments{
@@ -12,14 +12,14 @@ make_parameters(model, parameters = NULL, type = NULL,
 
 \item{parameters}{A numeric vector. Parameters to add to model.}
 
-\item{type}{A character string specifying type of parameters to set ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character string specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
 
 \item{warning}{Logicial indicates whether to warn about parameter renormalization}
 
 \item{...}{Options passed onto \code{make_priors()}.}
 }
 \description{
-A vector of "true" parameters to a model.
+A vector of "true" parameters; possibly drawn from prior or posterionr.
 }
 \examples{
 
@@ -28,11 +28,11 @@ model <- make_model("X -> Y")
 data  <- simulate_data(model, n = 2)
 model <- gbiqq(model, data)
 make_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
-make_parameters(model, type = "flat")
-make_parameters(model, type = "prior_draw")
-make_parameters(model, type = "prior_mean")
-make_parameters(model, type = "posterior_draw")
-make_parameters(model, type = "posterior_mean")
+make_parameters(model, param_type = "flat")
+make_parameters(model, param_type = "prior_draw")
+make_parameters(model, param_type = "prior_mean")
+make_parameters(model, param_type = "posterior_draw")
+make_parameters(model, param_type = "posterior_mean")
 
 # Harder examples, using \\code{define} and priors arguments to define
 # specific parameters using causal syntax

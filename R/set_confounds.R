@@ -197,9 +197,18 @@ set_confound <-  function(model, confound = NULL){
 
 	# Clean up for export
 	rownames(P) <- model$parameters_df$param_names
-	to_keep     <- apply(P, 1, sum)!=0
-	model$parameters_df <- dplyr::filter(model$parameters_df, to_keep)
-	P <- P[to_keep,]
+
+	# Drop family if an entire set is empty
+	sets <- unique(model$parameters_df$param_set)
+	to_keep     <- sapply(sets, function(j)
+		sum(P[model$parameters_df$param_set == j, ])>0)
+	if(!all(to_keep)){
+		keep_set <- sets[to_keep]
+		keep <- model$parameters_df$param_set %in% keep_set
+
+		model$parameters_df <- dplyr::filter(model$parameters_df, keep)
+		P <- P[keep,]
+		}
 
 
 	# Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations

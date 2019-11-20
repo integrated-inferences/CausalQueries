@@ -40,4 +40,6 @@ x <- get_query_types(model, query)
 
 query <- "(Y[X = .]==1)"
 get_query_types(model, query)
+
+model <- make_model("X -> Y")
 }

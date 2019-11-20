@@ -1,18 +1,17 @@
 
-context(desc = "Testing data_strategy")
+context(desc = "Testing make_data")
 
 model <- make_model("X -> M -> Y")
 
 testthat::test_that(
 	desc = "data strategy works",
 	code = {
-		strat <- data_strategy(model, n_obs = 8)
+		strat <- make_data(model, n = 8)
     expect_equal(nrow(strat), 8)
-
-    strat <- data_strategy(
+    set.seed(1)
+    strat <- make_data(
 			    	   model,
-			    	   n_obs = 8,
-			    	   n = NULL,
+			    	   n = 20,
 			         vars = list(c("X", "Y"), "M"),
 			    	   probs = list(1, .5),
 			    	   subsets = list(NULL, "X==1 & Y==0"))
@@ -25,19 +24,20 @@ testthat::test_that(
 })
 
 testthat::test_that(
-	desc = "data_strategy errors and messages when it should",
+	desc = "make_data errors and messages when it should",
 	code = {
-		no_p <- make_model("X -> M -> Y")
+		model <- make_model("X -> M -> Y")
 
      # "If specified, vars, probs, subsets, should have the same length"
-		expect_error(data_strategy(model, vars = c("X","M","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
-		#"If specified, n should be the same length as vars"
-		expect_error(data_strategy(model, vars = c("X","M","Y"), n = 1))
+		expect_error(make_data(model, vars = c("X","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
+		#"If specified, n_steps should be the same length as vars"
+		expect_error(make_data(model, vars = list("X","M","Y"), n_steps = 1))
 
-		expect_warning(data_strategy(
+		expect_warning(
+			make_data(
 			model,
-			n_obs = 8,
-			n = c(2,2),
+			n = 8,
+			n_steps = c(2,2),
 			vars = list(c("X", "Y"), "M"),
 			probs = list(1, .5),
 			subsets = list(NULL, "X==1 & Y==0")))

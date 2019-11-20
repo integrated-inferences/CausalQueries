@@ -7,7 +7,6 @@
 #' @param A A matrix. Ambiguity matrix. Not required but may be provided to avoid repeated computation for simulations.
 #' @param parameters A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.
 #' @param type_prob A numeric vector. Type probabilities (usually not required).
-#' @param using String indicating whether to use "priors", "posteriors" or "parameters".
 #'
 #' @export
 #' @examples
@@ -15,37 +14,25 @@
 #' get_event_prob(model = model)
 #' get_event_prob(model = model, parameters = rep(1, 6))
 #' get_event_prob(model = model, parameters = 1:6)
-#' get_event_prob(model = model, using = "priors")
-#' get_event_prob(model = model, using = "parameters")
 get_event_prob <- function(model,
                             P = NULL,
                             A = NULL,
                             parameters = NULL,
-                            type_prob = NULL,
-                            using = NULL){
+                            type_prob = NULL){
 
   # draw_event uses a parameter vector that is either provided directly or else drawn from priors or posteriors
   # a directly provided parameter vector is used instead of parameters contained in the model
-  # if parameters is NULL but using  parameters is specified then model$parameters is used if available
 
-  if(!is.null(parameters)) parameters <- {
-    model$parameters_df$parameters <- parameters
-    gbiqq:::clean_params(model$parameters_df)$parameters}
-
-  # Parameters called but not provided
-  if(!(is.null(using))) {
-    if(using == "parameters" & is.null(parameters)) parameters <- get_parameters(model)
-    }
-
-  if(is.null(parameters)) parameters <- make_parameters(model, using = using)
+  if(!is.null(parameters)) parameters <- gbiqq:::clean_param_vector(model, parameters)
+  if(is.null(parameters))  parameters <- get_parameters(model)
 
   # Ambiguity matrix
   # if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
   A <- get_ambiguities_matrix(model)
 
   # Type probabilities
-  if(is.null(type_prob)) {
-    type_prob <- get_type_prob(model = model, P = P, parameters = parameters, using = using)}
+  if(is.null(type_prob))
+    type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
 
   # Event probabilities  ## FLAG this is a hack for cases with only one possible data type
   if(ncol(A)==1) {out <- matrix(1); rownames(out) <- colnames(A); return(out)}

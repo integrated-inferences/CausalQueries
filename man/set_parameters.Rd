@@ -4,7 +4,7 @@
 \alias{set_parameters}
 \title{Set parameters}
 \usage{
-set_parameters(model, parameters = NULL, type = NULL,
+set_parameters(model, parameters = NULL, param_type = NULL,
   warning = FALSE, ...)
 }
 \arguments{
@@ -12,7 +12,7 @@ set_parameters(model, parameters = NULL, type = NULL,
 
 \item{parameters}{A parameter vector}
 
-\item{type}{A character string specifying type of parameters to set ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character string specifying type of parameters to set ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
 
 \item{warning}{Logicial indicates whether to warn about parameter renormalization}
 
@@ -23,10 +23,10 @@ Add a true parameter vector to a model. Parameters can be created using argument
 make_parameters and make_priors.
 }
 \details{
-Argument "type," is passed to make_priors and specifies  one of "flat", "prior_mean",
+Argument "param_type," is passed to make_priors and specifies  one of "flat", "prior_mean",
 "posterior_mean", "prior_draw", "posterior_draw", and "define".
-With type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise
-\code{flat} sets equal probabilities on each nodal type in each parameter set;
+With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise
+\code{flat} sets equal probabilities on each nodal param_type in each parameter set;
 \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
 take parameters as the means or as draws from the prior or posterior.
 }

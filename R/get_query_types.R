@@ -29,10 +29,6 @@
 #' get_query_types(model, query)
 #'
 #' model <- make_model("X -> Y")
-#' get_query_types(model, query = TRUE)
-#' get_query_types(model, query = FALSE)
-
-
 
 get_query_types <- function(model, query, join_by = "|"){
 
@@ -152,7 +148,6 @@ get_query_types <- function(model, query, join_by = "|"){
 
 }
 
-
 #' @export
 print.causal_types <- function(x, ...) {
 	print(summary(x))
@@ -183,7 +178,6 @@ print.summary.causal_types <- function(x, ...){
 		counter <- counter + 2
 	}
 
-
 	cat(paste("\n\n Number of causal types that meet condition(s) = ", length(types1)))
 	cat(paste("\n Total number of causal types in model = ", length(x$types)))
 	} else if(output_type == "numeric"){
@@ -191,7 +185,6 @@ print.summary.causal_types <- function(x, ...){
 	} else{
 		print(x)
 	}
-
 
 }
 
