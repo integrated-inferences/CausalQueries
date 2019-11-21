@@ -208,7 +208,7 @@ restrict_by_query <- function(model,
 			model$nodal_types   <- nodal_types
 
 			# Adjust P: What to drop
-			drop_rows <- model$parameters_df$node %in% drop_labels
+			drop_rows <- model$parameters_df$nodal_type %in% drop_labels
 
       # Now drop
 			model$parameters_df <- model$parameters_df %>%

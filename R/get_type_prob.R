@@ -12,15 +12,10 @@
 #'
 get_type_prob <- function(model,
                            P = NULL,
-                           parameters = NULL #,
-                          # using = NULL
+                           parameters = NULL
                           ){
 
-#  if(!is.null(parameters) & !is.null(using)) if(using!="parameters")
-#    message("Parameters provided but using is not set to parameters")
-#  if(!is.null(parameters)) using <- "parameters"
   if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
-#  if(is.null(using)) {using <- "priors"; message("using not provided, priors assumed")}
   if(is.null(parameters))  parameters <- get_parameters(model)
   if(is.null(P)) 	         P      <- get_parameter_matrix(model)
 

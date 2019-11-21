@@ -46,11 +46,20 @@
 #'
 #' @param model A model created by make_model()
 #' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
+#' @param add_confounds_df Logical. Attache a dataframe with confound links.
 #' @export
 #' @examples
 #'
 #' model <- make_model("X -> Y") %>%
 #'   set_confound(list("X <-> Y"))
+#'
+#' model <- make_model("X -> Y") %>%
+#'   set_confound(list("X <-> Y"), add_confounds_df = TRUE)
+#'
+#' make_model("X -> Y -> Z") %>%
+#'   set_restrictions(c(increasing("X", "Y")), keep = TRUE) %>%
+#'   set_confound(list("X <-> Y")) %>%
+#'   get_parameter_matrix()
 #'
 #' model <- make_model("X -> Y") %>%
 #'   set_confound(list(X = "Y"))
@@ -85,12 +94,18 @@
 #' confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 #' model <- set_confound(model = model, confound = confound)
 #'
-#' confound2 = list(X = "(Y[X=1]>Y[X=0])")
+#' # Unintended confounding between W and X?
 #' model <- make_model("X -> Y <- S; S -> W") %>%
-#' set_confound(list(X = "S==1", S = "W[S=1]==1"))
-#' attr(model$P, "confounds")
+#'   set_restrictions(c(
+#'   increasing("X", "Y"), increasing("S", "W"),
+#'   increasing("S", "Y"), decreasing("S", "Y")))
+#' model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+#' attr(model1$P, "confounds")
+#' model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+#' attr(model2$P, "confounds")
 
-set_confound <-  function(model, confound = NULL){
+
+set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 
   # Housekeeping
 
@@ -191,17 +206,14 @@ set_confound <-  function(model, confound = NULL){
 		# Zero out duplicated entries: 2
 		P[(model$parameters_df$param_family  == a) & (model$parameters_df$param_set!= a2),
 			types_names %in% D[[j]]]    <- 0
-
 	}
-
 
 	# Clean up for export
 	rownames(P) <- model$parameters_df$param_names
 
 	# Drop family if an entire set is empty
 	sets <- unique(model$parameters_df$param_set)
-	to_keep     <- sapply(sets, function(j)
-		sum(P[model$parameters_df$param_set == j, ])>0)
+	to_keep     <- sapply(sets, function(j) sum(P[model$parameters_df$param_set == j, ])>0)
 	if(!all(to_keep)){
 		keep_set <- sets[to_keep]
 		keep <- model$parameters_df$param_set %in% keep_set
@@ -210,21 +222,16 @@ set_confound <-  function(model, confound = NULL){
 		P <- P[keep,]
 		}
 
+	# Reorder
+	new_order <- with(model$parameters_df, order(gen, param_set)) #, nodal_type))
+	model$parameters_df <- 	model$parameters_df[new_order,]
+	model$P <- data.frame(P[new_order,])
+	rownames(model$parameters_df) <- NULL
 
 	# Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
-	V <- lapply(confound, var_in_query, model= model)
-	confounds_df <- data.frame(
-		conditioned = rep(as.vector(names(V)), times = as.vector(unlist(lapply(V, length)))),
-	  conditioned_on = unlist(lapply(V, unlist)), stringsAsFactors = FALSE)
-	confounds_df <- confounds_df[confounds_df$conditioned != confounds_df$conditioned_on,]
-	rownames(confounds_df) <- NULL
 
-	if(!is.null(attr(P, "confounds"))) confounds_df <- rbind(attr(P, "confounds"), confounds_df)
-	confounds_df <- confounds_df[!duplicated(confounds_df),]
+	if(add_confounds_df) attr(model$P, "confounds") <- make_confounds_df(model)
 
-	attr(P, "confounds") <- confounds_df
-
-	model$P     <- P
 	model
 
 	}

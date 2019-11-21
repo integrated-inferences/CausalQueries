@@ -18,6 +18,7 @@ Models can be updated with specification of a parameter matrix, P, by providing 
 The default setting for a causal model have flat (uniform) priors and parameters putting equal weight on each parameter within each parameter set. These can be adjust with \code{set_priors} and \code{set_parameters}
 }
 \examples{
+make_model(statement = "X -> Y")
 modelXKY <- make_model("X -> K -> Y; X -> Y")
 
 # Example where cyclicaly dag attempted

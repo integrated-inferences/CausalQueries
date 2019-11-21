@@ -4,12 +4,14 @@
 \alias{set_confound}
 \title{Set confound}
 \usage{
-set_confound(model, confound = NULL)
+set_confound(model, confound = NULL, add_confounds_df = FALSE)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{confound}{A named list relating nodes to statements that identify causal types with which they are confounded}
+
+\item{add_confounds_df}{Logical. Attache a dataframe with confound links.}
 }
 \description{
 Adjust parameter matrix to allow confounding.
@@ -62,6 +64,14 @@ model <- make_model("X -> Y") \%>\%
   set_confound(list("X <-> Y"))
 
 model <- make_model("X -> Y") \%>\%
+  set_confound(list("X <-> Y"), add_confounds_df = TRUE)
+
+make_model("X -> Y -> Z") \%>\%
+  set_restrictions(c(increasing("X", "Y")), keep = TRUE) \%>\%
+  set_confound(list("X <-> Y")) \%>\%
+  get_parameter_matrix()
+
+model <- make_model("X -> Y") \%>\%
   set_confound(list(X = "Y"))
 
 model <- make_model("X -> Y") \%>\%
@@ -94,8 +104,13 @@ model <- make_model("X -> Y")
 confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 model <- set_confound(model = model, confound = confound)
 
-confound2 = list(X = "(Y[X=1]>Y[X=0])")
+# Unintended confounding between W and X?
 model <- make_model("X -> Y <- S; S -> W") \%>\%
-set_confound(list(X = "S==1", S = "W[S=1]==1"))
-attr(model$P, "confounds")
+  set_restrictions(c(
+  increasing("X", "Y"), increasing("S", "W"),
+  increasing("S", "Y"), decreasing("S", "Y")))
+model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+attr(model1$P, "confounds")
+model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+attr(model2$P, "confounds")
 }
