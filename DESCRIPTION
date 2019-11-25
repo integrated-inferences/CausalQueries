@@ -23,8 +23,7 @@ Imports:
     gtools,
     rstan,
     rlang (>= 0.2.0),
-    stringr,
-    randomizr
+    stringr
 Suggests: 
     testthat,
     rmarkdown,
