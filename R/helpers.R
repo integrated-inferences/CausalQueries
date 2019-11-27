@@ -298,12 +298,3 @@ var_in_query <- function(model, query){
 	v <- 	model$nodes
 	v[sapply(v, 	includes_var, query = query)]
 }
-
-
-# helper from hadley
-# https://stackoverflow.com/questions/4752275/test-for-equality-among-all-elements-of-a-single-vector
-zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
-	if (length(x) == 1) return(TRUE)
-	x <- range(x) / mean(x)
-	isTRUE(all.equal(x[1], x[2], tolerance = tol))
-}

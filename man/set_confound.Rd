@@ -104,12 +104,13 @@ model <- make_model("X -> Y")
 confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 model <- set_confound(model = model, confound = confound)
 
-# Unintended confounding between Y1 and Y2?
-model <- make_model("Y1 <- X -> Y2") \%>\%
+# Unintended confounding between W and X?
+model <- make_model("X -> Y <- S; S -> W") \%>\%
   set_restrictions(c(
-  decreasing("X", "Y1"), decreasing("X", "Y2")))
-model1 <-  set_confound(model, list(Y1 = "X==1", Y2 = "X==1"), add_confounds_df = TRUE)
+  increasing("X", "Y"), increasing("S", "W"),
+  increasing("S", "Y"), decreasing("S", "Y")))
+model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
 attr(model1$P, "confounds")
-model2 <-  set_confound(model, list(X = "Y1[X=1]==1", X = "Y2[X=1]==1"), add_confounds_df = TRUE)
+model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
 attr(model2$P, "confounds")
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_confounds_df.R
 \name{get_nodal_joint_probability}
 \alias{get_nodal_joint_probability}
-\title{Calculate joint distribution of nodal types}
+\title{Get joint distribution of nodal types}
 \usage{
 get_nodal_joint_probability(model, parameters = NULL,
   generic_parameters = NULL)
