@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_confounds_df.R
 \name{make_confounds_df}
 \alias{make_confounds_df}
-\title{Get confounds dataframe}
+\title{Make confounds dataframe}
 \usage{
 make_confounds_df(model, ...)
 }

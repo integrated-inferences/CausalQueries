@@ -1,4 +1,4 @@
-#' Get joint distribution of nodal types
+#' Calculate joint distribution of nodal types
 #'
 #' Identifies confounded nodal types. Default behavior draws a random admissible parameter vector.
 #'
@@ -45,7 +45,7 @@ get_nodal_joint_probability <-
 		right_join(cbind(nodal_type = (rownames(joint)), joint), by = "nodal_type")
 }
 
-#' Get confounds dataframe
+#' Make confounds dataframe
 #'
 #' Identifies confounded nodal types. Default behavior draws a random admissible parameter vector.
 #'
@@ -87,13 +87,53 @@ distinct(confound_df)
 }
 
 
-# helper from hadley
-# https://stackoverflow.com/questions/4752275/test-for-equality-among-all-elements-of-a-single-vector
-zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
-	if (length(x) == 1) return(TRUE)
-	x <- range(x) / mean(x)
-	isTRUE(all.equal(x[1], x[2], tolerance = tol))
+#' Set confounds dataframe
+#'
+#' Adds matrix of confounded nodal types to model.
+#'
+#' @param model A model made by make_model
+#' @param ... arguments passed to make_confounds_df
+#' @export
+#' @examples
+#' model <- make_model("X -> M -> Y; X <-> M;  M <-> Y") %>%
+#'    set_confounds_df()
+#' get_confounds_df(model)
+#'
+#'
+
+set_confounds_df <- function(model, confounds_df = NULL, ...){
+	if(!is.null(confounds_df) && !is.data.frame(confounds_df)) stop("confounds_df should be a dataframe")
+	if(is.null(confounds_df)) confounds_df <- make_confounds_df(model,...)
+	model$confounds_df <- confounds_df
+	model
 }
+
+
+#' Get confounds dataframe
+#'
+#' Gets matrix of confounded nodal types from model.
+#'
+#' @param model A model made by make_model
+#' @param confounds_df A dataframe of pairs of nodes that have unobserved confounding
+#' @param ... arguments passed to make_confounds_df
+#' @export
+#' @examples
+#' model <- make_model("X -> M -> Y; X <-> M;  M <-> Y") %>%
+#'    set_confounds_df()
+#' get_confounds_df(model)
+#'
+#'
+
+get_confounds_df <- function(model, confounds_df = NULL, ...){
+
+	if(!is.null(model$confounds_df)) return(model$confounds_df)
+
+	message("confounds_df generated on the fly")
+	make_confounds_df(model, ...)
+
+	}
+
+
 
 #' helper to get conditional probability of nodal types
 prob_par1_given_par2 <- function(par1, par2, nodal_type, P, type_prob){

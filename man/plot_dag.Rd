@@ -4,10 +4,12 @@
 \alias{plot_dag}
 \title{Plot your dag using dagitty}
 \usage{
-plot_dag(model)
+plot_dag(model, include_confounds = TRUE)
 }
 \arguments{
-\item{model}{A dag created by make_model()}
+\item{model}{A model created by make_model()}
+
+\item{include_confounds}{Logical. Adds confounds by default. If model does not contain a confounds_df this is generated on the fly.}
 }
 \value{
 dagitty translation of DAG
@@ -18,7 +20,12 @@ Plot your dag using dagitty
 \examples{
 \dontrun{
 model <- make_model("X -> K -> Y; X -> Y")
-plot_dag(model)
+plot(model)
+
+model <- make_model("X -> K -> Y; X <-> Y")
+plot(model, include_confounds = FALSE)
+plot(model)
+plot_dag(model, include_confounds = TRUE)
 }
 
 }
