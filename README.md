@@ -43,19 +43,19 @@ model <- set_confound(model, list(X = "Y[X=1] == 1"))
 We then set priors thus:
 
 ```
-model <- set_priors(model, prior_distribution = "jeffreys")
+model <- set_priors(model, distribution = "jeffreys")
 ```
 
 You can plot the dag, making use of functions in the `dagitty` package. 
 
 ```{r}
-plot_dag(model)
+plot(model)
 ```
 
 You can draw data from the model, like this:
 
 ```
-data <- simulate_data(model, n = 10)
+data <- make_data(model, n = 10)
 ```
 
 
@@ -76,6 +76,7 @@ CoE <- query_distribution(
                    subset = "X==1 & Y==1"
                    )
 ```
+
 This uses the posterior distribution and the model to assess the "causes of effects" estimand: the probability that `X=1` was the cause of `Y=1` in those cases in which `X=1` and `Y=1`. The approach is to imagine a set of "do" operations on the model, that control the level of `X` and to inquire about the level of `Y` given these operations, and then to assess how likely is is that `Y` would be 0 if `X` were fixed at 0 within a set that naturally take on particular values of `X` and `Y`. By the same token this posterior can be calculated conditional on observations of `M`, allowing an assessment of how data on mediators alters inference about the causes of effects.
 
 ## Credits etc
