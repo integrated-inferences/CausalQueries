@@ -18,20 +18,20 @@
 #' data_long   <- simulate_data(model, n = 4)
 #' data_short  <- collapse_data(data_long, model)
 #' fit <- fitted_model()
-#' model_1 <- gbiqq(model, data_long)
-#' model_2 <- gbiqq(model, data_long, stan_model = fit)
+#' model_1 <- update_model(model, data_long)
+#' model_2 <- update_model(model, data_long, stan_model = fit)
 #'
 #' # Throws error unless compact data indicated:
 #' \dontrun{
-#' model_3 <- gbiqq(model, data_short)
+#' model_3 <- update_model(model, data_short)
 #' }
-#' model_4 <- gbiqq(model, data_short, stan_model = fit, data_type = "compact")
+#' model_4 <- update_model(model, data_short, stan_model = fit, data_type = "compact")
 #'
 #' # It is possible to implement updating without data, in which case the posterior
 #' # is a stan object that reflects the prior
-#' model5 <- gbiqq(model)
+#' model5 <- update_model(model)
 
-gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", keep_stan_model = FALSE, ...) {
+update_model <- function(model, data = NULL, stan_model = NULL, data_type = "long", keep_stan_model = FALSE, ...) {
 
 	if(data_type == "long") {
 
@@ -86,5 +86,13 @@ gbiqq <- function(model, data = NULL, stan_model = NULL, data_type = "long", kee
 #'
 fitted_model <- function() {
 	model <- make_model("X->Y")
-	gbiqq(model, simulate_data(model, n = 1), refresh = 0, keep_stan_model = TRUE)$stan_fit
+	update_model(model, make_data(model, n = 1), refresh = 0, keep_stan_model = TRUE)$stan_fit
 }
+
+#' gbiqq
+#'
+#' An alias for \code{\link{update_model}}
+#'
+#' @export
+
+gbiqq <- function(...) update_model(...)

@@ -63,7 +63,7 @@ Updating is done like this:
 
 
 ```
-updated_model <- gbiqq(model, data)
+updated_model <- update_model(model, data)
 ```
 
 Finally you can calculate an estimand of interest like this:
