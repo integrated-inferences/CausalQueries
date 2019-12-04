@@ -6,6 +6,9 @@
 \usage{
 gbiqq(...)
 }
+\arguments{
+\item{...}{arguments passed to  \code{\link{update_model}}}
+}
 \description{
 An alias for \code{\link{update_model}}
 }

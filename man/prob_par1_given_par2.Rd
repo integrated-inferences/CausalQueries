@@ -6,6 +6,17 @@
 \usage{
 prob_par1_given_par2(par1, par2, nodal_type, P, type_prob)
 }
+\arguments{
+\item{par1}{parameter 1}
+
+\item{par2}{parameter 1}
+
+\item{nodal_type}{vector of nodal types}
+
+\item{P}{P matrix}
+
+\item{type_prob}{vector of type probabilities}
+}
 \description{
 helper to get conditional probability of nodal types
 }

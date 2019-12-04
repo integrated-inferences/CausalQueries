@@ -15,7 +15,12 @@ get_nodal_joint_probability(model, parameters = NULL,
 \item{generic_parameters}{Logical, require selection of random parameter.}
 }
 \description{
-Identifies confounded nodal types. Default behavior draws a random admissible parameter vector.
+Identifies confounded nodal types. Default behavior draws
+a random admissible parameter vector.
+}
+\details{
+Note that nodal types may be non indepdendent even though
+they would be on observation of nodal values.
 }
 \examples{
 model <- make_model("X -> Y") \%>\%

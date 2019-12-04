@@ -4,14 +4,14 @@
 \alias{set_confound}
 \title{Set confound}
 \usage{
-set_confound(model, confound = NULL, add_confounds_df = FALSE)
+set_confound(model, confound = NULL, add_confounds_df = TRUE)
 }
 \arguments{
 \item{model}{A model created by make_model()}
 
 \item{confound}{A named list relating nodes to statements that identify causal types with which they are confounded}
 
-\item{add_confounds_df}{Logical. Attache a dataframe with confound links.}
+\item{add_confounds_df}{Logical. Attach a dataframe with confound links. Defaults to TRUE.}
 }
 \description{
 Adjust parameter matrix to allow confounding.

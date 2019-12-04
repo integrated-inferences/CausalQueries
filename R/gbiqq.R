@@ -93,6 +93,8 @@ fitted_model <- function() {
 #'
 #' An alias for \code{\link{update_model}}
 #'
+#' @param ... arguments passed to  \code{\link{update_model}}
+#'
 #' @export
 
 gbiqq <- function(...) update_model(...)

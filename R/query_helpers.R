@@ -139,8 +139,8 @@ substitutes <- function(X1, X2, Y){
 #'
 #' Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
 #'
-#' @param X input node
-#' @param Y outcome node
+#' @param X character: name of input node
+#' @param Y character: name of outcome node
 #' @family statements
 #' @export
 #'

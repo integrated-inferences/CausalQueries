@@ -63,6 +63,18 @@
 #' set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
 #'
+#' Use of | and &
+#'# Keep node if *for some value of B* Y[A = 1] == 1
+#'model <- make_model("A->Y<-B") %>%
+#'	set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "|", keep = TRUE)
+#'dim(get_parameter_matrix(model))
+#'
+#'
+#'# Keep node if *for all values of B* Y[A = 1] == 1
+#'model <- make_model("A->Y<-B") %>%
+#'	set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "&", keep = TRUE)
+#' dim(get_parameter_matrix(model))
+#'
 #' # Restrict multiple nodes
 #' model <- make_model("X->Y<-M; X -> M" ) %>%
 #' set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
@@ -120,6 +132,18 @@ set_restrictions <- function(model,
 	 model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
 	 }
 
+  # Remove any spare P matrix  / parameters_df param_families
+	if(!is.null(model$P)){
+
+		# Drop family if an entire set is empty
+		sets <- unique(model$parameters_df$param_set)
+		to_keep     <- sapply(sets, function(j) sum(model$P[model$parameters_df$param_set == j, ])>0)
+		if(!all(to_keep)){
+			keep <- model$parameters_df$param_set %in% sets[to_keep]
+			model$parameters_df <- dplyr::filter(model$parameters_df, keep)
+			model$P <- model$P[keep,]
+		}
+		}
 
 	# Keep restricted types as attributes
 	nodal_types1 <- model$nodal_types

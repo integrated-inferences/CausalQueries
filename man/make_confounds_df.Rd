@@ -2,23 +2,35 @@
 % Please edit documentation in R/make_confounds_df.R
 \name{make_confounds_df}
 \alias{make_confounds_df}
-\title{Get confounds dataframe}
+\title{Make a confounds dataframe}
 \usage{
-make_confounds_df(model, ...)
+make_confounds_df(model)
 }
 \arguments{
 \item{model}{A model made by make_model}
-
-\item{...}{arguments passed to get_nodal_joint_probability}
 }
 \description{
-Identifies confounded nodal types. Default behavior draws a random admissible parameter vector.
+Identifies confounded nodal types.
 }
 \examples{
-model <- make_model("X -> M -> Y; X <-> M")
+model <- make_model("X -> Y; X <-> Y")
+make_confounds_df(model)
+
+model <- make_model("X -> M -> Y; X <-> Y") \%>\%
+set_restrictions(c("M[X=1] == M[X=0]", "Y[M=1]==Y[M=0]"))
+make_confounds_df(model)
+
+model <- make_model("X -> M -> Y; X <-> M; M <-> Y") \%>\%
+set_restrictions(c("M[X=1] == M[X=0]", "Y[M=1]==Y[M=0]"))
 make_confounds_df(model)
 
 model <- make_model("X -> M -> Y") \%>\%
-  set_confound(list(X = "Y[X=1] > Y[X=0]"))
+  set_confound(list(X = "Y[X=1] > Y[X=0]"), add_confounds_df = FALSE)
 make_confounds_df(model)
+
+model <- make_model("X -> M -> Y")
+make_confounds_df(model)
+
+model <- make_model("X -> Y") \%>\%
+  set_confound(list(X = "X==1"))
 }

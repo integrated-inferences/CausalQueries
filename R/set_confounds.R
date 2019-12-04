@@ -46,39 +46,39 @@
 #'
 #' @param model A model created by make_model()
 #' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
-#' @param add_confounds_df Logical. Attache a dataframe with confound links.
+#' @param add_confounds_df Logical. Attach a dataframe with confound links. Defaults to TRUE.
 #' @export
 #' @examples
 #'
 #' model <- make_model("X -> Y") %>%
 #'   set_confound(list("X <-> Y"))
+#' get_parameters(model)
 #'
-#' model <- make_model("X -> Y") %>%
-#'   set_confound(list("X <-> Y"), add_confounds_df = TRUE)
-#'
+#'# In this case we notionally place a distribution but in fact Y has degenerate support
 #' make_model("X -> Y -> Z") %>%
 #'   set_restrictions(c(increasing("X", "Y")), keep = TRUE) %>%
 #'   set_confound(list("X <-> Y")) %>%
 #'   get_parameter_matrix()
 #'
-#' model <- make_model("X -> Y") %>%
-#'   set_confound(list(X = "Y"))
+#' # X nodes assigned conditional on Y
+#' make_model("X -> Y") %>%
+#'   set_confound(list(X = "Y")) %>%
+#'   get_parameter_matrix()
+#'
+#' # Y nodes assigned conditional on X
+#' make_model("X -> Y") %>%
+#'   set_confound(list(Y = "X")) %>%
+#'   get_parameter_matrix()
 #'
 #' model <- make_model("X -> Y") %>%
-#'   set_confound(list(Y = "X"))
-#'
-#' model <- make_model("X -> Y") %>%
-#'   set_confound(list(X = "(Y[X=1]>Y[X=0])"))
-#'
-#' confound <- list(X = "(Y[X=1]>Y[X=0])",
-#'                  X = "(Y[X=1]<Y[X=0])")
+#'   set_confound(list(X = "(Y[X=1]>Y[X=0])",
+#'                  X = "(Y[X=1]<Y[X=0])",
+#'                  X = "(Y[X=1]==Y[X=0])"))
 #'
 #' model <- make_model("X -> M -> Y") %>%
 #' set_confound (list(X = "(Y[X=1]>Y[X=0])",
 #'                  M = "Y",
 #'                  X = "(Y[X=1]<Y[X=0])"))
-#'
-#' model <- make_model("X -> Y") %>% set_confound(confound)
 #'
 #' confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
 #' model <- make_model("A -> B -> C -> D; B -> D") %>%
@@ -91,24 +91,24 @@
 #' cor(simulate_data(model, n = 20))
 #'
 #' model <- make_model("X -> Y")
-#' confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
+#' confound <- list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 #' model <- set_confound(model = model, confound = confound)
 #'
-#' # Unintended confounding between W and X?
 #' model <- make_model("X -> Y <- S; S -> W") %>%
 #'   set_restrictions(c(
 #'   increasing("X", "Y"), increasing("S", "W"),
 #'   increasing("S", "Y"), decreasing("S", "Y")))
 #' model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
-#' attr(model1$P, "confounds")
+#' model1$confounds_df
 #' model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
-#' attr(model2$P, "confounds")
+#' model2$confounds_df
 
 
-set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
+set_confound <-  function(model,
+													confound = NULL,
+													add_confounds_df = TRUE){
 
   # Housekeeping
-
 	if(is.null(confound)) {message("No confound provided"); return(model)}
 	if(is.null(model$P))   model <- set_parameter_matrix(model)
 
@@ -130,16 +130,17 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 		 names(confound)[j] <- z[1]
 	 	}}
 
+  # Figure our when confound expressed as model node
 	checks  <- unlist(lapply(confound, function(x) x %in% model$nodes))
 
-	 	# Function to either get types for a simple confound, or else expand to list for total confound
+	# Function to either get types for a simple confound,
+	# or else expand to list for confound expressed as node
 	 	f <- function(i) {
 	 		x <- confound[i]
 	 		if(checks[i]){
+	 			# Confounded nodes
 	 			nod_typs <- types_matrix[x[[1]]][[1]]
-	 			# -1 below to leave a residual nodal type
 	 			 exploded_list <- lapply(unique(nod_typs)[-1], function(n) types_names[n == nod_typs])
-	 			 #exploded_list <- lapply(unique(nod_typs), function(n) types_names[n == nod_typs])
 	 			names(exploded_list) <- rep(names(x), length(exploded_list))
 	 			return(exploded_list)
 	 		}
@@ -155,7 +156,6 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 	 	# Origin (Node with conditional distribution)
 	 	A <- names(D)
 
-
 	# Magic
 
 	for(j in 1:length(A)) {
@@ -164,39 +164,25 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 		a <- A[j]   # param_name
 
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
-		existing_ancestor <- startsWith(model$parameters_df$param_set, paste0(a, "-"))
-
-
-		if(!any(existing_ancestor)) {
-			model$parameters_df$param_set[model$parameters_df$param_set == a] <- paste0(a, "-", 0)
-			top_digit = 0
-		} else {
-			top_digit <- max(as.numeric(sapply(model$parameters$param_set[existing_ancestor],
-																						function(j) strsplit(j, "[-]")[[1]][2])))
-		}
-
-		# last param_set_name
-		a1 <- paste0(a, "-", top_digit)
-
-		# new param_set_name
-		a2 <- paste0(a, "-", top_digit + 1)
+ 		if(!any(startsWith(model$parameters_df$param_set, paste0(a, "-"))))
+ 			model$parameters_df <-
+ 				mutate(model$parameters_df, param_set = ifelse(param_set == a, paste0(a, "-", 0), param_set))
 
 		# Now extend priors and parameters
-
 		to_add <- model$parameters_df %>%
-			dplyr::filter(param_set == a1) %>%
-			dplyr::mutate(param_set  = a2,
-									 param_names = paste(param_set, param, sep = "."))
+			dplyr::filter(param_family == a) %>%
+			dplyr::mutate(
+				param_set  = gbiqq:::continue_names(param_set),
+				param_names = paste(param_set, param, sep = "."))
 
 		# Extend P: Make duplicate block of rows for each ancestor
-		# Should contain all values from parameter family
-		P_new <- data.frame(P[, ]) %>%
-			filter(model$parameters_df$param_family == a) %>%
-			group_split(model$parameters_df$param_set[model$parameters_df$param_family==a], keep = FALSE)
-		P_new <- 	1*(Reduce(f = "+", P_new) >0)
-		# Zero out duplicated entries: 1
+		# Should contain all values from parameter family (gathered here by recombining)
+		P_new <- data.frame(P[,]) %>%
+			filter(model$parameters_df$param_family == a) #%>%
+
+		# Zero out duplicated entries: 1 (New P elements have 0 for non specified types)
 		P_new[, !(types_names %in% D[[j]])] <- 0
-		P   <- rbind(P_new, P)
+		P   <- rbind(P_new, data.frame(as.matrix(P[,])))
 
 		# Extend parameter_df
 		model$parameters_df <- rbind(to_add,
@@ -204,9 +190,9 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 																 			 param_names = paste(param_set, param, sep = ".")))
 
 		# Zero out duplicated entries: 2
-		P[(model$parameters_df$param_family  == a) & (model$parameters_df$param_set!= a2),
-			types_names %in% D[[j]]]    <- 0
-	}
+		older <- 1:nrow(P) > nrow(P_new)
+    P[(model$parameters_df$param_family  == a) & older, types_names %in% D[[j]]]    <- 0
+ 	}
 
 	# Clean up for export
 	rownames(P) <- model$parameters_df$param_names
@@ -214,10 +200,9 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 	# Drop family if an entire set is empty
 	sets <- unique(model$parameters_df$param_set)
 	to_keep     <- sapply(sets, function(j) sum(P[model$parameters_df$param_set == j, ])>0)
-	if(!all(to_keep)){
-		keep_set <- sets[to_keep]
-		keep <- model$parameters_df$param_set %in% keep_set
 
+	if(!all(to_keep)){
+		keep <- model$parameters_df$param_set %in% sets[to_keep]
 		model$parameters_df <- dplyr::filter(model$parameters_df, keep)
 		P <- P[keep,]
 		}
@@ -229,20 +214,34 @@ set_confound <-  function(model, confound = NULL, add_confounds_df = FALSE){
 	rownames(model$parameters_df) <- NULL
 
 	# Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
+	if(add_confounds_df) model <- set_confounds_df(model)
 
-	if(add_confounds_df) attr(model$P, "confounds") <- make_confounds_df(model)
-
+	# Export
 	model
 
 	}
 
 
-#' #' explode confound
-#' #'
-#' #' Helper to turn a confound of the form Y="X" into a list of type statements
-#' #'
-#' explode_confound <- function(W) {
-#' 	new_list <-	lapply(unlist(model$nodal_types[W[[1]]]), function(j) j)
-#' 	names(new_list) <- rep(names(W), length(new_list))
-#' 	new_list
-#' }
+
+#' Continue names
+#'
+#' Slightly hacky function to continue param_set names in a sequence
+#' @examples
+#' x <- c("S-3", "S-3", "S-5")
+#' gbiqq:::continue_names(x)
+
+continue_names <- function(x){
+	z <- strsplit(x, split = "-")
+	r <- lapply(z, function(x)x [[2]])
+	m <- max(as.numeric(r)) + 1
+	lapply(z, function(w) paste0(w[[1]], "-", as.numeric(w[[2]]) + m)) %>%
+		unlist()
+}
+
+
+#' Set confounds
+#'
+#' alias for set_confound. See set_confound.
+#' @param ... arguments passed to set_confound
+#' @export
+set_confounds <- function(...) set_confound(...)
