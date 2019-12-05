@@ -62,33 +62,33 @@ Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint d
 
 model <- make_model("X -> Y") \%>\%
   set_confound(list("X <-> Y"))
+get_parameters(model)
 
-model <- make_model("X -> Y") \%>\%
-  set_confound(list("X <-> Y"), add_confounds_df = TRUE)
-
+# In this case we notionally place a distribution but in fact Y has degenerate support
 make_model("X -> Y -> Z") \%>\%
   set_restrictions(c(increasing("X", "Y")), keep = TRUE) \%>\%
   set_confound(list("X <-> Y")) \%>\%
   get_parameter_matrix()
 
-model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "Y"))
+# X nodes assigned conditional on Y
+make_model("X -> Y") \%>\%
+  set_confound(list(X = "Y")) \%>\%
+  get_parameter_matrix()
+
+# Y nodes assigned conditional on X
+make_model("X -> Y") \%>\%
+  set_confound(list(Y = "X")) \%>\%
+  get_parameter_matrix()
 
 model <- make_model("X -> Y") \%>\%
-  set_confound(list(Y = "X"))
-
-model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "(Y[X=1]>Y[X=0])"))
-
-confound <- list(X = "(Y[X=1]>Y[X=0])",
-                 X = "(Y[X=1]<Y[X=0])")
+  set_confound(list(X = "(Y[X=1]>Y[X=0])",
+                 X = "(Y[X=1]<Y[X=0])",
+                 X = "(Y[X=1]==Y[X=0])"))
 
 model <- make_model("X -> M -> Y") \%>\%
 set_confound (list(X = "(Y[X=1]>Y[X=0])",
                  M = "Y",
                  X = "(Y[X=1]<Y[X=0])"))
-
-model <- make_model("X -> Y") \%>\% set_confound(confound)
 
 confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
 model <- make_model("A -> B -> C -> D; B -> D") \%>\%
@@ -101,16 +101,15 @@ model <- make_model("A -> B <- C") \%>\%
 cor(simulate_data(model, n = 20))
 
 model <- make_model("X -> Y")
-confound = list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
+confound <- list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 model <- set_confound(model = model, confound = confound)
 
-# Unintended confounding between W and X?
 model <- make_model("X -> Y <- S; S -> W") \%>\%
   set_restrictions(c(
   increasing("X", "Y"), increasing("S", "W"),
   increasing("S", "Y"), decreasing("S", "Y")))
 model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
-attr(model1$P, "confounds")
+model1$confounds_df
 model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
-attr(model2$P, "confounds")
+model2$confounds_df
 }

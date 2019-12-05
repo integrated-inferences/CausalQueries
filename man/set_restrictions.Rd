@@ -74,6 +74,18 @@ model <- make_model("X->Y") \%>\%
 set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 get_parameter_matrix(model)
 
+Use of | and &
+# Keep node if *for some value of B* Y[A = 1] == 1
+model <- make_model("A->Y<-B") \%>\%
+set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "|", keep = TRUE)
+dim(get_parameter_matrix(model))
+
+
+# Keep node if *for all values of B* Y[A = 1] == 1
+model <- make_model("A->Y<-B") \%>\%
+set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "&", keep = TRUE)
+dim(get_parameter_matrix(model))
+
 # Restrict multiple nodes
 model <- make_model("X->Y<-M; X -> M" ) \%>\%
 set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)

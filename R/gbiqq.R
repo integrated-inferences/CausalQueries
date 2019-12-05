@@ -30,7 +30,36 @@
 #' # It is possible to implement updating without data, in which case the posterior
 #' # is a stan object that reflects the prior
 #' model5 <- update_model(model)
-
+#'
+#' # Advanced: Example of a model with tailored parameters.
+#' # We take a model and add a tailored P matrix (which maps from parameters
+#' # to causal types) and a tailored parameters_df which reports that
+#' # all parameters are in one family.
+#' # Parameters in this example are not connected with nodal types in any way.
+#'
+#' dontrun{
+#' model <- make_model("X->Y")
+#' model$P <- diag(8)
+#' colnames(model$P) <- rownames(model$causal_types)
+#' model$parameters_df <- data.frame(
+#'   param_names = paste0("x",1:8),
+#'   param_set = 1, priors = 1, parameters = 1/8)
+#'
+#' # Update fully confounded model on strongly correlated data
+#'
+#' data <- make_data(make_model("X->Y"), n = 100,
+#'   parameters = c(.5, .5, .1,.1,.7,.1))
+#' fully_confounded <- update_model(model, data,
+#'   stan_model = fit, keep_stan_model = TRUE)
+#' fully_confounded$stan_fit
+#' query_model(fully_confounded, "Y[X = 1] > Y[X=0]", using = "posteriors")
+#' # To see the confounding:
+#' with(fully_confounded$posterior_distribution %>% data.frame(),
+#' {par(mfrow = c(1,2))
+#'  plot(x1, x5, main = "joint distribution of X0.Y00, X0.Y01")
+#'  plot(x1, x6, main = "joint distribution of X0.Y00, X1.Y01")})
+#' }
+#'
 update_model <- function(model, data = NULL, stan_model = NULL, data_type = "long", keep_stan_model = FALSE, ...) {
 
 	if(data_type == "long") {
@@ -86,7 +115,9 @@ update_model <- function(model, data = NULL, stan_model = NULL, data_type = "lon
 #'
 fitted_model <- function() {
 	model <- make_model("X->Y")
-	update_model(model, make_data(model, n = 1), refresh = 0, keep_stan_model = TRUE)$stan_fit
+	update_model(model, make_data(model, n = 1),
+							 chains = 1, iter = 1000, refresh = 0,
+							 keep_stan_model = TRUE)$stan_fit
 }
 
 #' gbiqq

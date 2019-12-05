@@ -10,6 +10,7 @@
 #' @param parameters A numeric vector. Values of parameters may be specified. By default, it is drawn from priors.
 #' @param param_type A character string specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
 #' @param clean_params Logical. Use to check parameters in case these are manually supplied.
+#' @param include_strategy Logical. Whether to include a "strategy" vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.
 #' @return A data frame of events
 #' @importFrom stats rmultinom
 #' @export
@@ -18,6 +19,7 @@
 #' model <- make_model("X -> Y")
 #' simulate_events(model = model)
 #' simulate_events(model = model, param_type = "prior_draw")
+#' simulate_events(model = model, include_strategy = TRUE)
 #'
 simulate_events <- function(model, n = 1,
                              w = NULL,
@@ -25,7 +27,8 @@ simulate_events <- function(model, n = 1,
                              A = NULL,
                              parameters = NULL,
                              param_type = NULL,
-                             clean_params = TRUE
+                             clean_params = TRUE,
+                             include_strategy = FALSE
 ){
   # Check that parameters sum to 1 in each param_set
   if(clean_params) if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
@@ -44,7 +47,12 @@ simulate_events <- function(model, n = 1,
   }
 
   # Draw events (Compact dataframe)
-  data.frame(event = rownames(w), count = rmultinom(1, n, w))
+  df <- data.frame(event = rownames(w), count = rmultinom(1, n, w))
 
+  if(include_strategy) {
+    df$strategy <- paste0(model$nodes, collapse = "")
+    df <- df[, c("event", "strategy", "count")]}
+
+  df
 }
 

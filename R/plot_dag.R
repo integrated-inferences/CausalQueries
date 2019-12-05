@@ -15,6 +15,9 @@
 #' }
 #'
 translate_dagitty <- function(model){
+
+	if(length(model$nodes)==1) return(	paste0("dag{ ",model$statement, " }"))
+
   dag   <- model$dag
 	inner <- paste(paste0(apply(dag,1,paste,collapse = " -> "), collapse = " ; "),collapse = "")
 

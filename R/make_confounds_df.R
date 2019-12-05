@@ -17,6 +17,7 @@
 #' set_restrictions(c("M[X=1] == M[X=0]", "Y[M=1]==Y[M=0]"))
 #' make_confounds_df(model)
 #'
+#' # The implied confounding is between X and M and also between X and Y
 #' model <- make_model("X -> M -> Y") %>%
 #'   set_confound(list(X = "Y[X=1] > Y[X=0]"), add_confounds_df = FALSE)
 #' make_confounds_df(model)
@@ -24,55 +25,64 @@
 #' model <- make_model("X -> M -> Y")
 #' make_confounds_df(model)
 #'
+#' # Bad case
+#' \dontrun{
 #' model <- make_model("X -> Y") %>%
 #'   set_confound(list(X = "X==1"))
+#'}
 #'
-#' model <- make_model("Y2 <- X -> Y1") %>%
-#'  set_restrictions(c("(Y1[X=1] == Y1[X=0])", "(Y2[X=1] == Y2[X=0])")) %>%
-#'  set_confound(list("X <-> Y1", "X <-> Y2"))
-#'
-#' model$P
-#' model$confounds_df
-#'
-#' # Hard case 1: OK
+#' # Complex confounding 1
 #' model <- make_model("A -> X <- B ; A <-> X; B <-> X")
-#' table(model$parameters_df$param_set)
 #' model$confounds_df
 #'
-#' # Hard case 2: Not OK
+#' # Complex confounding 2
 #' model <- make_model("A <- X -> B; A <-> X; B <-> X") %>%
 #' set_restrictions(c("A[X=0] == A[X=1]", "B[X=0] == B[X=1]"))
 #' table(model$parameters_df$param_set)
 #' model$confounds_df
+#' plot(model)
+#'
+#' # Full confounding: X, A|X, B|A,X with 7 degrees of freedom
+#' model <- make_model("A <- X -> B; A <-> X; B <-> X; A<->B") %>%
+#' set_restrictions(c("A[X=0] == A[X=1]", "B[X=0] == B[X=1]"))
+#' table(model$parameters_df$param_set)
+#' model$confounds_df
+#' plot(model)
 
 
-make_confounds_df <- function(model){
+
+make_confounds_df <- function(model) {
 
 	if(is.null(model$P)) {message("No confounding"); return(NULL)}
 
-	if(any(apply(model$P, 1, sum)==0)) warning("Some rows in model$P sum to 0.
-																						 Likely indicative of malformed confounds
-																						 (such as the distribution of X depends on X)
-																						 confounds_df may not be reliable.")
-	nodes <- model$nodes
-  n <- nrow(model$P)
+	if(any(apply(model$P, 1, sum)==0)) warning("
+	Some rows in model$P sum to 0. Likely indicative of malformed confounds
+	(such as the distribution of X depends on X) confounds_df may not be reliable.")
 
-	joint_zero <-  (apply(model$P, 1, function(j) apply(as.matrix(model$P[,j==1], nrow = n), 1, sum)==0)*1) %>%
-		data.frame
+	# Correlations of the rows of the P matrix capture the qualitative nature
+	# of correlations of parameters
+	par_corr <-  cor(t(model$P))
 
-	param_family <- model$parameters_df$param_family
+	# Check if these correlations are *differentially conditional* within a param_set
+	# Key action is done by distinct: we partition into submatrices and see if the rows are different
+	pars <- model$parameters_df$param_set
+	sets <- unique(pars)
+	x <- 1*sapply(sets, function(i) {sapply(sets, function(j) {
+		(as.data.frame(par_corr[pars==i, pars==j]) %>% distinct() %>% nrow)>1
+		})})
+	diag(x) <- 0
 
-  # This produces a nodes * nodes matrix of confounding
-		x <-  sapply(nodes, function(j) {
-		         sapply(nodes, function(k) {
-			sum(joint_zero[param_family==j, param_family==k])})})
-	  diag(x) <- 0
+	# We now aggregate to the node level to make a nodes*nodes matrix
+	node_map <- (select(model$parameters_df, param_family, param_set) %>% distinct)$param_family
+	nodes <- unique(node_map)
+	x <- sapply(nodes, function(i) {sapply(nodes, function(j) {sum(x[node_map==i, node_map==j])})})
 
-	  # This reshapes into a 2 column df
-		x <- which(x>0, arr.ind = TRUE)
-		if(sum(x) == 0) return(NA)
 
-		confound_df <- matrix(nodes[x], nrow(x)) %>% data.frame()
+	# This reshapes into a 2 column df
+	x <- which(x>0, arr.ind = TRUE)
+	if(sum(x) == 0) return(NA)
+
+	confound_df <- matrix(nodes[x], nrow(x)) %>% data.frame(stringsAsFactors = FALSE)
 
 	# Put in causal order
 	for(i in 1:nrow(confound_df)){
@@ -81,7 +91,45 @@ make_confounds_df <- function(model){
 
 	distinct(confound_df)
 
-}
+	}
+
+# make_confounds_df <- function(model){
+#
+# 	if(is.null(model$P)) {message("No confounding"); return(NULL)}
+#
+# 	if(any(apply(model$P, 1, sum)==0)) warning("Some rows in model$P sum to 0.
+# 																						 Likely indicative of malformed confounds
+# 																						 (such as the distribution of X depends on X)
+# 																						 confounds_df may not be reliable.")
+# 	nodes <- model$nodes
+#   n <- nrow(model$P)
+#
+# 	joint_zero <-  (apply(model$P, 1, function(j)
+# 		apply(as.matrix(model$P[,j==1], nrow = n), 1, sum)==0)*1) %>%
+# 		data.frame
+#
+# 	param_family <- model$parameters_df$param_family
+#
+#   # This produces a nodes * nodes matrix of confounding
+# 		x <-  sapply(nodes, function(j) {
+# 		         sapply(nodes, function(k) {
+# 			sum(joint_zero[param_family==j, param_family==k])})})
+# 	  diag(x) <- 0
+#
+# 	  # This reshapes into a 2 column df
+# 		x <- which(x>0, arr.ind = TRUE)
+# 		if(sum(x) == 0) return(NA)
+#
+# 		confound_df <- matrix(nodes[x], nrow(x)) %>% data.frame()
+#
+# 	# Put in causal order
+# 	for(i in 1:nrow(confound_df)){
+# 		confound_df[i,] <- (nodes[nodes %in% sapply(confound_df[i,], as.character)])
+# 	}
+#
+# 	distinct(confound_df)
+#
+# }
 
 
 #' Set a confounds_df

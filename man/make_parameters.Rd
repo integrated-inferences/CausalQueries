@@ -26,7 +26,8 @@ A vector of "true" parameters; possibly drawn from prior or posterionr.
 # Simple examples
 model <- make_model("X -> Y")
 data  <- simulate_data(model, n = 2)
-model <- gbiqq(model, data)
+fit <- fitted_model()
+model <- update_model(model, data, stan_model = fit)
 make_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
 make_parameters(model, param_type = "flat")
 make_parameters(model, param_type = "prior_draw")

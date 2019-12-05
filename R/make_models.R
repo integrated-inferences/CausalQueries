@@ -26,6 +26,16 @@
 #' model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
 #' dim(model$P)
 #' model$parameters_df
+#'
+#' # A single node graph is also possible
+#' model <- make_model("X")
+#' plot(model)
+#'
+#' # Unconnected nodes cannot
+#' dontrun{
+#' model <- make_model("X <-> Y")
+#' plot(model)
+#' }
 
 make_model <- function(statement){
 
@@ -34,9 +44,12 @@ make_model <- function(statement){
 	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
 		data.frame(stringsAsFactors = FALSE)
 
+	if(nrow(x)==0){ dag <- data.frame(v = statement, w = NA)
+	} else {
 	dag  <- x %>%
 		dplyr::filter(e=="->") %>%
 		dplyr::select(v,w)
+	}
 
 	names(dag) <- c("parent", "children")
 
@@ -62,6 +75,7 @@ make_model <- function(statement){
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 
  endog_node <- as.character(rev(unique(rev(dag$children))))
+ if(is.na(endog_node)) endog_node <- NULL
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 

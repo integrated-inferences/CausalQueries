@@ -236,7 +236,7 @@ restrict_by_query <- function(model,
 
       # Now drop
 			model$parameters_df <- model$parameters_df %>%
-				filter(!drop_rows)  %>%
+				dplyr::filter(!drop_rows)  %>%
 				gbiqq:::clean_params(warning = FALSE)
 
 			if(!is.null(model$P)) model$P <- model$P[!drop_rows,]

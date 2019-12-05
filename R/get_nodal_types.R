@@ -23,7 +23,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 	if(collapse  & !is.null(model$nodal_types)) return(model$nodal_types)
 
 	# 2. Create and interpret list of nodal types
-	nodal_types <- make_nodal_types(model)
+	nodal_types <- gbiqq:::make_nodal_types(model)
 
 	# reduce if necessary
 	 if(!is.null(model$nodal_types)){
@@ -37,7 +37,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 
 
 	# 3. Optionally provide in collapsed form
-  if(collapse) nodal_types <- collapse_nodal_types(nodal_types)
+  if(collapse) nodal_types <- gbiqq:::collapse_nodal_types(nodal_types)
 
 	attr(nodal_types, "interpret") <- interpret_type(model)
 
@@ -51,9 +51,10 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #'
 make_nodal_types <- function(model) {
 
-	nodes   <- model$nodes
-	parents     <- get_parents(model)
-	nodal_types       <- lapply(lapply(parents, length), gbiqq:::type_matrix)
+	real_node <- !(is.na(nodes))
+	nodes       <- model$nodes[real_node]
+	parents     <- get_parents(model)[real_node]
+	nodal_types <- lapply(lapply(parents, length), gbiqq:::type_matrix)
 
 	nodal_types_labels <- lapply(1:length(nodal_types), function(i){
 		labels <- apply(nodal_types[[i]], 1, paste, collapse = "")

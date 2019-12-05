@@ -28,9 +28,21 @@ modelXKY <- make_model("X -> K -> Y; X -> Y")
 model <- make_model("X->Y; X <-> Y")
 model$P
 model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2")
+model$P
+model$confounds_df
 dim(model$P)
 model$P
 model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
 dim(model$P)
 model$parameters_df
+
+# A single node graph is also possible
+model <- make_model("X")
+plot(model)
+
+# Unconnected nodes cannot
+dontrun{
+model <- make_model("X <-> Y")
+plot(model)
+}
 }

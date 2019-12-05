@@ -166,7 +166,7 @@ set_confound <-  function(model,
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
  		if(!any(startsWith(model$parameters_df$param_set, paste0(a, "-"))))
  			model$parameters_df <-
- 				mutate(model$parameters_df, param_set = ifelse(param_set == a, paste0(a, "-", 0), param_set))
+ 				dplyr::mutate(model$parameters_df, param_set = ifelse(param_set == a, paste0(a, "-", 0), param_set))
 
 		# Now extend priors and parameters
 		to_add <- model$parameters_df %>%
@@ -178,7 +178,7 @@ set_confound <-  function(model,
 		# Extend P: Make duplicate block of rows for each ancestor
 		# Should contain all values from parameter family (gathered here by recombining)
 		P_new <- data.frame(P[,]) %>%
-			filter(model$parameters_df$param_family == a) #%>%
+			dplyr::filter(model$parameters_df$param_family == a) #%>%
 
 		# Zero out duplicated entries: 1 (New P elements have 0 for non specified types)
 		P_new[, !(types_names %in% D[[j]])] <- 0
@@ -186,7 +186,7 @@ set_confound <-  function(model,
 
 		# Extend parameter_df
 		model$parameters_df <- rbind(to_add,
-																 mutate(model$parameters_df,
+																 dplyr::mutate(model$parameters_df,
 																 			 param_names = paste(param_set, param, sep = ".")))
 
 		# Zero out duplicated entries: 2
@@ -226,6 +226,7 @@ set_confound <-  function(model,
 #' Continue names
 #'
 #' Slightly hacky function to continue param_set names in a sequence
+#' @param x A vector with strings of the form c("x-1", "x-2")
 #' @examples
 #' x <- c("S-3", "S-3", "S-5")
 #' gbiqq:::continue_names(x)
