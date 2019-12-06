@@ -51,8 +51,9 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #'
 make_nodal_types <- function(model) {
 
-	real_node <- !(is.na(nodes))
-	nodes       <- model$nodes[real_node]
+	nodes       <- model$nodes
+	real_node   <- !(is.na(nodes))
+	nodes       <- nodes[real_node]
 	parents     <- get_parents(model)[real_node]
 	nodal_types <- lapply(lapply(parents, length), gbiqq:::type_matrix)
 
