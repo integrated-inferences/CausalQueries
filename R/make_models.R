@@ -75,7 +75,7 @@ make_model <- function(statement){
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 
  endog_node <- as.character(rev(unique(rev(dag$children))))
- if(is.na(endog_node)) endog_node <- NULL
+ if(all(is.na(endog_node))) endog_node <- NULL
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
