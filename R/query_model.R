@@ -125,8 +125,8 @@ query_distribution <- function(model,
 #'
 
 query_model <- function(model,
-												queries    = list(NULL),
-												subsets    = list(TRUE),
+												queries    = NULL,
+												subsets    = NULL,
 												using      = list("priors"),
 												parameters = NULL,
 												stats      = NULL,
@@ -136,9 +136,15 @@ query_model <- function(model,
 												query = NULL,
 												subset = NULL){
 
+	if(is.null(query) & is.null(queries))  stop("No query provided.")
+	if(!is.null(query) & !is.null(queries))  stop("Please provide either queries or query.")
+	if(!is.null(subset) & !is.null(subsets))  stop("Please provide either subsets or subset")
+
 	# Forgive user
-	if(is.null(unlist(queries)) & !is.null(query))  queries <- query
-	if(is.null(unlist(subsets)) & !is.null(subset)) subsets <- subset
+	if(!is.null(query))  queries <- query
+	if(!is.null(subset)) subsets <- subset
+	if(is.null(subsets)) subsets <- TRUE
+
 
 	# Housekeeping
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
