@@ -49,7 +49,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #'
 #'@param model A causal model
 #'
-make_nodal_types <- function(model) {
+make_nodal_types <- function(model, include_node_names = FALSE) {
 
 	nodes       <- model$nodes
 	real_node   <- !(is.na(nodes))
@@ -59,7 +59,8 @@ make_nodal_types <- function(model) {
 
 	nodal_types_labels <- lapply(1:length(nodal_types), function(i){
 		labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
-		paste0(names(nodal_types)[i], labels)
+		if(include_node_names) return(paste0(names(nodal_types)[i], labels))
+		labels
 	})
 
 	names(nodal_types_labels) <- nodes
@@ -77,8 +78,9 @@ make_nodal_types <- function(model) {
 
 #' collapse nodal types
 #' @param nodal_types A list of nodal types.
+#' @param include_node_names Logical, if TRUE returns names X0, X1; otherwise returns 0, 1
 #'
-collapse_nodal_types <- function(nodal_types){
+collapse_nodal_types <- function(nodal_types, include_node_names = FALSE){
 	# Skip if already collapsed
 	if(!(is.data.frame(nodal_types[[1]]))) return(nodal_types)
 
@@ -87,7 +89,8 @@ collapse_nodal_types <- function(nodal_types){
 		var <- names(nodal_types)[i]
 		mat <- as.matrix(nodal_types[[i]])
 		labels <- apply(mat,1,paste,collapse = "")
-		paste0(var, labels)
+		if(include_node_names) return(paste0(var, labels))
+		paste0(labels)
 	})
 	names(types)  <- names(nodal_types)
 	types

@@ -149,16 +149,18 @@ make_priors <- function(model,
 #' gbiqq:::make_priors_single(model, node = "M", alphas = 8)
 #'
 #' # By nodal type statement
-#' gbiqq:::make_priors_single(model, statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
+#' gbiqq:::make_priors_single(model,
+#'         statement = "(Y[X=1, M = .] > Y[X=0, M = .])", alphas = 2)
 #'
-#' # By nodal type label
-#' gbiqq:::make_priors_single(model, label = "X0", alphas = 9)
+#' # By nodal type label (safest to provide node also)
+#' gbiqq:::make_priors_single(model, node = "X", label = "0", alphas = 9)
 #'
 #' # By confound query: Applies only to types that are involved in confounding
 #' # Only alters named node in confound, even if other nodes are listed in "nodes"
 #' confounds <- list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]")
 #' model     <- make_model("X->Y") %>% set_confound(confounds)
 #' gbiqq:::make_priors_single(model, confound = confounds[1], alphas = 3)
+#' gbiqq:::make_priors_single(model, node = "Y", confound = confounds[1], alphas = 3)
 #'
 #' # A residual  confound condition can also be defined
 #' gbiqq:::make_priors_single(model, confound = list(X = "!(Y[X=1] > Y[X=0])"), alphas = 3)
@@ -167,11 +169,11 @@ make_priors <- function(model,
 #' # make_priors_single can also be used for some vector valued statements
 #' model <- make_model("X -> M -> Y")
 #' gbiqq:::make_priors_single(model, node = c("X", "Y"), alphas = 2)
-#' gbiqq:::make_priors_single(model, label = c("X1", "Y01"), alphas = 2)
+#' gbiqq:::make_priors_single(model, label = c("1", "01"), alphas = 2)
 #'
 #' # Incompatible conditions produce no change
 #' # Such cases best handled by  make_priors
-#' gbiqq:::make_priors_single(model, node = "X", label = "Y01", alphas = 2)
+#' gbiqq:::make_priors_single(model, node = "X", label = "01", alphas = 2)
 #'
 #' # Problematic example
 #' \dontrun{
@@ -193,7 +195,7 @@ make_priors_single <- function(model,
 	# 1. Data from model
 	priors      <- get_priors(model)
 	prior_names <- names(priors)                 #
-	params      <- model$parameters_df$param     # Parameter names
+	params      <- model$parameters_df$param_names     # Parameter names
 	to_alter    <- rep(TRUE, length(priors))   # Subset to alter: Starts at full but can get reduced
 
 	# 1.2. If neither a distribution or alphas vector provided then return existing priors
@@ -223,18 +225,20 @@ make_priors_single <- function(model,
 	if(!all(is.na(node))){
 		if(!all(node %in% model$nodes))
 			stop("listed nodes must be nodes in the model")
-		to_alter[!(model$parameters_df$param_family %in% node)] <- FALSE}
+		to_alter[!(model$parameters_df$node %in% node)] <- FALSE}
 
 	# A2 Do not alter if nodal type is not part of a given statement
 		if (!all(is.na(statement))) {
-			l_types  <- lookup_type(model, statement)$types
-			types_to_alter <- names(l_types[l_types])
-			to_alter[!(params %in% types_to_alter)] <- FALSE
+			lnt     <- lookup_nodal_type(model, statement)
+			l_types <- lnt$types
+
+			to_alter[!(model$parameters_df$node %in% lnt$node &
+								 model$parameters_df$nodal_type %in% names(l_types[l_types]))] <- FALSE
 			}
 
 	# A3 Do not alter if nodal type is not one of listed nodal types
 		if(!all(is.na(label))){
-  	to_alter[!((params %in% label) | (prior_names %in% label))] <- FALSE
+  	to_alter[!(model$parameters_df$nodal_type %in% label) ] <- FALSE
 		}
 
 	# A4 Do not alter if confound condition is not met:

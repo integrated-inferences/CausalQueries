@@ -37,7 +37,7 @@
 #' # all parameters are in one family.
 #' # Parameters in this example are not connected with nodal types in any way.
 #'
-#' dontrun{
+#' \dontrun{
 #' model <- make_model("X->Y")
 #' model$P <- diag(8)
 #' colnames(model$P) <- rownames(model$causal_types)

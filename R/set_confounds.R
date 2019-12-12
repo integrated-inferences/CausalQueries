@@ -71,9 +71,7 @@
 #'   get_parameter_matrix()
 #'
 #' model <- make_model("X -> Y") %>%
-#'   set_confound(list(X = "(Y[X=1]>Y[X=0])",
-#'                  X = "(Y[X=1]<Y[X=0])",
-#'                  X = "(Y[X=1]==Y[X=0])"))
+#'   set_confound(list(X = "(Y[X=1]>Y[X=0])", X = "(Y[X=1]<Y[X=0])", X = "(Y[X=1]==Y[X=0])"))
 #'
 #' model <- make_model("X -> M -> Y") %>%
 #' set_confound (list(X = "(Y[X=1]>Y[X=0])",
@@ -164,21 +162,21 @@ set_confound <-  function(model,
 		a <- A[j]   # param_name
 
     # Get a name for the new parameter: using hyphen separator to recognize previous confounding
- 		if(!any(startsWith(model$parameters_df$param_set, paste0(a, "-"))))
+ 		if(!any(startsWith(model$parameters_df$param_set, paste0(a, "_"))))
  			model$parameters_df <-
- 				dplyr::mutate(model$parameters_df, param_set = ifelse(param_set == a, paste0(a, "-", 0), param_set))
+ 				dplyr::mutate(model$parameters_df, param_set = ifelse(param_set == a, paste0(a, "_", 0), param_set))
 
 		# Now extend priors and parameters
 		to_add <- model$parameters_df %>%
-			dplyr::filter(param_family == a) %>%
+			dplyr::filter(node == a) %>%
 			dplyr::mutate(
 				param_set  = gbiqq:::continue_names(param_set),
-				param_names = paste(param_set, param, sep = "."))
+				param_names = paste(param_set, nodal_type, sep = "."))
 
 		# Extend P: Make duplicate block of rows for each ancestor
 		# Should contain all values from parameter family (gathered here by recombining)
 		P_new <- data.frame(P[,]) %>%
-			dplyr::filter(model$parameters_df$param_family == a) #%>%
+			dplyr::filter(model$parameters_df$node == a) #%>%
 
 		# Zero out duplicated entries: 1 (New P elements have 0 for non specified types)
 		P_new[, !(types_names %in% D[[j]])] <- 0
@@ -187,11 +185,11 @@ set_confound <-  function(model,
 		# Extend parameter_df
 		model$parameters_df <- rbind(to_add,
 																 dplyr::mutate(model$parameters_df,
-																 			 param_names = paste(param_set, param, sep = ".")))
+																 			 param_names = paste(param_set, nodal_type, sep = ".")))
 
 		# Zero out duplicated entries: 2
 		older <- 1:nrow(P) > nrow(P_new)
-    P[(model$parameters_df$param_family  == a) & older, types_names %in% D[[j]]]    <- 0
+    P[(model$parameters_df$node  == a) & older, types_names %in% D[[j]]]    <- 0
  	}
 
 	# Clean up for export
@@ -226,16 +224,16 @@ set_confound <-  function(model,
 #' Continue names
 #'
 #' Slightly hacky function to continue param_set names in a sequence
-#' @param x A vector with strings of the form c("x-1", "x-2")
+#' @param x A vector with strings of the form c("x_1", "x_2")
 #' @examples
-#' x <- c("S-3", "S-3", "S-5")
+#' x <- c("S_3", "S_3", "S_5")
 #' gbiqq:::continue_names(x)
 
-continue_names <- function(x){
-	z <- strsplit(x, split = "-")
+continue_names <- function(x, split = "_"){
+	z <- strsplit(x, split = split)
 	r <- lapply(z, function(x)x [[2]])
 	m <- max(as.numeric(r)) + 1
-	lapply(z, function(w) paste0(w[[1]], "-", as.numeric(w[[2]]) + m)) %>%
+	lapply(z, function(w) paste0(w[[1]], split, as.numeric(w[[2]]) + m)) %>%
 		unlist()
 }
 

@@ -63,7 +63,7 @@
 #' set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 #' get_parameter_matrix(model)
 #'
-#' Use of | and &
+#'#  Use of | and &
 #'# Keep node if *for some value of B* Y[A = 1] == 1
 #'model <- make_model("A->Y<-B") %>%
 #'	set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "|", keep = TRUE)
@@ -88,16 +88,16 @@
 #'
 #' # 2. Restrict parameter space Using labels:
 #' model <- make_model("X->Y") %>%
-#' set_restrictions(labels = list(X = "X0", Y = "Y00"))
+#' set_restrictions(labels = list(X = "0", Y = "00"))
 #'
 #' # Restrictions can be  with wildcards
 #' model <- make_model("X->Y") %>%
-#' set_restrictions(labels = list(Y = "Y?0"))
+#' set_restrictions(labels = list(Y = "?0"))
 #' get_parameter_matrix(model)
 #'
 #' # Running example: there are only four causal types
 #' model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") %>%
-#' set_restrictions(labels = list(C = "C1000", R = "R0001", Y = "Y0001"), keep = TRUE)
+#' set_restrictions(labels = list(C = "1000", R = "0001", Y = "0001"), keep = TRUE)
 #' get_parameter_matrix(model)
 #'
 set_restrictions <- function(model,
@@ -119,7 +119,7 @@ set_restrictions <- function(model,
 
 	# Labels
 	if(!is.null(labels))		model <-
-			restrict_by_labels(model, labels = labels, keep = keep)
+			gbiqq:::restrict_by_labels(model, labels = labels, keep = keep)
 
 	# Statement
 	if(!is.null(statement))		model <-
@@ -196,7 +196,7 @@ restrict_by_query <- function(model,
 		}
 
 	restrictions_list <- lapply(1:n_restrictions, function(i){
-			lookup_type(model, query = statement[i], join_by = join_by[i], verbose = verbose)})
+			lookup_nodal_type(model, query = statement[i], join_by = join_by[i], verbose = verbose)})
 
 	nodes_list   <- sapply(restrictions_list, function(r) r$node)
 
@@ -224,15 +224,16 @@ restrict_by_query <- function(model,
 						stop(paste0("nodal_types can't be entirely reduced. Revise conditions for node ", node))}
 
 			# What to keep in nodal_types
-			kept_labels <- nodal_types[[node]][kept_types] # to be used for P
+			kept_labels <- nodal_types[[node]][kept_types]  # to be used for P
 			drop_labels <- nodal_types[[node]][!kept_types] # to be used for P
 
       # Adjust nodal_types
 			nodal_types[[node]]   <- kept_labels
-			model$nodal_types   <- nodal_types
+			model$nodal_types     <- nodal_types
 
 			# Adjust P: What to drop
-			drop_rows <- model$parameters_df$nodal_type %in% drop_labels
+			drop_rows <- (model$parameters_df$nodal_type %in% drop_labels ) &
+				           (model$parameters_df$node %in% node)
 
       # Now drop
 			model$parameters_df <- model$parameters_df %>%
@@ -254,18 +255,21 @@ restrict_by_query <- function(model,
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #'
+#' @examples
+#' model <- make_model("X->Y")
+#' gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "00"))$parameters_df
+#' gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "00"), keep = TRUE)$parameters_df
+#' gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "?0"))$parameters_df
+#' gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "?0"), keep = TRUE)$parameters_df
+#'
 #' @family restrictions
 
 restrict_by_labels <- function(model, labels, keep = FALSE){
 
-	nodes   <- model$nodes
-	# nodal_types <- get_nodal_types(model)
-	nodal_types <- model$nodal_types
-
 	# Stop if none of the names of the labels vector matches nodes in dag
 	# Stop if there's any labels name that doesn't match any of the nodes in the dag
 	restricted_vars <- names(labels)
-	matches    <- restricted_vars %in% nodes
+	matches    <- restricted_vars %in% model$nodes
 	if(!any(matches)){
 		stop("labels don't match nodes in DAG")
 	} else if(any(!matches)){
@@ -273,65 +277,19 @@ restrict_by_labels <- function(model, labels, keep = FALSE){
 	}
 
 	# If there are wild cards, spell them out
-	labels_list <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+	labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
 
-	# If "keep" specified, reverse meaning of restricted types -- only stipulated types to be kept
-	if(!is.logical(keep)) stop("`keep` should be either 'TRUE' or 'FALSE'")
-	if(keep) for(j in names(labels)){
-
-		labels_list <-
-			sapply(names(labels_list), function(j){
-				nodal_types[[j]][!(nodal_types[[j]] %in% labels_list[[j]])]
-			}, simplify = FALSE)
-
+	# Reduce nodal_types
+	for(j in restricted_vars){
+		nt <- model$nodal_types[[j]]
+		if(!keep) to_keep <- nt[!(nt %in% labels[[j]])]
+		if(keep)  to_keep <- nt[nt %in% labels[[j]]]
+		model$nodal_types[[j]] <- to_keep
+		model$parameters_df <- dplyr::filter(model$parameters_df, !(node==j & !(nodal_type %in% to_keep)))
 	}
-	nodal_types_labels <- nodal_types[restricted_vars]
 
-
-	# Paste vars to labels when needed
-	# For flexibility, labels can be written as "0" or "X0" for an exogenous var X
-	# Though, we'd write its nodal_types as "X0" or "X1"
-	# length(labels) = n_vars for which labels were specified
-	labels_out <- lapply(1:length(labels_list), function(i){
-
-		#Identify nodal_types, var name and actual labels statement for the current labels
-		ntr <- nodal_types_labels[[i]]
-		restricted_var <- restricted_vars[i]
-		labels_i <- labels_list[[i]]
-		if(length(ntr) == length(labels_i)) {
-			stop(paste0("nodal_types can't be entirely reduced. Revise labels for node ", restricted_var))
-		}
-		# Run through vector of labels for current restricted node
-		labels_i <- sapply(1:length(labels_i), function(j){
-			labels_ij <- labels_i[j]
-			# if labels doesn't contain node's name
-			# it pastes restricted var to labels
-			labels_ij <- ifelse(grepl(restricted_var, labels_ij),
-															 labels_ij,
-															 paste0(restricted_var, labels_ij))
-			#  stop if labels doesn't conform to nodal_types syntax (i.e. it doesn't look like Y00)
-			#			if(!labels_ij  %in% ntr){stop(paste0("labels ",	labels_ij, " not conformable to nodal_types"))}
-			# and return labelss if it does.
-			labels_ij})
-
-		## Nodal types are reduced here!
-		nodal_types[[restricted_var]] <<- ntr[!ntr %in% labels_i]
-		labels_i
-	})
-
-	names(labels_out)   <- restricted_vars
-	model$nodal_types   <- nodal_types
 	model$causal_types  <- update_causal_types(model)
-
-	type_names          <- get_type_names(nodal_types)
-
-	# if(!is.null(model$parameters_df$priors))
-	# 	model$parameters_df$priors <- model$parameters_df$priors[type_names]
-	# if(!is.null(model$parameters)) model$parameters <-
-	# 	reduce_parameters(model, model$parameters)
-
-	model$parameters_df <- dplyr::filter(model$parameters_df, param_names%in% type_names) %>%
-		gbiqq:::clean_params(warning = FALSE)
+	model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = FALSE)
 
 	return(model)
 
@@ -373,8 +331,8 @@ update_causal_types <- function(model){
 	nodes      <- model$nodes
 
 	# Remove var name prefix from nodal types (Y00 -> 00)
-	possible_types <- lapply(nodes, function(v) gsub(v, "", possible_types[[v]]))
-	names(possible_types) <- nodes
+#	possible_types <- lapply(nodes, function(v) gsub(v, "", possible_types[[v]]))
+#	names(possible_types) <- nodes
 
 	# Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
 	df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))

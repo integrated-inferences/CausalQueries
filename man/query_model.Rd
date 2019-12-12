@@ -4,7 +4,7 @@
 \alias{query_model}
 \title{Generate estimands dataframe}
 \usage{
-query_model(model, queries = list(NULL), subsets = list(TRUE),
+query_model(model, queries = NULL, subsets = NULL,
   using = list("priors"), parameters = NULL, stats = NULL,
   digits = 3, n_draws = 4000, expand_grid = FALSE, query = NULL,
   subset = NULL)

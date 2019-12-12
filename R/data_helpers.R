@@ -18,6 +18,8 @@
 
 get_data_families <- function(model, drop_impossible = TRUE, drop_none = TRUE, mapping_only = FALSE){
 
+  event <- NULL
+
 	# Get nodes
 	nodes <- model$nodes
 
@@ -264,7 +266,7 @@ data_type_names <- function(model, data){
 #' @export
 #' @examples
 #' all_data_types(make_model("X -> Y"))
-#' model <- make_model("X -> Y") %>% set_restrictions(labels = list(Y = "Y00"), keep = TRUE)
+#' model <- make_model("X -> Y") %>% set_restrictions(labels = list(Y = "00"), keep = TRUE)
 #'   all_data_types(model)
 #'   all_data_types(model, complete_data = TRUE)
 #'   all_data_types(model, possible_data = TRUE)

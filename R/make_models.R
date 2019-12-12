@@ -32,7 +32,7 @@
 #' plot(model)
 #'
 #' # Unconnected nodes cannot
-#' dontrun{
+#' \dontrun{
 #' model <- make_model("X <-> Y")
 #' plot(model)
 #' }
@@ -55,8 +55,9 @@ make_model <- function(statement){
 
 	# allowable names
 	node_names <- unique(c(as.character(dag$parent), as.character(dag$children)))
-	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
-	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try underscore?")
+#	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
+	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try dots?")
+	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
 
 	# Procedure for unique ordering of nodes
 		if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
@@ -91,14 +92,15 @@ make_model <- function(statement){
  # Parameters dataframe
  m  <- length(nodal_types)
  lgths <- lapply(nodal_types, length) %>% unlist
+
  model$parameters_df <- data.frame(
- 	gen = rep(1:m, lgths),
- 	param_family = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+ 	param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
+ 	param_value   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
  	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
-  param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
-  param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
+ 	node = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+  # param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
   nodal_type = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
-  parameters   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
+  gen = rep(1:m, lgths),
   priors       = 1,
   stringsAsFactors = FALSE
 

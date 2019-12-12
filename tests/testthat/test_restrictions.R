@@ -18,7 +18,7 @@ for(i in length(dags)){
 			model <- make_model(dags[i]) %>%
 							 set_restrictions(exogenous[i])
 
-			expect_equal(model$nodal_types$X, "X1")
+			expect_equal(model$nodal_types$X, "1")
 		}
 	)
 

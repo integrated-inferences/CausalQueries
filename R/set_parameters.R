@@ -67,9 +67,9 @@ make_parameters <- function(model,
 
 	# New (from alpha)
 	if (param_type == "define") {
-		# This is needed so that use of make_priors adjust parameters, not priors
+		# This is needed so that make_priors adjusts parameters, not priors
 		model_temp <- model
-		model_temp$parameters_df$priors <- model_temp$parameters_df$parameters
+		model_temp$parameters_df$priors <- model_temp$parameters_df$param_value
 		parameters <- make_priors(model_temp, ...)
 	}
 
@@ -136,7 +136,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 
 	if(is.null(parameters)) parameters <- make_parameters(model, param_type = param_type, ...)
 
-	model$parameters_df$parameters <- parameters
+	model$parameters_df$param_value <- parameters
 	model$parameters_df <- clean_params(model$parameters_df, warning = warning)
 
 	model
@@ -160,7 +160,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 get_parameters  <- function(model, param_type = NULL) {
 
 if(is.null(param_type))  {
-	x <-  model$parameters_df$parameters
+	x <-  model$parameters_df$param_value
 	names(x) <- model$parameters_df$param_names}
 
   if(!is.null(param_type)) x <-  make_parameters(model,param_type = param_type)

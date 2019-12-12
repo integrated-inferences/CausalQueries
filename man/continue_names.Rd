@@ -4,15 +4,15 @@
 \alias{continue_names}
 \title{Continue names}
 \usage{
-continue_names(x)
+continue_names(x, split = "_")
 }
 \arguments{
-\item{x}{A vector with strings of the form c("x-1", "x-2")}
+\item{x}{A vector with strings of the form c("x_1", "x_2")}
 }
 \description{
 Slightly hacky function to continue param_set names in a sequence
 }
 \examples{
-x <- c("S-3", "S-3", "S-5")
+x <- c("S_3", "S_3", "S_5")
 gbiqq:::continue_names(x)
 }

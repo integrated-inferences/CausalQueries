@@ -10,7 +10,7 @@ includes_var(var, query)
 \item{var}{Variable name}
 
 \item{query}{An expression in string format.
-Used in \code{lookup_types}}
+Used in \code{lookup_nodal_types}}
 }
 \description{
 Whether a query contains an exact string

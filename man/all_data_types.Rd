@@ -21,7 +21,7 @@ Creates dataframe with all data types, including NA types possible from a model
 }
 \examples{
 all_data_types(make_model("X -> Y"))
-model <- make_model("X -> Y") \%>\% set_restrictions(labels = list(Y = "Y00"), keep = TRUE)
+model <- make_model("X -> Y") \%>\% set_restrictions(labels = list(Y = "00"), keep = TRUE)
   all_data_types(model)
   all_data_types(model, complete_data = TRUE)
   all_data_types(model, possible_data = TRUE)

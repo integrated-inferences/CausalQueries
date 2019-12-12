@@ -81,9 +81,7 @@ make_model("X -> Y") \%>\%
   get_parameter_matrix()
 
 model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "(Y[X=1]>Y[X=0])",
-                 X = "(Y[X=1]<Y[X=0])",
-                 X = "(Y[X=1]==Y[X=0])"))
+  set_confound(list(X = "(Y[X=1]>Y[X=0])", X = "(Y[X=1]<Y[X=0])", X = "(Y[X=1]==Y[X=0])"))
 
 model <- make_model("X -> M -> Y") \%>\%
 set_confound (list(X = "(Y[X=1]>Y[X=0])",

@@ -16,12 +16,12 @@ clean_params <- function(parameters_df, warning = TRUE){
 	# Normalize parameters if needed
 	for(j in unique(parameters_df$param_set)) {
 		A     <- parameters_df$param_set ==j
-		check <- sum(parameters_df$parameters[A])
+		check <- sum(parameters_df$param_value[A])
 
 		if(!isTRUE(all.equal(check, 1)) ){
 
 			if(warning) message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
-			parameters_df$parameters[A]  <- parameters_df$parameters[A]/check
+			parameters_df$param_value[A]  <- parameters_df$param_value[A]/check
 
 		}}
 

@@ -4,7 +4,7 @@
 \alias{make_nodal_types}
 \title{make nodal types}
 \usage{
-make_nodal_types(model)
+make_nodal_types(model, include_node_names = FALSE)
 }
 \arguments{
 \item{model}{A causal model}

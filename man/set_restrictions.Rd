@@ -74,7 +74,7 @@ model <- make_model("X->Y") \%>\%
 set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
 get_parameter_matrix(model)
 
-Use of | and &
+#  Use of | and &
 # Keep node if *for some value of B* Y[A = 1] == 1
 model <- make_model("A->Y<-B") \%>\%
 set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "|", keep = TRUE)
@@ -99,16 +99,16 @@ set_restrictions(statement =  "(Y == 1)")
 
 # 2. Restrict parameter space Using labels:
 model <- make_model("X->Y") \%>\%
-set_restrictions(labels = list(X = "X0", Y = "Y00"))
+set_restrictions(labels = list(X = "0", Y = "00"))
 
 # Restrictions can be  with wildcards
 model <- make_model("X->Y") \%>\%
-set_restrictions(labels = list(Y = "Y?0"))
+set_restrictions(labels = list(Y = "?0"))
 get_parameter_matrix(model)
 
 # Running example: there are only four causal types
 model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
-set_restrictions(labels = list(C = "C1000", R = "R0001", Y = "Y0001"), keep = TRUE)
+set_restrictions(labels = list(C = "1000", R = "0001", Y = "0001"), keep = TRUE)
 get_parameter_matrix(model)
 
 }

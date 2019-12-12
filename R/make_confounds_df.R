@@ -73,7 +73,7 @@ make_confounds_df <- function(model) {
 	diag(x) <- 0
 
 	# We now aggregate to the node level to make a nodes*nodes matrix
-	node_map <- (select(model$parameters_df, param_family, param_set) %>% distinct)$param_family
+	node_map <- (select(model$parameters_df, node, param_set) %>% distinct)$node
 	nodes <- unique(node_map)
 	x <- sapply(nodes, function(i) {sapply(nodes, function(j) {sum(x[node_map==i, node_map==j])})})
 
@@ -108,12 +108,12 @@ make_confounds_df <- function(model) {
 # 		apply(as.matrix(model$P[,j==1], nrow = n), 1, sum)==0)*1) %>%
 # 		data.frame
 #
-# 	param_family <- model$parameters_df$param_family
+# 	node <- model$parameters_df$node
 #
 #   # This produces a nodes * nodes matrix of confounding
 # 		x <-  sapply(nodes, function(j) {
 # 		         sapply(nodes, function(k) {
-# 			sum(joint_zero[param_family==j, param_family==k])})})
+# 			sum(joint_zero[node==j, node==k])})})
 # 	  diag(x) <- 0
 #
 # 	  # This reshapes into a 2 column df
@@ -202,7 +202,7 @@ get_nodal_joint_probability <-
 		) %>% data.frame(stringsAsFactors = FALSE)
 
 		# Add in node and nodal_type
-		select(parameters_df, param_family, nodal_type) %>%
+		select(parameters_df, node, nodal_type) %>%
 			distinct %>%
 			mutate(nodal_type = factor(nodal_type)) %>%
 			right_join(cbind(nodal_type = (rownames(joint)), joint), by = "nodal_type")

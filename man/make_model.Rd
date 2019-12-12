@@ -41,7 +41,7 @@ model <- make_model("X")
 plot(model)
 
 # Unconnected nodes cannot
-dontrun{
+\dontrun{
 model <- make_model("X <-> Y")
 plot(model)
 }

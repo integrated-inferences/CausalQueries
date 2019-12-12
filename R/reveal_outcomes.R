@@ -25,7 +25,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 	if(!is.null(node) & is.null(dos)) stop("Do actions must be specified when node is not NULL")
 
 	nodal_types <- get_nodal_types(model, collapse = FALSE)
-	parents_list      <- get_parents(model)
+	parents_list  <- get_parents(model)
 
 	# Case with node specified
 	if(!is.null(node)){
@@ -100,8 +100,10 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 		rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
 		type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
 		attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
-	} else{
-		attr(data_realizations, "type_names") <-  rownames(data_realizations) <- apply(types_of_endogenous, 1, FUN = function(x)paste0(node,x))
+	} else {
+		attr(data_realizations, "type_names") <-
+			rownames(data_realizations) <- apply(types_of_endogenous, 1, FUN = function(x)paste0(# node,  ## Not uncomment to include node name
+				x))
 	}
 
 	data_realizations
