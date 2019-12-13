@@ -48,6 +48,8 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' make nodal types
 #'
 #'@param model A causal model
+#' @param include_node_names Logical, if TRUE returns names of form X0, X1; otherwise returns 0, 1
+
 #'
 make_nodal_types <- function(model, include_node_names = FALSE) {
 

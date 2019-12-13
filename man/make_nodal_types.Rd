@@ -8,6 +8,8 @@ make_nodal_types(model, include_node_names = FALSE)
 }
 \arguments{
 \item{model}{A causal model}
+
+\item{include_node_names}{Logical, if TRUE returns names of form X0, X1; otherwise returns 0, 1}
 }
 \description{
 make nodal types

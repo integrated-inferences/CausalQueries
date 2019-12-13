@@ -8,6 +8,8 @@ continue_names(x, split = "_")
 }
 \arguments{
 \item{x}{A vector with strings of the form c("x_1", "x_2")}
+
+\item{split}{String on which to split. String should appear only once in each vector entry.}
 }
 \description{
 Slightly hacky function to continue param_set names in a sequence
