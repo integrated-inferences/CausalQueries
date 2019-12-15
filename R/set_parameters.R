@@ -62,42 +62,42 @@ make_parameters <- function(model,
 
 	# Flat lambda
 	if (param_type == "flat")  {
-		parameters <- make_priors(model, distribution = "uniform")
+		param_value <- make_priors(model, distribution = "uniform")
 	}
 
 	# New (from alpha)
 	if (param_type == "define") {
-		# This is needed so that make_priors adjusts parameters, not priors
+		# This is needed so that make_priors adjusts param_value, not priors
 		model_temp <- model
 		model_temp$parameters_df$priors <- model_temp$parameters_df$param_value
-		parameters <- make_priors(model_temp, ...)
+		param_value <- make_priors(model_temp, ...)
 	}
 
 	# Prior mean
 	if (param_type == "prior_mean") {
-		parameters <- get_priors(model)
+		param_value <- get_priors(model)
 	}
 
 	# Prior draw
 	if (param_type == "prior_draw") {
-		parameters <- make_prior_distribution(model, 1)
+		param_value <- make_prior_distribution(model, 1)
 	}
 
   # Posterior mean
 	if (param_type == "posterior_mean") {
 		if (is.null(model$posterior)) stop("Posterior distribution required")
-		parameters <- apply(model$posterior_distribution, 2, mean)
+		param_value <- apply(model$posterior_distribution, 2, mean)
 	}
 
   # Posterior draw
 	if (param_type == "posterior_draw") {
 		if (is.null(model$posterior)) stop("Posterior distribution required")
 		df <- model$posterior_distribution
-		parameters <- df[sample(nrow(df), 1),]
+		param_value <- df[sample(nrow(df), 1),]
 	}
 
   # Clean: Check normalization, using data families
-  gbiqq:::clean_param_vector(model, parameters)
+  gbiqq:::clean_param_vector(model, param_value)
 
 }
 

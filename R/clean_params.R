@@ -5,7 +5,7 @@
 #' @export
 #' @examples
 #' model <- make_model("X->Y")
-#' model$parameters_df$parameters <- 1:6
+#' model$parameters_df$param_value <- 1:6
 #' clean_params(model$parameters_df, warning = TRUE)
 
 clean_params <- function(parameters_df, warning = TRUE){
