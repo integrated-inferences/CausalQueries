@@ -14,7 +14,7 @@ get_event_prob(model, P = NULL, A = NULL, parameters = NULL,
 
 \item{A}{A matrix. Ambiguity matrix. Not required but may be provided to avoid repeated computation for simulations.}
 
-\item{parameters}{A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.}
+\item{parameters}{A numeric vector. Values of parameters may be specified. By default, parameters is drawn from model$parameters_df.}
 
 \item{type_prob}{A numeric vector. Type probabilities (usually not required).}
 }
