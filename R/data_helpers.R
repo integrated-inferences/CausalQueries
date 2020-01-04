@@ -31,24 +31,24 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_none = TRUE, m
 	full_data <- filter(all_data, apply(all_data[,-1], 1, function(j) !any(is.na(j)))) %>%
 		           filter(event %in% possible_data_types)
 
-	# Make A_w: Sign matrix used to see if data is *inconsistent* with reduced type
+	# Make E: Sign matrix used to see if data is *inconsistent* with reduced type
 	sign_matrix <- (2*as.matrix(all_data[nodes])-1)
 	sign_matrix[is.na(sign_matrix)] <- 0
 
 	type_matrix <- (2*(as.matrix(full_data[nodes]))-1)
 
-	A_w <- 1*t(apply(sign_matrix, 1, function(j) apply(type_matrix, 1, function(k) !(any(k*j == -1)))))
-	rownames(A_w) <- all_data$event
-	colnames(A_w) <- full_data$event
+	E <- 1*t(apply(sign_matrix, 1, function(j) apply(type_matrix, 1, function(k) !(any(k*j == -1)))))
+	rownames(E) <- all_data$event
+	colnames(E) <- full_data$event
 
 	# Filtering
-	keep <- rep(TRUE, nrow(A_w))
-	if(drop_impossible) keep[!(apply(A_w, 1, function(j) any(j==1)))] <- FALSE
-	if(drop_none)       keep[rownames(A_w) == "None"] <- FALSE
-	A_w <- A_w[keep, ]
+	keep <- rep(TRUE, nrow(E))
+	if(drop_impossible) keep[!(apply(E, 1, function(j) any(j==1)))] <- FALSE
+	if(drop_none)       keep[rownames(E) == "None"] <- FALSE
+	E <- E[keep, ]
 	all_data <- all_data[keep, ]
 
-	possible_events <-rownames(A_w)
+	possible_events <-rownames(E)
 
 	## STRATEGIES ##############################
 
@@ -57,32 +57,17 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_none = TRUE, m
 	which_strategy <- which_strategy[lapply(which_strategy, length) != 0]
 
 	if(!mapping_only){
-		A_w <-
+		E <-
 		data.frame(event = possible_events,
 							 strategy = unlist(lapply(which_strategy, paste, collapse = "")),
-							 A_w,
+							 E,
 							 stringsAsFactors = FALSE)
 
-  rownames(A_w) <- A_w$event
+  rownames(E) <- E$event
 	}
 
-#   # Get the unique strategies of data collection
-# 	strategies <- unique(which_strategy)
-#
-# 	# For each strategy, get the data that corresponds to it
-# 	# Used in the data to fit a likelihood separately for each strategy
-# 	indices <- sapply(sapply(strategies, paste, collapse = ""),
-# 					 function(x) which(sapply(which_strategy, paste, collapse = "") %in% x))
-#
-	########################
-	A_w
+	E
 
-	# return(list(
-	#  	A_w             = A_w,
-	#  	w_starts        = sapply(indices,min),
-	#  	w_ends          = sapply(indices,max),
-	#  	n_strategies    = length(strategies)
-	#  ))
 
 }
 

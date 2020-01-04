@@ -4,16 +4,16 @@
 \alias{query_distribution}
 \title{Calculate estimand distribution}
 \usage{
-query_distribution(model, query, subset = TRUE, using = "priors",
+query_distribution(model, query, given = TRUE, using = "priors",
   parameters = NULL, type_distribution = NULL, verbose = FALSE,
-  join_by = "|")
+  join_by = "|", subset = NULL)
 }
 \arguments{
 \item{model}{A model}
 
 \item{query}{A query on potential outcomes such as "Y[X=1] - Y[X=0]"}
 
-\item{subset}{quoted expression evaluates to logical statement. subset allows estimand to be conditioned on *observational* distribution.}
+\item{given}{quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.}
 
 \item{using}{String indicating whether to use `priors`, `posteriors` or `parameters`}
 
@@ -24,18 +24,19 @@ query_distribution(model, query, subset = TRUE, using = "priors",
 \item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the consule.}
 
 \item{join_by}{A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
+
+\item{subset}{Deprecated argument for given}
 }
 \description{
 Calculated from a prior or posterior distribution
 }
 \examples{
-library(dplyr)
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
 
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "X==1")
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", subset = "Y[X=1]==1")
+ distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
+ distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")

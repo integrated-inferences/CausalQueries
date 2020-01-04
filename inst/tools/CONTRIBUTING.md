@@ -7,7 +7,7 @@
   Before you report a bug make sure the same bug hasn't been reported before. We track bugs as [issues on GitHub](https://github.com/macartan/gbiqq/issues). 
   If no related issue has been opened, create an issue keeping in mind the following guidelines:
   
-  - Use an informative tittle
+  - Use an informative title
   - Write a minimal working example that allow us to reproduce the bug you found
   - If the bug you're reporting crashes your R session, please mention that in the tittle
   

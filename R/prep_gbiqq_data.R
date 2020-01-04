@@ -24,7 +24,7 @@ prep_gbiqq_data <- function(model, data){
 	param_set          <- model$parameters_df$param_set
 	param_sets         <- unique(param_set)
 	n_param_sets       <- length(param_sets)
-	A_w                <- (get_data_families(model, mapping_only = TRUE))[data$event, ]
+	E                  <- (get_data_families(model, mapping_only = TRUE))[data$event, ]
 	strategies         <- data$strategy
 	n_strategies       <- length(unique(strategies))
 	w_starts           <- which(!duplicated(strategies))
@@ -43,14 +43,14 @@ prep_gbiqq_data <- function(model, data){
 			lambdas_prior   = get_priors(model),
 			n_types         = ncol(P),
 			n_data          = nrow(all_data_types(model, possible_data = TRUE)),
-			n_events        = nrow(A_w),
+			n_events        = nrow(E),
 			n_strategies    = n_strategies,
 			strategy_starts = as.array(w_starts),
 			strategy_ends   = as.array(w_ends),
 			P               = P,
 			not_P           = 1-P,
 			A               = A,
-			A_w             = A_w,
+			E               = E,
 			Y               = data$count)
 }
 

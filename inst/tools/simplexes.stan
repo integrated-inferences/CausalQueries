@@ -17,7 +17,7 @@ int<lower=1> strategy_ends[n_strategies];
 vector[n_types] P[n_params] ;
 vector[n_types] not_P[n_params] ;
 matrix<lower=0,upper=1>[n_types, n_data] A;
-matrix<lower=0,upper=1>[n_events,n_data] A_w;
+matrix<lower=0,upper=1>[n_events,n_data] E;
 int<lower=0> Y[n_events];
 
 }
@@ -47,24 +47,25 @@ vector[n_types] prob_of_types;
 vector[n_params] P_lambdas[n_types];
 
 for (i in 1:n_types) {
-for (j in 1:n_params) {
-P_lambdas[i, j] = P[j, i] .* lambdas[j] + not_P[j, i];
-}
-prob_of_types[i] = prod(P_lambdas[i]);
+  for (j in 1:n_params) {
+    P_lambdas[i, j] = P[j, i] .* lambdas[j] + not_P[j, i];
+  }
+  prob_of_types[i] = prod(P_lambdas[i]);
 }
 
 w = A' * prob_of_types;
-w_full = A_w * w;
-
+w_full = E * w;
 
 target += gamma_lpdf(lambdas  | lambdas_prior, 1);
+
 for (i in 1:n_param_sets) {
-target += -n_param_each[i] * log(sum_gammas[i]);
-}
+  target += -n_param_each[i] * log(sum_gammas[i]);
+ }
 
 for (i in 1:n_strategies) {
-target += multinomial_lpmf(
-Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]);
-}
+  target += multinomial_lpmf(
+  Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]);
+ }
+
 }
 
