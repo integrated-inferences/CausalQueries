@@ -39,8 +39,8 @@ clean_params <- function(parameters_df, warning = TRUE){
 
 clean_param_vector <- function(model, parameters) {
 
-	model$parameters_df$parameters <- as.vector(parameters)
-	x <- clean_params(model$parameters_df, warning = FALSE)$parameters
+	model$parameters_df$param_value <- as.vector(parameters)
+	x <- clean_params(model$parameters_df, warning = FALSE)$param_value
 	names(x) <- model$parameters_df$param_names
 	x
 	}

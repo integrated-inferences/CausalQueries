@@ -6,7 +6,7 @@
 \usage{
 query_distribution(model, query, given = TRUE, using = "priors",
   parameters = NULL, type_distribution = NULL, verbose = FALSE,
-  join_by = "|", subset = NULL)
+  join_by = "|")
 }
 \arguments{
 \item{model}{A model}
@@ -24,8 +24,6 @@ query_distribution(model, query, given = TRUE, using = "priors",
 \item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the consule.}
 
 \item{join_by}{A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
-
-\item{subset}{Deprecated argument for given}
 }
 \description{
 Calculated from a prior or posterior distribution

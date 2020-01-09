@@ -9,7 +9,6 @@
 #' @param query A query on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param join_by A string. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
-#' @param subset Deprecated argument for given
 #' @param type_distribution if provided saves calculation, otherwise clculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
 #' @importFrom stats sd weighted.mean
@@ -36,10 +35,7 @@ query_distribution <- function(model,
 															 parameters = NULL, # Use for example if true parameters known
 															 type_distribution = NULL,
 															 verbose = FALSE,
-															 join_by = "|",
-															 subset = NULL) {
-
-	if(!is.null(subset)) warning("subset is deprecated, please use `given` instead")
+															 join_by = "|") {
 
 	# forgive the user:
 	if(using == "posterior") using <- "posteriors"
@@ -92,28 +88,26 @@ query_distribution <- function(model,
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid logical If TRUE then all combinations of provided lists are examined. If not then each list is cycled through separately.
 #' @param query alias for queries
-#' @param subset deprecated alias for given
-#' @param subset deprecated alias for given
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
 #' estimands_df <-query_model(
 #'                model,
-#'                queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
 #'                using = c("parameters", "priors"),
 #'                expand_grid = TRUE)
 #'
 #' estimands_df <-query_model(
 #'                model,
-#'                queries = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
 #'                using = c("parameters", "priors"),
 #'                expand_grid = FALSE)
 #'
 #' estimands_df <- query_model(
 #'                 model,
 #'                 using = list( "parameters", "priors"),
-#'                 queries = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
+#'                 query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
 #'                 given = list(TRUE,  "Y==0 & X==1"),
 #'                 expand_grid = TRUE,
 #'                 digits = 3)
@@ -123,7 +117,7 @@ query_distribution <- function(model,
 #' estimands_df <- query_model(
 #'                 model,
 #'                 using = list( "parameters", "priors"),
-#'                 queries = "Y[X=1] > Y[X=0]",
+#'                 query = "Y[X=1] > Y[X=0]",
 #'                 stats = c(mean = mean, sd = sd, token_var = token_var))
 #'
 
@@ -136,19 +130,13 @@ query_model <- function(model,
 												digits     = 3,
 												n_draws    = 4000,
 												expand_grid = FALSE,
-												query = NULL,
-												subset = NULL,
-												subsets    = NULL){
+												query = NULL){
 
 	if(is.null(query) & is.null(queries))  stop("No query provided.")
 	if(!is.null(query) & !is.null(queries))  stop("Please provide either queries or query.")
-	if(!is.null(subset) | !is.null(subsets))  stop("subset and subsets are deprecated in query_model. Please use given instead.")
-	if(!is.null(subset) & !is.null(subsets))  stop("Please provide either subsets or subset not both")
 
 	# Forgive user
 	if(!is.null(query))   queries <- query
-	if(!is.null(subset))  subsets <- subset
-	if(!is.null(subsets)) given <- subsets
 	if(is.null(given))  given <- TRUE
 
 
@@ -186,7 +174,7 @@ query_model <- function(model,
 
 		v <- query_distribution(model,
 														query   = query,
-														given  = given,
+														given   = given,
 														using   = using,
 														type_distribution = dists[[using]], # select the right one by name
 														parameters = parameters,

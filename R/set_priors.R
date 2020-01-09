@@ -216,7 +216,7 @@ make_priors_single <- function(model,
 		stop("distribution, statement, and confound should be scalars in make_prior_single")
 
 	# 1.6 confound is a named list and if provided only the named node is changed
-	if(!is.na(confound) & is.na(node)) node <- names(confound)
+	if(!is.na(confound) & any(is.na(node))) node[is.na(node)] <- names(confound)
 
   # A. Where to make changes?
 	#########################################################################

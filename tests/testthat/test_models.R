@@ -2,7 +2,8 @@
 context(desc = "Testing that canonical models work as they should")
 
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
-fit <- fitted_model()
+fit  <- fitted_model()
+
 for(dag in dags){
 
 	testthat::test_that(
@@ -26,7 +27,7 @@ testthat::test_that(
 		data <- simulate_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
 		expect_equal(dim(data), c(1,2))
 
-		updated <- posterior <- update_model(XY_noconf, data, refresh = 0, stan_model = fit)
+		updated <- posterior <- update_model(XY_noconf, data, refresh = 0, fit = fit)
 		expect_true(!is.null(posterior))
 
 		ATE <- "Y[X=1] - Y[X=0]"
@@ -56,7 +57,7 @@ testthat::test_that(
 		expect_equal(c(1, 2), dim(data))
 
 
-		posterior <- update_model(XY_conf, data, refresh = 0, stan_model = fit)
+		posterior <- update_model(XY_conf, data, refresh = 0, fit = fit)
 		expect_true(!is.null(posterior))
 
 		prior_ate <- query_distribution(model = posterior,
@@ -67,7 +68,7 @@ testthat::test_that(
 		results <- query_model(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),
-			subsets = c("X==1 & Y==1"),
+			given = c("X==1 & Y==1"),
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))
@@ -87,7 +88,7 @@ testthat::test_that(
 			parameters = c(.5, .5, .2, .8, 0, 0, 0, .8, 0, .2))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- update_model(XY_mediator, data, refresh = 0, stan_model = fit)
+		posterior <- update_model(XY_mediator, data, refresh = 0, fit = fit)
 		expect_true(!is.null(posterior))
 
 		expect_equal(nrow(simulate_data(posterior , n = 5, using = "posteriors")), 5)
@@ -95,7 +96,7 @@ testthat::test_that(
 		results <- query_model(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),
-			subsets = c("X==1 & Y==1", "X==1 & Y==1 & M==0", "X==1 & Y==1 & M==1"),
+			given = c("X==1 & Y==1", "X==1 & Y==1 & M==0", "X==1 & Y==1 & M==1"),
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))
@@ -114,20 +115,18 @@ testthat::test_that(
 										 .02, .70, .02, .02, .02, .02, .02, .02))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- update_model(XY_moderator, data, refresh = 0, stan_model = fit)
+		posterior <- update_model(XY_moderator, data, refresh = 0, fit = fit)
 		expect_true(!is.null(posterior))
 
 		results <- query_model(
 			posterior,
 			queries = list(COE = "c(Y[X=1] > Y[X=0])"),
-			subsets = c("X==1 & Y==1", "X==1 & Y==1 & Z==0", "X==1 & Y==1 & Z==1"),
+			given = c("X==1 & Y==1", "X==1 & Y==1 & Z==0", "X==1 & Y==1 & Z==1"),
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))
 	}
 )
-
-
 
 
 testthat::test_that(
@@ -139,7 +138,7 @@ testthat::test_that(
 
 		data <- simulate_data(model, n = 5)
 
-		posterior <- update_model(model, data, refresh = 0, stan_model = fit)
+		posterior <- update_model(model, data, refresh = 0, fit = fit)
 
     posterior_parameter_draw <- make_parameters(posterior, param_type = "posterior_draw")
     expect_true(length(posterior_parameter_draw) == 16)
@@ -147,7 +146,7 @@ testthat::test_that(
 		results <- query_model(
 			posterior,
 			queries = list(COE = "c(Y1[X=1] > Y1[X=0])"),
-			subsets = c("X==1 & Y1==1"),
+			given = c("X==1 & Y1==1"),
 			using = "posteriors")
 
 		expect_true(is.data.frame(results))

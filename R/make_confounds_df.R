@@ -93,45 +93,6 @@ make_confounds_df <- function(model) {
 
 	}
 
-# make_confounds_df <- function(model){
-#
-# 	if(is.null(model$P)) {message("No confounding"); return(NULL)}
-#
-# 	if(any(apply(model$P, 1, sum)==0)) warning("Some rows in model$P sum to 0.
-# 																						 Likely indicative of malformed confounds
-# 																						 (such as the distribution of X depends on X)
-# 																						 confounds_df may not be reliable.")
-# 	nodes <- model$nodes
-#   n <- nrow(model$P)
-#
-# 	joint_zero <-  (apply(model$P, 1, function(j)
-# 		apply(as.matrix(model$P[,j==1], nrow = n), 1, sum)==0)*1) %>%
-# 		data.frame
-#
-# 	node <- model$parameters_df$node
-#
-#   # This produces a nodes * nodes matrix of confounding
-# 		x <-  sapply(nodes, function(j) {
-# 		         sapply(nodes, function(k) {
-# 			sum(joint_zero[node==j, node==k])})})
-# 	  diag(x) <- 0
-#
-# 	  # This reshapes into a 2 column df
-# 		x <- which(x>0, arr.ind = TRUE)
-# 		if(sum(x) == 0) return(NA)
-#
-# 		confound_df <- matrix(nodes[x], nrow(x)) %>% data.frame()
-#
-# 	# Put in causal order
-# 	for(i in 1:nrow(confound_df)){
-# 		confound_df[i,] <- (nodes[nodes %in% sapply(confound_df[i,], as.character)])
-# 	}
-#
-# 	distinct(confound_df)
-#
-# }
-
-
 #' Set a confounds_df
 #'
 #' Normally a confounds_df is added to a model whenever confounding is set.
