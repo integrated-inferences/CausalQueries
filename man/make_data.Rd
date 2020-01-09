@@ -4,9 +4,18 @@
 \alias{make_data}
 \title{Make data}
 \usage{
-make_data(model, n = 1, parameters = NULL, param_type = NULL,
-  vars = NULL, n_steps = NULL, probs = NULL, subsets = TRUE,
-  complete_data = NULL, ...)
+make_data(
+  model,
+  n = 1,
+  parameters = NULL,
+  param_type = NULL,
+  vars = NULL,
+  n_steps = NULL,
+  probs = NULL,
+  subsets = TRUE,
+  complete_data = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{A causal model as created by \code{make_model}}

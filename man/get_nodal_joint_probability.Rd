@@ -4,8 +4,11 @@
 \alias{get_nodal_joint_probability}
 \title{Get joint distribution of nodal types}
 \usage{
-get_nodal_joint_probability(model, parameters = NULL,
-  generic_parameters = NULL)
+get_nodal_joint_probability(
+  model,
+  parameters = NULL,
+  generic_parameters = NULL
+)
 }
 \arguments{
 \item{model}{A model made by make_model}

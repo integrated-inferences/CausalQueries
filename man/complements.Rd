@@ -24,8 +24,13 @@ complements("A", "B", "W")
 
 }
 \seealso{
-Other statements: \code{\link{decreasing}},
-  \code{\link{increasing}}, \code{\link{interacts}},
-  \code{\link{substitutes}}, \code{\link{te}}
+Other statements: 
+\code{\link{decreasing}()},
+\code{\link{increasing}()},
+\code{\link{interacts}()},
+\code{\link{non_decreasing}()},
+\code{\link{non_increasing}()},
+\code{\link{substitutes}()},
+\code{\link{te}()}
 }
 \concept{statements}

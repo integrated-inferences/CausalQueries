@@ -19,7 +19,8 @@ make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 5) \%>\% get_prior_d
 
 }
 \seealso{
-Other prior_distribution: \code{\link{get_prior_distribution}},
-  \code{\link{make_prior_distribution}}
+Other prior_distribution: 
+\code{\link{get_prior_distribution}()},
+\code{\link{make_prior_distribution}()}
 }
 \concept{prior_distribution}

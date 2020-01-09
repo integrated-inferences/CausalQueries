@@ -23,6 +23,32 @@ increasing <- function(X, Y){
 	statement
 	}
 
+
+#' Make monotonicity statement (non negative)
+#'
+#' Generate a statement for Y weakly monotonic (increasing) in X
+#'
+#' @param X input node
+#' @param Y outcome node
+#' @family statements
+#' @export
+#'
+#' @return A character statement of class statement
+#' @examples
+#' non_decreasing("A", "B")
+#'
+non_decreasing <- function(X, Y){
+
+	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
+
+	statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
+
+	class(statement) <- "statement"
+
+	statement
+}
+
+
 #' Make monotonicity statement (negative)
 #'
 #' Generate a statement for Y monotonic (decreasing) in X
@@ -45,6 +71,31 @@ decreasing <- function(X, Y){
 
 	statement
 }
+
+
+#' Make monotonicity statement (non positive)
+#'
+#' Generate a statement for Y weakly monotonic (not increasing) in X
+#'
+#' @param X input node
+#' @param Y outcome node
+#' @family statements
+#' @export
+#' @return A character statement of class statement
+#' @examples
+#' non_increasing("A", "B")
+#'
+non_increasing <- function(X, Y){
+
+	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
+
+	statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
+
+	class(statement) <- "statement"
+
+	statement
+}
+
 
 
 #' Make statement for any interaction

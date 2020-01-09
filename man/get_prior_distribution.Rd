@@ -20,7 +20,8 @@ make_model("X -> Y") \%>\% get_prior_distribution(3)
 
 }
 \seealso{
-Other prior_distribution: \code{\link{make_prior_distribution}},
-  \code{\link{set_prior_distribution}}
+Other prior_distribution: 
+\code{\link{make_prior_distribution}()},
+\code{\link{set_prior_distribution}()}
 }
 \concept{prior_distribution}

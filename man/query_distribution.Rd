@@ -4,9 +4,16 @@
 \alias{query_distribution}
 \title{Calculate estimand distribution}
 \usage{
-query_distribution(model, query, given = TRUE, using = "priors",
-  parameters = NULL, type_distribution = NULL, verbose = FALSE,
-  join_by = "|")
+query_distribution(
+  model,
+  query,
+  given = TRUE,
+  using = "priors",
+  parameters = NULL,
+  type_distribution = NULL,
+  verbose = FALSE,
+  join_by = "|"
+)
 }
 \arguments{
 \item{model}{A model}

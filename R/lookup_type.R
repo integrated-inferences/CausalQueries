@@ -11,8 +11,9 @@
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
 #' @examples
 #' model <- make_model("X->Y")
-#' query <- "(Y[X=0] > Y[X=1])"
-#' x <- lookup_nodal_type(model, query)
+#'
+#' lookup_nodal_type(model, "(Y[X=0] > Y[X=1])")
+#' lookup_nodal_type(model, "(Y[X=0] >= Y[X=1])")
 #'
 #' model <- make_model("X -> M -> Y; X->Y")
 #' query <- "(Y[X=0] > Y[X=1])"
@@ -22,7 +23,6 @@
 #' x <- lookup_nodal_type(model, query)
 #'
 #'
-#' #
 #' query <- "(Y[] == 1)"
 #' x <- lookup_nodal_type(model, query)
 #' x <- lookup_nodal_type(model, query, join_by = "&")
@@ -44,7 +44,7 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE){
 	# 1. remove (), split by logical symbol and trim
 	# w_query contains parts of query
 	w_query <- gsub("\\(|\\)", "", query)
-	w_query <- str_split(w_query, "\\==|\\+|\\-|>|<|>=|<=|!=|\\&|\\|")  #
+	w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")  #
 	w_query <- sapply(unlist(w_query), function(x) trimws(x))
 	dos         <- TRUE
 
@@ -88,7 +88,8 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE){
 
 	  # FLAG: Why is this repeated
 	  w_query <- gsub("\\(|\\)", "",   .w_query )
-	  w_query <- str_split(w_query, "\\==|>|<|>=|\\+|\\-|<=|!=|\\&|\\|")
+	 #w_query <- str_split(w_query, "\\==|>|<|>=|\\+|\\-|<=|!=|\\&|\\|")
+	  w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")
 	  w_query <- sapply(unlist(w_query), function(x) trimws(x))
 
 	} else{

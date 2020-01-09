@@ -4,8 +4,13 @@
 \alias{collapse_data}
 \title{Make compact data with data strategies}
 \usage{
-collapse_data(data, model, removeNA = TRUE, remove_family = FALSE,
-  summary = FALSE)
+collapse_data(
+  data,
+  model,
+  removeNA = TRUE,
+  remove_family = FALSE,
+  summary = FALSE
+)
 }
 \arguments{
 \item{data}{A data.frame of nodes that can take three values: 0, 1, and NA}

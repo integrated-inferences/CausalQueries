@@ -4,8 +4,16 @@
 \alias{set_priors}
 \title{Set prior distribution}
 \usage{
-set_priors(model, priors = NULL, distribution = NA, alphas = NA,
-  node = NA, label = NA, statement = NA, confound = NA)
+set_priors(
+  model,
+  priors = NULL,
+  distribution = NA,
+  alphas = NA,
+  node = NA,
+  label = NA,
+  statement = NA,
+  confound = NA
+)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
@@ -67,8 +75,9 @@ set_priors(node = "Y", alphas = 2)
 get_priors(model)
 }
 \seealso{
-Other priors: \code{\link{get_priors}},
-  \code{\link{make_priors_single}},
-  \code{\link{make_priors}}
+Other priors: 
+\code{\link{get_priors}()},
+\code{\link{make_priors_single}()},
+\code{\link{make_priors}()}
 }
 \concept{priors}

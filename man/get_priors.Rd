@@ -16,7 +16,9 @@ Extracts priors as a named vector
 get_priors(make_model("X -> Y"))
 }
 \seealso{
-Other priors: \code{\link{make_priors_single}},
-  \code{\link{make_priors}}, \code{\link{set_priors}}
+Other priors: 
+\code{\link{make_priors_single}()},
+\code{\link{make_priors}()},
+\code{\link{set_priors}()}
 }
 \concept{priors}

@@ -4,8 +4,12 @@
 \alias{get_data_families}
 \title{get_data_families}
 \usage{
-get_data_families(model, drop_impossible = TRUE, drop_none = TRUE,
-  mapping_only = FALSE)
+get_data_families(
+  model,
+  drop_impossible = TRUE,
+  drop_none = TRUE,
+  mapping_only = FALSE
+)
 }
 \arguments{
 \item{model}{A probabilistic causal model created by make_model().}

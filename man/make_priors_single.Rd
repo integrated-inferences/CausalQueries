@@ -4,8 +4,15 @@
 \alias{make_priors_single}
 \title{make_priors_single}
 \usage{
-make_priors_single(model, distribution = NA, alphas = NA, node = NA,
-  label = NA, statement = NA, confound = NA)
+make_priors_single(
+  model,
+  distribution = NA,
+  alphas = NA,
+  node = NA,
+  label = NA,
+  statement = NA,
+  confound = NA
+)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
@@ -78,7 +85,9 @@ gbiqq:::make_priors_single(model, alphas = 1:2)
 
 }
 \seealso{
-Other priors: \code{\link{get_priors}},
-  \code{\link{make_priors}}, \code{\link{set_priors}}
+Other priors: 
+\code{\link{get_priors}()},
+\code{\link{make_priors}()},
+\code{\link{set_priors}()}
 }
 \concept{priors}

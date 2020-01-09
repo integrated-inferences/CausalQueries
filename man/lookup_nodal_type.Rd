@@ -23,8 +23,9 @@ Lookup nodal types according to a query
 }
 \examples{
 model <- make_model("X->Y")
-query <- "(Y[X=0] > Y[X=1])"
-x <- lookup_nodal_type(model, query)
+
+lookup_nodal_type(model, "(Y[X=0] > Y[X=1])")
+lookup_nodal_type(model, "(Y[X=0] >= Y[X=1])")
 
 model <- make_model("X -> M -> Y; X->Y")
 query <- "(Y[X=0] > Y[X=1])"
@@ -34,7 +35,6 @@ query <- "(Y[X=0, M = .] > Y[X=1, M = 0])"
 x <- lookup_nodal_type(model, query)
 
 
-#
 query <- "(Y[] == 1)"
 x <- lookup_nodal_type(model, query)
 x <- lookup_nodal_type(model, query, join_by = "&")

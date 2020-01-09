@@ -36,6 +36,9 @@
 #' model <- make_model("X->Y") %>%
 #'   set_restrictions(statement = c("X == 0"))
 #'
+#' model <- make_model("X->Y") %>%
+#'   set_restrictions(non_increasing("X", "Y"))
+#'
 #' model <- make_model("X -> Y <- W") %>%
 #'   set_restrictions(c(decreasing("X", "Y"), substitutes("X", "W", "Y")))
 #'
