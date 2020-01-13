@@ -62,6 +62,7 @@ make_confounds_df <- function(model) {
 	# Correlations of the rows of the P matrix capture the qualitative nature
 	# of correlations of parameters
 	par_corr <-  cor(t(model$P))
+	par_corr <-  round(par_corr, 12) ## To avoid false positives from tiny correlation estimates
 
 	# Check if these correlations are *differentially conditional* within a param_set
 	# Key action is done by distinct: we partition into submatrices and see if the rows are different
