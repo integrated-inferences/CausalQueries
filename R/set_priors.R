@@ -342,6 +342,8 @@ set_priors  <- function(model,
 																						statement = statement,
 																						confound = confound)
 
+	 if(!is.null(priors) & is.character(priors)) stop("Argument priors must be a vector of positive real number")
+
    model$parameters_df$priors  <- priors
 
    model
