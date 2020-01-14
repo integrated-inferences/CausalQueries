@@ -9,9 +9,9 @@
 #'
 #' * \code{node}, which restricts for example to parameters associated with node "X"
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -23,7 +23,7 @@
 #'
 #' @param model A model created with \code{make_model}
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
@@ -130,7 +130,7 @@ make_priors <- function(model,
 #'
 #' @param model A model created with \code{make_model}
 #' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query that determines nodal types for which priors are to be altered
@@ -282,9 +282,9 @@ make_priors_single <- function(model,
 #'
 #' * \code{node}, which restricts for example to parameters associated with node "X"
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -297,9 +297,9 @@ make_priors_single <- function(model,
 #' For more examples and details see \code{make_priors}
 #'
 #' @param model A model created with \code{make_model}
-#' @param priors A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
+#' @param priors A optional vector of non negative reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
@@ -342,7 +342,7 @@ set_priors  <- function(model,
 																						statement = statement,
 																						confound = confound)
 
-	 if(!is.null(priors) & is.character(priors)) stop("Argument priors must be a vector of positive real number")
+	 if(!is.null(priors) && !is.numeric(priors)) stop("Argument priors must be a vector of non negative real numbers")
 
    model$parameters_df$priors  <- priors
 
