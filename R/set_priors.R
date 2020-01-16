@@ -9,9 +9,9 @@
 #'
 #' * \code{node}, which restricts for example to parameters associated with node "X"
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -23,7 +23,7 @@
 #'
 #' @param model A model created with \code{make_model}
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
@@ -62,20 +62,26 @@ make_priors <- function(model,
 												node = NA,
 												label=NA,
 												statement=NA,
-												confound=NA){
+												confound=NA,
+												nodal_type = NA,
+												param_names = NA,
+												param_set = NA
+												){
 
 	# Housekeeping regarding argument lengths
 	args <- list(distribution = distribution, alphas = alphas, node = node,
-							 label = label, statement = statement, confound = confound)
+							 label = label, statement = statement, confound = confound,
+							 nodal_type = nodal_type, param_names = param_names, param_set = param_set)
 	arg_provided <- unlist(lapply(args, function(x) any(!is.na(x))))
 	arg_length   <- unlist(lapply(args, length))
 
 	# Easy case: If all but node, label, or alphas are of length 1 then simply apply make_priors_single
-	for(j in c("node", "label", "alphas")) {
+	for(j in c("node", "label", "alphas", "nodal_type", "param_names", "param_set")) {
 		if(max(arg_length[names(args)!=j])==1) return(
 			gbiqq:::make_priors_single(model, distribution=distribution, alphas=alphas,
 															node = node, label=label, statement=statement,
-															confound=confound)
+															confound=confound, nodal_type = nodal_type,
+															param_names = param_names, param_set = param_set)
 		)}
 
 	# Harder case: Otherwise all arguments turned to lists and looped through
@@ -85,7 +91,10 @@ make_priors <- function(model,
 		stop("Provided arguments of length >1 should be of the same length") }
 
 	# Function uses mapply to generate task_list
-	f <- function(distribution, alphas, node, label, statement, confound, confound_names){
+	f <- function(distribution, alphas,
+								node, label, statement,
+								confound, confound_names,
+								nodal_type, param_names, param_set){
 
 		# Non NA confounds need to be in a named list
 		if(!is.na(confound)) {
@@ -93,25 +102,30 @@ make_priors <- function(model,
 		  names(confound) <- confound_names}
 
 		list(distribution = distribution, alphas = alphas,
-				 node = node, label = label, statement = statement, confound = confound)
+				 node = node, label = label, statement = statement, confound = confound,
+				 nodal_type = nodal_type, param_names = param_names, param_set = param_set)
 		}
 	if(is.null(names(confound))) names(confound) <- NA
 
 	task_list <- mapply(f, distribution = distribution, alphas = alphas,
 											node = node, label = label, statement = statement, confound = confound,
-											confound_names = names(confound))
+											confound_names = names(confound),
+											nodal_type = nodal_type, param_names = param_names, param_set = param_set)
 
 
 	for(i in 1:ncol(task_list)) {
 		arguments <- task_list[,i]
 			model$parameters_df$priors <-
 					gbiqq:::make_priors_single(model,
-														 distribution=arguments$distribution,
-														 alphas=arguments$alphas,
+														 distribution = arguments$distribution,
+														 alphas = arguments$alphas,
 														 node = arguments$node,
-														 label=arguments$label,
-														 statement=arguments$statement,
-														 confound=arguments$confound)}
+														 label = arguments$label,
+														 statement = arguments$statement,
+														 confound = arguments$confound,
+														 nodal_type = arguments$nodal_type,
+														 param_names = arguments$param_names,
+														 param_set = arguments$param_set)}
 	get_priors(model)
 	}
 
@@ -130,7 +144,7 @@ make_priors <- function(model,
 #'
 #' @param model A model created with \code{make_model}
 #' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query that determines nodal types for which priors are to be altered
@@ -188,7 +202,10 @@ make_priors_single <- function(model,
 												node = NA,
 												label = NA,
 												statement = NA,
-												confound = NA){
+												confound = NA,
+												nodal_type = NA,
+												param_names = NA,
+												param_set = NA){
 
 	#1. House keeping
 
@@ -218,6 +235,12 @@ make_priors_single <- function(model,
 	# 1.6 confound is a named list and if provided only the named node is changed
 	if(!is.na(confound) & any(is.na(node))) node[is.na(node)] <- names(confound)
 
+	# 1.7 label must be a character
+	if(!is.na(label) | !is.na(nodal_type)){
+		if(!is.character(label) && !is.character(nodal_type))
+			stop("arguments label and nodal_type must be a character")
+	}
+
   # A. Where to make changes?
 	#########################################################################
 
@@ -237,6 +260,9 @@ make_priors_single <- function(model,
 			}
 
 	# A3 Do not alter if nodal type is not one of listed nodal types
+		if(!is.na(nodal_type))
+			label <- nodal_type
+
 		if(!all(is.na(label))){
   	to_alter[!(model$parameters_df$nodal_type %in% label) ] <- FALSE
 		}
@@ -247,6 +273,16 @@ make_priors_single <- function(model,
 	if(!all(is.na(confound))){
 		P_short <- model$P[, get_query_types(model, confound[[1]])$types]
 		to_alter[(apply(P_short, 1, sum) == 0)] <- FALSE
+	}
+
+	# A5 Do not alter if parameter name is not in the model
+	if(!all(is.na(param_names))){
+		to_alter[!(model$parameters_df$param_names %in% param_names)] <- FALSE
+	}
+
+	# A6 Do not alter if parameter name is not in the model
+	if(!all(is.na(param_set))){
+		to_alter[!(model$parameters_df$param_set %in% param_set)] <- FALSE
 	}
 
   # B. What values to provide?
@@ -282,9 +318,9 @@ make_priors_single <- function(model,
 #'
 #' * \code{node}, which restricts for example to parameters associated with node "X"
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statement "Y[X=1] > Y[X=0]"
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -297,9 +333,9 @@ make_priors_single <- function(model,
 #' For more examples and details see \code{make_priors}
 #'
 #' @param model A model created with \code{make_model}
-#' @param priors A optional vector of non negative reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
+#' @param priors A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Non negative real numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
@@ -332,7 +368,10 @@ set_priors  <- function(model,
 													node = NA,
 												  label=NA,
 													statement=NA,
-													confound=NA) {
+													confound=NA,
+													nodal_type = NA,
+													param_names = NA,
+													param_set = NA) {
 
 	if(is.null(priors)) priors <- make_priors(model,
 			                            					distribution = distribution,
@@ -340,11 +379,14 @@ set_priors  <- function(model,
 																						node = node,
 																						label = label,
 																						statement = statement,
-																						confound = confound)
+																						confound = confound,
+																						nodal_type = nodal_type,
+																						param_names = param_names,
+																						param_set = param_set)
 
 	 if(!is.null(priors) && !is.numeric(priors)) stop("Argument priors must be a vector of non negative real numbers")
 
-   model$parameters_df$priors  <- priors
+	 model$parameters_df$priors  <- priors
 
    model
 
