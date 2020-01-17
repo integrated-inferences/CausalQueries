@@ -11,7 +11,8 @@ make_priors_single(
   node = NA,
   label = NA,
   statement = NA,
-  confound = NA
+  confound = NA,
+  nodal_type = NA
 )
 }
 \arguments{

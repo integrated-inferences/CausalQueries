@@ -55,7 +55,7 @@ make_parameters <- function(model,
 	# Figure out if we need to use make_priors
   prior_args = list(...)
 
-  prior_args_provided <- sum(names(prior_args) %in% c("distribution", "alphas", "node", "label", "statement", "confound"))
+  prior_args_provided <- sum(names(prior_args) %in% c("distribution", "alphas", "node", "label", "statement", "confound", "nodal_type", "param_set", "param_names"))
   if(prior_args_provided > 0 & is.null(param_type)) param_type <- "define"
 
   if(is.null(param_type)) param_type  <- 	"prior_mean"
