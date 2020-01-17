@@ -37,7 +37,7 @@
 #' plot(model)
 #' }
 
-make_model <- function(statement){
+make_model <- function(statement, add_causal_types = TRUE){
 
 	if(!(is.character(statement))) stop("model statement should be of type character")
 
@@ -107,7 +107,8 @@ make_model <- function(statement){
   )
 
  # Add causal types
- model$causal_types <- gbiqq:::update_causal_types(model)
+ if(add_causal_types){
+ model$causal_types <- gbiqq:::update_causal_types(model)}
 
  # Add confounds if any provided
  # extract confounds df
