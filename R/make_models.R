@@ -205,8 +205,9 @@ print.summary.causal_model <- function(x,  ...){
 
   } else{
 
-  	cat("\nNumber of unit types:")
-    cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+  	if(!is.null(x$causal_types)){
+  		cat("\nNumber of unit types:")
+  		cat(paste0("  ", nrow(get_causal_types(x)), "\n"))}
 
   }
 

@@ -12,7 +12,10 @@ set_priors(
   node = NA,
   label = NA,
   statement = NA,
-  confound = NA
+  confound = NA,
+  nodal_type = NA,
+  param_names = NA,
+  param_set = NA
 )
 }
 \arguments{
@@ -31,6 +34,12 @@ set_priors(
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
 \item{confound}{A confound statement (or list of statements) that restricts nodal types for which priors are to be altered}
+
+\item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+
+\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+
+\item{param_name}{String. The name of specific parameter in the form of, for example, "X.1", "Y.01"}
 }
 \description{
 A flexible function to add priors to a model.
