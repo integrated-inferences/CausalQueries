@@ -1,3 +1,21 @@
+context(desc = "Testing make_model")
+
+testthat::test_that(
+	desc = "Observational equivalence corresponds to model equivalence.",
+	code = {
+		m1 <- make_model("X -> Y -> Z <- U")
+		m2 <- make_model("U -> Z <- Y <- X")
+		expect_equal(m1$dag, m2$dag)
+		expect_equal(m1$step, m2$step)
+		expect_equal(m1$nodes, m2$nodes)
+		expect_equal(m1$nodal_types, m2$nodal_types)
+		expect_equal(m1$parameters_df, m2$parameters_df)
+		expect_equal(m1$causal_types, m2$causal_types)
+	}
+)
+
+
+
 
 context(desc = "Testing make_data")
 
@@ -24,7 +42,7 @@ testthat::test_that(
 })
 
 testthat::test_that(
-	desc = "make_data errors and messages when it should",
+	desc = "make_data errors and messages when it should.",
 	code = {
 		model <- make_model("X -> M -> Y")
 
