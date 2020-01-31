@@ -9,7 +9,7 @@
   
   - Use an informative title
   - Write a minimal working example that allow us to reproduce the bug you found
-  - If the bug you're reporting crashes your R session, please mention that in the tittle
+  - If the bug you're reporting crashes your R session, please mention that in the title
   
   ### Contributing code
   You have had a look at our [issues on GitHub](https://github.com/macartan/gbiqq/issues) and would like to solve one of them? or you would like to develop a feature? 
