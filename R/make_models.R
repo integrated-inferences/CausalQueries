@@ -46,6 +46,8 @@
 
 make_model <- function(statement, add_causal_types = TRUE){
 
+	if(length(statement) != 1) stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
+
 	if(!(is.character(statement))) stop("The model statement should be of type character.")
 
 	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
