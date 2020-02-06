@@ -5,8 +5,8 @@
 #' @param fit A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"
 #' @param data A data frame with observations
 #' @param data_type Either "long" (as made by `simulate_data()`) or "compact"
-#' @param keep_fit Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.
 #' (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.
+#' @param keep_fit Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @import methods
 #' @import Rcpp
