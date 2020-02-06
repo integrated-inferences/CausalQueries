@@ -1,5 +1,7 @@
 #' default_stan_control
 #'
+#' @param adapt_delta Determines adapt_delta
+#' @param max_treedepth Determines maximum tree depth
 #' @details Sets controls to default unless otherwise specified.
 
 
@@ -15,7 +17,10 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' set_sampling_args
 #' From rstanarm (November 1st, 2019)
 #'
-#' Set the sampling arguments
+#' @param object The fit
+#' @user_dots User commands
+#' @user_adapt_delta Adapt delta passed by the user
+#' @details Set the sampling arguments
 
 set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NULL, ...) {
     user_adapt_delta <- NULL

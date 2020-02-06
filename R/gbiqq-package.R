@@ -5,9 +5,7 @@
 #' @name gbiqq-package
 #' @importFrom utils globalVariables
 #' @useDynLib gbiqq, .registration = TRUE
-#' @importFrom rstan sampling
 #' @name gbiqq-package
-NULL
 
 globalVariables(names = c(
 	"posterior",
@@ -15,5 +13,9 @@ globalVariables(names = c(
 	"restrict",
 	"n",
 	"model",
-	"data"
+	"data",
+	"%>%",
+	"node",
+	"nodal_type",
+	"param_set"
 	))

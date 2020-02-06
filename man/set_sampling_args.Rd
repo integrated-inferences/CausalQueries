@@ -7,6 +7,13 @@ From rstanarm (November 1st, 2019)}
 \usage{
 set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 }
+\arguments{
+\item{object}{The fit}
+}
 \description{
+set_sampling_args
+From rstanarm (November 1st, 2019)
+}
+\details{
 Set the sampling arguments
 }

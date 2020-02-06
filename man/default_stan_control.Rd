@@ -6,6 +6,11 @@
 \usage{
 default_stan_control(adapt_delta = NULL, max_treedepth = 15L)
 }
+\arguments{
+\item{adapt_delta}{Determines adapt_delta}
+
+\item{max_treedepth}{Determines maximum tree depth}
+}
 \description{
 default_stan_control
 }
