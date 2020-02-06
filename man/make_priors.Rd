@@ -11,7 +11,10 @@ make_priors(
   node = NA,
   label = NA,
   statement = NA,
-  confound = NA
+  confound = NA,
+  nodal_type = NA,
+  param_names = NA,
+  param_set = NA
 )
 }
 \arguments{
@@ -27,22 +30,34 @@ make_priors(
 
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
-\item{confound}{A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
+\item{confound}{A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.}
+
+\item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+
+\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+
+\item{param_name}{String. The name of specific parameter in the form of, for example, "X.1", "Y.01"
+
+
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 }
 \description{
 A flexible function to generate priors for a model.
 }
 \details{
-Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
+Seven arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
 
-* \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+* \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 
 * \code{node}, which restricts for example to parameters associated with node "X"
 
 * \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
 
 * \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+
+* \code{param_set}, which us useful when setting confound statements that produces several sets of parameters
+
+* \code{param_name}, which restricts in specific parameters by naming them
 
 Two arguments govern what values to apply:
 

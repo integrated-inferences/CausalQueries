@@ -24,7 +24,12 @@ make_data(
 
 \item{parameters}{A specific parameter vector. If not provided parameters are drawn using model$parameter_df}
 
-\item{param_type}{A character string specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character string specifying type of parameters to make
+("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define").
+With param_type set to \code{define} use arguments to be passed to \code{make_priors};
+otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set;
+\code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
+take parameters as the means or as draws from the prior or posterior.}
 
 \item{vars}{List indicating number which nodes to be observed at each step}
 
