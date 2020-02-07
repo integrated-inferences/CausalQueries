@@ -14,7 +14,7 @@
 #'
 increasing <- function(X, Y){
 
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
+	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
 
@@ -39,7 +39,7 @@ increasing <- function(X, Y){
 #'
 non_decreasing <- function(X, Y){
 
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
+	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
 
@@ -63,7 +63,7 @@ non_decreasing <- function(X, Y){
 #'
 decreasing <- function(X, Y){
 
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
+	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
 
@@ -87,7 +87,7 @@ decreasing <- function(X, Y){
 #'
 non_increasing <- function(X, Y){
 
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
+	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
 
@@ -116,7 +116,7 @@ non_increasing <- function(X, Y){
 
 interacts <- function(X1, X2, Y){
 
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: interacts")
+	check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) != ",
 										 "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
@@ -143,7 +143,7 @@ interacts <- function(X1, X2, Y){
 #'
 complements <- function(X1, X2, Y){
 
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: complements")
+	check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) > ",
 										 "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
@@ -176,7 +176,7 @@ complements <- function(X1, X2, Y){
 #
 substitutes <- function(X1, X2, Y){
 
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: substitutes")
+	check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) < ",
 										 "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
@@ -210,7 +210,7 @@ substitutes <- function(X1, X2, Y){
 #'
 te <- function(X, Y){
 
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
+	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(",Y, "[", X, "=1] - ", Y, "[", X, "=0])")
 
@@ -218,3 +218,16 @@ te <- function(X, Y){
 
 	statement
 }
+
+
+#' Check string_input
+#'
+#' @param param_list List of parameters
+#' @param call_name Name of the call.
+#'
+
+check_string_input <- function(param_list = list(), call_name = NULL){
+	if (!all(is.character(param_list))) stop(paste0("Provide node names as strings in function: ", call_name))
+}
+
+
