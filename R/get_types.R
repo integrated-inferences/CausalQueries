@@ -51,7 +51,7 @@ get_types <- function(model, query, join_by = "|"){
 	bracket_ends    <- rev(grep( "\\]", w_query))
 
 	if(length(bracket_starts) != length(bracket_ends)){
-		stop("Either '[' or ']' missing")
+		stop("Either '[' or ']' missing.")
 	}
 	if(length(bracket_starts) == 0){
 		continue = FALSE
@@ -166,11 +166,11 @@ summary.causal_types <- function(object, ...) {
 #' @export
 print.summary.causal_types <- function(x, ...){
 	output_type <- class(x$types)
-	if(	output_type== "logical"){
-  types1 <- x$types[x$types]
-	cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query,  "\n\n"))
+	if (output_type== "logical"){
+  	types1 <- x$types[x$types]
+		cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query,  "\n\n"))
 
-  if(length(types1) %% 2 != 0){
+  if (length(types1) %% 2 != 0){
   	types1[length(types1) + 1] <- ""
   }
 	counter <- 2
