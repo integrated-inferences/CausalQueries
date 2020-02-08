@@ -9,8 +9,7 @@ testthat::test_that(
 		query <- "(Y[Z = .]==1)"
 		expect_error(get_types(model, query), "Variable Z is not part of the model.")
 		query <- "(Y[Z = . == 1)"
-		expect_error(get_types(model, query), "Either '[' or ']' missing.")
-
+		expect_error(get_types(model, query),"Either '[' or ']' missing.", fixed = TRUE)
 	}
 )
 
