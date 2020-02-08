@@ -21,7 +21,7 @@ increasing <- function(X, Y){
 	class(statement) <- "statement"
 
 	statement
-	}
+}
 
 
 #' Make monotonicity statement (non negative)
@@ -209,7 +209,6 @@ substitutes <- function(X1, X2, Y){
 #' }
 #'
 te <- function(X, Y){
-
 	check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
 	statement = paste0("(",Y, "[", X, "=1] - ", Y, "[", X, "=0])")
@@ -225,9 +224,10 @@ te <- function(X, Y){
 #' @param param_list List of parameters
 #' @param call_name Name of the call.
 #'
-
 check_string_input <- function(param_list = list(), call_name = NULL){
-	if (!all(is.character(param_list))) stop(paste0("Provide node names as strings in function: ", call_name))
+	for (i in 1:length(param_list)) if (!is.character(param_list[[i]])) stop(paste0("Provide node names as strings in function: ", call_name))
 }
+
+
 
 
