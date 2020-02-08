@@ -25,6 +25,7 @@ get_event_prob <- function(model,
 
   if(!is.null(parameters)) parameters <- gbiqq:::clean_param_vector(model, parameters)
   if(is.null(parameters))  parameters <- get_parameters(model)
+	if(any(parameters < 0)) stop("Parameters cannot take on negative values.")
 
   # Ambiguity matrix
   # if(is.null(A)) 	    model <- set_ambiguities_matrix(model)
