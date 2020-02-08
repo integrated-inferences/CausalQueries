@@ -3,8 +3,9 @@
 #'@param statement A quoted causal statement.
 #'@keywords internal
 #' @importFrom stringr boundary str_split
-nodes_in_statement <- function(nodes, statement)
+nodes_in_statement <- function(nodes, statement){
 	nodes[nodes %in% str_split(statement, boundary("word"))[[1]]]
+}
 
 #' Returns a list with the nodes that are not directly pointing into a node
 #'@param node A quoted name of a node
@@ -24,7 +25,7 @@ list_non_parents <- function(model, node){
 add_wildcard <- function(node, statement, parents, missing_parents){
  if(all(parents %in% missing_parents)) {
  	q <-
- 		paste0(node,"\\[", paste0(missing_parents, "= .", collapse = ", "), "\\]")
+ 		paste0(node,"[", paste0(missing_parents, "= .", collapse = ", "), "]")
 } else if(length(missing_parents) >0){
 	q <-
 		gsub("\\]", paste0(", ", paste0(missing_parents, "= .", collapse = ", "),"\\]"), statement)
