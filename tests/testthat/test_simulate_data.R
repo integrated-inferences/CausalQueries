@@ -31,9 +31,10 @@ context(desc = "Testing simulate_events.")
 testthat::test_that(
 	desc = "User input",
 	code = {
+		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
 		expect_silent(simulate_events(model = model, parameters = NULL))
-		w <- softmax(gtools::rdirichlet(4, 1))
+		w <- matrix(softmax(rnorm(4)), nrow = 4, ncol = 1)
 		rownames(w) <- c("A", "B", "C", "D")
 		expect_equal(as.character(simulate_events(model = model, w = w)[, 1]), rownames(w))
 		w[, 1] <- c(1, 0, 0, 0)
@@ -46,8 +47,8 @@ testthat::test_that(
 	desc = "param_type input test.",
 	code = {
 		model <- make_model("X -> Y")
-		expect_output(simulate_events(model = model, param_type = "flat"))
-		expect_output(simulate_events(model = model, param_type = "prior_mean"))
+		expect_is(simulate_events(model = model, param_type = "flat"), "data.frame")
+		expect_is(simulate_events(model = model, param_type = "prior_mean"), "data.frame")
 		error_message <- "Posterior distribution required"
 		expect_error(simulate_events(model = model, param_type = "posterior_mean"), error_message)
 		expect_error(simulate_events(model = model, param_type = "posterior_draw"), error_message)
@@ -55,7 +56,7 @@ testthat::test_that(
 	}
 )
 # ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
-textthat::test_that(
+testthat::test_that(
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
