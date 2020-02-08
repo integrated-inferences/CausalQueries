@@ -28,8 +28,8 @@ simulate_events <- function(model, n = 1,
                              parameters = NULL,
                              param_type = NULL,
                              clean_params = TRUE,
-                             include_strategy = FALSE
-){
+                             include_strategy = FALSE,
+														...){
 	# Check whether w is a matrix with named rows
 	if (!is.null(w)){
 		if (!is.matrix(w)) stop("w has to be a matrix.")
@@ -42,7 +42,7 @@ simulate_events <- function(model, n = 1,
   # If parameters not provided, take from model
   if(is.null(parameters)) {
     if(!is.null(param_type)){
-      parameters <- make_parameters(model, param_type = param_type)
+      parameters <- make_parameters(model, param_type = param_type, ...)
     } else {
       parameters 	 <- get_parameters(model) }}
 
