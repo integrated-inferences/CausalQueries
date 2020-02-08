@@ -11,7 +11,7 @@
 clean_params <- function(parameters_df, warning = TRUE){
 
 	# Check priors
-	if(min(parameters_df$priors) < 0 ) stop("Negative alpha arguments for priors are not allowed")
+	if(min(parameters_df$priors) < 0) stop("Negative alpha arguments for priors are not allowed")
 
 	# Normalize parameters if needed
 	for(j in unique(parameters_df$param_set)) {
@@ -22,7 +22,6 @@ clean_params <- function(parameters_df, warning = TRUE){
 
 			if(warning) message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
 			parameters_df$param_value[A]  <- parameters_df$param_value[A]/check
-
 		}}
 
 	parameters_df
