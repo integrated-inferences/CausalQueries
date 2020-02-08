@@ -22,6 +22,7 @@
 #' simulate_events(model = model, param_type = "prior_draw")
 #' simulate_events(model = model, include_strategy = TRUE)
 #'
+
 simulate_events <- function(model, n = 1,
                              w = NULL,
                              P = NULL,
