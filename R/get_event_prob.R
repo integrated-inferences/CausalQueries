@@ -32,8 +32,7 @@ get_event_prob <- function(model,
   A <- get_ambiguities_matrix(model)
 
   # Type probabilities
-  if(is.null(type_prob))
-    type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
+  if(is.null(type_prob)) type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
 
   # Event probabilities  ## FLAG this is a hack for cases with only one possible data type
   if(ncol(A)==1) {out <- matrix(1); rownames(out) <- colnames(A); return(out)}
@@ -43,5 +42,4 @@ get_event_prob <- function(model,
   if(!isTRUE(all.equal(sum(out), 1))) warning("Event probabilities not summing to 1")
   colnames(out) <- "event_prob"
   return(out)
-
 }
