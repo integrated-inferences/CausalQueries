@@ -1,6 +1,6 @@
 #' Restrict a model
 #'
-#' Restrict a model's parameter space. This reduces the number of nodal types and in cosequence the number of unit causal types.
+#' Restrict a model's parameter space. This reduces the number of nodal types and in consequence the number of unit causal types.
 #'
 #' Restrictions are made to nodal types, not to unit causal types. Thus for instance in a
 #' model \code{X -> M -> Y}, one cannot apply a simple restriction so that \code{Y} is nondecreasing

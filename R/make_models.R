@@ -1,10 +1,18 @@
 #' Make a model
 #'
-#' \code{make_model} uses dagitty syntax and functionality to specify nodes and edges of a graph. Implied causal types are calculated and default priors are provided under the assumption of no confounding.
-#' Models can be updated with specification of a parameter matrix, P, by providing restrictions on causal types, and/or by providing informative priors on parameters.
-#' The default setting for a causal model have flat (uniform) priors and parameters putting equal weight on each parameter within each parameter set. These can be adjust with \code{set_priors} and \code{set_parameters}
+#' \code{make_model} uses dagitty syntax and functionality to specify nodes and edges of a
+#' graph. Implied causal types are calculated and default priors are provided under the
+#' assumption of no confounding.
+#' Models can be updated with specification of a parameter matrix, P, by
+#' providing restrictions on causal types, and/or by providing informative priors on parameters.
+#' The default setting for a causal model have flat (uniform) priors and parameters
+#' putting equal weight on each parameter within each parameter set. These can be
+#' adjust with \code{set_priors} and \code{set_parameters}
 #'
-#' @param statement A character vector of length 1L. Statement describing causal relations using dagitty syntax. Only directed relations are permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
+#' @param statement A character vector of length 1L. Statement describing causal
+#' relations using dagitty syntax. Only directed relations are permitted.
+#' For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
+#' @param add_causal_types Logical
 #' @export
 #'
 #' @return An object of class probabilistic_causal_model containing a DAG.
@@ -39,7 +47,9 @@
 
 make_model <- function(statement, add_causal_types = TRUE){
 
-	if(!(is.character(statement))) stop("model statement should be of type character")
+	if(length(statement) != 1) stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
+
+	if(!(is.character(statement))) stop("The model statement should be of type character.")
 
 	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
 		data.frame(stringsAsFactors = FALSE)
@@ -60,18 +70,18 @@ make_model <- function(statement, add_causal_types = TRUE){
 	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
 
 	# Procedure for unique ordering of nodes
-		if(all(dag$parent %in% dag$children)) stop("No root nodes provided")
+	if(all(dag$parent %in% dag$children)) stop("No root nodes provided.")
 
 	gen <- rep(NA, nrow(dag))
-	j = 1
+	j <- 1
 	# assign 1 to exogenous nodes
 	gen[!(dag$parent %in% dag$children)] <- j
 	while(sum(is.na(gen))>0) {
 		j <- j+1
 		xx <- (dag$parent %in% dag$children[is.na(gen)])
-		if(all(xx[is.na(gen)])) stop(paste("Cycling at generation ", j))
+		if(all(xx[is.na(gen)])) stop(paste("Cycling at generation", j))
   	gen[!xx & is.na(gen)] <- j
-  	}
+  }
 
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 

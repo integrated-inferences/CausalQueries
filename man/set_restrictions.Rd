@@ -30,7 +30,7 @@ set_restrictions(
 A restricted model with nodal types saved as attributes.
 }
 \description{
-Restrict a model's parameter space. This reduces the number of nodal types and in cosequence the number of unit causal types.
+Restrict a model's parameter space. This reduces the number of nodal types and in consequence the number of unit causal types.
 }
 \details{
 Restrictions are made to nodal types, not to unit causal types. Thus for instance in a

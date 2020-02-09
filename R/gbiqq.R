@@ -88,11 +88,18 @@ update_model <- function(model, data = NULL, fit = NULL, data_type = "long", kee
 		data_events <- data
 		}
 
-	stan_file <- system.file("tools" ,"simplexes.stan", package = "gbiqq")
 	stan_data <- prep_gbiqq_data(model = model, data = data_events)
 
+	# assign fit
+	stanfit <- stanmodels$simplexes
+
 	if(is.null(fit)) {
-		newfit <-	rstan::stan(file = stan_file, data = stan_data,  ...)
+		sampling_args <- set_sampling_args(
+            object = stanfit,
+            user_dots = list(...),
+            data = stan_data,
+            show_messages = FALSE)
+    newfit <- do.call(rstan::sampling, sampling_args)
 	} else {
 		newfit <-	rstan::stan(fit = fit, data = stan_data,  ...)
 	}
