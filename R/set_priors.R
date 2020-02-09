@@ -96,8 +96,10 @@ make_priors <- function(model,
 	# Harder case: Otherwise all arguments turned to lists and looped through
 	# updating priors each time
 
-	if(sum(arg_length>1)>1) {if(sd(arg_length[arg_length>1])>0)
-		stop("Provided arguments of length >1 should be of the same length") }
+	if(sum(arg_length>1)>1) {
+		if(sd(arg_length[arg_length>1])>0)
+			stop("Provided arguments of length >1 should be of the same length")
+	}
 
 	# Function uses mapply to generate task_list
 	f <- function(distribution, alphas,
@@ -110,7 +112,7 @@ make_priors <- function(model,
 			confound <- list(confound)
 		  names(confound) <- confound_names}
 
-		list(distribution = distribution, alphas = alphas,
+			list(distribution = distribution, alphas = alphas,
 				 node = node, label = label, statement = statement, confound = confound,
 				 nodal_type = nodal_type, param_names = param_names, param_set = param_set)
 		}
