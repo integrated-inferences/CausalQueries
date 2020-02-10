@@ -240,7 +240,7 @@ make_priors_single <- function(model,
 		return(priors)}
 
 	#1.4. Alphas negatives
-	if (!all(is.na(alphas))) {if(min(alphas) < 0) stop("alphas must be non-negative")}
+	if (!all(is.na(alphas))) {if(min(alphas) < 0) stop("Alphas must be non-negative.")}
 
 	# 1.5 distribution should be a scalar
 	if(max(length(distribution), length(confound), length(statement))>1)
@@ -314,7 +314,7 @@ make_priors_single <- function(model,
 	if(sum(to_alter)==0) {message("No change to priors"); return(priors)}
 
   if((length(alphas) != 1) & (length(alphas) != sum(to_alter)))
-  	stop(paste("Trying to replace ", length(to_alter), " parameters with ", length(alphas), "values"))
+  	stop(paste("Trying to replace", length(to_alter), "parameters with", length(alphas), "values"))
 
 	priors[to_alter] <- alphas
 
