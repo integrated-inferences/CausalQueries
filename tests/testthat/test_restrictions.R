@@ -8,8 +8,6 @@ exogenous  <- c("X == 0", "X == 0", "X == 0")
 monotonicity  <- c("Y[X = 0] > Y[X=1]", "Y[M = 0] > Y[M =1]", "Y[X = 0, Z = 0] > Y[X = 1, Z = 1]")
 cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 
-
-
 for(i in length(dags)){
 
 	testthat::test_that(
@@ -38,7 +36,5 @@ for(i in length(dags)){
 			expect_error(set_restrictions(model,cases[i]))
 		}
 	)
-
-
 
 }
