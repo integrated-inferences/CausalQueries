@@ -85,7 +85,7 @@ make_priors <- function(model,
 	arg_length   <- unlist(lapply(args, length))
 
 	# Easy case: If all but node, label, or alphas are of length 1 then simply apply make_priors_single
-	for(j in c("node", "label", "alphas", "nodal_type", "param_names", "param_set")) {
+	for (j in c("node", "label", "alphas", "nodal_type", "param_names", "param_set")) {
 		if(max(arg_length[names(args)!=j])==1) return(
 			gbiqq:::make_priors_single(model, distribution=distribution, alphas=alphas,
 															node = node, label=label, statement=statement,
@@ -110,7 +110,8 @@ make_priors <- function(model,
 		# Non NA confounds need to be in a named list
 		if(!is.na(confound)) {
 			confound <- list(confound)
-		  names(confound) <- confound_names}
+		  names(confound) <- confound_names
+		}
 
 			list(distribution = distribution, alphas = alphas,
 				 node = node, label = label, statement = statement, confound = confound,
