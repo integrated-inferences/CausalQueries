@@ -13,7 +13,8 @@ simulate_events(
   parameters = NULL,
   param_type = NULL,
   clean_params = TRUE,
-  include_strategy = FALSE
+  include_strategy = FALSE,
+  ...
 )
 }
 \arguments{
@@ -21,7 +22,7 @@ simulate_events(
 
 \item{n}{An integer. Number of observations.}
 
-\item{w}{A numeric vector of event probabilities.}
+\item{w}{A numeric  N(parameters) x 1 matrix of event probabilities with named rows.}
 
 \item{P}{Parameter matrix. (Optional). May be provided to avoid repeated computation for simulations.}
 
@@ -34,6 +35,8 @@ simulate_events(
 \item{clean_params}{Logical. Use to check parameters in case these are manually supplied.}
 
 \item{include_strategy}{Logical. Whether to include a "strategy" vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.}
+
+\item{...}{Arguments to be passed to make_priors if param_type == \code{define}}
 }
 \value{
 A data frame of events
