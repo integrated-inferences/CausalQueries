@@ -1,7 +1,7 @@
 Package: gbiqq
 Type: Package
 Title: Generalized BIQQ
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
              person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut", "cre")),
@@ -14,19 +14,31 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
 Depends:
-	R (>= 3.3.0),
-	Rcpp (>= 0.12.0),
-	dplyr,
-	methods
+    dplyr,
+    methods,
+    R (>= 3.4.0),
+    Rcpp (>= 0.12.0)
 Imports:
     dagitty,
     gtools,
-    rstan,
+    methods,
+    stats,
+    Rcpp (>= 0.12.0),
     rlang (>= 0.2.0),
+    rstan (>= 2.18.1),
+    rstantools (>= 2.0.0),
     stringr
+LinkingTo: 
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
 Suggests: 
     testthat,
     rmarkdown,
     knitr,
     DeclareDesign
 VignetteBuilder: knitr
+SystemRequirements: GNU make
+Biarch: true

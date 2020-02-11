@@ -12,6 +12,7 @@
 #' @param statement A character vector of length 1L. Statement describing causal
 #' relations using dagitty syntax. Only directed relations are permitted.
 #' For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
+#' @param add_causal_types Logical
 #' @export
 #'
 #' @return An object of class probabilistic_causal_model containing a DAG.
@@ -45,6 +46,8 @@
 #' }
 
 make_model <- function(statement, add_causal_types = TRUE){
+
+	if(length(statement) != 1) stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
 
 	if(!(is.character(statement))) stop("The model statement should be of type character.")
 
@@ -212,8 +215,9 @@ print.summary.causal_model <- function(x,  ...){
 
   } else{
 
-  	cat("\nNumber of unit types:")
-    cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+  	if(!is.null(x$causal_types)){
+  		cat("\nNumber of unit types:")
+  		cat(paste0("  ", nrow(get_causal_types(x)), "\n"))}
 
   }
 

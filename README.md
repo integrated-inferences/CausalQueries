@@ -2,6 +2,17 @@
 
 `gbiqq` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of `dagitty` functionality. Updating is implemented in `stan`. 
 
+See [here](https://macartan.github.io/causalmodels/) for a guide to using `gbiqq` along with many examples of causal models  
+
+
+## Installation
+
+To install `gbiqq`:
+
+```
+install.packages("remotes")
+remotes::install_github("macartan/gbiqq")
+```
 
 ## Causal models
 

@@ -20,10 +20,10 @@ update_model(
 
 \item{fit}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
 
-\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact"}
-
-\item{keep_fit}{Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.
+\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact"
 (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
+
+\item{keep_fit}{Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.}
 
 \item{...}{Options passed onto \code{rstan::stan} call.}
 }
