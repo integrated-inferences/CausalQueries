@@ -18,9 +18,9 @@ update_model(
 
 \item{data}{A data frame with observations}
 
-\item{fit}{A fitted stan model. If not provided a gbiqq model is compiled from stan file "inst/tools/simplexes.stan"}
+\item{fit}{A fitted stan model. If not provided a gbiqq model is compiled from stan file 'inst/tools/simplexes.stan'}
 
-\item{data_type}{Either "long" (as made by `simulate_data()`) or "compact"
+\item{data_type}{Either 'long' (as made by `simulate_data()`) or 'compact'
 (as made by `collapse_data()``). Compact data must have entries for each member of each strategy family to produce a valid simplex.}
 
 \item{keep_fit}{Logical, defulating to FALSE, indicates whether to append the stanfit object to the model.}
@@ -31,7 +31,7 @@ update_model(
 Takes a model and data and returns a model object with data attached and a posterior model
 }
 \examples{
-model <- make_model("X->Y")
+model <- make_model('X->Y')
 data_long   <- simulate_data(model, n = 4)
 data_short  <- collapse_data(data_long, model)
 fit <- fitted_model()
@@ -42,7 +42,7 @@ model_2 <- update_model(model, data_long, fit = fit)
 \dontrun{
 model_3 <- update_model(model, data_short)
 }
-model_4 <- update_model(model, data_short, fit = fit, data_type = "compact")
+model_4 <- update_model(model, data_short, fit = fit, data_type = 'compact')
 
 # It is possible to implement updating without data, in which case the posterior
 # is a stan object that reflects the prior
@@ -55,26 +55,26 @@ model5 <- update_model(model)
 # Parameters in this example are not connected with nodal types in any way.
 
 \dontrun{
-model <- make_model("X->Y")
+model <- make_model('X->Y')
 model$P <- diag(8)
 colnames(model$P) <- rownames(model$causal_types)
 model$parameters_df <- data.frame(
-  param_names = paste0("x",1:8),
+  param_names = paste0('x',1:8),
   param_set = 1, priors = 1, parameters = 1/8)
 
 # Update fully confounded model on strongly correlated data
 
-data <- make_data(make_model("X->Y"), n = 100,
+data <- make_data(make_model('X->Y'), n = 100,
   parameters = c(.5, .5, .1,.1,.7,.1))
 fully_confounded <- update_model(model, data,
   fit = fit, keep_fit = TRUE)
 fully_confounded$stan_fit
-query_model(fully_confounded, "Y[X = 1] > Y[X=0]", using = "posteriors")
+query_model(fully_confounded, 'Y[X = 1] > Y[X=0]', using = 'posteriors')
 # To see the confounding:
 with(fully_confounded$posterior_distribution \%>\% data.frame(),
 {par(mfrow = c(1,2))
- plot(x1, x5, main = "joint distribution of X0.Y00, X0.Y01")
- plot(x1, x6, main = "joint distribution of X0.Y00, X1.Y01")})
+ plot(x1, x5, main = 'joint distribution of X0.Y00, X0.Y01')
+ plot(x1, x6, main = 'joint distribution of X0.Y00, X1.Y01')})
 }
 
 }

@@ -18,7 +18,7 @@ set_restrictions(
 
 \item{statement}{A quoted expressions defining the restriction. If values for some parents are not specified, statements should be surrounded by parentheses, for instance \code{(Y[A = 1] > Y[A=0])} will be interpreted for all combinations of other parents of Y set at possible levels they might take.}
 
-\item{join_by}{A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.}
+\item{join_by}{A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.}
 
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
 
@@ -52,74 +52,74 @@ Note that prior probabilities are redistributed over remaining types.
 \examples{
 
 # 1. Restrict parameter space using statements
-model <- make_model("X->Y") \%>\%
-  set_restrictions(statement = c("X == 0"))
+model <- make_model('X->Y') \%>\%
+  set_restrictions(statement = c('X == 0'))
 
-model <- make_model("X->Y") \%>\%
-  set_restrictions(non_increasing("X", "Y"))
+model <- make_model('X->Y') \%>\%
+  set_restrictions(non_increasing('X', 'Y'))
 
-model <- make_model("X -> Y <- W") \%>\%
-  set_restrictions(c(decreasing("X", "Y"), substitutes("X", "W", "Y")))
+model <- make_model('X -> Y <- W') \%>\%
+  set_restrictions(c(decreasing('X', 'Y'), substitutes('X', 'W', 'Y')))
 
 model$parameters_df
 
-model <- make_model("X-> Y <- W") \%>\%
-  set_restrictions(statement = decreasing("X", "Y"))
+model <- make_model('X-> Y <- W') \%>\%
+  set_restrictions(statement = decreasing('X', 'Y'))
 model$parameters_df
 
-model <- make_model("X->Y") \%>\%
-  set_restrictions(decreasing("X", "Y"))
+model <- make_model('X->Y') \%>\%
+  set_restrictions(decreasing('X', 'Y'))
 model$parameters_df
 
-model <- make_model("X->Y") \%>\%
-  set_restrictions(c(increasing("X", "Y"), decreasing("X", "Y")))
+model <- make_model('X->Y') \%>\%
+  set_restrictions(c(increasing('X', 'Y'), decreasing('X', 'Y')))
 model$parameters_df
 
 # Restrict to define a model with monotonicity
-model <- make_model("X->Y") \%>\%
-set_restrictions(statement = c("Y[X=1] < Y[X=0]"))
+model <- make_model('X->Y') \%>\%
+set_restrictions(statement = c('Y[X=1] < Y[X=0]'))
 get_parameter_matrix(model)
 
 # Restrict to a single type in endogenous node
-model <- make_model("X->Y") \%>\%
-set_restrictions(statement =  "(Y[X = 1] == 1)", join_by = "&", keep = TRUE)
+model <- make_model('X->Y') \%>\%
+set_restrictions(statement =  '(Y[X = 1] == 1)', join_by = '&', keep = TRUE)
 get_parameter_matrix(model)
 
 #  Use of | and &
 # Keep node if *for some value of B* Y[A = 1] == 1
-model <- make_model("A->Y<-B") \%>\%
-set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "|", keep = TRUE)
+model <- make_model('A->Y<-B') \%>\%
+\tset_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '|', keep = TRUE)
 dim(get_parameter_matrix(model))
 
 
 # Keep node if *for all values of B* Y[A = 1] == 1
-model <- make_model("A->Y<-B") \%>\%
-set_restrictions(statement =  "(Y[A = 1] == 1)", join_by = "&", keep = TRUE)
+model <- make_model('A->Y<-B') \%>\%
+\tset_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '&', keep = TRUE)
 dim(get_parameter_matrix(model))
 
 # Restrict multiple nodes
-model <- make_model("X->Y<-M; X -> M" ) \%>\%
-set_restrictions(statement =  c("(Y[X = 1] == 1)", "(M[X = 1] == 1)"), join_by = "&", keep = TRUE)
+model <- make_model('X->Y<-M; X -> M' ) \%>\%
+set_restrictions(statement =  c('(Y[X = 1] == 1)', '(M[X = 1] == 1)'), join_by = '&', keep = TRUE)
 get_parameter_matrix(model)
 
 # Restrictions on levels for endogenous nodes aren't allowed
 \dontrun{
-model <- make_model("X->Y") \%>\%
-set_restrictions(statement =  "(Y == 1)")
+model <- make_model('X->Y') \%>\%
+set_restrictions(statement =  '(Y == 1)')
 }
 
 # 2. Restrict parameter space Using labels:
-model <- make_model("X->Y") \%>\%
-set_restrictions(labels = list(X = "0", Y = "00"))
+model <- make_model('X->Y') \%>\%
+set_restrictions(labels = list(X = '0', Y = '00'))
 
 # Restrictions can be  with wildcards
-model <- make_model("X->Y") \%>\%
-set_restrictions(labels = list(Y = "?0"))
+model <- make_model('X->Y') \%>\%
+set_restrictions(labels = list(Y = '?0'))
 get_parameter_matrix(model)
 
 # Running example: there are only four causal types
-model <- make_model("S -> C -> Y <- R <- X; X -> C -> R") \%>\%
-set_restrictions(labels = list(C = "1000", R = "0001", Y = "0001"), keep = TRUE)
+model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') \%>\%
+set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 get_parameter_matrix(model)
 
 }

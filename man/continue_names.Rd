@@ -7,7 +7,7 @@
 continue_names(x, split = "_")
 }
 \arguments{
-\item{x}{A vector with strings of the form c("x_1", "x_2")}
+\item{x}{A vector with strings of the form c('x_1', 'x_2')}
 
 \item{split}{String on which to split. String should appear only once in each vector entry.}
 }
@@ -15,6 +15,6 @@ continue_names(x, split = "_")
 Slightly hacky function to continue param_set names in a sequence
 }
 \examples{
-x <- c("S_3", "S_3", "S_5")
+x <- c('S_3', 'S_3', 'S_5')
 gbiqq:::continue_names(x)
 }

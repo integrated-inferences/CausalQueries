@@ -4,27 +4,30 @@
 #' @param warning Logical whether to print warning (if any) in console.
 #' @export
 #' @examples
-#' model <- make_model("X->Y")
+#' model <- make_model('X->Y')
 #' model$parameters_df$param_value <- 1:6
 #' clean_params(model$parameters_df, warning = TRUE)
 
-clean_params <- function(parameters_df, warning = TRUE){
-
-	# Check priors
-	if(min(parameters_df$priors) < 0) stop("Negative alpha arguments for priors are not allowed")
-
-	# Normalize parameters if needed
-	for(j in unique(parameters_df$param_set)) {
-		A     <- parameters_df$param_set ==j
-		check <- sum(parameters_df$param_value[A])
-
-		if(!isTRUE(all.equal(check, 1)) ){
-
-			if(warning) message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
-			parameters_df$param_value[A]  <- parameters_df$param_value[A]/check
-		}}
-
-	parameters_df
+clean_params <- function(parameters_df, warning = TRUE) {
+    
+    # Check priors
+    if (min(parameters_df$priors) < 0) 
+        stop("Negative alpha arguments for priors are not allowed")
+    
+    # Normalize parameters if needed
+    for (j in unique(parameters_df$param_set)) {
+        A <- parameters_df$param_set == j
+        check <- sum(parameters_df$param_value[A])
+        
+        if (!isTRUE(all.equal(check, 1))) {
+            
+            if (warning) 
+                message(paste0("Parameters in set ", j, " do not sum to 1. Using normalized parameters"))
+            parameters_df$param_value[A] <- parameters_df$param_value[A]/check
+        }
+    }
+    
+    parameters_df
 }
 
 
@@ -33,13 +36,13 @@ clean_params <- function(parameters_df, warning = TRUE){
 #' @param model A model made by make_model
 #' @param parameters A parameter vector (real numbers in [0,1])
 #' @examples
-#' model <- make_model("X->Y")
+#' model <- make_model('X->Y')
 #' gbiqq:::clean_param_vector(model, 1:6)
 
 clean_param_vector <- function(model, parameters) {
-
-	model$parameters_df$param_value <- as.vector(parameters)
-	x <- clean_params(model$parameters_df, warning = FALSE)$param_value
-	names(x) <- model$parameters_df$param_names
-	x
-	}
+    
+    model$parameters_df$param_value <- as.vector(parameters)
+    x <- clean_params(model$parameters_df, warning = FALSE)$param_value
+    names(x) <- model$parameters_df$param_names
+    x
+}

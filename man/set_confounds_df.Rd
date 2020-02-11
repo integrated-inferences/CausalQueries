@@ -14,16 +14,16 @@ Normally a confounds_df is added to a model whenever confounding is set.
 The confounds_df can be manually provided however using set_sconfounds_df.
 }
 \examples{
-model <- make_model("X -> Y") \%>\%
-  set_confound(list("X <-> Y"), add_confounds_df = FALSE)
+model <- make_model('X -> Y') \%>\%
+  set_confound(list('X <-> Y'), add_confounds_df = FALSE)
 model$confounds_df
 set_confounds_df(model)$confounds_df
 
 # An example where a confounds dataframe needs to be updated manually
 # Here a restriction applied after a confounding relation is set removes the confounding
-model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "(Y[X=1] > Y[X=0])")) \%>\%
-  set_restrictions("(Y[X=1] > Y[X=0])")
+model <- make_model('X -> Y') \%>\%
+  set_confound(list(X = '(Y[X=1] > Y[X=0])')) \%>\%
+  set_restrictions('(Y[X=1] > Y[X=0])')
 model$confounds_df  # Incorrect
 model <- set_confounds_df(model)
 model$confounds_df  # Correct

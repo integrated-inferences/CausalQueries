@@ -13,7 +13,7 @@ get_priors(model)
 Extracts priors as a named vector
 }
 \examples{
-get_priors(make_model("X -> Y"))
+get_priors(make_model('X -> Y'))
 }
 \seealso{
 Other priors: 

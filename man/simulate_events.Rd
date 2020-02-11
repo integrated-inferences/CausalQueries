@@ -30,11 +30,11 @@ simulate_events(
 
 \item{parameters}{A numeric vector. Values of parameters may be specified. By default, it is drawn from priors.}
 
-\item{param_type}{A character string specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character string specifying type of parameters to make ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
 
 \item{clean_params}{Logical. Use to check parameters in case these are manually supplied.}
 
-\item{include_strategy}{Logical. Whether to include a "strategy" vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.}
+\item{include_strategy}{Logical. Whether to include a 'strategy' vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.}
 
 \item{...}{Arguments to be passed to make_priors if param_type == \code{define}}
 }
@@ -45,9 +45,9 @@ A data frame of events
 Draw compact data
 }
 \examples{
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 simulate_events(model = model)
-simulate_events(model = model, param_type = "prior_draw")
+simulate_events(model = model, param_type = 'prior_draw')
 simulate_events(model = model, include_strategy = TRUE)
 
 }

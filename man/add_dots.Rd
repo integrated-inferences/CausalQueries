@@ -15,9 +15,9 @@ add_dots(q, model)
 Helper to fill in missing do operators in causal expression
 }
 \examples{
-model <- make_model("X -> Y <- M")
-gbiqq:::add_dots("Y[X=1]", model)
+model <- make_model('X -> Y <- M')
+gbiqq:::add_dots('Y[X=1]', model)
 # FLAG : FORMAT NOT RIGHT
-gbiqq:::add_dots("Y[]", model)
+gbiqq:::add_dots('Y[]', model)
 
 }

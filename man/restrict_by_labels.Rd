@@ -17,11 +17,11 @@ restrict_by_labels(model, labels, keep = FALSE)
 Reduce nodal types using labels
 }
 \examples{
-model <- make_model("X->Y")
-gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "00"))$parameters_df
-gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "00"), keep = TRUE)$parameters_df
-gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "?0"))$parameters_df
-gbiqq:::restrict_by_labels(model, labels = list(X="0", Y = "?0"), keep = TRUE)$parameters_df
+model <- make_model('X->Y')
+gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '00'))$parameters_df
+gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '00'), keep = TRUE)$parameters_df
+gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '?0'))$parameters_df
+gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '?0'), keep = TRUE)$parameters_df
 
 }
 \seealso{

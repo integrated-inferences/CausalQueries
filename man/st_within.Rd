@@ -30,8 +30,8 @@ A character vector.
 Returns a substring enclosed by two regular expression patterns. By default returns the name of the arguments being indexed by squared brackets (\code{[]}) in a string containing an expression.
 }
 \examples{
-a <- "(XX[Y=0] == 1) > (XX[Y=1] == 0)"
+a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'
 st_within(a)
-b <- "(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)"
+b <- '(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)'
 st_within(b)
 }

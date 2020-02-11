@@ -13,11 +13,11 @@ translate_dagitty(model)
 dagitty translation of DAG
 }
 \description{
-If confounds are indicated (provided in \code{attr(model$P, "confounds")}), then these are represented as bidirectional arcs.
+If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
 }
 \examples{
 \dontrun{
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 translate_dagitty(model)
 }
 

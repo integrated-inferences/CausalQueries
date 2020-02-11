@@ -38,9 +38,9 @@ Take a `data.frame` and return compact `data.frame`` of event types and strategi
 }
 \examples{
 
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 df <- simulate_data(model, n = 10)
-df[1,1] <- ""
+df[1,1] <- ''
 collapse_data(df, model)
 
 collapse_data(df, model, removeNA = FALSE)
@@ -52,14 +52,14 @@ collapse_data(df, model, summary = TRUE)
 data <- simulate_data(model, n = 0)
 collapse_data(data, model)
 
-model <- make_model("X -> Y") \%>\% set_restrictions("X==1")
+model <- make_model('X -> Y') \%>\% set_restrictions('X==1')
 df <- simulate_data(model, n = 10)
-df[1,1] <- ""
+df[1,1] <- ''
 collapse_data(df, model)
 data <- data.frame(X= 0:1)
 collapse_data(data, model)
 
-model <- make_model("X->Y")
+model <- make_model('X->Y')
 long_data <- simulate_data(model, n = 6)
 collapse_data(long_data, model)
 }

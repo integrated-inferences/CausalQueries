@@ -18,7 +18,7 @@ A matrix representing ambiguities.
 Make ambiguities matrix. The ambiguities matrix  maps from causal types into data types.
 }
 \examples{
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 make_ambiguities_matrix(model = model)
 
 }

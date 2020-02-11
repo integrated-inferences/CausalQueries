@@ -6,11 +6,12 @@
 #' @details Checks whether the input is an integer bigger than 0.
 #'
 
-n_check <- function(n){
-	cond1 <- !(round(n) == n)
-	cond2 <- n <= 0
-	cond_joint <- cond1 | cond2
-	if (cond_joint) stop("Number of observation has to be an integer bigger than 0.")
+n_check <- function(n) {
+    cond1 <- !(round(n) == n)
+    cond2 <- n <= 0
+    cond_joint <- cond1 | cond2
+    if (cond_joint) 
+        stop("Number of observation has to be an integer bigger than 0.")
 }
 
 #' default_stan_control
@@ -21,7 +22,7 @@ n_check <- function(n){
 
 default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
     adapt_delta = NULL
-    if (is.null(adapt_delta)){
+    if (is.null(adapt_delta)) {
         adapt_delta <- 0.95
     }
     list(adapt_delta = adapt_delta, max_treedepth = max_treedepth)
@@ -46,12 +47,10 @@ set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NUL
     defaults <- default_stan_control(adapt_delta = user_adapt_delta)
     if (!"control" %in% unms) {
         args$control <- defaults
-    }
-    else {
+    } else {
         if (!is.null(user_adapt_delta)) {
             args$control$adapt_delta <- user_adapt_delta
-        }
-        else {
+        } else {
             args$control$adapt_delta <- defaults$adapt_delta
         }
         if (is.null(args$control$max_treedepth)) {
@@ -60,5 +59,5 @@ set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NUL
     }
     args$save_warmup <- FALSE
     return(args)
-
+    
 }

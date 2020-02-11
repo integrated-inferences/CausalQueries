@@ -15,7 +15,7 @@ expand_data(data_events, model)
 Expand compact data object to data frame
 }
 \examples{
-model <- make_model("X->M->Y")
+model <- make_model('X->M->Y')
 simulate_events(model, n = 5) \%>\%
   expand_data(model)
 simulate_events(model, n = 0) \%>\%

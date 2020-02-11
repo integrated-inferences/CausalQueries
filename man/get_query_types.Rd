@@ -11,7 +11,7 @@ get_query_types(model, query, join_by = "|")
 
 \item{query}{A character vector of length 1L. An expression in string format defining causal types to interrogate \code{reveal_outcomes()}}
 
-\item{join_by}{A string. The logical expression connecting expanded types, _AND_ ("&") or _OR_ ("|"). Defaults to "|".}
+\item{join_by}{A string. The logical expression connecting expanded types, _AND_ ('&') or _OR_ ('|'). Defaults to '|'.}
 }
 \value{
 A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
@@ -20,26 +20,26 @@ A list containing the types and the evaluated expression. `manipulated_outcomes`
 Get values of types according to a query
 }
 \examples{
-model <- make_model("X -> M -> Y; X->Y")
-query <- "(Y[X=1] > Y[X=0]) & (M[X=0]==1)"
+model <- make_model('X -> M -> Y; X->Y')
+query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'
 x <- get_query_types(model, query)
 summary(x)
 
-query <- "Y[M=M[X=0], X=1]==1"
+query <- 'Y[M=M[X=0], X=1]==1'
 x <- get_query_types(model, query)
 get_query_types(model, query)
 
-query <- "(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])"
+query <- '(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])'
 get_query_types(model, query)
 
-query <- "Y[X=1] == Y[X=0]"
+query <- 'Y[X=1] == Y[X=0]'
 get_query_types(model, query)
 
-query <- "(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)"
+query <- '(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)'
 x <- get_query_types(model, query)
 
-query <- "(Y[X = .]==1)"
+query <- '(Y[X = .]==1)'
 get_query_types(model, query)
 
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 }

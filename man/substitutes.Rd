@@ -21,12 +21,12 @@ Generate a statement for X1, X1 substitue for each other in the production of Y
 }
 \examples{
 
-get_query_types(model = make_model("A -> B <- C"),
-         query = substitutes("A", "C", "B"))
+get_query_types(model = make_model('A -> B <- C'),
+         query = substitutes('A', 'C', 'B'))
 
-query_model(model = make_model("A -> B <- C"),
-         queries = substitutes("A", "C", "B"),
-         using = "parameters")
+query_model(model = make_model('A -> B <- C'),
+         queries = substitutes('A', 'C', 'B'),
+         using = 'parameters')
 }
 \seealso{
 Other statements: 

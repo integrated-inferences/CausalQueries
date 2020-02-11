@@ -15,6 +15,6 @@ clean_param_vector(model, parameters)
 Clean parameter vector
 }
 \examples{
-model <- make_model("X->Y")
+model <- make_model('X->Y')
 gbiqq:::clean_param_vector(model, 1:6)
 }

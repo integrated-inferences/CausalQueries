@@ -36,78 +36,78 @@ A no confounding assumption means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y)
 
 \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
 
-The simplest way to allow for confounding is by adding a bidirected edge, such as via: \code{set_confound(model, list("X <-> Y"))}.
+The simplest way to allow for confounding is by adding a bidirected edge, such as via: \code{set_confound(model, list('X <-> Y'))}.
 In this case the descendent node has a distribution conditional on the value of the ancestor node.
 
-Ordering of conditioning can also be controlled however via  \code{set_confound(model, list(X = "Y"))}
+Ordering of conditioning can also be controlled however via  \code{set_confound(model, list(X = 'Y'))}
 in which case \code{X} is given a distribution conditional on nodal types of \code{Y}.
 
 More specific confounding statements are also possble using causal syntax.
-A statement of the form \code{list(X = "Y[X=1]==1")} can be interpreted as:
-"Allow \code{X} to have a distinct conditional distribution when \code{Y} has types that involve Y[X=1]==1."
+A statement of the form \code{list(X = 'Y[X=1]==1')} can be interpreted as:
+'Allow \code{X} to have a distinct conditional distribution when \code{Y} has types that involve Y[X=1]==1.'
 In this case nodal types for \code{Y} would continue to have 3 degrees of freedom.
 But there would be parameters assigning the probability of X when t^Y = 01 or t^Y=11 and
 other parameters for residual cases. Thus 6 degrees of freedom in all. This is still short of
 an unconstrained distribution, though an  unconstrained distribution can be achieved with
 repeated application of statements of this form, for instance via
-\code{list(X = "Y[X=1]>Y[X=0]"), X = "Y[X=1]==Y[X=0]")}.
+\code{list(X = 'Y[X=1]>Y[X=0]'), X = 'Y[X=1]==Y[X=0]')}.
 
-Similarly a statement of the form \code{list(Y = "X==1")} can be interpreted as:
-"Allow Y to have a distinct conditional distribution when X=1." In this case there would be
+Similarly a statement of the form \code{list(Y = 'X==1')} can be interpreted as:
+'Allow Y to have a distinct conditional distribution when X=1.' In this case there would be
 two distributions over nodal types for Y, producing 2*3 = 6 degrees of freedom.
 Nodal types for X would continue to have 1 degree of freedom.
 Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 }
 \examples{
 
-model <- make_model("X -> Y") \%>\%
-  set_confound(list("X <-> Y"))
+model <- make_model('X -> Y') \%>\%
+  set_confound(list('X <-> Y'))
 get_parameters(model)
 
 # In this case we notionally place a distribution but in fact Y has degenerate support
-make_model("X -> Y -> Z") \%>\%
-  set_restrictions(c(increasing("X", "Y")), keep = TRUE) \%>\%
-  set_confound(list("X <-> Y")) \%>\%
+make_model('X -> Y -> Z') \%>\%
+  set_restrictions(c(increasing('X', 'Y')), keep = TRUE) \%>\%
+  set_confound(list('X <-> Y')) \%>\%
   get_parameter_matrix()
 
 # X nodes assigned conditional on Y
-make_model("X -> Y") \%>\%
-  set_confound(list(X = "Y")) \%>\%
+make_model('X -> Y') \%>\%
+  set_confound(list(X = 'Y')) \%>\%
   get_parameter_matrix()
 
 # Y nodes assigned conditional on X
-make_model("X -> Y") \%>\%
-  set_confound(list(Y = "X")) \%>\%
+make_model('X -> Y') \%>\%
+  set_confound(list(Y = 'X')) \%>\%
   get_parameter_matrix()
 
-model <- make_model("X -> Y") \%>\%
-  set_confound(list(X = "(Y[X=1]>Y[X=0])", X = "(Y[X=1]<Y[X=0])", X = "(Y[X=1]==Y[X=0])"))
+model <- make_model('X -> Y') \%>\%
+  set_confound(list(X = '(Y[X=1]>Y[X=0])', X = '(Y[X=1]<Y[X=0])', X = '(Y[X=1]==Y[X=0])'))
 
-model <- make_model("X -> M -> Y") \%>\%
-set_confound (list(X = "(Y[X=1]>Y[X=0])",
-                 M = "Y",
-                 X = "(Y[X=1]<Y[X=0])"))
+model <- make_model('X -> M -> Y') \%>\%
+set_confound (list(X = '(Y[X=1]>Y[X=0])',
+                 M = 'Y',
+                 X = '(Y[X=1]<Y[X=0])'))
 
-confound = list(A = "(D[A=., B=1, C=1]>D[A=., B=0, C=0])")
-model <- make_model("A -> B -> C -> D; B -> D") \%>\%
+confound = list(A = '(D[A=., B=1, C=1]>D[A=., B=0, C=0])')
+model <- make_model('A -> B -> C -> D; B -> D') \%>\%
  set_confound(confound = confound)
 
 # Example where two parents are confounded
-model <- make_model("A -> B <- C") \%>\%
-  set_confound(list(A = "C==1")) \%>\%
+model <- make_model('A -> B <- C') \%>\%
+  set_confound(list(A = 'C==1')) \%>\%
   set_parameters(c(0,1,1,0, .5, .5, rep(.0625, 16)))
 cor(simulate_data(model, n = 20))
 
-model <- make_model("X -> Y")
-confound <- list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
+model <- make_model('X -> Y')
+confound <- list(X = '(Y[X=1] > Y[X=0])', X = '(Y[X=1] == 1)')
 model <- set_confound(model = model, confound = confound)
 
-model <- make_model("X -> Y <- S; S -> W") \%>\%
+model <- make_model('X -> Y <- S; S -> W') \%>\%
   set_restrictions(c(
-  increasing("X", "Y"), increasing("S", "W"),
-  increasing("S", "Y"), decreasing("S", "Y")))
-model1 <-  set_confound(model, list(X = "S==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+  increasing('X', 'Y'), increasing('S', 'W'),
+  increasing('S', 'Y'), decreasing('S', 'Y')))
+model1 <-  set_confound(model, list(X = 'S==1', S = 'W[S=1]==1'), add_confounds_df = TRUE)
 model1$confounds_df
-model2 <-  set_confound(model, list(S = "X==1", S = "W[S=1]==1"), add_confounds_df = TRUE)
+model2 <-  set_confound(model, list(S = 'X==1', S = 'W[S=1]==1'), add_confounds_df = TRUE)
 model2$confounds_df
 }

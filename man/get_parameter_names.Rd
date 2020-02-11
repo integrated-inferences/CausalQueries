@@ -16,6 +16,6 @@ Parameter names taken from P matrix or model if no P matrix provided
 }
 \examples{
 
-get_parameter_names(make_model("X->Y"))
+get_parameter_names(make_model('X->Y'))
 
 }

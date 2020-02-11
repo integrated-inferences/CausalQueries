@@ -7,15 +7,5 @@
 #' @useDynLib gbiqq, .registration = TRUE
 #' @name gbiqq-package
 
-globalVariables(names = c(
-	"posterior",
-	"prob",
-	"restrict",
-	"n",
-	"model",
-	"data",
-	"%>%",
-	"node",
-	"nodal_type",
-	"param_set"
-	))
+globalVariables(names = c("posterior", "prob", "restrict", "n", "model", "data", "%>%", "node", "nodal_type", 
+    "param_set"))
