@@ -59,6 +59,9 @@ make_data <- function(
 	complete_data = NULL,
 	...){
 
+	# check n input
+	n_check(n)
+
 	# n_steps and probs reconciliation
 	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
 	if(is.null(probs)) probs <- 1

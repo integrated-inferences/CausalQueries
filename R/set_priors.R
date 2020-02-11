@@ -85,7 +85,7 @@ make_priors <- function(model,
 	arg_length   <- unlist(lapply(args, length))
 
 	# Easy case: If all but node, label, or alphas are of length 1 then simply apply make_priors_single
-	for(j in c("node", "label", "alphas", "nodal_type", "param_names", "param_set")) {
+	for (j in c("node", "label", "alphas", "nodal_type", "param_names", "param_set")) {
 		if(max(arg_length[names(args)!=j])==1) return(
 			gbiqq:::make_priors_single(model, distribution=distribution, alphas=alphas,
 															node = node, label=label, statement=statement,
@@ -96,8 +96,10 @@ make_priors <- function(model,
 	# Harder case: Otherwise all arguments turned to lists and looped through
 	# updating priors each time
 
-	if(sum(arg_length>1)>1) {if(sd(arg_length[arg_length>1])>0)
-		stop("Provided arguments of length >1 should be of the same length") }
+	if(sum(arg_length>1)>1) {
+		if(sd(arg_length[arg_length>1])>0)
+			stop("Provided arguments of length >1 should be of the same length")
+	}
 
 	# Function uses mapply to generate task_list
 	f <- function(distribution, alphas,
@@ -108,9 +110,10 @@ make_priors <- function(model,
 		# Non NA confounds need to be in a named list
 		if(!is.na(confound)) {
 			confound <- list(confound)
-		  names(confound) <- confound_names}
+		  names(confound) <- confound_names
+		}
 
-		list(distribution = distribution, alphas = alphas,
+			list(distribution = distribution, alphas = alphas,
 				 node = node, label = label, statement = statement, confound = confound,
 				 nodal_type = nodal_type, param_names = param_names, param_set = param_set)
 		}
@@ -238,7 +241,7 @@ make_priors_single <- function(model,
 		return(priors)}
 
 	#1.4. Alphas negatives
-	if (!all(is.na(alphas))) {if(min(alphas) < 0) stop("alphas must be non-negative")}
+	if (!all(is.na(alphas))) {if(min(alphas) < 0) stop("Alphas must be non-negative.")}
 
 	# 1.5 distribution should be a scalar
 	if(max(length(distribution), length(confound), length(statement))>1)
@@ -312,7 +315,7 @@ make_priors_single <- function(model,
 	if(sum(to_alter)==0) {message("No change to priors"); return(priors)}
 
   if((length(alphas) != 1) & (length(alphas) != sum(to_alter)))
-  	stop(paste("Trying to replace ", length(to_alter), " parameters with ", length(alphas), "values"))
+  	stop(paste("Trying to replace", length(to_alter), "parameters with", length(alphas), "values"))
 
 	priors[to_alter] <- alphas
 

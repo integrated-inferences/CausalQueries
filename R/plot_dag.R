@@ -47,17 +47,14 @@ translate_dagitty <- function(model){
 
 plot_dag <- function(model){
 	if(!is.null(model$P) & is.null(model$confounds_df)){
-		message(
-		"Model has a P matrix but no confounds_df. confounds_df generated on the fly.
-						To avoid this message try model <- set_confounds_df(model)")
+		message("Model has a P matrix but no confounds_df. confounds_df generated on the fly. To avoid this message try model <- set_confounds_df(model)")
 		model <- set_confounds_df(model)}
 	dagitty_dag <- translate_dagitty(model)
 	plot(dagitty::graphLayout(dagitty_dag))
 }
 
-
 #' @export
 plot.causal_model <- function(x, ...) {
 		plot_dag(x)
-	}
+}
 

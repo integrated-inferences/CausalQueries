@@ -47,7 +47,6 @@ get_prior_distribution <- function(model, n_draws = 4000) {
   message("The model does not have an attached prior distribution; generated on the fly")
 
 	make_prior_distribution(model, n_draws)
-
 }
 
 #' Add prior distribution draws

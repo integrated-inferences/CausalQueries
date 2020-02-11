@@ -49,8 +49,6 @@
 #' model$confounds_df
 #' plot(model)
 
-
-
 make_confounds_df <- function(model) {
 
 	if(is.null(model$P)) {message("No confounding"); return(NULL)}
@@ -118,10 +116,9 @@ make_confounds_df <- function(model) {
 #' # plot(model)
 
 set_confounds_df <- function(model) {
-
 	model$confounds_df <- make_confounds_df(model)
 	model
-	}
+}
 
 
 
@@ -150,8 +147,7 @@ get_nodal_joint_probability <-
 		if(is.null(parameters)) {
 			if(is.null(generic_parameters)) generic_parameters <- TRUE
 			if(!generic_parameters)parameters <- get_parameters(model)
-			if(generic_parameters) parameters <-
-					gbiqq:::clean_param_vector(model,runif(nrow(parameters_df)))}
+			if(generic_parameters) parameters <- gbiqq:::clean_param_vector(model,runif(nrow(parameters_df)))}
 
 		nodal_type <- parameters_df$nodal_type
 		P          <- data.frame(get_parameter_matrix(model))
@@ -160,8 +156,8 @@ get_nodal_joint_probability <-
 		joint <- sapply(unique(nodal_type),
 										function(par1)
 										{sapply(unique(nodal_type), function(par2)
-											prob_par1_given_par2(par1, par2, nodal_type, P, type_prob))}
-		) %>% data.frame(stringsAsFactors = FALSE)
+											prob_par1_given_par2(par1, par2, nodal_type, P, type_prob))}) %>%
+			data.frame(stringsAsFactors = FALSE)
 
 		# Add in node and nodal_type
 		select(parameters_df, node, nodal_type) %>%
