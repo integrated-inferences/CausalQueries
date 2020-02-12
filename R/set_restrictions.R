@@ -69,13 +69,13 @@
 #'#  Use of | and &
 #'# Keep node if *for some value of B* Y[A = 1] == 1
 #'model <- make_model('A->Y<-B') %>%
-#'\tset_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '|', keep = TRUE)
+#' set_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '|', keep = TRUE)
 #'dim(get_parameter_matrix(model))
 #'
 #'
 #'# Keep node if *for all values of B* Y[A = 1] == 1
 #'model <- make_model('A->Y<-B') %>%
-#'\tset_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '&', keep = TRUE)
+#' set_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '&', keep = TRUE)
 #' dim(get_parameter_matrix(model))
 #'
 #' # Restrict multiple nodes
@@ -104,41 +104,41 @@
 #' get_parameter_matrix(model)
 #'
 set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE, verbose = FALSE) {
-    
+
     # nodal_types0 <- get_nodal_types(model)
     nodal_types0 <- model$nodal_types
-    
-    if (!is.logical(keep)) 
+
+    if (!is.logical(keep))
         stop("`keep` should be either 'TRUE' or 'FALSE'")
-    
+
     if (is.null(labels) & is.null(statement)) {
         message("No restrictions provided: provide either a causal statement or nodal type labels.")
         return(model)
     }
-    
+
     if (!is.null(labels) & !is.null(statement)) {
         message("Provide either a causal statement or nodal type labels, not both.")
         return(model)
     }
-    
+
     # Labels
-    if (!is.null(labels)) 
+    if (!is.null(labels))
         model <- gbiqq:::restrict_by_labels(model, labels = labels, keep = keep)
-    
+
     # Statement
-    if (!is.null(statement)) 
-        model <- gbiqq:::restrict_by_query(model, statement = statement, join_by = join_by, keep = keep, 
+    if (!is.null(statement))
+        model <- gbiqq:::restrict_by_query(model, statement = statement, join_by = join_by, keep = keep,
             verbose = verbose)
-    
+
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
         remaining_causal_type_names <- rownames(update_causal_types(model))
         model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
     }
-    
+
     # Remove any spare P matrix / parameters_df param_families
     if (!is.null(model$P)) {
-        
+
         # Drop family if an entire set is empty
         sets <- unique(model$parameters_df$param_set)
         to_keep <- sapply(sets, function(j) sum(model$P[model$parameters_df$param_set == j, ]) > 0)
@@ -148,14 +148,14 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
             model$P <- model$P[keep, ]
         }
     }
-    
+
     # Keep restricted types as attributes
     nodal_types1 <- model$nodal_types
     restrictions <- sapply(model$nodes, function(node) {
         restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
         nodal_types0[[node]][restricted]
     }, simplify = FALSE, USE.NAMES = TRUE)
-    
+
     restrictions <- Filter(length, restrictions)
     if (is.null(attr(model, "restrictions"))) {
         attr(model, "restrictions") <- restrictions
@@ -165,7 +165,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
             c(restrictions[[node]], restrictions0[[node]])
         }, simplify = FALSE, USE.NAMES = TRUE)
     }
-    
+
     return(model)
 }
 
@@ -181,71 +181,71 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 #' @family restrictions
 
 restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, verbose = FALSE) {
-    
+
     # nodal_types <- get_nodal_types(model)
     nodal_types <- model$nodal_types
-    
+
     n_restrictions <- length(statement)
-    
-    if (!is.logical(keep)) 
+
+    if (!is.logical(keep))
         stop("`keep` should be either 'TRUE' or 'FALSE'")
-    
+
     if (length(join_by) == 1) {
         join_by <- rep(join_by, n_restrictions)
     } else if (length(join_by) != n_restrictions) {
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
-    
+
     restrictions_list <- lapply(1:n_restrictions, function(i) {
         lookup_nodal_type(model, query = statement[i], join_by = join_by[i], verbose = verbose)
     })
-    
+
     nodes_list <- sapply(restrictions_list, function(r) r$node)
-    
+
     restrictions_list2 <- lapply(restrictions_list, function(x) names(x$types)[x$types])
-    
+
     names(restrictions_list2) <- nodes_list
     unique_nodes <- unique(nodes_list)
-    
+
     # Run through unique nodes and get all restricted types for the node
     selected_types <- sapply(unique_nodes, function(node) {
         i <- which(nodes_list == node)
         rl <- restrictions_list[i]
         unique(unlist(c(sapply(rl, function(x) names(x$types)[x$types]))))
     }, simplify = FALSE)
-    
+
     # Clean up: Go through each node; figure out what to drop Remove from parameters_df and P matrix
     for (node in unique_nodes) {
-        
+
         kept_types <- (nodal_types[[node]] %in% selected_types[[node]])
-        
+
         if (!keep) {
             kept_types <- !kept_types
         }
-        
+
         if (sum(kept_types) == 0) {
             stop(paste0("nodal_types can't be entirely reduced. Revise conditions for node ", node))
         }
-        
+
         # What to keep in nodal_types
         kept_labels <- nodal_types[[node]][kept_types]  # to be used for P
         drop_labels <- nodal_types[[node]][!kept_types]  # to be used for P
-        
+
         # Adjust nodal_types
         nodal_types[[node]] <- kept_labels
         model$nodal_types <- nodal_types
-        
+
         # Adjust P: What to drop
-        drop_rows <- (model$parameters_df$nodal_type %in% drop_labels) & (model$parameters_df$node %in% 
+        drop_rows <- (model$parameters_df$nodal_type %in% drop_labels) & (model$parameters_df$node %in%
             node)
-        
+
         # Now drop
         model$parameters_df <- model$parameters_df %>% dplyr::filter(!drop_rows) %>% gbiqq:::clean_params(warning = FALSE)
-        
-        if (!is.null(model$P)) 
+
+        if (!is.null(model$P))
             model$P <- model$P[!drop_rows, ]
-        
-        
+
+
     }
     model$causal_types <- update_causal_types(model)
     model
@@ -268,7 +268,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, ver
 #' @family restrictions
 
 restrict_by_labels <- function(model, labels, keep = FALSE) {
-    
+
     # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
     # name that doesn't match any of the nodes in the dag
     restricted_vars <- names(labels)
@@ -278,26 +278,26 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
     } else if (any(!matches)) {
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
     }
-    
+
     # If there are wild cards, spell them out
     labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
-    
+
     # Reduce nodal_types
     for (j in restricted_vars) {
         nt <- model$nodal_types[[j]]
-        if (!keep) 
+        if (!keep)
             to_keep <- nt[!(nt %in% labels[[j]])]
-        if (keep) 
+        if (keep)
             to_keep <- nt[nt %in% labels[[j]]]
         model$nodal_types[[j]] <- to_keep
         model$parameters_df <- dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
     }
-    
+
     model$causal_types <- update_causal_types(model)
     model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = FALSE)
-    
+
     return(model)
-    
+
 }
 
 
@@ -319,7 +319,7 @@ get_type_names <- function(nodal_types) {
 unpack_wildcard <- function(x) {
     splitstring <- strsplit(x, "")[[1]]
     n_wild <- sum(splitstring == "?")
-    if (n_wild == 0) 
+    if (n_wild == 0)
         return(x)
     variations <- perm(rep(1, n_wild))
     apply(variations, 1, function(j) {
@@ -335,21 +335,21 @@ unpack_wildcard <- function(x) {
 #' update_causal_types(make_model('X->Y'))
 #' @export
 update_causal_types <- function(model) {
-    
+
     possible_types <- get_nodal_types(model)
     nodes <- model$nodes
-    
+
     # Remove var name prefix from nodal types (Y00 -> 00) possible_types <- lapply(nodes, function(v)
     # gsub(v, '', possible_types[[v]])) names(possible_types) <- nodes
-    
+
     # Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
     df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
-    
+
     # Add names
     cnames <- causal_type_names(df)
     rownames(df) <- do.call(paste, c(cnames, sep = "."))
-    
+
     # Export
     df
-    
+
 }

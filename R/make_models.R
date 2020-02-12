@@ -21,7 +21,9 @@
 #' modelXKY <- make_model("X -> K -> Y; X -> Y")
 #'
 #' # Example where cyclicaly dag attempted
-#' \dontrun{modelXKX <- make_model("X -> K -> X")}
+#' \dontrun{
+#'  modelXKX <- make_model("X -> K -> X")
+#' }
 #'
 #' # Examples with confounding
 #' model <- make_model("X->Y; X <-> Y")
@@ -41,8 +43,8 @@
 #'
 #' # Unconnected nodes cannot
 #' \dontrun{
-#' model <- make_model("X <-> Y")
-#' plot(model)
+#'  model <- make_model("X <-> Y")
+#'  plot(model)
 #' }
 
 make_model <- function(statement, add_causal_types = TRUE){

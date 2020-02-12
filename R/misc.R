@@ -8,9 +8,9 @@
 
 n_check <- function(n) {
     cond1 <- !(round(n) == n)
-    cond2 <- n <= 0
+    cond2 <- n < 0
     cond_joint <- cond1 | cond2
-    if (cond_joint) 
+    if (cond_joint)
         stop("Number of observation has to be an integer bigger than 0.")
 }
 
@@ -33,8 +33,9 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' From rstanarm (November 1st, 2019)
 #'
 #' @param object The fit
-#' @user_dots User commands
-#' @user_adapt_delta Adapt delta passed by the user
+#' @param user_dots User commands
+#' @param user_adapt_delta Adapt delta passed by the user
+#' @param ... further arguments to be passed to stan
 #' @details Set the sampling arguments
 
 set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NULL, ...) {
@@ -59,5 +60,5 @@ set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NUL
     }
     args$save_warmup <- FALSE
     return(args)
-    
+
 }

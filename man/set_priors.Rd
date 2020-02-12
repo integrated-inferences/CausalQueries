@@ -37,9 +37,9 @@ set_priors(
 
 \item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 
-\item{param_name}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 }
 \description{
 A flexible function to add priors to a model.

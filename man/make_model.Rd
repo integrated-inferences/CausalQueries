@@ -31,7 +31,9 @@ make_model(statement = "X -> Y")
 modelXKY <- make_model("X -> K -> Y; X -> Y")
 
 # Example where cyclicaly dag attempted
-\dontrun{modelXKX <- make_model("X -> K -> X")}
+\dontrun{
+ modelXKX <- make_model("X -> K -> X")
+}
 
 # Examples with confounding
 model <- make_model("X->Y; X <-> Y")
@@ -51,7 +53,7 @@ plot(model)
 
 # Unconnected nodes cannot
 \dontrun{
-model <- make_model("X <-> Y")
-plot(model)
+ model <- make_model("X <-> Y")
+ plot(model)
 }
 }

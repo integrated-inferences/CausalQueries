@@ -17,57 +17,57 @@
 # make_model('X->Y') %>% set_restrictions('X==1') %>% get_data_families()
 
 get_data_families <- function(model, drop_impossible = TRUE, drop_none = TRUE, mapping_only = FALSE) {
-    
+
     event <- NULL
-    
+
     # Get nodes
     nodes <- model$nodes
-    
+
     # Get all possible data realizations, given strategies in which some data is not sought (NA).
     all_data <- all_data_types(model)
-    
+
     # Get the realizations of the fundamental *possible* data events
     possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
-    full_data <- filter(all_data, apply(all_data[, -1], 1, function(j) !any(is.na(j)))) %>% filter(event %in% 
+    full_data <- filter(all_data, apply(all_data[, -1], 1, function(j) !any(is.na(j)))) %>% filter(event %in%
         possible_data_types)
-    
+
     # Make E: Sign matrix used to see if data is *inconsistent* with reduced type
     sign_matrix <- (2 * as.matrix(all_data[nodes]) - 1)
     sign_matrix[is.na(sign_matrix)] <- 0
-    
+
     type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
-    
+
     E <- 1 * t(apply(sign_matrix, 1, function(j) apply(type_matrix, 1, function(k) !(any(k * j == -1)))))
     rownames(E) <- all_data$event
     colnames(E) <- full_data$event
-    
+
     # Filtering
     keep <- rep(TRUE, nrow(E))
-    if (drop_impossible) 
+    if (drop_impossible)
         keep[!(apply(E, 1, function(j) any(j == 1)))] <- FALSE
-    if (drop_none) 
+    if (drop_none)
         keep[rownames(E) == "None"] <- FALSE
     E <- E[keep, ]
     all_data <- all_data[keep, ]
-    
+
     possible_events <- rownames(E)
-    
+
     ## STRATEGIES ##############################
-    
+
     # Figure out what strategy is being used in each of the possible data realizations
     which_strategy <- apply(all_data[nodes], 1, function(row) nodes[!is.na(row)])
     which_strategy <- which_strategy[lapply(which_strategy, length) != 0]
-    
+
     if (!mapping_only) {
-        E <- data.frame(event = possible_events, strategy = unlist(lapply(which_strategy, paste, collapse = "")), 
+        E <- data.frame(event = possible_events, strategy = unlist(lapply(which_strategy, paste, collapse = "")),
             E, stringsAsFactors = FALSE)
-        
+
         rownames(E) <- E$event
     }
-    
+
     E
-    
-    
+
+
 }
 
 #' Make compact data with data strategies
@@ -118,37 +118,37 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_none = TRUE, m
 
 
 collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, summary = FALSE) {
-    
+
     # Add missing nodes and order correctly
     nodes <- model$nodes
-    if (any(!(nodes %in% names(data)))) 
+    if (any(!(nodes %in% names(data))))
         data[nodes[!(nodes %in% names(data))]] <- NA
     data <- data[, nodes]
-    
+
     if (nrow(data) == 0 | all(is.na(data))) {
         data_events <- gbiqq:::minimal_event_data(model)
         removeNA <- FALSE
-        
+
     } else {
-        
+
         data_families <- get_data_families(model)[, c("event", "strategy")]
         data_type <- data_type_names(model, data)
-        
+
         # Inconsistent data
-        if (!all(unique(data_type) %in% data_families$event)) 
+        if (!all(unique(data_type) %in% data_families$event))
             message(paste0(unique(data_type)[!(unique(data_type) %in% data_families$event)], " data is inconsistent with model and ignored"))
-        
+
         # Collapse
         data_events <- data.frame(table(data_type), stringsAsFactors = FALSE)
         colnames(data_events) <- c("event", "count")
         data_events$event <- as.character(data_events$event)
-        
+
         # Merge in families
-        data_events <- left_join(data_families, data_events, by = "event") %>% mutate(count = ifelse(is.na(count), 
+        data_events <- left_join(data_families, data_events, by = "event") %>% mutate(count = ifelse(is.na(count),
             0, count))
-        
+
     }
-    
+
     # Output varies according to args
     if (removeNA) {
         data_events <- gbiqq:::drop_empty_families(data_events)
@@ -157,12 +157,12 @@ collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, s
         data_events <- dplyr::select(data_events, -"strategy")
     }
     if (summary) {
-        return(list(data_events = data_events, observed_events = with(data_events, unique(event[count > 
+        return(list(data_events = data_events, observed_events = with(data_events, unique(event[count >
             0])), unobserved_events = with(data_events, unique(event[count == 0]))))
     } else {
         return(data_events)
     }
-    
+
 }
 
 
@@ -177,14 +177,14 @@ collapse_data <- function(data, model, removeNA = TRUE, remove_family = FALSE, s
 #' gbiqq:::drop_empty_families(data_events)
 #'
 drop_empty_families <- function(data_events) {
-    
+
     for (j in unique(data_events$strategy)) {
         if (sum(data_events$count[data_events$strategy == j]) == 0) {
             data_events <- dplyr::filter(data_events, strategy != j)
         }
     }
     data_events
-    
+
 }
 
 
@@ -201,19 +201,19 @@ drop_empty_families <- function(data_events) {
 #'   expand_data(model)
 #'
 expand_data <- function(data_events, model) {
-    
-    if (class(model) != "causal_model") 
+
+    if (class(model) != "causal_model")
         stop("model should be a model generated with make_model")
-    if (is.null(data_events)) 
+    if (is.null(data_events))
         data_events <- minimal_event_data(model)
-    if ("strategy" %in% names(data_events)) 
+    if ("strategy" %in% names(data_events))
         data_events <- dplyr::select(data_events, -strategy)
-    if (!is.data.frame(data_events) & ncol(data_events != 2)) 
+    if (!is.data.frame(data_events) & ncol(data_events != 2))
         stop("data_events should be a data frame with columns `event` and `count`")
-    
-    if (sum(data_events[, 2]) == 0) 
+
+    if (sum(data_events[, 2]) == 0)
         return(minimal_data(model))  # Special case with no data
-    
+
     vars <- model$nodes
     df <- merge(all_data_types(model), data_events, by.x = "event")
     xx <- unlist(sapply(1:nrow(df), function(i) replicate(df[i, ncol(df)], df[i, vars])))
@@ -270,17 +270,17 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
     df[df == -1] <- NA
     names(df) <- nodes
     df <- data.frame(cbind(event = data_type_names(model, df), df))
-    
-    order_list <- c(list(rowSums(is.na(df))), lapply(rev(nodes), function(node) is.na(df[, node])), 
+
+    order_list <- c(list(rowSums(is.na(df))), lapply(rev(nodes), function(node) is.na(df[, node])),
         lapply(rev(nodes), function(node) df[, node]))
-    
+
     df <- df[do.call(what = order, args = order_list), ]
-    
+
     if (possible_data) {
         possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
         df <- dplyr::filter(df, event %in% possible_data_types)
     }
-    
+
     # exclude data not consistent with 'given' (NAs are *not* consistent with given)
     if (!is.null(given)) {
         take <- with(df, eval(parse(text = given)))
@@ -288,7 +288,7 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
         df <- df[take, ]
     }
     rownames(df) <- df$event
-    
+
     df
 }
 

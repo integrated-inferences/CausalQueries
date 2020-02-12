@@ -2,7 +2,6 @@
 context(desc = "Testing that canonical models work as they should")
 
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
-fit  <- fitted_model()
 
 for(dag in dags){
 
@@ -27,7 +26,7 @@ testthat::test_that(
 		data <- simulate_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
 		expect_equal(dim(data), c(1,2))
 
-		updated <- posterior <- update_model(XY_noconf, data, refresh = 0, fit = fit)
+		updated <- posterior <- update_model(XY_noconf, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
 		ATE <- "Y[X=1] - Y[X=0]"
@@ -57,7 +56,7 @@ testthat::test_that(
 		expect_equal(c(1, 2), dim(data))
 
 
-		posterior <- update_model(XY_conf, data, refresh = 0, fit = fit)
+		posterior <- update_model(XY_conf, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
 		prior_ate <- query_distribution(model = posterior,
@@ -88,7 +87,7 @@ testthat::test_that(
 			parameters = c(.5, .5, .2, .8, 0, 0, 0, .8, 0, .2))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- update_model(XY_mediator, data, refresh = 0, fit = fit)
+		posterior <- update_model(XY_mediator, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
 		expect_equal(nrow(simulate_data(posterior , n = 5, using = "posteriors")), 5)
@@ -115,7 +114,7 @@ testthat::test_that(
 										 .02, .70, .02, .02, .02, .02, .02, .02))
 		expect_equal(c(1, 3), dim(data))
 
-		posterior <- update_model(XY_moderator, data, refresh = 0, fit = fit)
+		posterior <- update_model(XY_moderator, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
 		results <- query_model(
@@ -138,7 +137,7 @@ testthat::test_that(
 
 		data <- simulate_data(model, n = 5)
 
-		posterior <- update_model(model, data, refresh = 0, fit = fit)
+		posterior <- update_model(model, data, refresh = 0)
 
     posterior_parameter_draw <- make_parameters(posterior, param_type = "posterior_draw")
     expect_true(length(posterior_parameter_draw) == 16)
@@ -152,4 +151,29 @@ testthat::test_that(
 		expect_true(is.data.frame(results))
 	}
 )
+
+
+
+
+testthat::test_that(
+	desc = "Check gbiqq alias and use keep_fit",
+	code = {
+		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE)
+		expect_true(class(updated) == "causal_model")
+	}
+)
+
+
+testthat::test_that(
+	desc = "Check long and short data",
+	code = {
+		model <- make_model('X->Y')
+		data_long   <- make_data(model, n = 4)
+		data_short  <- collapse_data(data_long, model)
+		expect_error(update_model(model, data_short))
+		updated <- update_model(model, data_short, data_type = 'compact')
+		expect_true(class(updated) == "causal_model")
+	}
+)
+
 

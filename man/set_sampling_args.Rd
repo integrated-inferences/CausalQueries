@@ -9,6 +9,12 @@ set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 }
 \arguments{
 \item{object}{The fit}
+
+\item{user_dots}{User commands}
+
+\item{user_adapt_delta}{Adapt delta passed by the user}
+
+\item{...}{further arguments to be passed to stan}
 }
 \description{
 set_sampling_args

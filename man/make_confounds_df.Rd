@@ -48,12 +48,10 @@ model <- make_model('A <- X -> B; A <-> X; B <-> X') \%>\%
 set_restrictions(c('A[X=0] == A[X=1]', 'B[X=0] == B[X=1]'))
 table(model$parameters_df$param_set)
 model$confounds_df
-plot(model)
 
 # Full confounding: X, A|X, B|A,X with 7 degrees of freedom
 model <- make_model('A <- X -> B; A <-> X; B <-> X; A<->B') \%>\%
 set_restrictions(c('A[X=0] == A[X=1]', 'B[X=0] == B[X=1]'))
 table(model$parameters_df$param_set)
 model$confounds_df
-plot(model)
 }
