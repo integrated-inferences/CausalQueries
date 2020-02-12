@@ -2,20 +2,20 @@
 % Please edit documentation in R/get_type_helpers.R
 \name{add_wildcard}
 \alias{add_wildcard}
-\title{#' Adds a wildcard for every missing parent}
+\title{Adds a wildcard for every missing parent}
 \usage{
 add_wildcard(node, statement, parents, missing_parents)
 }
 \arguments{
-\item{node}{A quoted name of a node}
+\item{node}{A character. The quoted name of a node.}
 
-\item{statement}{A quoted causal statement.}
+\item{statement}{A character. A quoted causal statement.}
 
-\item{parents}{node's parents}
+\item{parents}{A vector of characters. The \code{node}'s parents}
 
-\item{missing_parents}{node's missing parents}
+\item{missing_parents}{A vector of characters.  The \code{node}'s missing parents}
 }
 \description{
-#' Adds a wildcard for every missing parent
+Adds a wildcard for every missing parent
 }
 \keyword{internal}
