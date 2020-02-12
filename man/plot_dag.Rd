@@ -17,7 +17,7 @@ Plot your dag using dagitty
 }
 \examples{
 \dontrun{
-model <- make_model("X -> K -> Y; X -> Y")
+model <- make_model('X -> K -> Y; X -> Y')
 plot_dag(model)
 }
 

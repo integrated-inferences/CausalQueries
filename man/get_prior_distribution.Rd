@@ -15,8 +15,8 @@ get_prior_distribution(model, n_draws = 4000)
 Add to the model a n_draws x n_param matrix of possible parameters.
 }
 \examples{
-make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 5) \%>\% get_prior_distribution()
-make_model("X -> Y") \%>\% get_prior_distribution(3)
+make_model('X -> Y') \%>\% set_prior_distribution(n_draws = 5) \%>\% get_prior_distribution()
+make_model('X -> Y') \%>\% get_prior_distribution(3)
 
 }
 \seealso{

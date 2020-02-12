@@ -15,7 +15,7 @@ get_type_prob_multiple(
 \arguments{
 \item{model}{A model, normally containing a prior or a posterior distribution.}
 
-\item{using}{A character string indicating whether to use "priors", "posteriors" or "parameters".}
+\item{using}{A character string indicating whether to use 'priors', 'posteriors' or 'parameters'.}
 
 \item{parameters}{A numeric vector. True parameters to be used instead of parameters attached to the model in case `using` specifies `parameters`.}
 
@@ -30,7 +30,7 @@ A matrix of type probabilities.
 Draw matrix of type probabilities, before or after estimation
 }
 \examples{
-model <- make_model("X -> Y")
-get_type_prob_multiple(model, using = "priors", n_draws = 3)
-get_type_prob_multiple(model, using = "parameters", n_draws = 3)
+model <- make_model('X -> Y')
+get_type_prob_multiple(model, using = 'priors', n_draws = 3)
+get_type_prob_multiple(model, using = 'parameters', n_draws = 3)
 }

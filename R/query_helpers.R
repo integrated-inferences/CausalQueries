@@ -10,18 +10,18 @@
 #'
 #' @return A character statement of class statement
 #' @examples
-#' increasing("A", "B")
+#' increasing('A', 'B')
 #'
-increasing <- function(X, Y){
-
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
-
-	statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
-
-	class(statement) <- "statement"
-
-	statement
-	}
+increasing <- function(X, Y) {
+    
+    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
+    
+    class(statement) <- "statement"
+    
+    statement
+}
 
 
 #' Make monotonicity statement (non negative)
@@ -35,17 +35,17 @@ increasing <- function(X, Y){
 #'
 #' @return A character statement of class statement
 #' @examples
-#' non_decreasing("A", "B")
+#' non_decreasing('A', 'B')
 #'
-non_decreasing <- function(X, Y){
-
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
-
-	statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
-
-	class(statement) <- "statement"
-
-	statement
+non_decreasing <- function(X, Y) {
+    
+    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 
@@ -59,17 +59,17 @@ non_decreasing <- function(X, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#' decreasing("A", "B")
+#' decreasing('A', 'B')
 #'
-decreasing <- function(X, Y){
-
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
-
-	statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
-
-	class(statement) <- "statement"
-
-	statement
+decreasing <- function(X, Y) {
+    
+    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 
@@ -83,17 +83,17 @@ decreasing <- function(X, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#' non_increasing("A", "B")
+#' non_increasing('A', 'B')
 #'
-non_increasing <- function(X, Y){
-
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: decreasing")
-
-	statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
-
-	class(statement) <- "statement"
-
-	statement
+non_increasing <- function(X, Y) {
+    
+    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 
@@ -109,21 +109,21 @@ non_increasing <- function(X, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#' interacts("A", "B", "W")
-#' get_query_types(model = make_model("X-> Y <- W"),
-#'          query = interacts("X", "W", "Y"))
+#' interacts('A', 'B', 'W')
+#' get_query_types(model = make_model('X-> Y <- W'),
+#'          query = interacts('X', 'W', 'Y'))
 #'
 
-interacts <- function(X1, X2, Y){
-
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: interacts")
-
-	statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) != ",
-										 "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
-
-	class(statement) <- "statement"
-
-	statement
+interacts <- function(X1, X2, Y) {
+    
+    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ", 
+        "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 
@@ -139,18 +139,18 @@ interacts <- function(X1, X2, Y){
 #' @export
 #' @return A character statement of class statement
 #' @examples
-#'complements("A", "B", "W")
+#'complements('A', 'B', 'W')
 #'
-complements <- function(X1, X2, Y){
-
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: complements")
-
-	statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) > ",
-										 "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
-
-	class(statement) <- "statement"
-
-	statement
+complements <- function(X1, X2, Y) {
+    
+    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ", 
+        "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 
@@ -167,23 +167,23 @@ complements <- function(X1, X2, Y){
 #' @return A character statement of class statement
 #' @examples
 #'
-#'get_query_types(model = make_model("A -> B <- C"),
-#'          query = substitutes("A", "C", "B"))
+#'get_query_types(model = make_model('A -> B <- C'),
+#'          query = substitutes('A', 'C', 'B'))
 #'
-#'query_model(model = make_model("A -> B <- C"),
-#'          queries = substitutes("A", "C", "B"),
-#'          using = "parameters")
-#
-substitutes <- function(X1, X2, Y){
-
-	if(!is.character(X1) | !is.character(X2) |!is.character(Y)) stop("Provide node names as strings in function: substitutes")
-
-	statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[",X1, " = 0, ", X2, " = 1])) < ",
-										 "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[",X1, " = 0, ", X2, " = 0]))" )
-
-	class(statement) <- "statement"
-
-	statement
+#'query_model(model = make_model('A -> B <- C'),
+#'          queries = substitutes('A', 'C', 'B'),
+#'          using = 'parameters')
+# 
+substitutes <- function(X1, X2, Y) {
+    
+    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ", 
+        "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
 
 #' Make treatment effect statement (positive)
@@ -197,24 +197,38 @@ substitutes <- function(X1, X2, Y){
 #'
 #' @return A character statement of class statement
 #' @examples
-#' te("A", "B")
+#' te('A', 'B')
 #'
-#' model <- make_model("X->Y") %>% set_restrictions(increasing("X", "Y"))
-#' query_model(model, list(ate = te("X", "Y")),  using = "parameters")
+#' model <- make_model('X->Y') %>% set_restrictions(increasing('X', 'Y'))
+#' query_model(model, list(ate = te('X', 'Y')),  using = 'parameters')
 #'
 #' # set_restrictions  breaks with te because it requires a listing
 #' # of causal types, not numeric output.
 #'\dontrun{
-#' model <- make_model("X->Y") %>% set_restrictions(te("X", "Y"))
+#' model <- make_model('X->Y') %>% set_restrictions(te('X', 'Y'))
 #' }
 #'
-te <- function(X, Y){
-
-	if(!is.character(X) | !is.character(Y)) stop("Provide node names as strings in function: increasing")
-
-	statement = paste0("(",Y, "[", X, "=1] - ", Y, "[", X, "=0])")
-
-	class(statement) <- "statement"
-
-	statement
+te <- function(X, Y) {
+    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+    
+    statement = paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
+    
+    class(statement) <- "statement"
+    
+    statement
 }
+
+
+#' Check string_input
+#'
+#' @param param_list List of parameters
+#' @param call_name Name of the call.
+#'
+check_string_input <- function(param_list = list(), call_name = NULL) {
+    for (i in 1:length(param_list)) if (!is.character(param_list[[i]])) 
+        stop(paste0("Provide node names as strings in function: ", call_name))
+}
+
+
+
+

@@ -36,7 +36,7 @@ make_priors(
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 
-\item{param_name}{String. The name of specific parameter in the form of, for example, "X.1", "Y.01"
+\item{param_name}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 
 
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
@@ -45,15 +45,15 @@ For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X 
 A flexible function to generate priors for a model.
 }
 \details{
-Seven arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
+Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 
 * \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 
-* \code{node}, which restricts for example to parameters associated with node "X"
+* \code{node}, which restricts for example to parameters associated with node 'X'
 
-* \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+* \code{statement}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
 
-* \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+* \code{confound}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
 
 * \code{param_set}, which us useful when setting confound statements that produces several sets of parameters
 
@@ -63,32 +63,32 @@ Two arguments govern what values to apply:
 
 * alphas is one or more non negative numbers and
 
-* "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+* 'distribution' indicates one of a common class: uniform, jeffreys, or 'certain'
 
 Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 }
 \examples{
-model <- make_model("X -> M -> Y")
-make_priors(model, node = "X", alphas = 3)
-make_priors(model, node = c("X", "Y"), alphas = 3)
-make_priors(model, node = list("X", "Y"), alphas = list(3, 6))
-make_priors(model, node = c("X", "Y"), distribution = c("certainty", "jeffreys"))
-make_priors(model, statement = "Y[M=1] > Y[M=0]", alphas = 3)
-make_priors(model, statement = c("Y[M=1] > Y[M=0]", "M[X=1]== M[X=0]"), alphas = c(3, 2))
+model <- make_model('X -> M -> Y')
+make_priors(model, node = 'X', alphas = 3)
+make_priors(model, node = c('X', 'Y'), alphas = 3)
+make_priors(model, node = list('X', 'Y'), alphas = list(3, 6))
+make_priors(model, node = c('X', 'Y'), distribution = c('certainty', 'jeffreys'))
+make_priors(model, statement = 'Y[M=1] > Y[M=0]', alphas = 3)
+make_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
 \dontrun{
 # Error if statement seeks to
-make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3)
+make_priors(model, statement = 'Y[X=1] > Y[X=0]', alphas = 3)
 }
-model <- make_model("X->Y") \%>\%
- set_confound(list(X = "Y[X=1] > Y[X=0]", X = "Y[X=1] < Y[X=0]"))
+model <- make_model('X->Y') \%>\%
+ set_confound(list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]'))
 make_priors(model,
-            confound = list(X="Y[X=1] > Y[X=0]",
-                            X="Y[X=1] < Y[X=0]"),
+            confound = list(X='Y[X=1] > Y[X=0]',
+                            X='Y[X=1] < Y[X=0]'),
             alphas = c(3, 6))
-make_model("X -> Y") \%>\%
-  set_confound(list(X = "Y[X=1]>Y[X=0]"))\%>\%
-  make_priors(statement = "X==1",
-              confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
+make_model('X -> Y') \%>\%
+  set_confound(list(X = 'Y[X=1]>Y[X=0]'))\%>\%
+  make_priors(statement = 'X==1',
+              confound = list(X = 'Y[X=1]>Y[X=0]', X = 'Y[X=1]<Y[X=0]'),
               alphas = c(2, .5))
 }
 \seealso{

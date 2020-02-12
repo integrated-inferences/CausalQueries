@@ -39,27 +39,27 @@ set_priors(
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 
-\item{param_name}{String. The name of specific parameter in the form of, for example, "X.1", "Y.01"}
+\item{param_name}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 }
 \description{
 A flexible function to add priors to a model.
 }
 \details{
-Four arguments govern *which* parameters should be altered. The default is "all" but this can be reduced by specifying
+Four arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 
 * \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 
-* \code{node}, which restricts for example to parameters associated with node "X"
+* \code{node}, which restricts for example to parameters associated with node 'X'
 
-* \code{statement}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+* \code{statement}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
 
-* \code{confound}, which restricts for example to nodal types that satisfy the statment "Y[X=1] > Y[X=0]"
+* \code{confound}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
 
 Two arguments govern what values to apply:
 
 * alphas is one or more non negative numbers and
 
-* "distribution" indicates one of a common class: uniform, jeffreys, or "certain"
+* 'distribution' indicates one of a common class: uniform, jeffreys, or 'certain'
 
 Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 
@@ -68,19 +68,19 @@ For more examples and details see \code{make_priors}
 \examples{
 
 library(dplyr)
-model <- make_model("X -> Y") \%>\%
+model <- make_model('X -> Y') \%>\%
   set_priors(alphas = 3)
 get_priors(model)
 
-model <- make_model("X -> Y") \%>\%
-set_priors(distribution = "jeffreys")
+model <- make_model('X -> Y') \%>\%
+set_priors(distribution = 'jeffreys')
 get_priors(model)
 
-model <- make_model("X -> Y") \%>\%
+model <- make_model('X -> Y') \%>\%
 set_priors(1:6)
 get_priors(model)
-model <- make_model("X -> Y") \%>\%
-set_priors(node = "Y", alphas = 2)
+model <- make_model('X -> Y') \%>\%
+set_priors(node = 'Y', alphas = 2)
 get_priors(model)
 }
 \seealso{

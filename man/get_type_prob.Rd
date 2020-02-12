@@ -17,7 +17,7 @@ get_type_prob(model, P = NULL, parameters = NULL)
 Gets probability of vector of causal types given a single realization of parameters, possibly drawn from model priors.
 }
 \examples{
-get_type_prob(model = make_model("X->Y"))
-get_type_prob(model = make_model("X->Y"), parameters = 1:6)
+get_type_prob(model = make_model('X->Y'))
+get_type_prob(model = make_model('X->Y'), parameters = 1:6)
 
 }

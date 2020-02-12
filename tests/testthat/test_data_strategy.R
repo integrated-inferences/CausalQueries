@@ -16,7 +16,7 @@ testthat::test_that(
 
 
 
-
+#################################################
 context(desc = "Testing make_data")
 
 model <- make_model("X -> M -> Y")

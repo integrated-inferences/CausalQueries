@@ -21,7 +21,7 @@ get_event_prob(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL)
 Draw event probabilities
 }
 \examples{
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 get_event_prob(model = model)
 get_event_prob(model = model, parameters = rep(1, 6))
 get_event_prob(model = model, parameters = 1:6)

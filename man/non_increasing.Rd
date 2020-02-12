@@ -18,7 +18,7 @@ A character statement of class statement
 Generate a statement for Y weakly monotonic (not increasing) in X
 }
 \examples{
-non_increasing("A", "B")
+non_increasing('A', 'B')
 
 }
 \seealso{

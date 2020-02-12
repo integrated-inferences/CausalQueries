@@ -18,15 +18,15 @@ A character statement of class statement
 Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
 }
 \examples{
-te("A", "B")
+te('A', 'B')
 
-model <- make_model("X->Y") \%>\% set_restrictions(increasing("X", "Y"))
-query_model(model, list(ate = te("X", "Y")),  using = "parameters")
+model <- make_model('X->Y') \%>\% set_restrictions(increasing('X', 'Y'))
+query_model(model, list(ate = te('X', 'Y')),  using = 'parameters')
 
 # set_restrictions  breaks with te because it requires a listing
 # of causal types, not numeric output.
 \dontrun{
-model <- make_model("X->Y") \%>\% set_restrictions(te("X", "Y"))
+model <- make_model('X->Y') \%>\% set_restrictions(te('X', 'Y'))
 }
 
 }

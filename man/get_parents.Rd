@@ -16,6 +16,6 @@ A list of parents in a DAG
 Get list of parents in a dag
 }
 \examples{
-model <- make_model("X -> K -> Y")
+model <- make_model('X -> K -> Y')
 get_parents(model)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_parameters.R
 \name{make_parameters}
 \alias{make_parameters}
-\title{Make a "true" parameter vector}
+\title{Make a 'true' parameter vector}
 \usage{
 make_parameters(
   model,
@@ -17,43 +17,43 @@ make_parameters(
 
 \item{parameters}{A numeric vector. Parameters to add to model.}
 
-\item{param_type}{A character string specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character string specifying type of parameters to make ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
 
-\item{warning}{Logicial indicates whether to warn about parameter renormalization}
+\item{warning}{Logical indicates whether to warn about parameter renormalization}
 
 \item{...}{Options passed onto \code{make_priors()}.}
 }
 \description{
-A vector of "true" parameters; possibly drawn from prior or posterionr.
+A vector of 'true' parameters; possibly drawn from prior or posterionr.
 }
 \examples{
 
 # Simple examples
-model <- make_model("X -> Y")
+model <- make_model('X -> Y')
 data  <- simulate_data(model, n = 2)
 fit <- fitted_model()
 model <- update_model(model, data, fit = fit)
 make_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
-make_parameters(model, param_type = "flat")
-make_parameters(model, param_type = "prior_draw")
-make_parameters(model, param_type = "prior_mean")
-make_parameters(model, param_type = "posterior_draw")
-make_parameters(model, param_type = "posterior_mean")
+make_parameters(model, param_type = 'flat')
+make_parameters(model, param_type = 'prior_draw')
+make_parameters(model, param_type = 'prior_mean')
+make_parameters(model, param_type = 'posterior_draw')
+make_parameters(model, param_type = 'posterior_mean')
 
 # Harder examples, using \code{define} and priors arguments to define
 # specific parameters using causal syntax
 
-make_parameters(make_model("X -> Y"),
-               statement = "Y[X=1]>Y[X=0]", alphas = 2)
-make_model("X -> Y") \%>\%
-   make_parameters(statement = c("Y[X=1]>Y[X=0]", "Y[X=1]<Y[X=0]"), alphas = c(2,0))
+make_parameters(make_model('X -> Y'),
+               statement = 'Y[X=1]>Y[X=0]', alphas = 2)
+make_model('X -> Y') \%>\%
+   make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), alphas = c(2,0))
 
 # May be built up
-make_model("X -> Y") \%>\%
-  set_confound(list(X = "Y[X=1]>Y[X=0]"))  \%>\%
-  set_parameters(confound = list(X="Y[X=1]>Y[X=0]", X="Y[X=1]<=Y[X=0]"),
+make_model('X -> Y') \%>\%
+  set_confound(list(X = 'Y[X=1]>Y[X=0]'))  \%>\%
+  set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
                  alphas = list(c(.2, .8), c(.8, .2))) \%>\%
-  set_parameters(statement = "Y[X=1]>Y[X=0]", alphas = .5) \%>\%
+  set_parameters(statement = 'Y[X=1]>Y[X=0]', alphas = .5) \%>\%
   get_parameters
 }
 \seealso{

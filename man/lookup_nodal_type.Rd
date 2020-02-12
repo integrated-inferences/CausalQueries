@@ -11,7 +11,7 @@ lookup_nodal_type(model, query, join_by = "|", verbose = FALSE)
 
 \item{query}{A character vector of length 1L. An expression in string format defining nodal types to interrogate \code{reveal_outcomes()}}
 
-\item{join_by}{A string. The logical expression connecting expanded types, _AND_ ("&") or _OR_ ("|"). Defaults to "|".}
+\item{join_by}{A string. The logical expression connecting expanded types, _AND_ ('&') or _OR_ ('|'). Defaults to '|'.}
 
 \item{verbose}{Logical. Whether to print expanded query on the consule.}
 }
@@ -22,31 +22,31 @@ A list containing the types and the evaluated expression. `manipulated_outcomes`
 Lookup nodal types according to a query
 }
 \examples{
-model <- make_model("X->Y")
+model <- make_model('X->Y')
 
-lookup_nodal_type(model, "(Y[X=0] > Y[X=1])")
-lookup_nodal_type(model, "(Y[X=0] >= Y[X=1])")
+lookup_nodal_type(model, '(Y[X=0] > Y[X=1])')
+lookup_nodal_type(model, '(Y[X=0] >= Y[X=1])')
 
-model <- make_model("X -> M -> Y; X->Y")
-query <- "(Y[X=0] > Y[X=1])"
+model <- make_model('X -> M -> Y; X->Y')
+query <- '(Y[X=0] > Y[X=1])'
 x <- lookup_nodal_type(model, query)
 
-query <- "(Y[X=0, M = .] > Y[X=1, M = 0])"
+query <- '(Y[X=0, M = .] > Y[X=1, M = 0])'
 x <- lookup_nodal_type(model, query)
 
 
-query <- "(Y[] == 1)"
+query <- '(Y[] == 1)'
 x <- lookup_nodal_type(model, query)
-x <- lookup_nodal_type(model, query, join_by = "&")
+x <- lookup_nodal_type(model, query, join_by = '&')
 
-query <- "(X == 1)"
+query <- '(X == 1)'
 x <- lookup_nodal_type(model, query)
 
-query <- "(M[X=1] == M[X=0])"
+query <- '(M[X=1] == M[X=0])'
 x <- lookup_nodal_type(model, query)
 
 # Complements
-model <- make_model("M->Y; X->Y")
-query <- complements("X", "M", "Y")
+model <- make_model('M->Y; X->Y')
+query <- complements('X', 'M', 'Y')
 lookup_nodal_type(model, query)
 }

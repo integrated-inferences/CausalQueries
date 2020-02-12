@@ -18,7 +18,7 @@ A character statement of class statement
 Generate a statement for Y monotonic (decreasing) in X
 }
 \examples{
-decreasing("A", "B")
+decreasing('A', 'B')
 
 }
 \seealso{

@@ -20,7 +20,7 @@ A character statement of class statement
 Generate a statement for X1, X1 complement each other in the production of Y
 }
 \examples{
-complements("A", "B", "W")
+complements('A', 'B', 'W')
 
 }
 \seealso{

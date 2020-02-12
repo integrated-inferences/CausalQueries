@@ -9,40 +9,41 @@
 #' @return A list of nodal types for each parent in a DAG
 #'
 #' @examples
-#' model <- make_model("X -> K -> Y")
+#' model <- make_model('X -> K -> Y')
 #' get_nodal_types(model)
 #'
-#' model <- make_model("X -> K -> Y") %>%
-#'    set_restrictions(statement = "K[X=1]>K[X=0]") %>%
-#'    set_confound(list(K = "Y[K=1]>Y[K=0]"))
+#' model <- make_model('X -> K -> Y') %>%
+#'    set_restrictions(statement = 'K[X=1]>K[X=0]') %>%
+#'    set_confound(list(K = 'Y[K=1]>Y[K=0]'))
 #' unlist(get_nodal_types(model))
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
-
-	# .1 Extract nodal types if these exist (and collapsed format sought)
-	if(collapse  & !is.null(model$nodal_types)) return(model$nodal_types)
-
-	# 2. Create and interpret list of nodal types
-	nodal_types <- gbiqq:::make_nodal_types(model)
-
-	# reduce if necessary
-	 if(!is.null(model$nodal_types)){
-	 	nodal_types <-
-	 		lapply(model$nodes, function(v){
-	 				mat <- nodal_types[[v]]
-	 				mat[model$nodal_types[[v]], ]
-	 	})
-	  names(nodal_types)  <- model$nodes
-	 	}
-
-
-	# 3. Optionally provide in collapsed form
-  if(collapse) nodal_types <- gbiqq:::collapse_nodal_types(nodal_types)
-
-	attr(nodal_types, "interpret") <- interpret_type(model)
-
-	nodal_types
-
+    
+    # .1 Extract nodal types if these exist (and collapsed format sought)
+    if (collapse & !is.null(model$nodal_types)) 
+        return(model$nodal_types)
+    
+    # 2. Create and interpret list of nodal types
+    nodal_types <- gbiqq:::make_nodal_types(model)
+    
+    # reduce if necessary
+    if (!is.null(model$nodal_types)) {
+        nodal_types <- lapply(model$nodes, function(v) {
+            mat <- nodal_types[[v]]
+            mat[model$nodal_types[[v]], ]
+        })
+        names(nodal_types) <- model$nodes
+    }
+    
+    
+    # 3. Optionally provide in collapsed form
+    if (collapse) 
+        nodal_types <- gbiqq:::collapse_nodal_types(nodal_types)
+    
+    attr(nodal_types, "interpret") <- interpret_type(model)
+    
+    nodal_types
+    
 }
 
 #' make nodal types
@@ -52,64 +53,67 @@ get_nodal_types <- function(model, collapse = TRUE) {
 
 #'
 make_nodal_types <- function(model, include_node_names = FALSE) {
-
-	nodes       <- model$nodes
-	real_node   <- !(is.na(nodes))
-	nodes       <- nodes[real_node]
-	parents     <- get_parents(model)[real_node]
-	nodal_types <- lapply(lapply(parents, length), gbiqq:::type_matrix)
-
-	nodal_types_labels <- lapply(1:length(nodal_types), function(i){
-		labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
-		if(include_node_names) return(paste0(names(nodal_types)[i], labels))
-		labels
-	})
-
-	names(nodal_types_labels) <- nodes
-
-	# Add row labels
-	nodal_types <- lapply(nodes, function(v){
-		rownames(nodal_types[[v]]) <- nodal_types_labels[[v]]
-		nodal_types[[v]]
-	})
-
-	names(nodal_types)  <- nodes
-
-	nodal_types
-	}
+    
+    nodes <- model$nodes
+    real_node <- !(is.na(nodes))
+    nodes <- nodes[real_node]
+    parents <- get_parents(model)[real_node]
+    nodal_types <- lapply(lapply(parents, length), gbiqq:::type_matrix)
+    
+    nodal_types_labels <- lapply(1:length(nodal_types), function(i) {
+        labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
+        if (include_node_names) 
+            return(paste0(names(nodal_types)[i], labels))
+        labels
+    })
+    
+    names(nodal_types_labels) <- nodes
+    
+    # Add row labels
+    nodal_types <- lapply(nodes, function(v) {
+        rownames(nodal_types[[v]]) <- nodal_types_labels[[v]]
+        nodal_types[[v]]
+    })
+    
+    names(nodal_types) <- nodes
+    
+    nodal_types
+}
 
 #' collapse nodal types
 #' @param nodal_types A list of nodal types.
 #' @param include_node_names Logical, if TRUE returns names X0, X1; otherwise returns 0, 1
 #'
-collapse_nodal_types <- function(nodal_types, include_node_names = FALSE){
-	# Skip if already collapsed
-	if(!(is.data.frame(nodal_types[[1]]))) return(nodal_types)
-
-	# Otherwise collapse
-	types <-	lapply(1:length(nodal_types), function(i){
-		var <- names(nodal_types)[i]
-		mat <- as.matrix(nodal_types[[i]])
-		labels <- apply(mat,1,paste,collapse = "")
-		if(include_node_names) return(paste0(var, labels))
-		paste0(labels)
-	})
-	names(types)  <- names(nodal_types)
-	types
+collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
+    # Skip if already collapsed
+    if (!(is.data.frame(nodal_types[[1]]))) 
+        return(nodal_types)
+    
+    # Otherwise collapse
+    types <- lapply(1:length(nodal_types), function(i) {
+        var <- names(nodal_types)[i]
+        mat <- as.matrix(nodal_types[[i]])
+        labels <- apply(mat, 1, paste, collapse = "")
+        if (include_node_names) 
+            return(paste0(var, labels))
+        paste0(labels)
+    })
+    names(types) <- names(nodal_types)
+    types
 }
 
 
 #' Generate type matrix
 #' @param parent_n An integer. Number of parents of a given child.
 #'
-type_matrix <- function(parent_n){
-	type_mat <- perm(rep(1, 2^parent_n))
-	if(parent_n == 0){
-		labels <- NULL
-	} else {
-		input_mat <- perm(rep(1, parent_n))
-		labels <- apply(input_mat,1,paste,collapse = "")
-	}
-	colnames(type_mat) <- labels
-	return(type_mat)
+type_matrix <- function(parent_n) {
+    type_mat <- perm(rep(1, 2^parent_n))
+    if (parent_n == 0) {
+        labels <- NULL
+    } else {
+        input_mat <- perm(rep(1, parent_n))
+        labels <- apply(input_mat, 1, paste, collapse = "")
+    }
+    colnames(type_mat) <- labels
+    return(type_mat)
 }

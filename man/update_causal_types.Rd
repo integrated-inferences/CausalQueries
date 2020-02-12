@@ -13,5 +13,5 @@ update_causal_types(model)
 Update causal types based on nodal types
 }
 \examples{
-update_causal_types(make_model("X->Y"))
+update_causal_types(make_model('X->Y'))
 }

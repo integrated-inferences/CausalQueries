@@ -21,8 +21,8 @@ get_nodal_joint_probability(
 Identifies possible conditional probabilities of nodal types. May be used to identify patterns of non independence.
 }
 \examples{
-model <- make_model("X -> Y") \%>\%
-  set_confound(list("X <-> Y"))
+model <- make_model('X -> Y') \%>\%
+  set_confound(list('X <-> Y'))
 
 get_nodal_joint_probability(model)
 

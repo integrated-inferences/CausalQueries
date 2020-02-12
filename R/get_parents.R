@@ -6,7 +6,7 @@
 #' @export
 #' @return A list of parents in a DAG
 #' @examples
-#' model <- make_model("X -> K -> Y")
+#' model <- make_model('X -> K -> Y')
 #' get_parents(model)
 
 get_parents <- function(model) {

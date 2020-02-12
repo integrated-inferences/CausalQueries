@@ -24,12 +24,12 @@ all_data_types(
 Creates dataframe with all data types, including NA types possible from a model
 }
 \examples{
-all_data_types(make_model("X -> Y"))
-model <- make_model("X -> Y") \%>\% set_restrictions(labels = list(Y = "00"), keep = TRUE)
+all_data_types(make_model('X -> Y'))
+model <- make_model('X -> Y') \%>\% set_restrictions(labels = list(Y = '00'), keep = TRUE)
   all_data_types(model)
   all_data_types(model, complete_data = TRUE)
   all_data_types(model, possible_data = TRUE)
-  all_data_types(model, given  = "X==1")
-  all_data_types(model, given  = "X==1 & Y==1")
+  all_data_types(model, given  = 'X==1')
+  all_data_types(model, given  = 'X==1 & Y==1')
 
 }
