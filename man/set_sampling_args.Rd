@@ -8,11 +8,11 @@ From rstanarm (November 1st, 2019)}
 set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 }
 \arguments{
-\item{object}{The fit}
+\item{object}{A \code{stanfit object}.}
 
-\item{user_dots}{User commands}
+\item{user_dots}{A list. User commands.}
 
-\item{user_adapt_delta}{Adapt delta passed by the user}
+\item{user_adapt_delta}{A double between 0 and 1. Adapt delta passed by the user}
 
 \item{...}{further arguments to be passed to stan}
 }

@@ -7,11 +7,11 @@
 substitutes(X1, X2, Y)
 }
 \arguments{
-\item{X1}{input node 1}
+\item{X1}{A character. The quoted name of the input node 1.}
 
-\item{X2}{input node 2}
+\item{X2}{A character. The quoted name of the input node 2.}
 
-\item{Y}{outcome node}
+\item{Y}{A character. The quoted name of the outcome node.}
 }
 \value{
 A character statement of class statement

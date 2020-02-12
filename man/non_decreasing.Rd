@@ -7,9 +7,9 @@
 non_decreasing(X, Y)
 }
 \arguments{
-\item{X}{input node}
+\item{X}{A character. The quoted name of the input node}
 
-\item{Y}{outcome node}
+\item{Y}{A character. The quoted name of the outcome node}
 }
 \value{
 A character statement of class statement

@@ -7,7 +7,7 @@
 n_check(n)
 }
 \arguments{
-\item{n}{A sample size argument.}
+\item{n}{An integer. sample size argument.}
 }
 \description{
 n_check

@@ -2,9 +2,8 @@
 #'
 #' Create a list containing the data to be passed to stan
 #'
-#' @param model A model created by \code{make_model}
-#' @param data A  'compact' data frame (as made by `simulate_events()``)
-#' @return a list
+#' @inheritParams gbiqq_internal_inherit_params
+#' @return A \code{list}.
 #' @export
 #' @examples
 #' model <- make_model('X->Y')
@@ -16,10 +15,10 @@
 #' prep_gbiqq_data(model, data)
 #'
 prep_gbiqq_data <- function(model, data) {
-    
-    if (!all(c("event", "strategy", "count") %in% names(data))) 
+
+    if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")
-    
+
     A <- get_ambiguities_matrix(model)
     P <- get_parameter_matrix(model)
     param_set <- model$parameters_df$param_set
@@ -30,7 +29,7 @@ prep_gbiqq_data <- function(model, data) {
     n_strategies <- length(unique(strategies))
     w_starts <- which(!duplicated(strategies))
     k <- length(strategies)
-    w_ends <- if (n_strategies < 2) 
+    w_ends <- if (n_strategies < 2)
         k else c(w_starts[2:n_strategies] - 1, k)
     n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
     l_ends <- as.array(cumsum(n_param_each))
@@ -40,10 +39,10 @@ prep_gbiqq_data <- function(model, data) {
         l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1)
     }
     names(l_starts) <- names(l_ends)
-    
-    list(n_params = nrow(P), n_param_sets = n_param_sets, n_param_each = as.array(n_param_each), l_starts = as.array(l_starts), 
-        l_ends = as.array(l_ends), lambdas_prior = get_priors(model), n_types = ncol(P), n_data = nrow(all_data_types(model, 
-            possible_data = TRUE)), n_events = nrow(E), n_strategies = n_strategies, strategy_starts = as.array(w_starts), 
+
+    list(n_params = nrow(P), n_param_sets = n_param_sets, n_param_each = as.array(n_param_each), l_starts = as.array(l_starts),
+        l_ends = as.array(l_ends), lambdas_prior = get_priors(model), n_types = ncol(P), n_data = nrow(all_data_types(model,
+            possible_data = TRUE)), n_events = nrow(E), n_strategies = n_strategies, strategy_starts = as.array(w_starts),
         strategy_ends = as.array(w_ends), P = P, not_P = 1 - P, A = A, E = E, Y = data$count)
 }
 
