@@ -13,11 +13,11 @@ st_within(
 )
 }
 \arguments{
-\item{x}{A character vector of length 1L.}
+\item{x}{A character.}
 
-\item{left}{A regular expression to serve as look ahead.}
+\item{left}{A character. Regular expression to serve as look ahead.}
 
-\item{right}{A regular expression to serve as a look behind.}
+\item{right}{A character. Regular expression to serve as a look behind.}
 
 \item{rm_left}{An integer. Number of bites after left-side match to remove from result. Defaults to -1.}
 

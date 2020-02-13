@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_type_helpers.R
 \name{nodes_in_statement}
 \alias{nodes_in_statement}
-\title{Identify nodes in statement}
+\title{Identify nodes in a statement}
 \usage{
 nodes_in_statement(nodes, statement)
 }
 \arguments{
-\item{nodes}{A vector with quoted names of the nodes}
+\item{nodes}{A vector of characters. It should contain quoted names of the nodes in \code{model}}
 
-\item{statement}{A quoted causal statement.}
+\item{statement}{A character. A quoted causal statement.}
 }
 \description{
-Identify nodes in statement
+Identify nodes in a statement
 }
 \keyword{internal}

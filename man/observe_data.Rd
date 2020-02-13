@@ -7,24 +7,24 @@
 observe_data(
   complete_data,
   observed = NULL,
-  vars_to_observe = NULL,
+  nodes_to_observe = NULL,
   prob = 1,
   m = NULL,
   subset = NULL
 )
 }
 \arguments{
-\item{complete_data}{A data.frame. Data observed and unobserved.}
+\item{complete_data}{A \code{data.frame}. Data observed and unobserved.}
 
-\item{observed}{A data.frame. Data observed.}
+\item{observed}{A \code{data.frame}. Data observed.}
 
-\item{vars_to_observe}{A list of nodes to observe.}
+\item{nodes_to_observe}{A list. Nodes to observe.}
 
 \item{prob}{A scalar. Observation probability.}
 
-\item{m}{Number of units to observe; if specified, \code{m} overrides \code{prob}.}
+\item{m}{A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.}
 
-\item{subset}{A logical statement that can be applied to rows of complete data. For instance observation fo some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!}
+\item{subset}{A character.  Logical statement that can be applied to rows of complete data. For instance observation fo some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!}
 }
 \description{
 Observe data, given a strategy
@@ -33,10 +33,10 @@ Observe data, given a strategy
 model <- make_model("X -> Y")
 df <- simulate_data(model, n = 8)
 # Observe X values only
-observe_data(complete_data = df, vars_to_observe = "X")
+observe_data(complete_data = df, nodes_to_observe = "X")
 # Observe half the Y values for cases with observed X = 1
 observe_data(complete_data = df,
-     observed = observe_data(complete_data = df, vars_to_observe = "X"),
-     vars_to_observe = "Y", prob = .5,
+     observed = observe_data(complete_data = df, nodes_to_observe = "X"),
+     nodes_to_observe = "Y", prob = .5,
      subset = "X==1")
 }

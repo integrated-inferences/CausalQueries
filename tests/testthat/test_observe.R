@@ -17,9 +17,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
-	desc = "observe works when vars_to_observe is specified",
+	desc = "observe works when nodes_to_observe is specified",
 	code = {
-		obs <- observe_data(complete_data = df, vars_to_observe = "X")
+		obs <- observe_data(complete_data = df, nodes_to_observe = "X")
 		expect_true(all(obs$X))
 		expect_true(all(!obs$Y))
 	}
@@ -30,10 +30,10 @@ testthat::test_that(
 	desc = "observe works when observed is specified",
 	code = {
 
-		obs1 <- observe_data(complete_data = df, vars_to_observe = "X")
+		obs1 <- observe_data(complete_data = df, nodes_to_observe = "X")
 		obs2 <- observe_data(complete_data = df,
 										 observed = obs1,
-										 vars_to_observe = "Y")
+										 nodes_to_observe = "Y")
 		expect_true(all(obs2$X))
 		expect_true(all(obs2$Y))
 
@@ -44,10 +44,10 @@ testthat::test_that(
 # 	desc = "observe works when subset is specified",
 # 	code = {
 #
-# 		obs1 <-   observe_data(complete_data = df, vars_to_observe = "X")
+# 		obs1 <-   observe_data(complete_data = df, nodes_to_observe = "X")
 # 		obs2 <- 	observe_data(complete_data = df,
 # 										  observed = obs1,
-# 										  vars_to_observe = "Y",
+# 										  nodes_to_observe = "Y",
 # 										  subset = "X==1")
 #
 # 		expect_true(all(obs2$X))
@@ -60,8 +60,8 @@ testthat::test_that(
 	desc = "m overrides p (observe)",
 	code = {
 		obs <- observe_data(complete_data    = df,
-								  	observed        = observe_data(complete_data = df, vars_to_observe = "X"),
-									  vars_to_observe = "Y",
+								  	observed        = observe_data(complete_data = df, nodes_to_observe = "X"),
+									  nodes_to_observe = "Y",
 										prob            = 1,
 										m               = 2,
 										subset          = "X==1")

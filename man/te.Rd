@@ -7,9 +7,9 @@
 te(X, Y)
 }
 \arguments{
-\item{X}{character: name of input node}
+\item{X}{A character. The quoted name of the input node}
 
-\item{Y}{character: name of outcome node}
+\item{Y}{A character. The quoted name of the outcome node}
 }
 \value{
 A character statement of class statement
