@@ -1,0 +1,44 @@
+language: r
+sudo: FALSE
+warnings_are_errors: false
+cache:
+  - packages
+  - cache
+
+warnings_are_errors: TRUE
+
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
+
+r_github_packages:
+  - macartan/gbiqq
+  - jimhester/covr
+
+env:
+  global:
+    - MAKEFLAGS="-j 2"
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+
+
+before_install:
+  - mkdir -p ~/.R
+  - echo "CXX14FLAGS=-O3 -mtune=native -march=native -Wno-unused-variable -Wno-unused-function  -Wno-macro-redefined" >> ~/.R/Makevars
+  - echo "CXX14=g++ -std=c++1y -fext-numeric-literals -fPIC" >> ~/.R/Makevars
+
+after_success:
+  - travis_wait 30 Rscript -e 'covr::codecov()'
+  
+after_failure:
+  - cat gbiqq.Rcheck/00*
