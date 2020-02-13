@@ -8,7 +8,7 @@ testthat::test_that(
 		expect_error(make_parameters(model, param_type = 'posterior_draw'))
 		expect_error(make_parameters(model, param_type = 'posterior_mean'))
 
-		model <- update_model(model, data.frame(X=1, Y=1))
+		model <- update_model(model, data.frame(X=1, Y=1), refresh = 0)
 		a <- make_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
 		expect_true(length(a)==6)
 

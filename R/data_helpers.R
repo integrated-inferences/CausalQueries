@@ -3,7 +3,6 @@
 #' Get possible data types
 #'
 #' @inheritParams gbiqq_internal_inherit_params
-#'
 #' @param drop_impossible Logical. Whether to drop data that is impossible given model restrictions. Defaults to `TRUE`
 #' @param drop_all_NA Logical. Whether to drop row of all `NA`s. Defaults to `TRUE`
 #' @param mapping_only Logical. Whether to return data mapping matrix only. Defaults to `FALSE`.
@@ -192,7 +191,7 @@ drop_empty_families <- function(data_events) {
 
 #' Expand compact data object to data frame
 #'
-#'#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams gbiqq_internal_inherit_params
 #'
 #' @export
 #' @examples
@@ -247,13 +246,12 @@ data_type_names <- function(model, data) {
 
 #' All data types
 #'
-#' Creates dataframe with all data types, including NA types possible from a model
+#' Creates dataframe with all data types (including NA types) that are possible from a model.
 #'
 #' @inheritParams gbiqq_internal_inherit_params
-#'
-#' @param complete_data Logical. If `TRUE` return only complete data types (no `NA`s). Defaults to `FALSE`.
-#' @param possible_data Logical. If `TRUE` returns only complete data types (no `NA`s) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
-#' @param given. A character.  A quoted statement that evaluates to logical. Data conditional on specific values.
+#' @param complete_data Logical. If `TRUE` return only complete data types (no NA's). Defaults to `FALSE`.
+#' @param possible_data Logical. If `TRUE` returns only complete data types (no NA's) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
+#' @param given A character.  A quoted statement that evaluates to logical. Data conditional on specific values.
 #' @export
 #' @examples
 #' all_data_types(make_model('X -> Y'))
