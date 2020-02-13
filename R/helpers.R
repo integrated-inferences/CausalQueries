@@ -10,13 +10,15 @@
 #' \dontrun{
 #' perm(3)
 #' }
-# perm <- function(v) { sapply(1:length(v), function(x) { rep(rep(1:v[x], each =
-# prod(v[x:length(v)])/v[x]), length.out = prod(v)) }) - 1 }
 perm <- function(max = rep(1, 2)) {
+
     grid <- sapply(max, function(m) exprs(0:!!m))
-    perm <- do.call(expand.grid, grid)
-    colnames(perm) <- NULL
-    perm
+
+    x <- do.call(expand.grid, grid)
+
+    colnames(x) <- NULL
+
+    x
 }
 
 #' Get string between two regular expression patterns
@@ -253,7 +255,9 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
     if (include_paramset)
         return(model$parameters_df$param_names)
     if (!include_paramset)
-        return(model$parameters_df$param)
+
+        return(model$parameters_df$nodal_type)
+
 
 }
 
@@ -264,7 +268,9 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' @param query An expression in string format.
 #'
 #' Used in \code{lookup_nodal_types}
-includes_var <- function(var, query) length(grep(paste0("\\<", var, "\\>"), query)) > 0
+#'
+includes_var <- function(var, query)
+    length(grep(paste0("\\<", var, "\\>"), query)) > 0
 
 #' List of nodes contained in query
 #' @inheritParams gbiqq_internal_inherit_params
@@ -275,11 +281,3 @@ var_in_query <- function(model, query) {
 }
 
 
-# helper from hadley
-# https://stackoverflow.com/questions/4752275/test-for-equality-among-all-elements-of-a-single-vector
-zero_range <- function(x, tol = .Machine$double.eps^0.5) {
-    if (length(x) == 1)
-        return(TRUE)
-    x <- range(x)/mean(x)
-    isTRUE(all.equal(x[1], x[2], tolerance = tol))
-}
