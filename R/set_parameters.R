@@ -41,7 +41,7 @@
 make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, ...) {
 
     if (!is.null(parameters))
-        return(clean_param_vector(model, parameters))
+        return(gbiqq:::clean_param_vector(model, parameters))
 
     if (!is.null(param_type))
         if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw",
@@ -139,7 +139,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
         parameters <- make_parameters(model, param_type = param_type, ...)
 
     model$parameters_df$param_value <- parameters
-    model$parameters_df <- clean_params(model$parameters_df, warning = warning)
+    model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = warning)
 
     model
 
