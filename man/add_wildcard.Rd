@@ -7,9 +7,9 @@
 add_wildcard(node, statement, parents, missing_parents)
 }
 \arguments{
-\item{node}{A character. The quoted name of a node.}
+\item{node}{A character string. The quoted name of a node.}
 
-\item{statement}{A character. A quoted causal statement.}
+\item{statement}{A character string. A quoted causal statement.}
 
 \item{parents}{A vector of characters. The \code{node}'s parents}
 

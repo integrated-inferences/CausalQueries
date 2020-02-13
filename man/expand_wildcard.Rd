@@ -9,7 +9,7 @@ expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 \arguments{
 \item{to_expand}{A character vector of length 1L.}
 
-\item{join_by}{A character. The logical expression connecting expanded types, \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
+\item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 
 \item{verbose}{Logical. Whether to print expanded query on the consule.}
 }
