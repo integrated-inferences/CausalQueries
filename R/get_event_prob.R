@@ -31,7 +31,7 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
     if (is.null(type_prob))
         type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
 
-    # Event probabilities ## FLAG this is a hack for cases with only one possible data type
+    # Event probabilities: this is for cases with only one possible data type
     if (ncol(A) == 1) {
         out <- matrix(1)
         rownames(out) <- colnames(A)
