@@ -12,7 +12,7 @@ r_check_args: '--ignore-vignettes'
 
 r_github_packages:
   - macartan/gbiqq
-    - jimhester/covr
+  - jimhester/covr
 
 env:
   global:
