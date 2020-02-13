@@ -40,7 +40,7 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
 
     # Housekeeping 1. remove (), split by logical symbol and trim w_query contains parts of query
     w_query <- gsub("\\(|\\)", "", query)
-    w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")  #
+    w_query <- stringr::str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")  #
     w_query <- sapply(unlist(w_query), function(x) trimws(x))
     dos <- TRUE
 
@@ -82,7 +82,7 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
         # FLAG: Why is this repeated
         w_query <- gsub("\\(|\\)", "", .w_query)
         # w_query <- str_split(w_query, '\\==|>|<|>=|\\+|\\-|<=|!=|\\&|\\|')
-        w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")
+        w_query <- stringr::str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")
         w_query <- sapply(unlist(w_query), function(x) trimws(x))
 
     } else {
