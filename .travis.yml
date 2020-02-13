@@ -1,10 +1,10 @@
 language: r
 r: devel
 sudo: FALSE
-
+warnings_are_errors: false
 cache:
   - packages
-  - ccache
+  - cache
 
 warnings_are_errors: TRUE
 
