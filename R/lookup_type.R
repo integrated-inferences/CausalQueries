@@ -38,13 +38,17 @@
 
 lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
 
+    operators <- "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|"
+
     # Housekeeping 1. remove (), split by logical symbol and trim w_query contains parts of query
-    w_query <- gsub("\\(|\\)", "", query)
-    w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")  #
-    w_query <- sapply(unlist(w_query), function(x) trimws(x))
+    w_query <- gsub("\\(|\\)", "", query) %>%
+               stringr::str_split(operators) %>%
+               unlist %>%
+               sapply(function(x) trimws(x))
+
     dos <- TRUE
 
-    # 2. Grab outcome nodes in query, and stop if there are more than one var in query allowed: Y[X =1]
+    # 2. Grab outcome nodes in query, and stop if there is more than one var in query allowed: Y[X =1]
     # == 1 & Y[X=0] ==1 not allowed: M[X=1] == 1 & Y[X=0] ==1
     var <- node <- st_within(query)
     if (length(var) > 1 & sum(!duplicated(var)) > 1)
@@ -59,38 +63,45 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
         w_query <- sapply(w_query, gbiqq:::add_dots, model = model)
         names(w_query) <- q_names
 
-        .w_query <- quoted_query <- query
 
 
         ########################################################################### Generate a 'quoted query' of the form '(`Y[X=0]` > `Y[X=1]`)'.  This can then be evaluated on a
         ########################################################################### potential outcomes dataset.  Substitute expanded in w_query back into original query paste
         ########################################################################### backslashes \\ and ` ` for matching (quoted_query)
+        # quoted query is of the form: "(`Y[X=1, M= .]` == 1) & `Y[X=0, M= .]`==1"
+
+        .w_query <- quoted_query <- query
 
         for (i in 1:length(w_query)) {
-            var <- st_within(names(w_query)[i])
+            var <- gbiqq:::st_within(names(w_query)[i])
             string_i <- gsub(paste0("\\[|\\]|", var), "", names(w_query)[i])
             string_i <- paste0(var, "\\[", string_i, "\\]")
             .w_query <- gsub(string_i, w_query[i], .w_query)
             quoted_query <- gsub(string_i, paste0("`", w_query[i], "`"), quoted_query)
         }
 
+        # Expanded quote query is of the form
+        # "(`Y[X=1, M=0]` == 1 | `Y[X=1, M=1]` == 1)"
         if (grepl(".", .w_query, fixed = TRUE)) {
-            .w_query <- expand_wildcard(.w_query, join_by = join_by, verbose = verbose)
-            quoted_query <- expand_wildcard(quoted_query, join_by = join_by, verbose = FALSE)
+            .w_query <-
+                gbiqq:::expand_wildcard(.w_query, join_by = join_by, verbose = verbose)
+            quoted_query <-
+                gbiqq:::expand_wildcard(quoted_query, join_by = join_by, verbose = FALSE)
         }
 
-        # FLAG: Why is this repeated
-        w_query <- gsub("\\(|\\)", "", .w_query)
-        # w_query <- str_split(w_query, '\\==|>|<|>=|\\+|\\-|<=|!=|\\&|\\|')
-        w_query <- str_split(w_query, "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|")
-        w_query <- sapply(unlist(w_query), function(x) trimws(x))
+        # Get components again from .w_query. This time with expanded values.
+        w_query <- gsub("\\(|\\)", "", .w_query) %>%
+            stringr::str_split(operators) %>%
+            unlist %>%
+            sapply(function(x) trimws(x))
+
 
     } else {
         # If there are no do operations in query
         .w_query <- quoted_query <- w_query <- query
-        dos <- FALSE
+        dos   <- FALSE
         nodes <- model$nodes
-        node <- nodes[sapply(nodes, function(v) grepl(v, query))]
+        node  <- nodes[sapply(nodes, function(v) grepl(v, query))]
     }
 
     # Magic The query df provide var outcomes for relevant queried conditions, rows are types, columns
@@ -219,7 +230,6 @@ print.summary.nodal_types <- function(x, ...) {
 #' @examples
 #' model <- make_model('X -> Y <- M')
 #' gbiqq:::add_dots('Y[X=1]', model)
-#' # FLAG : FORMAT NOT RIGHT
 #' gbiqq:::add_dots('Y[]', model)
 #'
 add_dots <- function(q, model) {
@@ -232,6 +242,7 @@ add_dots <- function(q, model) {
     var <- st_within(q)
     if (!all(var %in% model$nodes))
         stop(paste0("Outcome node "), var, " not in model")
+
     # Only allow specification of var's parents
 
     # Identify parents not specified in query and paste them as 'parent = .'

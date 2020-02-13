@@ -139,6 +139,8 @@ query_model <- function(model,
 	if(!is.null(query))   queries <- query
 	if(is.null(given))  given <- TRUE
 
+  # If parameters provided, add these to model
+	if(!is.null(parameters)) model <- set_parameters(model, parameters)
 
 	# Housekeeping
 	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){

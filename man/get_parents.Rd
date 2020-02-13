@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_parents.R
 \name{get_parents}
 \alias{get_parents}
-\title{Get list of parents in a dag}
+\title{Get list of parents of all nodes in a model}
 \usage{
 get_parents(model)
 }
@@ -13,7 +13,7 @@ get_parents(model)
 A \code{list} of parents in a DAG
 }
 \description{
-Get list of parents in a dag
+Get list of parents of all nodes in a model
 }
 \examples{
 model <- make_model('X -> K -> Y')

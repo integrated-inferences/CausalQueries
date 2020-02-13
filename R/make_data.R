@@ -7,6 +7,7 @@
 #' otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set;
 #' \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
 #' take parameters as the means or as draws from the prior or posterior.
+#' @param n Non negative integer. Number of observations.
 #' @param n_steps A \code{list}. Number of observations to be observed at each step
 #' @param nodes A \code{list}. Which nodes to be observed at each step
 #' @param probs A \code{list}. Observation probabilities at each step
