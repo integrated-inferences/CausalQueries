@@ -10,13 +10,15 @@
 #' \dontrun{
 #' perm(3)
 #' }
-# perm <- function(v) { sapply(1:length(v), function(x) { rep(rep(1:v[x], each =
-# prod(v[x:length(v)])/v[x]), length.out = prod(v)) }) - 1 }
 perm <- function(max = rep(1, 2)) {
+
     grid <- sapply(max, function(m) exprs(0:!!m))
-    perm <- do.call(expand.grid, grid)
-    colnames(perm) <- NULL
-    perm
+
+    x <- do.call(expand.grid, grid)
+
+    colnames(x) <- NULL
+
+    x
 }
 
 #' Get string between two regular expression patterns
@@ -37,18 +39,18 @@ perm <- function(max = rep(1, 2)) {
 #' st_within(b)
 
 st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0, rm_right = -1) {
-    if (!is.character(x)) 
+    if (!is.character(x))
         stop("`x` must be a string.")
     puncts <- gregexpr(left, x, perl = TRUE)[[1]]
     stops <- gregexpr(right, x, perl = TRUE)[[1]]
-    
+
     # only index the first of the same boundary when there are consecutive ones (eg. '[[')
     consec_brackets <- diff(stops)
     if (any(consec_brackets == 1)) {
         remov <- which(consec_brackets == 1) + 1
         stops <- stops[-remov]
     }
-    
+
     # find the closest punctuation or space
     starts <- sapply(stops, function(s) {
         dif <- s - puncts
@@ -57,7 +59,7 @@ st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0
         return(ret)
     })
     drop <- is.na(starts) | is.na(stops)
-    sapply(1:length(starts), function(i) if (!drop[i]) 
+    sapply(1:length(starts), function(i) if (!drop[i])
         substr(x, starts[i] + rm_left, stops[i] + rm_right))
 }
 
@@ -71,7 +73,7 @@ st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0
 #' @param ... Options passed onto \code{gsub()} call.
 #'
 gsub_many <- function(x, pattern_vector, replacement_vector, ...) {
-    if (!identical(length(pattern_vector), length(replacement_vector))) 
+    if (!identical(length(pattern_vector), length(replacement_vector)))
         stop("pattern and replacement vectors must be the same length")
     for (i in seq_along(pattern_vector)) {
         x <- gsub(pattern_vector[i], replacement_vector[i], x, ...)
@@ -106,33 +108,33 @@ clean_condition <- function(condition) {
 #' interpret_type(model)
 #' @export
 interpret_type <- function(model, condition = NULL, position = NULL) {
-    if (sum(!is.null(condition) & !is.null(position)) > 1) 
+    if (sum(!is.null(condition) & !is.null(position)) > 1)
         stop("Must specify either `query` or `nodal_position`, but not both.")
     parents <- get_parents(model)
     types <- lapply(lapply(parents, length), function(l) perm(rep(1, l)))
-    
+
     if (is.null(position)) {
         position <- lapply(types, function(i) ifelse(length(i) == 0, return(NA), return(1:nrow(i))))
     } else {
-        if (!all(names(position) %in% names(types))) 
+        if (!all(names(position) %in% names(types)))
             stop("One or more names in `position` not found in model.")
     }
-    
+
     interpret <- lapply(1:length(position), function(i) {
         positions <- position[[i]]
         type <- types[[names(position)[i]]]
         pos_elements <- type[positions, ]
-        
+
         if (!all(is.na(positions))) {
-            interpret <- sapply(1:nrow(pos_elements), function(row) paste0(parents[[names(position)[i]]], 
+            interpret <- sapply(1:nrow(pos_elements), function(row) paste0(parents[[names(position)[i]]],
                 " = ", pos_elements[row, ], collapse = " & "))
             interpret <- paste0(paste0(c(names(position)[i], " | "), collapse = ""), interpret)
             # Create 'Y*[*]**'-type representations
             asterisks <- rep("*", nrow(type))
             asterisks_ <- sapply(positions, function(s) {
                 if (s < length(asterisks)) {
-                  if (s == 1) 
-                    paste0(c("[*]", asterisks[(s + 1):length(asterisks)]), collapse = "") else paste0(c(asterisks[1:(s - 1)], "[*]", asterisks[(s + 1):length(asterisks)]), 
+                  if (s == 1)
+                    paste0(c("[*]", asterisks[(s + 1):length(asterisks)]), collapse = "") else paste0(c(asterisks[1:(s - 1)], "[*]", asterisks[(s + 1):length(asterisks)]),
                     collapse = "")
                 } else {
                   paste0(c(asterisks[1:(s - 1)], "[*]"), collapse = "")
@@ -143,12 +145,12 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
             interpret <- paste0(paste0(c(names(position)[i], " = "), collapse = ""), c(0, 1))
             display <- paste0(names(position)[i], c(0, 1))
         }
-        data.frame(node = names(position)[i], position = position[[i]], display = display, interpretation = interpret, 
+        data.frame(node = names(position)[i], position = position[[i]], display = display, interpretation = interpret,
             stringsAsFactors = FALSE)
     })
-    
+
     names(interpret) <- names(position)
-    
+
     if (!is.null(condition)) {
         conditions <- sapply(condition, clean_condition)
         interpret_ <- lapply(interpret, function(i) {
@@ -160,13 +162,13 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
                 })
             })
             i <- i[rowSums(slct) > 0, ]
-            if (nrow(i) == 0) 
+            if (nrow(i) == 0)
                 i <- NULL
             i
         })
         interpret <- interpret_[!sapply(interpret_, is.null)]
     }
-    
+
     return(interpret)
 }
 
@@ -185,14 +187,14 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
     orig <- st_within(to_expand, left = "\\(", right = "\\)", rm_left = 1)
     if (is.list(orig)) {
-        if (is.null(orig[[1]])) 
+        if (is.null(orig[[1]]))
             stop("The character expressions to be expanded must be contained within parentheses")
     }
     skeleton <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)), fixed = TRUE)
     expand_it <- grepl("\\.", orig)
-    
+
     expanded_types <- lapply(1:length(orig), function(i) {
-        if (!expand_it[i]) 
+        if (!expand_it[i])
             return(orig[i]) else {
             exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
             a <- gregexpr("\\w{1}\\s*(?=(=\\s*\\.){1})", orig[i], perl = TRUE)
@@ -202,7 +204,7 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
             grid <- replicate(n_types, expr(c(0, 1)))
             type_values <- do.call(expand.grid, grid)
             colnames(type_values) <- unique(matcha)
-            
+
             apply(type_values, 1, function(s) {
                 to_sub <- paste0(colnames(type_values), "(\\s)*=(\\s)*$")
                 subbed <- gsub_many(exp_types, to_sub, paste0(colnames(type_values), "=", s), perl = TRUE)
@@ -210,7 +212,7 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
             })
         }
     })
-    
+
     if (!is.null(join_by)) {
         oper <- sapply(expanded_types, function(l) {
             paste0(l, collapse = paste0(" ", join_by, " "))
@@ -221,10 +223,10 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
         } else {
             oper_return <- gsub_many(skeleton, paste0("%expand%", 1:length(orig)), oper)
         }
-        
+
     } else {
         oper <- do.call(cbind, expanded_types)
-        oper_return <- apply(oper, 1, function(i) gsub_many(skeleton, paste0("%expand%", 1:length(orig)), 
+        oper_return <- apply(oper, 1, function(i) gsub_many(skeleton, paste0("%expand%", 1:length(orig)),
             i))
     }
     if (verbose) {
@@ -247,45 +249,23 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
 #' get_parameter_names(make_model('X->Y'))
 #'
 get_parameter_names <- function(model, include_paramset = TRUE) {
-    
-    if (include_paramset) 
+
+    if (include_paramset)
         return(model$parameters_df$param_names)
-    if (!include_paramset) 
-        return(model$parameters_df$param)
-    
+    if (!include_paramset)
+        return(model$parameters_df$nodal_type)
+
 }
 
 
-#'combine two lists by names
-#'
-#' @param list1 a list
-#' @param list2 a list typically different than list1
-combine_lists <- function(list1, list2) {
-    
-    matches <- names(list1) %in% names(list2)
-    matching_names <- names(list1)[matches]
-    matches2 <- names(list2) %in% names(list1)
-    
-    if (any(matches)) {
-        combined_list <- sapply(matching_names, function(nam) {
-            out <- c(list1[[nam]], list2[[nam]])
-            out[!duplicated(names(out))]
-        }, simplify = FALSE)
-        
-        combined_list <- c(combined_list, list1[!matches])
-        combined_list <- c(combined_list, list2[!matches2])
-    } else {
-        combined_list <- c(list1, list2)
-    }
-    
-    combined_list
-}
 
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
 #' Used in \code{lookup_nodal_types}
-includes_var <- function(var, query) length(grep(paste0("\\<", var, "\\>"), query)) > 0
+#'
+includes_var <- function(var, query)
+    length(grep(paste0("\\<", var, "\\>"), query)) > 0
 
 #' List of nodes contained in query
 #' @param model A model object generated by \code{make_model()}.
@@ -297,11 +277,3 @@ var_in_query <- function(model, query) {
 }
 
 
-# helper from hadley
-# https://stackoverflow.com/questions/4752275/test-for-equality-among-all-elements-of-a-single-vector
-zero_range <- function(x, tol = .Machine$double.eps^0.5) {
-    if (length(x) == 1) 
-        return(TRUE)
-    x <- range(x)/mean(x)
-    isTRUE(all.equal(x[1], x[2], tolerance = tol))
-}
