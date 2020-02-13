@@ -17,7 +17,7 @@ get_type_prob_multiple(
 
 \item{using}{A character. It indicates whether to use `priors`, `posteriors` or `parameters`.}
 
-\item{parameters}{A vector of real numbers in [0,1]. Values of parameters may be specified. By default, parameters is drawn from model$parameters_df.}
+\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 
 \item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 

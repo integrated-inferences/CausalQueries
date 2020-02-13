@@ -13,7 +13,7 @@ get_event_prob(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL)
 
 \item{A}{A \code{data.frame}. Ambiguity matrix. Not required but may be provided to avoid repeated computation for simulations.}
 
-\item{parameters}{A vector of real numbers in [0,1]. Values of parameters may be specified. By default, parameters is drawn from model$parameters_df.}
+\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 
 \item{type_prob}{A numeric vector. Type probabilities. (Not required).}
 }

@@ -11,7 +11,7 @@ get_type_prob(model, P = NULL, parameters = NULL)
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be provided to avoid repeated computation for simulations.}
 
-\item{parameters}{A vector of real numbers in [0,1]. Values of parameters may be specified. By default, parameters is drawn from model$parameters_df.}
+\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 }
 \description{
 Gets probability of vector of causal types given a single realization of parameters, possibly drawn from model priors.
