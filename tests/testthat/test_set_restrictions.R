@@ -59,7 +59,6 @@ testthat::test_that(
 		model <- make_model("X -> Y")
 		model <- gbiqq:::restrict_by_labels(model, labels = list(X = "0"))
 		expect_equal(model$nodal_types$X, "1")
-		skip("Skipping test for correct removal for nodal types 00, 01")
 		model <- make_model("X -> Y")
 		model <- gbiqq:::restrict_by_labels(model, labels = list(Y = "00", Y = "01"))
 		expect_equal(model$nodal_types$Y, c("10", "11"))

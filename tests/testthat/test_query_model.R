@@ -5,7 +5,7 @@ testthat::test_that(
 	code = {
 
 
-		model <- make_model("X -> Y") %>% update_model(data.frame(X=0, Y=0))
+		model <- make_model("X -> Y") %>% update_model(data.frame(X=0, Y=0), refresh = 0)
 
 		query_distribution(model, query = "Y[X=1] - Y[X=0]", verbose = TRUE, using = "priors")
 		q <- query_distribution(model, query = "Y[X=1] - Y[X=0]", verbose = TRUE, using = "parameters", parameters = 1:6)

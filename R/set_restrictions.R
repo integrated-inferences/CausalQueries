@@ -278,12 +278,13 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
     labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
 
     # Reduce nodal_types
-    for (j in restricted_vars) {
+    for (k in 1:length(restricted_vars)) {
+        j <- restricted_vars[k]
         nt <- model$nodal_types[[j]]
         if (!keep)
-            to_keep <- nt[!(nt %in% labels[[j]])]
+            to_keep <- nt[!(nt %in% labels[[k]])]
         if (keep)
-            to_keep <- nt[nt %in% labels[[j]]]
+            to_keep <- nt[nt %in% labels[[k]]]
         model$nodal_types[[j]] <- to_keep
         model$parameters_df <- dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
     }
