@@ -1,6 +1,6 @@
 
 
-#' Get list of parents in a dag
+#' Get list of parents of all nodes in a model
 #'
 #' @inheritParams gbiqq_internal_inherit_params
 #' @export
