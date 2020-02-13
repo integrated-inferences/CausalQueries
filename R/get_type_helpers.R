@@ -1,26 +1,28 @@
-#' Identify nodes in statement
-#'@param nodes A vector with quoted names of the nodes
-#'@param statement A quoted causal statement.
+#' Identify nodes in a statement
+#'
+#'@param nodes A vector of characters. It should contain quoted names of the nodes in \code{model}
+#'@param statement A character. A quoted causal statement.
+#'
 #'@keywords internal
-#' @importFrom stringr boundary str_split
+#'@importFrom stringr boundary str_split
 nodes_in_statement <- function(nodes, statement) {
     nodes[nodes %in% str_split(statement, boundary("word"))[[1]]]
 }
 
 #' Returns a list with the nodes that are not directly pointing into a node
-#'@param node A quoted name of a node
-#'@param statement A quoted causal statement.
+#'
+#' @inheritParams gbiqq_internal_inherit_params
+#'
 #'@keywords internal
 list_non_parents <- function(model, node) {
     node_parents <- get_parents(model)[[node]]
     not_parents <- !model$nodes %in% c(node_parents, node)
     model$nodes[not_parents]
 }
-#'#' Adds a wildcard for every missing parent
-#'@param node A quoted name of a node
-#'@param statement A quoted causal statement.
-#'@param parents node's parents
-#'@param missing_parents node's missing parents
+#' Adds a wildcard for every missing parent
+#' @inheritParams gbiqq_internal_inherit_params
+#'@param parents A vector of characters. The \code{node}'s parents
+#'@param missing_parents A vector of characters.  The \code{node}'s missing parents
 #'@keywords internal
 add_wildcard <- function(node, statement, parents, missing_parents) {
     if (all(parents %in% missing_parents)) {

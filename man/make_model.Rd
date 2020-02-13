@@ -7,20 +7,20 @@
 make_model(statement, add_causal_types = TRUE)
 }
 \arguments{
-\item{statement}{A character vector of length 1L. Statement describing causal
+\item{statement}{A character. Statement describing causal
 relations using dagitty syntax. Only directed relations are permitted.
 For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
-\item{add_causal_types}{Logical}
+\item{add_causal_types}{Logical. Whether to dreate and attach causal types to \code{model}. Defaults to `TRUE`.}
 }
 \value{
-An object of class probabilistic_causal_model containing a DAG.
+An object of class \code{causal_model} containing a DAG.
 }
 \description{
-\code{make_model} uses dagitty syntax and functionality to specify nodes and edges of a
+\code{make_model} uses \link{dagitty} syntax and functionality to specify nodes and edges of a
 graph. Implied causal types are calculated and default priors are provided under the
 assumption of no confounding.
-Models can be updated with specification of a parameter matrix, P, by
+Models can be updated with specification of a parameter matrix, \code{P}, by
 providing restrictions on causal types, and/or by providing informative priors on parameters.
 The default setting for a causal model have flat (uniform) priors and parameters
 putting equal weight on each parameter within each parameter set. These can be

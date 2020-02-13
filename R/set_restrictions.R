@@ -254,16 +254,11 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, ver
 
 #' Reduce nodal types using labels
 #'
-#' @param model a model created by make_model()
+#' @inheritParams gbiqq_internal_inherit_params
+#'
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #'
-#' @examples
-#' model <- make_model('X->Y')
-#' gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '00'))$parameters_df
-#' gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '00'), keep = TRUE)$parameters_df
-#' gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '?0'))$parameters_df
-#' gbiqq:::restrict_by_labels(model, labels = list(X='0', Y = '?0'), keep = TRUE)$parameters_df
 #'
 #' @family restrictions
 
@@ -302,7 +297,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
 
 
 #' Get type names
-#' @param nodal_types Nodal types of a model. See \code{get_nodal_types()}.
+#' @param nodal_types Nodal types of a model. See \code{\link{get_nodal_types}}.
 #'
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
@@ -314,7 +309,7 @@ get_type_names <- function(nodal_types) {
 
 
 #' Unpack a wild card
-#' @param x A string of length 1L. A nodal type containing one or more wildcard characters '.' to be unpacked.
+#' @param x A character. A nodal type containing one or more wildcard characters '.' to be unpacked.
 
 unpack_wildcard <- function(x) {
     splitstring <- strsplit(x, "")[[1]]
@@ -330,7 +325,7 @@ unpack_wildcard <- function(x) {
 }
 
 #' Update causal types based on nodal types
-#' @param model A model object generated with \code{make_model}
+#' @inheritParams gbiqq_internal_inherit_params
 #' @examples
 #' update_causal_types(make_model('X->Y'))
 #' @export

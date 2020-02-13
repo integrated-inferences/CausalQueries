@@ -1,7 +1,7 @@
 
 #' n_check
 #'
-#' @param n A sample size argument.
+#' @param n An integer. sample size argument.
 #'
 #' @details Checks whether the input is an integer bigger than 0.
 #'
@@ -16,8 +16,8 @@ n_check <- function(n) {
 
 #' default_stan_control
 #'
-#' @param adapt_delta Determines adapt_delta
-#' @param max_treedepth Determines maximum tree depth
+#' @param adapt_delta A double between 0 and 1. It determines \code{adapt_delta}
+#' @param max_treedepth A positive integer. It determines maximum tree depth
 #' @details Sets controls to default unless otherwise specified.
 
 default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
@@ -32,9 +32,9 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' set_sampling_args
 #' From rstanarm (November 1st, 2019)
 #'
-#' @param object The fit
-#' @param user_dots User commands
-#' @param user_adapt_delta Adapt delta passed by the user
+#' @param object A \code{stanfit object}.
+#' @param user_dots A list. User commands.
+#' @param user_adapt_delta A double between 0 and 1. Adapt delta passed by the user
 #' @param ... further arguments to be passed to stan
 #' @details Set the sampling arguments
 

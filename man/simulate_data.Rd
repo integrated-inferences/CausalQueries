@@ -7,7 +7,7 @@
 simulate_data(...)
 }
 \arguments{
-\item{...}{arguments for make_model}
+\item{...}{arguments for \code{\link{make_model}}}
 }
 \description{
 simulate_data is an alias for make_data

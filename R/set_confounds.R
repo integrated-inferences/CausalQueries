@@ -44,8 +44,8 @@
 #' Nodal types for X would continue to have 1 degree of freedom.
 #' Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 #'
-#' @param model A model created by make_model()
-#' @param confound A named list relating nodes to statements that identify causal types with which they are confounded
+#' @inheritParams gbiqq_internal_inherit_params
+#' @param confound A named \code{list}. It relates nodes to statements that identify causal types with which they are confounded
 #' @param add_confounds_df Logical. Attach a dataframe with confound links. Defaults to TRUE.
 #' @export
 #' @examples
@@ -103,25 +103,25 @@
 
 
 set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
-    
+
     # Housekeeping
     if (is.null(confound)) {
         message("No confound provided")
         return(model)
     }
-    if (is.null(model$P)) 
+    if (is.null(model$P))
         model <- set_parameter_matrix(model)
-    
+
     nodes <- model$nodes
     P <- model$P
     pars <- rownames(P)
     types_matrix <- model$causal_types
     types_names <- rownames(types_matrix)
-    
+
     # Descendant types
-    
+
     # Check to see if any statements involve full confounding and redefine lists
-    
+
     for (j in 1:length(confound)) {
         if (grepl("<->", confound[[j]])) {
             z <- sapply(strsplit(confound[[j]], "<->"), trimws)
@@ -130,10 +130,10 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
             names(confound)[j] <- z[1]
         }
     }
-    
+
     # Figure our when confound expressed as model node
     checks <- unlist(lapply(confound, function(x) x %in% model$nodes))
-    
+
     # Function to either get types for a simple confound, or else expand to list for confound expressed
     # as node
     f <- function(i) {
@@ -151,73 +151,73 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
             simple_list
         }
     }
-    
+
     D <- f(1)
-    if (length(confound) > 1) 
+    if (length(confound) > 1)
         for (j in 2:length(confound)) D <- c(D, f(j))
-    
+
     # Origin (Node with conditional distribution)
     A <- names(D)
-    
+
     # Magic
-    
+
     for (j in 1:length(A)) {
-        
+
         # Housekeeping for renaming confound vars
         a <- A[j]  # param_name
-        
+
         # Get a name for the new parameter: using hyphen separator to recognize previous confounding
-        if (!any(startsWith(model$parameters_df$param_set, paste0(a, "_")))) 
-            model$parameters_df <- dplyr::mutate(model$parameters_df, param_set = ifelse(param_set == 
+        if (!any(startsWith(model$parameters_df$param_set, paste0(a, "_"))))
+            model$parameters_df <- dplyr::mutate(model$parameters_df, param_set = ifelse(param_set ==
                 a, paste0(a, "_", 0), param_set))
-        
+
         # Now extend priors and parameters
-        to_add <- model$parameters_df %>% dplyr::filter(node == a) %>% dplyr::mutate(param_set = gbiqq:::continue_names(param_set), 
+        to_add <- model$parameters_df %>% dplyr::filter(node == a) %>% dplyr::mutate(param_set = gbiqq:::continue_names(param_set),
             param_names = paste(param_set, nodal_type, sep = "."))
-        
+
         # Extend P: Make duplicate block of rows for each ancestor Should contain all values from parameter
         # family (gathered here by recombining)
         P_new <- data.frame(P[, ]) %>% dplyr::filter(model$parameters_df$node == a)  #%>%
-        
+
         # Zero out duplicated entries: 1 (New P elements have 0 for non specified types)
         P_new[, !(types_names %in% D[[j]])] <- 0
         P <- rbind(P_new, data.frame(as.matrix(P[, ])))
-        
+
         # Extend parameter_df
-        model$parameters_df <- rbind(to_add, dplyr::mutate(model$parameters_df, param_names = paste(param_set, 
+        model$parameters_df <- rbind(to_add, dplyr::mutate(model$parameters_df, param_names = paste(param_set,
             nodal_type, sep = ".")))
-        
+
         # Zero out duplicated entries: 2
         older <- 1:nrow(P) > nrow(P_new)
         P[(model$parameters_df$node == a) & older, types_names %in% D[[j]]] <- 0
     }
-    
+
     # Clean up for export
     rownames(P) <- model$parameters_df$param_names
-    
+
     # Drop family if an entire set is empty
     sets <- unique(model$parameters_df$param_set)
     to_keep <- sapply(sets, function(j) sum(P[model$parameters_df$param_set == j, ]) > 0)
-    
+
     if (!all(to_keep)) {
         keep <- model$parameters_df$param_set %in% sets[to_keep]
         model$parameters_df <- dplyr::filter(model$parameters_df, keep)
         P <- P[keep, ]
     }
-    
+
     # Reorder
     new_order <- with(model$parameters_df, order(gen, param_set))  #, nodal_type))
     model$parameters_df <- model$parameters_df[new_order, ]
     model$P <- data.frame(P[new_order, ])
     rownames(model$parameters_df) <- NULL
-    
+
     # Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
-    if (add_confounds_df) 
+    if (add_confounds_df)
         model <- set_confounds_df(model)
-    
+
     # Export
     model
-    
+
 }
 
 

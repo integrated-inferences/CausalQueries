@@ -30,7 +30,7 @@ testthat::test_that(
     strat <- make_data(
 			    	   model,
 			    	   n = 20,
-			         vars = list(c("X", "Y"), "M"),
+			         nodes = list(c("X", "Y"), "M"),
 			    	   probs = list(1, .5),
 			    	   subsets = list(NULL, "X==1 & Y==0"))
 		# Test subset functionality
@@ -47,16 +47,16 @@ testthat::test_that(
 		model <- make_model("X -> M -> Y")
 
      # "If specified, vars, probs, subsets, should have the same length"
-		expect_error(make_data(model, vars = c("X","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
+		expect_error(make_data(model, nodes  = c("X","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
 		#"If specified, n_steps should be the same length as vars"
-		expect_error(make_data(model, vars = list("X","M","Y"), n_steps = 1))
+		expect_error(make_data(model, nodes = list("X","M","Y"), n_steps = 1))
 
 		expect_warning(
 			make_data(
 			model,
 			n = 8,
 			n_steps = c(2,2),
-			vars = list(c("X", "Y"), "M"),
+			nodes = list(c("X", "Y"), "M"),
 			probs = list(1, .5),
 			subsets = list(NULL, "X==1 & Y==0")))
 

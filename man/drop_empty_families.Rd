@@ -7,7 +7,7 @@
 drop_empty_families(data_events)
 }
 \arguments{
-\item{data_events}{A dataframe whose columns are \code{event}, \code{strategy} and \code{count}}
+\item{data_events}{A \code{data.frame}. It must be compatible with nodes in \code{model}. The default columns are \code{event}, \code{strategy} and \code{count}.}
 }
 \value{
 Returns data events with strategies (excluding  strategy families that contain no observed data)

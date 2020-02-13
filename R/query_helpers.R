@@ -3,8 +3,8 @@
 #'
 #' Generate a statement for Y monotonic (increasing) in X
 #'
-#' @param X input node
-#' @param Y outcome node
+#' @param X A character. The quoted name of the input node
+#' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
 #'
@@ -13,13 +13,13 @@
 #' increasing('A', 'B')
 #'
 increasing <- function(X, Y) {
-    
+
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
-    
+
     statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -28,8 +28,8 @@ increasing <- function(X, Y) {
 #'
 #' Generate a statement for Y weakly monotonic (increasing) in X
 #'
-#' @param X input node
-#' @param Y outcome node
+#' @param X A character. The quoted name of the input node
+#' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
 #'
@@ -38,13 +38,13 @@ increasing <- function(X, Y) {
 #' non_decreasing('A', 'B')
 #'
 non_decreasing <- function(X, Y) {
-    
+
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
-    
+
     statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -53,8 +53,8 @@ non_decreasing <- function(X, Y) {
 #'
 #' Generate a statement for Y monotonic (decreasing) in X
 #'
-#' @param X input node
-#' @param Y outcome node
+#' @param X A character. The quoted name of the input node
+#' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -62,13 +62,13 @@ non_decreasing <- function(X, Y) {
 #' decreasing('A', 'B')
 #'
 decreasing <- function(X, Y) {
-    
+
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
-    
+
     statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -77,8 +77,8 @@ decreasing <- function(X, Y) {
 #'
 #' Generate a statement for Y weakly monotonic (not increasing) in X
 #'
-#' @param X input node
-#' @param Y outcome node
+#' @param X A character. The quoted name of the input node
+#' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -86,13 +86,13 @@ decreasing <- function(X, Y) {
 #' non_increasing('A', 'B')
 #'
 non_increasing <- function(X, Y) {
-    
+
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
-    
+
     statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -102,9 +102,9 @@ non_increasing <- function(X, Y) {
 #'
 #' Generate a statement for X1, X1 interact in the production of Y
 #'
-#' @param X1 input node 1
-#' @param X2 input node 2
-#' @param Y outcome node
+#' @param X1 A character. The quoted name of the input node 1.
+#' @param X2 A character. The quoted name of the input node 2.
+#' @param Y A character. The quoted name of the outcome node.
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -115,14 +115,14 @@ non_increasing <- function(X, Y) {
 #'
 
 interacts <- function(X1, X2, Y) {
-    
+
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
-    
-    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ", 
+
+    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ",
         "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -132,9 +132,9 @@ interacts <- function(X1, X2, Y) {
 #'
 #' Generate a statement for X1, X1 complement each other in the production of Y
 #'
-#' @param X1 input node 1
-#' @param X2 input node 2
-#' @param Y outcome node
+#' @param X1 A character. The quoted name of the input node 1.
+#' @param X2 A character. The quoted name of the input node 2.
+#' @param Y A character. The quoted name of the outcome node.
 #' @family statements
 #' @export
 #' @return A character statement of class statement
@@ -142,14 +142,14 @@ interacts <- function(X1, X2, Y) {
 #'complements('A', 'B', 'W')
 #'
 complements <- function(X1, X2, Y) {
-    
+
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
-    
-    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ", 
+
+    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ",
         "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -159,9 +159,9 @@ complements <- function(X1, X2, Y) {
 #'
 #' Generate a statement for X1, X1 substitue for each other in the production of Y
 #'
-#' @param X1 input node 1
-#' @param X2 input node 2
-#' @param Y outcome node
+#' @param X1 A character. The quoted name of the input node 1.
+#' @param X2 A character. The quoted name of the input node 2.
+#' @param Y A character. The quoted name of the outcome node.
 #' @export
 #' @family statements
 #' @return A character statement of class statement
@@ -173,16 +173,16 @@ complements <- function(X1, X2, Y) {
 #'query_model(model = make_model('A -> B <- C'),
 #'          queries = substitutes('A', 'C', 'B'),
 #'          using = 'parameters')
-# 
+#
 substitutes <- function(X1, X2, Y) {
-    
+
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
-    
-    statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ", 
+
+    statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ",
         "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -190,8 +190,8 @@ substitutes <- function(X1, X2, Y) {
 #'
 #' Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
 #'
-#' @param X character: name of input node
-#' @param Y character: name of outcome node
+#' @param X A character. The quoted name of the input node
+#' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
 #'
@@ -210,11 +210,11 @@ substitutes <- function(X1, X2, Y) {
 #'
 te <- function(X, Y) {
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
-    
+
     statement = paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
-    
+
     class(statement) <- "statement"
-    
+
     statement
 }
 
@@ -225,7 +225,7 @@ te <- function(X, Y) {
 #' @param call_name Name of the call.
 #'
 check_string_input <- function(param_list = list(), call_name = NULL) {
-    for (i in 1:length(param_list)) if (!is.character(param_list[[i]])) 
+    for (i in 1:length(param_list)) if (!is.character(param_list[[i]]))
         stop(paste0("Provide node names as strings in function: ", call_name))
 }
 
