@@ -20,7 +20,7 @@
   - Be always up to date with the `master`
   - Add your edits
   - Run and pass `devtools::check()`
-  - Reach a 100% coverage `covr::check()`
+  - Reach a 100% coverage `covr::package_coverage()`
   - Add yourself as a contributor in the `DESCRIPTION` file
   - Open a pull request
   
