@@ -5,6 +5,7 @@
 #' @inheritParams gbiqq_internal_inherit_params
 #' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
 #' @param warning Logical. Whether to warn about parameter renormalization.
+#' @param normalize Logical. If parameter given for a subset of a family the residual elements are normalized so that parameters in param_set sum to 1 and provided params are unaltered.
 #' @param ... Options passed onto \code{\link{make_priors}}.
 #' @importFrom rstan extract
 #' @export
@@ -26,21 +27,29 @@
 #' # specific parameters using causal syntax
 #'
 #' make_parameters(make_model('X -> Y'),
-#'                statement = 'Y[X=1]>Y[X=0]', alphas = 2)
+#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
+#' make_parameters(make_model('X -> Y'),
+#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
 #' make_model('X -> Y') %>%
-#'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), alphas = c(2,0))
+#'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
+#' make_model('X -> Y') %>%
+#'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), parameters = c(.2,0))
+#'
+#'#  FLAG
+#'# make_model('X -> Y') %>%
+#'#    make_parameters(statement = c('(Y[X=1]>Y[X=0]) | (Y[X=1]<Y[X=0])'), parameters = c(.2,0))
 #'
 #' # May be built up
 #' make_model('X -> Y') %>%
 #'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
-#'   set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
-#'                  alphas = list(c(.2, .8), c(.8, .2))) %>%
-#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', alphas = .5) %>%
+#'   set_parameters(confound   = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
+#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
+#'   set_parameters(statement  = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
 #'   get_parameters
 
-make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, ...) {
+make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
 
-    if (!is.null(parameters))
+    if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
         return(gbiqq:::clean_param_vector(model, parameters))
 
     if (!is.null(param_type))
@@ -49,28 +58,32 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
             stop("param_type should be one of `flat`, `prior_mean`, `posterior_mean`, `prior_draw`, `posterior_draw`, or `define`")
         }
 
-    # Figure out if we need to use make_priors
-    prior_args = list(...)
+    # Figure out if we need to use make_par_values
+    par_args = list(...)
 
-    prior_args_provided <- sum(names(prior_args) %in% c("distribution", "alphas", "node", "label", "statement",
+    par_args_provided <- sum(names(par_args) %in% c("distribution", "parameters", "node", "label", "statement",
         "confound", "nodal_type", "param_set", "param_names"))
-    if (prior_args_provided > 0 & is.null(param_type))
+    if (par_args_provided > 0 & is.null(param_type))
         param_type <- "define"
 
     if (is.null(param_type))
         param_type <- "prior_mean"
 
+
+    # Magic
+
+    # New (from parameters)
+    if (param_type == "define") {
+        param_value <- gbiqq:::make_par_values_multiple(model,
+                                                y = get_parameters(model),
+                                                x = parameters,
+                                                normalize = normalize,
+                                                ...)
+    }
+
     # Flat lambda
     if (param_type == "flat") {
         param_value <- make_priors(model, distribution = "uniform")
-    }
-
-    # New (from alpha)
-    if (param_type == "define") {
-        # This is needed so that make_priors adjusts param_value, not priors
-        model_temp <- model
-        model_temp$parameters_df$priors <- model_temp$parameters_df$param_value
-        param_value <- make_priors(model_temp, ...)
     }
 
     # Prior mean
@@ -102,6 +115,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     gbiqq:::clean_param_vector(model, param_value)
 
 }
+
 
 
 #' Set parameters
