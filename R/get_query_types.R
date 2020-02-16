@@ -40,7 +40,7 @@ get_query_types <- function(model, query, join_by = "|") {
     i <- 0
     list_names <- ""
     continue <- TRUE
-    manipulated_outcomes <- NULL  # keep a list of the manipulated outcomes for dagitty plotting
+    manipulated_outcomes <- NULL  # keep a list of the manipulated outcomes
     # strip whitespaces split query into single characters locate opening brackets and reverse oder
     w_query <- gsub(" ", "", query)
     w_query <- unlist(strsplit(query, ""))

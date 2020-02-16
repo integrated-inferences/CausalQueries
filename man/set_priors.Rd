@@ -86,7 +86,9 @@ get_priors(model)
 \seealso{
 Other priors: 
 \code{\link{get_priors}()},
-\code{\link{make_priors_single}()},
-\code{\link{make_priors}()}
+\code{\link{make_par_values_multiple}()},
+\code{\link{make_par_values}()},
+\code{\link{make_priors}()},
+\code{\link{make_values_task_list}()}
 }
 \concept{priors}

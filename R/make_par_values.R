@@ -73,10 +73,10 @@ make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = 
 #'   \item Setting negative values.
 #' }
 #'
-#'
 #' @param model A model created with \code{make_model}
+#' @param y Vector of real non negative values to be changed
+#' @param x Vector of real non negative values to be substituted into y
 #' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param values Real positive numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query that determines nodal types for which priors are to be altered
@@ -131,8 +131,10 @@ make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = 
 #'
 #' # Normalization: Take in a parameter vector and output is renormalized
 #' model <- make_model("X->Y")
-#' gbiqq:::make_par_values(model, y = get_parameters(model), label = '01', x = .1, normalize = TRUE)
-#' gbiqq:::make_par_values(model, y = get_parameters(model), statement = '(Y[X=1] == Y[X=0])', x = .1, normalize = TRUE)
+#' gbiqq:::make_par_values(model, y = get_parameters(model),
+#'   label = '01', x = .1, normalize = TRUE)
+#' gbiqq:::make_par_values(model, y = get_parameters(model),
+#'   statement = '(Y[X=1] == Y[X=0])', x = .1, normalize = TRUE)
 #'
 #' # Problematic examples
 #' \dontrun{
@@ -142,7 +144,9 @@ make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = 
 #'
 
 
-make_par_values <- function(model, y = get_priors(model), x = NA, distribution = NA, node = NA, label = NA, statement = NA,
+make_par_values <- function(model,
+														y = get_priors(model),
+														x = NA, distribution = NA, node = NA, label = NA, statement = NA,
 														confound = NA, nodal_type = NA, param_names = NA, param_set = NA,
 														normalize = FALSE) {
 
@@ -272,6 +276,21 @@ make_par_values <- function(model, y = get_priors(model), x = NA, distribution =
 #'
 #' Internal function to create parameter vector when list like arguments are provided
 #'
+#' @param model A model created with \code{make_model}
+#' @param y Vector of real non negative values to be changed
+#' @param x Vector of real non negative values to be substituted into y
+#' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param node A string indicating nodes for which priors are to be altered
+#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param statement A causal query that determines nodal types for which priors are to be altered
+#' @param confound A confound statement that restricts nodal types for which priors are to be altered
+#' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
+#' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+#' @param normalize Logical. If TRUE normalizes such that param set probabilities sum to 1.
+#'
+#' @family priors
+
 make_par_values_multiple <-
 	function(model, y=get_priors(model), x = NA, distribution = NA, node = NA, label = NA, statement = NA,
 					 confound = NA, nodal_type = NA, param_names = NA, param_set = NA,

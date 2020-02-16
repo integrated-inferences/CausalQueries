@@ -26,18 +26,20 @@
 #' # Harder examples, using \code{define} and priors arguments to define
 #' # specific parameters using causal syntax
 #'
-#' make_parameters(make_model('X -> Y'),
-#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
-#' make_parameters(make_model('X -> Y'),
-#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
+#'# Using labels: Two values for two nodes with the same label
+#' make_model('X -> M -> Y') %>% make_parameters(label = "01", parameters = c(0,1))
+#'
+#' # Using statement:
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), parameters = c(.2,0))
 #'
-#'#  FLAG
-#'# make_model('X -> Y') %>%
-#'#    make_parameters(statement = c('(Y[X=1]>Y[X=0]) | (Y[X=1]<Y[X=0])'), parameters = c(.2,0))
+#' # Normalize renormalizes values not set so that value set is not renomalized
+#' make_parameters(make_model('X -> Y'),
+#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
+#' make_parameters(make_model('X -> Y'),
+#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
 #'
 #' # May be built up
 #' make_model('X -> Y') %>%
@@ -142,15 +144,18 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' make_model('X -> Y') %>%
 #'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
 #'   set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
-#'                  alphas = list(c(.2, .8), c(.8, .2))) %>%
-#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', alphas = .5) %>%
+#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
+#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
 #'   get_parameters
 
 
 set_parameters <- function(model, parameters = NULL, param_type = NULL, warning = FALSE, ...) {
 
-    if (is.null(parameters))
-        parameters <- make_parameters(model, param_type = param_type, ...)
+    # parameters are created unless a vector of full length is provided
+    if (length(parameters) != length(get_parameters(model))) {
+        if(!is.null(parameters)) parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
+        if(is.null(parameters))  parameters <- make_parameters(model, param_type = param_type, ...)
+    }
 
     model$parameters_df$param_value <- parameters
     model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = warning)

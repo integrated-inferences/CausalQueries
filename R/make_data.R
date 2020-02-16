@@ -26,7 +26,7 @@
 #' make_data(model)
 #' make_data(model, n = 3, nodes = c("X","Y"))
 #' make_data(model, n = 3, param_type = "prior_draw")
-#' make_data(model, n = 10, param_type = "define", alpha =  0:9)
+#' make_data(model, n = 10, param_type = "define", parameters =  0:9)
 #'
 #' # Data Strategies
 #' # A strategy in which X, Y are observed for sure and M is observed
@@ -59,7 +59,7 @@ make_data <- function(
 	...){
 
 	# check n input
-	n_check(n)
+	gbiqq:::n_check(n)
 
 	# n_steps and probs reconciliation
 	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")

@@ -65,9 +65,9 @@ lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
 
 
 
-        ########################################################################### Generate a 'quoted query' of the form '(`Y[X=0]` > `Y[X=1]`)'.  This can then be evaluated on a
-        ########################################################################### potential outcomes dataset.  Substitute expanded in w_query back into original query paste
-        ########################################################################### backslashes \\ and ` ` for matching (quoted_query)
+        # Generate a 'quoted query' of the form '(`Y[X=0]` > `Y[X=1]`)'.  This can then be evaluated on a
+        # potential outcomes dataset.  Substitute expanded in w_query back into original query paste
+        # backslashes \\ and ` ` for matching (quoted_query)
         # quoted query is of the form: "(`Y[X=1, M= .]` == 1) & `Y[X=0, M= .]`==1"
 
         .w_query <- quoted_query <- query

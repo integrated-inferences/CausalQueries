@@ -57,7 +57,7 @@ model <- make_model("X -> M -> Y")
 make_data(model)
 make_data(model, n = 3, nodes = c("X","Y"))
 make_data(model, n = 3, param_type = "prior_draw")
-make_data(model, n = 10, param_type = "define", alpha =  0:9)
+make_data(model, n = 10, param_type = "define", parameters =  0:9)
 
 # Data Strategies
 # A strategy in which X, Y are observed for sure and M is observed

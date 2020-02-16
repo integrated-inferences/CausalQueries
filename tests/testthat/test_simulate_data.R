@@ -52,7 +52,7 @@ testthat::test_that(
 		error_message <- "Posterior distribution required"
 		expect_error(simulate_events(model = model, param_type = "posterior_mean"), error_message)
 		expect_error(simulate_events(model = model, param_type = "posterior_draw"), error_message)
-		expect_is(simulate_events(model = model, param_type = "define", distribution = "jeffreys"), "data.frame")
+		expect_is(simulate_events(model = model, param_type = "prior_mean"), "data.frame")
 	}
 )
 # ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
@@ -82,7 +82,7 @@ testthat::test_that(
 	desc = "Check warnings.",
 	code = {
 		model <- make_model("X -> Y")
-		expect_warning(simulate_events(model = model, param_type = "define"), "neither distribution nor alphas provided; no change to priors")
+		expect_warning(simulate_events(model = model, param_type = "define"), "neither distribution nor values provided; no change to values")
 	}
 )
 

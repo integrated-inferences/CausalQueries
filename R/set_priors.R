@@ -26,8 +26,8 @@
 #' Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 #'
 #' @param model A model created with \code{make_model}
-#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
@@ -35,6 +35,7 @@
 #' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+#'
 #'
 #'
 #' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
@@ -66,15 +67,14 @@
 #'               alphas = c(2, .5))
 
 make_priors <-
-    function(model, priors = get_priors(model), alphas = NA, distribution = NA, node = NA, label = NA, statement = NA,
-             confound = NA, nodal_type = NA, param_names = NA, param_set = NA,
-             normalize = FALSE) {
+    function(model, alphas = NA, distribution = NA, node = NA, label = NA, statement = NA,
+             confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
 
         make_par_values_multiple(
-            model, y=priors, x = alphas, distribution = distribution,
+            model, y=get_priors(model), x = alphas, distribution = distribution,
             node = node, label = label, statement = statement,
             confound = confound, nodal_type = nodal_type, param_names = param_names,
-            param_set = param_set, normalize = normalize)
+            param_set = param_set, normalize = FALSE)
     }
 
 
