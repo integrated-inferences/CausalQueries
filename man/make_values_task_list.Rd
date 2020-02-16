@@ -13,8 +13,7 @@ make_values_task_list(
   confound = NA,
   nodal_type = NA,
   param_names = NA,
-  param_set = NA,
-  normalize = FALSE
+  param_set = NA
 )
 }
 \arguments{
@@ -38,8 +37,6 @@ make_values_task_list(
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
-
-\item{model}{A model created with \code{make_model}}
 }
 \description{
 A function to generate a list of parameter arguments.

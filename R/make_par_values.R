@@ -3,7 +3,6 @@
 #' A function to generate a list of parameter arguments.
 #'
 #'
-#' @param model A model created with \code{make_model}
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param x Real positive numbers. For priors these are hyperparameters of the Dirichlet distribution. For parameters these are probabilities.
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
@@ -25,7 +24,7 @@
 
 
 make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = NA, statement = NA,
-																	confound = NA, nodal_type = NA, param_names = NA, param_set = NA, normalize = FALSE) {
+																	confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
 
 	# Housekeeping regarding argument lengths
 	args <- list(distribution = distribution, x = x, node = node, label = label, statement = statement,
