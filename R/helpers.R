@@ -183,13 +183,25 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 #' @importFrom rlang expr
 #' @export
 #' @examples
+#'
+#' # Position of parentheses matters for type of expansion
+#' # In the "global expansion" versions of the entire statement are joined
 #' expand_wildcard('(Y[X=1, M=.] > Y[X=1, M=.])')
+#' # In the "local expansion" versions of indicated parts are joined
+#' expand_wildcard('(Y[X=1, M=.]) > (Y[X=1, M=.])')
+#'
+#' # If parentheses are missing global expansion used.
+#' expand_wildcard('Y[X=1, M=.] > Y[X=1, M=.]')
+#'
+#' # Expressions not requiring expansion are allowed
+#' expand_wildcard('(Y[X=1])')
 #'
 expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
     orig <- st_within(to_expand, left = "\\(", right = "\\)", rm_left = 1)
     if (is.list(orig)) {
-        if (is.null(orig[[1]]))
-            stop("The character expressions to be expanded must be contained within parentheses")
+        if (is.null(orig[[1]])){
+            message("No parentheses indicated. Global expansion assumed. See expand_wildcard.")
+        orig <- to_expand}
     }
     skeleton <- gsub_many(to_expand, orig, paste0("%expand%", 1:length(orig)), fixed = TRUE)
     expand_it <- grepl("\\.", orig)

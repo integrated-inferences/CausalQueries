@@ -57,7 +57,7 @@ testthat::test_that(
 		model <- make_model("X -> Y") %>%
 			set_confound(list(X = "Y[X=1]>Y[X=0]"))
 		out <- make_priors(model,
-											 statement = "X==1",
+											 statement = "X[]==1",
 											 confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
 											 alphas = c(2, .5))
 		expect_true(all(c(2, .5) %in% out))

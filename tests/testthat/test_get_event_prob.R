@@ -13,7 +13,7 @@ testthat::test_that(
 	desc = "Testing hack",
 	code = {
 		model <- make_model("X -> Y") %>%
-			set_restrictions(c("X==1", "(Y[X=.]==1)"))
+			set_restrictions(c("(X[]==1)", "(Y[X=.]==1)"))
 		expect_true(row.names(get_event_prob(model = model))==colnames(get_ambiguities_matrix(model)))
 	}
 )

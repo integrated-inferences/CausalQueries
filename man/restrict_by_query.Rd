@@ -4,13 +4,7 @@
 \alias{restrict_by_query}
 \title{Reduce nodal types}
 \usage{
-restrict_by_query(
-  model,
-  statement,
-  join_by = "|",
-  keep = FALSE,
-  verbose = FALSE
-)
+restrict_by_query(model, statement, join_by = "|", keep = FALSE)
 }
 \arguments{
 \item{model}{a model created by make_model()}
@@ -20,8 +14,6 @@ restrict_by_query(
 \item{join_by}{A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.}
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
-
-\item{verbose}{Logical. Whether to print expanded query on the console.}
 }
 \description{
 Reduce nodal types
