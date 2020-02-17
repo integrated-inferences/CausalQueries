@@ -187,7 +187,7 @@ observe_data <- function(complete_data,
 			if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
 
 			if(prob == 1 && length(unique(strata))==1) { show <- TRUE } else {
-				show <- randomizr::strata_rs(strata = strata,
+				show <- strata_rs(strata = strata,
 																		 strata_prob = c(0, prob)) == 1
 			}
 			observed[show, nodes_to_observe] <- TRUE
