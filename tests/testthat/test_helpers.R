@@ -63,7 +63,7 @@ testthat::test_that(
 	desc = "expand_wildcard",
 	code = {
 
-		expect_error(expand_wildcard("Y[X=1, M=.] ==1"))
+		expect_message(expand_wildcard("Y[X=1, M=.] ==1"))
 
 		a <- expand_wildcard('(Y[X=1, M=1] > Y[X=1, M=0])')== "(Y[X=1, M=1] > Y[X=1, M=0])"
 		expect_true(a)

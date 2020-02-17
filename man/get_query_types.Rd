@@ -14,7 +14,7 @@ get_query_types(model, query, join_by = "|")
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 }
 \value{
-A \code{list} containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
+A \code{list} containing the types and the evaluated expression.
 }
 \description{
 Get values of types according to a query

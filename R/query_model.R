@@ -1,6 +1,6 @@
-#' Calculate estimand distribution
+#' Calculate query distribution
 #'
-#' Calculated from a prior or posterior distribution
+#' Calculated distribution of a query from a prior or posterior distribution of parameters
 #'
 #'
 #' @inheritParams gbiqq_internal_inherit_params

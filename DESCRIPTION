@@ -23,6 +23,7 @@ Imports:
     gtools,
     methods,
     stats,
+    randomizr,
     Rcpp (>= 0.12.0),
     rlang (>= 0.2.0),
     rstan (>= 2.18.1),

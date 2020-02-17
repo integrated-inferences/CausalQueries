@@ -23,7 +23,6 @@
 #' @param join_by A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
-#' @param verbose Logical. Whether to print expanded \code{statement} on the console.
 #'
 #' @family restrictions
 #'
@@ -34,7 +33,7 @@
 #'
 #' # 1. Restrict parameter space using statements
 #' model <- make_model('X->Y') %>%
-#'   set_restrictions(statement = c('X == 0'))
+#'   set_restrictions(statement = c('X[] == 0'))
 #'
 #' model <- make_model('X->Y') %>%
 #'   set_restrictions(non_increasing('X', 'Y'))
@@ -103,9 +102,8 @@
 #' set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 #' get_parameter_matrix(model)
 #'
-set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE, verbose = FALSE) {
+set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE) {
 
-    # nodal_types0 <- get_nodal_types(model)
     nodal_types0 <- model$nodal_types
 
     if (!is.logical(keep))
@@ -127,8 +125,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 
     # Statement
     if (!is.null(statement))
-        model <- gbiqq:::restrict_by_query(model, statement = statement, join_by = join_by, keep = keep,
-            verbose = verbose)
+        model <- gbiqq:::restrict_by_query(model, statement = statement, join_by = join_by, keep = keep)
 
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
@@ -176,11 +173,10 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#' @param verbose Logical. Whether to print expanded query on the console.
 #'
 #' @family restrictions
 
-restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, verbose = FALSE) {
+restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 
     # nodal_types <- get_nodal_types(model)
     nodal_types <- model$nodal_types
@@ -197,7 +193,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, ver
     }
 
     restrictions_list <- lapply(1:n_restrictions, function(i) {
-        lookup_nodal_type(model, query = statement[i], join_by = join_by[i], verbose = verbose)
+        lookup_nodal_type(model, query = statement[i], join_by = join_by[i])
     })
 
     nodes_list <- sapply(restrictions_list, function(r) r$node)

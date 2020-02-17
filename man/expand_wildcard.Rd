@@ -17,6 +17,17 @@ expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 Expand statement containing wildcard
 }
 \examples{
+
+# Position of parentheses matters for type of expansion
+# In the "global expansion" versions of the entire statement are joined
 expand_wildcard('(Y[X=1, M=.] > Y[X=1, M=.])')
+# In the "local expansion" versions of indicated parts are joined
+expand_wildcard('(Y[X=1, M=.]) > (Y[X=1, M=.])')
+
+# If parentheses are missing global expansion used.
+expand_wildcard('Y[X=1, M=.] > Y[X=1, M=.]')
+
+# Expressions not requiring expansion are allowed
+expand_wildcard('(Y[X=1])')
 
 }

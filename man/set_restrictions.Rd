@@ -9,8 +9,7 @@ set_restrictions(
   statement = NULL,
   join_by = "|",
   labels = NULL,
-  keep = FALSE,
-  verbose = FALSE
+  keep = FALSE
 )
 }
 \arguments{
@@ -23,8 +22,6 @@ set_restrictions(
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
-
-\item{verbose}{Logical. Whether to print expanded \code{statement} on the console.}
 }
 \value{
 A restricted model with nodal types saved as attributes.
@@ -53,7 +50,7 @@ Note that prior probabilities are redistributed over remaining types.
 
 # 1. Restrict parameter space using statements
 model <- make_model('X->Y') \%>\%
-  set_restrictions(statement = c('X == 0'))
+  set_restrictions(statement = c('X[] == 0'))
 
 model <- make_model('X->Y') \%>\%
   set_restrictions(non_increasing('X', 'Y'))

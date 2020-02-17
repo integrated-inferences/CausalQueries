@@ -105,7 +105,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' data <- simulate_data(model, n = 0)
 #' collapse_data(data, model)
 #'
-#' model <- make_model('X -> Y') %>% set_restrictions('X==1')
+#' model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
 #' df <- simulate_data(model, n = 10)
 #' df[1,1] <- ''
 #' collapse_data(df, model)
