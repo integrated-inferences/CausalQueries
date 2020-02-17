@@ -164,6 +164,9 @@ add_dots <- function(q, model) {
 
 
 #' Helper to expand nodal expression
+#'
+#' @inheritParams gbiqq_internal_inherit_params
+
 
 expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 
@@ -195,6 +198,8 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 }
 
 #' Helper to turn query into a data expression
+#'
+#' @inheritParams gbiqq_internal_inherit_params
 query_to_expression <- function(query, node){
 
     query <- gsub("=","==", query)

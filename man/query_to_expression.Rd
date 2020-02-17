@@ -6,6 +6,11 @@
 \usage{
 query_to_expression(query, node)
 }
+\arguments{
+\item{query}{A character string. An expression defining nodal types to interrogate \code{\link{reveal_outcomes}}}
+
+\item{node}{A character string. The quoted name of a node.}
+}
 \description{
 Helper to turn query into a data expression
 }
