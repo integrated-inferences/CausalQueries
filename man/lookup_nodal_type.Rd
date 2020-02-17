@@ -2,7 +2,7 @@
 % Please edit documentation in R/lookup_type.R
 \name{lookup_nodal_type}
 \alias{lookup_nodal_type}
-\title{Lookup nodal types according to a query}
+\title{Find which nodal types satisfy a query}
 \usage{
 lookup_nodal_type(model, query, join_by = "|")
 }
@@ -17,7 +17,7 @@ lookup_nodal_type(model, query, join_by = "|")
 A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
 }
 \description{
-Lookup nodal types according to a query
+Find which nodal types satisfy a query
 }
 \examples{
 model <- make_model('X->Y')
@@ -36,9 +36,10 @@ query <- '(Y[] == 1)'
 x <- lookup_nodal_type(model, query)
 x <- lookup_nodal_type(model, query, join_by = '&')
 
+# Root nodes specified with []
+lookup_nodal_type(model, '(X[] == 1)')
 \dontrun{
-query <- '(X == 1)'
-x <- lookup_nodal_type(model, query)
+lookup_nodal_type(model, 'X == 1')
 }
 
 query <- '(M[X=1] == M[X=0])'

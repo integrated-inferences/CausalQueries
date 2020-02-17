@@ -1,5 +1,5 @@
 
-#' Lookup nodal types according to a query
+#' Find which nodal types satisfy a query
 #'
 #' @inheritParams gbiqq_internal_inherit_params
 #' @export
@@ -23,9 +23,10 @@
 #' x <- lookup_nodal_type(model, query)
 #' x <- lookup_nodal_type(model, query, join_by = '&')
 #'
+#' # Root nodes specified with []
+#' lookup_nodal_type(model, '(X[] == 1)')
 #' \dontrun{
-#' query <- '(X == 1)'
-#' x <- lookup_nodal_type(model, query)
+#' lookup_nodal_type(model, 'X == 1')
 #' }
 #'
 #' query <- '(M[X=1] == M[X=0])'
@@ -40,22 +41,28 @@ lookup_nodal_type <-  function(model, query, join_by = "|") {
 
     # Get outcome var (preceding square brackets)
     node <- unique(st_within(query))
+    if(is.null(node[[1]])) stop("No outcome variable specified. If required, specify roots as X[]==1 not X==1.")
     if(length(node)>1) stop(paste0("Can't lookup types for nodes ", paste0(node, collapse = ", "),
                                    " simultaneously. Please write expression as separate queries"))
-    # Expand causal expression
-    expanded_query <- expand_nodal_expression(model, query, node, join_by = join_by)
-    Q <- query_to_expression(expanded_query)
-
     # Xs: possible values of parents (no restrictions)
     pa <- get_parents(model)[node][[1]]
     Xs <- perm(rep(1,length(pa)))
     names(Xs) <- pa
+
+    # Expand causal expression
+
+    expanded_query <- expand_nodal_expression(model, query, node, join_by = join_by)
+    Q <- query_to_expression(expanded_query)
+
 
     # Y: potential outcomes: possible nodal types (restrictions respected)
     assign(node, t(data.frame(get_nodal_types(model, collapse = FALSE)[node])))
 
     # Magic: evaluate the query expression on potential outcomes
     types <- with(Xs, eval(parse(text = Q)))
+
+    # Add name for singletons
+    if(length(types)==1 && is.null(names(types))) names(types) <- model$nodal_types[node]
 
     # Output
     return_list <- list(types = types,
@@ -161,6 +168,7 @@ add_dots <- function(q, model) {
 expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 
     operators <- "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|"
+    query <- gsub(" ", "", query)
 
     # Add dots to query parts
     w_query <- gsub("\\(|\\)", "", query) %>%
@@ -179,15 +187,18 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
     }
 
     # Expand
-    gbiqq:::expand_wildcard(query, join_by = join_by, verbose = FALSE)
+    if(grepl("\\.", query))
+        query <- gbiqq:::expand_wildcard(query, join_by = join_by, verbose = FALSE)
+
+    # Return
+    query
 }
 
 #' Helper to turn query into a data expression
 query_to_expression <- function(query, node){
 
     query <- gsub("=","==", query)
-    query <- gsub("===","==", query)
-    query <- gsub("===","==", query) # errors if only provided once
+    query <- gsub("====","==", query)
     query <- gsub(">==",">=", query)
     query <- gsub("<==","<=", query)
     query <- gsub("!==","!=", query)

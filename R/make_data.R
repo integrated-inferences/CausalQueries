@@ -15,7 +15,7 @@
 #' @param complete_data A \code{data.frame}. Dataset with complete observations. Optional.
 #' @param ... additional arguments that can be passed to \code{link{make_parameters}}
 #' @return A \code{data.frame} simulated data.
-#'
+#' @importFrom randomizr strata_rs
 #' @export
 #'
 #' @examples

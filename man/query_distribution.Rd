@@ -2,7 +2,7 @@
 % Please edit documentation in R/query_model.R
 \name{query_distribution}
 \alias{query_distribution}
-\title{Calculate estimand distribution}
+\title{Calculate query distribution}
 \usage{
 query_distribution(
   model,
@@ -33,7 +33,7 @@ query_distribution(
 \item{join_by}{A character. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 }
 \description{
-Calculated from a prior or posterior distribution
+Calculated distribution of a query from a prior or posterior distribution of parameters
 }
 \examples{
 model <- make_model("X -> Y") \%>\%

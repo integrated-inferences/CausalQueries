@@ -53,10 +53,10 @@ testthat::test_that(
 		# Removing columns from P after restrictions
 		model_a <- make_model("X->Y") %>%
 			set_parameter_matrix() %>%
-			set_restrictions("X==1")
+			set_restrictions("X[]==1")
 
 		model_b <- make_model("X->Y") %>%
-			set_restrictions("X==1") %>%
+			set_restrictions("X[]==1") %>%
 			set_parameter_matrix()
 
 		expect_equal(ncol(model_a$P), ncol(model_b$P))
