@@ -10,9 +10,13 @@
 
 clean_params <- function(parameters_df, warning = TRUE) {
 
-    # Check priors
+    # Check positive
     if (min(parameters_df$priors) < 0)
         stop("Negative alpha arguments for priors are not allowed")
+
+    # Check positive
+    if (min(parameters_df$param_value) < 0)
+        stop("Negative arguments for parameters not allowed")
 
     # Normalize parameters if needed
     for (j in unique(parameters_df$param_set)) {

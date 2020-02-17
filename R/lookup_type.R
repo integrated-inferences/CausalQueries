@@ -49,7 +49,7 @@ lookup_nodal_type <-  function(model, query, join_by = "|") {
     Xs <- perm(rep(1,length(pa)))
     names(Xs) <- pa
 
-    # Expand causal expression
+
 
     expanded_query <- expand_nodal_expression(model, query, node, join_by = join_by)
     Q <- query_to_expression(expanded_query)

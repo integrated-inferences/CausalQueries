@@ -15,7 +15,6 @@ testthat::test_that(
 		a <-make_parameters(model)
 		expect_true(length(a)==6)
 
-
 		a <-make_parameters(model, param_type = 'flat')
 		expect_true(length(a)==6)
 
@@ -31,10 +30,10 @@ testthat::test_that(
 		a <- make_parameters(model, param_type = 'posterior_mean')
 		expect_true(length(a)==6)
 
-		a <- make_parameters(model, param_type = 'define', statement = "Y[X=1] > Y[X=0]", alphas = .5)
-		expect_true(a[5]==.4)
+		a <- make_parameters(model,  statement = "Y[X=1] > Y[X=0]", parameters = .5)
+		expect_true(a[5]==.5)
 
-		a <- make_parameters(model, statement = "Y[X=1] > Y[X=0]", alphas = .5)
+		a <- make_parameters(model, statement = "Y[X=1] > Y[X=0]", parameters = .5, normalize = FALSE)
 		expect_true(a[5]==.4)
 
 		a <- get_parameters(model, param_type = 'posterior_mean')
