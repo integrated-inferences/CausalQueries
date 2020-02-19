@@ -1,28 +1,10 @@
 language: r
-r: devel
-sudo: false
+sudo: true
 cache: packages
-
-
-latex: true
-r_build_args: '--no-build-vignettes'
-r_check_args: '--ignore-vignettes'
 
 r_github_packages:
   - jimhester/covr
   - macartan/gbiqq
-
-addons:
-  apt:
-    packages:
-      - libudunits2-dev
-      - libgdal-dev
-      - libproj-dev
-      - libv8-dev
-
-env:
-  global:
-    - MAKEFLAGS="-j 2"
 
 matrix:
   include:
@@ -53,31 +35,17 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     - os: osx
-      fortran: false
+      fortran: true
       osx_image: xcode10
       r: release
 
+
 before_install:
   - mkdir -p ~/.R/
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14 = g++-7 -fPIC" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14FLAGS = -mtune=native -march=native -Wno-unused-variable -Wno-unused-function -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-deprecated-declarations -Wno-attributes -O3" >> ~/.R/Makevars; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14 = g++-7 -fPIC -flto=2" >> ~/.R/Makevars; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14FLAGS = -mtune=native -O3" >> ~/.R/Makevars; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CXX14 = clang++ -arch x86_64 -ftemplate-depth-256" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CXX14FLAGS = -O3 -mtune=native -march=native -Wno-unused-variable -Wno-unused-function  -Wno-unknown-pragmas" >> ~/.R/Makevars; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CXX14FLAGS = -O3 -mtune=native" >> ~/.R/Makevars; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CC = clang" >> ~/.R/Makevars; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
-script:
-  - |
-    travis_wait 42 R CMD build .
-    travis_wait 59 R CMD check  gbiqq*tar.gz
-
-after_script:
-  - tar -ztvf gbiqq_*.tar.gz
-  - echo ${NOT_CRAN}
-
-after_success:
-  - travis_wait 40 tar -C .. -xf $PKG_TARBALL
-  - travis_wait 40 Rscript -e 'covr::codecov()'
-
-after_failure:
-  - cat gbiqq.Rcheck/00*
