@@ -9,6 +9,9 @@
 #' @return Returns indices and ambiguity matrix
 #' @export
 #' @examples
+#'
+#' @importFrom dplyr filter
+#' @examples
 #' get_data_families(model = make_model('X->Y'))
 #' get_data_families(model = make_model('X->Y'), mapping_only = TRUE)
 #' get_data_families(model = make_model('X-> M -> Y'))
@@ -80,6 +83,9 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' @param drop_family Logical. Whether to remove column \code{strategy} from the output. Defaults to `FALSE`.
 #' @param summary Logical. Whether to return summary of the data. See details.  Defaults to `FALSE`.
 #' @export
+#'
+#' @importFrom dplyr left_join
+#' @importFrom dplyr filter mutate
 #'
 #' @return A vector of data events
 #'

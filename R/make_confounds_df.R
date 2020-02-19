@@ -3,6 +3,7 @@
 #' Identifies confounded nodal types.
 #'
 #' @inheritParams gbiqq_internal_inherit_params
+#' @importFrom stats cor
 #' @export
 #' @examples
 #' model <- make_model('X -> Y') %>%

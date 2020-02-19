@@ -21,9 +21,7 @@ Depends:
 Imports:
     dagitty,
     gtools,
-    methods,
     stats,
-    Rcpp (>= 0.12.0),
     rlang (>= 0.2.0),
     rstan (>= 2.18.1),
     rstantools (>= 2.0.0),
@@ -38,7 +36,8 @@ Suggests:
     testthat,
     rmarkdown,
     knitr,
-    DeclareDesign
+    DeclareDesign,
+    V8
 VignetteBuilder: knitr
 SystemRequirements: GNU make
 Biarch: true

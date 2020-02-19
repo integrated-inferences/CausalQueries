@@ -27,6 +27,7 @@ Returns indices and ambiguity matrix
 Get possible data types
 }
 \examples{
+
 get_data_families(model = make_model('X->Y'))
 get_data_families(model = make_model('X->Y'), mapping_only = TRUE)
 get_data_families(model = make_model('X-> M -> Y'))

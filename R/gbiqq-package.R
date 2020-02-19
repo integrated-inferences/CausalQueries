@@ -7,4 +7,4 @@
 #' @useDynLib gbiqq, .registration = TRUE
 
 globalVariables(names = c("posterior", "prob", "restrict", "n", "model", "data", "%>%", "node", "nodal_type",
-    "param_set"))
+    "param_set", "event", "count", "strategy",  "distinct", "e", "v", "w"))

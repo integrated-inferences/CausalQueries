@@ -228,9 +228,11 @@ print.summary.nodal_types <- function(x, ...) {
 #' @param q a causal query
 #' @param model a model
 #' @examples
+#' \dontrun{
 #' model <- make_model('X -> Y <- M')
 #' gbiqq:::add_dots('Y[X=1]', model)
 #' gbiqq:::add_dots('Y[]', model)
+#' }
 #'
 add_dots <- function(q, model) {
 
