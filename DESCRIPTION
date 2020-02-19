@@ -37,7 +37,7 @@ Suggests:
     testthat,
     rmarkdown,
     knitr,
-    DeclareDesign,
+    DeclareDesign
 VignetteBuilder: knitr
 SystemRequirements: GNU make
 Biarch: true
