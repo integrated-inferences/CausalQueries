@@ -120,7 +120,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 
  # Add causal types
  if(add_causal_types){
- model$causal_types <- gbiqq:::update_causal_types(model)}
+ model$causal_types <- update_causal_types(model)}
 
  # Add confounds if any provided
  # extract confounds df

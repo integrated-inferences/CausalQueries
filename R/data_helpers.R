@@ -132,7 +132,7 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
     data <- data[, nodes]
 
     if (nrow(data) == 0 | all(is.na(data))) {
-        data_events <- gbiqq:::minimal_event_data(model)
+        data_events <- minimal_event_data(model)
         drop_NA <- FALSE
 
     } else {
@@ -157,7 +157,7 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
 
     # Output varies according to args
     if (drop_NA) {
-        data_events <- gbiqq:::drop_empty_families(data_events)
+        data_events <- drop_empty_families(data_events)
     }
     if (drop_family) {
         data_events <- dplyr::select(data_events, -"strategy")

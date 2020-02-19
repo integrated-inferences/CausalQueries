@@ -172,7 +172,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
                 a, paste0(a, "_", 0), param_set))
 
         # Now extend priors and parameters
-        to_add <- model$parameters_df %>% dplyr::filter(node == a) %>% dplyr::mutate(param_set = gbiqq:::continue_names(param_set),
+        to_add <- model$parameters_df %>% dplyr::filter(node == a) %>% dplyr::mutate(param_set =  continue_names(param_set),
             param_names = paste(param_set, nodal_type, sep = "."))
 
         # Extend P: Make duplicate block of rows for each ancestor Should contain all values from parameter

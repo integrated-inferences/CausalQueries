@@ -121,11 +121,11 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 
     # Labels
     if (!is.null(labels))
-        model <- gbiqq:::restrict_by_labels(model, labels = labels, keep = keep)
+        model <- restrict_by_labels(model, labels = labels, keep = keep)
 
     # Statement
     if (!is.null(statement))
-        model <- gbiqq:::restrict_by_query(model, statement = statement, join_by = join_by, keep = keep)
+        model <- restrict_by_query(model, statement = statement, join_by = join_by, keep = keep)
 
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
@@ -236,7 +236,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
             node)
 
         # Now drop
-        model$parameters_df <- model$parameters_df %>% dplyr::filter(!drop_rows) %>% gbiqq:::clean_params(warning = FALSE)
+        model$parameters_df <- model$parameters_df %>% dplyr::filter(!drop_rows) %>% clean_params(warning = FALSE)
 
         if (!is.null(model$P))
             model$P <- model$P[!drop_rows, ]
@@ -271,7 +271,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
     }
 
     # If there are wild cards, spell them out
-    labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+    labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
     # Reduce nodal_types
     for (k in 1:length(restricted_vars)) {
@@ -286,7 +286,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
     }
 
     model$causal_types <- update_causal_types(model)
-    model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = FALSE)
+    model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
 
     return(model)
 

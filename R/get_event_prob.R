@@ -18,7 +18,7 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
     # model
 
     if (!is.null(parameters))
-        parameters <- gbiqq:::clean_param_vector(model, parameters)
+        parameters <- clean_param_vector(model, parameters)
     if (is.null(parameters))
         parameters <- get_parameters(model)
     if (any(parameters < 0))

@@ -122,11 +122,11 @@ print.summary.nodal_types <- function(x, ...) {
 #' @param q a causal query
 #' @param model a model
 #' @examples
-#' \dontrun{
+#'
 #' model <- make_model('X -> Y <- M')
 #' gbiqq:::add_dots('Y[X=1]', model)
 #' gbiqq:::add_dots('Y[]', model)
-#' }
+#'
 #'
 add_dots <- function(q, model) {
 
@@ -143,9 +143,9 @@ add_dots <- function(q, model) {
 
     # Identify parents not specified in query and paste them as 'parent = .'
     v_parents <- get_parents(model)[[var]]
-    parents_in_q <- gbiqq:::nodes_in_statement(v_parents, q)
-    not_parents <- gbiqq:::list_non_parents(model, var)
-    not_parents_q <- gbiqq:::nodes_in_statement(not_parents, q)
+    parents_in_q <- nodes_in_statement(v_parents, q)
+    not_parents <- list_non_parents(model, var)
+    not_parents_q <- nodes_in_statement(not_parents, q)
     missing_parents <- v_parents[!v_parents %in% parents_in_q]
 
     if (length(not_parents_q) > 0) {
@@ -158,7 +158,7 @@ add_dots <- function(q, model) {
 
     # Add wildcard if needed
     if (length(v_parents) != length(parents_in_q))
-        q <- gbiqq:::add_wildcard(node, statement = q, parents = v_parents, missing_parents)
+        q <- add_wildcard(node, statement = q, parents = v_parents, missing_parents)
 
     q
 
@@ -180,7 +180,7 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
         stringr::str_split(operators) %>%
         unlist %>%
         sapply(function(x) trimws(x)) %>%
-        sapply(gbiqq:::add_dots, model = model)
+        sapply(add_dots, model = model)
     w_query <- gsub(" ", "", w_query)
 
     # Rejoin to complete query
@@ -193,7 +193,7 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 
     # Expand
     if(grepl("\\.", query))
-        query <- gbiqq:::expand_wildcard(query, join_by = join_by, verbose = FALSE)
+        query <- expand_wildcard(query, join_by = join_by, verbose = FALSE)
 
     # Return
     query

@@ -303,13 +303,13 @@ make_par_values_multiple <-
 		# Easy case: If all but node, label, or x (replacement values) are of length 1 then simply apply make_par_values
 		for (j in c("node", "label", "x", "nodal_type", "param_names", "param_set")) {
 			if (max(arg_length[names(args) != j]) == 1)
-				return(gbiqq:::make_par_values(model, y, x = x, distribution = distribution, node = node,
+				return(make_par_values(model, y, x = x, distribution = distribution, node = node,
 																			 label = label, statement = statement, confound = confound, nodal_type = nodal_type,
 																			 param_names = param_names, param_set = param_set, normalize = normalize))
 		}
 
 		# Harder case requires tasks list
-		task_list <- gbiqq:::make_values_task_list(
+		task_list <- make_values_task_list(
 			distribution = distribution,
 			x = x,
 			node = node,
@@ -326,7 +326,7 @@ make_par_values_multiple <-
 		for (i in 1:ncol(task_list)) {
 			y <- with(task_list[, i],
 
-					 	gbiqq:::make_par_values(
+					 	make_par_values(
 					 		model, y = y, x = x,
 					 		distribution = distribution, node = node, label = label,
 					 		statement = statement, confound = confound,

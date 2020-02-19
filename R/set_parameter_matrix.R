@@ -11,7 +11,7 @@
 make_parameter_matrix <- function(model) {
 
     nodal_types <- get_nodal_types(model)
-    types <- gbiqq:::causal_type_names(get_causal_types(model))
+    types <- causal_type_names(get_causal_types(model))
     # pars <- unlist(nodal_types)
     pars <- sapply(1:length(nodal_types), function(i) paste0(names(nodal_types)[i], nodal_types[i][[1]])) %>%
         unlist
