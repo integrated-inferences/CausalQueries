@@ -38,7 +38,6 @@ Suggests:
     rmarkdown,
     knitr,
     DeclareDesign,
-    V8
 VignetteBuilder: knitr
 SystemRequirements: GNU make
 Biarch: true
