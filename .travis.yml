@@ -1,4 +1,5 @@
 language: r
+r: devel
 sudo: false
 cache: packages
 
@@ -11,8 +12,14 @@ r_github_packages:
   - jimhester/covr
   - macartan/gbiqq
 
-apt_packages:
-  - libv8-dev
+addons:
+  apt:
+    packages:
+      - libudunits2-dev
+      - libgdal-dev
+      - libproj-dev
+      - libv8-dev
+
 env:
   global:
     - MAKEFLAGS="-j 2"
