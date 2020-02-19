@@ -6,7 +6,6 @@ testthat::test_that(
 		m1 <- make_model("X -> Y -> Z <- U")
 		m2 <- make_model("U -> Z <- Y <- X")
 		expect_equal(m1$dag, m2$dag)
-		expect_equal(m1$step, m2$step)
 		expect_equal(m1$nodes, m2$nodes)
 		expect_equal(m1$nodal_types, m2$nodal_types)
 		expect_equal(m1$parameters_df, m2$parameters_df)

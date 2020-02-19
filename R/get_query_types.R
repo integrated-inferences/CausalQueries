@@ -4,7 +4,7 @@
 #'@inheritParams gbiqq_internal_inherit_params
 #'
 #' @export
-#' @return A \code{list} containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
+#' @return A \code{list} containing the types and the evaluated expression.
 #' @examples
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'
@@ -40,7 +40,7 @@ get_query_types <- function(model, query, join_by = "|") {
     i <- 0
     list_names <- ""
     continue <- TRUE
-    manipulated_outcomes <- NULL  # keep a list of the manipulated outcomes for dagitty plotting
+
     # strip whitespaces split query into single characters locate opening brackets and reverse oder
     w_query <- gsub(" ", "", query)
     w_query <- unlist(strsplit(query, ""))
@@ -55,6 +55,7 @@ get_query_types <- function(model, query, join_by = "|") {
     }
 
     eval_var <- reveal_outcomes(model)
+
     list_names <- colnames(eval_var)
     k <- ncol(eval_var) + 1
 
@@ -92,8 +93,6 @@ get_query_types <- function(model, query, join_by = "|") {
         var <- paste0(w_query[b], collapse = "")
         var <- st_within(var)
         var <- var[length(var)]
-
-        manipulated_outcomes <- c(manipulated_outcomes, var)
 
         # Save result from last iteration and remove corresponding expression w_query
         var_length <- nchar(var)
@@ -134,8 +133,7 @@ get_query_types <- function(model, query, join_by = "|") {
         type_list <- NULL
 
     # Return
-    return_list <- list(types = types, query = query, evaluated_nodes = eval_var, type_list = type_list,
-        manipulated_outcomes = unique(manipulated_outcomes))
+    return_list <- list(types = types, query = query, evaluated_nodes = eval_var, type_list = type_list)
 
     class(return_list) <- "causal_types"
 

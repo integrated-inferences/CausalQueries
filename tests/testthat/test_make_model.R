@@ -12,7 +12,7 @@ testthat::test_that(
 		model <- make_model("X -> Y") %>% set_confound(list("X <-> Y"))
 		out <- capture.output(gbiqq:::print.summary.causal_model(model))
 		expect_true(any(grepl("Parameter matrix.+", out)))
-		model <- make_model("X->Y") %>% set_restrictions(statement = c("X == 0"))
+		model <- make_model("X->Y") %>% set_restrictions(statement = c("X[] == 0"))
 		out <- capture.output(gbiqq:::print.summary.causal_model(model))
 		expect_true(any(grepl("Restrictions.+", out)))
 	}

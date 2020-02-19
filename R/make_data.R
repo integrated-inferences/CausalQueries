@@ -15,7 +15,7 @@
 #' @param complete_data A \code{data.frame}. Dataset with complete observations. Optional.
 #' @param ... additional arguments that can be passed to \code{link{make_parameters}}
 #' @return A \code{data.frame} simulated data.
-#'
+#' @importFrom randomizr strata_rs
 #' @export
 #'
 #' @examples
@@ -26,7 +26,7 @@
 #' make_data(model)
 #' make_data(model, n = 3, nodes = c("X","Y"))
 #' make_data(model, n = 3, param_type = "prior_draw")
-#' make_data(model, n = 10, param_type = "define", alpha =  0:9)
+#' make_data(model, n = 10, param_type = "define", parameters =  0:9)
 #'
 #' # Data Strategies
 #' # A strategy in which X, Y are observed for sure and M is observed
@@ -59,7 +59,7 @@ make_data <- function(
 	...){
 
 	# check n input
-	n_check(n)
+	gbiqq:::n_check(n)
 
 	# n_steps and probs reconciliation
 	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
@@ -187,7 +187,7 @@ observe_data <- function(complete_data,
 			if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
 
 			if(prob == 1 && length(unique(strata))==1) { show <- TRUE } else {
-				show <- randomizr::strata_rs(strata = strata,
+				show <- strata_rs(strata = strata,
 																		 strata_prob = c(0, prob)) == 1
 			}
 			observed[show, nodes_to_observe] <- TRUE

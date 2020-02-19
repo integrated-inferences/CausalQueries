@@ -1,8 +1,7 @@
 
-#' Lookup nodal types according to a query
+#' Find which nodal types satisfy a query
 #'
 #' @inheritParams gbiqq_internal_inherit_params
-#' @param verbose Logical. Whether to print expanded query on the consule.
 #' @export
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select
@@ -20,13 +19,15 @@
 #' query <- '(Y[X=0, M = .] > Y[X=1, M = 0])'
 #' x <- lookup_nodal_type(model, query)
 #'
-#'
 #' query <- '(Y[] == 1)'
 #' x <- lookup_nodal_type(model, query)
 #' x <- lookup_nodal_type(model, query, join_by = '&')
 #'
-#' query <- '(X == 1)'
-#' x <- lookup_nodal_type(model, query)
+#' # Root nodes specified with []
+#' lookup_nodal_type(model, '(X[] == 1)')
+#' \dontrun{
+#' lookup_nodal_type(model, 'X == 1')
+#' }
 #'
 #' query <- '(M[X=1] == M[X=0])'
 #' x <- lookup_nodal_type(model, query)
@@ -36,152 +37,45 @@
 #' query <- complements('X', 'M', 'Y')
 #' lookup_nodal_type(model, query)
 
-lookup_nodal_type <- function(model, query, join_by = "|", verbose = FALSE) {
+lookup_nodal_type <-  function(model, query, join_by = "|") {
 
-    operators <- "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|"
-
-    # Housekeeping 1. remove (), split by logical symbol and trim w_query contains parts of query
-    w_query <- gsub("\\(|\\)", "", query) %>%
-               stringr::str_split(operators) %>%
-               unlist %>%
-               sapply(function(x) trimws(x))
-
-    dos <- TRUE
-
-    # 2. Grab outcome nodes in query, and stop if there is more than one var in query allowed: Y[X =1]
-    # == 1 & Y[X=0] ==1 not allowed: M[X=1] == 1 & Y[X=0] ==1
-    var <- node <- st_within(query)
-    if (length(var) > 1 & sum(!duplicated(var)) > 1)
-        stop(paste0("Can't lookup types for nodes ", paste0(var[!duplicated(var)], collapse = ", "),
-            " simultaneously. Please write expression as separate queries"))
-
-    # If there are any do operations
-    if (grepl("\\[|\\]", query)) {
-
-        # Add any unspecified parents: e.g for model = 'X->Y<-M'; query = Y[M=0] -> Y [M=0, X=.]
-        q_names <- trimws(names(w_query))
-        w_query <- sapply(w_query, gbiqq:::add_dots, model = model)
-        names(w_query) <- q_names
+    # Get outcome var (preceding square brackets)
+    node <- unique(st_within(query))
+    if(is.null(node[[1]])) stop("No outcome variable specified. If required, specify roots as X[]==1 not X==1.")
+    if(length(node)>1) stop(paste0("Can't lookup types for nodes ", paste0(node, collapse = ", "),
+                                   " simultaneously. Please write expression as separate queries"))
+    # Xs: possible values of parents (no restrictions)
+    pa <- get_parents(model)[node][[1]]
+    Xs <- perm(rep(1,length(pa)))
+    names(Xs) <- pa
 
 
 
-        ########################################################################### Generate a 'quoted query' of the form '(`Y[X=0]` > `Y[X=1]`)'.  This can then be evaluated on a
-        ########################################################################### potential outcomes dataset.  Substitute expanded in w_query back into original query paste
-        ########################################################################### backslashes \\ and ` ` for matching (quoted_query)
-        # quoted query is of the form: "(`Y[X=1, M= .]` == 1) & `Y[X=0, M= .]`==1"
-
-        .w_query <- quoted_query <- query
-
-        for (i in 1:length(w_query)) {
-            var <- gbiqq:::st_within(names(w_query)[i])
-            string_i <- gsub(paste0("\\[|\\]|", var), "", names(w_query)[i])
-            string_i <- paste0(var, "\\[", string_i, "\\]")
-            .w_query <- gsub(string_i, w_query[i], .w_query)
-            quoted_query <- gsub(string_i, paste0("`", w_query[i], "`"), quoted_query)
-        }
-
-        # Expanded quote query is of the form
-        # "(`Y[X=1, M=0]` == 1 | `Y[X=1, M=1]` == 1)"
-        if (grepl(".", .w_query, fixed = TRUE)) {
-            .w_query <-
-                gbiqq:::expand_wildcard(.w_query, join_by = join_by, verbose = verbose)
-            quoted_query <-
-                gbiqq:::expand_wildcard(quoted_query, join_by = join_by, verbose = FALSE)
-        }
-
-        # Get components again from .w_query. This time with expanded values.
-        w_query <- gsub("\\(|\\)", "", .w_query) %>%
-            stringr::str_split(operators) %>%
-            unlist %>%
-            sapply(function(x) trimws(x))
+    expanded_query <- expand_nodal_expression(model, query, node, join_by = join_by)
+    Q <- query_to_expression(expanded_query)
 
 
-    } else {
-        # If there are no do operations in query
-        .w_query <- quoted_query <- w_query <- query
-        dos   <- FALSE
-        nodes <- model$nodes
-        node  <- nodes[sapply(nodes, function(v) grepl(v, query))]
-    }
+    # Y: potential outcomes: possible nodal types (restrictions respected)
+    assign(node, t(data.frame(get_nodal_types(model, collapse = FALSE)[node])))
 
-    # Magic The query df provide var outcomes for relevant queried conditions, rows are types, columns
-    # are conditions
-    .query_df <- lapply(w_query, function(wq) gbiqq:::lookup_nodal_type_internal(model, query = wq))
-    query_df <- do.call(cbind, .query_df)
-    if (dos)
-        colnames(query_df) <- sapply(names(.query_df), trimws)
+    # Magic: evaluate the query expression on potential outcomes
+    types <- with(Xs, eval(parse(text = Q)))
 
-    # The query is then evaluated on this df to see which rows satisfy the query
-    value <- c(eval(parse(text = quoted_query), envir = query_df))
+    # Add name for singletons
+    if(length(types)==1 && is.null(names(types))) names(types) <- model$nodal_types[node]
 
-    names(value) <- rownames(query_df)
-
-    return_list <- list(types = value, query = query, expanded_query = .w_query, evaluated_nodes = query_df,
-        node = node[1])
+    # Output
+    return_list <- list(types = types,
+                        query = query,
+                        expanded_query = expanded_query,
+                        evaluated_nodes = t(eval(parse(text = node))),
+                        node = node)
 
     class(return_list) <- "nodal_types"
     return(return_list)
-}
-
-
-#' Reveal nodal types according to a query
-#' @inheritParams gbiqq_internal_inherit_params
-lookup_nodal_type_internal <- function(model, query) {
-
-    if (!grepl("\\D", query))
-        return(as.numeric(query))
-
-    # The presence of [] indicate a do operation
-    if (grepl("\\[|\\]", query)) {
-        w_query <- gsub(" ", "", query)
-        w_query <- unlist(strsplit(query, ""))
-        bracket_starts <- grep("\\[", w_query)
-        bracket_ends <- grep("\\]", w_query)
-        .query <- w_query[(bracket_starts):bracket_ends]
-
-        brackets <- grepl("\\[|\\]", .query)
-        .query <- .query[!brackets]
-        .query <- paste0(.query, collapse = "")
-        .query <- unlist(strsplit(.query, ","))
-
-
-        dos <- sapply(.query, function(q) {
-
-            do <- unlist(strsplit(q, ""))
-            stop <- gregexpr("=", q, perl = TRUE)[[1]][1] - 1
-            var_name <- paste0(do[1:stop], collapse = "")
-            var_name <- gsub(" ", "", var_name)
-            value <- paste0(do[(stop + 2):nchar(q)], collapse = "")
-            vars <- model$nodes
-            if (!var_name %in% vars)
-                stop(paste("Node", var_name, "is not part of the model."))
-            out <- value
-            names(out) <- var_name
-            out
-        }, USE.NAMES = FALSE)
-
-        dos <- sapply(dos, trimws)
-        # Identify nodes
-        b <- 1:bracket_starts
-        var <- paste0(w_query[b], collapse = "")
-        var <- st_within(var)
-        revealed_vars <- reveal_outcomes(model, dos, node = var)[var]
-    } else {
-        # If no dos check whether node in query is exogenous and error if otherwise.
-        nodes <- model$nodes
-        wv <- sapply(nodes, function(v) grepl(v, query))
-        if (sum(wv) > 1)
-            stop(paste0("Can't lookup types for nodes ", paste0(nodes[!duplicated(nodes)], collapse = ", "),
-                " simultaneously. Please write expression as separate statements"))
-        if (nodes[wv] %in% attributes(model)$endogenous_nodes)
-            stop("Restrictions on observational quantities not allowed. No nodal types restricted")
-        revealed_vars <- get_nodal_types(model, collapse = FALSE)[[nodes[wv]]]
-        names(revealed_vars) <- nodes[wv]
-    }
-
-    return(revealed_vars)
 
 }
+
 
 
 #' @export
@@ -269,3 +163,55 @@ add_dots <- function(q, model) {
     q
 
 }
+
+
+#' Helper to expand nodal expression
+#'
+#' @inheritParams gbiqq_internal_inherit_params
+
+
+expand_nodal_expression <- function(model, query, node, join_by = "|")	{
+
+    operators <- "\\==|\\+|\\-|>=|<=|>|<|!=|\\&|\\|"
+    query <- gsub(" ", "", query)
+
+    # Add dots to query parts
+    w_query <- gsub("\\(|\\)", "", query) %>%
+        stringr::str_split(operators) %>%
+        unlist %>%
+        sapply(function(x) trimws(x)) %>%
+        sapply(gbiqq:::add_dots, model = model)
+    w_query <- gsub(" ", "", w_query)
+
+    # Rejoin to complete query
+    for (i in 1:length(w_query)) {
+        string_i <- gsub(paste0("\\[|\\]|", node), "", names(w_query)[[i]])
+        string_i <- paste0(node, "\\[", string_i, "\\]")
+        string_i <- gsub(" ", "", string_i)
+        query <- gsub(string_i, w_query[i], query)
+    }
+
+    # Expand
+    if(grepl("\\.", query))
+        query <- gbiqq:::expand_wildcard(query, join_by = join_by, verbose = FALSE)
+
+    # Return
+    query
+}
+
+#' Helper to turn query into a data expression
+#'
+#' @inheritParams gbiqq_internal_inherit_params
+query_to_expression <- function(query, node){
+
+    query <- gsub("=","==", query)
+    query <- gsub("====","==", query)
+    query <- gsub(">==",">=", query)
+    query <- gsub("<==","<=", query)
+    query <- gsub("!==","!=", query)
+    query <- gsub("~==","~=", query)
+    query <- gsub(","," & ", query)
+    query <- gsub("\\]", ", \\]", query)
+    query
+}
+

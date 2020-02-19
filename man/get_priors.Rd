@@ -17,8 +17,10 @@ get_priors(make_model('X -> Y'))
 }
 \seealso{
 Other priors: 
-\code{\link{make_priors_single}()},
+\code{\link{make_par_values_multiple}()},
+\code{\link{make_par_values}()},
 \code{\link{make_priors}()},
+\code{\link{make_values_task_list}()},
 \code{\link{set_priors}()}
 }
 \concept{priors}
