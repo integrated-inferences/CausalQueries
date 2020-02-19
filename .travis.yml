@@ -11,6 +11,8 @@ r_github_packages:
   - jimhester/covr
   - macartan/gbiqq
 
+apt_packages:
+  - libv8-dev
 env:
   global:
     - MAKEFLAGS="-j 2"
