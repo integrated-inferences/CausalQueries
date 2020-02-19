@@ -34,7 +34,7 @@ simulate_events <- function(model, n = 1, w = NULL, P = NULL, A = NULL, paramete
     # Check that parameters sum to 1 in each param_set
     if (clean_params)
         if (!is.null(parameters))
-            parameters <- gbiqq:::clean_param_vector(model, parameters)
+            parameters <- clean_param_vector(model, parameters)
 
     # If parameters not provided, take from model
     if (is.null(parameters)) {

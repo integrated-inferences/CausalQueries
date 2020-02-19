@@ -52,7 +52,7 @@
 make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
 
     if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
-        return(gbiqq:::clean_param_vector(model, parameters))
+        return(clean_param_vector(model, parameters))
 
     if (!is.null(param_type))
         if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw",
@@ -76,7 +76,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 
     # New (from parameters)
     if (param_type == "define") {
-        param_value <- gbiqq:::make_par_values_multiple(model,
+        param_value <- make_par_values_multiple(model,
                                                 y = get_parameters(model),
                                                 x = parameters,
                                                 normalize = normalize,
@@ -114,7 +114,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     }
 
     # Clean: Check normalization, using data families
-    gbiqq:::clean_param_vector(model, param_value)
+    clean_param_vector(model, param_value)
 
 }
 
@@ -158,7 +158,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
     }
 
     model$parameters_df$param_value <- parameters
-    model$parameters_df <- gbiqq:::clean_params(model$parameters_df, warning = warning)
+    model$parameters_df <- clean_params(model$parameters_df, warning = warning)
 
     model
 

@@ -59,14 +59,14 @@ make_data <- function(
 	...){
 
 	# check n input
-	gbiqq:::n_check(n)
+	n_check(n)
 
 	# n_steps and probs reconciliation
 	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
 	if(is.null(probs)) probs <- 1
 
 		# Check that parameters sum to 1 in each param_set
-	if(!is.null(parameters)) parameters <- gbiqq:::clean_param_vector(model, parameters)
+	if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
 
 	# If parameters not provided, make or take from model
 	if(is.null(parameters)) {
@@ -233,7 +233,7 @@ make_data_single <- function(
 	w = NULL, P = NULL, A = NULL){
 
 	# Check that parameters sum to 1 in each param_set
-	# if(!is.null(parameters)) parameters <- gbiqq:::clean_param_vector(model, parameters)
+	# if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
 
   # If parameters not provided, take from model
 	if(is.null(parameters)) {

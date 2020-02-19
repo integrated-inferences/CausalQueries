@@ -9,6 +9,9 @@
 #' @return Returns indices and ambiguity matrix
 #' @export
 #' @examples
+#'
+#' @importFrom dplyr filter
+#' @examples
 #' get_data_families(model = make_model('X->Y'))
 #' get_data_families(model = make_model('X->Y'), mapping_only = TRUE)
 #' get_data_families(model = make_model('X-> M -> Y'))
@@ -81,6 +84,9 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' @param summary Logical. Whether to return summary of the data. See details.  Defaults to `FALSE`.
 #' @export
 #'
+#' @importFrom dplyr left_join
+#' @importFrom dplyr filter mutate
+#'
 #' @return A vector of data events
 #'
 #' If \code{summary = TRUE} `collapse_data` returns a list containing the following components:
@@ -126,7 +132,7 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
     data <- data[, nodes]
 
     if (nrow(data) == 0 | all(is.na(data))) {
-        data_events <- gbiqq:::minimal_event_data(model)
+        data_events <- minimal_event_data(model)
         drop_NA <- FALSE
 
     } else {
@@ -151,7 +157,7 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
 
     # Output varies according to args
     if (drop_NA) {
-        data_events <- gbiqq:::drop_empty_families(data_events)
+        data_events <- drop_empty_families(data_events)
     }
     if (drop_family) {
         data_events <- dplyr::select(data_events, -"strategy")
