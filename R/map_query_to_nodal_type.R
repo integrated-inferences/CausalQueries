@@ -9,35 +9,35 @@
 #' @examples
 #' model <- make_model('X->Y')
 #'
-#' lookup_nodal_type(model, '(Y[X=0] > Y[X=1])')
-#' lookup_nodal_type(model, '(Y[X=0] >= Y[X=1])')
+#' map_query_to_nodal_type(model, '(Y[X=0] > Y[X=1])')
+#' map_query_to_nodal_type(model, '(Y[X=0] >= Y[X=1])')
 #'
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=0] > Y[X=1])'
-#' x <- lookup_nodal_type(model, query)
+#' x <- map_query_to_nodal_type(model, query)
 #'
 #' query <- '(Y[X=0, M = .] > Y[X=1, M = 0])'
-#' x <- lookup_nodal_type(model, query)
+#' x <- map_query_to_nodal_type(model, query)
 #'
 #' query <- '(Y[] == 1)'
-#' x <- lookup_nodal_type(model, query)
-#' x <- lookup_nodal_type(model, query, join_by = '&')
+#' x <- map_query_to_nodal_type(model, query)
+#' x <- map_query_to_nodal_type(model, query, join_by = '&')
 #'
 #' # Root nodes specified with []
-#' lookup_nodal_type(model, '(X[] == 1)')
+#' map_query_to_nodal_type(model, '(X[] == 1)')
 #' \dontrun{
-#' lookup_nodal_type(model, 'X == 1')
+#' map_query_to_nodal_type(model, 'X == 1')
 #' }
 #'
 #' query <- '(M[X=1] == M[X=0])'
-#' x <- lookup_nodal_type(model, query)
+#' x <- map_query_to_nodal_type(model, query)
 #'
 #' # Complements
 #' model <- make_model('M->Y; X->Y')
 #' query <- complements('X', 'M', 'Y')
-#' lookup_nodal_type(model, query)
+#' map_query_to_nodal_type(model, query)
 
-lookup_nodal_type <-  function(model, query, join_by = "|") {
+map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
     # Get outcome var (preceding square brackets)
     node <- unique(st_within(query))

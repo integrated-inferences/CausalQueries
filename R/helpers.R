@@ -279,7 +279,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' @param var Variable name
 #' @param query An expression in string format.
 #'
-#' Used in \code{lookup_nodal_types}
+#' Used in \code{map_query_to_nodal_types}
 #'
 includes_var <- function(var, query)
     length(grep(paste0("\\<", var, "\\>"), query)) > 0

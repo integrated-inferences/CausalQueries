@@ -249,7 +249,7 @@ make_data_single <- function(
 		w <- get_event_prob(model, P, A, parameters = parameters)}
 
 	# Data drawn here
-	simulate_events(model, n = n,  parameters = parameters, w = w, clean_params = FALSE) %>%
+	make_events(model, n = n,  parameters = parameters, w = w, clean_params = FALSE) %>%
 		expand_data(model)
 
  }

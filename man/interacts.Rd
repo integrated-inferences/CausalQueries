@@ -21,7 +21,7 @@ Generate a statement for X1, X1 interact in the production of Y
 }
 \examples{
 interacts('A', 'B', 'W')
-get_query_types(model = make_model('X-> Y <- W'),
+map_query_to_causal_type(model = make_model('X-> Y <- W'),
          query = interacts('X', 'W', 'Y'))
 
 }

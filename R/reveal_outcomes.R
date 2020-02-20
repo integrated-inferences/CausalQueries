@@ -3,7 +3,7 @@
 #' Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.
 #' If a do operator is applied to any node then it takes the given value and all its descendants are generated accordingly.
 #'
-#' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{get_query_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
+#' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{map_query_to_causal_type}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
 #' @inheritParams gbiqq_internal_inherit_params
 #' @param dos A named \code{list}. Do actions defining node values, e.g., \code{list(X = 0, M = 1)}.
 #' @param node A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.

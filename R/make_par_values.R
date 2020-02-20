@@ -200,7 +200,7 @@ make_par_values <- function(model,
 
 	# A2 Do not alter if nodal type is not part of a given statement
 	if (!all(is.na(statement))) {
-		lnt <- lookup_nodal_type(model, statement)
+		lnt <- map_query_to_nodal_type(model, statement)
 		l_types <- lnt$types
 
 		to_alter[!(full_node %in% lnt$node & model$parameters_df$nodal_type %in% names(l_types[l_types]))] <- FALSE
@@ -218,7 +218,7 @@ make_par_values <- function(model,
 	# then any parameter that does *not* contribute to a causal type satisfying this condition is not
 	# modified
 	if (!all(is.na(confound))) {
-		P_short <- model$P[, get_query_types(model, confound[[1]])$types]
+		P_short <- model$P[, map_query_to_causal_type(model, confound[[1]])$types]
 		to_alter[(apply(P_short, 1, sum) == 0)] <- FALSE
 	}
 

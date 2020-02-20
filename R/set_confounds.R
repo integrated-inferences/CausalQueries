@@ -146,7 +146,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
             return(exploded_list)
         }
         if (!checks[i]) {
-            simple_list <- list((get_query_types(model, x[[1]])$type_list))
+            simple_list <- list((map_query_to_causal_type(model, x[[1]])$type_list))
             names(simple_list) <- names(x)
             simple_list
         }

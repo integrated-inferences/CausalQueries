@@ -193,7 +193,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
     }
 
     restrictions_list <- lapply(1:n_restrictions, function(i) {
-        lookup_nodal_type(model, query = statement[i], join_by = join_by[i])
+        map_query_to_nodal_type(model, query = statement[i], join_by = join_by[i])
     })
 
     nodes_list <- sapply(restrictions_list, function(r) r$node)

@@ -1,4 +1,4 @@
-context("Make_date")
+context("Make_models")
 
 testthat::test_that(
 	desc = "Print and summary functions",
@@ -15,6 +15,7 @@ testthat::test_that(
 		model <- make_model("X->Y") %>% set_restrictions(statement = c("X[] == 0"))
 		out <- capture.output(gbiqq:::print.summary.causal_model(model))
 		expect_true(any(grepl("Restrictions.+", out)))
+		expect_error(make_model("X -> S <- Y; S <-> Z"))
 	}
 )
 

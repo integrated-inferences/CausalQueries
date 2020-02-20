@@ -63,6 +63,9 @@ make_model <- function(statement, add_causal_types = TRUE){
 		dplyr::select(v,w)
 	}
 
+	if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
+		stop("Graph should not contain isolates.")
+
 	names(dag) <- c("parent", "children")
 
 	# allowable names

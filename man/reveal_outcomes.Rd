@@ -21,7 +21,7 @@ Reveal outcomes for all causal types. Calculated by sequentially calculating end
 If a do operator is applied to any node then it takes the given value and all its descendants are generated accordingly.
 }
 \details{
-\code{reveal_outcomes} starts off by creating types (via \code{\link{get_query_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
+\code{reveal_outcomes} starts off by creating types (via \code{\link{map_query_to_causal_type}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
 }
 \examples{
 model <- make_model("X -> Y")

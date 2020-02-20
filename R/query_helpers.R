@@ -110,7 +110,7 @@ non_increasing <- function(X, Y) {
 #' @return A character statement of class statement
 #' @examples
 #' interacts('A', 'B', 'W')
-#' get_query_types(model = make_model('X-> Y <- W'),
+#' map_query_to_causal_type(model = make_model('X-> Y <- W'),
 #'          query = interacts('X', 'W', 'Y'))
 #'
 
@@ -167,7 +167,7 @@ complements <- function(X1, X2, Y) {
 #' @return A character statement of class statement
 #' @examples
 #'
-#'get_query_types(model = make_model('A -> B <- C'),
+#'map_query_to_causal_type(model = make_model('A -> B <- C'),
 #'          query = substitutes('A', 'C', 'B'))
 #'
 #'query_model(model = make_model('A -> B <- C'),

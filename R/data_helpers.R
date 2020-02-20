@@ -202,9 +202,9 @@ drop_empty_families <- function(data_events) {
 #' @export
 #' @examples
 #' model <- make_model('X->M->Y')
-#' simulate_events(model, n = 5) %>%
+#' make_events(model, n = 5) %>%
 #'   expand_data(model)
-#' simulate_events(model, n = 0) %>%
+#' make_events(model, n = 0) %>%
 #'   expand_data(model)
 #'
 expand_data <- function(data_events, model) {

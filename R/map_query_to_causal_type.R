@@ -8,33 +8,34 @@
 #' @examples
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'
-#' x <- get_query_types(model, query)
+#' x <- map_query_to_causal_type(model, query)
 #' summary(x)
 #'
 #' query <- 'Y[M=M[X=0], X=1]==1'
-#' x <- get_query_types(model, query)
-#' get_query_types(model, query)
+#' x <- map_query_to_causal_type(model, query)
+#' map_query_to_causal_type(model, query)
 #'
 #' query <- '(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])'
-#' get_query_types(model, query)
+#' map_query_to_causal_type(model, query)
 #'
 #' query <- 'Y[X=1] == Y[X=0]'
-#' get_query_types(model, query)
+#' map_query_to_causal_type(model, query)
 #'
 #' query <- '(X == 1) & (M==1) & (Y ==1) & (Y[X=0] ==1)'
-#' x <- get_query_types(model, query)
+#' x <- map_query_to_causal_type(model, query)
 #'
 #' query <- '(Y[X = .]==1)'
-#' get_query_types(model, query)
+#' map_query_to_causal_type(model, query)
 #'
 #' model <- make_model('X -> Y')
 
-get_query_types <- function(model, query, join_by = "|") {
+map_query_to_causal_type <- function(model, query, join_by = "|") {
+
+    if (length(query) > 1L)
+        stop("Please specify a query of length 1L.")
 
     if (grepl(".", query, fixed = TRUE))
         query <- expand_wildcard(query, join_by = join_by)
-    if (length(query) > 1L)
-        stop("Please specify a query of length 1L.")
 
     # Global Variables
     i <- 0
@@ -48,7 +49,7 @@ get_query_types <- function(model, query, join_by = "|") {
     bracket_ends <- rev(grep("\\]", w_query))
 
     if (length(bracket_starts) != length(bracket_ends)) {
-        stop("Either '[' or ']' missing")
+        stop("Either '[' or ']' missing.")
     }
     if (length(bracket_starts) == 0) {
         continue = FALSE

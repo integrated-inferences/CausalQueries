@@ -45,13 +45,13 @@ query_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(given)) given <- get_query_types(model, given)$types
+	if(!is.logical(given)) given <- map_query_to_causal_type(model, given)$types
 
 	if(all(!given)) {message("No units in given"); return() }
 
 
 		# Evaluation of query on vector of causal types
-	x <- (get_query_types(model, query = query)$types)[given]
+	x <- (map_query_to_causal_type(model, query = query)$types)[given]
 
 	# Parameters specified
 	if(using =="parameters"){

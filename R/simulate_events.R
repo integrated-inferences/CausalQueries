@@ -1,6 +1,6 @@
-#' Draw compact data
+#' Make data in compact form
 #'
-# Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
+#  Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
 # `make_data`.
 #'
 #' @inheritParams gbiqq_internal_inherit_params
@@ -16,12 +16,12 @@
 #'
 #' @examples
 #' model <- make_model('X -> Y')
-#' simulate_events(model = model)
-#' simulate_events(model = model, param_type = 'prior_draw')
-#' simulate_events(model = model, include_strategy = TRUE)
+#' make_events(model = model)
+#' make_events(model = model, param_type = 'prior_draw')
+#' make_events(model = model, include_strategy = TRUE)
 #'
 
-simulate_events <- function(model, n = 1, w = NULL, P = NULL, A = NULL, parameters = NULL, param_type = NULL,
+make_events <- function(model, n = 1, w = NULL, P = NULL, A = NULL, parameters = NULL, param_type = NULL,
     clean_params = TRUE, include_strategy = FALSE, ...) {
     # Check whether w is a matrix with named rows
     if (!is.null(w)) {
