@@ -4,7 +4,7 @@ testthat::test_that(
 	desc = "Check warnings",
 	code = {
 		model <- make_model("X -> Y")
-		#expect_warning(make_priors(model, label = c("X0", "Y1"), alphas = 1))
+		expect_warning(make_priors(model, label = c("X0", "Y1")))
 		expect_warning(make_priors(model, statement = c("Y[M=0] > Y[M=1]"), alphas = c(NA)))
 		model <- make_model("X -> Y")
 		#expect_warning(make_priors(model, label = c("X0", "Y1"), distribution = c("jeffreys")))
