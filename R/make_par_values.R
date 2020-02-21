@@ -184,7 +184,7 @@ make_par_values <- function(model,
 		node[is.na(node)] <- names(confound)
 
 	# 1.7 label must be a character
-	if (!is.na(label) | !is.na(nodal_type)) {
+	if (all(!is.na(label)) | !is.na(nodal_type)) {
 		if (!is.character(label) && !is.character(nodal_type))
 			stop("arguments label and nodal_type must be a character")
 	}
