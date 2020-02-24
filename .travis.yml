@@ -30,6 +30,7 @@ matrix:
       r: devel
       r_binary_packages:
         - devtools
+      install: travis_wait mvn install
       addons:
         apt:
           sources:
