@@ -58,4 +58,4 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
 after_success:
-- Rscript -e 'covr::codecov()'
+- Rscript -e 'covr::coveralls()'
