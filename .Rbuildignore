@@ -4,3 +4,6 @@
 src/.*\.o$
 src/.*\.cc$
 src/.*\.hpp$
+src/.*\.gcda$
+.gitignore
+
