@@ -49,7 +49,7 @@ set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NUL
     if (!"control" %in% unms) {
         args$control <- defaults
     } else {
-        if (!is.null(user_adapt_delta)) {
+        if (!is.null(args$control$user_adapt_delta)) {
             args$control$adapt_delta <- user_adapt_delta
         } else {
             args$control$adapt_delta <- defaults$adapt_delta
