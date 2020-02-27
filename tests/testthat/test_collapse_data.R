@@ -25,4 +25,15 @@ testthat::test_that(
 	}
 )
 
+testthat::test_that(
+	desc = "data is all NA",
+	code = {
+		model <- make_model('X->Y')
+		data <- data.frame(Y = c(1,0,1,0))
+		data <- collapse_data(data, model)
+	  expect_true(!c("X") %in% data$strategy)
+	}
+)
+
+
 
