@@ -4,7 +4,7 @@
 \alias{expand_data}
 \title{Expand compact data object to data frame}
 \usage{
-expand_data(data_events, model)
+expand_data(data_events = NULL, model)
 }
 \arguments{
 \item{data_events}{A \code{data.frame}. It must be compatible with nodes in \code{model}. The default columns are \code{event}, \code{strategy} and \code{count}.}
