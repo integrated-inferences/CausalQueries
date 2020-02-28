@@ -195,6 +195,7 @@ testthat::test_that(
 		Y <- c(NA, NA, NA)
 		data <- as.data.frame(cbind(X, Y))
 		expect_message(update_model(model, data))
+		expect_error(update_model(model, data, data_type = "compact"))
 	}
 )
 
