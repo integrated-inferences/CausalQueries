@@ -187,4 +187,14 @@ testthat::test_that(
 	}
 )
 
+testthat::test_that(
+	desc = "Test when all NA",
+	code = {
+		model <- make_model("X -> Y")
+		X <- c(NA, NA, NA)
+		Y <- c(NA, NA, NA)
+		data <- as.data.frame(cbind(X, Y))
+		expect_message(update_model(model, data))
+	}
+)
 
