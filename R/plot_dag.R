@@ -22,7 +22,7 @@ translate_dagitty <- function(model) {
     dag <- model$dag
     inner <- paste(paste0(apply(dag, 1, paste, collapse = " -> "), collapse = " ; "), collapse = "")
 
-    if (!is.null(model$P) && !is.null(model$confounds_df) && !is.na(model$confounds_df)) {
+    if (!is.null(model$P) && !is.null(model$confounds_df) && all(!is.na(model$confounds_df))) {
         conf_df <- model$confounds_df
         inner <- paste(inner, " ; ", paste(paste(conf_df[, 1], conf_df[, 2], sep = " <-> "), collapse = " ; "))
     }

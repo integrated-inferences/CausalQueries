@@ -30,8 +30,6 @@ If \code{summary = TRUE} `collapse_data` returns a list containing the following
 \item{data_events}{A compact data.frame of event types and strategies.}
    \item{observed_events}{A vector of character strings specifying the events observed in the data}
    \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
-   \item{used_strategies}{A vector of character strings specifying the strategies with observed data}
-   \item{unused_strategies}{A vector of character strings specifying the strategies containing no observed data}
 }
 \description{
 Take a `data.frame` and return compact `data.frame`  of event types and strategies.

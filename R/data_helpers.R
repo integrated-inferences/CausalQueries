@@ -93,8 +93,6 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' \item{data_events}{A compact data.frame of event types and strategies.}
 #'    \item{observed_events}{A vector of character strings specifying the events observed in the data}
 #'    \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
-#'    \item{used_strategies}{A vector of character strings specifying the strategies with observed data}
-#'    \item{unused_strategies}{A vector of character strings specifying the strategies containing no observed data}
 #' @examples
 #'
 #' model <- make_model('X -> Y')
@@ -207,16 +205,17 @@ drop_empty_families <- function(data_events) {
 #' make_events(model, n = 0) %>%
 #'   expand_data(model)
 #'
-expand_data <- function(data_events, model) {
+expand_data <- function(data_events = NULL, model) {
 
     if (class(model) != "causal_model")
         stop("model should be a model generated with make_model")
     if (is.null(data_events))
         data_events <- minimal_event_data(model)
+    if ((!is.data.frame(data_events) & !is.matrix(data_events)) |
+          any(!c("event", "count") %in% colnames(data_events)))
+       stop( "data_events should be a data frame or a matrix with columns `event` and `count`")
     if ("strategy" %in% names(data_events))
-        data_events <- dplyr::select(data_events, -strategy)
-    if (!is.data.frame(data_events) & ncol(data_events != 2))
-        stop("data_events should be a data frame with columns `event` and `count`")
+        data_events <- dplyr::select(as.data.frame(data_events), c("event", "count"))
 
     if (sum(data_events[, 2]) == 0)
         return(minimal_data(model))  # Special case with no data
