@@ -264,14 +264,22 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
     # name that doesn't match any of the nodes in the dag
     restricted_vars <- names(labels)
     matches <- restricted_vars %in% model$nodes
-    if (!any(matches)) {
-        stop("labels don't match nodes in DAG")
-    } else if (any(!matches)) {
+
+    if (!any(matches))
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
-    }
 
     # If there are wild cards, spell them out
-    labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+    labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+
+
+    for (i in restricted_vars) {
+        check <- model$parameters_df %>%
+            filter(node==i)
+        check <- check$nodal_type
+        labels_passed <- unlist(labels[[i]])
+        if (!all (labels_passed %in% check))
+            stop("labels passed are not mapped to nodal_type. Check model$parameters_df")
+    }
 
     # Reduce nodal_types
     for (k in 1:length(restricted_vars)) {
