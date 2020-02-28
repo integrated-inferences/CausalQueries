@@ -1,7 +1,4 @@
-context("Testing make_confounders")
-
-
-
+context("Testing make_confounds")
 
 
 testthat::test_that(
@@ -9,5 +6,7 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> Y")
 		expect_message(make_confounds_df(model))
+		expect_message(model <- set_confound(model, list(X = 'X==1')))
 	}
 )
+
