@@ -38,3 +38,23 @@ for(i in length(dags)){
 	)
 
 }
+
+testthat::test_that(
+	desc = "error when keep is not logical",
+	code = {
+		model <- make_model("Y <- X")
+		expect_error(model <- set_restrictions(model, "Y[X=1] > Y[X=0]", keep="HELLO"))
+	}
+)
+
+
+testthat::test_that(
+	desc = "errors when labels are wrong",
+	code = {
+		model <- make_model("Y <- X")
+		expect_error(model <- set_restrictions(model, labels = list(X="666")))
+		expect_error(model <- set_restrictions(model, labels = list(W=1)))
+	}
+)
+
+
