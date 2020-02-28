@@ -21,8 +21,6 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
         parameters <- clean_param_vector(model, parameters)
     if (is.null(parameters))
         parameters <- get_parameters(model)
-    if (any(parameters < 0))
-        stop("Parameters cannot take on negative values.")
 
     # Ambiguity matrix if(is.null(A)) model <- set_ambiguities_matrix(model)
     A <- get_ambiguities_matrix(model)
@@ -40,8 +38,6 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
 
     out <- t(A) %*% type_prob
 
-    if (!isTRUE(all.equal(sum(out), 1)))
-        warning("Event probabilities not summing to 1")
     colnames(out) <- "event_prob"
     return(out)
 }
