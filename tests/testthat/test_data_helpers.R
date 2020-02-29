@@ -99,8 +99,21 @@ testthat::test_that(
 		expect_error(expand_data(c(events = c("X0YO", "X1Y1")), model))
 		colnames(events) <- NULL
 		expect_error(expand_data(events, model))
-			}
+	}
 )
+
+testthat::test_that(
+	desc = "all_data_types errors",
+	code = {
+		model <- make_model("X -> Y")
+		expect_error(all_data_types(model, given = "Z == 0"))
+		model <- make_model('X -> Y') %>%
+			set_restrictions(labels = list(Y = '00'), keep = TRUE)
+		out <- all_data_types(model, given = "Y == 0")
+		expect_true(is.na(out$X[3]))
+	}
+)
+
 
 
 
