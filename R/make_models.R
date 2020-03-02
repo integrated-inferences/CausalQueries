@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @importFrom dplyr filter select
-#' @importFrom dagitty dagitty edges
+#' @importFrom dagitty dagitty edges children parents
 #' @return An object of class \code{causal_model} containing a DAG.
 #' @examples
 #' make_model(statement = "X -> Y")
@@ -54,28 +54,29 @@ make_model <- function(statement, add_causal_types = TRUE){
 	if(length(statement) != 1) stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
 
 	if(!(is.character(statement))) stop("The model statement should be of type character.")
-
+  isolates   <- statement
 	dgitty     <- dagitty(paste0("dag{", statement, "}"))
 	d_nodes    <- names(dgitty)
 	d_children <- children(dgitty, d_nodes)
 	d_parents  <- parents(dgitty, d_nodes)
+	isolates   <- d_nodes[!d_nodes %in% c(d_children, d_parents)]
 
 	x <- edges(dgitty) %>%
 			 data.frame(stringsAsFactors = FALSE)
 
-	if(nrow(x)==0){ dag <- data.frame(v = statement, w = NA)
+	if(nrow(x)==0){ dag <- data.frame(v = isolates, w = "")
 	} else {
 	dag  <- x %>%
 		filter(e=="->") %>%
 		select(v,w)
+
+	if(length(isolates) != 0){
+		dag <- dplyr::add_row(dag, v = isolates, w = "")
+	}
 	}
 
-	isolates <- d_var[!d_nodes %in% c(d_children, d_parents)]
-
-
-
-	# if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
-	# 	stop("Graph should not contain isolates.")
+ 	 # if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
+ 	 # 	stop("Graph should not contain isolates.")
 
 	names(dag) <- c("parent", "children")
 
@@ -102,9 +103,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 
-  if(!is.null(isolates)){
-  	dag <- dplyr::add_row(dag, parent = isolates, children = "__")
-  }
+
 
 
  endog_node <- as.character(rev(unique(rev(dag$children))))
@@ -112,8 +111,8 @@ make_model <- function(statement, add_causal_types = TRUE){
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
- #update to allow isolates
- endog_node <- endog_node[endog_node != "__"]
+ #edit to allow isolates
+ endog_node <- endog_node[endog_node != ""]
 
  nodes <- c(exog_node, endog_node)
 
