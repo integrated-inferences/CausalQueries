@@ -15,6 +15,8 @@
 #' @param add_causal_types Logical. Whether to dreate and attach causal types to \code{model}. Defaults to `TRUE`.
 #' @export
 #'
+#' @importFrom dplyr filter select
+#' @importFrom dagitty dagitty edges
 #' @return An object of class \code{causal_model} containing a DAG.
 #' @examples
 #' make_model(statement = "X -> Y")
@@ -53,18 +55,27 @@ make_model <- function(statement, add_causal_types = TRUE){
 
 	if(!(is.character(statement))) stop("The model statement should be of type character.")
 
-	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
-		data.frame(stringsAsFactors = FALSE)
+	dgitty     <- dagitty(paste0("dag{", statement, "}"))
+	d_nodes    <- names(dgitty)
+	d_children <- children(dgitty, d_nodes)
+	d_parents  <- parents(dgitty, d_nodes)
+
+	x <- edges(dgitty) %>%
+			 data.frame(stringsAsFactors = FALSE)
 
 	if(nrow(x)==0){ dag <- data.frame(v = statement, w = NA)
 	} else {
 	dag  <- x %>%
-		dplyr::filter(e=="->") %>%
-		dplyr::select(v,w)
+		filter(e=="->") %>%
+		select(v,w)
 	}
 
-	if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
-		stop("Graph should not contain isolates.")
+	isolates <- d_var[!d_nodes %in% c(d_children, d_parents)]
+
+
+
+	# if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
+	# 	stop("Graph should not contain isolates.")
 
 	names(dag) <- c("parent", "children")
 
@@ -73,6 +84,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 #	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
 	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try dots?")
 	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
+
 
 	# Procedure for unique ordering of nodes
 	if(all(dag$parent %in% dag$children)) stop("No root nodes provided.")
@@ -90,10 +102,18 @@ make_model <- function(statement, add_causal_types = TRUE){
 
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 
+  if(!is.null(isolates)){
+  	dag <- dplyr::add_row(dag, parent = isolates, children = "__")
+  }
+
+
  endog_node <- as.character(rev(unique(rev(dag$children))))
  if(all(is.na(endog_node))) endog_node <- NULL
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
+
+ #update to allow isolates
+ endog_node <- endog_node[endog_node != "__"]
 
  nodes <- c(exog_node, endog_node)
 
