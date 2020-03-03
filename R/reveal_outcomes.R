@@ -72,7 +72,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 		if(!is.null(dos)) for(j in 1:length(dos)) data_realizations[, in_dos[j]] <- dos[[j]] # [1] mh 20191008 Commented out this "[1]" as it was stopping filling in a vector of dos for nested expression
 
 		}
-
+  if(ncol(types_of_endogenous) > 0){
 	# Magic: Work though each endogeneous node in sequence and substitute its implied values
 	for(j in 1:ncol(types_of_endogenous)) {
 		if(!(endogenous_vars[j] %in% in_dos)){   # skip if do applied to var
@@ -94,6 +94,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 			data_realizations[, endogenous_vars[j]] <- J
 		}
 	}
+  }
 
 	# Prep for export
 	if(is.null(node)){

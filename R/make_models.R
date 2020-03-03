@@ -69,7 +69,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 	dag  <- x %>%
 		filter(e=="->") %>%
 		select(v,w)
-
+	# Update to allow isolates
 	if(length(isolates) != 0){
 		dag <- dplyr::add_row(dag, v = isolates, w = "")
 	}
@@ -128,12 +128,12 @@ make_model <- function(statement, add_causal_types = TRUE){
  lgths <- lapply(nodal_types, length) %>% unlist
 
  model$parameters_df <- data.frame(
- 	param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
- 	param_value   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
- 	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
- 	node = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+ 	param_names  = unlist(lapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
+ 	param_value   = unlist(lapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
+ 	param_set    = unlist(lapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+ 	node = unlist(lapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
   # param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
-  nodal_type = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
+  nodal_type = unlist(lapply(1:m, function(i) nodal_types[i][[1]])),
   gen = rep(1:m, lgths),
   priors       = 1,
   stringsAsFactors = FALSE
