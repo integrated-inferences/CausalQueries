@@ -46,3 +46,4 @@ prep_gbiqq_data <- function(model, data) {
         strategy_ends = as.array(w_ends), P = P, not_P = 1 - P, A = A, E = E, Y = data$count)
 }
 
+
