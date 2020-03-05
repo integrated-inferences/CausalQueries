@@ -33,11 +33,7 @@ prep_gbiqq_data <- function(model, data) {
         k else c(w_starts[2:n_strategies] - 1, k)
     n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
     l_ends <- as.array(cumsum(n_param_each))
-    if (length(l_ends) == 1) {
-        l_starts <- 1
-    } else {
-        l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1)
-    }
+    l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1)
     names(l_starts) <- names(l_ends)
 
     list(n_params = nrow(P), n_param_sets = n_param_sets, n_param_each = as.array(n_param_each), l_starts = as.array(l_starts),
@@ -45,4 +41,5 @@ prep_gbiqq_data <- function(model, data) {
             possible_data = TRUE)), n_events = nrow(E), n_strategies = n_strategies, strategy_starts = as.array(w_starts),
         strategy_ends = as.array(w_ends), P = P, not_P = 1 - P, A = A, E = E, Y = data$count)
 }
+
 
