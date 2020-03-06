@@ -269,7 +269,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
 
     # If there are wild cards, spell them out
-    labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+    labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
 
     for (i in restricted_vars) {
