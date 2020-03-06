@@ -116,5 +116,25 @@ testthat::test_that(
 
 
 
+testthat::test_that(
+	desc = "get_data_families works",
+	code = {
+		model <- make_model("X -> Y")
+		expect_equal(nrow(get_data_families(model)),  8)
+
+		model <- make_model('X->Y') %>%
+			set_restrictions(statement =  '(Y[X = .] == 1)', join_by = '&', keep = TRUE)
+    data_fam <- get_data_families(model)
+		expect_true(!"Y0"%in% data_fam$event)
+
+		model <- model %>%
+						 set_restrictions(statement =  'X[] == 1', keep = TRUE)
+		data_fam <- get_data_families(model)
+		expect_equal(ncol(data_fam), 3)
+		expect_equal(data_fam$event, c("X1Y1", "Y1", "X1"))
+	}
+)
+
+
 
 
