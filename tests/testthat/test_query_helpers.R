@@ -22,3 +22,14 @@ testthat::test_that(
 		expect_equal(out[1], "(B[A=1] - B[A=0])")
 	}
 )
+
+testthat::test_that(
+	desc = "Check input.",
+	code = {
+		expect_error(gbiqq:::te(2, 1))
+	}
+)
+
+
+
+
