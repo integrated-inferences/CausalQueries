@@ -40,8 +40,13 @@ testthat::test_that(
 		w[, 1] <- c(1, 0, 0, 0)
 		expect_equal(make_events(model = model, w = w, n = 10)[1, 2], 10)
 		expect_equal(colnames(make_events(model = model, include_strategy = TRUE))[2], "strategy")
+
+		out <- make_events(model = model, include_strategy = TRUE, clean_params = TRUE, parameters = c(1, 0, 0, 0, 1, 0))
+		expect_equal(out$count[1], 1)
 	}
 )
+
+
 
 testthat::test_that(
 	desc = "param_type input test.",
