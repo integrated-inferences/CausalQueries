@@ -55,7 +55,6 @@ testthat::test_that(
 	}
 )
 
-
 testthat::test_that(
 	desc = "expand_wildcard",
 	code = {
