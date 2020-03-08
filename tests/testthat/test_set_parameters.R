@@ -46,7 +46,14 @@ testthat::test_that(
 
 		expect_true(class(set_parameters(model)) == "causal_model")
 
-
+		out <- make_model('X -> Y') %>%
+  		set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
+  		set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
+                 parameters = list(c(.2, .8), c(.8, .2))) %>%
+  		get_parameters
+		expect_equal(sum(0.2 == out), 2)
 		}
 )
+
+
 
