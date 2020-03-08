@@ -109,7 +109,7 @@ clean_condition <- function(condition) {
 #' interpret_type(model)
 #' @export
 interpret_type <- function(model, condition = NULL, position = NULL) {
-    if (sum(!is.null(condition) & !is.null(position)) > 1)
+    if (!is.null(condition) & !is.null(position))
         stop("Must specify either `query` or `nodal_position`, but not both.")
     parents <- get_parents(model)
     types <- lapply(lapply(parents, length), function(l) perm(rep(1, l)))
