@@ -7,8 +7,9 @@ testthat::test_that(
 		expect_equal(length(get_type_prob(model = make_model('X->Y'))), 8)
 		expect_true(is.numeric(get_type_prob(model = make_model('X->Y'))))
 		}
-	
+)
 
+testthat::test_that(
 	desc = "Test function works just the same with arg parameters",
 	code = {
 		model <- make_model("X -> Y")
@@ -26,19 +27,10 @@ testthat::test_that(
 	code = {
 		expect_error(get_param_dist(model = make_model('X->Y'), using = 'posteriors', n_draws = 4))
 	}
-
-
-
-	desc = "Test error if model has not been updated",
-	code = {
-		model <- make_model("X -> Y")
-		expect_true(is.null(model$posterior_distribution))
-		expect_error(get_param_dist(model, using="posteriors"))
-		data_long   <- simulate_data(model, n = 4)
-		model <- update_model(model, data_long)
-		expect_true(!is.null(model$posterior_distribution))
-	}
 )
+
+
+
 
 
 
