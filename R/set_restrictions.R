@@ -183,9 +183,6 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 
     n_restrictions <- length(statement)
 
-    if (!is.logical(keep))
-        stop("`keep` should be either 'TRUE' or 'FALSE'")
-
     if (length(join_by) == 1) {
         join_by <- rep(join_by, n_restrictions)
     } else if (length(join_by) != n_restrictions) {
