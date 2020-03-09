@@ -22,10 +22,3 @@ testthat::test_that(
 		expect_equal(out[1], "(B[A=1] - B[A=0])")
 	}
 )
-
-testthat::test_that(
-	desc = "Test error",
-	code = {
-		expect_error(increasing(1, "B"))
-	}
-)
