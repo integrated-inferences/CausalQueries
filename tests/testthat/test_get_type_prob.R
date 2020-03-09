@@ -6,6 +6,8 @@ testthat::test_that(
 	code = {
 		expect_equal(length(get_type_prob(model = make_model('X->Y'))), 8)
 		expect_true(is.numeric(get_type_prob(model = make_model('X->Y'))))
+		}
+	
 
 	desc = "Test function works just the same with arg parameters",
 	code = {
@@ -24,7 +26,7 @@ testthat::test_that(
 	code = {
 		expect_error(get_param_dist(model = make_model('X->Y'), using = 'posteriors', n_draws = 4))
 	}
-)
+
 
 
 	desc = "Test error if model has not been updated",
