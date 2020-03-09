@@ -12,7 +12,6 @@ make_events(
   A = NULL,
   parameters = NULL,
   param_type = NULL,
-  clean_params = TRUE,
   include_strategy = FALSE,
   ...
 )
@@ -31,8 +30,6 @@ make_events(
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 
 \item{param_type}{A character. String specifying type of parameters to make ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
-
-\item{clean_params}{Logical. Use to check parameters in case these are manually supplied.}
 
 \item{include_strategy}{Logical. Whether to include a 'strategy' vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.}
 

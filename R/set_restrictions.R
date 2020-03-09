@@ -183,9 +183,6 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 
     n_restrictions <- length(statement)
 
-    if (!is.logical(keep))
-        stop("`keep` should be either 'TRUE' or 'FALSE'")
-
     if (length(join_by) == 1) {
         join_by <- rep(join_by, n_restrictions)
     } else if (length(join_by) != n_restrictions) {
@@ -269,7 +266,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
 
     # If there are wild cards, spell them out
-    labels <- lapply(labels, function(j) unique(unlist(sapply(j, gbiqq:::unpack_wildcard))))
+    labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
 
     for (i in restricted_vars) {

@@ -33,3 +33,10 @@ testthat::test_that(
 
 
 
+
+	desc = "Test error",
+	code = {
+		expect_error(increasing(1, "B"))
+	}
+)
+

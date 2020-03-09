@@ -22,6 +22,8 @@ testthat::test_that(
 		expect_error(make_priors(model, distribution = c("certainty", "certainty", "jeffreys", "certainty"), node = c("X", "M", "Y", "Z")))
 		expect_error(make_priors(model, node = c("Z"), distribution = c( "uniform"))) # listed node must be in model
 		expect_error(make_priors(model, nodal_type=1, alphas= 23))
+		expect_error(set_priors(model, rnorm(10)))
+		expect_error(set_priors(model, priors = LETTERS))
 	}
 )
 

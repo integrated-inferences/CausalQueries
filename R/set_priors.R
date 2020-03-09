@@ -144,7 +144,7 @@ set_priors <- function(model, priors = NULL, distribution = NA, alphas = NA, nod
             statement = statement, confound = confound, nodal_type = nodal_type, param_names = param_names,
             param_set = param_set)
 
-    if (!is.null(priors) && !is.numeric(priors))
+    if (!is.null(priors) && isTRUE(!is.numeric(priors) | !all(priors >= 0)))
         stop("Argument priors must be a vector of non negative real numbers")
 
     model$parameters_df$priors <- priors

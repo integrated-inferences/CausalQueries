@@ -40,7 +40,11 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 
     type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
 
-    E <- 1 * t(apply(sign_matrix, 1, function(j) apply(type_matrix, 1, function(k) !(any(k * j == -1)))))
+
+    E <- 1 * matrix(apply(sign_matrix, 1, function(j) apply(type_matrix, 1, function(k) !(any(k * j == -1)))),
+                    nrow = length(all_data$event),
+                    byrow = TRUE)
+
     rownames(E) <- all_data$event
     colnames(E) <- full_data$event
 
@@ -50,8 +54,11 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
         keep[!(apply(E, 1, function(j) any(j == 1)))] <- FALSE
     if (drop_all_NA)
         keep[rownames(E) == "None"] <- FALSE
-    E <- E[keep, ]
-    all_data <- all_data[keep, ]
+
+   E <- E[keep,, drop = FALSE]
+
+
+    all_data <- all_data[keep,]
 
     possible_events <- rownames(E)
 
