@@ -20,6 +20,6 @@ testthat::test_that(
 		expect_equal(nrow(A), 8)
 		model2 <-  make_model("X -> Y")
 		B <- make_ambiguities_matrix(model2)
-		expect_equal(as.vector(A), as.vector(B))
+		expect_setequal(as.vector(A), as.vector(B))
 	}
 )
