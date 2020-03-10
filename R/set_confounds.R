@@ -177,7 +177,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 
         # Extend P: Make duplicate block of rows for each ancestor Should contain all values from parameter
         # family (gathered here by recombining)
-        P_new <- data.frame(P[, ]) %>% dplyr::filter(model$parameters_df$node == a)  #%>%
+        P_new <- data.frame(P) %>% dplyr::filter(model$parameters_df$node == a)  #%>%
 
         # Zero out duplicated entries: 1 (New P elements have 0 for non specified types)
         P_new[, !(types_names %in% D[[j]])] <- 0
@@ -209,6 +209,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
     new_order <- with(model$parameters_df, order(gen, param_set))  #, nodal_type))
     model$parameters_df <- model$parameters_df[new_order, ]
     model$P <- data.frame(P[new_order, ])
+    class(model$P) <- c("parameter_matrix", "data.frame")
     rownames(model$parameters_df) <- NULL
 
     # Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
