@@ -216,6 +216,8 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
     if (add_confounds_df)
         model <- set_confounds_df(model)
 
+    attr(model$P, "confounds_df") <- model$confounds_df
+    attr(model$P, "param_set") <- unique(model$parameters_df$param_set)
     # Export
     model
 

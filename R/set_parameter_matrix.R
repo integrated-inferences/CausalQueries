@@ -91,18 +91,16 @@ summary.parameter_matrix <- function(object, ...) {
 print.summary.parameter_matrix <- function(x, ...) {
     cat(paste0("\nRows are parameters, grouped in parameter sets"))
     cat(paste0("\n\nColumns are causal types"))
-    cat(paste0("\n\nCell entries indicate whether a parameter probability is used in the calculation of causal type probability"))
+    cat(paste0("\n\nCell entries indicate whether a parameter probability is used\nin the calculation of causal type probability\n\n"))
 
     param_set <- attr(x, "param_set")
     class(x) <- "data.frame"
-
-    cat("\n \n parameter set  (P)\n ")
     print(x)
-
+    cat("\n \n param_set  (P)\n ")
     cat(paste0(param_set, collapse = "  "))
-    if (!is.null(attr(x, "confounds"))) {
+    if (!is.null(attr(x, "confounds_df"))) {
         cat("\n\n confounds (P)\n")
-        print(attr(x, "confounds"))
+        print(attr(x, "confounds_df"), row.names = FALSE )
     }
 }
 
