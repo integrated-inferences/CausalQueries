@@ -230,12 +230,9 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
         oper <- sapply(expanded_types, function(l) {
             paste0(l, collapse = paste0(" ", join_by, " "))
         })
-        if (length(orig) == 1 && length(orig) != length(oper)) {
-            oper <- sapply(expanded_types, function(a) gsub("%expand%1", a, skeleton))
-            oper_return <- paste0(oper, collapse = paste0(" ", join_by, " "))
-        } else {
-            oper_return <- gsub_many(skeleton, paste0("%expand%", 1:length(orig)), oper)
-        }
+
+        oper_return <- gsub_many(skeleton, paste0("%expand%", 1:length(orig)), oper)
+
 
     } else {
         oper <- do.call(cbind, expanded_types)
