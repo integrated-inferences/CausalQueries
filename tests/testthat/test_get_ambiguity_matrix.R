@@ -13,9 +13,9 @@ testthat::test_that(
 	desc = "Return if not null.",
 	code = {
 		model <- make_model("X -> Y")
-		A1 <- "ambiguity_matrix"
-		model <- set_ambiguities_matrix(model, A1)
-		A2    <- get_ambiguities_matrix(model)[]
+		model1 <- set_ambiguities_matrix(model)
+		A1    <- get_ambiguities_matrix(model1)[]
+		A2    <- get_ambiguities_matrix(model)
 		expect_identical(A1, A2)
 	}
 )
