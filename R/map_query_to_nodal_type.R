@@ -111,8 +111,8 @@ print.summary.nodal_types <- function(x, ...) {
         counter <- counter + 2
     }
 
-    cat(paste("\n\n Number of nodal types that meet query = ", nt))
-    cat(paste("\n Total number of nodal types related to", x$node, "= ", length(x$types)))
+    cat(paste("\n\n Number of nodal types that meet query =", nt))
+    cat(paste("\n Total number of nodal types related to", x$node, "=", length(x$types)))
 
 }
 

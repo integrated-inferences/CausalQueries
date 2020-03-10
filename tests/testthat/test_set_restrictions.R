@@ -23,8 +23,20 @@ testthat::test_that(
 		model_1 <- set_restrictions(model, statement = c("(X[] == 1)"))
 		model_2 <- set_restrictions(model, statement = c("(Z[] == 1)"))
 		expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
+
+		# sequential addition of restrictions
+		model <- make_model("X -> Y <- Z")
+		model <- set_restrictions(model, statement = c("(X[] == 1)"))
+		model <- set_restrictions(model, statement = c("(Z[] == 1)"))
+		expect_true((attr(model, "restrictions")$Z == 1) && (attr(model, "restrictions")$X == 1))
 	}
 )
+
+model <- make_model("X -> Y <- Z")
+model_1 <- set_restrictions(model, statement = c("(X[] == 1)"))
+model_2 <- set_restrictions(model_1, statement = c("(Z[] == 1)"))
+expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
+
 
 context("Test restrict_by_query")
 
@@ -36,6 +48,9 @@ testthat::test_that(
 		join_by <- c("&", "|", "AND")
 		## too many in join_by
 		expect_error(gbiqq:::restrict_by_query(model = model, statement = statement, join_by = join_by))
+		## not logical
+		expect_error(gbiqq:::restrict_by_query(model = model, statement = statement, keep = NULL))
+
 		model <- set_restrictions(model, statement =  c("(X[] == 1)", "(Z[] == 1)" ))
 		## nodal_types can't be entirely reduced. Revise conditions for node X
 		expect_error(set_restrictions(model, statement = c("(X[] == 0)")))

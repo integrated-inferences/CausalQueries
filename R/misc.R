@@ -21,7 +21,6 @@ n_check <- function(n) {
 #' @details Sets controls to default unless otherwise specified.
 
 default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
-    adapt_delta = NULL
     if (is.null(adapt_delta)) {
         adapt_delta <- 0.95
     }
@@ -39,7 +38,6 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' @details Set the sampling arguments
 
 set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NULL, ...) {
-    user_adapt_delta <- NULL
     args <- list(object = object, ...)
     unms <- names(user_dots)
     for (j in seq_along(user_dots)) {
