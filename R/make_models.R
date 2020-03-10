@@ -210,7 +210,7 @@ print.summary.causal_model <- function(x,  ...){
   if(!is.null(x$P)){
   	cat("\n ------------------------------------------------------------------------------------------\n")
   	cat("\nParameter matrix: \n")
-  	print(model$P)
+  	print(x$P)
   	}
 
 
