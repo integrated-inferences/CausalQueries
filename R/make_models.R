@@ -213,13 +213,13 @@ print.summary.causal_model <- function(x,  ...){
   	print(model$P)
   	}
 
-  } else{
 
-  	if(!is.null(x$causal_types)){
+
+  if(!is.null(x$causal_types)){
   		cat("\nNumber of unit types:")
   		cat(paste0("  ", nrow(get_causal_types(x)), "\n"))}
 
-  }
+
 
 	if(!is.null(attr(x,"restrictions"))){
 
