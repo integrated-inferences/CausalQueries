@@ -23,6 +23,7 @@ testthat::test_that(
 	}
 )
 
+
 testthat::test_that(
 	desc = "Check input.",
 	code = {
@@ -39,4 +40,6 @@ testthat::test_that(
 		expect_error(increasing(1, "B"))
 	}
 )
+
+
 
