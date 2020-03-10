@@ -30,7 +30,8 @@ make_parameter_matrix <- function(model) {
     # Tidy up
     colnames(P) <- do.call(paste, c(types, sep = "."))
     rownames(P) <- model$parameters_df$param_names
-
+    P <- as.data.frame(P)
+    class(P) <- c("parameter_matrix", "data.frame")
     P
 }
 
@@ -68,7 +69,7 @@ set_parameter_matrix <- function(model, P = NULL) {
     if (is.null(P))
         P <- make_parameter_matrix(model)
     model$P <- P
-    class(model$P) <- c("parameter_matrix")
+
     model
 }
 
@@ -82,19 +83,22 @@ print.parameter_matrix <- function(x, ...) {
 
 #' @export
 summary.parameter_matrix <- function(object, ...) {
-    structure(object, class = c("summary.parameter_matrix", "table"))
+    structure(object, class = c("summary.parameter_matrix", "data.frame"))
 
 }
 
 #' @export
 print.summary.parameter_matrix <- function(x, ...) {
-    print("Rows are parameters, grouped in parameter sets")
-    print("Columns are causal types")
-    print("Cell entries indicate whether a parameter probability is used in the calculation of causal type probability")
-    print.table(x)
-    param_set <- attr(x, "param_set")
+    cat(paste0("\nRows are parameters, grouped in parameter sets"))
+    cat(paste0("\n\nColumns are causal types"))
+    cat(paste0("\n\nCell entries indicate whether a parameter probability is used in the calculation of causal type probability"))
 
-    cat("\n parameter set  (P)\n ")
+    param_set <- attr(x, "param_set")
+    class(x) <- "data.frame"
+
+    cat("\n \n parameter set  (P)\n ")
+    print(x)
+
     cat(paste0(param_set, collapse = "  "))
     if (!is.null(attr(x, "confounds"))) {
         cat("\n\n confounds (P)\n")
