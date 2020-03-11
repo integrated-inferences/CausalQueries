@@ -64,4 +64,4 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
 after_success:
- - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; travis_wait 40  Rscript -e 'covr::coveralls()'
+ - travis_wait 40  Rscript -e 'covr::coveralls()'
