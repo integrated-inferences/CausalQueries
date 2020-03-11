@@ -63,5 +63,10 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CC = clang" >> ~/.R/Makevars; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
+script:
+  - |
+    travis_wait 42 R CMD build .
+    travis_wait 59 R CMD check gbiqq*tar.gz
+
 after_success:
  - travis_wait 40  Rscript -e 'covr::coveralls()'
