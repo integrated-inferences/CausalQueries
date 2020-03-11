@@ -1,35 +1,27 @@
 context(desc = "Testing data helperse")
 
 testthat::test_that(
-	desc = "collapse_data works",
-	code = {
-		testthat::test_that(
-			desc = "when variables not in the model",
+	desc = "collapse_data works when variables not in the model",
 			code = {
 				 model <- make_model('X->Y')
 				 long_data <- simulate_data(model, n = 6)
 				 data <- collapse_data(long_data, model)
 				 expect_true(class(data) == "data.frame")
 				 expect_true(unique(data$strategy) == "XY")
-			}
-		)
+
+				 model <- make_model('X->Y')
+				 data <- simulate_data(model, n = 3)
+				 Z <- c(0, 0, 0)
+				 data <- cbind(data, Z)
+				 nodes <- model$nodes
+				 data <- collapse_data(data, model)
+				 expect_equal(nrow(data), 4)
+
 	}
 )
 
 
 
-testthat::test_that(
-	desc = "collapse_data works when variables not in the model",
-	code = {
-		model <- make_model('X->Y')
-		data <- simulate_data(model, n = 3)
-		Z <- c(0, 0, 0)
-		data <- cbind(data, Z)
-		nodes <- model$nodes
-		data <- collapse_data(data, model)
-		expect_equal(nrow(data), 4)
-	}
-)
 
 testthat::test_that(
 	desc = "collapse_data works when all NA",
