@@ -10,23 +10,6 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      r: oldrel
-      r_binary_packages:
-        - devtools
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - libudunits2-dev
-            - libgdal-dev
-            - libproj-dev
-            - libv8-dev
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - os: linux
-      dist: trusty
       r: release
       r_binary_packages:
         - devtools

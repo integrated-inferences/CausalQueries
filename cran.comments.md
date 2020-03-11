@@ -1,9 +1,9 @@
 ## Test environments
 
-* local OS X install, R 3.6.2
-* Ubuntu 14.04 (on travis-ci), R-oldrel R-release, R-devel
-* OS X on travis-ci, R-oldrel R-release, R-devel
-* win-builder, R-oldrel,  R-release, R-devel
+* local OS X install (R 3.6.2)
+* Ubuntu 14.04 on travis-ci (R-release, R-devel)
+* OS X on travis-ci (R-oldrel R-release, R-devel)
+* win-builder (R-oldrel,  R-release, R-devel)
 
 ## R CMD check results
 
