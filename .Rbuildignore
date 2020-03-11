@@ -6,4 +6,6 @@ src/.*\.cc$
 src/.*\.hpp$
 src/.*\.gcda$
 .gitignore
-
+rcppExports.cpp
+stanExports_*
+cran.comments.md

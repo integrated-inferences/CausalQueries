@@ -97,7 +97,7 @@ make_confounds_df <- function(model) {
     for (i in 1:nrow(confound_df)) {
         confound_df[i, ] <- (nodes[nodes %in% sapply(confound_df[i, ], as.character)])
     }
-
+    colnames(confound_df) <- c("node 1", "node 2")
     distinct(confound_df)
 
 }
