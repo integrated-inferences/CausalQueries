@@ -210,21 +210,16 @@ print.summary.causal_model <- function(x,  ...){
   if(!is.null(x$P)){
   	cat("\n ------------------------------------------------------------------------------------------\n")
   	cat("\nParameter matrix: \n")
-  	P <- x$P
-  	cat(paste0("Number of parameters (rows): ", nrow(P), "\n"))
-  	cat(paste0("Number of unit types (columns): ", ncol(P), "\n"))
-  	if(!is.null(attr(P, "confounds") )){
-  	cat("\nConfounds: \n")
-  	print(attr(P, "confounds") )
+  	print(x$P)
   	}
 
-  } else{
 
-  	if(!is.null(x$causal_types)){
+
+  if(!is.null(x$causal_types)){
   		cat("\nNumber of unit types:")
   		cat(paste0("  ", nrow(get_causal_types(x)), "\n"))}
 
-  }
+
 
 	if(!is.null(attr(x,"restrictions"))){
 
