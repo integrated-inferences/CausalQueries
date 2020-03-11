@@ -15,5 +15,11 @@ testthat::test_that(
 		x <- map_query_to_causal_type(model, query)
 		out <- capture.output(gbiqq:::print.summary.causal_types(x))
 		expect_equal(length(out), 10)
+
+		# Other objects
+		x <- list()
+		class(x) <- "causal_type"
+		out <- capture.output(gbiqq:::print.summary.causal_types(x))
+		expect_equal(out[1], "list()")
 	}
 )
