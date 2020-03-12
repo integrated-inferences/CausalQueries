@@ -16,7 +16,16 @@ testthat::test_that(
 		model <- make_model("X -> Y")
 		expect_equal(model$nodal_types, gbiqq:::collapse_nodal_types(model$nodal_types))
 		nodal_types <- get_nodal_types(model, collapse = FALSE)
-		expect_true(all(grepl("X", gbiqq:::collapse_nodal_types(nodal_types, include_node_names = TRUE)$X)))
+    expect_true(all(grepl("X", gbiqq:::collapse_nodal_types(nodal_types, include_node_names = TRUE)$X)))
+
+		x <- gbiqq:::collapse_nodal_types(nodal_types)$X
+		expect_setequal(x, c("0", "1"))
+
+		model <- make_model("X -> Y")
+		nodal_types <- get_nodal_types(model, collapse = TRUE)
+		x <- gbiqq:::collapse_nodal_types(nodal_types)
+		expect_identical(x, nodal_types)
+
 	}
 )
 
