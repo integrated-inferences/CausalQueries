@@ -221,6 +221,7 @@ print.summary.causal_model <- function(x,  ...){
 
 
 
+
 	if(!is.null(attr(x,"restrictions"))){
 
 		restrictions <- attr(x,"restrictions")
