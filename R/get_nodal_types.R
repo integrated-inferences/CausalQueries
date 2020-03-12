@@ -49,9 +49,10 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' Make nodal types
 #'
 #' @inheritParams gbiqq_internal_inherit_params
+#' @param include_node_names Logical. If `TRUE` returns names of form X0, X1; otherwise returns 0, 1. Defaults to `FALSE`
 #'
 #'
-make_nodal_types <- function(model) {
+make_nodal_types <- function(model, include_node_names = FALSE) {
 
     nodes <- model$nodes
     real_node <- !(is.na(nodes))
@@ -61,6 +62,8 @@ make_nodal_types <- function(model) {
 
     nodal_types_labels <- lapply(1:length(nodal_types), function(i) {
         labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
+        if (include_node_names)
+            return(paste0(names(nodal_types)[i], labels))
         labels
     })
 
@@ -79,8 +82,9 @@ make_nodal_types <- function(model) {
 
 #' collapse nodal types
 #' @param nodal_types A list of nodal types.
+#' @param include_node_names Logical, if TRUE returns names X0, X1; otherwise returns 0, 1
 #'
-collapse_nodal_types <- function(nodal_types) {
+collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
     # Skip if already collapsed
     if (!(is.data.frame(nodal_types[[1]])))
         return(nodal_types)
@@ -90,6 +94,8 @@ collapse_nodal_types <- function(nodal_types) {
         var <- names(nodal_types)[i]
         mat <- as.matrix(nodal_types[[i]])
         labels <- apply(mat, 1, paste, collapse = "")
+        if (include_node_names)
+            return(paste0(var, labels))
         paste0(labels)
     })
     names(types) <- names(nodal_types)

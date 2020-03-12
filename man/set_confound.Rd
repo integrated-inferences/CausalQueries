@@ -66,7 +66,7 @@ get_parameters(model)
 
 # In this case we notionally place a distribution but in fact Y has degenerate support
 make_model('X -> Y -> Z') \%>\%
-  set_restrictions(c(increasing('X', 'Y')), keep = FALSE) \%>\%
+  set_restrictions(c(increasing('X', 'Y')), keep = TRUE) \%>\%
   set_confound(list('X <-> Y')) \%>\%
   get_parameter_matrix()
 
