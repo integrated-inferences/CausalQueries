@@ -4,6 +4,3 @@
 \name{gbiqq-package}
 \alias{gbiqq-package}
 \title{gbiqq: A package for creating and updating  binary probabilistic causal models}
-\description{
-gbiqq: A package for creating and updating  binary probabilistic causal models
-}
