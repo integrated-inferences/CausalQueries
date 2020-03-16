@@ -36,8 +36,6 @@ make_priors(
 
 \item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 
-
-
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
@@ -62,30 +60,51 @@ Seven arguments govern *which* parameters should be altered. The default is 'all
 
 Two arguments govern what values to apply:
 
-* alphas is one or more non negative numbers and
+* \code{alphas} is one or more non negative numbers and
 
-* 'distribution' indicates one of a common class: uniform, jeffreys, or 'certain'
+* \code{distribution} indicates one of a common class: uniform, jeffreys, or 'certain'
 
 Any arguments entered as lists or vectors of size > 1 should be of the same length as each other.
 }
 \examples{
+
+# Pass all nodal types
+model <- make_model("Y <- X")
+make_priors(model, alphas = .4)
+make_priors(model, distribution = "jeffreys")
+
+# Passing by names of node, parameter set or label
 model <- make_model('X -> M -> Y')
+make_priors(model, param_name = "X.1", alphas = 2)
 make_priors(model, node = 'X', alphas = 3)
+make_priors(model, param_set = 'Y', alphas = 5)
 make_priors(model, node = c('X', 'Y'), alphas = 3)
+make_priors(model, param_set = c('X', 'Y'), alphas = 5)
 make_priors(model, node = list('X', 'Y'), alphas = list(3, 6))
+make_priors(model, param_set = list('X', 'Y'), alphas = list(4, 6))
 make_priors(model, node = c('X', 'Y'), distribution = c('certainty', 'jeffreys'))
+make_priors(model, param_set = c('X', 'Y'), distribution = c('jeffreys', 'certainty'))
+make_priors(model, label = '01', alphas = 5)
+make_priors(model, node = 'Y', label = '00', alphas = 2)
+make_priors(model, node =c('M', 'Y'), label = '11', alphas = 4)
+
+# Passing a causal statement
 make_priors(model, statement = 'Y[M=1] > Y[M=0]', alphas = 3)
 make_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
-\dontrun{
-# Error if statement seeks to
-make_priors(model, statement = 'Y[X=1] > Y[X=0]', alphas = 3)
-}
+
+# Passing a confound statement
 model <- make_model('X->Y') \%>\%
  set_confound(list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]'))
+
 make_priors(model,
             confound = list(X='Y[X=1] > Y[X=0]',
                             X='Y[X=1] < Y[X=0]'),
             alphas = c(3, 6))
+
+make_priors(model, confound= list(X='Y[X=1] > Y[X=0]'), alphas = 4)
+make_priors(model, param_set='X_1', alphas = 5)
+make_priors(model, param_names='X_2.1', alphas = .75)
+
 make_model('X -> Y') \%>\%
   set_confound(list(X = 'Y[X=1]>Y[X=0]'))\%>\%
   make_priors(statement = 'X[]==1',
