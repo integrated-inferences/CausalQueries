@@ -4,14 +4,16 @@
 \name{democracy_data}
 \alias{democracy_data}
 \title{Democracy Data}
-\format{A data frame with 84 rows and 5 nodes:
+\format{
+A data frame with 84 rows and 5 nodes:
 \describe{
   \item{Case}{Case}
   \item{D}{Democracy}
   \item{I}{Inequality}
   \item{P}{International Pressure}
   \item{M}{Mobilization}
-}}
+}
+}
 \source{
 \url{https://www.cambridge.org/core/journals/american-political-science-review/article/inequality-and-regime-change-democratic-transitions-and-the-stability-of-democratic-rule/C39AAF4CF274445555FF41F7CC896AE3#fndtn-supplementary-materials/}
 }
