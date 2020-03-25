@@ -77,6 +77,9 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
         dos <- list()
 
         # Walks through splitted expressions (i.e dos) and evaulates each expression when possible
+        if(length(.query) == 0) {
+        stop("query does not return any causal types.\nNote that expressions of the form `Y[]==1` are not allowed for mapping queries to causal types.\nSpecify queries as (e.g.) `Y==1` or `Y[X=0] == 1` instead.")
+        }
         for (j in 1:length(.query)) {
             do <- unlist(strsplit(.query[j], ""))
             stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
