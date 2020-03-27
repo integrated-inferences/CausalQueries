@@ -158,7 +158,7 @@ testthat::test_that(
 testthat::test_that(
 	desc = "Check CausalQueries alias and use keep_fit",
 	code = {
-		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
+		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
 		expect_true(class(updated) == "causal_model")
 	}
 )
@@ -180,9 +180,9 @@ testthat::test_that(
 testthat::test_that(
 	desc = "Test stan arguments",
 	code = {
-		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
+		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
 		expect_true(class(updated) == "causal_model")
-		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(max_treedepth = 20))
+		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(max_treedepth = 20))
 		expect_true(class(updated) == "causal_model")
 	}
 )

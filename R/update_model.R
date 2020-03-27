@@ -119,4 +119,4 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 #'
 #' @export
 
-CausalQueries <- function(...) update_model(...)
+gbiqq <- function(...) update_model(...)

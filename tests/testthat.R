@@ -1,5 +1,5 @@
 library(testthat)
 
-library(gbiqq)
+library(CausalQueries)
 
-test_check("gbiqq")
+test_check("CausalQueries")

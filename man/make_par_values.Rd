@@ -83,8 +83,12 @@ CausalQueries:::make_par_values(model, confound = confounds[1], x = 3)
 CausalQueries:::make_par_values(model, node = 'Y', confound = confounds[1], x = 3)
 
 # A residual  confound condition can also be defined
-CausalQueries:::make_par_values(model, confound = list(X = '!(Y[X=1] > Y[X=0])'), x = 3)
-CausalQueries:::make_par_values(model, confound = list(X = '(Y[X=1] == Y[X=0])'), x = 3)
+CausalQueries:::make_par_values(model,
+                                confound = list(X = '!(Y[X=1] > Y[X=0])'),
+                                x = 3)
+CausalQueries:::make_par_values(model,
+                                confound = list(X = '(Y[X=1] == Y[X=0])'),
+                                x = 3)
 
 # make_par_values can also be used for some vector valued statements
 model <- make_model('X -> M -> Y')
@@ -100,15 +104,25 @@ CausalQueries:::make_par_values(model, statement = '(Y[X=1] == 2)', x = .1)
 
 # Normalization: Take in a parameter vector and output is renormalized
 model <- make_model("X->Y")
-CausalQueries:::make_par_values(model, y = get_parameters(model),
-  label = '01', x = .1, normalize = TRUE)
-CausalQueries:::make_par_values(model, y = get_parameters(model),
-  statement = '(Y[X=1] == Y[X=0])', x = .1, normalize = TRUE)
+CausalQueries:::make_par_values(model,
+                                y = get_parameters(model),
+                                label = '01',
+                                x = .1,
+                                normalize = TRUE)
+CausalQueries:::make_par_values(model,
+                                y = get_parameters(model),
+                                statement = '(Y[X=1] == Y[X=0])',
+                                x = .1,
+                                normalize = TRUE)
 
 # Problematic examples
 \dontrun{
 CausalQueries:::make_par_values(model, x = 1:2)
-CausalQueries:::make_par_values(model, y = get_parameters(model), label = '01', x = 2, normalize = TRUE)
+CausalQueries:::make_par_values(model,
+                                y = get_parameters(model),
+                                label = '01',
+                                x = 2,
+                                normalize = TRUE)
 }
 
 }
