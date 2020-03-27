@@ -110,13 +110,3 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
     model
 }
 
-
-#' CausalQueries
-#'
-#' An alias for \code{\link{update_model}}
-#'
-#' @param ... arguments passed to  \code{\link{update_model}}
-#'
-#' @export
-
-gbiqq <- function(...) update_model(...)
