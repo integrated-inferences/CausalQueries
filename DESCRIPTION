@@ -1,6 +1,6 @@
-Package: gbiqq
+Package: CausalQueries
 Type: Package
-Title: Generalized BIQQ
+Title: Make, update, and query binary causal models
 Version: 0.0.3
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
