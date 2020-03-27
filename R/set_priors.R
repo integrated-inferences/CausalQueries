@@ -174,9 +174,13 @@ make_priors <-
 #' get_priors(model_new_priors)
 #' model_new_priors <- set_priors(model, param_set = list('X', 'Y'), alphas = list(4, 6))
 #' get_priors(model_new_priors)
-#' model_new_priors <- set_priors(model, node = c('X', 'Y'), distribution = c('certainty', 'jeffreys'))
+#' model_new_priors <- set_priors(model,
+#'                                node = c('X', 'Y'),
+#'                                distribution = c('certainty', 'jeffreys'))
 #' get_priors(model_new_priors)
-#' model_new_priors <- set_priors(model, param_set = c('X', 'Y'), distribution = c('jeffreys', 'certainty'))
+#' model_new_priors <- set_priors(model,
+#'                                param_set = c('X', 'Y'),
+#'                                distribution = c('jeffreys', 'certainty'))
 #' get_priors(model_new_priors)
 #' model_new_priors <- set_priors(model, label = '01', alphas = 5)
 #' get_priors(model_new_priors)
@@ -188,7 +192,9 @@ make_priors <-
 #' # Passing a causal statement
 #' model_new_priors <- set_priors(model, statement = 'Y[M=1] > Y[M=0]', alphas = 3)
 #' get_priors(model_new_priors)
-#' model_new_priors <- set_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
+#' model_new_priors <- set_priors(model,
+#'                                statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'),
+#'                                alphas = c(3, 2))
 #' get_priors(model_new_priors)
 #'
 #' # Passing a confound statement
