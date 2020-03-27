@@ -4,7 +4,7 @@
 #'
 #' By default, parameters is drawn from `using` argument (either from priors, posteriors, or from model$parameters)
 #'
-#'@inheritParams gbiqq_internal_inherit_params
+#'@inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #' @examples
@@ -28,7 +28,7 @@ get_type_prob <- function(model, P = NULL, parameters = NULL) {
 
 #' Draw matrix of type probabilities, before or after estimation
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param using A character. It indicates whether to use `priors`, `posteriors` or `parameters`.
 #' @param n_draws An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.
@@ -61,7 +61,7 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
 #'
 #' Using parameters, priors, or posteriors
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #' @examples

@@ -2,7 +2,7 @@
 #'
 #' Get possible data types
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param drop_impossible Logical. Whether to drop data that is impossible given model restrictions. Defaults to `TRUE`
 #' @param drop_all_NA Logical. Whether to drop row of all `NA`s. Defaults to `TRUE`
 #' @param mapping_only Logical. Whether to return data mapping matrix only. Defaults to `FALSE`.
@@ -84,7 +84,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #'
 #' Take a `data.frame` and return compact `data.frame`  of event types and strategies.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param drop_NA Logical. Whether to exclude strategy families that contain no observed data. Exceptionally if no data is provided, minimal data on data on first node is returned. Defaults to `TRUE`
 #' @param drop_family Logical. Whether to remove column \code{strategy} from the output. Defaults to `FALSE`.
@@ -179,14 +179,14 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
 
 #' Drop empty families
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @return Returns data events with strategies (excluding  strategy families that contain no observed data)
 #'
 #' @examples
 #'
 #' data_events <- data.frame(event = c('X0Y0', 'Y0'), strategy = c('XY', 'Y'), count = 1:0)
-#' gbiqq:::drop_empty_families(data_events)
+#' CausalQueries:::drop_empty_families(data_events)
 #'
 drop_empty_families <- function(data_events) {
 
@@ -202,7 +202,7 @@ drop_empty_families <- function(data_events) {
 
 #' Expand compact data object to data frame
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #' @examples
@@ -239,7 +239,7 @@ expand_data <- function(data_events = NULL, model) {
 #' Data type names
 #'
 #' Provides names to data types
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #' @examples
@@ -260,7 +260,7 @@ data_type_names <- function(model, data) {
 #'
 #' Creates dataframe with all data types (including NA types) that are possible from a model.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param complete_data Logical. If `TRUE` return only complete data types (no NA's). Defaults to `FALSE`.
 #' @param possible_data Logical. If `TRUE` returns only complete data types (no NA's) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
 #' @param given A character.  A quoted statement that evaluates to logical. Data conditional on specific values.

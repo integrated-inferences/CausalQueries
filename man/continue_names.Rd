@@ -16,5 +16,5 @@ Slightly hacky function to continue param_set names in a sequence
 }
 \examples{
 x <- c('S_3', 'S_3', 'S_5')
-gbiqq:::continue_names(x)
+CausalQueries:::continue_names(x)
 }

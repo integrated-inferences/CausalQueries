@@ -1,17 +1,17 @@
-# gbiqq
+# CausalQueries
 
-`gbiqq` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of `dagitty` functionality. Updating is implemented in `stan`. 
+`CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of `dagitty` functionality. Updating is implemented in `stan`. 
 
-See [here](https://macartan.github.io/causalmodels/) for a guide to using `gbiqq` along with many examples of causal models  
+See [here](https://macartan.github.io/causalmodels/) for a guide to using `CausalQueries` along with many examples of causal models  
 
 
 ## Installation
 
-To install `gbiqq`:
+To install `CausalQueries`:
 
 ```
 install.packages("remotes")
-remotes::install_github("macartan/gbiqq")
+remotes::install_github("macartan/CausalQueries")
 ```
 
 ## Causal models
@@ -92,4 +92,4 @@ This uses the posterior distribution and the model to assess the "causes of effe
 
 ## Credits etc
 
-The approach used in `gbiqq` is a generalization of the `biqq` models described in "Mixing Methods: A Bayesian Approach" (Humphreys and Jacobs, 2015,  https://doi.org/10.1017/S0003055415000453). The conceptual extension makes use of work on probabilistic causal models described in Pearl's *Causality* (Pearl, 2009,  https://doi.org/10.1017/CBO9780511803161). The approach to generating a generic `stan` function that can take data from arbitrary models was developed in key contributions by Jasper Cooper (http://jasper-cooper.com/) and Georgiy Syunyaev (http://gsyunyaev.com/).  Lily Medina (https://lilymedina.github.io/) did the magical work of pulling it all together and developing approaches to characterizing confounding and defining estimands. Julio Solis has done wonders to simplify the specification of priors.    
+The approach used in `CausalQueries` is a generalization of the `biqq` models described in "Mixing Methods: A Bayesian Approach" (Humphreys and Jacobs, 2015,  https://doi.org/10.1017/S0003055415000453). The conceptual extension makes use of work on probabilistic causal models described in Pearl's *Causality* (Pearl, 2009,  https://doi.org/10.1017/CBO9780511803161). The approach to generating a generic `stan` function that can take data from arbitrary models was developed in key contributions by Jasper Cooper (http://jasper-cooper.com/) and Georgiy Syunyaev (http://gsyunyaev.com/).  Lily Medina (https://lilymedina.github.io/) did the magical work of pulling it all together and developing approaches to characterizing confounding and defining estimands. Julio Solis has done wonders to simplify the specification of priors.    

@@ -38,7 +38,7 @@ clean_params <- function(parameters_df, warning = TRUE) {
 
 #' Clean parameter vector
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 clean_param_vector <- function(model, parameters) {
 

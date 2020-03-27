@@ -31,7 +31,7 @@ testthat::test_that(
 
 		ATE <- "Y[X=1] - Y[X=0]"
 		COE <- "Y[X=1] > Y[X=0]"
-		results <- gbiqq::query_model(
+		results <- CausalQueries::query_model(
 			updated,
 			queries = list(ATE = ATE, ATE = ATE, COE = COE, COE = COE),
 			using = list("priors", "posteriors"))
@@ -156,9 +156,9 @@ testthat::test_that(
 
 
 testthat::test_that(
-	desc = "Check gbiqq alias and use keep_fit",
+	desc = "Check CausalQueries alias and use keep_fit",
 	code = {
-		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
+		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
 		expect_true(class(updated) == "causal_model")
 	}
 )
@@ -180,9 +180,9 @@ testthat::test_that(
 testthat::test_that(
 	desc = "Test stan arguments",
 	code = {
-		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
+		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
 		expect_true(class(updated) == "causal_model")
-		updated <- gbiqq(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(max_treedepth = 20))
+		updated <- CausalQueries(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(max_treedepth = 20))
 		expect_true(class(updated) == "causal_model")
 	}
 )

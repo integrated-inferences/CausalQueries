@@ -2,7 +2,7 @@
 
 #' Get list of parents of all nodes in a model
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @export
 #' @return A \code{list} of parents in a DAG
 #' @examples

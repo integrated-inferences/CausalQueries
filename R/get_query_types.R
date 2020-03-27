@@ -2,7 +2,7 @@
 #'
 #' Find the nodal or causal types used by the query. Passes arguments into \code{\link{map_query_to_causal_type}} or \code{\link{map_query_to_nodal_type}}
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param map Types in query. Either \code{nodal_type} or \code{causal_type}. Default is causal types
 #'
 #' @export

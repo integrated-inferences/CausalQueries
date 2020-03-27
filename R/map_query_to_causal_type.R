@@ -1,7 +1,7 @@
 
 #' Get values of types according to a query
 #'
-#'@inheritParams gbiqq_internal_inherit_params
+#'@inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #' @return A \code{list} containing the types and the evaluated expression.

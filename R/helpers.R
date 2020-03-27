@@ -95,7 +95,7 @@ clean_condition <- function(condition) {
 #' Interpret or find position in nodal type
 #'
 #' Interprets the position of one or more digits (specified by \code{position}) in a nodal type. Alternatively returns nodal type digit positions that correspond to one or more given \code{condition}.
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param condition A vector of characters. Strings specifying the child node, followed by '|' (given) and the values of its parent nodes in \code{model}.
 #' @param position A named list of integers. The name is the name of the child node in \code{model}, and its value a vector of digit positions in that node's nodal type to be interpreted. See `Details`.
 #' @details A node for a child node X with \code{k} parents has a nodal type represented by X followed by \code{2^k} digits. Argument \code{position} allows user to interpret the meaning of one or more digit positions in any nodal type. For example \code{position = list(X = 1:3)} will return the interpretation of the first three digits in causal types for X. Argument \code{condition} allows users to query the digit position in the nodal type by providing instead the values of the parent nodes of a given child. For example, \code{condition = 'X | Z=0 & R=1'} returns the digit position that corresponds to values X takes when Z = 0 and R = 1.
@@ -177,7 +177,7 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 #'
 #' Expand statement containing wildcard
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param to_expand A character vector of length 1L.
 #' @param verbose Logical. Whether to print expanded query on the consule.
 #' @importFrom rlang expr
@@ -252,7 +252,7 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
 #'
 #' Parameter names taken from \code{P} matrix or model if no \code{P}  matrix provided
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param include_paramset Logical. Whether to include the param set prefix as part of the name.
 #' @export
 #' @examples
@@ -282,7 +282,7 @@ includes_var <- function(var, query)
     length(grep(paste0("\\<", var, "\\>"), query)) > 0
 
 #' List of nodes contained in query
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 var_in_query <- function(model, query) {
     v <- model$nodes

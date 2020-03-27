@@ -18,9 +18,9 @@
 #'
 #' @family priors
 #' @examples
-#' gbiqq:::make_values_task_list(node = 'X', x = 3)
-#' gbiqq:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
-#' gbiqq:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
+#' CausalQueries:::make_values_task_list(node = 'X', x = 3)
+#' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
+#' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
 
 
 make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = NA, statement = NA,
@@ -89,56 +89,56 @@ make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = 
 #' @examples
 #' model <- make_model('X -> M -> Y; X -> Y')
 #'
-#' gbiqq:::make_par_values(model, distribution = 'jeffreys')
+#' CausalQueries:::make_par_values(model, distribution = 'jeffreys')
 #'
-#' gbiqq:::make_par_values(model, x = 3)
+#' CausalQueries:::make_par_values(model, x = 3)
 #'
 #' # Selecting subsets:
 #'
 #' # By node
-#' gbiqq:::make_par_values(model, node = 'M', x = 8)
+#' CausalQueries:::make_par_values(model, node = 'M', x = 8)
 #'
 #' # By nodal type statement
-#' gbiqq:::make_par_values(model,
+#' CausalQueries:::make_par_values(model,
 #'         statement = '(Y[X=1, M = .] > Y[X=0, M = .])', x = 2)
 #'
 #' # By nodal type label (safest to provide node also)
-#' gbiqq:::make_par_values(model, node = 'X', label = '0', x = 9)
+#' CausalQueries:::make_par_values(model, node = 'X', label = '0', x = 9)
 #'
 #' # By confound query: Applies only to types that are involved in confounding
 #' # Only alters named node in confound, even if other nodes are listed in 'nodes'
 #' confounds <- list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]')
 #' model     <- make_model('X->Y') %>% set_confound(confounds)
-#' gbiqq:::make_par_values(model, confound = confounds[1], x = 3)
-#' gbiqq:::make_par_values(model, node = 'Y', confound = confounds[1], x = 3)
+#' CausalQueries:::make_par_values(model, confound = confounds[1], x = 3)
+#' CausalQueries:::make_par_values(model, node = 'Y', confound = confounds[1], x = 3)
 #'
 #' # A residual  confound condition can also be defined
-#' gbiqq:::make_par_values(model, confound = list(X = '!(Y[X=1] > Y[X=0])'), x = 3)
-#' gbiqq:::make_par_values(model, confound = list(X = '(Y[X=1] == Y[X=0])'), x = 3)
+#' CausalQueries:::make_par_values(model, confound = list(X = '!(Y[X=1] > Y[X=0])'), x = 3)
+#' CausalQueries:::make_par_values(model, confound = list(X = '(Y[X=1] == Y[X=0])'), x = 3)
 #'
 #' # make_par_values can also be used for some vector valued statements
 #' model <- make_model('X -> M -> Y')
-#' gbiqq:::make_par_values(model, node = c('X', 'Y'), x = 2)
-#' gbiqq:::make_par_values(model, label = c('1', '01'), x = 2)
+#' CausalQueries:::make_par_values(model, node = c('X', 'Y'), x = 2)
+#' CausalQueries:::make_par_values(model, label = c('1', '01'), x = 2)
 #'
 #' # Incompatible conditions produce no change
-#' gbiqq:::make_par_values(model, node = 'X', label = '01', x = 2)
+#' CausalQueries:::make_par_values(model, node = 'X', label = '01', x = 2)
 #'
 #' # If statement not satisfied by any cases then no change
 #' model <- make_model("X->Y")
-#' gbiqq:::make_par_values(model, statement = '(Y[X=1] == 2)', x = .1)
+#' CausalQueries:::make_par_values(model, statement = '(Y[X=1] == 2)', x = .1)
 #'
 #' # Normalization: Take in a parameter vector and output is renormalized
 #' model <- make_model("X->Y")
-#' gbiqq:::make_par_values(model, y = get_parameters(model),
+#' CausalQueries:::make_par_values(model, y = get_parameters(model),
 #'   label = '01', x = .1, normalize = TRUE)
-#' gbiqq:::make_par_values(model, y = get_parameters(model),
+#' CausalQueries:::make_par_values(model, y = get_parameters(model),
 #'   statement = '(Y[X=1] == Y[X=0])', x = .1, normalize = TRUE)
 #'
 #' # Problematic examples
 #' \dontrun{
-#' gbiqq:::make_par_values(model, x = 1:2)
-#' gbiqq:::make_par_values(model, y = get_parameters(model), label = '01', x = 2, normalize = TRUE)
+#' CausalQueries:::make_par_values(model, x = 1:2)
+#' CausalQueries:::make_par_values(model, y = get_parameters(model), label = '01', x = 2, normalize = TRUE)
 #' }
 #'
 

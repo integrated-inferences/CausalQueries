@@ -18,6 +18,6 @@ Drop empty families
 \examples{
 
 data_events <- data.frame(event = c('X0Y0', 'Y0'), strategy = c('XY', 'Y'), count = 1:0)
-gbiqq:::drop_empty_families(data_events)
+CausalQueries:::drop_empty_families(data_events)
 
 }

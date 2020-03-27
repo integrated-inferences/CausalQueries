@@ -247,7 +247,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 
 #' Reduce nodal types using labels
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
@@ -327,7 +327,7 @@ unpack_wildcard <- function(x) {
 }
 
 #' Update causal types based on nodal types
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @examples
 #' update_causal_types(make_model('X->Y'))
 #' @export

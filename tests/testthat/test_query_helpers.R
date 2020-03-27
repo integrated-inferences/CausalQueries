@@ -27,7 +27,7 @@ testthat::test_that(
 testthat::test_that(
 	desc = "Check input.",
 	code = {
-		expect_error(gbiqq:::te(2, 1))
+		expect_error(CausalQueries:::te(2, 1))
 	}
 )
 

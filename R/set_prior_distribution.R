@@ -2,7 +2,7 @@
 #'
 #' Add n_param x n_draws database of possible lambda draws to the model.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
 #' @export
 #' @importFrom gtools rdirichlet
@@ -32,7 +32,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #'
 #' Add to the model a n_draws x n_param matrix of possible parameters.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
 #' @export
 #' @family prior_distribution
@@ -54,7 +54,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #'
 #' Add n_param x n_draws database of possible lambda draws to the model.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
 #' @export
 #' @family prior_distribution

@@ -3,7 +3,7 @@
 #'
 #' Return ambiguities matrix if it exists; otherwise calculate it assuming no confounding. The ambiguities matrix  maps from causal types into data types.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @return A \code{data.frame}. Types (rows) corresponding to possible data realizations (columns).
 #' @return A matrix representing ambiguities.
@@ -27,7 +27,7 @@ get_ambiguities_matrix <- function(model) {
 #'
 #' Make ambiguities matrix. The ambiguities matrix  maps from causal types into data types.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame}. Types (rows) corresponding to possible data realizations (columns).
 #' @return A matrix representing ambiguities.
 #' @export
@@ -70,7 +70,7 @@ make_ambiguities_matrix <- function(model) {
 #'
 #' Add an ambiguities matrix to a model
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #'

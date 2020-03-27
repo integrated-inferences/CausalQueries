@@ -2,7 +2,7 @@
 #'
 #' Identifies confounded nodal types.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @importFrom stats cor
 #' @export
 #' @examples
@@ -107,7 +107,7 @@ make_confounds_df <- function(model) {
 #' Normally a confounds_df is added to a model whenever confounding is set.
 #' The confounds_df can be manually provided however using set_sconfounds_df.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @export
 #' @examples
 #' model <- make_model('X -> Y') %>%

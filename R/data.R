@@ -1,7 +1,7 @@
 #' Democracy Data
 #'
 #' A dataset containing information on inequality, democracy, mobilization, and international pressure.
-#' Made by \code{devtools::use_data(democracy_data, gbiqq)}
+#' Made by \code{devtools::use_data(democracy_data, CausalQueries)}
 #'
 #' @format A data frame with 84 rows and 5 nodes:
 #' \describe{
