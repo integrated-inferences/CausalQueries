@@ -33,7 +33,7 @@ get_ambiguities_matrix <- function(model) {
 #' @keywords internal
 #' @examples
 #' model <- make_model('X -> Y')
-#' make_ambiguities_matrix(model = model)
+#' CausalQueries:::make_ambiguities_matrix(model = model)
 #'
 make_ambiguities_matrix <- function(model) {
 
