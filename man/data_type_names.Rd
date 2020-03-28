@@ -20,3 +20,4 @@ data <- simulate_data(model, n = 2)
 data_type_names(model, data)
 
 }
+\keyword{internal}

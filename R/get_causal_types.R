@@ -1,6 +1,6 @@
 #' Get causal types
 #'
-#' Create a data frame with types produced from all combinations of possible data produced by a DAG.
+#' Return data frame with types produced from all combinations of possible data produced by a DAG.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A code{data.frame} indicating causal types of \code{model}

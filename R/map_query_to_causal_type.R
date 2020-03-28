@@ -3,7 +3,7 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #'
-#' @export
+#' @keywords internal
 #' @return A \code{list} containing the types and the evaluated expression.
 #' @examples
 #' model <- make_model('X -> M -> Y; X->Y')

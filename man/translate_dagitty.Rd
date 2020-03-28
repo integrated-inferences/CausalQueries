@@ -22,3 +22,4 @@ translate_dagitty(model)
 }
 
 }
+\keyword{internal}

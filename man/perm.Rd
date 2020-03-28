@@ -21,3 +21,4 @@ Produces the possible permutations of a set of nodes
 perm(3)
 }
 }
+\keyword{internal}

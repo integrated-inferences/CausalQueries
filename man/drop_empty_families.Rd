@@ -21,3 +21,4 @@ data_events <- data.frame(event = c('X0Y0', 'Y0'), strategy = c('XY', 'Y'), coun
 CausalQueries:::drop_empty_families(data_events)
 
 }
+\keyword{internal}

@@ -15,10 +15,11 @@ A \code{data.frame}. Types (rows) corresponding to possible data realizations (c
 A matrix representing ambiguities.
 }
 \description{
-Make ambiguities matrix. The ambiguities matrix  maps from causal types into data types.
+Make ambiguities matrix. The ambiguities matrix maps from causal types into data types.
 }
 \examples{
 model <- make_model('X -> Y')
 make_ambiguities_matrix(model = model)
 
 }
+\keyword{internal}

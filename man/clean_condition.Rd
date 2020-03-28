@@ -12,3 +12,4 @@ clean_condition(condition)
 \description{
 Takes a string specifying condition and returns properly spaced string.
 }
+\keyword{internal}

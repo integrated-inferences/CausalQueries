@@ -24,3 +24,4 @@ Other restrictions:
 \code{\link{set_restrictions}()}
 }
 \concept{restrictions}
+\keyword{internal}

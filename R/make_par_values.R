@@ -12,7 +12,7 @@
 #' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-#'
+#' @keywords internal
 #'
 #' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 #'
@@ -21,7 +21,6 @@
 #' CausalQueries:::make_values_task_list(node = 'X', x = 3)
 #' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
 #' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
-
 
 make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = NA, statement = NA,
 																	confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
@@ -155,7 +154,6 @@ make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = 
 #'                                 normalize = TRUE)
 #' }
 #'
-
 
 make_par_values <- function(model,
 														y = get_priors(model),
@@ -301,7 +299,7 @@ make_par_values <- function(model,
 #' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @param normalize Logical. If TRUE normalizes such that param set probabilities sum to 1.
-#'
+#' @keywords internal
 #' @family priors
 
 make_par_values_multiple <-

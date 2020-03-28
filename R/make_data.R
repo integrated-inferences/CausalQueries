@@ -209,7 +209,7 @@ observe_data <- function(complete_data,
 #' @param P A \code{matrix}. Parameter matrix that can be used to generate w if w is not provided
 #' @param A A \code{matrix}. Ambiguity matrix that can be used to generate w if w is not provided
 #' @return A \code{data.frame} of simulated data.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #'

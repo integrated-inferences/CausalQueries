@@ -14,3 +14,4 @@ clean_param_vector(model, parameters)
 \description{
 Clean parameter vector
 }
+\keyword{internal}

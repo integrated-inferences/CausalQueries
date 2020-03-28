@@ -50,3 +50,4 @@ model <- make_model('M->Y; X->Y')
 query <- complements('X', 'M', 'Y')
 map_query_to_nodal_type(model, query)
 }
+\keyword{internal}

@@ -43,3 +43,4 @@ map_query_to_causal_type(model, query)
 
 model <- make_model('X -> Y')
 }
+\keyword{internal}

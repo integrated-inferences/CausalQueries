@@ -7,11 +7,12 @@
 n_check(n)
 }
 \arguments{
-\item{n}{An integer. sample size argument.}
+\item{n}{An integer. Sample size argument.}
 }
 \description{
 n_check
 }
 \details{
-Checks whether the input is an integer bigger than 0.
+Checks whether the input is an integer greater than 0.
 }
+\keyword{internal}

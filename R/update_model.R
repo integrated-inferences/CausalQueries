@@ -91,7 +91,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
         data_events <- data
     }
 
-    stan_data <- prep_CausalQueries_data(model = model, data = data_events)
+    stan_data <- prep_stan_data(model = model, data = data_events)
 
     # assign fit
     stanfit <- stanmodels$simplexes

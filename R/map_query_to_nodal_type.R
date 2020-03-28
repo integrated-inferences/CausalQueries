@@ -2,10 +2,11 @@
 #' Find which nodal types satisfy a query
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @export
+#' @keywords internal
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
+#'
 #' @examples
 #' model <- make_model('X->Y')
 #'
@@ -121,8 +122,8 @@ print.summary.nodal_types <- function(x, ...) {
 #'
 #' @param q a causal query
 #' @param model a model
+#' @keywords internal
 #' @examples
-#'
 #' model <- make_model('X -> Y <- M')
 #' CausalQueries:::add_dots('Y[X=1]', model)
 #' CausalQueries:::add_dots('Y[]', model)
@@ -166,9 +167,8 @@ add_dots <- function(q, model) {
 
 
 #' Helper to expand nodal expression
-#'
+#' @keywords internal
 #' @inheritParams CausalQueries_internal_inherit_params
-
 
 expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 
@@ -200,7 +200,7 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 }
 
 #' Helper to turn query into a data expression
-#'
+#' @keywords internal
 #' @inheritParams CausalQueries_internal_inherit_params
 query_to_expression <- function(query, node){
 

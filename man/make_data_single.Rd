@@ -50,3 +50,4 @@ w <- get_event_prob(model)
 replicate(5, make_data_single(model, n = 5, w = w))
 
 }
+\keyword{internal}

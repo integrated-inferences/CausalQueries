@@ -12,3 +12,4 @@ unpack_wildcard(x)
 \description{
 Unpack a wild card
 }
+\keyword{internal}
