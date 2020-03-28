@@ -31,7 +31,9 @@ make_values_task_list(
 
 \item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+
+For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 }
@@ -52,22 +54,3 @@ Other priors:
 \code{\link{set_priors}()}
 }
 \concept{priors}
-\keyword{=}
-\keyword{For}
-\keyword{X}
-\keyword{Y.}
-\keyword{Y[X=0])}}
-\keyword{Y[X=1]>}
-\keyword{\code{confound}
-\keyword{adjust}
-\keyword{are}
-\keyword{conditional}
-\keyword{for}
-\keyword{instance}
-\keyword{internal}
-\keyword{list(X}
-\keyword{nodal}
-\keyword{on}
-\keyword{parameters}
-\keyword{that}
-\keyword{types}

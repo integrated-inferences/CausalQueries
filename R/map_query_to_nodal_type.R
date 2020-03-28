@@ -10,33 +10,33 @@
 #' @examples
 #' model <- make_model('X->Y')
 #'
-#' map_query_to_nodal_type(model, '(Y[X=0] > Y[X=1])')
-#' map_query_to_nodal_type(model, '(Y[X=0] >= Y[X=1])')
+#' CausalQueries:::map_query_to_nodal_type(model, '(Y[X=0] > Y[X=1])')
+#' CausalQueries:::map_query_to_nodal_type(model, '(Y[X=0] >= Y[X=1])')
 #'
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=0] > Y[X=1])'
-#' x <- map_query_to_nodal_type(model, query)
+#' x <- CausalQueries:::map_query_to_nodal_type(model, query)
 #'
 #' query <- '(Y[X=0, M = .] > Y[X=1, M = 0])'
-#' x <- map_query_to_nodal_type(model, query)
+#' x <- CausalQueries:::map_query_to_nodal_type(model, query)
 #'
 #' query <- '(Y[] == 1)'
-#' x <- map_query_to_nodal_type(model, query)
-#' x <- map_query_to_nodal_type(model, query, join_by = '&')
+#' x <- CausalQueries:::map_query_to_nodal_type(model, query)
+#' x <- CausalQueries:::map_query_to_nodal_type(model, query, join_by = '&')
 #'
 #' # Root nodes specified with []
-#' map_query_to_nodal_type(model, '(X[] == 1)')
+#' CausalQueries:::map_query_to_nodal_type(model, '(X[] == 1)')
 #' \dontrun{
-#' map_query_to_nodal_type(model, 'X == 1')
+#' CausalQueries:::map_query_to_nodal_type(model, 'X == 1')
 #' }
 #'
 #' query <- '(M[X=1] == M[X=0])'
-#' x <- map_query_to_nodal_type(model, query)
+#' x <- CausalQueries:::map_query_to_nodal_type(model, query)
 #'
 #' # Complements
 #' model <- make_model('M->Y; X->Y')
 #' query <- complements('X', 'M', 'Y')
-#' map_query_to_nodal_type(model, query)
+#' CausalQueries:::map_query_to_nodal_type(model, query)
 
 map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 

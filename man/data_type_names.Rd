@@ -18,6 +18,4 @@ Provides names to data types
 model <- make_model('X -> Y')
 data <- simulate_data(model, n = 2)
 data_type_names(model, data)
-
 }
-\keyword{internal}

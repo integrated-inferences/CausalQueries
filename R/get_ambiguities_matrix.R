@@ -8,7 +8,6 @@
 #'
 #' @return A \code{data.frame}. Causal types (rows) corresponding to possible data realizations (columns).
 #' @return A matrix representing ambiguities.
-#' @keywords internal
 #' @examples
 #' model <- make_model('X -> Y')
 #' get_ambiguities_matrix(model = model)

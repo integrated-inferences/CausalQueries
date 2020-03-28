@@ -23,4 +23,3 @@ model <- make_model('X -> Y')
 get_ambiguities_matrix(model = model)
 
 }
-\keyword{internal}

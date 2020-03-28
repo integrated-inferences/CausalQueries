@@ -19,4 +19,3 @@ model <- make_model('X->Y')
 model$parameters_df$param_value <- 1:6
 clean_params(model$parameters_df, warning = TRUE)
 }
-\keyword{internal}
