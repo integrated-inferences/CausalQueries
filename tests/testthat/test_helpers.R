@@ -3,9 +3,9 @@ context("Testing helper functions.")
 testthat::test_that(
 	desc = "perm  permutations_function",
 	code = {
-		gbiqq:::perm(3)
-		expect_true(nrow(gbiqq:::perm(3)) == 4)
-		expect_true(sum(gbiqq:::perm(2:3)) == 30)
+		CausalQueries:::perm(3)
+		expect_true(nrow(CausalQueries:::perm(3)) == 4)
+		expect_true(sum(CausalQueries:::perm(2:3)) == 30)
 	}
 )
 
@@ -23,20 +23,20 @@ testthat::test_that(
 testthat::test_that(
 	desc = "gsub_many: multiple substitutions",
 	code = {
-		expect_true(gbiqq:::gsub_many("abc", "a", "b") == "bbc")
-		expect_true(gbiqq:::gsub_many("abc", c("ab", "c"), c("o", "k")) == "ok")
+		expect_true(CausalQueries:::gsub_many("abc", "a", "b") == "bbc")
+		expect_true(CausalQueries:::gsub_many("abc", c("ab", "c"), c("o", "k")) == "ok")
 	}
 )
 
 testthat::test_that(
 	desc = "gsub_many: error",
-		expect_error(gbiqq:::gsub_many("abc", c("ab", "c"), c("o")))
+		expect_error(CausalQueries:::gsub_many("abc", c("ab", "c"), c("o")))
 )
 
 testthat::test_that(
 	desc = "clean_condition: spacing strings",
 	code = {
-		expect_true(gbiqq:::clean_condition("01") == "0 1")
+		expect_true(CausalQueries:::clean_condition("01") == "0 1")
 	}
 )
 
@@ -44,14 +44,14 @@ testthat::test_that(
 	desc = "interpret_type",
 	code = {
 		model <- make_model('R -> X; Z -> X; X -> Y')
-		a1 <- gbiqq:::interpret_type(model, position = list(X = c(3,4), Y = 1))
-		a2 <- gbiqq:::interpret_type(model, condition = c('X | Z=0 & R=1', 'X | Z=0 & R=0'))
+		a1 <- CausalQueries:::interpret_type(model, position = list(X = c(3,4), Y = 1))
+		a2 <- CausalQueries:::interpret_type(model, condition = c('X | Z=0 & R=1', 'X | Z=0 & R=0'))
 		expect_true(all(dim(a1[[2]]) == c(1,4)))
 		expect_true(all(dim(a2[[1]]) == c(2,4)))
 		# both defined
 		expect_error(interpret_type(model, condition = c('X | Z=0 & R=1', 'X | Z=0 & R=0'), position = list(X = c(3,4), Y = 1)))
 		# not in types
-		expect_error(gbiqq:::interpret_type(model, position = list(Q = c(3,5), Y = 1)))
+		expect_error(CausalQueries:::interpret_type(model, position = list(Q = c(3,5), Y = 1)))
 	}
 )
 
@@ -90,10 +90,10 @@ testthat::test_that(
 	code = {
 
 		model <- make_model("X->Y")
-		expect_true(gbiqq:::includes_var("X", "X==1"))
+		expect_true(CausalQueries:::includes_var("X", "X==1"))
 
-		expect_true(!(gbiqq:::includes_var("Y", "X==1")))
-		a <- gbiqq:::var_in_query(model, "X==1")
+		expect_true(!(CausalQueries:::includes_var("Y", "X==1")))
+		a <- CausalQueries:::var_in_query(model, "X==1")
 
 		expect_true(a == "X")
 	}

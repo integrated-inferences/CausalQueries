@@ -47,7 +47,7 @@ model <- make_model("X -> Y") \%>\%
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 \dontrun{
  df    <- simulate_data(model, n = 3)
- updated_model <- gbiqq(model, df)
+ updated_model <- CausalQueries(model, df)
  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 }
 }

@@ -42,9 +42,9 @@ For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X 
 A function to generate a list of parameter arguments.
 }
 \examples{
-gbiqq:::make_values_task_list(node = 'X', x = 3)
-gbiqq:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
-gbiqq:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
+CausalQueries:::make_values_task_list(node = 'X', x = 3)
+CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
+CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
 }
 \seealso{
 Other priors: 

@@ -3,7 +3,7 @@
 #' Calculated distribution of a query from a prior or posterior distribution of parameters
 #'
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param parameters A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param using A character. Whether to use `priors`, `posteriors` or `parameters`
 #' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
@@ -25,7 +25,7 @@
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 #' \dontrun{
 #'  df    <- simulate_data(model, n = 3)
-#'  updated_model <- gbiqq(model, df)
+#'  updated_model <- CausalQueries(model, df)
 #'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 #' }
 query_distribution <- function(model,
@@ -78,7 +78,7 @@ query_distribution <- function(model,
 #'
 #' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
 #' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.

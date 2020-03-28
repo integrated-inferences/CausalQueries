@@ -2,7 +2,7 @@
 #'
 #' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #'
@@ -33,7 +33,7 @@ translate_dagitty <- function(model) {
 
 #' Plot your dag using dagitty
 #'
-#'@inheritParams gbiqq_internal_inherit_params
+#'@inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #'

@@ -32,8 +32,8 @@ context(desc = "Testing type lookup")
 			expect_error(map_query_to_nodal_type(XMY, "(Y[X=1]==1)"))
 
 
-			expect_true(gbiqq:::add_dots('Y[]', model) == "Y[X = . ]")
-			expect_error(gbiqq:::add_dots('Z[]', model))
+			expect_true(CausalQueries:::add_dots('Y[]', model) == "Y[X = . ]")
+			expect_error(CausalQueries:::add_dots('Z[]', model))
 
 		}
 	)

@@ -16,6 +16,6 @@
 #'
 #' @keywords internal
 #'
-gbiqq_internal_inherit_params <- function(model, query, join_by, parameters, P, A,  data, data_events, node, statement, using, n_draws){
+CausalQueries_internal_inherit_params <- function(model, query, join_by, parameters, P, A,  data, data_events, node, statement, using, n_draws){
 
 }

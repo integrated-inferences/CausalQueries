@@ -47,9 +47,9 @@ testthat::test_that(
 		statement <- c("X == 1", "Z == 1")
 		join_by <- c("&", "|", "AND")
 		## too many in join_by
-		expect_error(gbiqq:::restrict_by_query(model = model, statement = statement, join_by = join_by))
+		expect_error(CausalQueries:::restrict_by_query(model = model, statement = statement, join_by = join_by))
 		## not logical
-		expect_error(gbiqq:::restrict_by_query(model = model, statement = statement, keep = NULL))
+		expect_error(CausalQueries:::restrict_by_query(model = model, statement = statement, keep = NULL))
 
 		model <- set_restrictions(model, statement =  c("(X[] == 1)", "(Z[] == 1)" ))
 		## nodal_types can't be entirely reduced. Revise conditions for node X
@@ -64,7 +64,7 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> Y")
 		## Z is not in the model
-		expect_error(gbiqq:::restrict_by_labels(model, labels = list(Z = "0")))
+		expect_error(CausalQueries:::restrict_by_labels(model, labels = list(Z = "0")))
 	}
 )
 
@@ -72,10 +72,10 @@ testthat::test_that(
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
-		model <- gbiqq:::restrict_by_labels(model, labels = list(X = "0"))
+		model <- CausalQueries:::restrict_by_labels(model, labels = list(X = "0"))
 		expect_equal(model$nodal_types$X, "1")
 		model <- make_model("X -> Y")
-		model <- gbiqq:::restrict_by_labels(model, labels = list(Y = "00", Y = "01"))
+		model <- CausalQueries:::restrict_by_labels(model, labels = list(Y = "00", Y = "01"))
 		expect_equal(model$nodal_types$Y, c("10", "11"))
 	}
 )
@@ -86,7 +86,7 @@ testthat::test_that(
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
-		out <- gbiqq:::get_type_names(model$nodal_types)
+		out <- CausalQueries:::get_type_names(model$nodal_types)
 		expect_equal(length(out), 6)
 		expect_true(all(is.character(out)))
 	}
@@ -99,9 +99,9 @@ testthat::test_that(
 	code = {
 		n <- 3
 		x <- paste0(c(rep("?", n)), collapse = "")
-		expect_equal(length(gbiqq:::unpack_wildcard(x)), 2^n)
+		expect_equal(length(CausalQueries:::unpack_wildcard(x)), 2^n)
 		x <- "00"
-		expect_equal(gbiqq:::unpack_wildcard(x), x)
+		expect_equal(CausalQueries:::unpack_wildcard(x), x)
 	}
 )
 

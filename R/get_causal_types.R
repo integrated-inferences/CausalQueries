@@ -2,7 +2,7 @@
 #'
 #' Create a data frame with types produced from all combinations of possible data produced by a DAG.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @return A code{data.frame} indicating causal types of \code{model}
 #' @export
 #'

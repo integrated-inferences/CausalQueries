@@ -13,13 +13,13 @@ testthat::test_that(
 		model <- make_model('X -> Y')
 		query <- '(Y[X=1] > Y[X=0]) & (X == 0)'
 		x <- map_query_to_causal_type(model, query)
-		out <- capture.output(gbiqq:::print.summary.causal_types(x))
+		out <- capture.output(CausalQueries:::print.summary.causal_types(x))
 		expect_equal(length(out), 10)
 
 		# Other objects
 		x <- list()
 		class(x) <- "causal_type"
-		out <- capture.output(gbiqq:::print.summary.causal_types(x))
+		out <- capture.output(CausalQueries:::print.summary.causal_types(x))
 		expect_equal(out[1], "list()")
 	}
 )

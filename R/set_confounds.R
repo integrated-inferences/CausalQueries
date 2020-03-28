@@ -44,7 +44,7 @@
 #' Nodal types for X would continue to have 1 degree of freedom.
 #' Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint distribution.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param confound A named \code{list}. It relates nodes to statements that identify causal types with which they are confounded
 #' @param add_confounds_df Logical. Attach a dataframe with confound links. Defaults to TRUE.
 #' @export
@@ -232,7 +232,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 #' @param split String on which to split. String should appear only once in each vector entry.
 #' @examples
 #' x <- c('S_3', 'S_3', 'S_5')
-#' gbiqq:::continue_names(x)
+#' CausalQueries:::continue_names(x)
 
 continue_names <- function(x, split = "_") {
     z <- strsplit(x, split = split)

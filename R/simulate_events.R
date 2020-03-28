@@ -3,7 +3,7 @@
 #  Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
 # `make_data`.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param n An integer. Number of observations.
 #' @param w A numeric  N(parameters) x 1 matrix of event probabilities with named rows.
 #' @param param_type A character. String specifying type of parameters to make ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.

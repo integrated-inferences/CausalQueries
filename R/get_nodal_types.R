@@ -2,7 +2,7 @@
 #'
 #' As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param collapse Logical. If `TRUE`, shows unique nodal types for each node. If `FALSE`, shows for each node a matrix with nodal types as rows and parent types as columns, if applicable. Defaults to `TRUE`.
 #' @importFrom rlang is_empty
 #' @export
@@ -48,7 +48,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 
 #' Make nodal types
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param include_node_names Logical. If `TRUE` returns names of form X0, X1; otherwise returns 0, 1. Defaults to `FALSE`
 #'
 #'

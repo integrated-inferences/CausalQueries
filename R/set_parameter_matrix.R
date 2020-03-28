@@ -2,7 +2,7 @@
 #'
 #' Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @export
 #' @examples
 #' model <- make_model('X -> Y')
@@ -55,7 +55,7 @@ get_parameter_matrix <- function(model) {
 #'
 #' Add a parameter matrix to a model
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @export
 #'

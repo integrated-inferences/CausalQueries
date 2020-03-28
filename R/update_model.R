@@ -2,7 +2,7 @@
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param data_type Either 'long' (as made by `simulate_data()`) or 'compact' (as made by \code{\link{collapse_data}}).
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
@@ -91,7 +91,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
         data_events <- data
     }
 
-    stan_data <- prep_gbiqq_data(model = model, data = data_events)
+    stan_data <- prep_CausalQueries_data(model = model, data = data_events)
 
     # assign fit
     stanfit <- stanmodels$simplexes
@@ -110,13 +110,3 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
     model
 }
 
-
-#' gbiqq
-#'
-#' An alias for \code{\link{update_model}}
-#'
-#' @param ... arguments passed to  \code{\link{update_model}}
-#'
-#' @export
-
-gbiqq <- function(...) update_model(...)

@@ -11,7 +11,7 @@ nodes_in_statement <- function(nodes, statement) {
 
 #' Returns a list with the nodes that are not directly pointing into a node
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'
 #'@keywords internal
 list_non_parents <- function(model, node) {
@@ -20,7 +20,7 @@ list_non_parents <- function(model, node) {
     model$nodes[not_parents]
 }
 #' Adds a wildcard for every missing parent
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #'@param parents A vector of characters. The \code{node}'s parents
 #'@param missing_parents A vector of characters.  The \code{node}'s missing parents
 #'@keywords internal

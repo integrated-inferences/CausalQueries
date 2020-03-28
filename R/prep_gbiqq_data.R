@@ -2,19 +2,19 @@
 #'
 #' Create a list containing the data to be passed to stan
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{list}.
 #' @export
 #' @examples
 #' model <- make_model('X->Y')
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' prep_gbiqq_data(model, data)
+#' prep_CausalQueries_data(model, data)
 #'
 #' model <- make_model('X->Y') %>% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' prep_gbiqq_data(model, data)
+#' prep_CausalQueries_data(model, data)
 #'
-prep_gbiqq_data <- function(model, data) {
+prep_CausalQueries_data <- function(model, data) {
 
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")

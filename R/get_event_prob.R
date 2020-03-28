@@ -2,7 +2,7 @@
 #'
 # `get_event_prob` draws event probability vector `w` given a single realization of parameters
 #'
-#' @inheritParams gbiqq_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
 #' @param type_prob A numeric vector. Type probabilities. (Not required).
 #'
 #' @export
