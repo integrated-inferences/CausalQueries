@@ -4,17 +4,9 @@
 \alias{make_values_task_list}
 \title{Make values task list}
 \usage{
-make_values_task_list(
-  distribution = NA,
-  x = NA,
-  node = NA,
-  label = NA,
-  statement = NA,
-  confound = NA,
-  nodal_type = NA,
-  param_names = NA,
-  param_set = NA
-)
+make_values_task_list(distribution = NA, x = NA, node = NA,
+  label = NA, statement = NA, confound = NA, nodal_type = NA,
+  param_names = NA, param_set = NA)
 }
 \arguments{
 \item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
@@ -47,11 +39,9 @@ CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
 CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
 }
 \seealso{
-Other priors: 
-\code{\link{get_priors}()},
-\code{\link{make_par_values_multiple}()},
-\code{\link{make_par_values}()},
-\code{\link{make_priors}()},
-\code{\link{set_priors}()}
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_par_values_multiple}},
+  \code{\link{make_par_values}}, \code{\link{make_priors}},
+  \code{\link{set_priors}}
 }
 \concept{priors}

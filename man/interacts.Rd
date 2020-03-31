@@ -26,13 +26,10 @@ map_query_to_causal_type(model = make_model('X-> Y <- W'),
 
 }
 \seealso{
-Other statements: 
-\code{\link{complements}()},
-\code{\link{decreasing}()},
-\code{\link{increasing}()},
-\code{\link{non_decreasing}()},
-\code{\link{non_increasing}()},
-\code{\link{substitutes}()},
-\code{\link{te}()}
+Other statements: \code{\link{complements}},
+  \code{\link{decreasing}}, \code{\link{increasing}},
+  \code{\link{non_decreasing}},
+  \code{\link{non_increasing}}, \code{\link{substitutes}},
+  \code{\link{te}}
 }
 \concept{statements}

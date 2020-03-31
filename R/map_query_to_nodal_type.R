@@ -2,7 +2,7 @@
 #' Find which nodal types satisfy a query
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @export
+#' @noRd
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select
 #' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression

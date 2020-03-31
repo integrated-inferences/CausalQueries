@@ -4,20 +4,10 @@
 \alias{make_par_values_multiple}
 \title{Make par values multiple}
 \usage{
-make_par_values_multiple(
-  model,
-  y = get_priors(model),
-  x = NA,
-  distribution = NA,
-  node = NA,
-  label = NA,
-  statement = NA,
-  confound = NA,
-  nodal_type = NA,
-  param_names = NA,
-  param_set = NA,
-  normalize = FALSE
-)
+make_par_values_multiple(model, y = get_priors(model), x = NA,
+  distribution = NA, node = NA, label = NA, statement = NA,
+  confound = NA, nodal_type = NA, param_names = NA, param_set = NA,
+  normalize = FALSE)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
@@ -48,11 +38,9 @@ make_par_values_multiple(
 Internal function to create parameter vector when list like arguments are provided
 }
 \seealso{
-Other priors: 
-\code{\link{get_priors}()},
-\code{\link{make_par_values}()},
-\code{\link{make_priors}()},
-\code{\link{make_values_task_list}()},
-\code{\link{set_priors}()}
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_par_values}}, \code{\link{make_priors}},
+  \code{\link{make_values_task_list}},
+  \code{\link{set_priors}}
 }
 \concept{priors}

@@ -4,18 +4,9 @@
 \alias{make_priors}
 \title{Make Priors}
 \usage{
-make_priors(
-  model,
-  alphas = NA,
-  distribution = NA,
-  node = NA,
-  label = NA,
-  statement = NA,
-  confound = NA,
-  nodal_type = NA,
-  param_names = NA,
-  param_set = NA
-)
+make_priors(model, alphas = NA, distribution = NA, node = NA,
+  label = NA, statement = NA, confound = NA, nodal_type = NA,
+  param_names = NA, param_set = NA)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
@@ -112,11 +103,10 @@ make_model('X -> Y') \%>\%
               alphas = c(2, .5))
 }
 \seealso{
-Other priors: 
-\code{\link{get_priors}()},
-\code{\link{make_par_values_multiple}()},
-\code{\link{make_par_values}()},
-\code{\link{make_values_task_list}()},
-\code{\link{set_priors}()}
+Other priors: \code{\link{get_priors}},
+  \code{\link{make_par_values_multiple}},
+  \code{\link{make_par_values}},
+  \code{\link{make_values_task_list}},
+  \code{\link{set_priors}}
 }
 \concept{priors}

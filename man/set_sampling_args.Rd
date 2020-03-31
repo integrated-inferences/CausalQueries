@@ -5,7 +5,8 @@
 \title{set_sampling_args
 From rstanarm (November 1st, 2019)}
 \usage{
-set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
+set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL,
+  ...)
 }
 \arguments{
 \item{object}{A \code{stanfit object}.}

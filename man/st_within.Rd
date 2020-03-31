@@ -4,13 +4,8 @@
 \alias{st_within}
 \title{Get string between two regular expression patterns}
 \usage{
-st_within(
-  x,
-  left = "[^_[:^punct:]]|\\\\b",
-  right = "\\\\[",
-  rm_left = 0,
-  rm_right = -1
-)
+st_within(x, left = "[^_[:^punct:]]|\\\\b", right = "\\\\[",
+  rm_left = 0, rm_right = -1)
 }
 \arguments{
 \item{x}{A character.}

@@ -4,14 +4,8 @@
 \alias{observe_data}
 \title{Observe data, given a strategy}
 \usage{
-observe_data(
-  complete_data,
-  observed = NULL,
-  nodes_to_observe = NULL,
-  prob = 1,
-  m = NULL,
-  subset = NULL
-)
+observe_data(complete_data, observed = NULL, nodes_to_observe = NULL,
+  prob = 1, m = NULL, subset = NULL)
 }
 \arguments{
 \item{complete_data}{A \code{data.frame}. Data observed and unobserved.}

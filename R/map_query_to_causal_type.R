@@ -1,9 +1,8 @@
 
 #' Get values of types according to a query
 #'
-#'@inheritParams CausalQueries_internal_inherit_params
-#'
-#' @export
+#' @inheritParams CausalQueries_internal_inherit_params
+#' @noRd
 #' @return A \code{list} containing the types and the evaluated expression.
 #' @examples
 #' model <- make_model('X -> M -> Y; X->Y')
@@ -27,7 +26,6 @@
 #' query <- '(Y[X = .]==1)'
 #' map_query_to_causal_type(model, query)
 #'
-#' model <- make_model('X -> Y')
 
 map_query_to_causal_type <- function(model, query, join_by = "|") {
 
