@@ -52,7 +52,8 @@ matrix:
       r: oldrel
 
 
-
+remotes:
+ - cran/Rcpp@1.0.3
 
 before_install:
   - mkdir -p ~/.R/
