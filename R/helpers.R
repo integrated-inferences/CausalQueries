@@ -8,7 +8,7 @@
 #' @examples
 #'
 #' \dontrun{
-#' perm(3)
+#' CausalQueries:::perm(3)
 #' }
 perm <- function(max = rep(1, 2)) {
 
@@ -34,9 +34,9 @@ perm <- function(max = rep(1, 2)) {
 #' @keywords internal
 #' @examples
 #' a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'
-#' st_within(a)
+#' CausalQueries:::st_within(a)
 #' b <- '(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)'
-#' st_within(b)
+#' CausalQueries:::st_within(b)
 
 st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0, rm_right = -1) {
     if (!is.character(x))

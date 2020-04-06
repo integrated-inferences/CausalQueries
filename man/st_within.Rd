@@ -31,8 +31,8 @@ Returns a substring enclosed by two regular expression patterns. By default retu
 }
 \examples{
 a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'
-st_within(a)
+CausalQueries:::st_within(a)
 b <- '(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)'
-st_within(b)
+CausalQueries:::st_within(b)
 }
 \keyword{internal}

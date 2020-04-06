@@ -41,13 +41,13 @@ model <- make_model("X -> Y")
 
 # Simplest behavior uses by default  the parameter vector contained in model,
 # which is flat by default:
-make_data_single(model, n = 5)
+CausalQueries:::make_data_single(model, n = 5)
 
-make_data_single(model, n = 5, param_type = "prior_draw")
+CausalQueries:::make_data_single(model, n = 5, param_type = "prior_draw")
 
 # Simulate multiple datasets is fastest if w is provided
 w <- get_event_prob(model)
-replicate(5, make_data_single(model, n = 5, w = w))
+replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 
 }
 \keyword{internal}

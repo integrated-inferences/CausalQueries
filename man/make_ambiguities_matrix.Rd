@@ -19,7 +19,7 @@ Make ambiguities matrix. The ambiguities matrix maps from causal types into data
 }
 \examples{
 model <- make_model('X -> Y')
-make_ambiguities_matrix(model = model)
+CausalQueries:::make_ambiguities_matrix(model = model)
 
 }
 \keyword{internal}

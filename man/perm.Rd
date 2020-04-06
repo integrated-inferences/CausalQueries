@@ -18,7 +18,7 @@ Produces the possible permutations of a set of nodes
 \examples{
 
 \dontrun{
-perm(3)
+CausalQueries:::perm(3)
 }
 }
 \keyword{internal}

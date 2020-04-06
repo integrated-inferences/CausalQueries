@@ -331,7 +331,7 @@ unpack_wildcard <- function(x) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @keywords internal
 #' @examples
-#' update_causal_types(make_model('X->Y'))
+#' CausalQueries:::update_causal_types(make_model('X->Y'))
 
 update_causal_types <- function(model) {
 
