@@ -17,7 +17,8 @@ RoxygenNote: 7.1.0
 Depends:
     dplyr,
     methods,
-    R (>= 3.4.0)
+    R (>= 3.4.0),
+    Rcpp (>= 0.12.0)
 Imports:
     dagitty,
     gtools,
@@ -39,8 +40,6 @@ Suggests:
     knitr,
     DeclareDesign,
     covr
-Remotes:
-   cran/Rcpp@1.0.3
 VignetteBuilder: knitr
 SystemRequirements: GNU make
 Biarch: true
