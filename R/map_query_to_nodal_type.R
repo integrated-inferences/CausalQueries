@@ -2,6 +2,7 @@
 #' Find which nodal types satisfy a query
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @noRd
 #' @keywords internal
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select

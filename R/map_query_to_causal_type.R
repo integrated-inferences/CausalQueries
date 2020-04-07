@@ -2,7 +2,7 @@
 #' Get values of types according to a query
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
-#'
+#' @noRd
 #' @keywords internal
 #' @return A \code{list} containing the types and the evaluated expression.
 #' @examples
@@ -27,7 +27,6 @@
 #' query <- '(Y[X = .]==1)'
 #' CausalQueries:::map_query_to_causal_type(model, query)
 #'
-
 map_query_to_causal_type <- function(model, query, join_by = "|") {
 
     if (length(query) > 1L)
