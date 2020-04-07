@@ -4,7 +4,7 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @export
+#' @keywords internal
 #'
 #' @return dagitty translation of DAG
 #'
@@ -35,7 +35,7 @@ translate_dagitty <- function(model) {
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #'
-#' @export
+#' @keywords internal
 #'
 #' @return dagitty translation of DAG
 #' @importFrom graphics plot

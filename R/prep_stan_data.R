@@ -4,17 +4,17 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{list}.
-#' @export
+#' @keywords internal
 #' @examples
 #' model <- make_model('X->Y')
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' prep_CausalQueries_data(model, data)
+#' CausalQueries:::prep_stan_data(model, data)
 #'
 #' model <- make_model('X->Y') %>% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 #' data  <-  collapse_data(simulate_data(model, n = 6), model)
-#' prep_CausalQueries_data(model, data)
+#' CausalQueries:::prep_stan_data(model, data)
 #'
-prep_CausalQueries_data <- function(model, data) {
+prep_stan_data <- function(model, data) {
 
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")

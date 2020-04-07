@@ -110,8 +110,8 @@ non_increasing <- function(X, Y) {
 #' @return A character statement of class statement
 #' @examples
 #' interacts('A', 'B', 'W')
-#' map_query_to_causal_type(model = make_model('X-> Y <- W'),
-#'          query = interacts('X', 'W', 'Y'))
+#' get_query_types(model = make_model('X-> Y <- W'),
+#'          query = interacts('X', 'W', 'Y'), map = "causal_type")
 #'
 
 interacts <- function(X1, X2, Y) {
@@ -167,8 +167,8 @@ complements <- function(X1, X2, Y) {
 #' @return A character statement of class statement
 #' @examples
 #'
-#'map_query_to_causal_type(model = make_model('A -> B <- C'),
-#'          query = substitutes('A', 'C', 'B'))
+#' get_query_types(model = make_model('A -> B <- C'),
+#'          query = substitutes('A', 'C', 'B'),map = "causal_type")
 #'
 #'query_model(model = make_model('A -> B <- C'),
 #'          queries = substitutes('A', 'C', 'B'),
@@ -223,7 +223,7 @@ te <- function(X, Y) {
 #'
 #' @param param_list List of parameters
 #' @param call_name Name of the call.
-#'
+#' @keywords internal
 check_string_input <- function(param_list = list(), call_name = NULL) {
     for (i in 1:length(param_list)) if (!is.character(param_list[[i]]))
         stop(paste0("Provide node names as strings in function: ", call_name))

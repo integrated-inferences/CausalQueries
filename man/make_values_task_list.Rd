@@ -33,7 +33,6 @@ make_values_task_list(
 
 \item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 
-
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}

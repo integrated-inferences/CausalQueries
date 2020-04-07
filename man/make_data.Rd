@@ -74,6 +74,6 @@ make_data(
 # Simulate multiple datasets is fastest if w is provided
 model <- make_model("X -> Y")
 w <- get_event_prob(model)
-replicate(5, make_data_single(model, n = 5, w = w))
+replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 
 }

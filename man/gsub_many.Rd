@@ -18,3 +18,4 @@ gsub_many(x, pattern_vector, replacement_vector, ...)
 \description{
 Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
 }
+\keyword{internal}

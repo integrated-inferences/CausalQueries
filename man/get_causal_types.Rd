@@ -13,5 +13,5 @@ get_causal_types(model)
 A code{data.frame} indicating causal types of \code{model}
 }
 \description{
-Create a data frame with types produced from all combinations of possible data produced by a DAG.
+Return data frame with types produced from all combinations of possible data produced by a DAG.
 }

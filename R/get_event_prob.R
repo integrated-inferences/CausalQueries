@@ -22,7 +22,6 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
     if (is.null(parameters))
         parameters <- get_parameters(model)
 
-    # Ambiguity matrix if(is.null(A)) model <- set_ambiguities_matrix(model)
     A <- get_ambiguities_matrix(model)
 
     # Type probabilities

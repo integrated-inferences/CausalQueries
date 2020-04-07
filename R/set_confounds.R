@@ -230,6 +230,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 #' Slightly hacky function to continue param_set names in a sequence
 #' @param x A vector with strings of the form c('x_1', 'x_2')
 #' @param split String on which to split. String should appear only once in each vector entry.
+#' @keywords internal
 #' @examples
 #' x <- c('S_3', 'S_3', 'S_5')
 #' CausalQueries:::continue_names(x)

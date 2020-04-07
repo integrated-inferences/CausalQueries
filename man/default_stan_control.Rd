@@ -9,7 +9,7 @@ default_stan_control(adapt_delta = NULL, max_treedepth = 15L)
 \arguments{
 \item{adapt_delta}{A double between 0 and 1. It determines \code{adapt_delta}}
 
-\item{max_treedepth}{A positive integer. It determines maximum tree depth}
+\item{max_treedepth}{A positive integer. It determines  \code{maximum_tree_depth}}
 }
 \description{
 default_stan_control
@@ -17,3 +17,4 @@ default_stan_control
 \details{
 Sets controls to default unless otherwise specified.
 }
+\keyword{internal}

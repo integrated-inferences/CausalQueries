@@ -14,3 +14,4 @@ query_to_expression(query, node)
 \description{
 Helper to turn query into a data expression
 }
+\keyword{internal}

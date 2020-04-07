@@ -1,10 +1,10 @@
 context("Testing prep_qbiqq_data")
 
 testthat::test_that(
-	desc = "prep_CausalQueries_data errors",
+	desc = "prep_stan_data errors",
 	code = {
 		model <- make_model('X->Y')
 		data  <-  collapse_data(simulate_data(model, n = 6), model)
-		expect_error(prep_CausalQueries_data(model, data[, 1:2]))
+		expect_error(prep_stan_data(model, data[, 1:2]))
 	}
 )

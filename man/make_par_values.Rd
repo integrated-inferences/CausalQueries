@@ -135,3 +135,4 @@ Other priors:
 \code{\link{set_priors}()}
 }
 \concept{priors}
+\keyword{internal}

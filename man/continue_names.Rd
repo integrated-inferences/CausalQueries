@@ -18,3 +18,4 @@ Slightly hacky function to continue param_set names in a sequence
 x <- c('S_3', 'S_3', 'S_5')
 CausalQueries:::continue_names(x)
 }
+\keyword{internal}

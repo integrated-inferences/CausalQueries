@@ -18,3 +18,4 @@ expand_nodal_expression(model, query, node, join_by = "|")
 \description{
 Helper to expand nodal expression
 }
+\keyword{internal}
