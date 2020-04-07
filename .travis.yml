@@ -44,11 +44,11 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     - os: osx
       fortran: true
-      osx_image: xcode9.2
+      osx_image: xcode10
       r: release
     - os: osx
       fortran: true
-      osx_image: xcode9.2
+      osx_image: xcode10
       r: oldrel
 
 
