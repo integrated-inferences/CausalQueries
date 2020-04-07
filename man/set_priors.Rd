@@ -4,9 +4,19 @@
 \alias{set_priors}
 \title{Set prior distribution}
 \usage{
-set_priors(model, priors = NULL, distribution = NA, alphas = NA,
-  node = NA, label = NA, statement = NA, confound = NA,
-  nodal_type = NA, param_names = NA, param_set = NA)
+set_priors(
+  model,
+  priors = NULL,
+  distribution = NA,
+  alphas = NA,
+  node = NA,
+  label = NA,
+  statement = NA,
+  confound = NA,
+  nodal_type = NA,
+  param_names = NA,
+  param_set = NA
+)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
@@ -141,9 +151,11 @@ model <- make_model('X -> Y') \%>\%
 get_priors(model)
 }
 \seealso{
-Other priors: \code{\link{get_priors}},
-  \code{\link{make_par_values_multiple}},
-  \code{\link{make_par_values}}, \code{\link{make_priors}},
-  \code{\link{make_values_task_list}}
+Other priors: 
+\code{\link{get_priors}()},
+\code{\link{make_par_values_multiple}()},
+\code{\link{make_par_values}()},
+\code{\link{make_priors}()},
+\code{\link{make_values_task_list}()}
 }
 \concept{priors}

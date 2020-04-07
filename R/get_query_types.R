@@ -1,9 +1,8 @@
 #' Look up query types
 #'
-#' Find the nodal or causal types used by the query. Passes arguments into \code{\link{map_query_to_causal_type}} or \code{\link{map_query_to_nodal_type}}
-#'
+#' Find which nodal or causal types are satisfied by a query.
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param map Types in query. Either \code{nodal_type} or \code{causal_type}. Default is causal types
+#' @param map Types in query. Either \code{nodal_type} or \code{causal_type}. Default is \code{causal_type}.
 #'
 #' @export
 #' @examples
@@ -51,7 +50,6 @@
 #' query <- '(Y[X = .]==1)'
 #' get_query_types(model, query, "causal_type")
 #'
-
 get_query_types <- function(model, query, map = "causal_type", join_by = "|"){
 	if(!(map%in%c("causal_type", "nodal_type"))){
 		stop("map must be either causal_type or nodal_type")

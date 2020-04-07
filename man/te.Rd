@@ -31,9 +31,13 @@ model <- make_model('X->Y') \%>\% set_restrictions(te('X', 'Y'))
 
 }
 \seealso{
-Other statements: \code{\link{complements}},
-  \code{\link{decreasing}}, \code{\link{increasing}},
-  \code{\link{interacts}}, \code{\link{non_decreasing}},
-  \code{\link{non_increasing}}, \code{\link{substitutes}}
+Other statements: 
+\code{\link{complements}()},
+\code{\link{decreasing}()},
+\code{\link{increasing}()},
+\code{\link{interacts}()},
+\code{\link{non_decreasing}()},
+\code{\link{non_increasing}()},
+\code{\link{substitutes}()}
 }
 \concept{statements}

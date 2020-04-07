@@ -11,12 +11,12 @@ get_query_types(model, query, map = "causal_type", join_by = "|")
 
 \item{query}{A character string. An expression defining nodal types to interrogate \code{\link{reveal_outcomes}}}
 
-\item{map}{Types in query. Either \code{nodal_type} or \code{causal_type}. Default is causal types}
+\item{map}{Types in query. Either \code{nodal_type} or \code{causal_type}. Default is \code{causal_type}.}
 
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 }
 \description{
-Find the nodal or causal types used by the query. Passes arguments into \code{\link{map_query_to_causal_type}} or \code{\link{map_query_to_nodal_type}}
+Find which nodal or causal types are satisfied by a query.
 }
 \examples{
 model <- make_model('X -> M -> Y; X->Y')

@@ -29,9 +29,13 @@ query_model(model = make_model('A -> B <- C'),
          using = 'parameters')
 }
 \seealso{
-Other statements: \code{\link{complements}},
-  \code{\link{decreasing}}, \code{\link{increasing}},
-  \code{\link{interacts}}, \code{\link{non_decreasing}},
-  \code{\link{non_increasing}}, \code{\link{te}}
+Other statements: 
+\code{\link{complements}()},
+\code{\link{decreasing}()},
+\code{\link{increasing}()},
+\code{\link{interacts}()},
+\code{\link{non_decreasing}()},
+\code{\link{non_increasing}()},
+\code{\link{te}()}
 }
 \concept{statements}

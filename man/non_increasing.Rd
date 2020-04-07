@@ -22,9 +22,13 @@ non_increasing('A', 'B')
 
 }
 \seealso{
-Other statements: \code{\link{complements}},
-  \code{\link{decreasing}}, \code{\link{increasing}},
-  \code{\link{interacts}}, \code{\link{non_decreasing}},
-  \code{\link{substitutes}}, \code{\link{te}}
+Other statements: 
+\code{\link{complements}()},
+\code{\link{decreasing}()},
+\code{\link{increasing}()},
+\code{\link{interacts}()},
+\code{\link{non_decreasing}()},
+\code{\link{substitutes}()},
+\code{\link{te}()}
 }
 \concept{statements}

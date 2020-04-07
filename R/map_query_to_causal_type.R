@@ -27,7 +27,6 @@
 #' query <- '(Y[X = .]==1)'
 #' CausalQueries:::map_query_to_causal_type(model, query)
 #'
-
 map_query_to_causal_type <- function(model, query, join_by = "|") {
 
     if (length(query) > 1L)
