@@ -23,3 +23,4 @@ Other restrictions: \code{\link{restrict_by_labels}},
   \code{\link{set_restrictions}}
 }
 \concept{restrictions}
+\keyword{internal}

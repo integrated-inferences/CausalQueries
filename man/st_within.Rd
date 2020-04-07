@@ -8,11 +8,11 @@ st_within(x, left = "[^_[:^punct:]]|\\\\b", right = "\\\\[",
   rm_left = 0, rm_right = -1)
 }
 \arguments{
-\item{x}{A character.}
+\item{x}{A character string.}
 
-\item{left}{A character. Regular expression to serve as look ahead.}
+\item{left}{A character string. Regular expression to serve as look ahead.}
 
-\item{right}{A character. Regular expression to serve as a look behind.}
+\item{right}{A character string. Regular expression to serve as a look behind.}
 
 \item{rm_left}{An integer. Number of bites after left-side match to remove from result. Defaults to -1.}
 
@@ -26,7 +26,8 @@ Returns a substring enclosed by two regular expression patterns. By default retu
 }
 \examples{
 a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'
-st_within(a)
+CausalQueries:::st_within(a)
 b <- '(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)'
-st_within(b)
+CausalQueries:::st_within(b)
 }
+\keyword{internal}

@@ -21,8 +21,8 @@ Generate a statement for X1, X1 substitue for each other in the production of Y
 }
 \examples{
 
-map_query_to_causal_type(model = make_model('A -> B <- C'),
-         query = substitutes('A', 'C', 'B'))
+get_query_types(model = make_model('A -> B <- C'),
+         query = substitutes('A', 'C', 'B'),map = "causal_type")
 
 query_model(model = make_model('A -> B <- C'),
          queries = substitutes('A', 'C', 'B'),

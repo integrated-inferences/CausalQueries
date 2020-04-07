@@ -15,10 +15,10 @@ add_dots(q, model)
 Helper to fill in missing do operators in causal expression
 }
 \examples{
-
 model <- make_model('X -> Y <- M')
 CausalQueries:::add_dots('Y[X=1]', model)
 CausalQueries:::add_dots('Y[]', model)
 
 
 }
+\keyword{internal}

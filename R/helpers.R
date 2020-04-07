@@ -2,13 +2,13 @@
 #' Produces the possible permutations of a set of nodes
 #'
 #' @param max A vector of integers. The maximum value of an integer value starting at 0. Defaults to 1. The number of permutation is defined by \code{max}'s length
-#' @export
+#' @keywords internal
 #' @return A \code{matrix} of permutations
 #' @importFrom rlang exprs
 #' @examples
 #'
 #' \dontrun{
-#' perm(3)
+#' CausalQueries:::perm(3)
 #' }
 perm <- function(max = rep(1, 2)) {
 
@@ -25,18 +25,18 @@ perm <- function(max = rep(1, 2)) {
 #'
 #' Returns a substring enclosed by two regular expression patterns. By default returns the name of the arguments being indexed by squared brackets (\code{[]}) in a string containing an expression.
 #'
-#' @param x A character.
-#' @param left A character. Regular expression to serve as look ahead.
-#' @param right A character. Regular expression to serve as a look behind.
+#' @param x A character string.
+#' @param left A character string. Regular expression to serve as look ahead.
+#' @param right A character string. Regular expression to serve as a look behind.
 #' @param rm_left An integer. Number of bites after left-side match to remove from result. Defaults to -1.
 #' @param rm_right An integer. Number of bites after right-side match to remove from result. Defaults to 0.
 #' @return A character vector.
-#' @export
+#' @keywords internal
 #' @examples
 #' a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'
-#' st_within(a)
+#' CausalQueries:::st_within(a)
 #' b <- '(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)'
-#' st_within(b)
+#' CausalQueries:::st_within(b)
 
 st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0, rm_right = -1) {
     if (!is.character(x))
@@ -66,7 +66,7 @@ st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0
 #' Recursive substitution
 #'
 #' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
-#'
+#' @keywords internal
 #' @param x A character vector.
 #' @param pattern_vector A character vector.
 #' @param replacement_vector A character vector.
@@ -84,7 +84,7 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...) {
 #' Clean condition
 #'
 #' Takes a string specifying condition and returns properly spaced string.
-#'
+#' @keywords internal
 #' @param condition A character string. Condition that refers to a unique position (posible outcome) in a nodal type.
 clean_condition <- function(condition) {
     spliced <- strsplit(condition, split = "")[[1]]
@@ -275,7 +275,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
-#'
+#' @keywords internal
 #' Used in \code{map_query_to_nodal_types}
 #'
 includes_var <- function(var, query)

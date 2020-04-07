@@ -24,3 +24,4 @@ From rstanarm (November 1st, 2019)
 \details{
 Set the sampling arguments
 }
+\keyword{internal}

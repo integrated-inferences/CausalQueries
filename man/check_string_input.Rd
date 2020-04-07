@@ -14,3 +14,4 @@ check_string_input(param_list = list(), call_name = NULL)
 \description{
 Check string_input
 }
+\keyword{internal}

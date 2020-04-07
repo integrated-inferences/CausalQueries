@@ -123,7 +123,7 @@ make_confounds_df <- function(model) {
 #' model$confounds_df  # Incorrect
 #' model <- set_confounds_df(model)
 #' model$confounds_df  # Correct
-#' # plot(model)
+
 
 set_confounds_df <- function(model) {
     model$confounds_df <- make_confounds_df(model)

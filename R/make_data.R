@@ -43,7 +43,7 @@
 #' # Simulate multiple datasets is fastest if w is provided
 #' model <- make_model("X -> Y")
 #' w <- get_event_prob(model)
-#' replicate(5, make_data_single(model, n = 5, w = w))
+#' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
 
 make_data <- function(
@@ -209,7 +209,7 @@ observe_data <- function(complete_data,
 #' @param P A \code{matrix}. Parameter matrix that can be used to generate w if w is not provided
 #' @param A A \code{matrix}. Ambiguity matrix that can be used to generate w if w is not provided
 #' @return A \code{data.frame} of simulated data.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #'
@@ -217,13 +217,13 @@ observe_data <- function(complete_data,
 #'
 #' # Simplest behavior uses by default  the parameter vector contained in model,
 #' # which is flat by default:
-#' make_data_single(model, n = 5)
+#' CausalQueries:::make_data_single(model, n = 5)
 #'
-#' make_data_single(model, n = 5, param_type = "prior_draw")
+#' CausalQueries:::make_data_single(model, n = 5, param_type = "prior_draw")
 #'
 #' # Simulate multiple datasets is fastest if w is provided
 #' w <- get_event_prob(model)
-#' replicate(5, make_data_single(model, n = 5, w = w))
+#' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
 
 make_data_single <- function(

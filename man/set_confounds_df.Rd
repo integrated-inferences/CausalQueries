@@ -27,5 +27,4 @@ model <- make_model('X -> Y') \%>\%
 model$confounds_df  # Incorrect
 model <- set_confounds_df(model)
 model$confounds_df  # Correct
-# plot(model)
 }

@@ -44,3 +44,4 @@ Other priors: \code{\link{get_priors}},
   \code{\link{set_priors}}
 }
 \concept{priors}
+\keyword{internal}

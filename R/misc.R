@@ -1,10 +1,10 @@
 
 #' n_check
 #'
-#' @param n An integer. sample size argument.
+#' @param n An integer. Sample size argument.
 #'
-#' @details Checks whether the input is an integer bigger than 0.
-#'
+#' @details Checks whether the input is an integer greater than 0.
+#' @keywords internal
 
 n_check <- function(n) {
     cond1 <- !(round(n) == n)
@@ -17,8 +17,9 @@ n_check <- function(n) {
 #' default_stan_control
 #'
 #' @param adapt_delta A double between 0 and 1. It determines \code{adapt_delta}
-#' @param max_treedepth A positive integer. It determines maximum tree depth
+#' @param max_treedepth A positive integer. It determines  \code{maximum_tree_depth}
 #' @details Sets controls to default unless otherwise specified.
+#' @keywords internal
 
 default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
     if (is.null(adapt_delta)) {
@@ -36,6 +37,7 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' @param user_adapt_delta A double between 0 and 1. Adapt delta passed by the user
 #' @param ... further arguments to be passed to stan
 #' @details Set the sampling arguments
+#' @keywords internal
 
 set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NULL, ...) {
     args <- list(object = object, ...)

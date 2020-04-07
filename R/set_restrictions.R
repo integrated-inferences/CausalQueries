@@ -173,7 +173,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#'
+#' @keywords internal
 #' @family restrictions
 
 restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
@@ -252,7 +252,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #'
-#'
+#' @keywords internal
 #' @family restrictions
 
 restrict_by_labels <- function(model, labels, keep = FALSE) {
@@ -312,6 +312,7 @@ get_type_names <- function(nodal_types) {
 
 #' Unpack a wild card
 #' @param x A character. A nodal type containing one or more wildcard characters '.' to be unpacked.
+#' @keywords internal
 
 unpack_wildcard <- function(x) {
     splitstring <- strsplit(x, "")[[1]]
@@ -328,9 +329,10 @@ unpack_wildcard <- function(x) {
 
 #' Update causal types based on nodal types
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @keywords internal
 #' @examples
-#' update_causal_types(make_model('X->Y'))
-#' @export
+#' CausalQueries:::update_causal_types(make_model('X->Y'))
+
 update_causal_types <- function(model) {
 
     possible_types <- get_nodal_types(model)

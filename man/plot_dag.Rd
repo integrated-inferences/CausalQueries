@@ -24,3 +24,4 @@ plot_dag(model)
 }
 
 }
+\keyword{internal}

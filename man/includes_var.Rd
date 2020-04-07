@@ -9,10 +9,12 @@ includes_var(var, query)
 \arguments{
 \item{var}{Variable name}
 
-\item{query}{An expression in string format.
-
-Used in \code{map_query_to_nodal_types}}
+\item{query}{An expression in string format.}
 }
 \description{
 Whether a query contains an exact string
 }
+\keyword{Used}
+\keyword{\code{map_query_to_nodal_types}}
+\keyword{in}
+\keyword{internal}

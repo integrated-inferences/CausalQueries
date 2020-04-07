@@ -12,3 +12,4 @@ minimal_data(model)
 \description{
 Creates a data frame for case with no data
 }
+\keyword{internal}

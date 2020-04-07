@@ -12,3 +12,4 @@ minimal_event_data(model)
 \description{
 Creates a compact data frame for case with no data
 }
+\keyword{internal}

@@ -4,7 +4,7 @@ cache: packages
 warnings_are_errors: false
 
 r_github_packages:
-  - macartan/gbiqq
+  - macartan/CausalQueries
 
 matrix:
   include:
@@ -50,8 +50,6 @@ matrix:
       fortran: true
       osx_image: xcode10
       r: oldrel
-
-
 
 
 before_install:

@@ -21,3 +21,4 @@ Other restrictions: \code{\link{restrict_by_query}},
   \code{\link{set_restrictions}}
 }
 \concept{restrictions}
+\keyword{internal}
