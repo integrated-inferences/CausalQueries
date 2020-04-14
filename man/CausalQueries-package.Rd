@@ -3,7 +3,7 @@
 \docType{package}
 \name{CausalQueries-package}
 \alias{CausalQueries-package}
-\title{CausalQueries: A package for creating and updating  binary probabilistic causal models}
+\title{CausalQueries}
 \description{
-CausalQueries: A package for creating and updating  binary probabilistic causal models
+A package for creating and updating  binary probabilistic causal models
 }
