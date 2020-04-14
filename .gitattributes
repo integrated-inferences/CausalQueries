@@ -1,0 +1,10 @@
+inst/* linguist-vendored
+src/Makevars* linguist-vendored
+src/RcppExports.cpp linguist-vendored
+src/StanExports_simplexes.cc linguist-vendored
+src/StanExports_simplexes.h linguist-vendored
+inst/stan/license.stan linguist-vendored
+inst/stan/include/simplexes.stan linguist-vendored
+inst/include/stan_meta_header.hpp linguist-vendored
+text=auto
+eol=lf
