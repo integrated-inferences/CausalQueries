@@ -1,4 +1,6 @@
-#' CausalQueries: A package for creating and updating  binary probabilistic causal models
+#' CausalQueries
+#'
+#' A package for creating and updating  binary probabilistic causal models
 #'
 #' @docType package
 #'
