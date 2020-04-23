@@ -30,4 +30,4 @@ before_install:
   - echo "CXX14=g++ -std=c++1y -fext-numeric-literals -fPIC" >> ~/.R/Makevars
 
 after_success:
-  - Rscript -e 'covr::coveralls()'
+ - travis_wait 50  Rscript -e 'covr::coveralls()'
