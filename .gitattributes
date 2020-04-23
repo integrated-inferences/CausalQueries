@@ -1,10 +1,13 @@
-inst/* linguist-vendored
-src/Makevars* linguist-vendored
-src/RcppExports.cpp linguist-vendored
-src/StanExports_simplexes.cc linguist-vendored
-src/StanExports_simplexes.h linguist-vendored
-inst/stan/license.stan linguist-vendored
-inst/stan/include/simplexes.stan linguist-vendored
-inst/include/stan_meta_header.hpp linguist-vendored
-text=auto
-eol=lf
+* text=auto
+
+*.c text eol=lf
+*.cpp text eol=lf
+*.R text eol=lf
+*.h text eol=lf
+*.o text eol=lf
+*.hpp text eol=lf
+*.stan text eol=lf
+
+
+Makevars text eol=lf
+Makevars.win eol=lf
