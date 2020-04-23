@@ -1,7 +1,7 @@
 ## Test environments
 
 * local OS X install (R 3.6.3 and R 4.0.0 )
-* win-builder (R-release and R-devel)
+* Ubuntu 14.04 on travis-ci (R-release, R-devel)
 
 ## R CMD check results
 
