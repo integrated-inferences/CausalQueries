@@ -22,7 +22,8 @@ addons:
       - libudunits2-dev
       - libgdal-dev
       - libproj-dev
-
+      - g++-7
+      - libv8-dev
 before_install:
   - mkdir -p ~/.R
   - echo "PKG_CPPFLAG=-DBOOST_NO_AUTO_PTR" >> ~/.R/Makevars
