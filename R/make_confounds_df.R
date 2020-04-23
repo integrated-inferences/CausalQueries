@@ -105,7 +105,7 @@ make_confounds_df <- function(model) {
 #' Set a confounds_df
 #'
 #' Normally a confounds_df is added to a model whenever confounding is set.
-#' The confounds_df can be manually provided however using set_sconfounds_df.
+#' The confounds_df can be manually provided however using set_confounds_df.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @export

@@ -1,4 +1,4 @@
-#' Puts your DAG into daggity syntax (useful for using their plotting functions)
+#' Puts your DAG into dagitty syntax (useful for using their plotting functions)
 #'
 #' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
 #'

@@ -145,7 +145,7 @@ make_data <- function(
 #' @param nodes_to_observe  A list. Nodes to observe.
 #' @param prob A scalar. Observation probability.
 #' @param m A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.
-#' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation fo some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
+#' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
 #'
 #' @export
 #' @examples

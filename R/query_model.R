@@ -10,7 +10,7 @@
 #' @param join_by A character. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
-#' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
+#' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples

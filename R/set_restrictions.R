@@ -5,8 +5,8 @@
 #' Restrictions are made to nodal types, not to unit causal types. Thus for instance in a
 #' model \code{X -> M -> Y}, one cannot apply a simple restriction so that \code{Y} is nondecreasing
 #' in  \code{X}, however one can restrict so that \code{M} is nondecreasing in \code{X} and \code{Y} nondecreasing in \code{M}.
-#' To have a restriction that \code{Y} be nondecreasing in \code{X} would otherwise require restrictions on causal types, not nodaly types,
-#' which implies a form of undeclared confounding (ie that in cases in which \code{M} is decreasing in \code{X}, \code{Y} is decreasing in \code{M}).
+#' To have a restriction that \code{Y} be nondecreasing in \code{X} would otherwise require restrictions on causal types, not nodal types,
+#' which implies a form of undeclared confounding (i.e. that in cases in which \code{M} is decreasing in \code{X}, \code{Y} is decreasing in \code{M}).
 #'
 #' Since restrictions are to nodal types, all parents of a node are implicity fixed.  Thus for model \code{make_model(`X -> Y <- W`)} the request
 #' \code{set_restrictions(`(Y[X=1] == 0)`)}

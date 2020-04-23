@@ -15,6 +15,6 @@ includes_var(var, query)
 Whether a query contains an exact string
 }
 \keyword{Used}
-\keyword{\code{map_query_to_nodal_types}}
 \keyword{in}
 \keyword{internal}
+\keyword{map_query_to_nodal_types}

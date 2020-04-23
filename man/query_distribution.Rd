@@ -28,7 +28,7 @@ query_distribution(
 
 \item{type_distribution}{A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior}
 
-\item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the consule.}
+\item{verbose}{Logical. Whether to print mean and standard deviation of the estimand on the console.}
 
 \item{join_by}{A character. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 }

@@ -7,7 +7,7 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param dos A named \code{list}. Do actions defining node values, e.g., \code{list(X = 0, M = 1)}.
 #' @param node A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.
-#' @return A \code{data.frame} object of revealed data for each nodel (columns) given causal / nodal type (rows) .
+#' @return A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")

@@ -8,9 +8,9 @@
 #'
 #' * \code{node}, which restricts for example to parameters associated with node 'X'
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
 #' * \code{param_set}, which us useful when setting confound statements that produces several sets of parameters
 #'
@@ -108,9 +108,9 @@ make_priors <-
 #'
 #' * \code{node}, which restricts for example to parameters associated with node 'X'
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
+#' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statment 'Y[X=1] > Y[X=0]'
+#' * \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
 #' Two arguments govern what values to apply:
 #'

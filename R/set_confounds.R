@@ -28,7 +28,7 @@
 #' Ordering of conditioning can also be controlled however via  \code{set_confound(model, list(X = 'Y'))}
 #' in which case \code{X} is given a distribution conditional on nodal types of \code{Y}.
 #'
-#' More specific confounding statements are also possble using causal syntax.
+#' More specific confounding statements are also possible using causal syntax.
 #' A statement of the form \code{list(X = 'Y[X=1]==1')} can be interpreted as:
 #' 'Allow \code{X} to have a distinct conditional distribution when \code{Y} has types that involve Y[X=1]==1.'
 #' In this case nodal types for \code{Y} would continue to have 3 degrees of freedom.

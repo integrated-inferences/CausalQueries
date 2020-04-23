@@ -1,6 +1,6 @@
 Package: CausalQueries
 Type: Package
-Title: Make, update, and query binary causal models
+Title: Make, Update, and Query Binary Causal Models
 Version: 0.0.3
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
@@ -40,6 +40,5 @@ Suggests:
     knitr,
     DeclareDesign,
     covr
-VignetteBuilder: knitr
 SystemRequirements: GNU make
 Biarch: true

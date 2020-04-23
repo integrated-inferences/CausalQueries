@@ -17,7 +17,7 @@ substitutes(X1, X2, Y)
 A character statement of class statement
 }
 \description{
-Generate a statement for X1, X1 substitue for each other in the production of Y
+Generate a statement for X1, X1 substitute for each other in the production of Y
 }
 \examples{
 

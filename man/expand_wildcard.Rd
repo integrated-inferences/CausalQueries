@@ -11,7 +11,7 @@ expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 
-\item{verbose}{Logical. Whether to print expanded query on the consule.}
+\item{verbose}{Logical. Whether to print expanded query on the console.}
 }
 \description{
 Expand statement containing wildcard
