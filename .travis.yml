@@ -61,4 +61,4 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
 after_failure:
-  - cat /home/travis/build/saudiwin/CausalQueries/CausalQueries.Rcheck/00install.out
+  - cat /home/travis/build/macartan/CausalQueries/CausalQueries.Rcheck/00install.out
