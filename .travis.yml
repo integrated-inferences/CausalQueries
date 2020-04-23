@@ -1,10 +1,12 @@
 language: r
 sudo: true
-cache: packages
+cache:
+ packages: false
 warnings_are_errors: false
 
 r_github_packages:
   - macartan/CausalQueries
+
 
 matrix:
   include:
@@ -46,11 +48,7 @@ matrix:
       fortran: true
       osx_image: xcode10
       r: release
-    - os: osx
-      fortran: true
-      osx_image: xcode10
-      r: devel
-      after_success: echo skipping source packaging on linux/devel
+
 
 
 before_install:
@@ -62,10 +60,5 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CC = clang" >> ~/.R/Makevars; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
 
-script:
-  - |
-    travis_wait 60 R CMD build .
-    travis_wait 70 R CMD check CausalQueries*tar.gz
-
-after_success:
- - travis_wait 40  Rscript -e 'covr::coveralls()'
+after_failure:
+  - cat /home/travis/build/saudiwin/CausalQueries/CausalQueries.Rcheck/00install.out
