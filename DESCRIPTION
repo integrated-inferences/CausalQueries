@@ -4,9 +4,9 @@ Title: Make, update, and query binary causal models
 Version: 0.0.3
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("aut")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("aut")),
-             person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut", "cre")),
+             person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
 	          person("Merlin", "Heidemanns", email = "mnh2123@columbia.edu ", role = c("aut")),
-             person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut")),
+             person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut" , "cre")),
              person("Julio", "Solis", email = "juliosolisar@gmail.com", role = c("aut")),
              person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("aut")))
 Description: Define and update arbitrary binary probabilistic structural models.
@@ -26,7 +26,6 @@ Imports:
     randomizr,
     rlang (>= 0.2.0),
     rstan (>= 2.18.1),
-    rstantools (>= 2.0.0),
     stringr
 LinkingTo: 
     BH (>= 1.66.0),
@@ -39,6 +38,7 @@ Suggests:
     rmarkdown,
     knitr,
     DeclareDesign,
+    rstantools (>= 2.0.0),
     covr
 VignetteBuilder: knitr
 SystemRequirements: GNU make
