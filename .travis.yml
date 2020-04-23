@@ -1,64 +1,34 @@
 language: r
-sudo: true
+r:
+  - devel
+  - release
+latex: false
+
 cache:
- packages: false
+  - packages
+  - ccache
+
 warnings_are_errors: false
+
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
 
 r_github_packages:
   - macartan/CausalQueries
 
-
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      r: release
-      r_binary_packages:
-        - devtools
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - libudunits2-dev
-            - libgdal-dev
-            - libproj-dev
-            - libv8-dev
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - os: linux
-      dist: trusty
-      r: devel
-      r_binary_packages:
-        - devtools
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-            - libudunits2-dev
-            - libgdal-dev
-            - libproj-dev
-            - libv8-dev
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - os: osx
-      fortran: true
-      osx_image: xcode10
-      r: release
-
-
+addons:
+  apt:
+    packages:
+      - libudunits2-dev
+      - libgdal-dev
+      - libproj-dev
 
 before_install:
-  - mkdir -p ~/.R/
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14 = g++-7 -fPIC -flto=2" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "CXX14FLAGS = -mtune=native -O3" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CXX14 = clang++ -arch x86_64 -ftemplate-depth-256" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CXX14FLAGS = -O3 -mtune=native" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "CC = clang" >> ~/.R/Makevars; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo tlmgr install inconsolata; fi
+  - mkdir -p ~/.R
+  - echo "PKG_CPPFLAG=-DBOOST_NO_AUTO_PTR" >> ~/.R/Makevars
+  - echo "CXX14FLAGS=-O3 -mtune=native -march=native -Wno-unused -Wno-deprecated-declarations" >> ~/.R/Makevars
+  - echo "CXX14=g++ -std=c++1y -fext-numeric-literals -fPIC" >> ~/.R/Makevars
 
-after_failure:
-  - cat /home/travis/build/macartan/CausalQueries/CausalQueries.Rcheck/00install.out
+after_success:
+  - tar -C .. -xf $PKG_TARBALL
+  - Rscript -e 'covr::coveralls()'
