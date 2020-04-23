@@ -22,7 +22,6 @@ addons:
       - libudunits2-dev
       - libgdal-dev
       - libproj-dev
-      - g++-7
       - libv8-dev
 before_install:
   - mkdir -p ~/.R
