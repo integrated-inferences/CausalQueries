@@ -30,5 +30,4 @@ before_install:
   - echo "CXX14=g++ -std=c++1y -fext-numeric-literals -fPIC" >> ~/.R/Makevars
 
 after_success:
-  - tar -C .. -xf $PKG_TARBALL
   - Rscript -e 'covr::coveralls()'
