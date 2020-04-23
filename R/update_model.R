@@ -10,6 +10,7 @@
 #' @param ... Options passed onto \code{rstan::stan} call.
 #' @import methods
 #' @import Rcpp
+#' @import rstantools
 #' @importFrom rstan stan
 #' @importFrom rstan extract
 #' @importFrom rstan sampling
