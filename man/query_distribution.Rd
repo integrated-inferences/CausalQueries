@@ -38,14 +38,14 @@ Calculated distribution of a query from a prior or posterior distribution of par
 \examples{
 model <- make_model("X -> Y") \%>\%
          set_prior_distribution()
-
+ \dontrun{
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-\dontrun{
  df    <- simulate_data(model, n = 3)
  updated_model <- CausalQueries(model, df)
  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")

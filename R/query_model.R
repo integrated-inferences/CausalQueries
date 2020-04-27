@@ -16,14 +16,14 @@
 #' @examples
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'
+#'  \dontrun{
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
 #'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-#' \dontrun{
 #'  df    <- simulate_data(model, n = 3)
 #'  updated_model <- CausalQueries(model, df)
 #'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
@@ -92,6 +92,7 @@ query_distribution <- function(model,
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
+#' \dontrun{
 #' estimands_df <-query_model(
 #'                model,
 #'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
@@ -119,7 +120,7 @@ query_distribution <- function(model,
 #'                 using = list( "parameters", "priors"),
 #'                 query = "Y[X=1] > Y[X=0]",
 #'                 stats = c(mean = mean, sd = sd, token_var = token_var))
-#'
+#'}
 
 query_model <- function(model,
 												queries    = NULL,
