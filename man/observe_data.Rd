@@ -24,7 +24,7 @@ observe_data(
 
 \item{m}{A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.}
 
-\item{subset}{A character.  Logical statement that can be applied to rows of complete data. For instance observation fo some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!}
+\item{subset}{A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!}
 }
 \description{
 Observe data, given a strategy

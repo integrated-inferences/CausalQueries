@@ -85,7 +85,7 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...) {
 #'
 #' Takes a string specifying condition and returns properly spaced string.
 #' @keywords internal
-#' @param condition A character string. Condition that refers to a unique position (posible outcome) in a nodal type.
+#' @param condition A character string. Condition that refers to a unique position (possible outcome) in a nodal type.
 clean_condition <- function(condition) {
     spliced <- strsplit(condition, split = "")[[1]]
     spaces <- grepl("[[:space:]]", spliced, perl = TRUE)
@@ -179,7 +179,7 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param to_expand A character vector of length 1L.
-#' @param verbose Logical. Whether to print expanded query on the consule.
+#' @param verbose Logical. Whether to print expanded query on the console.
 #' @importFrom rlang expr
 #' @export
 #' @examples
@@ -276,7 +276,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' @param var Variable name
 #' @param query An expression in string format.
 #' @keywords internal
-#' Used in \code{map_query_to_nodal_types}
+#' Used in map_query_to_nodal_types
 #'
 includes_var <- function(var, query)
     length(grep(paste0("\\<", var, "\\>"), query)) > 0

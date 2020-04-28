@@ -11,7 +11,7 @@ set_confounds_df(model)
 }
 \description{
 Normally a confounds_df is added to a model whenever confounding is set.
-The confounds_df can be manually provided however using set_sconfounds_df.
+The confounds_df can be manually provided however using set_confounds_df.
 }
 \examples{
 model <- make_model('X -> Y') \%>\%

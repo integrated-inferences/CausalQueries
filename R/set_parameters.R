@@ -1,6 +1,6 @@
 #' Make a 'true' parameter vector
 #'
-#' A vector of 'true' parameters; possibly drawn from prior or posterionr.
+#' A vector of 'true' parameters; possibly drawn from prior or posterior.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
