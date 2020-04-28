@@ -157,7 +157,7 @@ complements <- function(X1, X2, Y) {
 
 #' Make statement for substitutes
 #'
-#' Generate a statement for X1, X1 substitue for each other in the production of Y
+#' Generate a statement for X1, X1 substitute for each other in the production of Y
 #'
 #' @param X1 A character. The quoted name of the input node 1.
 #' @param X2 A character. The quoted name of the input node 2.

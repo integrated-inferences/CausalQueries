@@ -14,7 +14,7 @@ reveal_outcomes(model, dos = NULL, node = NULL)
 \item{node}{A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.}
 }
 \value{
-A \code{data.frame} object of revealed data for each nodel (columns) given causal / nodal type (rows) .
+A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .
 }
 \description{
 Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.

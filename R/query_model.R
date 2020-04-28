@@ -10,20 +10,20 @@
 #' @param join_by A character. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
-#' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the consule.
+#' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'
+#'  \dontrun{
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
 #'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-#' \dontrun{
 #'  df    <- simulate_data(model, n = 3)
 #'  updated_model <- CausalQueries(model, df)
 #'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
@@ -92,6 +92,7 @@ query_distribution <- function(model,
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
+#' \dontrun{
 #' estimands_df <-query_model(
 #'                model,
 #'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
@@ -119,7 +120,7 @@ query_distribution <- function(model,
 #'                 using = list( "parameters", "priors"),
 #'                 query = "Y[X=1] > Y[X=0]",
 #'                 stats = c(mean = mean, sd = sd, token_var = token_var))
-#'
+#'}
 
 query_model <- function(model,
 												queries    = NULL,

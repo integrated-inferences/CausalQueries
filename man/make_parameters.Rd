@@ -27,7 +27,7 @@ make_parameters(
 \item{...}{Options passed onto \code{\link{make_priors}}.}
 }
 \description{
-A vector of 'true' parameters; possibly drawn from prior or posterionr.
+A vector of 'true' parameters; possibly drawn from prior or posterior.
 }
 \examples{
 

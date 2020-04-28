@@ -12,7 +12,7 @@
 #' @param statement A character. Statement describing causal
 #' relations using dagitty syntax. Only directed relations are permitted.
 #' For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
-#' @param add_causal_types Logical. Whether to dreate and attach causal types to \code{model}. Defaults to `TRUE`.
+#' @param add_causal_types Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.
 #' @export
 #'
 #' @return An object of class \code{causal_model} containing a DAG.
