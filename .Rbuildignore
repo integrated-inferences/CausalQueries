@@ -9,3 +9,4 @@ src/.*\.gcda$
 rcppExports.cpp
 stanExports_*
 cran.comments.md
+^CRAN-RELEASE$
