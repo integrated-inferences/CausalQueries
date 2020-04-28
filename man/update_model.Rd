@@ -25,12 +25,13 @@ Takes a model and data and returns a model object with data attached and a poste
 model <- make_model('X->Y')
 data_long   <- simulate_data(model, n = 4)
 data_short  <- collapse_data(data_long, model)
+ \dontrun{
 model_1 <- update_model(model, data_long)
 
 # Throws error unless compact data indicated:
-\dontrun{
+
 model_3 <- update_model(model, data_short)
-}
+
 model_4 <- update_model(model, data_short, data_type = 'compact')
 
 # It is possible to implement updating without data, in which case the posterior
@@ -43,7 +44,6 @@ model5 <- update_model(model)
 # all parameters are in one family.
 # Parameters in this example are not connected with nodal types in any way.
 
-\dontrun{
 model <- make_model('X->Y')
 model$P <- diag(8)
 colnames(model$P) <- rownames(model$causal_types)
