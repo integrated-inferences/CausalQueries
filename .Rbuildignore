@@ -2,5 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 .gitignore
-cran.comments.md
+cran-comments.md
 ^CRAN-RELEASE$
