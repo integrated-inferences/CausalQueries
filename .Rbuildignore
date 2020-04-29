@@ -1,12 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
-src/.*\.o$
-src/.*\.cc$
-src/.*\.hpp$
-src/.*\.gcda$
 .gitignore
-rcppExports.cpp
-stanExports_*
 cran.comments.md
 ^CRAN-RELEASE$
