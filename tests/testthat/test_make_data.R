@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Tests make_data")
 
 testthat::test_that(
@@ -26,7 +31,7 @@ testthat::test_that(
 		expect_true(all(c(out$X, out$Y)))
 	}
 )
-
+}
 
 
 

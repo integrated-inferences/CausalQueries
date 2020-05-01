@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing data helperse")
 
 testthat::test_that(
@@ -130,3 +135,4 @@ testthat::test_that(
 
 
 
+}

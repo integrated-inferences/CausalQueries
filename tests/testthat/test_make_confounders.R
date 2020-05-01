@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing make_confounds")
 
 testthat::test_that(
@@ -22,3 +27,5 @@ testthat::test_that(
 	}
 )
 
+
+}

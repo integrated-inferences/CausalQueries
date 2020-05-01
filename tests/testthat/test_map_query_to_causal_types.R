@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing map_query_to_causal_type")
 
 testthat::test_that(
@@ -23,3 +28,4 @@ testthat::test_that(
 		expect_equal(out[1], "list()")
 	}
 )
+}

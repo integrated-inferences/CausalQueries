@@ -1,6 +1,10 @@
 
 
 
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing type lookup")
 
 	testthat::test_that(
@@ -37,3 +41,5 @@ context(desc = "Testing type lookup")
 
 		}
 	)
+
+}

@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing set_restrictions")
 
 testthat::test_that(
@@ -106,4 +111,4 @@ testthat::test_that(
 )
 
 
-
+}

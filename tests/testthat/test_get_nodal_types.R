@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing get_nodal_types")
 
 testthat::test_that(
@@ -29,4 +34,4 @@ testthat::test_that(
 	}
 )
 
-
+}

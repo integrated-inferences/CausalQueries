@@ -1,4 +1,9 @@
 
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
+
 context(desc = "Testing that canonical models work as they should")
 
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
@@ -198,4 +203,4 @@ testthat::test_that(
 		expect_error(update_model(model, data, data_type = "compact"))
 	}
 )
-
+}

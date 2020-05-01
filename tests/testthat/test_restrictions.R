@@ -1,4 +1,8 @@
 
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing restrictions")
 
 
@@ -56,5 +60,5 @@ testthat::test_that(
 		expect_error(model <- set_restrictions(model, labels = list(W=1)))
 	}
 )
-
+}
 

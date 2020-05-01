@@ -1,4 +1,8 @@
 
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing make_data")
 
 # Simulate using parameters
@@ -91,3 +95,4 @@ testthat::test_that(
 	}
 )
 
+}

@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing reveal_outcomes")
 
 model <- make_model("X->M->Y")
@@ -15,4 +20,5 @@ testthat::test_that(
 		expect_equal(nrow(reveal_outcomes(model, dos = list(X = 1), node = "M")), 4)
 	}
 )
+}
 

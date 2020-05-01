@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("get_causal_types")
 
 testthat::test_that(
@@ -8,3 +13,4 @@ testthat::test_that(
 		expect_equal(nrow(get_causal_types(model)), 8)
 	}
 )
+}

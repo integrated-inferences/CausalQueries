@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing prep_qbiqq_data")
 
 testthat::test_that(
@@ -8,3 +13,4 @@ testthat::test_that(
 		expect_error(prep_stan_data(model, data[, 1:2]))
 	}
 )
+}

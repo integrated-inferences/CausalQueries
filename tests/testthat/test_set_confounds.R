@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing set_confounds")
 
 testthat::test_that(
@@ -10,3 +15,4 @@ testthat::test_that(
 		expect_identical(model, models)
 	}
 )
+}

@@ -53,7 +53,7 @@
 #' model <- make_model('X -> Y') %>%
 #'   set_confound(list('X <-> Y'))
 #' get_parameters(model)
-#'
+#' \dontrun{
 #'# In this case we notionally place a distribution but in fact Y has degenerate support
 #' make_model('X -> Y -> Z') %>%
 #'   set_restrictions(c(increasing('X', 'Y')), keep = TRUE) %>%
@@ -100,6 +100,7 @@
 #' model1$confounds_df
 #' model2 <-  set_confound(model, list(S = 'X==1', S = 'W[S=1]==1'), add_confounds_df = TRUE)
 #' model2$confounds_df
+#' }
 
 
 set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {

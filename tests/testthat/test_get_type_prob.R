@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing get_type_prob")
 
 testthat::test_that(
@@ -29,7 +34,7 @@ testthat::test_that(
 	}
 )
 
-
+}
 
 
 

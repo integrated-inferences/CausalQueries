@@ -1,3 +1,7 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
 context("Testing helper functions.")
 
 testthat::test_that(
@@ -98,3 +102,4 @@ testthat::test_that(
 		expect_true(a == "X")
 	}
 )
+}

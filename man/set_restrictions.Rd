@@ -71,7 +71,7 @@ model$parameters_df
 model <- make_model('X->Y') \%>\%
   set_restrictions(c(increasing('X', 'Y'), decreasing('X', 'Y')))
 model$parameters_df
-
+\dontrun{
 # Restrict to define a model with monotonicity
 model <- make_model('X->Y') \%>\%
 set_restrictions(statement = c('Y[X=1] < Y[X=0]'))
@@ -118,7 +118,7 @@ get_parameter_matrix(model)
 model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') \%>\%
 set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 get_parameter_matrix(model)
-
+}
 }
 \seealso{
 Other restrictions: 

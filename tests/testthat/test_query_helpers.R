@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Tests for query_helpers")
 
 testthat::test_that(
@@ -42,4 +47,4 @@ testthat::test_that(
 )
 
 
-
+}

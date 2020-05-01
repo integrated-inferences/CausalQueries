@@ -47,7 +47,7 @@ make_parameters(model, param_type = 'posterior_mean')
 
 # Using labels: Two values for two nodes with the same label
 make_model('X -> M -> Y') \%>\% make_parameters(label = "01", parameters = c(0,1))
-
+\dontrun{
 # Using statement:
 make_model('X -> Y') \%>\%
    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
@@ -67,6 +67,7 @@ make_model('X -> Y') \%>\%
                  parameters = list(c(.2, .8), c(.8, .2))) \%>\%
   set_parameters(statement  = 'Y[X=1]>Y[X=0]', parameters = .5) \%>\%
   get_parameters
+  }
 }
 \seealso{
 Other parameters: 

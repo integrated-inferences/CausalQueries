@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing set_priors")
 
 testthat::test_that(
@@ -45,3 +50,4 @@ testthat::test_that(
 		expect_true(all(666 %in% out))
 	}
 )
+}

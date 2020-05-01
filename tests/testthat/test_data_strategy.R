@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing make_model")
 
 testthat::test_that(
@@ -62,3 +67,4 @@ testthat::test_that(
 	}
 )
 
+}

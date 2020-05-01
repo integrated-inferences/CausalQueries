@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Testing get_ambiguity_matrix")
 
 testthat::test_that(
@@ -19,3 +24,4 @@ testthat::test_that(
 		expect_identical(A1, A2)
 	}
 )
+}

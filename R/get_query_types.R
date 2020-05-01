@@ -8,6 +8,7 @@
 #' @examples
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=0] > Y[X=1])'
+#' \dontrun{
 #' get_query_types(model, query, map="nodal_type")
 #' get_query_types(model, query, map="causal_type")
 #' get_query_types(model, query)
@@ -49,7 +50,7 @@
 #'
 #' query <- '(Y[X = .]==1)'
 #' get_query_types(model, query, "causal_type")
-#'
+#'}
 get_query_types <- function(model, query, map = "causal_type", join_by = "|"){
 	if(!(map%in%c("causal_type", "nodal_type"))){
 		stop("map must be either causal_type or nodal_type")

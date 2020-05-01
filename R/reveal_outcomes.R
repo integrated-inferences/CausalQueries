@@ -10,6 +10,7 @@
 #' @return A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .
 #' @export
 #' @examples
+#' \dontrun{
 #' model <- make_model("X -> Y")
 #' reveal_outcomes(model)
 #'
@@ -18,7 +19,7 @@
 #'
 #' model <- make_model("X->M->Y")
 #' reveal_outcomes(model, dos = list(M = 1), node = "Y")
-#'
+#'}
 reveal_outcomes <- function(model, dos = NULL, node = NULL){
 
 	# Housekeeping

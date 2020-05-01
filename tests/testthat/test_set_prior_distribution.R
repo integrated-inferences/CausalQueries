@@ -1,3 +1,9 @@
+
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Set_prior_distribution")
 
 testthat::test_that(
@@ -7,3 +13,4 @@ testthat::test_that(
 		expect_equal(make_model("X -> Y") %>% set_prior_distribution(n_draws = 10) %>% get_prior_distribution() %>% nrow(), 10)
 	}
 )
+}

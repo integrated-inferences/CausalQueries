@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing plot_dag")
 
 testthat::test_that(
@@ -33,3 +38,4 @@ testthat::test_that(
 		expect_message(plot_dag(model))
 	}
 )
+}

@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Query model, query distribution")
 
 testthat::test_that(
@@ -34,4 +39,5 @@ testthat::test_that(
 
 			}
 )
+}
 

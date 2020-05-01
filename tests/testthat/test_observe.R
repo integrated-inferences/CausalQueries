@@ -1,4 +1,9 @@
 
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing observe")
 
 set.seed(1)
@@ -70,6 +75,6 @@ testthat::test_that(
 	}
 )
 
-
+}
 
 

@@ -1,4 +1,9 @@
 
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context(desc = "Testing map_query_to_nodal_type")
 
 testthat::test_that(
@@ -21,3 +26,4 @@ testthat::test_that(
 		expect_true(any(grepl(test_output, b, fixed = TRUE)))
 	}
 )
+}

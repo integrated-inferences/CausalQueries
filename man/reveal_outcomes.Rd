@@ -24,6 +24,7 @@ If a do operator is applied to any node then it takes the given value and all it
 \code{reveal_outcomes} starts off by creating types (via \code{\link{get_nodal_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
 }
 \examples{
+\dontrun{
 model <- make_model("X -> Y")
 reveal_outcomes(model)
 
@@ -32,5 +33,5 @@ reveal_outcomes(model, dos = list(X1 = 1, M = 0))
 
 model <- make_model("X->M->Y")
 reveal_outcomes(model, dos = list(M = 1), node = "Y")
-
+}
 }

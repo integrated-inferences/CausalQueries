@@ -1,5 +1,8 @@
 
 
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
 
 context(desc = "Testing layering")
 
@@ -61,3 +64,5 @@ testthat::test_that(
 
 		expect_equal(ncol(model_a$P), ncol(model_b$P))
 		})
+
+}

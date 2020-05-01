@@ -1,3 +1,8 @@
+
+.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
+
+if (.runThisTest) {
+
 context("Error messages of map_query_to_causal_type")
 
 testthat::test_that(
@@ -49,3 +54,4 @@ testthat::test_that(
 		expect_output(print(out))
 	}
 )
+}
