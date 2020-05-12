@@ -12,7 +12,7 @@ te(X, Y)
 \item{Y}{A character. The quoted name of the outcome node}
 }
 \value{
-A character statement of class \code{statement}
+A character statement of class statement
 }
 \description{
 Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.

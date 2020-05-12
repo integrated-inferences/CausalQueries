@@ -1,12 +1,4 @@
 # First Submission
-## Addressing comments on first submission 
-
-- Please always add all authors, contributors and copyright holders in the
-Authors@R field with the appropriate roles.
-
-We listed Macartan Humphreys and Alan Jacobs as authors of 'CausalQueries' and the rest of us as contributors.
-
- 
 
 ## Test environments
 
@@ -28,8 +20,6 @@ Explanation: GNU make is required for packages build using rstantools. The requi
  checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Lily Medina <lilymiru@gmail.com>'
 ```
-
-
 
 
 

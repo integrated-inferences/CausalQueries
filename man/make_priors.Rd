@@ -26,21 +26,19 @@ make_priors(
 
 \item{node}{A string (or list of strings) indicating nodes for which priors are to be altered}
 
-\item{label}{A string. Label for nodal type indicating nodal types for which priors are to be altered}
+\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
 \item{confound}{A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.}
 
-\item{nodal_type}{A string. Label for nodal type indicating nodal types for which priors are to be altered}
+\item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{param_names}{A string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 
-\item{param_set}{A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
-}
-\value{
-A vector indicating the hyperparameters of the prior distribution of the nodal types.
-For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
+For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
+
+\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 }
 \description{
 A flexible function to generate priors for a model.

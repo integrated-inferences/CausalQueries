@@ -202,7 +202,7 @@ drop_empty_families <- function(data_events) {
 #' Expand compact data object to data frame
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @return A \code{data.frame} with rows as data observation
+#'
 #' @export
 #' @examples
 #' model <- make_model('X->M->Y')
@@ -239,7 +239,7 @@ expand_data <- function(data_events = NULL, model) {
 #'
 #' Provides names to data types
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @return A vector of strings of data types
+#'
 #' @examples
 #' model <- make_model('X -> Y')
 #' data <- simulate_data(model, n = 2)
@@ -262,7 +262,6 @@ data_type_names <- function(model, data) {
 #' @param complete_data Logical. If `TRUE` returns only complete data types (no NA's). Defaults to `FALSE`.
 #' @param possible_data Logical. If `TRUE` returns only complete data types (no NA's) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
 #' @param given A character.  A quoted statement that evaluates to logical. Data conditional on specific values.
-#' @return A \code{data.frame} with all data types (including NA types) that are possible from a model.
 #' @export
 #' @examples
 #' all_data_types(make_model('X -> Y'))

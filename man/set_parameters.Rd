@@ -23,10 +23,6 @@ set_parameters(
 
 \item{...}{Arguments to be passed to make_parameters}
 }
-\value{
-An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-the model (e.g. 'statement', 'confounds' and 'restrictions') with true vector of parameters attached to it.
-}
 \description{
 Add a true parameter vector to a model. Parameters can be created using arguments passed to
 make_parameters and make_priors.

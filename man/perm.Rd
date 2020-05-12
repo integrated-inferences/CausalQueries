@@ -16,7 +16,8 @@ A \code{matrix} of permutations
 Produces the possible permutations of a set of nodes
 }
 \examples{
-\donttest{
+
+\dontrun{
 CausalQueries:::perm(3)
 }
 }

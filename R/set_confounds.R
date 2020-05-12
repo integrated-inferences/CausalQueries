@@ -47,15 +47,13 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param confound A named \code{list}. It relates nodes to statements that identify causal types with which they are confounded
 #' @param add_confounds_df Logical. Attach a dataframe with confound links. Defaults to TRUE.
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix updated according to `confound`.
 #' @export
 #' @examples
 #'
 #' model <- make_model('X -> Y') %>%
 #'   set_confound(list('X <-> Y'))
 #' get_parameters(model)
-#' \donttest{
+#' \dontrun{
 #'# In this case we notionally place a distribution but in fact Y has degenerate support
 #' make_model('X -> Y -> Z') %>%
 #'   set_restrictions(c(increasing('X', 'Y')), keep = TRUE) %>%
@@ -103,6 +101,7 @@
 #' model2 <-  set_confound(model, list(S = 'X==1', S = 'W[S=1]==1'), add_confounds_df = TRUE)
 #' model2$confounds_df
 #' }
+
 
 set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 

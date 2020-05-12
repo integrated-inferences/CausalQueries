@@ -17,9 +17,6 @@ get_event_prob(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL)
 
 \item{type_prob}{A numeric vector. Type probabilities. (Not required).}
 }
-\value{
-An {array} of event probabilities
-}
 \description{
 Draw event probabilities
 }

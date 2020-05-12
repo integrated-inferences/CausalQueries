@@ -13,9 +13,6 @@ get_param_dist(model, using, n_draws = 4000)
 
 \item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 }
-\value{
-A \code{matrix} with the distribution of the parameters in the model
-}
 \description{
 Using parameters, priors, or posteriors
 }

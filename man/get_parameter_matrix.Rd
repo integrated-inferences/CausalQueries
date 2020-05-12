@@ -7,15 +7,8 @@
 get_parameter_matrix(model)
 }
 \arguments{
-\item{model}{A model created by \code{make_model()}}
-}
-\value{
-A \code{data.frame}, the parameter matrix, mapping from parameters to causal types
+\item{model}{A model created by make_model()}
 }
 \description{
 Return parameter matrix if it exists; otherwise calculate it assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
-}
-\examples{
-model <- make_model('X -> Y')
-get_parameter_matrix(model)
 }

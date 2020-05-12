@@ -13,9 +13,6 @@ get_type_prob(model, P = NULL, parameters = NULL)
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 }
-\value{
-A vector with probabilities of vector of causal types
-}
 \description{
 Gets probability of vector of causal types given a single realization of parameters, possibly drawn from model priors.
 }

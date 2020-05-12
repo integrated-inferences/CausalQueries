@@ -13,10 +13,6 @@ set_confound(model, confound = NULL, add_confounds_df = TRUE)
 
 \item{add_confounds_df}{Logical. Attach a dataframe with confound links. Defaults to TRUE.}
 }
-\value{
-An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix updated according to `confound`.
-}
 \description{
 Adjust parameter matrix to allow confounding.
 }
@@ -67,7 +63,7 @@ Thus 7 degrees of freedom in all, corresponding to a fully unconstrained joint d
 model <- make_model('X -> Y') \%>\%
   set_confound(list('X <-> Y'))
 get_parameters(model)
-\donttest{
+\dontrun{
 # In this case we notionally place a distribution but in fact Y has degenerate support
 make_model('X -> Y -> Z') \%>\%
   set_restrictions(c(increasing('X', 'Y')), keep = TRUE) \%>\%

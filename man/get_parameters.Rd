@@ -11,9 +11,6 @@ get_parameters(model, param_type = NULL)
 
 \item{param_type}{A character. String specifying type of parameters to set ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define'). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
 }
-\value{
-A vector of draws from the prior or distribution of parameters
-}
 \description{
 Extracts parameters as a named vector
 }

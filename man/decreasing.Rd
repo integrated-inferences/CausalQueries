@@ -12,7 +12,7 @@ decreasing(X, Y)
 \item{Y}{A character. The quoted name of the outcome node}
 }
 \value{
-A character statement of class \code{statement}
+A character statement of class statement
 }
 \description{
 Generate a statement for Y monotonic (decreasing) in X

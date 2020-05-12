@@ -5,7 +5,7 @@
 #' By default, parameters is drawn from `using` argument (either from priors, posteriors, or from model$parameters)
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
-#' @return A vector with probabilities of vector of causal types
+#'
 #' @export
 #' @examples
 #' get_type_prob(model = make_model('X->Y'))
@@ -62,7 +62,7 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
 #' Using parameters, priors, or posteriors
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @return A \code{matrix} with the distribution of the parameters in the model
+#'
 #' @export
 #' @examples
 #' get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)

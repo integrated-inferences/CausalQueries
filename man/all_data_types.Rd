@@ -20,9 +20,6 @@ all_data_types(
 
 \item{given}{A character.  A quoted statement that evaluates to logical. Data conditional on specific values.}
 }
-\value{
-A \code{data.frame} with all data types (including NA types) that are possible from a model.
-}
 \description{
 Creates dataframe with all data types (including NA types) that are possible from a model.
 }

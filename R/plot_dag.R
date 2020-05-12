@@ -6,12 +6,12 @@
 #'
 #' @keywords internal
 #'
-#' @return A \code{\link[dagitty]{dagitty}} translation of \code{DAG}
+#' @return dagitty translation of DAG
 #'
 #' @examples
 #' \dontrun{
 #' model <- make_model('X -> Y')
-#' CausalQueries:::translate_dagitty(model)
+#' translate_dagitty(model)
 #' }
 #'
 translate_dagitty <- function(model) {
@@ -36,13 +36,15 @@ translate_dagitty <- function(model) {
 #'@inheritParams CausalQueries_internal_inherit_params
 #'
 #' @keywords internal
+#'
+#' @return dagitty translation of DAG
 #' @importFrom graphics plot
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' model <- make_model('X -> K -> Y; X -> Y')
-#' CausalQueries:::plot_dag(model)
-#' model <- CausalQueries:::make_model('X -> K -> Y; X <-> Y')
-#' CausalQueries:::plot_dag(model)
+#' plot_dag(model)
+#' model <- make_model('X -> K -> Y; X <-> Y')
+#' plot_dag(model)
 #' }
 #'
 

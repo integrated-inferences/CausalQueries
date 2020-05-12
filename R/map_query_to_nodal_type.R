@@ -6,7 +6,7 @@
 #' @keywords internal
 #' @importFrom stringr str_split str_detect
 #' @importFrom dplyr select
-#' @return A \code{list} containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression.
+#' @return A list containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression
 #'
 #' @examples
 #' model <- make_model('X->Y')
@@ -129,7 +129,7 @@ print.summary.nodal_types <- function(x, ...) {
 #' CausalQueries:::add_dots('Y[X=1]', model)
 #' CausalQueries:::add_dots('Y[]', model)
 #'
-
+#'
 add_dots <- function(q, model) {
 
     # Skip numeric strings------------------------------- 'query = `Y[] == 1` would be splitted as

@@ -7,17 +7,16 @@
 #' @param parameters A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
 #' @param using A character. Whether to use `priors`, `posteriors` or `parameters`
 #' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
-#' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
+#' @param join_by A character. The logical operator joining expanded types when \code{causal_type_restrict} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
-#' @return A vector of draws from the distribution of the potential outcomes specified in `query`
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
 #'          set_prior_distribution()
-#'  \donttest{
+#'  \dontrun{
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 #'
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
@@ -26,7 +25,7 @@
 #'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 #'  df    <- simulate_data(model, n = 3)
-#'  updated_model <- update_model(model, df)
+#'  updated_model <- CausalQueries(model, df)
 #'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 #' }
 query_distribution <- function(model,
@@ -89,12 +88,11 @@ query_distribution <- function(model,
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.
 #' @param query alias for queries
-#' @return A \code{data.frame} with columns `Query`, `Given` and `Using` defined by corresponding input values. Further columns are generated as specified in `stats`.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
-#' \donttest{
+#' \dontrun{
 #' estimands_df <-query_model(
 #'                model,
 #'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),

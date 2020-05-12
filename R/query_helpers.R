@@ -8,7 +8,7 @@
 #' @family statements
 #' @export
 #'
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' increasing('A', 'B')
 #'
@@ -33,7 +33,7 @@ increasing <- function(X, Y) {
 #' @family statements
 #' @export
 #'
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' non_decreasing('A', 'B')
 #'
@@ -57,7 +57,7 @@ non_decreasing <- function(X, Y) {
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' decreasing('A', 'B')
 #'
@@ -81,7 +81,7 @@ decreasing <- function(X, Y) {
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
 #' @export
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' non_increasing('A', 'B')
 #'
@@ -107,7 +107,7 @@ non_increasing <- function(X, Y) {
 #' @param Y A character. The quoted name of the outcome node.
 #' @family statements
 #' @export
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' interacts('A', 'B', 'W')
 #' get_query_types(model = make_model('X-> Y <- W'),
@@ -137,7 +137,7 @@ interacts <- function(X1, X2, Y) {
 #' @param Y A character. The quoted name of the outcome node.
 #' @family statements
 #' @export
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #'complements('A', 'B', 'W')
 #'
@@ -164,7 +164,7 @@ complements <- function(X1, X2, Y) {
 #' @param Y A character. The quoted name of the outcome node.
 #' @export
 #' @family statements
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #'
 #' get_query_types(model = make_model('A -> B <- C'),
@@ -195,7 +195,7 @@ substitutes <- function(X1, X2, Y) {
 #' @family statements
 #' @export
 #'
-#' @return A character statement of class \code{statement}
+#' @return A character statement of class statement
 #' @examples
 #' te('A', 'B')
 #'

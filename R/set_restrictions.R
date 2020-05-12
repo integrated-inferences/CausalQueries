@@ -27,7 +27,7 @@
 #' @family restrictions
 #'
 #' @export
-#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+#' @return A restricted model with nodal types saved as attributes.
 #'
 #' @examples
 #'
@@ -54,7 +54,7 @@
 #' model <- make_model('X->Y') %>%
 #'   set_restrictions(c(increasing('X', 'Y'), decreasing('X', 'Y')))
 #' model$parameters_df
-#' \donttest{
+#' \dontrun{
 #' # Restrict to define a model with monotonicity
 #' model <- make_model('X->Y') %>%
 #' set_restrictions(statement = c('Y[X=1] < Y[X=0]'))
@@ -300,7 +300,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
 
 #' Get type names
 #' @param nodal_types Nodal types of a model. See \code{\link{get_nodal_types}}.
-#' @keywords internal
+#'
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
         name <- names(nodal_types)[i]

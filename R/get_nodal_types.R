@@ -6,7 +6,7 @@
 #' @param collapse Logical. If `TRUE`, shows unique nodal types for each node. If `FALSE`, shows for each node a matrix with nodal types as rows and parent types as columns, if applicable. Defaults to `TRUE`.
 #' @importFrom rlang is_empty
 #' @export
-#' @return A named \code{list} of nodal types for each parent in a DAG
+#' @return A list of nodal types for each parent in a DAG
 #'
 #' @examples
 #' model <- make_model('X -> K -> Y')
@@ -51,7 +51,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param include_node_names Logical. If `TRUE` returns names of form X0, X1; otherwise returns 0, 1. Defaults to `FALSE`
 #'
-#' @keywords internal
+#'
 make_nodal_types <- function(model, include_node_names = FALSE) {
 
     nodes <- model$nodes
@@ -83,7 +83,7 @@ make_nodal_types <- function(model, include_node_names = FALSE) {
 #' collapse nodal types
 #' @param nodal_types A list of nodal types.
 #' @param include_node_names Logical, if TRUE returns names X0, X1; otherwise returns 0, 1
-#' @keywords internal
+#'
 collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
     # Skip if already collapsed
     if (!(is.data.frame(nodal_types[[1]])))
@@ -105,7 +105,7 @@ collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
 
 #' Generate type matrix
 #' @param parent_n An integer. Number of parents of a given child.
-#' @keywords internal
+#'
 type_matrix <- function(parent_n) {
     type_mat <- perm(rep(1, 2^parent_n))
     if (parent_n == 0) {

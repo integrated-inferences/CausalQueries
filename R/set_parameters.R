@@ -7,7 +7,6 @@
 #' @param warning Logical. Whether to warn about parameter renormalization.
 #' @param normalize Logical. If parameter given for a subset of a family the residual elements are normalized so that parameters in param_set sum to 1 and provided params are unaltered.
 #' @param ... Options passed onto \code{\link{make_priors}}.
-#' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom rstan extract
 #' @export
 #' @family parameters
@@ -29,7 +28,7 @@
 #'
 #'# Using labels: Two values for two nodes with the same label
 #' make_model('X -> M -> Y') %>% make_parameters(label = "01", parameters = c(0,1))
-#'\donttest{
+#'\dontrun{
 #' # Using statement:
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
@@ -138,8 +137,6 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' @param param_type A character. String specifying type of parameters to set ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
 #' @param warning Logical. Whether to warn about parameter renormalization
 #' @param ... Arguments to be passed to make_parameters
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with true vector of parameters attached to it.
 #' @export
 #' @family parameters
 #' @examples
@@ -151,6 +148,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
 #'   set_parameters(statement = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
 #'   get_parameters
+
 
 set_parameters <- function(model, parameters = NULL, param_type = NULL, warning = FALSE, ...) {
 
@@ -174,7 +172,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param param_type A character. String specifying type of parameters to set ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define'). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
-#' @return A vector of draws from the prior or distribution of parameters
+#'
 #' @importFrom gtools rdirichlet
 #' @family parameters
 #' @export

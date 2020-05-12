@@ -24,7 +24,7 @@ set_restrictions(
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
 }
 \value{
-An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+A restricted model with nodal types saved as attributes.
 }
 \description{
 Restrict a model's parameter space. This reduces the number of nodal types and in consequence the number of unit causal types.
@@ -71,7 +71,7 @@ model$parameters_df
 model <- make_model('X->Y') \%>\%
   set_restrictions(c(increasing('X', 'Y'), decreasing('X', 'Y')))
 model$parameters_df
-\donttest{
+\dontrun{
 # Restrict to define a model with monotonicity
 model <- make_model('X->Y') \%>\%
 set_restrictions(statement = c('Y[X=1] < Y[X=0]'))

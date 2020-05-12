@@ -11,9 +11,6 @@ get_prior_distribution(model, n_draws = 4000)
 
 \item{n_draws}{A scalar. Number of draws.}
 }
-\value{
-A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
-}
 \description{
 Add to the model a n_draws x n_param matrix of possible parameters.
 }

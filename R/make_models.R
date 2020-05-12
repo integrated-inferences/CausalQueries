@@ -15,15 +15,7 @@
 #' @param add_causal_types Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.
 #' @export
 #'
-#' @return An object of class \code{causal_model}.
-#'
-#' An object of class \code{"causal_model"} is a list containing at least the
-#' following components:
-#' \item{dag}{A \code{data.frame} with columns `parent`and `children` indicating how nodes relate to each other.}
-#' \item{node}{A named \code{list} with the nodes in the model}
-#' \item{statement}{A character vector of the statemtent that defines the model}
-#' \item{nodal_types}{A named \code{list} with the nodal types in the model}
-#' \item{parameters_df}{A \code{data.frame} with descriptive information of the parameters in the model}
+#' @return An object of class \code{causal_model} containing a DAG.
 #' @examples
 #' make_model(statement = "X -> Y")
 #' modelXKY <- make_model("X -> K -> Y; X -> Y")

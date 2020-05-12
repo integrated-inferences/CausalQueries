@@ -6,7 +6,6 @@
 #' @keywords internal
 #' @return A \code{list} containing the types and the evaluated expression.
 #' @examples
-#' \donttest{
 #' model <- make_model('X -> M -> Y; X->Y')
 #' query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'
 #' x <- CausalQueries:::map_query_to_causal_type(model, query)
@@ -27,7 +26,7 @@
 #'
 #' query <- '(Y[X = .]==1)'
 #' CausalQueries:::map_query_to_causal_type(model, query)
-#'}
+#'
 map_query_to_causal_type <- function(model, query, join_by = "|") {
 
     if (length(query) > 1L)

@@ -19,5 +19,6 @@ model <- make_model('X -> Y <- M')
 CausalQueries:::add_dots('Y[X=1]', model)
 CausalQueries:::add_dots('Y[]', model)
 
+
 }
 \keyword{internal}
