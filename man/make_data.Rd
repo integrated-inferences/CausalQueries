@@ -44,7 +44,7 @@ take parameters as the means or as draws from the prior or posterior.}
 \item{...}{additional arguments that can be passed to \code{link{make_parameters}}}
 }
 \value{
-A \code{data.frame} simulated data.
+A \code{data.frame} with simulated data.
 }
 \description{
 Make data
@@ -70,10 +70,5 @@ make_data(
   nodes = list(c("X", "Y"), "M"),
   probs = list(1, .5),
   subsets = list(NULL, "X==1 & Y==0"))
-
-# Simulate multiple datasets is fastest if w is provided
-model <- make_model("X -> Y")
-w <- get_event_prob(model)
-replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 
 }

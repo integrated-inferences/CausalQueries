@@ -3,6 +3,7 @@
 #' Identifies confounded nodal types.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return  A \code{data.frame} indicating which nodes are confounded
 #' @importFrom stats cor
 #' @export
 #' @examples
@@ -108,6 +109,8 @@ make_confounds_df <- function(model) {
 #' The confounds_df can be manually provided however using set_confounds_df.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the confound_df attached to the parameter matrix in the model.
 #' @export
 #' @examples
 #' model <- make_model('X -> Y') %>%
@@ -115,15 +118,10 @@ make_confounds_df <- function(model) {
 #' model$confounds_df
 #' set_confounds_df(model)$confounds_df
 #'
-#' # An example where a confounds dataframe needs to be updated manually
-#' # Here a restriction applied after a confounding relation is set removes the confounding
+#' # An example where a restriction is applied after a confounding relation is set removes
 #' model <- make_model('X -> Y') %>%
 #'   set_confound(list(X = '(Y[X=1] > Y[X=0])')) %>%
 #'   set_restrictions('(Y[X=1] > Y[X=0])')
-#' model$confounds_df  # Incorrect
-#' model <- set_confounds_df(model)
-#' model$confounds_df  # Correct
-
 
 set_confounds_df <- function(model) {
     model$confounds_df <- make_confounds_df(model)

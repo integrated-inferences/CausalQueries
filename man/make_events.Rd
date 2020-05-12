@@ -2,7 +2,8 @@
 % Please edit documentation in R/simulate_events.R
 \name{make_events}
 \alias{make_events}
-\title{Make data in compact form}
+\title{Make data in compact form
+Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see}
 \usage{
 make_events(
   model,
@@ -36,10 +37,11 @@ make_events(
 \item{...}{Arguments to be passed to make_priors if param_type == \code{define}}
 }
 \value{
-A code{data.frame} of events
+A \code{data.frame} of events
 }
 \description{
 Make data in compact form
+Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
 }
 \examples{
 model <- make_model('X -> Y')

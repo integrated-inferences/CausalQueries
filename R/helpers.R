@@ -6,8 +6,8 @@
 #' @return A \code{matrix} of permutations
 #' @importFrom rlang exprs
 #' @examples
-#'
-#' \dontrun{
+#
+#' \donttest{
 #' CausalQueries:::perm(3)
 #' }
 perm <- function(max = rep(1, 2)) {
@@ -98,6 +98,7 @@ clean_condition <- function(condition) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param condition A vector of characters. Strings specifying the child node, followed by '|' (given) and the values of its parent nodes in \code{model}.
 #' @param position A named list of integers. The name is the name of the child node in \code{model}, and its value a vector of digit positions in that node's nodal type to be interpreted. See `Details`.
+#' @return A named \code{list} with interpration of positions of the digits in a nodal type
 #' @details A node for a child node X with \code{k} parents has a nodal type represented by X followed by \code{2^k} digits. Argument \code{position} allows user to interpret the meaning of one or more digit positions in any nodal type. For example \code{position = list(X = 1:3)} will return the interpretation of the first three digits in causal types for X. Argument \code{condition} allows users to query the digit position in the nodal type by providing instead the values of the parent nodes of a given child. For example, \code{condition = 'X | Z=0 & R=1'} returns the digit position that corresponds to values X takes when Z = 0 and R = 1.
 #' @examples
 #' model <- make_model('R -> X; Z -> X; X -> Y')
@@ -180,6 +181,7 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param to_expand A character vector of length 1L.
 #' @param verbose Logical. Whether to print expanded query on the console.
+#' @return A charater string with the expanded expression. Wildcard '.' is replaced by 0 and 1.
 #' @importFrom rlang expr
 #' @export
 #' @examples
@@ -254,6 +256,7 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param include_paramset Logical. Whether to include the param set prefix as part of the name.
+#' @return A character vector with the names of the parameters in the model
 #' @export
 #' @examples
 #'
@@ -283,7 +286,7 @@ includes_var <- function(var, query)
 
 #' List of nodes contained in query
 #' @inheritParams CausalQueries_internal_inherit_params
-#'
+#' @keywords internal
 var_in_query <- function(model, query) {
     v <- model$nodes
     v[sapply(v, includes_var, query = query)]

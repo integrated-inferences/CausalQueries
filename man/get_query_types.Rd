@@ -15,13 +15,22 @@ get_query_types(model, query, map = "causal_type", join_by = "|")
 
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 }
+\value{
+A list containg some of the following elements
+\item{types}{A named vector with logical values indicating whether a \code{nodal_type} or a \code{causal_type} satisfy `query`}
+\item{query}{A character string as specified by the user}
+\item{expanded_query}{A character string with the expanded query. Only differs from `query` if this contains wildcard '.'}
+\item{evaluated_nodes}{Value that the nodes take given a query}
+\item{node}{A character string of the node whose nodal types are being queried}
+\item{type_list}{List of causal types satisfied by a query}
+}
 \description{
 Find which nodal or causal types are satisfied by a query.
 }
 \examples{
 model <- make_model('X -> M -> Y; X->Y')
 query <- '(Y[X=0] > Y[X=1])'
-\dontrun{
+\donttest{
 get_query_types(model, query, map="nodal_type")
 get_query_types(model, query, map="causal_type")
 get_query_types(model, query)

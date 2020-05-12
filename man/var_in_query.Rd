@@ -14,3 +14,4 @@ var_in_query(model, query)
 \description{
 List of nodes contained in query
 }
+\keyword{internal}

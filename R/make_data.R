@@ -14,7 +14,7 @@
 #' @param subsets A \code{list}. Strata within which observations are to be observed at each step
 #' @param complete_data A \code{data.frame}. Dataset with complete observations. Optional.
 #' @param ... additional arguments that can be passed to \code{link{make_parameters}}
-#' @return A \code{data.frame} simulated data.
+#' @return A \code{data.frame} with simulated data.
 #' @importFrom randomizr strata_rs
 #' @export
 #'
@@ -39,11 +39,6 @@
 #'   nodes = list(c("X", "Y"), "M"),
 #'   probs = list(1, .5),
 #'   subsets = list(NULL, "X==1 & Y==0"))
-#'
-#' # Simulate multiple datasets is fastest if w is provided
-#' model <- make_model("X -> Y")
-#' w <- get_event_prob(model)
-#' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
 
 make_data <- function(
@@ -146,7 +141,7 @@ make_data <- function(
 #' @param prob A scalar. Observation probability.
 #' @param m A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.
 #' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
-#'
+#' @return A \code{data.frame} with logical values indicating which nodes to observe in each row of `complete_data`.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")

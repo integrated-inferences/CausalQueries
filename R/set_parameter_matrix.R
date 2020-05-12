@@ -1,8 +1,9 @@
 #' Make parameter matrix
 #'
-#' Calculate parameter matrix assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
+#' Calculate parameter matrix assuming no confounding. The parameter matrix maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return A \code{data.frame}, the parameter matrix, mapping from parameters to causal types
 #' @export
 #' @examples
 #' model <- make_model('X -> Y')
@@ -39,10 +40,12 @@ make_parameter_matrix <- function(model) {
 #'
 #' Return parameter matrix if it exists; otherwise calculate it assuming no confounding. The parameter matrix  maps from parameters into causal types. In models without confounding parameters correspond to nodal types.
 #'
-#' @param model A model created by make_model()
-#'
+#' @param model A model created by \code{make_model()}
+#' @return A \code{data.frame}, the parameter matrix, mapping from parameters to causal types
 #' @export
-#'
+#' @examples
+#' model <- make_model('X -> Y')
+#' get_parameter_matrix(model)
 get_parameter_matrix <- function(model) {
 
     if (!is.null(model$P))
@@ -56,9 +59,15 @@ get_parameter_matrix <- function(model) {
 #' Add a parameter matrix to a model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#'
+#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix attached to it.
 #' @export
 #'
+#' @examples
+#' model <- make_model('X -> Y')
+#' P <- diag(8)
+#' colnames(P) <- rownames(model$causal_types)
+#' model <- set_parameter_matrix(model, P = P)
 set_parameter_matrix <- function(model, P = NULL) {
 
     if (!is.null(model$P)) {
@@ -106,8 +115,8 @@ print.summary.parameter_matrix <- function(x, ...) {
 
 
 
-# Names for causal types
-
+#' Names for causal types
+#' @keywords internal
 causal_type_names <- function(causal_types) {
     for (j in (1:ncol(causal_types))) causal_types[, j] <- paste0(names(causal_types)[j], causal_types[,
         j])

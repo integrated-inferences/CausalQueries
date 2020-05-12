@@ -11,8 +11,11 @@ make_prior_distribution(model, n_draws = 4000)
 
 \item{n_draws}{A scalar. Number of draws.}
 }
+\value{
+A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
+}
 \description{
-Add n_param x n_draws database of possible lambda draws to the model.
+Create a `n_param`x `n_draws` database of possible lambda draws to be attached to the model.
 }
 \examples{
 make_model('X -> Y') \%>\% make_prior_distribution(n_draws = 5)

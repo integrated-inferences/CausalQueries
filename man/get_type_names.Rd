@@ -12,3 +12,4 @@ get_type_names(nodal_types)
 \description{
 Get type names
 }
+\keyword{internal}

@@ -68,7 +68,10 @@ make_ambiguities_matrix <- function(model) {
 #' Add an ambiguities matrix to a model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#'
+#' @example
+#' model <- make_model('X -> Y') %>%
+#'          set_ambiguities_matrix()
+#' model$A
 #' @export
 #'
 set_ambiguities_matrix <- function(model, A = NULL) {

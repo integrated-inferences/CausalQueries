@@ -17,13 +17,13 @@ make_values_task_list(
 )
 }
 \arguments{
-\item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
+\item{distribution}{A string (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
 \item{x}{Real positive numbers. For priors these are hyperparameters of the Dirichlet distribution. For parameters these are probabilities.}
 
 \item{node}{A string (or list of strings) indicating nodes for which priors are to be altered}
 
-\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+\item{label}{A string. Label for nodal type indicating nodal types for which priors are to be altered}
 
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
@@ -31,11 +31,14 @@ make_values_task_list(
 
 \item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
 
-\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-
-For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.}
+\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+}
+\value{
+An \code{array} of parameter arguments.
+
+For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 }
 \description{
 A function to generate a list of parameter arguments.

@@ -3,7 +3,7 @@
 #' Create a list containing the data to be passed to stan
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @return A \code{list}.
+#' @return A \code{list} containing data to be passed to stan
 #' @keywords internal
 #' @examples
 #' model <- make_model('X->Y')
@@ -33,7 +33,7 @@ prep_stan_data <- function(model, data) {
         k else c(w_starts[2:n_strategies] - 1, k)
     n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
     l_ends <- as.array(cumsum(n_param_each))
-    l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1)
+    ifelse(length(l_ends) == 1,  l_starts <- 1, l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1))
     names(l_starts) <- names(l_ends)
 
     list(n_params = nrow(P), n_param_sets = n_param_sets, n_param_each = as.array(n_param_each), l_starts = as.array(l_starts),

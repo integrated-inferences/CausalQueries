@@ -26,6 +26,9 @@ make_parameters(
 
 \item{...}{Options passed onto \code{\link{make_priors}}.}
 }
+\value{
+A vector of draws from the prior or distribution of parameters
+}
 \description{
 A vector of 'true' parameters; possibly drawn from prior or posterior.
 }
@@ -47,7 +50,7 @@ make_parameters(model, param_type = 'posterior_mean')
 
 # Using labels: Two values for two nodes with the same label
 make_model('X -> M -> Y') \%>\% make_parameters(label = "01", parameters = c(0,1))
-\dontrun{
+\donttest{
 # Using statement:
 make_model('X -> Y') \%>\%
    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))

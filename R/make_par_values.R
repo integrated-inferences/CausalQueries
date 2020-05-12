@@ -3,16 +3,16 @@
 #' A function to generate a list of parameter arguments.
 #'
 #'
-#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param distribution A string (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param x Real positive numbers. For priors these are hyperparameters of the Dirichlet distribution. For parameters these are probabilities.
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
-#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param label A string. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
 #' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
 #' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-#
+#' @return  An \code{array} of parameter arguments.
 #'
 #' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 #'

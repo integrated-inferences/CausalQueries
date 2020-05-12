@@ -13,6 +13,9 @@ expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 
 \item{verbose}{Logical. Whether to print expanded query on the console.}
 }
+\value{
+A charater string with the expanded expression. Wildcard '.' is replaced by 0 and 1.
+}
 \description{
 Expand statement containing wildcard
 }

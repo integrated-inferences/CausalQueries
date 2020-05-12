@@ -14,3 +14,4 @@ make_nodal_types(model, include_node_names = FALSE)
 \description{
 Make nodal types
 }
+\keyword{internal}
