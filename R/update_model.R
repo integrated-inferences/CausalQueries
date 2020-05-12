@@ -8,6 +8,8 @@
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param keep_fit Logical. Whether to append the stanfit object to the model. Defaults to `FALSE`
 #' @param ... Options passed onto \code{rstan::stan} call.
+#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the `posterior_distribution` returned by \code{rstan::stan} attached to it.
 #' @import methods
 #' @import Rcpp
 #' @import rstantools
@@ -16,16 +18,19 @@
 #' @importFrom rstan sampling
 #' @export
 #' @examples
+#'
 #' model <- make_model('X->Y')
 #' data_long   <- simulate_data(model, n = 4)
 #' data_short  <- collapse_data(data_long, model)
-#'  \dontrun{
+#'\donttest{
 #' model_1 <- update_model(model, data_long)
-#'
+#'}
+#'\dontrun{
 #' # Throws error unless compact data indicated:
 #'
 #' model_3 <- update_model(model, data_short)
-#'
+#'}
+#'\donttest{
 #' model_4 <- update_model(model, data_short, data_type = 'compact')
 #'
 #' # It is possible to implement updating without data, in which case the posterior
@@ -37,13 +42,14 @@
 #' # to causal types) and a tailored parameters_df which reports that
 #' # all parameters are in one family.
 #' # Parameters in this example are not connected with nodal types in any way.
-#'
 #' model <- make_model('X->Y')
-#' model$P <- diag(8)
-#' colnames(model$P) <- rownames(model$causal_types)
+#' P <- diag(8)
+#' colnames(P) <- rownames(model$causal_types)
+#' model <- set_parameter_matrix(model, P = P)
 #' model$parameters_df <- data.frame(
 #'   param_names = paste0('x',1:8),
 #'   param_set = 1, priors = 1, parameters = 1/8)
+#'
 #'
 #' # Update fully confounded model on strongly correlated data
 #'

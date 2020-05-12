@@ -13,6 +13,9 @@ interpret_type(model, condition = NULL, position = NULL)
 
 \item{position}{A named list of integers. The name is the name of the child node in \code{model}, and its value a vector of digit positions in that node's nodal type to be interpreted. See `Details`.}
 }
+\value{
+A named \code{list} with interpration of positions of the digits in a nodal type
+}
 \description{
 Interprets the position of one or more digits (specified by \code{position}) in a nodal type. Alternatively returns nodal type digit positions that correspond to one or more given \code{condition}.
 }

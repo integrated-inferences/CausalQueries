@@ -41,6 +41,10 @@ set_priors(
 
 \item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 }
+\value{
+An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+the model (e.g. 'statement', 'confounds' and 'restrictions') with the `priors` attached to it.
+}
 \description{
 A flexible function to add priors to a model.
 }

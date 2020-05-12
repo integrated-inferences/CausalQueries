@@ -12,7 +12,7 @@ get_nodal_types(model, collapse = TRUE)
 \item{collapse}{Logical. If `TRUE`, shows unique nodal types for each node. If `FALSE`, shows for each node a matrix with nodal types as rows and parent types as columns, if applicable. Defaults to `TRUE`.}
 }
 \value{
-A list of nodal types for each parent in a DAG
+A named \code{list} of nodal types for each parent in a DAG
 }
 \description{
 As type labels are hard to interpret for large models, the type list includes an attribute to help interpret them. See  \code{attr(types, interpret)}

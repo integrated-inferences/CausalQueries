@@ -26,6 +26,9 @@ observe_data(
 
 \item{subset}{A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!}
 }
+\value{
+A \code{data.frame} with logical values indicating which nodes to observe in each row of `complete_data`.
+}
 \description{
 Observe data, given a strategy
 }

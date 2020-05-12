@@ -14,3 +14,4 @@ collapse_nodal_types(nodal_types, include_node_names = FALSE)
 \description{
 collapse nodal types
 }
+\keyword{internal}

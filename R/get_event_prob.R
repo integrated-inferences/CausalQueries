@@ -4,7 +4,7 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param type_prob A numeric vector. Type probabilities. (Not required).
-#'
+#' @return An {array} of event probabilities
 #' @export
 #' @examples
 #' model <- make_model('X -> Y')

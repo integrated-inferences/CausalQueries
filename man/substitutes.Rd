@@ -14,7 +14,7 @@ substitutes(X1, X2, Y)
 \item{Y}{A character. The quoted name of the outcome node.}
 }
 \value{
-A character statement of class statement
+A character statement of class \code{statement}
 }
 \description{
 Generate a statement for X1, X1 substitute for each other in the production of Y

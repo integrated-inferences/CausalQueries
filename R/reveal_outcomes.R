@@ -10,7 +10,7 @@
 #' @return A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' model <- make_model("X -> Y")
 #' reveal_outcomes(model)
 #'

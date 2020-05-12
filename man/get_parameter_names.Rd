@@ -11,6 +11,9 @@ get_parameter_names(model, include_paramset = TRUE)
 
 \item{include_paramset}{Logical. Whether to include the param set prefix as part of the name.}
 }
+\value{
+A character vector with the names of the parameters in the model
+}
 \description{
 Parameter names taken from \code{P} matrix or model if no \code{P}  matrix provided
 }

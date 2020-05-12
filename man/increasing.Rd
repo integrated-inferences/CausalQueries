@@ -12,7 +12,7 @@ increasing(X, Y)
 \item{Y}{A character. The quoted name of the outcome node}
 }
 \value{
-A character statement of class statement
+A character statement of class \code{statement}
 }
 \description{
 Generate a statement for Y monotonic (increasing) in X

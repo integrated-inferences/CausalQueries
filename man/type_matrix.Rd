@@ -12,3 +12,4 @@ type_matrix(parent_n)
 \description{
 Generate type matrix
 }
+\keyword{internal}

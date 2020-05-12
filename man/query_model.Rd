@@ -38,13 +38,16 @@ query_model(
 
 \item{query}{alias for queries}
 }
+\value{
+A \code{data.frame} with columns `Query`, `Given` and `Using` defined by corresponding input values. Further columns are generated as specified in `stats`.
+}
 \description{
 Calculated from a parameter vector, from a prior or from a posterior distribution
 }
 \examples{
 model <- make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 10000)
 
-\dontrun{
+\donttest{
 estimands_df <-query_model(
                model,
                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
