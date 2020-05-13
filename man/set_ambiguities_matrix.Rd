@@ -14,3 +14,8 @@ set_ambiguities_matrix(model, A = NULL)
 \description{
 Add an ambiguities matrix to a model
 }
+\examples{
+model <- make_model('X -> Y') \%>\%
+         set_ambiguities_matrix()
+model$A
+}

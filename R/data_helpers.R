@@ -259,8 +259,8 @@ data_type_names <- function(model, data) {
 #' Creates dataframe with all data types (including NA types) that are possible from a model.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param complete_data Logical. If `TRUE` returns only complete data types (no NA's). Defaults to `FALSE`.
-#' @param possible_data Logical. If `TRUE` returns only complete data types (no NA's) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
+#' @param complete_data Logical. If `TRUE` returns only complete data types (no NAs). Defaults to `FALSE`.
+#' @param possible_data Logical. If `TRUE` returns only complete data types (no NAs) that are *possible* given model restrictions. Note that in principle an intervention could make observationally impossible data types arise. Defaults to `FALSE`.
 #' @param given A character.  A quoted statement that evaluates to logical. Data conditional on specific values.
 #' @return A \code{data.frame} with all data types (including NA types) that are possible from a model.
 #' @export

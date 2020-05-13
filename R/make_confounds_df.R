@@ -110,7 +110,7 @@ make_confounds_df <- function(model) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the confound_df attached to the parameter matrix in the model.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the confound_df attached to the parameter matrix in the model.
 #' @export
 #' @examples
 #' model <- make_model('X -> Y') %>%

@@ -2,8 +2,7 @@
 % Please edit documentation in R/simulate_events.R
 \name{make_events}
 \alias{make_events}
-\title{Make data in compact form
-Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see}
+\title{Make data in compact form}
 \usage{
 make_events(
   model,
@@ -22,7 +21,7 @@ make_events(
 
 \item{n}{An integer. Number of observations.}
 
-\item{w}{A numeric  N(parameters) x 1 matrix of event probabilities with named rows.}
+\item{w}{A numeric matrix. A `n_parameters x 1` matrix of event probabilities with named rows.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be provided to avoid repeated computation for simulations.}
 
@@ -40,8 +39,8 @@ make_events(
 A \code{data.frame} of events
 }
 \description{
-Make data in compact form
 Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
+\code{\link{make_data}}.
 }
 \examples{
 model <- make_model('X -> Y')

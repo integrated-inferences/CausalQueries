@@ -8,7 +8,7 @@ make_model(statement, add_causal_types = TRUE)
 }
 \arguments{
 \item{statement}{A character. Statement describing causal
-relations using dagitty syntax. Only directed relations are permitted.
+relations using \link{dagitty} syntax. Only directed relations are permitted.
 For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
 \item{add_causal_types}{Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.}
@@ -20,7 +20,7 @@ An object of class \code{"causal_model"} is a list containing at least the
 following components:
 \item{dag}{A \code{data.frame} with columns `parent`and `children` indicating how nodes relate to each other.}
 \item{node}{A named \code{list} with the nodes in the model}
-\item{statement}{A character vector of the statemtent that defines the model}
+\item{statement}{A character vector of the statement that defines the model}
 \item{nodal_types}{A named \code{list} with the nodal types in the model}
 \item{parameters_df}{A \code{data.frame} with descriptive information of the parameters in the model}
 }

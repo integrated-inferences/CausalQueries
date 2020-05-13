@@ -48,7 +48,7 @@
 #' @param confound A named \code{list}. It relates nodes to statements that identify causal types with which they are confounded
 #' @param add_confounds_df Logical. Attach a dataframe with confound links. Defaults to TRUE.
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix updated according to `confound`.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix updated according to `confound`.
 #' @export
 #' @examples
 #'

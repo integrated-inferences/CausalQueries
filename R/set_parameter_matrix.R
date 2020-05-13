@@ -60,7 +60,7 @@ get_parameter_matrix <- function(model) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix attached to it.
 #' @export
 #'
 #' @examples

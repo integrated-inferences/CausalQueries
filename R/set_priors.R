@@ -35,7 +35,7 @@
 #' @param param_set A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names A string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @return A vector indicating the hyperparameters of the prior distribution of the nodal types.
-
+#'
 #' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 #'
 #' @family priors
@@ -123,7 +123,7 @@ make_priors <-
 #' For more examples and details see \code{make_priors}
 #'
 #' @param model A model created with \code{make_model}
-#' @param priors A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
+#' @param priors A optional vector of positive reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
@@ -134,7 +134,7 @@ make_priors <-
 #' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the `priors` attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
 #' @export
 #' @family priors
 #' @examples

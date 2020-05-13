@@ -15,3 +15,7 @@ A \code{data.frame} indicating causal types of a \code{model}
 \description{
 Return data frame with types produced from all combinations of possible data produced by a DAG.
 }
+\examples{
+get_causal_types(make_model('X -> Y'))
+
+}

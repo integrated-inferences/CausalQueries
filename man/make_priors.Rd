@@ -40,6 +40,7 @@ make_priors(
 }
 \value{
 A vector indicating the hyperparameters of the prior distribution of the nodal types.
+
 For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 }
 \description{

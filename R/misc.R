@@ -30,12 +30,12 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 
 
 #' set_sampling_args
-#' From rstanarm (November 1st, 2019)
+#' From 'rstanarm' (November 1st, 2019)
 #'
-#' @param object A \code{stanfit object}.
+#' @param object A \code{stanfit} object.
 #' @param user_dots A list. User commands.
 #' @param user_adapt_delta A double between 0 and 1. Adapt delta passed by the user
-#' @param ... further arguments to be passed to stan
+#' @param ... further arguments to be passed to 'stan'
 #' @details Set the sampling arguments
 #' @keywords internal
 

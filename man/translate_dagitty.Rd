@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_dag.R
 \name{translate_dagitty}
 \alias{translate_dagitty}
-\title{Puts your DAG into dagitty syntax (useful for using their plotting functions)}
+\title{Puts your DAG into 'dagitty' syntax (useful for using their plotting functions)}
 \usage{
 translate_dagitty(model)
 }

@@ -11,7 +11,7 @@ set_confounds_df(model)
 }
 \value{
 An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-the model (e.g. 'statement', 'confounds' and 'restrictions') with the confound_df attached to the parameter matrix in the model.
+a model (e.g. 'statement', 'nodal_types' and 'DAG') with the confound_df attached to the parameter matrix in the model.
 }
 \description{
 Normally a confounds_df is added to a model whenever confounding is set.

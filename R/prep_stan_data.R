@@ -1,9 +1,9 @@
-#' Prepare data for stan
+#' Prepare data for 'stan'
 #'
-#' Create a list containing the data to be passed to stan
+#' Create a list containing the data to be passed to 'stan
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @return A \code{list} containing data to be passed to stan
+#' @return A \code{list} containing data to be passed to 'stan'
 #' @keywords internal
 #' @examples
 #' model <- make_model('X->Y')

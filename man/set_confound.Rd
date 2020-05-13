@@ -15,7 +15,7 @@ set_confound(model, confound = NULL, add_confounds_df = TRUE)
 }
 \value{
 An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix updated according to `confound`.
+a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix updated according to `confound`.
 }
 \description{
 Adjust parameter matrix to allow confounding.
