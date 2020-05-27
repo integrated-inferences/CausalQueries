@@ -18,6 +18,7 @@ A \code{list} containing data to be passed to 'stan'
 Create a list containing the data to be passed to 'stan
 }
 \examples{
+\donttest{
 model <- make_model('X->Y')
 data  <-  collapse_data(simulate_data(model, n = 6), model)
 CausalQueries:::prep_stan_data(model, data)
@@ -25,6 +26,7 @@ CausalQueries:::prep_stan_data(model, data)
 model <- make_model('X->Y') \%>\% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 data  <-  collapse_data(simulate_data(model, n = 6), model)
 CausalQueries:::prep_stan_data(model, data)
+}
 
 }
 \keyword{internal}

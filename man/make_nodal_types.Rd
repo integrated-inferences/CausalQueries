@@ -18,7 +18,9 @@ A named list containing nodal types for each node
 Make nodal types
 }
 \examples{
+\donttest{
 model <- make_model('X -> K -> Y')
 CausalQueries:::make_nodal_types(model)
+}
 }
 \keyword{internal}

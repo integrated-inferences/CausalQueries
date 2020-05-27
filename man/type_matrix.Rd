@@ -16,6 +16,8 @@ A \code{data.frame} whose rows contain digits of each causal types in a model
 Generate type matrix
 }
 \examples{
+\donttest{
 CausalQueries:::type_matrix(2)
+}
 }
 \keyword{internal}

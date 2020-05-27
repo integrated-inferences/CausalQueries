@@ -16,7 +16,9 @@ A \code{data.frame} with one row of NAs and columns named according to nodes in 
 Creates a data frame for case with no data
 }
 \examples{
+\donttest{
 model <- make_model('X -> K -> Y')
 CausalQueries:::minimal_data(model)
+}
 }
 \keyword{internal}

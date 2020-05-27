@@ -5,10 +5,11 @@
 #' @return A parameters \code{data.frame}  with names and where parameters sum to 1.
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' model <- make_model('X->Y')
 #' model$parameters_df$param_value <- 1:6
 #' CausalQueries:::clean_params(model$parameters_df, warning = TRUE)
-#'
+#'}
 
 clean_params <- function(parameters_df, warning = TRUE) {
 

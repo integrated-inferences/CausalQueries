@@ -9,6 +9,7 @@
 #' @return A named \code{list} of nodal types for each parent in a DAG
 #'
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> K -> Y')
 #' get_nodal_types(model)
 #'
@@ -16,6 +17,7 @@
 #'    set_restrictions(statement = 'K[X=1]>K[X=0]') %>%
 #'    set_confound(list(K = 'Y[K=1]>Y[K=0]'))
 #' get_nodal_types(model)
+#' }
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
 
@@ -53,8 +55,10 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' @return A named list containing nodal types for each node
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> K -> Y')
 #' CausalQueries:::make_nodal_types(model)
+#' }
 make_nodal_types <- function(model, include_node_names = FALSE) {
 
     nodes <- model$nodes
@@ -117,7 +121,9 @@ collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
 #' @return A \code{data.frame} whose rows contain digits of each causal types in a model
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' CausalQueries:::type_matrix(2)
+#' }
 type_matrix <- function(parent_n) {
     type_mat <- perm(rep(1, 2^parent_n))
     if (parent_n == 0) {

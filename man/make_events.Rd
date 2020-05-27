@@ -43,9 +43,11 @@ Draw \code{n} events given event probabilities. Draws full data only. For incomp
 \code{\link{make_data}}.
 }
 \examples{
+\donttest{
 model <- make_model('X -> Y')
 make_events(model = model)
 make_events(model = model, param_type = 'prior_draw')
 make_events(model = model, include_strategy = TRUE)
+}
 
 }

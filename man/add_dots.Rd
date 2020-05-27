@@ -18,9 +18,10 @@ A causal query expression with all parents nodes set to either 0, 1 or wildcard 
 Helper to fill in missing do operators in causal expression
 }
 \examples{
+\donttest{
 model <- make_model('X -> Y <- M')
 CausalQueries:::add_dots('Y[X=1]', model)
 CausalQueries:::add_dots('Y[]', model)
-
+}
 }
 \keyword{internal}

@@ -16,8 +16,11 @@ A \code{data.frame} whose rows contain the character values that conform each ca
 Names for causal types
 }
 \examples{
+\donttest{
+model <- make_model('X -> Y')
 possible_types <- get_nodal_types(model)
 df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 CausalQueries:::causal_type_names(df)
+}
 }
 \keyword{internal}

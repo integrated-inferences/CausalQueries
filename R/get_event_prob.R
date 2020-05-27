@@ -7,10 +7,12 @@
 #' @return An {array} of event probabilities
 #' @export
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y')
 #' get_event_prob(model = model)
 #' get_event_prob(model = model, parameters = rep(1, 6))
 #' get_event_prob(model = model, parameters = 1:6)
+#' }
 get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL) {
 
     # draw_event uses a parameter vector that is either provided directly or else drawn from priors or

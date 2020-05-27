@@ -20,8 +20,9 @@ A character statement of class \code{statement}
 Generate a statement for X1, X1 complement each other in the production of Y
 }
 \examples{
+\donttest{
 complements('A', 'B', 'W')
-
+}
 }
 \seealso{
 Other statements: 

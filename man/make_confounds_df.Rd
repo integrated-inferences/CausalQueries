@@ -16,6 +16,7 @@ A \code{data.frame} indicating which nodes are confounded
 Identifies confounded nodal types.
 }
 \examples{
+\donttest{
 model <- make_model('X -> Y') \%>\%
 set_confound('X <-> Y', add_confounds_df  = FALSE)
 make_confounds_df(model)
@@ -35,7 +36,7 @@ make_confounds_df(model)
 
 model <- make_model('X -> M -> Y')
 make_confounds_df(model)
-
+}
 # Bad case
 \dontrun{
 model <- make_model('X -> Y') \%>\%

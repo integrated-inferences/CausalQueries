@@ -18,9 +18,10 @@ A parameters \code{data.frame}  with names and where parameters sum to 1.
 Check parameters sum to 1 in paramset; normalize if needed; add names if needed
 }
 \examples{
+\donttest{
 model <- make_model('X->Y')
 model$parameters_df$param_value <- 1:6
 CausalQueries:::clean_params(model$parameters_df, warning = TRUE)
-
+}
 }
 \keyword{internal}

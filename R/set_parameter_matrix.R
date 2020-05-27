@@ -120,9 +120,12 @@ print.summary.parameter_matrix <- function(x, ...) {
 #' @keywords internal
 #' @return A \code{data.frame} whose rows contain the character values that conform each causal type in a model.
 #' @examples
+#' \donttest{
+#' model <- make_model('X -> Y')
 #' possible_types <- get_nodal_types(model)
 #' df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 #' CausalQueries:::causal_type_names(df)
+#' }
 
 causal_type_names <- function(causal_types) {
     for (j in (1:ncol(causal_types))) causal_types[, j] <- paste0(names(causal_types)[j], causal_types[,

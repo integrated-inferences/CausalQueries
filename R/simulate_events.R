@@ -14,10 +14,12 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y')
 #' make_events(model = model)
 #' make_events(model = model, param_type = 'prior_draw')
 #' make_events(model = model, include_strategy = TRUE)
+#' }
 #'
 make_events <- function(model, n = 1, w = NULL, P = NULL, A = NULL, parameters = NULL, param_type = NULL,
                         include_strategy = FALSE, ...) {

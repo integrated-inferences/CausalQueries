@@ -27,6 +27,7 @@ A \code{data.frame} with all data types (including NA types) that are possible f
 Creates dataframe with all data types (including NA types) that are possible from a model.
 }
 \examples{
+\donttest{
 all_data_types(make_model('X -> Y'))
 model <- make_model('X -> Y') \%>\% set_restrictions(labels = list(Y = '00'), keep = TRUE)
   all_data_types(model)
@@ -34,5 +35,5 @@ model <- make_model('X -> Y') \%>\% set_restrictions(labels = list(Y = '00'), ke
   all_data_types(model, possible_data = TRUE)
   all_data_types(model, given  = 'X==1')
   all_data_types(model, given  = 'X==1 & Y==1')
-
+}
 }

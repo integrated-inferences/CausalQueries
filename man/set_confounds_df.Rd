@@ -18,6 +18,7 @@ Normally a confounds_df is added to a model whenever confounding is set.
 The confounds_df can be manually provided however using set_confounds_df.
 }
 \examples{
+\donttest{
 model <- make_model('X -> Y') \%>\%
   set_confound(list('X <-> Y'), add_confounds_df = FALSE)
 model$confounds_df
@@ -27,4 +28,5 @@ set_confounds_df(model)$confounds_df
 model <- make_model('X -> Y') \%>\%
   set_confound(list(X = '(Y[X=1] > Y[X=0])')) \%>\%
   set_restrictions('(Y[X=1] > Y[X=0])')
+}
 }

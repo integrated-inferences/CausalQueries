@@ -16,9 +16,10 @@ Returns data events with strategies (excluding  strategy families that contain n
 Drop empty families
 }
 \examples{
-
+\donttest{
 data_events <- data.frame(event = c('X0Y0', 'Y0'), strategy = c('XY', 'Y'), count = 1:0)
 CausalQueries:::drop_empty_families(data_events)
+ }
 
 }
 \keyword{internal}

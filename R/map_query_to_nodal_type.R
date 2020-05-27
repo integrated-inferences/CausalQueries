@@ -9,6 +9,7 @@
 #' @return A \code{list} containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression.
 #'
 #' @examples
+#' \donttest{
 #' model <- make_model('X->Y')
 #'
 #' CausalQueries:::map_query_to_nodal_type(model, '(Y[X=0] > Y[X=1])')
@@ -27,6 +28,7 @@
 #'
 #' # Root nodes specified with []
 #' CausalQueries:::map_query_to_nodal_type(model, '(X[] == 1)')
+#' }
 #' \dontrun{
 #' CausalQueries:::map_query_to_nodal_type(model, 'X == 1')
 #' }
@@ -125,10 +127,11 @@ print.summary.nodal_types <- function(x, ...) {
 #' @keywords internal
 #' @return A causal query expression with all parents nodes set to either 0, 1 or wildcard '.'.
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y <- M')
 #' CausalQueries:::add_dots('Y[X=1]', model)
 #' CausalQueries:::add_dots('Y[]', model)
-#'
+#'}
 
 add_dots <- function(q, model) {
 
