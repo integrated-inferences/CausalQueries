@@ -7,7 +7,6 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @return A \code{data.frame}. Causal types (rows) corresponding to possible data realizations (columns).
-#' @return A matrix representing ambiguities.
 #' @examples
 #' model <- make_model('X -> Y')
 #' get_ambiguities_matrix(model = model)
@@ -29,7 +28,6 @@ get_ambiguities_matrix <- function(model) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame}. Types (rows) corresponding to possible data realizations (columns).
-#' @return A matrix representing ambiguities.
 #' @keywords internal
 #' @examples
 #' model <- make_model('X -> Y')
@@ -68,6 +66,7 @@ make_ambiguities_matrix <- function(model) {
 #' Add an ambiguities matrix to a model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return An object of type \code{causal_model} with the ambiguities matrix attached
 #' @examples
 #' model <- make_model('X -> Y') %>%
 #'          set_ambiguities_matrix()

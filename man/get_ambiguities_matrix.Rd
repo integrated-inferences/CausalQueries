@@ -11,8 +11,6 @@ get_ambiguities_matrix(model)
 }
 \value{
 A \code{data.frame}. Causal types (rows) corresponding to possible data realizations (columns).
-
-A matrix representing ambiguities.
 }
 \description{
 Return ambiguities matrix if it exists; otherwise calculate it assuming no confounding.

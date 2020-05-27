@@ -16,6 +16,9 @@ set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 
 \item{...}{further arguments to be passed to 'stan'}
 }
+\value{
+A \code{list} with arguments to be passed to \code{stan}
+}
 \description{
 set_sampling_args
 From 'rstanarm' (November 1st, 2019)

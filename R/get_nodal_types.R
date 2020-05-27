@@ -50,8 +50,11 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param include_node_names Logical. If `TRUE` returns names of form X0, X1; otherwise returns 0, 1. Defaults to `FALSE`
-#'
+#' @return A named list containing nodal types for each node
 #' @keywords internal
+#' @examples
+#' model <- make_model('X -> K -> Y')
+#' CausalQueries:::make_nodal_types(model)
 make_nodal_types <- function(model, include_node_names = FALSE) {
 
     nodes <- model$nodes
@@ -83,7 +86,13 @@ make_nodal_types <- function(model, include_node_names = FALSE) {
 #' collapse nodal types
 #' @param nodal_types A list of nodal types.
 #' @param include_node_names Logical, if TRUE returns names X0, X1; otherwise returns 0, 1
+#' @return A \code{list} containing nodes with nodal types in a vector form.
 #' @keywords internal
+#' @examples
+#'
+#' model <- make_model('X -> K -> Y')
+#' (nodal_types <- get_nodal_types(model , collapse = FALSE))
+#' CausalQueries:::collapse_nodal_types(nodal_types )
 collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
     # Skip if already collapsed
     if (!(is.data.frame(nodal_types[[1]])))
@@ -105,7 +114,10 @@ collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
 
 #' Generate type matrix
 #' @param parent_n An integer. Number of parents of a given child.
+#' @return A \code{data.frame} whose rows contain digits of each causal types in a model
 #' @keywords internal
+#' @examples
+#' CausalQueries:::type_matrix(2)
 type_matrix <- function(parent_n) {
     type_mat <- perm(rep(1, 2^parent_n))
     if (parent_n == 0) {

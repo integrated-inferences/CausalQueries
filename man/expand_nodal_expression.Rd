@@ -15,6 +15,9 @@ expand_nodal_expression(model, query, node, join_by = "|")
 
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 }
+\value{
+A nodal expression with no missing parents
+}
 \description{
 Helper to expand nodal expression
 }

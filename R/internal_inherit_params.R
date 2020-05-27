@@ -12,8 +12,8 @@
 #' @param statement A character string. A quoted causal statement.
 #' @param using A character string. It indicates whether to use `priors`, `posteriors` or `parameters`.
 #' @param n_draws An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.
-
 #'
+#' @return This function does not return anything. It is used to inherit roxygen documentation
 #' @keywords internal
 #'
 CausalQueries_internal_inherit_params <- function(model, query, join_by, parameters, P, A,  data, data_events, node, statement, using, n_draws){

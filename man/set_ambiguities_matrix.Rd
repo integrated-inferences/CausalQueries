@@ -11,6 +11,9 @@ set_ambiguities_matrix(model, A = NULL)
 
 \item{A}{A \code{data.frame}. Ambiguity matrix. Not required but may be provided to avoid repeated computation for simulations.}
 }
+\value{
+An object of type \code{causal_model} with the ambiguities matrix attached
+}
 \description{
 Add an ambiguities matrix to a model
 }

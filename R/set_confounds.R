@@ -232,9 +232,10 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 #' Slightly hacky function to continue param_set names in a sequence
 #' @param x A vector with strings of the form c('x_1', 'x_2')
 #' @param split String on which to split. String should appear only once in each vector entry.
+#' @return a vector with parameter names sequentially created with respect to \code{x}
 #' @keywords internal
 #' @examples
-#' x <- c('S_3', 'S_3', 'S_5')
+#' x <- c('S_2', 'S_3', 'S_5')
 #' CausalQueries:::continue_names(x)
 
 continue_names <- function(x, split = "_") {
@@ -249,5 +250,7 @@ continue_names <- function(x, split = "_") {
 #'
 #' alias for set_confound. See set_confound.
 #' @param ... arguments passed to set_confound
+#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix updated according to `confound`.
 #' @export
 set_confounds <- function(...) set_confound(...)

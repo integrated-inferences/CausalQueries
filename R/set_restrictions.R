@@ -28,7 +28,7 @@
 #' @family restrictions
 #'
 #' @export
-#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+#' @return An object of class \code{model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #'
 #' @examples
 #'
@@ -174,6 +174,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
+#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #' @keywords internal
 #' @family restrictions
 
@@ -252,7 +253,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 #'
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#'
+#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #' @keywords internal
 #' @family restrictions
 
@@ -301,7 +302,11 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
 
 #' Get type names
 #' @param nodal_types Nodal types of a model. See \code{\link{get_nodal_types}}.
+#' @return A vector containing causal type names
 #' @keywords internal
+#' @examples
+#' model <- make_model('A->Y<-B')
+#' CausalQueries:::get_type_names(model$nodal_types)
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
         name <- names(nodal_types)[i]
@@ -312,8 +317,10 @@ get_type_names <- function(nodal_types) {
 
 
 #' Unpack a wild card
-#' @param x A character. A nodal type containing one or more wildcard characters '.' to be unpacked.
+#' @param x A character. A nodal type containing one or more wildcard characters '?' to be unpacked.
+#' @return A type label with wildcard characters '?' substituted by 0 and 1.
 #' @keywords internal
+
 
 unpack_wildcard <- function(x) {
     splitstring <- strsplit(x, "")[[1]]
@@ -330,6 +337,7 @@ unpack_wildcard <- function(x) {
 
 #' Update causal types based on nodal types
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
 #' @examples
 #' CausalQueries:::update_causal_types(make_model('X->Y'))
@@ -337,7 +345,7 @@ unpack_wildcard <- function(x) {
 update_causal_types <- function(model) {
 
     possible_types <- get_nodal_types(model)
-    nodes <- model$nodes
+
 
     # Remove var name prefix from nodal types (Y00 -> 00) possible_types <- lapply(nodes, function(v)
     # gsub(v, '', possible_types[[v]])) names(possible_types) <- nodes

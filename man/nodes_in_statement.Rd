@@ -11,6 +11,9 @@ nodes_in_statement(nodes, statement)
 
 \item{statement}{A character. A quoted causal statement.}
 }
+\value{
+Returns name of nodes present in a statement
+}
 \description{
 Identify nodes in a statement
 }

@@ -11,6 +11,9 @@ default_stan_control(adapt_delta = NULL, max_treedepth = 15L)
 
 \item{max_treedepth}{A positive integer. It determines  \code{maximum_tree_depth}}
 }
+\value{
+A \code{list} containing arguments to be passed to \code{stan}
+}
 \description{
 default_stan_control
 }

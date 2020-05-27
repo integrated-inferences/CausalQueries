@@ -9,7 +9,13 @@ type_matrix(parent_n)
 \arguments{
 \item{parent_n}{An integer. Number of parents of a given child.}
 }
+\value{
+A \code{data.frame} whose rows contain digits of each causal types in a model
+}
 \description{
 Generate type matrix
+}
+\examples{
+CausalQueries:::type_matrix(2)
 }
 \keyword{internal}

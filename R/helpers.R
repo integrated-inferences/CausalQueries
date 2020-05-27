@@ -66,6 +66,7 @@ st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0
 #' Recursive substitution
 #'
 #' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#' @return Returns multiple expression with substituted elements
 #' @keywords internal
 #' @param x A character vector.
 #' @param pattern_vector A character vector.
@@ -85,6 +86,7 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...) {
 #'
 #' Takes a string specifying condition and returns properly spaced string.
 #' @keywords internal
+#' @return A properly spaced string.
 #' @param condition A character string. Condition that refers to a unique position (possible outcome) in a nodal type.
 clean_condition <- function(condition) {
     spliced <- strsplit(condition, split = "")[[1]]
@@ -278,6 +280,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
+#' @return A logical expression indicating whether a variable is included in a query
 #' @keywords internal
 #' Used in map_query_to_nodal_types
 #'
@@ -286,6 +289,7 @@ includes_var <- function(var, query)
 
 #' List of nodes contained in query
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return A vector indicating which variables are included in a query
 #' @keywords internal
 var_in_query <- function(model, query) {
     v <- model$nodes

@@ -11,6 +11,9 @@ clean_params(parameters_df, warning = TRUE)
 
 \item{warning}{Logical. Whether to print warning (if any) in console. Defaults to TRUE}
 }
+\value{
+A parameters \code{data.frame}  with names and where parameters sum to 1.
+}
 \description{
 Check parameters sum to 1 in paramset; normalize if needed; add names if needed
 }

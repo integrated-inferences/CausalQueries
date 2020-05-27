@@ -15,6 +15,9 @@ gsub_many(x, pattern_vector, replacement_vector, ...)
 
 \item{...}{Options passed onto \code{gsub()} call.}
 }
+\value{
+Returns multiple expression with substituted elements
+}
 \description{
 Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
 }

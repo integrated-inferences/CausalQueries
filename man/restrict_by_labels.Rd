@@ -13,6 +13,9 @@ restrict_by_labels(model, labels, keep = FALSE)
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
+\value{
+An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+}
 \description{
 Reduce nodal types using labels
 }

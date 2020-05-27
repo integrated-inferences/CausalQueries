@@ -253,6 +253,7 @@ make_data_single <- function(
 
 #' simulate_data is an alias for make_data
 #' @param ... arguments for \code{\link{make_model}}
+#' @return A \code{data.frame} with simulated data.
 #' @export
 #' @examples
 #' simulate_data(make_model("X->Y"))

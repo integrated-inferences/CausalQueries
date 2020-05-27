@@ -44,6 +44,9 @@ CausalQueries_internal_inherit_params(
 
 \item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 }
+\value{
+This function does not return anything. It is used to inherit roxygen documentation
+}
 \description{
 Create parameter documentation to inherit
 }

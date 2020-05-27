@@ -7,7 +7,10 @@
 unpack_wildcard(x)
 }
 \arguments{
-\item{x}{A character. A nodal type containing one or more wildcard characters '.' to be unpacked.}
+\item{x}{A character. A nodal type containing one or more wildcard characters '?' to be unpacked.}
+}
+\value{
+A type label with wildcard characters '?' substituted by 0 and 1.
 }
 \description{
 Unpack a wild card

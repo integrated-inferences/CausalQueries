@@ -9,6 +9,9 @@ n_check(n)
 \arguments{
 \item{n}{An integer. Sample size argument.}
 }
+\value{
+An error message if \code{n} is not an integer or is less than 0.
+}
 \description{
 n_check
 }

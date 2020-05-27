@@ -11,7 +11,14 @@ make_nodal_types(model, include_node_names = FALSE)
 
 \item{include_node_names}{Logical. If `TRUE` returns names of form X0, X1; otherwise returns 0, 1. Defaults to `FALSE`}
 }
+\value{
+A named list containing nodal types for each node
+}
 \description{
 Make nodal types
+}
+\examples{
+model <- make_model('X -> K -> Y')
+CausalQueries:::make_nodal_types(model)
 }
 \keyword{internal}

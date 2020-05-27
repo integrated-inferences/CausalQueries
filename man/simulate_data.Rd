@@ -9,6 +9,9 @@ simulate_data(...)
 \arguments{
 \item{...}{arguments for \code{\link{make_model}}}
 }
+\value{
+A \code{data.frame} with simulated data.
+}
 \description{
 simulate_data is an alias for make_data
 }

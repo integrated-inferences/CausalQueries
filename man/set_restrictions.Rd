@@ -24,7 +24,7 @@ set_restrictions(
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
 }
 \value{
-An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+An object of class \code{model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 }
 \description{
 Restrict a model's parameter space. This reduces the number of nodal types and in consequence the number of unit causal types.

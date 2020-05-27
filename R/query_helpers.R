@@ -224,6 +224,7 @@ te <- function(X, Y) {
 #' @param param_list List of parameters
 #' @param call_name Name of the call.
 #' @keywords internal
+#' @return If appropriate, it returns error message.
 check_string_input <- function(param_list = list(), call_name = NULL) {
     for (i in 1:length(param_list)) if (!is.character(param_list[[i]]))
         stop(paste0("Provide node names as strings in function: ", call_name))

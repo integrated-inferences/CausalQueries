@@ -11,6 +11,9 @@ includes_var(var, query)
 
 \item{query}{An expression in string format.}
 }
+\value{
+A logical expression indicating whether a variable is included in a query
+}
 \description{
 Whether a query contains an exact string
 }

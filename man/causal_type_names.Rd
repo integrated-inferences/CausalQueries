@@ -6,7 +6,18 @@
 \usage{
 causal_type_names(causal_types)
 }
+\arguments{
+\item{causal_types}{A \code{data.frame} whose rows containing the 0-1 digits that conform the causal types.}
+}
+\value{
+A \code{data.frame} whose rows contain the character values that conform each causal type in a model.
+}
 \description{
 Names for causal types
+}
+\examples{
+possible_types <- get_nodal_types(model)
+df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
+CausalQueries:::causal_type_names(df)
 }
 \keyword{internal}

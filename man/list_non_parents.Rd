@@ -11,6 +11,9 @@ list_non_parents(model, node)
 
 \item{node}{A character string. The quoted name of a node.}
 }
+\value{
+Returns a list with the nodes that are not directly pointing into a node
+}
 \description{
 Returns a list with the nodes that are not directly pointing into a node
 }
