@@ -8,7 +8,7 @@
 #' To have a restriction that \code{Y} be nondecreasing in \code{X} would otherwise require restrictions on causal types, not nodal types,
 #' which implies a form of undeclared confounding (i.e. that in cases in which \code{M} is decreasing in \code{X}, \code{Y} is decreasing in \code{M}).
 #'
-#' Since restrictions are to nodal types, all parents of a node are implicity fixed.  Thus for model \code{make_model(`X -> Y <- W`)} the request
+#' Since restrictions are to nodal types, all parents of a node are implicitly fixed.  Thus for model \code{make_model(`X -> Y <- W`)} the request
 #' \code{set_restrictions(`(Y[X=1] == 0)`)}
 #' is interpreted as \code{set_restrictions(`(Y[X=1, W=0] == 0 | Y[X=1, W=1] == 0)`)}.
 #'

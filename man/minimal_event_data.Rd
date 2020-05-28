@@ -15,4 +15,10 @@ A compact data frame where each row represents an element from the exhaustive se
 \description{
 Creates a compact data frame for case with no data
 }
+\examples{
+\donttest{
+model <- make_model('X -> K -> Y')
+CausalQueries:::minimal_event_data(model)
+}
+}
 \keyword{internal}
