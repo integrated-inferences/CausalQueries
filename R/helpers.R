@@ -66,6 +66,7 @@ st_within <- function(x, left = "[^_[:^punct:]]|\\b", right = "\\[", rm_left = 0
 #' Recursive substitution
 #'
 #' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#' @return Returns multiple expression with substituted elements
 #' @keywords internal
 #' @param x A character vector.
 #' @param pattern_vector A character vector.
@@ -85,6 +86,7 @@ gsub_many <- function(x, pattern_vector, replacement_vector, ...) {
 #'
 #' Takes a string specifying condition and returns properly spaced string.
 #' @keywords internal
+#' @return A properly spaced string.
 #' @param condition A character string. Condition that refers to a unique position (possible outcome) in a nodal type.
 clean_condition <- function(condition) {
     spliced <- strsplit(condition, split = "")[[1]]
@@ -98,7 +100,7 @@ clean_condition <- function(condition) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param condition A vector of characters. Strings specifying the child node, followed by '|' (given) and the values of its parent nodes in \code{model}.
 #' @param position A named list of integers. The name is the name of the child node in \code{model}, and its value a vector of digit positions in that node's nodal type to be interpreted. See `Details`.
-#' @return A named \code{list} with interpration of positions of the digits in a nodal type
+#' @return A named \code{list} with interpretation of positions of the digits in a nodal type
 #' @details A node for a child node X with \code{k} parents has a nodal type represented by X followed by \code{2^k} digits. Argument \code{position} allows user to interpret the meaning of one or more digit positions in any nodal type. For example \code{position = list(X = 1:3)} will return the interpretation of the first three digits in causal types for X. Argument \code{condition} allows users to query the digit position in the nodal type by providing instead the values of the parent nodes of a given child. For example, \code{condition = 'X | Z=0 & R=1'} returns the digit position that corresponds to values X takes when Z = 0 and R = 1.
 #' @examples
 #' model <- make_model('R -> X; Z -> X; X -> Y')
@@ -181,7 +183,7 @@ interpret_type <- function(model, condition = NULL, position = NULL) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param to_expand A character vector of length 1L.
 #' @param verbose Logical. Whether to print expanded query on the console.
-#' @return A charater string with the expanded expression. Wildcard '.' is replaced by 0 and 1.
+#' @return A character string with the expanded expression. Wildcard '.' is replaced by 0 and 1.
 #' @importFrom rlang expr
 #' @export
 #' @examples
@@ -278,6 +280,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
+#' @return A logical expression indicating whether a variable is included in a query
 #' @keywords internal
 #' Used in map_query_to_nodal_types
 #'
@@ -286,6 +289,7 @@ includes_var <- function(var, query)
 
 #' List of nodes contained in query
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @return A vector indicating which variables are included in a query
 #' @keywords internal
 var_in_query <- function(model, query) {
     v <- model$nodes

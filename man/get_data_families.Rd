@@ -27,10 +27,11 @@ Returns indices and ambiguity matrix
 Get possible data types
 }
 \examples{
+\donttest{
 CausalQueries:::get_data_families(model = make_model('X->Y'))
 CausalQueries:::get_data_families(model = make_model('X->Y'), mapping_only = TRUE)
 CausalQueries:::get_data_families(model = make_model('X-> M -> Y'))
 
-
+}
 }
 \keyword{internal}

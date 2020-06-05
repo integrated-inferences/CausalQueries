@@ -18,8 +18,9 @@ A character statement of class \code{statement}
 Generate a statement for Y monotonic (decreasing) in X
 }
 \examples{
+\donttest{
 decreasing('A', 'B')
-
+}
 }
 \seealso{
 Other statements: 

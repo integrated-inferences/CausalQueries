@@ -3,7 +3,7 @@
 #' Find which nodal or causal types are satisfied by a query.
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param map Types in query. Either \code{nodal_type} or \code{causal_type}. Default is \code{causal_type}.
-#' @return A list containg some of the following elements
+#' @return A list containing some of the following elements
 #' \item{types}{A named vector with logical values indicating whether a \code{nodal_type} or a \code{causal_type} satisfy `query`}
 #' \item{query}{A character string as specified by the user}
 #' \item{expanded_query}{A character string with the expanded query. Only differs from `query` if this contains wildcard '.'}

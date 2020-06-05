@@ -3,22 +3,25 @@
 \name{set_sampling_args}
 \alias{set_sampling_args}
 \title{set_sampling_args
-From rstanarm (November 1st, 2019)}
+From 'rstanarm' (November 1st, 2019)}
 \usage{
 set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 }
 \arguments{
-\item{object}{A \code{stanfit object}.}
+\item{object}{A \code{stanfit} object.}
 
 \item{user_dots}{A list. User commands.}
 
 \item{user_adapt_delta}{A double between 0 and 1. Adapt delta passed by the user}
 
-\item{...}{further arguments to be passed to stan}
+\item{...}{further arguments to be passed to 'stan'}
+}
+\value{
+A \code{list} with arguments to be passed to \code{stan}
 }
 \description{
 set_sampling_args
-From rstanarm (November 1st, 2019)
+From 'rstanarm' (November 1st, 2019)
 }
 \details{
 Set the sampling arguments

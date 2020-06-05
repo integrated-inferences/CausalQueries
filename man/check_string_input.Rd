@@ -11,6 +11,9 @@ check_string_input(param_list = list(), call_name = NULL)
 
 \item{call_name}{Name of the call.}
 }
+\value{
+If appropriate, it returns error message.
+}
 \description{
 Check string_input
 }

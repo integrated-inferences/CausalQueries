@@ -11,8 +11,6 @@ make_ambiguities_matrix(model)
 }
 \value{
 A \code{data.frame}. Types (rows) corresponding to possible data realizations (columns).
-
-A matrix representing ambiguities.
 }
 \description{
 Make ambiguities matrix. The ambiguities matrix maps from causal types into data types.

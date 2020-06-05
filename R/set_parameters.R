@@ -125,9 +125,9 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' Set parameters
 #'
 #' Add a true parameter vector to a model. Parameters can be created using arguments passed to
-#' make_parameters and make_priors.
+#' \code{\link{make_parameters}} and \code{\link{make_priors}}.
 #'
-#' Argument 'param_type,' is passed to make_priors and specifies  one of 'flat', 'prior_mean',
+#' Argument 'param_type' is passed to make_priors and specifies  one of 'flat', 'prior_mean',
 #' 'posterior_mean', 'prior_draw', 'posterior_draw', and 'define'.
 #' With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise
 #' \code{flat} sets equal probabilities on each nodal param_type in each parameter set;
@@ -139,7 +139,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' @param warning Logical. Whether to warn about parameter renormalization
 #' @param ... Arguments to be passed to make_parameters
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with true vector of parameters attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with true vector of parameters attached to it.
 #' @export
 #' @family parameters
 #' @examples

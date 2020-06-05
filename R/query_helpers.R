@@ -10,8 +10,9 @@
 #'
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' increasing('A', 'B')
-#'
+#'}
 increasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
@@ -35,8 +36,9 @@ increasing <- function(X, Y) {
 #'
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' non_decreasing('A', 'B')
-#'
+#'}
 non_decreasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
@@ -59,8 +61,9 @@ non_decreasing <- function(X, Y) {
 #' @export
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' decreasing('A', 'B')
-#'
+#'}
 decreasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
@@ -83,8 +86,9 @@ decreasing <- function(X, Y) {
 #' @export
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' non_increasing('A', 'B')
-#'
+#'}
 non_increasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
@@ -109,10 +113,11 @@ non_increasing <- function(X, Y) {
 #' @export
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' interacts('A', 'B', 'W')
 #' get_query_types(model = make_model('X-> Y <- W'),
 #'          query = interacts('X', 'W', 'Y'), map = "causal_type")
-#'
+#'}
 
 interacts <- function(X1, X2, Y) {
 
@@ -139,8 +144,9 @@ interacts <- function(X1, X2, Y) {
 #' @export
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #'complements('A', 'B', 'W')
-#'
+#'}
 complements <- function(X1, X2, Y) {
 
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
@@ -166,14 +172,14 @@ complements <- function(X1, X2, Y) {
 #' @family statements
 #' @return A character statement of class \code{statement}
 #' @examples
-#'
+#'\donttest{
 #' get_query_types(model = make_model('A -> B <- C'),
 #'          query = substitutes('A', 'C', 'B'),map = "causal_type")
 #'
 #'query_model(model = make_model('A -> B <- C'),
 #'          queries = substitutes('A', 'C', 'B'),
 #'          using = 'parameters')
-#
+#'}
 substitutes <- function(X1, X2, Y) {
 
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
@@ -197,6 +203,7 @@ substitutes <- function(X1, X2, Y) {
 #'
 #' @return A character statement of class \code{statement}
 #' @examples
+#' \donttest{
 #' te('A', 'B')
 #'
 #' model <- make_model('X->Y') %>% set_restrictions(increasing('X', 'Y'))
@@ -204,6 +211,7 @@ substitutes <- function(X1, X2, Y) {
 #'
 #' # set_restrictions  breaks with te because it requires a listing
 #' # of causal types, not numeric output.
+#' }
 #'\dontrun{
 #' model <- make_model('X->Y') %>% set_restrictions(te('X', 'Y'))
 #' }
@@ -224,6 +232,7 @@ te <- function(X, Y) {
 #' @param param_list List of parameters
 #' @param call_name Name of the call.
 #' @keywords internal
+#' @return If appropriate, it returns error message.
 check_string_input <- function(param_list = list(), call_name = NULL) {
     for (i in 1:length(param_list)) if (!is.character(param_list[[i]]))
         stop(paste0("Provide node names as strings in function: ", call_name))

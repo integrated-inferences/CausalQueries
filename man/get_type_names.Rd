@@ -9,7 +9,14 @@ get_type_names(nodal_types)
 \arguments{
 \item{nodal_types}{Nodal types of a model. See \code{\link{get_nodal_types}}.}
 }
+\value{
+A vector containing causal type names
+}
 \description{
 Get type names
+}
+\examples{
+model <- make_model('A->Y<-B')
+CausalQueries:::get_type_names(model$nodal_types)
 }
 \keyword{internal}

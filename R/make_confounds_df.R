@@ -7,6 +7,7 @@
 #' @importFrom stats cor
 #' @export
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y') %>%
 #' set_confound('X <-> Y', add_confounds_df  = FALSE)
 #' make_confounds_df(model)
@@ -26,7 +27,7 @@
 #'
 #' model <- make_model('X -> M -> Y')
 #' make_confounds_df(model)
-#'
+#' }
 #' # Bad case
 #' \dontrun{
 #' model <- make_model('X -> Y') %>%
@@ -110,9 +111,10 @@ make_confounds_df <- function(model) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the confound_df attached to the parameter matrix in the model.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the confound_df attached to the parameter matrix in the model.
 #' @export
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y') %>%
 #'   set_confound(list('X <-> Y'), add_confounds_df = FALSE)
 #' model$confounds_df
@@ -122,6 +124,7 @@ make_confounds_df <- function(model) {
 #' model <- make_model('X -> Y') %>%
 #'   set_confound(list(X = '(Y[X=1] > Y[X=0])')) %>%
 #'   set_restrictions('(Y[X=1] > Y[X=0])')
+#' }
 
 set_confounds_df <- function(model) {
     model$confounds_df <- make_confounds_df(model)

@@ -15,7 +15,7 @@ get_prior_distribution(model, n_draws = 4000)
 A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
 }
 \description{
-Add to the model a n_draws x n_param matrix of possible parameters.
+Add to the model a `n_draws x n_param` matrix of possible parameters.
 }
 \examples{
 make_model('X -> Y') \%>\% set_prior_distribution(n_draws = 5) \%>\% get_prior_distribution()

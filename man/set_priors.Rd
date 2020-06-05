@@ -21,7 +21,7 @@ set_priors(
 \arguments{
 \item{model}{A model created with \code{make_model}}
 
-\item{priors}{A optional vector of positive reals indicating priors over all parameters. These are interepreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df}
+\item{priors}{A optional vector of positive reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df}
 
 \item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
@@ -43,7 +43,7 @@ set_priors(
 }
 \value{
 An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-the model (e.g. 'statement', 'confounds' and 'restrictions') with the `priors` attached to it.
+a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
 }
 \description{
 A flexible function to add priors to a model.

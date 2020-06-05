@@ -1,4 +1,4 @@
-#' Puts your DAG into dagitty syntax (useful for using their plotting functions)
+#' Puts your DAG into 'dagitty' syntax (useful for using their plotting functions)
 #'
 #' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
 #'
@@ -31,12 +31,13 @@ translate_dagitty <- function(model) {
     return(dagitty_dag)
 }
 
-#' Plot your dag using dagitty
+#' Plot your dag using 'dagitty'
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #'
 #' @keywords internal
 #' @importFrom graphics plot
+#' @return No return value.
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> K -> Y; X -> Y')

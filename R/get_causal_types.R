@@ -4,7 +4,7 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame} indicating causal types of a \code{model}
-#' @example
+#' @examples
 #' get_causal_types(make_model('X -> Y'))
 #'
 #' @export

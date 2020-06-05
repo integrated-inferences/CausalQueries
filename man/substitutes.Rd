@@ -20,13 +20,14 @@ A character statement of class \code{statement}
 Generate a statement for X1, X1 substitute for each other in the production of Y
 }
 \examples{
-
+\donttest{
 get_query_types(model = make_model('A -> B <- C'),
          query = substitutes('A', 'C', 'B'),map = "causal_type")
 
 query_model(model = make_model('A -> B <- C'),
          queries = substitutes('A', 'C', 'B'),
          using = 'parameters')
+}
 }
 \seealso{
 Other statements: 

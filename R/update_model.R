@@ -1,15 +1,15 @@
-#' Fit causal model using stan
+#' Fit causal model using 'stan'
 #'
 #' Takes a model and data and returns a model object with data attached and a posterior model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @param data_type Either 'long' (as made by `simulate_data()`) or 'compact' (as made by \code{\link{collapse_data}}).
+#' @param data_type Either 'long' (as made by  \code{\link{simulate_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
-#' @param keep_fit Logical. Whether to append the stanfit object to the model. Defaults to `FALSE`
-#' @param ... Options passed onto \code{rstan::stan} call.
+#' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
+#' @param ... Options passed onto \code{\link[rstan]{stan}} call.
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the `posterior_distribution` returned by \code{rstan::stan} attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
 #' @import methods
 #' @import Rcpp
 #' @import rstantools

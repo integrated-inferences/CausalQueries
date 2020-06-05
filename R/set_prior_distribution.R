@@ -31,7 +31,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 
 #' Get a prior distribution from priors
 #'
-#' Add to the model a n_draws x n_param matrix of possible parameters.
+#' Add to the model a `n_draws x n_param` matrix of possible parameters.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
@@ -54,12 +54,12 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 
 #' Add prior distribution draws
 #'
-#' Add n_param x n_draws database of possible lambda draws to the model.
+#' Add `n_param x n_draws` database of possible lambda draws to the model.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the `prior_distribution` attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `prior_distribution` attached to it.
 #' @export
 #' @family prior_distribution
 #' @examples

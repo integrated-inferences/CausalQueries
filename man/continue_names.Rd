@@ -11,11 +11,14 @@ continue_names(x, split = "_")
 
 \item{split}{String on which to split. String should appear only once in each vector entry.}
 }
+\value{
+a vector with parameter names sequentially created with respect to \code{x}
+}
 \description{
 Slightly hacky function to continue param_set names in a sequence
 }
 \examples{
-x <- c('S_3', 'S_3', 'S_5')
+x <- c('S_2', 'S_3', 'S_5')
 CausalQueries:::continue_names(x)
 }
 \keyword{internal}

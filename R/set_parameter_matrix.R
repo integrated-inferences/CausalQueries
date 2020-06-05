@@ -60,7 +60,7 @@ get_parameter_matrix <- function(model) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' the model (e.g. 'statement', 'confounds' and 'restrictions') with the parameter matrix attached to it.
+#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix attached to it.
 #' @export
 #'
 #' @examples
@@ -116,7 +116,17 @@ print.summary.parameter_matrix <- function(x, ...) {
 
 
 #' Names for causal types
+#' @param causal_types A \code{data.frame} whose rows containing the 0-1 digits that conform the causal types.
 #' @keywords internal
+#' @return A \code{data.frame} whose rows contain the character values that conform each causal type in a model.
+#' @examples
+#' \donttest{
+#' model <- make_model('X -> Y')
+#' possible_types <- get_nodal_types(model)
+#' df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
+#' CausalQueries:::causal_type_names(df)
+#' }
+
 causal_type_names <- function(causal_types) {
     for (j in (1:ncol(causal_types))) causal_types[, j] <- paste0(names(causal_types)[j], causal_types[,
         j])

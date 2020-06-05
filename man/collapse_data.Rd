@@ -35,7 +35,7 @@ If \code{summary = TRUE} `collapse_data` returns a list containing the following
 Take a `data.frame` and return compact `data.frame`  of event types and strategies.
 }
 \examples{
-
+\donttest{
 model <- make_model('X -> Y')
 df <- simulate_data(model, n = 10)
 df[1,1] <- ''
@@ -60,4 +60,5 @@ collapse_data(data, model)
 model <- make_model('X->Y')
 long_data <- simulate_data(model, n = 6)
 collapse_data(long_data, model)
+}
 }

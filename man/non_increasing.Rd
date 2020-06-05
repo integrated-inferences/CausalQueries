@@ -18,8 +18,9 @@ A character statement of class \code{statement}
 Generate a statement for Y weakly monotonic (not increasing) in X
 }
 \examples{
+\donttest{
 non_increasing('A', 'B')
-
+}
 }
 \seealso{
 Other statements: 

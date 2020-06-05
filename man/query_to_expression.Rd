@@ -11,6 +11,9 @@ query_to_expression(query, node)
 
 \item{node}{A character string. The quoted name of a node.}
 }
+\value{
+A cleaned query expression
+}
 \description{
 Helper to turn query into a data expression
 }

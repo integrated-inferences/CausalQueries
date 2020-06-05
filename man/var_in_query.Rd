@@ -11,6 +11,9 @@ var_in_query(model, query)
 
 \item{query}{A character string. An expression defining nodal types to interrogate \code{\link{reveal_outcomes}}}
 }
+\value{
+A vector indicating which variables are included in a query
+}
 \description{
 List of nodes contained in query
 }

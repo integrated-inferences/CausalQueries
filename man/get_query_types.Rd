@@ -16,7 +16,7 @@ get_query_types(model, query, map = "causal_type", join_by = "|")
 \item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 }
 \value{
-A list containg some of the following elements
+A list containing some of the following elements
 \item{types}{A named vector with logical values indicating whether a \code{nodal_type} or a \code{causal_type} satisfy `query`}
 \item{query}{A character string as specified by the user}
 \item{expanded_query}{A character string with the expanded query. Only differs from `query` if this contains wildcard '.'}

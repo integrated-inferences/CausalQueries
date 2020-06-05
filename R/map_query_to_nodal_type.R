@@ -9,6 +9,7 @@
 #' @return A \code{list} containing the types and the evaluated expression. `manipulated_outcomes` are the nodes on the left of a [] expression.
 #'
 #' @examples
+#' \donttest{
 #' model <- make_model('X->Y')
 #'
 #' CausalQueries:::map_query_to_nodal_type(model, '(Y[X=0] > Y[X=1])')
@@ -27,6 +28,7 @@
 #'
 #' # Root nodes specified with []
 #' CausalQueries:::map_query_to_nodal_type(model, '(X[] == 1)')
+#' }
 #' \dontrun{
 #' CausalQueries:::map_query_to_nodal_type(model, 'X == 1')
 #' }
@@ -120,15 +122,16 @@ print.summary.nodal_types <- function(x, ...) {
 
 
 #' Helper to fill in missing do operators in causal expression
-#'
-#' @param q a causal query
-#' @param model a model
+#' @inheritParams CausalQueries_internal_inherit_params
+#' @param q A character string. Causal query with at least one parent node missing their do operator.
 #' @keywords internal
+#' @return A causal query expression with all parents nodes set to either 0, 1 or wildcard '.'.
 #' @examples
+#' \donttest{
 #' model <- make_model('X -> Y <- M')
 #' CausalQueries:::add_dots('Y[X=1]', model)
 #' CausalQueries:::add_dots('Y[]', model)
-#'
+#'}
 
 add_dots <- function(q, model) {
 
@@ -169,6 +172,7 @@ add_dots <- function(q, model) {
 
 #' Helper to expand nodal expression
 #' @keywords internal
+#' @return A nodal expression with no missing parents
 #' @inheritParams CausalQueries_internal_inherit_params
 
 expand_nodal_expression <- function(model, query, node, join_by = "|")	{
@@ -202,6 +206,7 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
 
 #' Helper to turn query into a data expression
 #' @keywords internal
+#' @return A cleaned query expression
 #' @inheritParams CausalQueries_internal_inherit_params
 query_to_expression <- function(query, node){
 
