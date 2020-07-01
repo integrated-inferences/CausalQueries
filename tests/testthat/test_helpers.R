@@ -5,6 +5,7 @@ if (.runThisTest) {
 context("Testing helper functions.")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "perm  permutations_function",
 	code = {
 		CausalQueries:::perm(3)
@@ -14,6 +15,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "st_within: Removing consecutive brackets",
 	code = {
 		# tests for remove
@@ -25,6 +27,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "gsub_many: multiple substitutions",
 	code = {
 		expect_true(CausalQueries:::gsub_many("abc", "a", "b") == "bbc")
@@ -33,11 +36,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "gsub_many: error",
 		expect_error(CausalQueries:::gsub_many("abc", c("ab", "c"), c("o")))
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "clean_condition: spacing strings",
 	code = {
 		expect_true(CausalQueries:::clean_condition("01") == "0 1")
@@ -45,6 +50,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "interpret_type",
 	code = {
 		model <- make_model('R -> X; Z -> X; X -> Y')
@@ -60,6 +66,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "expand_wildcard",
 	code = {
 		expect_message(expand_wildcard("Y[X=1, M=.] ==1"))
@@ -82,6 +89,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "get_parameter_names",
 	code = {
 		out <- get_parameter_names(make_model('X->Y'), include_paramset = FALSE)
@@ -90,6 +98,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "include_vars",
 	code = {
 

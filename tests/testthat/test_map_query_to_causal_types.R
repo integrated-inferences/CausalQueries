@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing map_query_to_causal_type")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "print statement",
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')

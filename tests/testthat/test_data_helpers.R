@@ -6,6 +6,7 @@ if (.runThisTest) {
 context(desc = "Testing data helperse")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "collapse_data works when variables not in the model",
 			code = {
 				 model <- make_model('X->Y')
@@ -29,6 +30,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "collapse_data works when all NA",
 	code = {
 		model <- make_model('X->Y')
@@ -41,6 +43,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "collapse_data works when node not in data",
 	code = {
 		model <- make_model('X->Y')
@@ -51,6 +54,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "collapse data inconsistent with model and ignored",
 	code = {
 		model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
@@ -61,6 +65,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "collapse_data conditions work",
 	code = {
 		model <- make_model('X -> Y')
@@ -76,6 +81,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "expand_data works",
 	code = {
 		model <-  make_model('X -> Y')
@@ -88,6 +94,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "expand_data errors",
 	code = {
 		model <-  make_model('X -> Y')
@@ -100,6 +107,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "all_data_types errors",
 	code = {
 		model <- make_model("X -> Y")
@@ -114,6 +122,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "get_data_families works",
 	code = {
 		model <- make_model("X -> Y")

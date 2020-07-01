@@ -7,6 +7,7 @@ if (.runThisTest) {
 context(desc = "Testing map_query_to_nodal_type")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "print and class of summaries",
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')

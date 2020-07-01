@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing get_query_types")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output works fine",
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')

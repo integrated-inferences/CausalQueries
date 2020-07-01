@@ -9,6 +9,7 @@ context(desc = "Testing make_data")
 model <- make_model("X -> Y")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Simulate data works using parameter.",
 	code = {
 		dat <- make_data(model, n = 5)
@@ -17,6 +18,7 @@ testthat::test_that(
 	})
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Simulate data works using priors.",
 	code = {
 		dat <- make_data(model, n = 5, param_type = "prior_draw")
@@ -24,6 +26,7 @@ testthat::test_that(
 	})
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Positive integer number of observations.",
 	code = {
 		expect_error(make_data(model, n = -1), "Number of observation has to be an integer greater than 0.")
@@ -33,6 +36,7 @@ testthat::test_that(
 context(desc = "Testing make_events.")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "User input",
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
@@ -53,6 +57,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "param_type input test.",
 	code = {
 		model <- make_model("X -> Y")
@@ -66,6 +71,7 @@ testthat::test_that(
 )
 # ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
@@ -76,6 +82,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check errors.",
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
@@ -88,6 +95,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check warnings.",
 	code = {
 		model <- make_model("X -> Y")

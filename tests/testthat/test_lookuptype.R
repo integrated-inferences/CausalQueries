@@ -8,6 +8,7 @@ if (.runThisTest) {
 context(desc = "Testing type lookup")
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Look up nodes",
 		code = {
 

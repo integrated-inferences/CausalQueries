@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing get_nodal_types")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Condition for make_nodal_types",
 	code = {
 		out_true <- CausalQueries:::make_nodal_types(make_model("X -> Y"), include_node_names = TRUE)
@@ -16,6 +17,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing collapse_nodal_types",
 	code = {
 		model <- make_model("X -> Y")

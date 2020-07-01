@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing set_parameters")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Main arguments",
 	code = {
 		model <- make_model('X -> Y')

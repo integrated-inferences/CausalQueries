@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Tests make_data")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "make_data_single",
 	code = {
 		model <- make_model("X -> Y") %>%
@@ -20,6 +21,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "observe_data",
 	code = {
 		model <- make_model("X -> Y")

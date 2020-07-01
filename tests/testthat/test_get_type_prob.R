@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing get_type_prob")
 
 testthat::test_that(
+testthat::skip_on_cran()
 
 	desc = "get_type_prob",
 	code = {
@@ -15,6 +16,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test function works just the same with arg parameters",
 	code = {
 		model <- make_model("X -> Y")
@@ -27,6 +29,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 
 	desc = "get_param_dist",
 	code = {

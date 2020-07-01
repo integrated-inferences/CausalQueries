@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing make_confounds")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check messages.",
 	code = {
 		model <- make_model("X -> Y")
@@ -16,6 +17,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Set confounds",
 	code = {
 		## passer function

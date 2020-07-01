@@ -6,6 +6,7 @@ if (.runThisTest) {
 context(desc = "Testing plot_dag")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing plot.dag",
 	code = {
 		model <- make_model("X -> M -> Y; X -> Y")
@@ -19,6 +20,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing translate_daggity",
 	code = {
 		model <- make_model("X")
@@ -31,6 +33,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing warning",
 	code = {
 		model <- make_model('X -> K -> Y; X -> Y')

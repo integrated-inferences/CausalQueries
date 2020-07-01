@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing get_ambiguity_matrix")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test if null.",
 	code = {
 		model <- make_model("X -> Y")
@@ -15,6 +16,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Return if not null.",
 	code = {
 		model <- make_model("X -> Y")

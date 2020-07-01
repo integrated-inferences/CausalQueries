@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing misc")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "sampling_args user_adapt_delta",
 	code = {
 		object <- NULL

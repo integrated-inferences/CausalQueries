@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing set_priors")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check warnings",
 	code = {
 		model <- make_model("X -> Y")
@@ -18,6 +19,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check errors.",
 	code = {
 		model <- make_model("X -> M -> Y")
@@ -33,6 +35,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y") %>%

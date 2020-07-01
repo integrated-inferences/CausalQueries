@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing set_parameter_matrix")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing messages.",
 	code = {
 		model <- make_model("X <- Y")
@@ -18,6 +19,7 @@ testthat::test_that(
 context("Testing summary commands for set_parameter_matrix")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing print.",
 	code = {
 		model <- make_model("X -> Y")
@@ -28,6 +30,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing summary.",
 	code = {
 		model <- make_model("X -> Y")

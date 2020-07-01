@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Tests for query_helpers")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "All functions:",
 	code = {
 		out <- increasing("A", "B")
@@ -30,6 +31,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check input.",
 	code = {
 		expect_error(CausalQueries:::te(2, 1))
@@ -40,6 +42,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test error",
 	code = {
 		expect_error(increasing(1, "B"))

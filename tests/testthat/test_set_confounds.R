@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing set_confounds")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test alias is working ",
 	code = {
 		model <- make_model('X -> Y') %>%

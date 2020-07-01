@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Error messages of map_query_to_causal_type")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Proper error messages.",
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
@@ -23,6 +24,7 @@ testthat::test_that(
 context("Proper output.")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Proper output.",
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
@@ -41,6 +43,7 @@ testthat::test_that(
 context("Summary functions of map_query_to_causal_type")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check the summary functions of map_query_to_causal_type",
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")

@@ -11,11 +11,13 @@ dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
 for(dag in dags){
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Model returns a non-null object.",
 		code = expect_true(length(make_model(dag)) > 1)
 	)
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Model returns the correct object class.",
 		code = expect_identical(class(make_model(dag)), "causal_model")
 	)
@@ -23,6 +25,7 @@ for(dag in dags){
 }
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test functions on model X -> Y without confounding",
 	code = {
 
@@ -46,6 +49,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test functions on model X -> Y with confounding",
 	code = {
 		XY_conf <- make_model("X -> Y")
@@ -83,6 +87,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test functions on mediator model (X -> M -> Y)",
 	code = {
 		XY_mediator <- make_model("X -> M -> Y")
@@ -108,6 +113,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test functions on moderator model (X -> Y; Z -> Y)",
 	code = {
 		XY_moderator <- make_model("X -> Y; Z -> Y")
@@ -134,6 +140,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test complex model",
 	code = {
 		model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2") %>%
@@ -161,6 +168,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "update_model using keep_fit",
 	code = {
 		updated <- update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
@@ -170,6 +178,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check long and short data",
 	code = {
 		model <- make_model('X->Y')
@@ -183,6 +192,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test stan arguments",
 	code = {
 		updated <- update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
@@ -193,6 +203,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Test when all NA",
 	code = {
 		model <- make_model("X -> Y")

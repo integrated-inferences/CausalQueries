@@ -15,6 +15,7 @@ cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 for(i in length(dags)){
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Simple restrictions on exogenous nodes work",
 		code = {
 			model <- make_model(dags[i]) %>%
@@ -25,6 +26,7 @@ for(i in length(dags)){
 	)
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Monotonicity restrictions work",
 		code = {
 			model <- make_model(dags[i])
@@ -34,6 +36,7 @@ for(i in length(dags)){
 	)
 
 	testthat::test_that(
+testthat::skip_on_cran()
 		desc = "Restriction function errors when it should",
 		code = {
 			model <- make_model(dags[i])
@@ -44,6 +47,7 @@ for(i in length(dags)){
 }
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "error when keep is not logical",
 	code = {
 		model <- make_model("Y <- X")
@@ -53,6 +57,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "errors when labels are wrong",
 	code = {
 		model <- make_model("Y <- X")

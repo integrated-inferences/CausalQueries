@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing get_event_prob")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing warnings",
 	code = {
 		model <- make_model("X -> Y")
@@ -15,6 +16,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Testing hack",
 	code = {
 		model <- make_model("X -> Y") %>%

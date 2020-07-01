@@ -7,6 +7,7 @@ if (.runThisTest) {
 context("Set_prior_distribution")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check messages.",
 	code = {
 		expect_message(make_model("X -> Y") %>% get_prior_distribution(3))

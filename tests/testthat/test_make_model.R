@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Make_models")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Print and summary functions",
 	code = {
 		model <- make_model("X -> Y")

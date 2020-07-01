@@ -12,6 +12,7 @@ df  <- make_data(model, n = 4)
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "observe works when only complete_data is specified",
 	code = {
 
@@ -22,6 +23,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "observe works when nodes_to_observe is specified",
 	code = {
 		obs <- observe_data(complete_data = df, nodes_to_observe = "X")
@@ -32,6 +34,7 @@ testthat::test_that(
 
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "observe works when observed is specified",
 	code = {
 
@@ -46,6 +49,7 @@ testthat::test_that(
 )
 
 # testthat::test_that(
+testthat::skip_on_cran()
 # 	desc = "observe works when subset is specified",
 # 	code = {
 #
@@ -62,6 +66,7 @@ testthat::test_that(
 # )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "m overrides p (observe)",
 	code = {
 		obs <- observe_data(complete_data    = df,

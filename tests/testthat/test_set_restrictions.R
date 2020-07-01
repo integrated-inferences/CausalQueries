@@ -6,6 +6,7 @@ if (.runThisTest) {
 context("Testing set_restrictions")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check messages for input.",
 	code = {
 		model <- make_model("X -> Y")
@@ -15,6 +16,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y <- Z")
@@ -46,6 +48,7 @@ expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
 context("Test restrict_by_query")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check errors.",
 	code = {
 		model <- make_model("X -> M -> Y; Z -> Y")
@@ -65,6 +68,7 @@ testthat::test_that(
 context("Test restrict_by_labels")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check errors.",
 	code = {
 		model <- make_model("X -> Y")
@@ -74,6 +78,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
@@ -88,6 +93,7 @@ testthat::test_that(
 context("Test get_type_names")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		model <- make_model("X -> Y")
@@ -100,6 +106,7 @@ testthat::test_that(
 context("Test unpack_wildcard")
 
 testthat::test_that(
+testthat::skip_on_cran()
 	desc = "Check output.",
 	code = {
 		n <- 3
