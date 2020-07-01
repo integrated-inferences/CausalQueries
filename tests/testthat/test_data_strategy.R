@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing make_model")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Observational equivalence corresponds to model equivalence.",
+
 	code = {
 		m1 <- make_model("X -> Y -> Z <- U")
 		m2 <- make_model("U -> Z <- Y <- X")
@@ -23,10 +26,13 @@ testthat::test_that(
 #################################################
 context(desc = "Testing make_data")
 
+testthat::skip_on_cran()
 model <- make_model("X -> M -> Y")
 
 testthat::test_that(
+
 	desc = "data strategy works",
+
 	code = {
 		strat <- make_data(model, n = 8)
     expect_equal(nrow(strat), 8)
@@ -46,7 +52,9 @@ testthat::test_that(
 })
 
 testthat::test_that(
+
 	desc = "make_data errors and messages when it should.",
+
 	code = {
 		model <- make_model("X -> M -> Y")
 
@@ -67,4 +75,4 @@ testthat::test_that(
 	}
 )
 
-}
+

@@ -1,11 +1,14 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_type_prob")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
+
 
 	desc = "get_type_prob",
 	code = {
@@ -15,7 +18,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Test function works just the same with arg parameters",
+
 	code = {
 		model <- make_model("X -> Y")
 		expect_identical(get_type_prob(model), get_type_prob(model, parameters = rep(1, 6)))
@@ -28,13 +33,15 @@ testthat::test_that(
 
 testthat::test_that(
 
+
+
 	desc = "get_param_dist",
 	code = {
 		expect_error(get_param_dist(model = make_model('X->Y'), using = 'posteriors', n_draws = 4))
 	}
 )
 
-}
+
 
 
 

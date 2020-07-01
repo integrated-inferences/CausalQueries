@@ -1,14 +1,17 @@
 
 
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing type lookup")
 
+testthat::skip_on_cran()
 	testthat::test_that(
+
 		desc = "Look up nodes",
+
 		code = {
 
 			model <- make_model('X->Y')
@@ -42,4 +45,4 @@ context(desc = "Testing type lookup")
 		}
 	)
 
-}
+

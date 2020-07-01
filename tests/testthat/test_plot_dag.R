@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing plot_dag")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Testing plot.dag",
+
 	code = {
 		model <- make_model("X -> M -> Y; X -> Y")
 		pdf(file = NULL)
@@ -19,7 +22,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Testing translate_daggity",
+
 	code = {
 		model <- make_model("X")
 		expect_equal(translate_dagitty(model), "dag{ X }")
@@ -31,11 +36,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Testing warning",
+
 	code = {
 		model <- make_model('X -> K -> Y; X -> Y')
 		model <- set_parameter_matrix(model)
 		expect_message(plot_dag(model))
 	}
 )
-}
+

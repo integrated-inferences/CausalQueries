@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_parameters")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Main arguments",
+
 	code = {
 		model <- make_model('X -> Y')
 
@@ -61,4 +64,4 @@ testthat::test_that(
 )
 
 
-}
+
