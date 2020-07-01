@@ -1,7 +1,7 @@
 Package: CausalQueries
 Type: Package
 Title: Make, Update, and Query Binary Causal Models
-Version: 0.0.3
+Version: 0.0.3.1
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("ctb")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("ctb")),
              person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),

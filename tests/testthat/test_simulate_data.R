@@ -26,7 +26,7 @@ testthat::test_that(
 testthat::test_that(
 	desc = "Positive integer number of observations.",
 	code = {
-		expect_error(make_data(model, n = -1), "Number of observation has to be an integer bigger than 0.")
+		expect_error(make_data(model, n = -1), "Number of observation has to be an integer greater than 0.")
 	}
 )
 
