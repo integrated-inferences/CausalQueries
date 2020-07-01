@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_confounds")
 
@@ -16,4 +16,4 @@ testthat::skip_on_cran()
 		expect_identical(model, models)
 	}
 )
-}
+

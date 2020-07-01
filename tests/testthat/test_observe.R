@@ -1,8 +1,8 @@
 
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing observe")
 
@@ -80,6 +80,6 @@ testthat::skip_on_cran()
 	}
 )
 
-}
+
 
 

@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Query model, query distribution")
 
@@ -40,5 +40,5 @@ testthat::skip_on_cran()
 
 			}
 )
-}
+
 

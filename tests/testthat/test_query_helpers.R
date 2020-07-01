@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Tests for query_helpers")
 
@@ -50,4 +50,4 @@ testthat::skip_on_cran()
 )
 
 
-}
+

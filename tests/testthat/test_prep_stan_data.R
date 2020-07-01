@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing prep_qbiqq_data")
 
@@ -14,4 +14,4 @@ testthat::skip_on_cran()
 		expect_error(prep_stan_data(model, data[, 1:2]))
 	}
 )
-}
+

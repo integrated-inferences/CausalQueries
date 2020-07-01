@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_query_types")
 
@@ -18,4 +18,4 @@ testthat::skip_on_cran()
 
 	}
 )
-}
+

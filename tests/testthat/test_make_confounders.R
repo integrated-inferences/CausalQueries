@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing make_confounds")
 
@@ -30,4 +30,4 @@ testthat::skip_on_cran()
 )
 
 
-}
+

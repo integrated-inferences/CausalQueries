@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_ambiguity_matrix")
 
@@ -26,4 +26,4 @@ testthat::skip_on_cran()
 		expect_identical(A1, A2)
 	}
 )
-}
+

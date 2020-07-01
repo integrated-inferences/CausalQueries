@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing restrictions")
 
@@ -65,5 +65,5 @@ testthat::skip_on_cran()
 		expect_error(model <- set_restrictions(model, labels = list(W=1)))
 	}
 )
-}
+
 

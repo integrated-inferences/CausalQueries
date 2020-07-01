@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing reveal_outcomes")
 
@@ -22,5 +22,5 @@ testthat::skip_on_cran()
 		expect_equal(nrow(reveal_outcomes(model, dos = list(X = 1), node = "M")), 4)
 	}
 )
-}
+
 

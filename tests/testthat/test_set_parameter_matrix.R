@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_parameter_matrix")
 
@@ -41,5 +41,5 @@ testthat::skip_on_cran()
 		expect_true(any(grepl(" parameter set", out)))
 	}
 )
-}
+
 

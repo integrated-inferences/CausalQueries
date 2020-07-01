@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Tests make_data")
 
@@ -33,7 +33,7 @@ testthat::skip_on_cran()
 		expect_true(all(c(out$X, out$Y)))
 	}
 )
-}
+
 
 
 

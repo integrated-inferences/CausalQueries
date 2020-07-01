@@ -1,8 +1,8 @@
 
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing layering")
 
@@ -67,4 +67,4 @@ testthat::skip_on_cran()
 		expect_equal(ncol(model_a$P), ncol(model_b$P))
 		})
 
-}
+

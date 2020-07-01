@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing plot_dag")
 
@@ -41,4 +41,4 @@ testthat::skip_on_cran()
 		expect_message(plot_dag(model))
 	}
 )
-}
+

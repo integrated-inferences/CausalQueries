@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_nodal_types")
 
@@ -36,4 +36,4 @@ testthat::skip_on_cran()
 	}
 )
 
-}
+

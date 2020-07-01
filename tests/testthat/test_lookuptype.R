@@ -1,9 +1,9 @@
 
 
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing type lookup")
 
@@ -43,4 +43,4 @@ testthat::skip_on_cran()
 		}
 	)
 
-}
+

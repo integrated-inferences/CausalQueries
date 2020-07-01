@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_type_prob")
 
@@ -37,7 +37,7 @@ testthat::skip_on_cran()
 	}
 )
 
-}
+
 
 
 

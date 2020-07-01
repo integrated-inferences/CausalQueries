@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 
 context(desc = "Testing that canonical models work as they should")
@@ -214,4 +214,4 @@ testthat::skip_on_cran()
 		expect_error(update_model(model, data, data_type = "compact"))
 	}
 )
-}
+

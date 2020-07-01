@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("get_causal_types")
 
@@ -14,4 +14,4 @@ testthat::skip_on_cran()
 		expect_equal(nrow(get_causal_types(model)), 8)
 	}
 )
-}
+

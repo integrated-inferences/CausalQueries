@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 context("Testing helper functions.")
 
 testthat::test_that(
@@ -111,4 +111,4 @@ testthat::skip_on_cran()
 		expect_true(a == "X")
 	}
 )
-}
+

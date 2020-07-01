@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_priors")
 
@@ -53,4 +53,4 @@ testthat::skip_on_cran()
 		expect_true(all(666 %in% out))
 	}
 )
-}
+

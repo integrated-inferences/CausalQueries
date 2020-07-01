@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_restrictions")
 
@@ -118,4 +118,4 @@ testthat::skip_on_cran()
 )
 
 
-}
+

@@ -1,7 +1,7 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing map_query_to_causal_type")
 
@@ -29,4 +29,4 @@ testthat::skip_on_cran()
 		expect_equal(out[1], "list()")
 	}
 )
-}
+
