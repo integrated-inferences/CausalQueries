@@ -5,10 +5,11 @@
 
 context("Testing set_parameter_matrix")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Testing messages.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X <- Y")
 		model <- set_parameter_matrix(model)
@@ -19,10 +20,11 @@ testthat::skip_on_cran()
 
 context("Testing summary commands for set_parameter_matrix")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Testing print.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> Y")
 		model <- set_parameter_matrix(model)
@@ -34,7 +36,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Testing summary.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> Y")
 		confound <- list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")

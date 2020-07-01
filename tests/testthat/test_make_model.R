@@ -5,10 +5,11 @@
 
 context("Make_models")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Print and summary functions",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> Y")
 		out <- capture.output(CausalQueries:::print.causal_model(model))

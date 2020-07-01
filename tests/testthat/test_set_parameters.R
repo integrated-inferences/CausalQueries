@@ -5,10 +5,11 @@
 
 context("Testing set_parameters")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Main arguments",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model('X -> Y')
 

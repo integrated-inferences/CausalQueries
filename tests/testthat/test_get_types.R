@@ -5,10 +5,11 @@
 
 context("Error messages of map_query_to_causal_type")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Proper error messages.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
 		query <- c("(Y[X = .]==1)", "(Y[X = 0] == 0)")
@@ -24,10 +25,11 @@ testthat::skip_on_cran()
 
 context("Proper output.")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Proper output.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
 		query <- "(Y[X = .]==1)"
@@ -44,10 +46,11 @@ testthat::skip_on_cran()
 
 context("Summary functions of map_query_to_causal_type")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Check the summary functions of map_query_to_causal_type",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
 		query <- "(Y[X = .]==1)"

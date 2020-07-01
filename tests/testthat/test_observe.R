@@ -6,6 +6,7 @@
 
 context(desc = "Testing observe")
 
+testthat::skip_on_cran()
 set.seed(1)
 model <- make_model("X -> Y")
 df  <- make_data(model, n = 4)
@@ -14,7 +15,7 @@ df  <- make_data(model, n = 4)
 testthat::test_that(
 
 	desc = "observe works when only complete_data is specified",
-testthat::skip_on_cran()
+
 	code = {
 
 		obs <- observe_data(complete_data = df)
@@ -26,7 +27,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "observe works when nodes_to_observe is specified",
-testthat::skip_on_cran()
+
 	code = {
 		obs <- observe_data(complete_data = df, nodes_to_observe = "X")
 		expect_true(all(obs$X))
@@ -38,7 +39,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "observe works when observed is specified",
-testthat::skip_on_cran()
+
 	code = {
 
 		obs1 <- observe_data(complete_data = df, nodes_to_observe = "X")
@@ -54,7 +55,7 @@ testthat::skip_on_cran()
 # testthat::test_that(
 
 # 	desc = "observe works when subset is specified",
-testthat::skip_on_cran()
+
 # 	code = {
 #
 # 		obs1 <-   observe_data(complete_data = df, nodes_to_observe = "X")
@@ -72,7 +73,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "m overrides p (observe)",
-testthat::skip_on_cran()
+
 	code = {
 		obs <- observe_data(complete_data    = df,
 								  	observed        = observe_data(complete_data = df, nodes_to_observe = "X"),

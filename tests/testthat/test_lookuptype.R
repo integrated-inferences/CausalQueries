@@ -7,10 +7,11 @@
 
 context(desc = "Testing type lookup")
 
+testthat::skip_on_cran()
 	testthat::test_that(
 
 		desc = "Look up nodes",
-testthat::skip_on_cran()
+
 		code = {
 
 			model <- make_model('X->Y')

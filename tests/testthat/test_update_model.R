@@ -6,6 +6,7 @@
 
 context(desc = "Testing that canonical models work as they should")
 
+testthat::skip_on_cran()
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
 
 for(dag in dags){
@@ -13,14 +14,14 @@ for(dag in dags){
 	testthat::test_that(
 
 		desc = "Model returns a non-null object.",
-testthat::skip_on_cran()
+
 		code = expect_true(length(make_model(dag)) > 1)
 	)
 
 	testthat::test_that(
 
 		desc = "Model returns the correct object class.",
-testthat::skip_on_cran()
+
 		code = expect_identical(class(make_model(dag)), "causal_model")
 	)
 
@@ -29,7 +30,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test functions on model X -> Y without confounding",
-testthat::skip_on_cran()
+
 	code = {
 
 		XY_noconf <- make_model("X -> Y")
@@ -54,7 +55,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test functions on model X -> Y with confounding",
-testthat::skip_on_cran()
+
 	code = {
 		XY_conf <- make_model("X -> Y")
 		XY_conf <- set_confound(XY_conf,
@@ -93,7 +94,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test functions on mediator model (X -> M -> Y)",
-testthat::skip_on_cran()
+
 	code = {
 		XY_mediator <- make_model("X -> M -> Y")
 
@@ -120,7 +121,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test functions on moderator model (X -> Y; Z -> Y)",
-testthat::skip_on_cran()
+
 	code = {
 		XY_moderator <- make_model("X -> Y; Z -> Y")
 
@@ -148,7 +149,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test complex model",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2") %>%
 			       set_restrictions("Y2[X=1] > Y2[X=0]") %>%
@@ -177,7 +178,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "update_model using keep_fit",
-testthat::skip_on_cran()
+
 	code = {
 		updated <- update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0)
 		expect_true(class(updated) == "causal_model")
@@ -188,7 +189,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Check long and short data",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model('X->Y')
 		data_long   <- make_data(model, n = 4)
@@ -203,7 +204,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test stan arguments",
-testthat::skip_on_cran()
+
 	code = {
 		updated <- update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5))
 		expect_true(class(updated) == "causal_model")
@@ -215,7 +216,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test when all NA",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> Y")
 		X <- c(NA, NA, NA)

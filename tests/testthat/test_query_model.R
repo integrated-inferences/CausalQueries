@@ -5,10 +5,11 @@
 
 context("Query model, query distribution")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Proper error messages.",
-testthat::skip_on_cran()
+
 	code = {
 
 

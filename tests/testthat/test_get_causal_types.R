@@ -5,10 +5,11 @@
 
 context("get_causal_types")
 
+testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Test get_causal_types output.",
-testthat::skip_on_cran()
+
 	code = {
 		model <- make_model("X -> Y")
 		model$causal_types <- NULL

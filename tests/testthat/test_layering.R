@@ -6,6 +6,7 @@
 
 context(desc = "Testing layering")
 
+testthat::skip_on_cran()
 models <- c("X -> Y",
 						"X -> Y <- M",
 						"C -> Y <- M; X -> Y ")
@@ -17,7 +18,7 @@ for(i in length(models)){
 	testthat::test_that(
 
 		desc = "Layering confounds and restrictions work in both directions",
-testthat::skip_on_cran()
+
 		code = {
 
 			model1 <- make_model(models[i]) %>%
@@ -53,7 +54,7 @@ testthat::skip_on_cran()
 testthat::test_that(
 
 	desc = "Layering restrictions and P matrix",
-testthat::skip_on_cran()
+
 	code = {
 
 
