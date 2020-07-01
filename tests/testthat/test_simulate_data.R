@@ -9,8 +9,9 @@ context(desc = "Testing make_data")
 model <- make_model("X -> Y")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Simulate data works using parameter.",
+testthat::skip_on_cran()
 	code = {
 		dat <- make_data(model, n = 5)
 		expect_equal(nrow(dat), 5)
@@ -18,16 +19,18 @@ testthat::skip_on_cran()
 	})
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Simulate data works using priors.",
+testthat::skip_on_cran()
 	code = {
 		dat <- make_data(model, n = 5, param_type = "prior_draw")
 		expect_equal(nrow(dat), 5)
 	})
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Positive integer number of observations.",
+testthat::skip_on_cran()
 	code = {
 		expect_error(make_data(model, n = -1), "Number of observation has to be an integer greater than 0.")
 	}
@@ -36,8 +39,9 @@ testthat::skip_on_cran()
 context(desc = "Testing make_events.")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "User input",
+testthat::skip_on_cran()
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
@@ -57,8 +61,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "param_type input test.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_is(make_events(model = model, param_type = "flat"), "data.frame")
@@ -71,8 +76,9 @@ testthat::skip_on_cran()
 )
 # ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		n <- rpois(1, 55) + 1
@@ -82,8 +88,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check errors.",
+testthat::skip_on_cran()
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
@@ -95,8 +102,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check warnings.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_warning(make_events(model = model, param_type = "define"), "neither distribution nor values provided; no change to values")

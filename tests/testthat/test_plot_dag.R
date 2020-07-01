@@ -6,8 +6,9 @@
 context(desc = "Testing plot_dag")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Testing plot.dag",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> M -> Y; X -> Y")
 		pdf(file = NULL)
@@ -20,8 +21,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Testing translate_daggity",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X")
 		expect_equal(translate_dagitty(model), "dag{ X }")
@@ -33,8 +35,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Testing warning",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X -> K -> Y; X -> Y')
 		model <- set_parameter_matrix(model)

@@ -6,8 +6,9 @@
 context("Tests for query_helpers")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "All functions:",
+testthat::skip_on_cran()
 	code = {
 		out <- increasing("A", "B")
 		expect_equal(out[1], "(B[A=1] > B[A=0])")
@@ -31,8 +32,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check input.",
+testthat::skip_on_cran()
 	code = {
 		expect_error(CausalQueries:::te(2, 1))
 	}
@@ -42,8 +44,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Test error",
+testthat::skip_on_cran()
 	code = {
 		expect_error(increasing(1, "B"))
 	}

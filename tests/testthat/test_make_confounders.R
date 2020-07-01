@@ -6,8 +6,9 @@
 context("Testing make_confounds")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check messages.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_message(make_confounds_df(model))
@@ -17,8 +18,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Set confounds",
+testthat::skip_on_cran()
 	code = {
 		## passer function
 		model_1 <- make_model('X -> Y') %>%

@@ -6,8 +6,9 @@
 context("Testing set_confounds")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Test alias is working ",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X -> Y') %>%
 			set_confound(list('X <-> Y'))

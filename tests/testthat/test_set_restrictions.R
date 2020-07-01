@@ -6,8 +6,9 @@
 context("Testing set_restrictions")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check messages for input.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_message(set_restrictions(model, labels = NULL, statement = NULL))
@@ -16,8 +17,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y <- Z")
 		model$P <- NULL
@@ -48,8 +50,9 @@ expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
 context("Test restrict_by_query")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check errors.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> M -> Y; Z -> Y")
 		statement <- c("X == 1", "Z == 1")
@@ -68,8 +71,9 @@ testthat::skip_on_cran()
 context("Test restrict_by_labels")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check errors.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		## Z is not in the model
@@ -78,8 +82,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		model <- CausalQueries:::restrict_by_labels(model, labels = list(X = "0"))
@@ -93,8 +98,9 @@ testthat::skip_on_cran()
 context("Test get_type_names")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		out <- CausalQueries:::get_type_names(model$nodal_types)
@@ -106,8 +112,9 @@ testthat::skip_on_cran()
 context("Test unpack_wildcard")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		n <- 3
 		x <- paste0(c(rep("?", n)), collapse = "")

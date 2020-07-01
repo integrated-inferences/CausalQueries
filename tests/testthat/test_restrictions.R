@@ -15,8 +15,9 @@ cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 for(i in length(dags)){
 
 	testthat::test_that(
-testthat::skip_on_cran()
+
 		desc = "Simple restrictions on exogenous nodes work",
+testthat::skip_on_cran()
 		code = {
 			model <- make_model(dags[i]) %>%
 							 set_restrictions(exogenous[i])
@@ -26,8 +27,9 @@ testthat::skip_on_cran()
 	)
 
 	testthat::test_that(
-testthat::skip_on_cran()
+
 		desc = "Monotonicity restrictions work",
+testthat::skip_on_cran()
 		code = {
 			model <- make_model(dags[i])
 		  rest_model <-	set_restrictions(model, monotonicity[i])
@@ -36,8 +38,9 @@ testthat::skip_on_cran()
 	)
 
 	testthat::test_that(
-testthat::skip_on_cran()
+
 		desc = "Restriction function errors when it should",
+testthat::skip_on_cran()
 		code = {
 			model <- make_model(dags[i])
 			expect_error(set_restrictions(model,cases[i]))
@@ -47,8 +50,9 @@ testthat::skip_on_cran()
 }
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "error when keep is not logical",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("Y <- X")
 		expect_error(model <- set_restrictions(model, "Y[X=1] > Y[X=0]", keep="HELLO"))
@@ -57,8 +61,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "errors when labels are wrong",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("Y <- X")
 		expect_error(model <- set_restrictions(model, labels = list(X="666")))

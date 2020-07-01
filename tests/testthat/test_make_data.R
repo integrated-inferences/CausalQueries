@@ -6,8 +6,9 @@
 context("Tests make_data")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "make_data_single",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y") %>%
 			set_priors(priors = c(1, 1, 1, 0, 0 , 0))
@@ -21,8 +22,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "observe_data",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		df <- simulate_data(model, n = 8)

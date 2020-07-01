@@ -6,8 +6,9 @@
 context("Testing prep_qbiqq_data")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "prep_stan_data errors",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X->Y')
 		data  <-  collapse_data(simulate_data(model, n = 6), model)

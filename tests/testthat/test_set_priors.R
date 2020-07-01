@@ -6,8 +6,9 @@
 context("Testing set_priors")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check warnings",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_warning(make_priors(model, label = c("X0", "Y1")))
@@ -19,8 +20,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check errors.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> M -> Y")
 		expect_error(make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3))
@@ -35,8 +37,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Check output.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y") %>%
 			set_confound(list(X = "Y[X=1]>Y[X=0]"))

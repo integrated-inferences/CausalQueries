@@ -6,8 +6,9 @@
 context("Testing get_nodal_types")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Condition for make_nodal_types",
+testthat::skip_on_cran()
 	code = {
 		out_true <- CausalQueries:::make_nodal_types(make_model("X -> Y"), include_node_names = TRUE)
 		expect_true(all(grepl("X", rownames(out_true$X))))
@@ -17,8 +18,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Testing collapse_nodal_types",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_equal(model$nodal_types, CausalQueries:::collapse_nodal_types(model$nodal_types))

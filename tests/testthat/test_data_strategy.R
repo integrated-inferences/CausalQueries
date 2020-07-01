@@ -6,8 +6,9 @@
 context(desc = "Testing make_model")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "Observational equivalence corresponds to model equivalence.",
+testthat::skip_on_cran()
 	code = {
 		m1 <- make_model("X -> Y -> Z <- U")
 		m2 <- make_model("U -> Z <- Y <- X")
@@ -27,8 +28,9 @@ context(desc = "Testing make_data")
 model <- make_model("X -> M -> Y")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "data strategy works",
+testthat::skip_on_cran()
 	code = {
 		strat <- make_data(model, n = 8)
     expect_equal(nrow(strat), 8)
@@ -48,8 +50,9 @@ testthat::skip_on_cran()
 })
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "make_data errors and messages when it should.",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> M -> Y")
 

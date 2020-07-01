@@ -6,8 +6,9 @@
 context("Testing map_query_to_causal_type")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "print statement",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')
 		query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'

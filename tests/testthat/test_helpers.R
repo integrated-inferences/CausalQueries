@@ -5,8 +5,9 @@
 context("Testing helper functions.")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "perm  permutations_function",
+testthat::skip_on_cran()
 	code = {
 		CausalQueries:::perm(3)
 		expect_true(nrow(CausalQueries:::perm(3)) == 4)
@@ -15,8 +16,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "st_within: Removing consecutive brackets",
+testthat::skip_on_cran()
 	code = {
 		# tests for remove
 		b <- "(XXX[[Y=0]] == 1 + XXX[[Y=1]] == 0)"
@@ -27,8 +29,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "gsub_many: multiple substitutions",
+testthat::skip_on_cran()
 	code = {
 		expect_true(CausalQueries:::gsub_many("abc", "a", "b") == "bbc")
 		expect_true(CausalQueries:::gsub_many("abc", c("ab", "c"), c("o", "k")) == "ok")
@@ -36,22 +39,25 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "gsub_many: error",
+testthat::skip_on_cran()
 		expect_error(CausalQueries:::gsub_many("abc", c("ab", "c"), c("o")))
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "clean_condition: spacing strings",
+testthat::skip_on_cran()
 	code = {
 		expect_true(CausalQueries:::clean_condition("01") == "0 1")
 	}
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "interpret_type",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('R -> X; Z -> X; X -> Y')
 		a1 <- CausalQueries:::interpret_type(model, position = list(X = c(3,4), Y = 1))
@@ -66,8 +72,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "expand_wildcard",
+testthat::skip_on_cran()
 	code = {
 		expect_message(expand_wildcard("Y[X=1, M=.] ==1"))
 
@@ -89,8 +96,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "get_parameter_names",
+testthat::skip_on_cran()
 	code = {
 		out <- get_parameter_names(make_model('X->Y'), include_paramset = FALSE)
 		expect_true(all(!grepl("X|Y", out)))
@@ -98,8 +106,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "include_vars",
+testthat::skip_on_cran()
 	code = {
 
 		model <- make_model("X->Y")

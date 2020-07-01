@@ -6,8 +6,9 @@
 context(desc = "Testing data helperse")
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "collapse_data works when variables not in the model",
+testthat::skip_on_cran()
 			code = {
 				 model <- make_model('X->Y')
 				 long_data <- simulate_data(model, n = 6)
@@ -30,8 +31,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "collapse_data works when all NA",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X->Y')
 		X <- c(NA, NA, NA)
@@ -43,8 +45,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "collapse_data works when node not in data",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X->Y')
 		data <- data.frame(Y = c(1,0,1,0))
@@ -54,8 +57,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "collapse data inconsistent with model and ignored",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
 		data <- data.frame(X= 0:1)
@@ -65,8 +69,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "collapse_data conditions work",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model('X -> Y')
 		data <- simulate_data(model, n = 4)%>%
@@ -81,8 +86,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "expand_data works",
+testthat::skip_on_cran()
 	code = {
 		model <-  make_model('X -> Y')
 		events <- make_events(model, n = 4)
@@ -94,8 +100,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "expand_data errors",
+testthat::skip_on_cran()
 	code = {
 		model <-  make_model('X -> Y')
 		events <- make_events(model, n = 5)
@@ -107,8 +114,9 @@ testthat::skip_on_cran()
 )
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "all_data_types errors",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_error(all_data_types(model, given = "Z == 0"))
@@ -122,8 +130,9 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-testthat::skip_on_cran()
+
 	desc = "get_data_families works",
+testthat::skip_on_cran()
 	code = {
 		model <- make_model("X -> Y")
 		expect_equal(nrow(get_data_families(model)),  8)
