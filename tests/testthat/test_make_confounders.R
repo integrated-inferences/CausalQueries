@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing make_confounds")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Check messages.",
+
 	code = {
 		model <- make_model("X -> Y")
 		expect_message(make_confounds_df(model))
@@ -16,7 +19,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Set confounds",
+
 	code = {
 		## passer function
 		model_1 <- make_model('X -> Y') %>%
@@ -28,4 +33,4 @@ testthat::test_that(
 )
 
 
-}
+

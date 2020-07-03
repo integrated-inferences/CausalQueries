@@ -1,13 +1,16 @@
 
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing map_query_to_nodal_type")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "print and class of summaries",
+
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')
 		query <- '(Y[X=0]>Y[X=1])'
@@ -26,4 +29,4 @@ testthat::test_that(
 		expect_true(any(grepl(test_output, b, fixed = TRUE)))
 	}
 )
-}
+

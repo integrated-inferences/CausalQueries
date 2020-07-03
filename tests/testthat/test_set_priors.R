@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing set_priors")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Check warnings",
+
 	code = {
 		model <- make_model("X -> Y")
 		expect_warning(make_priors(model, label = c("X0", "Y1")))
@@ -18,7 +21,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Check errors.",
+
 	code = {
 		model <- make_model("X -> M -> Y")
 		expect_error(make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3))
@@ -33,7 +38,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Check output.",
+
 	code = {
 		model <- make_model("X -> Y") %>%
 			set_confound(list(X = "Y[X=1]>Y[X=0]"))
@@ -50,4 +57,4 @@ testthat::test_that(
 		expect_true(all(666 %in% out))
 	}
 )
-}
+

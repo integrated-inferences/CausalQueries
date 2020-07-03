@@ -1,10 +1,11 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing restrictions")
 
+testthat::skip_on_cran()
 
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
 
@@ -15,7 +16,9 @@ cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 for(i in length(dags)){
 
 	testthat::test_that(
+
 		desc = "Simple restrictions on exogenous nodes work",
+
 		code = {
 			model <- make_model(dags[i]) %>%
 							 set_restrictions(exogenous[i])
@@ -25,7 +28,9 @@ for(i in length(dags)){
 	)
 
 	testthat::test_that(
+
 		desc = "Monotonicity restrictions work",
+
 		code = {
 			model <- make_model(dags[i])
 		  rest_model <-	set_restrictions(model, monotonicity[i])
@@ -34,7 +39,9 @@ for(i in length(dags)){
 	)
 
 	testthat::test_that(
+
 		desc = "Restriction function errors when it should",
+
 		code = {
 			model <- make_model(dags[i])
 			expect_error(set_restrictions(model,cases[i]))
@@ -44,7 +51,9 @@ for(i in length(dags)){
 }
 
 testthat::test_that(
+
 	desc = "error when keep is not logical",
+
 	code = {
 		model <- make_model("Y <- X")
 		expect_error(model <- set_restrictions(model, "Y[X=1] > Y[X=0]", keep="HELLO"))
@@ -53,12 +62,14 @@ testthat::test_that(
 
 
 testthat::test_that(
+
 	desc = "errors when labels are wrong",
+
 	code = {
 		model <- make_model("Y <- X")
 		expect_error(model <- set_restrictions(model, labels = list(X="666")))
 		expect_error(model <- set_restrictions(model, labels = list(W=1)))
 	}
 )
-}
+
 

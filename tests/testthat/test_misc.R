@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing misc")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "sampling_args user_adapt_delta",
+
 	code = {
 		object <- NULL
 		user_dots = list(control = list(user_adapt_delta = 10))
@@ -15,4 +18,4 @@ testthat::test_that(
 	}
 )
 
-}
+

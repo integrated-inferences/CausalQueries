@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Tests make_data")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "make_data_single",
+
 	code = {
 		model <- make_model("X -> Y") %>%
 			set_priors(priors = c(1, 1, 1, 0, 0 , 0))
@@ -20,7 +23,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "observe_data",
+
 	code = {
 		model <- make_model("X -> Y")
 		df <- simulate_data(model, n = 8)
@@ -31,7 +36,7 @@ testthat::test_that(
 		expect_true(all(c(out$X, out$Y)))
 	}
 )
-}
+
 
 
 

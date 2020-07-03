@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing map_query_to_causal_type")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "print statement",
+
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')
 		query <- '(Y[X=1] > Y[X=0]) & (M[X=0]==1)'
@@ -28,4 +31,4 @@ testthat::test_that(
 		expect_equal(out[1], "list()")
 	}
 )
-}
+

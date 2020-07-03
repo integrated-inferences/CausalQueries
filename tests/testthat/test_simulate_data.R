@@ -1,15 +1,18 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context(desc = "Testing make_data")
 
+testthat::skip_on_cran()
 # Simulate using parameters
 model <- make_model("X -> Y")
 
 testthat::test_that(
+
 	desc = "Simulate data works using parameter.",
+
 	code = {
 		dat <- make_data(model, n = 5)
 		expect_equal(nrow(dat), 5)
@@ -17,14 +20,18 @@ testthat::test_that(
 	})
 
 testthat::test_that(
+
 	desc = "Simulate data works using priors.",
+
 	code = {
 		dat <- make_data(model, n = 5, param_type = "prior_draw")
 		expect_equal(nrow(dat), 5)
 	})
 
 testthat::test_that(
+
 	desc = "Positive integer number of observations.",
+
 	code = {
 		expect_error(make_data(model, n = -1), "Number of observation has to be an integer greater than 0.")
 	}
@@ -32,8 +39,11 @@ testthat::test_that(
 
 context(desc = "Testing make_events.")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "User input",
+
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
@@ -53,7 +63,9 @@ testthat::test_that(
 
 
 testthat::test_that(
+
 	desc = "param_type input test.",
+
 	code = {
 		model <- make_model("X -> Y")
 		expect_is(make_events(model = model, param_type = "flat"), "data.frame")
@@ -66,7 +78,9 @@ testthat::test_that(
 )
 # ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
 testthat::test_that(
+
 	desc = "Check output.",
+
 	code = {
 		model <- make_model("X -> Y")
 		n <- rpois(1, 55) + 1
@@ -76,7 +90,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Check errors.",
+
 	code = {
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
@@ -88,11 +104,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Check warnings.",
+
 	code = {
 		model <- make_model("X -> Y")
 		expect_warning(make_events(model = model, param_type = "define"), "neither distribution nor values provided; no change to values")
 	}
 )
 
-}
+

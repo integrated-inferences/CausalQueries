@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_ambiguity_matrix")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Test if null.",
+
 	code = {
 		model <- make_model("X -> Y")
 		model <- set_ambiguities_matrix(model)
@@ -15,7 +18,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
+
 	desc = "Return if not null.",
+
 	code = {
 		model <- make_model("X -> Y")
 		model1 <- set_ambiguities_matrix(model)
@@ -24,4 +29,4 @@ testthat::test_that(
 		expect_identical(A1, A2)
 	}
 )
-}
+

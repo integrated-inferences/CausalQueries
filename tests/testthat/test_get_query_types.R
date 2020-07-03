@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Testing get_query_types")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "Check output works fine",
+
 	code = {
 		model <- make_model('X -> M -> Y; X->Y')
 		query <- '(Y[X=0] > Y[X=1])'
@@ -17,4 +20,4 @@ testthat::test_that(
 
 	}
 )
-}
+

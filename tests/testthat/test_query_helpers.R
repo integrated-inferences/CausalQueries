@@ -1,12 +1,15 @@
 
-.runThisTest <- Sys.getenv("RunAllRcppTests") == "yes"
 
-if (.runThisTest) {
+
+
 
 context("Tests for query_helpers")
 
+testthat::skip_on_cran()
 testthat::test_that(
+
 	desc = "All functions:",
+
 	code = {
 		out <- increasing("A", "B")
 		expect_equal(out[1], "(B[A=1] > B[A=0])")
@@ -30,7 +33,9 @@ testthat::test_that(
 
 
 testthat::test_that(
+
 	desc = "Check input.",
+
 	code = {
 		expect_error(CausalQueries:::te(2, 1))
 	}
@@ -40,11 +45,13 @@ testthat::test_that(
 
 
 testthat::test_that(
+
 	desc = "Test error",
+
 	code = {
 		expect_error(increasing(1, "B"))
 	}
 )
 
 
-}
+
