@@ -164,7 +164,6 @@ make_par_values <- function(model,
 														normalize = FALSE) {
 
 	# 1. House keeping
-
 	# 1.0 Data from model
 	full_param_set <- model$parameters_df$param_set
 	full_node      <- model$parameters_df$node
@@ -184,9 +183,14 @@ make_par_values <- function(model,
 		return(y)
 	}
 
+	if (!all(is.na(x)) && !is.numeric(x)) {
+	   stop("arguments 'parameters' and 'alphas' must be a numeric vector")
+	}
+
+
 	# 1.4. values negative
 	if (!all(is.na(x)) && (min(x) < 0))
-		stop("x must be non-negative.")
+		stop("arguments 'parameters' and 'alphas' must be non-negative.")
 
 
 	# 1.5 distribution should be a scalar
@@ -311,11 +315,11 @@ make_par_values_multiple <-
 
 		# Housekeeping regarding argument lengths
 		args <- list(distribution = distribution, x = x, node = node, label = label, statement = statement,
-								 confound = confound, nodal_type = nodal_type, param_names = param_names, param_set = param_set)
+								 confound = confound, nodal_type = nodal_type, param_set = param_set)
 		arg_length   <- unlist(lapply(args, length))
 
 		# Easy case: If all but node, label, or x (replacement values) are of length 1 then simply apply make_par_values
-		for (j in c("node", "label", "x", "nodal_type", "param_names", "param_set")) {
+		for (j in c("node", "label", "x", "nodal_type", "param_set")) {
 			if (max(arg_length[names(args) != j]) == 1)
 				return(make_par_values(model, y, x = x, distribution = distribution, node = node,
 																			 label = label, statement = statement, confound = confound, nodal_type = nodal_type,
