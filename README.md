@@ -7,7 +7,13 @@ See [here](https://macartan.github.io/causalmodels/) for a guide to using `Causa
 
 ## Installation
 
-To install `CausalQueries`:
+To install the latest stable release of `CausalQueries`:
+
+```
+install.packages("CausalQueries")
+```
+
+To install the latest development release :
 
 ```
 install.packages("remotes")
