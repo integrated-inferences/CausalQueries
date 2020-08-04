@@ -19,3 +19,13 @@ testthat::test_that(
 	}
 )
 
+
+testthat::test_that(
+
+  desc = "set_confound warns when prob of types is greater than 1",
+
+  code = {
+    model <- make_model("X -> Y <- M")
+    expect_warning(set_confound(model, confound = list(M = "Y[X=1]==1")))
+  }
+)
