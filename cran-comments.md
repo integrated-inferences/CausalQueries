@@ -1,30 +1,8 @@
-# First submission
-## Addressing comments on previous submission 
+# New submission
+## New Functions 
 
-Possibly mis-spelled words in DESCRIPTION:
-     estimands (13:123)
-
-Do you mean estimates?
-- Thanks for checkin with us.  Estimands is correct. We mean by estimand the target variable to be estimated. We also employ the term estimate in other parts of the documentation by which we mean the calculated point value of an estimand. I hope that clarifies.
-
-Please correct in your Description test:
-
-"2009,"  -->  "2009, "
- 
-- Done
-
-Missing Rd-tags:
-      add_dots.Rd: \value
-      add_wildcard.Rd: \value
-      causal_type_names.Rd: \arguments,  \value
-      CausalQueries_internal_inherit_params.Rd: \value
-      check_string_input.Rd: \value
-      clean_condition.Rd: \value
-      clean_param_vector.Rd: \value
-      ....
-Please add the tag and explain in detail the returned objects.
-
-- Done
+`is_improper` 
+`is_model`
 
 ## Test environments
 

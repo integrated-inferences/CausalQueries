@@ -135,6 +135,7 @@ query_model <- function(model,
 												expand_grid = FALSE,
 												query = NULL){
 
+  is_a_model(model)
 	if(is.null(query) & is.null(queries))  stop("No query provided.")
 	if(!is.null(query) & !is.null(queries))  stop("Please provide either queries or query.")
 

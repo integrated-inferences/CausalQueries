@@ -14,7 +14,7 @@
 #' @export
 #'
 get_ambiguities_matrix <- function(model) {
-
+    is_a_model(model)
     if (!is.null(model$A))
         return(model$A)
 

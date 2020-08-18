@@ -53,6 +53,7 @@
 
 make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
 
+    is_a_model(model)
     if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
         return(clean_param_vector(model, parameters))
 

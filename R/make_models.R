@@ -135,6 +135,12 @@ make_model <- function(statement, add_causal_types = TRUE){
 
  # Add confounds if any provided
  # extract confounds df
+
+ # Prep for export
+ attr(model, "endogenous_nodes") <- endog_node
+ attr(model, "exogenous_nodes")  <- exog_node
+ class(model) <- "causal_model"
+
  if(any(x$e=="<->")) {
 
 	 	confounds <- NULL
@@ -162,10 +168,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 
 
 
- # Prep for export
- attr(model, "endogenous_nodes") <- endog_node
- attr(model, "exogenous_nodes")  <- exog_node
- class(model) <- "causal_model"
+
 
  model
 
