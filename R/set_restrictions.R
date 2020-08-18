@@ -105,6 +105,8 @@
 #'}
 set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE) {
 
+
+    is_a_model(model)
     nodal_types0 <- model$nodal_types
 
     if (!is.logical(keep))

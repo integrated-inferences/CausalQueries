@@ -296,4 +296,33 @@ var_in_query <- function(model, query) {
     v[sapply(v, includes_var, query = query)]
 }
 
+#' Check whether argument is a model
+#'
+#' @inheritParams CausalQueries_internal_inherit_params
+#' @return An error message if argument is not a model.
+#' @keywords internal
+is_a_model <- function(model){
+  minimum_components <- c("dag", "step","nodes", "statement","nodal_types" )
+  missing_components <- !minimum_components %in% names(model)
+
+  if(class(model) != "causal_model")
+    stop("Argument 'model' must be of class 'causal_model'")
+  if(any(missing_components))
+    stop("Model doesn't contain ",
+         paste(minimum_components[missing_components], collapse = ", "))
+}
+
+
+#' Check whether a model is improper
+#'
+#' Compute the sum of causal types probabilities. A model is flagged as improper if the sum is different than one.
+#' @inheritParams CausalQueries_internal_inherit_params
+#' @return A logical expression indicating whether a model is improper
+#' @keywords internal
+is_improper <- function(model){
+    parameters <- suppressMessages(get_param_dist(model, n_draws = 1, using = "priors"))
+    prob_of_s <- get_type_prob(model, model$P, parameters = parameters)
+    round(sum(prob_of_s),6) != "1"
+}
+
 

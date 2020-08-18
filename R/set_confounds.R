@@ -106,6 +106,7 @@
 
 set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
 
+    is_a_model(model)
     model_0 <- model
     # Housekeeping
     if (is.null(confound)) {
@@ -222,11 +223,7 @@ set_confound <- function(model, confound = NULL, add_confounds_df = TRUE) {
     attr(model$P, "confounds_df") <- model$confounds_df
     attr(model$P, "param_set") <- unique(model$parameters_df$param_set)
 
-    parameters <- suppressMessages(get_param_dist(model, n_draws = 1, using = "priors"))
-    prob_of_s <- get_type_prob(model, model$P, parameters = parameters)
-
-
-    if(round(sum(prob_of_s),6) != "1"){ #Very hacky and ugly: Didn't work with numeric comparison-- even when comparing against 1L
+    if(is_improper(model)){ #Very hacky and ugly: Didn't work with numeric comparison-- even when comparing against 1L
         warning("Cannot characterize confounding; no action taken")
         return(model_0)
     }

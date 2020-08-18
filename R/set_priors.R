@@ -88,7 +88,7 @@
 make_priors <-
     function(model, alphas = NA, distribution = NA, node = NA, label = NA, statement = NA,
              confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
-
+    is_a_model(model)
         make_par_values_multiple(
             model, y=get_priors(model), x = alphas, distribution = distribution,
             node = node, label = label, statement = statement,
@@ -225,6 +225,7 @@ make_priors <-
 set_priors <- function(model, priors = NULL, distribution = NA, alphas = NA, node = NA, label = NA,
     statement = NA, confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
 
+    is_a_model(model)
     if (is.null(priors))
         priors <- make_priors(model, distribution = distribution, alphas = alphas, node = node, label = label,
             statement = statement, confound = confound, nodal_type = nodal_type, param_names = param_names,
