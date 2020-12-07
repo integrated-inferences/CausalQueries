@@ -11,6 +11,7 @@
 #' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
+#' @param case_level Logical. If true estimates the probability of the query for a case.
 #' @return A vector of draws from the distribution of the potential outcomes specified in `query`
 #' @importFrom stats sd weighted.mean
 #' @export
@@ -21,8 +22,11 @@
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 #'
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", verbose = TRUE)
+#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", case_level = TRUE, verbose = TRUE)
 #'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 #'  df    <- simulate_data(model, n = 3)
@@ -36,7 +40,8 @@ query_distribution <- function(model,
 															 parameters = NULL, # Use for example if true parameters known
 															 type_distribution = NULL,
 															 verbose = FALSE,
-															 join_by = "|") {
+															 join_by = "|",
+															 case_level = FALSE) {
 
 	# forgive the user:
 	if(using == "posterior") using <- "posteriors"
@@ -46,30 +51,47 @@ query_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
   	"`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(given)) given <- map_query_to_causal_type(model, given)$types
+	if(!is.logical(given)) given <- CausalQueries:::map_query_to_causal_type(model, given)$types
 
 	if(all(!given)) {message("No units in given"); return() }
 
 
 		# Evaluation of query on vector of causal types
-	x <- (map_query_to_causal_type(model, query = query)$types)[given]
+	x <- (CausalQueries:::map_query_to_causal_type(model, query = query)$types)[given]
 
 	# Parameters specified
 	if(using =="parameters"){
 
 		if(is.null(type_distribution)){
 			if(is.null(parameters)) parameters <- get_parameters(model)
-			type_distribution <- get_type_prob(model, parameters = parameters)}
+			type_distribution <- CausalQueries:::get_type_prob(model, parameters = parameters)}
 
-		return(weighted.mean(x, type_distribution[given]))
+	  type_distribution <- type_distribution[given]
+
+	  # always case level if using = parameters
+	  # return(weighted.mean(x, type_distribution[given]))
+	  return(sum(x * type_distribution) /sum(type_distribution))
+
 		}
 
+	# slow step
 	if(is.null(type_distribution)) type_distribution <- get_type_prob_multiple(model, using = using)
+	type_distribution <- type_distribution[given, ]
 
-	# Magic: Subsetting implemented on type_distribution prior to taking weighted mean
-  estimand <- apply(type_distribution[given,], 2, function(wt) weighted.mean(x, wt))
+	# Subsetting implemented on type_distribution prior to take weighted mean
+	# This gets the distribution of conditional values
+	if(!case_level){
+#	  estimand <- apply(type_distribution[given,], 2, function(wt) weighted.mean(x[given], wt))
+	  estimand <- (x %*% type_distribution) / apply(type_distribution, 2, sum)
+   }
 
+	# This gets the expected of conditional values
+	if(case_level){
+  	estimand <- mean(x %*% type_distribution) /mean( apply(type_distribution, 2, sum))
+  	}
   if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
+
+
 
   estimand
 }
@@ -133,6 +155,7 @@ query_model <- function(model,
 												digits     = 3,
 												n_draws    = 4000,
 												expand_grid = FALSE,
+												case_level = FALSE,
 												query = NULL){
 
   is_a_model(model)
@@ -161,9 +184,9 @@ query_model <- function(model,
 	# Cross product of conditions to be examined
 	if(expand_grid){
 		query_names <- expand.grid(using, given, query_names, stringsAsFactors = FALSE)[,3]
-		grid <- expand.grid(using, given, queries, stringsAsFactors = FALSE)
+		grid    <- expand.grid(using, given, queries, stringsAsFactors = FALSE)
 		queries <- grid[,3]
-		given <- grid[,2]
+		given   <- grid[,2]
 		using   <- grid[,1]}
 
 	# Type distribution: Calculated once for speed
@@ -184,6 +207,7 @@ query_model <- function(model,
 														using   = using,
 														type_distribution = dists[[using]], # select the right one by name
 														parameters = parameters,
+														case_level = case_level,
 														verbose = FALSE)
 
 		# for cases in which evaluation sought on impossible given
