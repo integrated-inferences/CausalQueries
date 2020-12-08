@@ -40,8 +40,9 @@ get_type_prob <- function(model, P = NULL, parameters = NULL) {
 #' get_type_prob_multiple(model, using = 'priors', n_draws = 3)
 #' get_type_prob_multiple(model, using = 'parameters', n_draws = 3)
 
-get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000, param_dist = NULL) {
-    P <- get_parameter_matrix(model)
+get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000, param_dist = NULL, P = NULL) {
+
+    if(is.null(P)) P <- get_parameter_matrix(model)
 
     if (using == "parameters") {
         if (is.null(parameters))
@@ -52,6 +53,7 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
     if (is.null(param_dist))
         param_dist <- get_param_dist(model, using, n_draws = n_draws)
 
+    # Seem to be no speed gains via matrix multiplication instead of apply
     apply(param_dist, 1, function(j) get_type_prob(model, parameters = j, P = P))
 
 }

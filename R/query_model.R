@@ -17,7 +17,8 @@
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
-#'          set_prior_distribution()
+#'          set_prior_distribution() %>%
+#'          set_parameter_matrix()
 #'  \donttest{
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 #'
@@ -74,8 +75,8 @@ query_distribution <- function(model,
 
 		}
 
-	# slow step
-	if(is.null(type_distribution)) type_distribution <- get_type_prob_multiple(model, using = using)
+	# slow step; adding P to model can speed up slightly
+	if(is.null(type_distribution)) type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
 	type_distribution <- type_distribution[given, ]
 
 	# Subsetting implemented on type_distribution prior to take weighted mean
