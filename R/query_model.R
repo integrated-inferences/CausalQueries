@@ -183,8 +183,9 @@ query_model <- function(model,
 
 	# Cross product of conditions to be examined
 	if(expand_grid){
-		query_names <- expand.grid(using, given, query_names, stringsAsFactors = FALSE)[,3]
-		grid    <- expand.grid(using, given, queries, stringsAsFactors = FALSE)
+		query_names <- expand.grid(using, given, query_names, case_level, stringsAsFactors = FALSE)[,3]
+		grid    <- expand.grid(using, given, queries, case_level, stringsAsFactors = FALSE)
+		case_level <- grid[,4]
 		queries <- grid[,3]
 		given   <- grid[,2]
 		using   <- grid[,1]}
@@ -199,15 +200,15 @@ query_model <- function(model,
   names(dists) <- using_used
 
 	# Function for mapply
-	f <- function(query, given, using){
+	f <- function(query, given, using, case_level){
 
 		v <- query_distribution(model,
 														query   = query,
 														given   = given,
 														using   = using,
+														case_level   = case_level,
 														type_distribution = dists[[using]], # select the right one by name
 														parameters = parameters,
-														case_level = case_level,
 														verbose = FALSE)
 
 		# for cases in which evaluation sought on impossible given
@@ -219,19 +220,19 @@ query_model <- function(model,
 	}
 
   # Implementation
-	out <- mapply(f, queries, given, using)
+	out <- mapply(f, queries, given, using, case_level)
 
 	## Clean up: 'if' used here only because shape depends on length of stats
 	if(length(stats)==1) out <- data.frame(mean = as.vector(out), stringsAsFactors = FALSE)
 	if(length(stats)> 1) out <- data.frame(t(out), stringsAsFactors = FALSE)
 
 	## Clean up: mapply again for identifiers
-	h    <- function(qname, given, using){ c(qname, paste(given), using)}
-	cols <- data.frame(t(mapply(h, query_names, given, using)), stringsAsFactors = FALSE)
+	h    <- function(qname, given, using, case_level){ c(qname, paste(given), using, case_level)}
+	cols <- data.frame(t(mapply(h, query_names, given, using, case_level)), stringsAsFactors = FALSE)
 
 	## Clean up: formatting
 	out <- cbind(cols, out)
-	names(out) <- c( "Query", "Given", "Using", paste(names(stats)))
+	names(out) <- c( "Query", "Given", "Using", "Case estimand", paste(names(stats)))
 	out$Given[out$Given == "TRUE"] <- "-"
 	rownames(out) <- NULL
 
