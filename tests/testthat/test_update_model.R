@@ -70,6 +70,9 @@ testthat::test_that(
 		expect_equal(c(1, 2), dim(data))
 
 
+		posterior <- update_model(XY_conf, data, refresh = 0, keep_transformed = TRUE)
+		expect_true(!is.null(posterior))
+
 		posterior <- update_model(XY_conf, data, refresh = 0)
 		expect_true(!is.null(posterior))
 
