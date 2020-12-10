@@ -42,6 +42,9 @@ data_short  <- collapse_data(data_long, model)
 \donttest{
 model_1 <- update_model(model, data_long)
 }
+\donttest{
+model_2 <- update_model(model, data_long, keep_transformed = TRUE)
+}
 \dontrun{
 # Throws error unless compact data indicated:
 

@@ -59,5 +59,7 @@ model <- make_model("X -> Y") \%>\%
  df    <- simulate_data(model, n = 3)
  updated_model <- update_model(model, df)
  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+ updated_model <- update_model(model, df, keep_transformed = TRUE)
+ query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 }
 }
