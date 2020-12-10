@@ -43,7 +43,8 @@ Calculated distribution of a query from a prior or posterior distribution of par
 }
 \examples{
 model <- make_model("X -> Y") \%>\%
-         set_prior_distribution()
+         set_prior_distribution() \%>\%
+         set_parameter_matrix()
  \donttest{
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 

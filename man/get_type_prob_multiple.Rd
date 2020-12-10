@@ -9,7 +9,8 @@ get_type_prob_multiple(
   using = "priors",
   parameters = NULL,
   n_draws = 4000,
-  param_dist = NULL
+  param_dist = NULL,
+  P = NULL
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ get_type_prob_multiple(
 \item{n_draws}{An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.}
 
 \item{param_dist}{A \code{matrix}.  Distribution of parameters. Optional for speed.}
+
+\item{P}{A \code{data.frame}. Parameter matrix. Not required but may be provided to avoid repeated computation for simulations.}
 }
 \value{
 A \code{matrix} of type probabilities.

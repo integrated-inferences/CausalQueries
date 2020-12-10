@@ -7,6 +7,7 @@
 #' @param data_type Either 'long' (as made by  \code{\link{simulate_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
+#' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full
 #' @param ... Options passed onto \code{\link[rstan]{stan}} call.
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
@@ -24,6 +25,9 @@
 #' data_short  <- collapse_data(data_long, model)
 #'\donttest{
 #' model_1 <- update_model(model, data_long)
+#'}
+#'\donttest{
+#' model_2 <- update_model(model, data_long, keep_transformed = TRUE)
 #'}
 #'\dontrun{
 #' # Throws error unless compact data indicated:
@@ -65,7 +69,7 @@
 #'  plot(x1, x6, main = 'joint distribution of X0.Y00, X1.Y01')})
 #' }
 #'
-update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALSE, ...) {
+update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALSE, keep_transformed = FALSE, ...) {
 
     if (data_type == "long") {
 
@@ -101,18 +105,31 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
     stan_data <- prep_stan_data(model = model, data = data_events)
 
     # assign fit
-    stanfit <- stanmodels$simplexes
+    if(!keep_transformed) stanfit <- stanmodels$simplexes
+    if(keep_transformed) stanfit  <- stanmodels$simplexes_retain_w
+
     sampling_args <- set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
     newfit <- do.call(rstan::sampling, sampling_args)
 
-    if (keep_fit)
-        model$stan_fit <- newfit
+    model$stan_objects  <- list()
+    model$stan_objects$data <- data
+
+    if(keep_fit) model$stan_objects$stan_fit <- newfit
 
     posterior_distribution <- extract(newfit, pars = "lambdas")$lambdas
     colnames(posterior_distribution) <- get_parameter_names(model)
 
     model$posterior_distribution <- posterior_distribution
-    model$data <- data
+
+    if(keep_transformed) {
+
+        model$stan_objects$type_distribution <- extract(newfit, pars = "prob_of_types")$prob_of_types
+        colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+
+        model$stan_objects$w_full <- extract(newfit, pars = "w_full")$w_full
+        colnames(model$stan_objects$w_full) <- rownames(stan_data$E)
+    }
+
 
     model
 }

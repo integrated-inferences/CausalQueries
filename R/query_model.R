@@ -35,61 +35,67 @@
 #'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
 #' }
 query_distribution <- function(model,
-															 query,
-															 given = TRUE,
-															 using  = "priors",
-															 parameters = NULL, # Use for example if true parameters known
-															 type_distribution = NULL,
-															 verbose = FALSE,
-															 join_by = "|",
-															 case_level = FALSE) {
+                               query,
+                               given = TRUE,
+                               using  = "priors",
+                               parameters = NULL, # Use for example if true parameters known
+                               type_distribution = NULL,
+                               verbose = FALSE,
+                               join_by = "|",
+                               case_level = FALSE) {
 
-	# forgive the user:
-	if(using == "posterior") using <- "posteriors"
-	if(using == "prior")     using <- "priors"
-	if(given %in% c("TRUE", "All", "all", "ALL", "None", "none", "NONE")) given <- TRUE
+  # forgive the user:
+  if(using == "posterior") using <- "posteriors"
+  if(using == "prior")     using <- "priors"
+  if(given %in% c("TRUE", "All", "all", "ALL", "None", "none", "NONE")) given <- TRUE
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
-  	"`using` should be one of `priors`, `posteriors`, or `parameters`")
+    "`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-	if(!is.logical(given)) given <- CausalQueries:::map_query_to_causal_type(model, given)$types
+  if(!is.logical(given)) given <- CausalQueries:::map_query_to_causal_type(model, given)$types
 
-	if(all(!given)) {message("No units in given"); return() }
+  if(all(!given)) {message("No units in given"); return() }
 
 
-		# Evaluation of query on vector of causal types
-	x <- (CausalQueries:::map_query_to_causal_type(model, query = query)$types)[given]
+  # Evaluation of query on vector of causal types
+  x <- (CausalQueries:::map_query_to_causal_type(model, query = query)$types)[given]
 
-	# Parameters specified
-	if(using =="parameters"){
+  # Parameters specified
+  if(using =="parameters"){
 
-		if(is.null(type_distribution)){
-			if(is.null(parameters)) parameters <- get_parameters(model)
-			type_distribution <- CausalQueries:::get_type_prob(model, parameters = parameters)}
+    if(is.null(type_distribution)){
+      if(is.null(parameters)) parameters <- get_parameters(model)
+      type_distribution <- CausalQueries:::get_type_prob(model, parameters = parameters)}
 
-	  type_distribution <- type_distribution[given]
+    type_distribution <- type_distribution[given]
 
-	  # always case level if using = parameters
-	  # return(weighted.mean(x, type_distribution[given]))
-	  return(sum(x * type_distribution) /sum(type_distribution))
+    # always case level if using = parameters
+    # return(weighted.mean(x, type_distribution[given]))
+    return(sum(x * type_distribution) /sum(type_distribution))
 
-		}
+  }
 
-	# slow step; adding P to model can speed up slightly
-	if(is.null(type_distribution)) type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
-	type_distribution <- type_distribution[given, ]
+  # slow step
+  # set keep_transformed=TRUE in update model to ensure access to type_distribution
+  # adding P to model can also speed up slightly
+  if(is.null(type_distribution) & using == "posteriors")
+    type_distribution <- model$stan_objects$type_distributions
+  if(is.null(type_distribution))
+    type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
 
-	# Subsetting implemented on type_distribution prior to take weighted mean
-	# This gets the distribution of conditional values
-	if(!case_level){
-#	  estimand <- apply(type_distribution[given,], 2, function(wt) weighted.mean(x[given], wt))
-	  estimand <- (x %*% type_distribution) / apply(type_distribution, 2, sum)
-   }
+  type_distribution <- type_distribution[given, ]
 
-	# This gets the expected of conditional values
-	if(case_level){
-  	estimand <- mean(x %*% type_distribution) /mean( apply(type_distribution, 2, sum))
-  	}
+  # Subsetting implemented on type_distribution prior to take weighted mean
+  # This gets the distribution of conditional values
+  if(!case_level){
+    #	  estimand <- apply(type_distribution[given,], 2, function(wt) weighted.mean(x[given], wt))
+    estimand <- (x %*% type_distribution) / apply(type_distribution, 2, sum)
+  }
+
+  # This gets the expected of conditional values
+  if(case_level){
+    estimand <- mean(x %*% type_distribution) /mean( apply(type_distribution, 2, sum))
+  }
   if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
 
 
@@ -148,95 +154,95 @@ query_distribution <- function(model,
 #'}
 
 query_model <- function(model,
-												queries    = NULL,
-												given      = NULL,
-												using      = list("priors"),
-												parameters = NULL,
-												stats      = NULL,
-												digits     = 3,
-												n_draws    = 4000,
-												expand_grid = FALSE,
-												case_level = FALSE,
-												query = NULL){
+                        queries    = NULL,
+                        given      = NULL,
+                        using      = list("priors"),
+                        parameters = NULL,
+                        stats      = NULL,
+                        digits     = 3,
+                        n_draws    = 4000,
+                        expand_grid = FALSE,
+                        case_level = FALSE,
+                        query = NULL){
 
   is_a_model(model)
-	if(is.null(query) & is.null(queries))  stop("No query provided.")
-	if(!is.null(query) & !is.null(queries))  stop("Please provide either queries or query.")
+  if(is.null(query) & is.null(queries))  stop("No query provided.")
+  if(!is.null(query) & !is.null(queries))  stop("Please provide either queries or query.")
 
-	# Forgive user
-	if(!is.null(query))   queries <- query
-	if(is.null(given))  given <- TRUE
+  # Forgive user
+  if(!is.null(query))   queries <- query
+  if(is.null(given))  given <- TRUE
 
   # If parameters provided, add these to model
-	if(!is.null(parameters)) model <- set_parameters(model, parameters)
+  if(!is.null(parameters)) model <- set_parameters(model, parameters)
 
-	# Housekeeping
-	if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
-		model <- set_prior_distribution(model, n_draws = n_draws)}
+  # Housekeeping
+  if(("priors" %in% unlist(using)) & is.null(model$prior_distribution)){
+    model <- set_prior_distribution(model, n_draws = n_draws)}
 
-	if(all(using == "parameters") & is.null(stats)) stats <- c(mean = mean)
-	if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
+  if(all(using == "parameters") & is.null(stats)) stats <- c(mean = mean)
+  if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
 
-	# Make complete vector of names, with imputation if needed
-	if(is.null(names(queries)))  names(queries) <- paste("Q", 1:length(queries))
-	for(j in 1:length(queries)) if(names(queries[j])=="") names(queries)[j] <- paste("Q", j)
-	query_names <- names(queries)
+  # Make complete vector of names, with imputation if needed
+  if(is.null(names(queries)))  names(queries) <- paste("Q", 1:length(queries))
+  for(j in 1:length(queries)) if(names(queries[j])=="") names(queries)[j] <- paste("Q", j)
+  query_names <- names(queries)
 
-	# Cross product of conditions to be examined
-	if(expand_grid){
-		query_names <- expand.grid(using, given, query_names, case_level, stringsAsFactors = FALSE)[,3]
-		grid    <- expand.grid(using, given, queries, case_level, stringsAsFactors = FALSE)
-		case_level <- grid[,4]
-		queries <- grid[,3]
-		given   <- grid[,2]
-		using   <- grid[,1]}
+  # Cross product of conditions to be examined
+  if(expand_grid){
+    query_names <- expand.grid(using, given, query_names, case_level, stringsAsFactors = FALSE)[,3]
+    grid    <- expand.grid(using, given, queries, case_level, stringsAsFactors = FALSE)
+    case_level <- grid[,4]
+    queries <- grid[,3]
+    given   <- grid[,2]
+    using   <- grid[,1]}
 
-	# Type distribution: Calculated once for speed
+  # Type distribution: Calculated once for speed
   using_used <- unique(unlist(using))
 
-	dists <- lapply(using_used, function(j) {
-		param_dist <- get_param_dist(model, j)  # parameter distribution extracted just once
-		get_type_prob_multiple(model, using = j, param_dist = param_dist)}
-		)
+  dists <- lapply(using_used, function(j) {
+    param_dist <- get_param_dist(model, j)  # parameter distribution extracted just once
+    get_type_prob_multiple(model, using = j, param_dist = param_dist)}
+  )
   names(dists) <- using_used
 
-	# Function for mapply
-	f <- function(query, given, using, case_level){
+  # Function for mapply
+  f <- function(query, given, using, case_level){
 
-		v <- query_distribution(model,
-														query   = query,
-														given   = given,
-														using   = using,
-														case_level   = case_level,
-														type_distribution = dists[[using]], # select the right one by name
-														parameters = parameters,
-														verbose = FALSE)
+    v <- query_distribution(model,
+                            query   = query,
+                            given   = given,
+                            using   = using,
+                            case_level   = case_level,
+                            type_distribution = dists[[using]], # select the right one by name
+                            parameters = parameters,
+                            verbose = FALSE)
 
-		# for cases in which evaluation sought on impossible given
-		if(is.null(v)) return(rep(NA, length(stats)))
+    # for cases in which evaluation sought on impossible given
+    if(is.null(v)) return(rep(NA, length(stats)))
 
-		# return
-		round(sapply(stats, function(g) g(v)), digits)
+    # return
+    round(sapply(stats, function(g) g(v)), digits)
 
-	}
+  }
 
   # Implementation
-	out <- mapply(f, queries, given, using, case_level)
+  out <- mapply(f, queries, given, using, case_level)
 
-	## Clean up: 'if' used here only because shape depends on length of stats
-	if(length(stats)==1) out <- data.frame(mean = as.vector(out), stringsAsFactors = FALSE)
-	if(length(stats)> 1) out <- data.frame(t(out), stringsAsFactors = FALSE)
+  ## Clean up: 'if' used here only because shape depends on length of stats
+  if(length(stats)==1) out <- data.frame(mean = as.vector(out), stringsAsFactors = FALSE)
+  if(length(stats)> 1) out <- data.frame(t(out), stringsAsFactors = FALSE)
 
-	## Clean up: mapply again for identifiers
-	h    <- function(qname, given, using, case_level){ c(qname, paste(given), using, case_level)}
-	cols <- data.frame(t(mapply(h, query_names, given, using, case_level)), stringsAsFactors = FALSE)
+  ## Clean up: mapply again for identifiers
+  h    <- function(qname, given, using, case_level){ c(qname, paste(given), using, case_level)}
+  cols <- data.frame(t(mapply(h, query_names, given, using, case_level)), stringsAsFactors = FALSE)
 
-	## Clean up: formatting
-	out <- cbind(cols, out)
-	names(out) <- c( "Query", "Given", "Using", "Case estimand", paste(names(stats)))
-	out$Given[out$Given == "TRUE"] <- "-"
-	rownames(out) <- NULL
+  ## Clean up: formatting
+  out <- cbind(cols, out)
+  names(out) <- c( "Query", "Given", "Using", "Case estimand", paste(names(stats)))
+  out$Given[out$Given == "TRUE"] <- "-"
+  rownames(out) <- NULL
 
-	data.frame(out)
+  data.frame(out)
 
 }

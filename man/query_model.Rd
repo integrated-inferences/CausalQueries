@@ -14,6 +14,7 @@ query_model(
   digits = 3,
   n_draws = 4000,
   expand_grid = FALSE,
+  case_level = FALSE,
   query = NULL
 )
 }
