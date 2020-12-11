@@ -11,7 +11,6 @@ query_model(
   using = list("priors"),
   parameters = NULL,
   stats = NULL,
-  digits = 3,
   n_draws = 4000,
   expand_grid = FALSE,
   case_level = FALSE,
@@ -30,8 +29,6 @@ query_model(
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 
 \item{stats}{Functions to be applied to estimand distribution. If `NULL`, defaults to mean and standard deviation.}
-
-\item{digits}{An integer. Decimal digits in output table.}
 
 \item{n_draws}{An integer. Number of draws.}
 
@@ -66,8 +63,7 @@ estimands_df <- query_model(
                 using = list( "parameters", "priors"),
                 query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
                 given = list(TRUE,  "Y==0 & X==1"),
-                expand_grid = TRUE,
-                digits = 3)
+                expand_grid = TRUE)
 
 # An example: a stat representing uncertainty of token causation
 token_var <- function(x) mean(x)*(1-mean(x))

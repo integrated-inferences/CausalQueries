@@ -80,8 +80,6 @@ query_distribution <- function(model,
   # slow step
   # set keep_transformed=TRUE in update model to ensure access to type_distribution
   # adding P to model can also speed up slightly
-  if(is.null(type_distribution) & using == "posteriors")
-    type_distribution <- model$stan_objects$type_distributions
   if(is.null(type_distribution))
     type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
 
@@ -116,7 +114,6 @@ query_distribution <- function(model,
 #' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
 #' @param using A character. Whether to use `priors`, `posteriors` or `parameters`.
 #' @param stats Functions to be applied to estimand distribution. If `NULL`, defaults to mean and standard deviation.
-#' @param digits An integer. Decimal digits in output table.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.
 #' @param query alias for queries
@@ -143,8 +140,7 @@ query_distribution <- function(model,
 #'                 using = list( "parameters", "priors"),
 #'                 query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
 #'                 given = list(TRUE,  "Y==0 & X==1"),
-#'                 expand_grid = TRUE,
-#'                 digits = 3)
+#'                 expand_grid = TRUE)
 #'
 #' # An example: a stat representing uncertainty of token causation
 #' token_var <- function(x) mean(x)*(1-mean(x))
@@ -161,7 +157,6 @@ query_model <- function(model,
                         using      = list("priors"),
                         parameters = NULL,
                         stats      = NULL,
-                        digits     = 3,
                         n_draws    = 4000,
                         expand_grid = FALSE,
                         case_level = FALSE,
@@ -203,8 +198,8 @@ query_model <- function(model,
   using_used <- unique(unlist(using))
 
   dists <- lapply(using_used, function(j) {
-    param_dist <- get_param_dist(model, j)  # parameter distribution extracted just once
-    get_type_prob_multiple(model, using = j, param_dist = param_dist)}
+    get_type_prob_multiple(model, using = j)
+  }
   )
   names(dists) <- using_used
 
@@ -224,7 +219,7 @@ query_model <- function(model,
     if(is.null(v)) return(rep(NA, length(stats)))
 
     # return
-    round(sapply(stats, function(g) g(v)), digits)
+    sapply(stats, function(g) g(v))
 
   }
 
