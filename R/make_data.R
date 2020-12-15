@@ -7,17 +7,18 @@
 #' otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set;
 #' \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
 #' take parameters as the means or as draws from the prior or posterior.
-#' @param n Non negative integer. Number of observations.
+#' @param n Non negative integer. Number of observations. If not provided it is inferred from the  largest n_step.
 #' @param n_steps A \code{list}. Number of observations to be observed at each step
-#' @param nodes A \code{list}. Which nodes to be observed at each step
+#' @param nodes A \code{list}. Which nodes to be observed at each step. If NULL all nodes are observed.
 #' @param probs A \code{list}. Observation probabilities at each step
-#' @param subsets A \code{list}. Strata within which observations are to be observed at each step
+#' @param subsets A \code{list}. Strata within which observations are to be observed at each step. TRUE for all, otherwise an expression that evaluates to a logical condition.
 #' @param complete_data A \code{data.frame}. Dataset with complete observations. Optional.
+#' @param verbose Logical. If TRUE prints step schedule.
 #' @param ... additional arguments that can be passed to \code{link{make_parameters}}
 #' @return A \code{data.frame} with simulated data.
-#' @importFrom randomizr strata_rs
 #' @export
-#'
+#' @details
+#' Note that default behavior is not to take account of whether a node has already been observed when determining whether to select or not. One can however specifically request observation of nodes that have not been previously observed.
 #' @examples
 #'
 #'
@@ -38,12 +39,43 @@
 #'   n = 8,
 #'   nodes = list(c("X", "Y"), "M"),
 #'   probs = list(1, .5),
-#'   subsets = list(NULL, "X==1 & Y==0"))
+#'   subsets = list(TRUE, "X==1 & Y==0"))
 #'
+#'# n not provided but inferred from largest n_step (not from sum of n_steps)
+#' make_data(
+#'   model,
+#'   nodes = list(c("X", "Y"), "M"),
+#'   n_steps = list(5, 2))
+#'
+#' # Wide then deep
+#'   make_data(
+#'   model,
+#'   n = 8,
+#'   nodes = list(c("X", "Y"), "M"),
+#'   subsets = list(TRUE, "!is.na(X) & !is.na(Y)"),
+#'   n_steps = list(6, 2))
+#'
+# # Look for X only where X has not already been observed
+#'
+#' make_data(
+#'   model,
+#'   n = 8,
+#'   nodes = list(c("X", "Y"), c("X", "M")),
+#'   subsets = list(TRUE, "is.na(X)"),
+#'   n_steps = list(3, 2))
+#'
+#'# Example with probabilities at each step
+#'
+#'make_data(
+#'   model,
+#'   n = 8,
+#'   nodes = list(c("X", "Y"), c("X", "M")),
+#'   subsets = list(TRUE, "is.na(X)"),
+#'   probs = list(.5, .2))
 
 make_data <- function(
 	model,
-	n   = 1,
+	n   = NULL,
 	parameters = NULL,
 	param_type = NULL,
 	nodes    = NULL,  # nodes revealed at each step
@@ -51,16 +83,22 @@ make_data <- function(
 	probs   = NULL,            # probs at each step
 	subsets = TRUE,         # subsets at each step
 	complete_data = NULL,
+	verbose = TRUE,
 	...){
 
-	# check n input
-	n_check(n)
+  # n_step, n consistency
+  if(!is.null(n)) n_check(n)
+  if(!is.null(n_steps) & !is.null(n)) if(max(n_steps %>% unlist) > n) stop("n_step larger than n")
+  if(!is.null(n_steps) & is.null(n)) n <- max(n_steps %>% unlist)
+  if(is.null(n_steps) & is.null(n)) n <- 1
 
 	# n_steps and probs reconciliation
 	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
-	if(is.null(probs)) probs <- 1
+  if(is.null(n_steps) & is.null(probs)) n_steps <- n
+  if(is.null(n_steps)) n_steps <- NA
+  if(is.null(probs))   probs <- 1
 
-		# Check that parameters sum to 1 in each param_set
+	# Check that parameters sum to 1 in each param_set
 	if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
 
 	# If parameters not provided, make or take from model
@@ -70,7 +108,6 @@ make_data <- function(
 		} else {
 			parameters 	 <- get_parameters(model) }}
 
-
 	# Check nodes
 	if(is.null(nodes))  nodes <- list(model$nodes)
 	if(!is.list(nodes)) nodes <- list(nodes) # Lets one step nodes be provided as vector
@@ -78,57 +115,46 @@ make_data <- function(
 
 	# Complete data
 	if(is.null(complete_data)) {
-		complete_data <- make_data_single(model, n = n, parameters = parameters)
+		complete_data <- CausalQueries:::make_data_single(model, n = n, parameters = parameters)
 	}
 
 	# Default behavior is to return complete data -- triggered if all data and all nodes sought in step 1
-	if(all(model$nodes %in% nodes[[1]])){
+	if(all(model$nodes %in% nodes[[1]]))
 		if(probs[1]==1 || n_steps[1]==n) return(complete_data)
-	}
-
 
 	# Otherwise, gradually reveal
 
-	# Housekeeping
-
 	# Check length consistency
-	if(is.null(n_steps) & is.null(probs)) probs <- 1
-	lengths = sapply(list(c(nodes, n_steps, probs, subsets)), length)
-	if(sum(lengths >1)>1) if(sd(lengths[lengths >1]) > 0) stop("Incompatible lengths for
-																														 nodes, n_steps, probs, subsets")
-
-	if(length(nodes) >1) if(!((length(n_steps)== length(nodes)) || (length(probs)== length(nodes)) )){
-  	stop("Multistep nodes requires compatible multistep n_steps or multistep probs")}
-
+	roster <- tibble(node_names = lapply(nodes, paste, collapse = ", ") %>% unlist,
+	                 nodes = nodes, n_steps = n_steps %>% unlist, probs = probs%>% unlist, subsets = subsets%>% unlist)
+	if(verbose) print(roster)
 
 	observed <- complete_data
 
 	observed[,] <- FALSE
 
+	# Go step by step
 	j = 1
 	while(j <= length(nodes)) {
-		ifelse(!is.null(n_steps) && !is.null(probs),
-					 {name <- "n_steps"; value = n_steps[[j]]},
-					 {name <- "prob"; value = probs[[j]]})
-		if(!is.null(subsets[[j]])) {given <- paste0(", given ", subsets[[j]])
-		} else { given <- NULL}
-		description <- paste0("Step ", j, ": Observe ",
-													paste(nodes[[j]], collapse = ", "),
-													" (", name, " = ", value, ")", given, "\n") # , given, ".\n_steps")
+
+	  pars <- roster[j, ]
+
 		observed <- observe_data(
 			complete_data,
 			observed = observed,
-			nodes_to_observe = nodes[[j]],
-			prob = probs[[j]],
-			m = n_steps[[j]],
-			subset = subsets[[j]])
+			nodes_to_observe = pars$nodes %>% unlist,
+			prob = pars$probs,
+			m    = pars$n_steps,
+			subset = pars$subsets)
+
 		j = j + 1
-		cat(description)
+
 	}
 
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
 	observed_data
+
 }
 
 
@@ -161,34 +187,31 @@ observe_data <- function(complete_data,
 												 nodes_to_observe = NULL,
 												 prob = 1,
 												 m = NULL,
-												 subset = NULL){
+												 subset = TRUE){
 
 	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
 	if(is.null(nodes_to_observe)) nodes_to_observe <- names(complete_data)
 
+	# Prep observed data dataframe
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
 
-	# Handle cases with no subsetting; where condition is empty, and when the condition is satisfied
+	# Within which subset to reveal?
+	if(!is.logical(subset) & subset != "TRUE") {
+	  sub <- with(observed_data, eval(parse(text = subset)))
+	} else {
+	  sub <- rep(TRUE, nrow(observed_data))
+	}
 
-	if(is.null(subset)){ observed[, nodes_to_observe] <- TRUE
+	if(!any(sub)) message("Empty subset")
 
-	}  else {
+	# Target to reveal
+	if(is.null(m) | is.na(m)){
+	  E <- prob*sum(sub) # Expected number selected
+	  m <- floor(E)  + (runif(1) <  E - floor(E)) # Get best m
+	}
 
-		strata <- with(observed_data, eval(parse(text = subset)))
-
-		if(max(strata) == 1){
-
-			if(!is.null(m)) prob <- min(1, m/sum(strata))   # If m is specified, use this to extent possible
-
-			if(prob == 1 && length(unique(strata))==1) {
-				show <- TRUE
-			} else {
-				show <- strata_rs(strata = strata,
-																		 strata_prob = c(0, prob)) == 1
-			}
-			observed[show, nodes_to_observe] <- TRUE
-		}}
+	observed[sample((1:length(sub))[sub], m), nodes_to_observe] <- TRUE
 
 	observed
 }

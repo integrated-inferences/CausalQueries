@@ -10,7 +10,7 @@ observe_data(
   nodes_to_observe = NULL,
   prob = 1,
   m = NULL,
-  subset = NULL
+  subset = TRUE
 )
 }
 \arguments{
