@@ -115,7 +115,7 @@ make_data <- function(
 
 	# Complete data
 	if(is.null(complete_data)) {
-		complete_data <- CausalQueries:::make_data_single(model, n = n, parameters = parameters)
+		complete_data <- make_data_single(model, n = n, parameters = parameters)
 	}
 
 	# Default behavior is to return complete data -- triggered if all data and all nodes sought in step 1
@@ -191,7 +191,7 @@ observe_data <- function(complete_data,
 
 	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
 	if(is.null(nodes_to_observe)) nodes_to_observe <- names(complete_data)
-
+	if(is.null(m)) m <- NA
 	# Prep observed data dataframe
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
@@ -206,7 +206,7 @@ observe_data <- function(complete_data,
 	if(!any(sub)) message("Empty subset")
 
 	# Target to reveal
-	if(is.null(m) | is.na(m)){
+	if(is.na(m)){
 	  E <- prob*sum(sub) # Expected number selected
 	  m <- floor(E)  + (runif(1) <  E - floor(E)) # Get best m
 	}
