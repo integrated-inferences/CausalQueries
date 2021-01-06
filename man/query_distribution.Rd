@@ -33,7 +33,7 @@ query_distribution(
 
 \item{join_by}{A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 
-\item{case_level}{Logical. If true estimates the probability of the query for a case.}
+\item{case_level}{Logical. If TRUE estimates the probability of the query for a case.}
 }
 \value{
 A vector of draws from the distribution of the potential outcomes specified in `query`
@@ -52,8 +52,15 @@ model <- make_model("X -> Y") \%>\%
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
- distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", verbose = TRUE)
- distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", case_level = TRUE, verbose = TRUE)
+ distribution <- query_distribution(model,
+                                    query = "(Y[X=1] > Y[X=0])",
+                                    given = "X==1 & Y==1",
+                                    verbose = TRUE)
+ distribution <- query_distribution(model,
+                                    query = "(Y[X=1] > Y[X=0])",
+                                    given = "X==1 & Y==1",
+                                    case_level = TRUE,
+                                    verbose = TRUE)
  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
  df    <- simulate_data(model, n = 3)

@@ -168,6 +168,8 @@ make_data <- function(
 #' @param m A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.
 #' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
 #' @return A \code{data.frame} with logical values indicating which nodes to observe in each row of `complete_data`.
+#' @importFrom stats runif
+#' @importFrom dplyr tibble
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
