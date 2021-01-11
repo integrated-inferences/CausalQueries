@@ -21,7 +21,6 @@
 #' Note that default behavior is not to take account of whether a node has already been observed when determining whether to select or not. One can however specifically request observation of nodes that have not been previously observed.
 #' @examples
 #'
-#'
 #' # Simple draws
 #' model <- make_model("X -> M -> Y")
 #' make_data(model)
