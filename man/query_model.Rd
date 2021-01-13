@@ -34,6 +34,8 @@ query_model(
 
 \item{expand_grid}{Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.}
 
+\item{case_level}{Logical. If TRUE estimates the probability of the query for a case.}
+
 \item{query}{alias for queries}
 }
 \value{

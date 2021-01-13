@@ -21,7 +21,6 @@
 #' Note that default behavior is not to take account of whether a node has already been observed when determining whether to select or not. One can however specifically request observation of nodes that have not been previously observed.
 #' @examples
 #'
-#'
 #' # Simple draws
 #' model <- make_model("X -> M -> Y")
 #' make_data(model)
@@ -115,7 +114,7 @@ make_data <- function(
 
 	# Complete data
 	if(is.null(complete_data)) {
-		complete_data <- CausalQueries:::make_data_single(model, n = n, parameters = parameters)
+		complete_data <- make_data_single(model, n = n, parameters = parameters)
 	}
 
 	# Default behavior is to return complete data -- triggered if all data and all nodes sought in step 1
@@ -168,6 +167,8 @@ make_data <- function(
 #' @param m A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.
 #' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
 #' @return A \code{data.frame} with logical values indicating which nodes to observe in each row of `complete_data`.
+#' @importFrom stats runif
+#' @importFrom dplyr tibble
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
@@ -191,7 +192,7 @@ observe_data <- function(complete_data,
 
 	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
 	if(is.null(nodes_to_observe)) nodes_to_observe <- names(complete_data)
-
+	if(is.null(m)) m <- NA
 	# Prep observed data dataframe
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
@@ -206,7 +207,7 @@ observe_data <- function(complete_data,
 	if(!any(sub)) message("Empty subset")
 
 	# Target to reveal
-	if(is.null(m) | is.na(m)){
+	if(is.na(m)){
 	  E <- prob*sum(sub) # Expected number selected
 	  m <- floor(E)  + (runif(1) <  E - floor(E)) # Get best m
 	}

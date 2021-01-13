@@ -42,7 +42,7 @@ testthat::test_that(
 			    	   n = 20,
 			         nodes = list(c("X", "Y"), "M"),
 			    	   probs = list(1, .5),
-			    	   subsets = list(NULL, "X==1 & Y==0"))
+			    	   subsets = list(TRUE, "X==1 & Y==0"))
 		# Test subset functionality
 	  subsetM <- strat[!is.na(strat$M), ]
 	  expect_equal(subsetM$X, rep(1, nrow(subsetM)))
@@ -60,8 +60,6 @@ testthat::test_that(
 
      # "If specified, vars, probs, subsets, should have the same length"
 		expect_error(make_data(model, nodes  = c("X","Y"), probs = c(1,2), subsets = c("X==1", "Y==1", "X==0")))
-		#"If specified, n_steps should be the same length as vars"
-		expect_error(make_data(model, nodes = list("X","M","Y"), n_steps = 1))
 
 		expect_warning(
 			make_data(
@@ -70,9 +68,9 @@ testthat::test_that(
 			n_steps = c(2,2),
 			nodes = list(c("X", "Y"), "M"),
 			probs = list(1, .5),
-			subsets = list(NULL, "X==1 & Y==0")))
+			subsets = list(TRUE, TRUE)))
 
-	}
+		}
 )
 
 

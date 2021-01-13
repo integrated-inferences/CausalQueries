@@ -11,7 +11,7 @@
 #' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
-#' @param case_level Logical. If true estimates the probability of the query for a case.
+#' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @return A vector of draws from the distribution of the potential outcomes specified in `query`
 #' @importFrom stats sd weighted.mean
 #' @export
@@ -26,8 +26,15 @@
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
-#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", verbose = TRUE)
-#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y==1", case_level = TRUE, verbose = TRUE)
+#'  distribution <- query_distribution(model,
+#'                                     query = "(Y[X=1] > Y[X=0])",
+#'                                     given = "X==1 & Y==1",
+#'                                     verbose = TRUE)
+#'  distribution <- query_distribution(model,
+#'                                     query = "(Y[X=1] > Y[X=0])",
+#'                                     given = "X==1 & Y==1",
+#'                                     case_level = TRUE,
+#'                                     verbose = TRUE)
 #'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
 #'  df    <- simulate_data(model, n = 3)
@@ -54,20 +61,20 @@ query_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
     "`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-  if(!is.logical(given)) given <- CausalQueries:::map_query_to_causal_type(model, given)$types
+  if(!is.logical(given)) given <- map_query_to_causal_type(model, given)$types
 
   if(all(!given)) {message("No units in given"); return() }
 
 
   # Evaluation of query on vector of causal types
-  x <- (CausalQueries:::map_query_to_causal_type(model, query = query)$types)[given]
+  x <- (map_query_to_causal_type(model, query = query)$types)[given]
 
   # Parameters specified
   if(using =="parameters"){
 
     if(is.null(type_distribution)){
       if(is.null(parameters)) parameters <- get_parameters(model)
-      type_distribution <- CausalQueries:::get_type_prob(model, parameters = parameters)}
+      type_distribution <- get_type_prob(model, parameters = parameters)}
 
     type_distribution <- type_distribution[given]
 
@@ -116,6 +123,7 @@ query_distribution <- function(model,
 #' @param stats Functions to be applied to estimand distribution. If `NULL`, defaults to mean and standard deviation.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.
+#' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @param query alias for queries
 #' @return A \code{data.frame} with columns `Query`, `Given` and `Using` defined by corresponding input values. Further columns are generated as specified in `stats`.
 #' @export
