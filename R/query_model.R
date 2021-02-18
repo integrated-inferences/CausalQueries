@@ -85,12 +85,12 @@ query_distribution <- function(model,
   }
 
   # slow step
-  # set keep_transformed=TRUE in update model to ensure access to type_distribution
+  # set keep_transformed=TRUE in updated model to ensure access to type_distribution
   # adding P to model can also speed up slightly
   if(is.null(type_distribution))
     type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
 
-  type_distribution <- type_distribution[given, ]
+  type_distribution <- matrix(type_distribution[given, ], ncol = ncol(type_distribution))
 
   # Subsetting implemented on type_distribution prior to take weighted mean
   # This gets the distribution of conditional values
