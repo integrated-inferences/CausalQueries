@@ -8,6 +8,7 @@
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full
+#' @param censored_types vector of data types that are selected out of the data, eg c("X0Y0")
 #' @param ... Options passed onto \code{\link[rstan]{stan}} call.
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
@@ -69,7 +70,18 @@
 #'  plot(x1, x6, main = 'joint distribution of X0.Y00, X1.Y01')})
 #' }
 #'
-update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALSE, keep_transformed = FALSE, ...) {
+#' # Censored data types
+#' make_model("X->Y") %>%
+#'   update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0")) %>%
+#'   query_model(te("X", "Y"), using = "posteriors")
+#'
+#'# Learning nothing
+#' make_model("X->Y") %>%
+#'   update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0", "X0Y0", "X0Y1")) %>%
+#'   query_model(te("X", "Y"), using = "posteriors")
+
+update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALSE,
+                         keep_transformed = TRUE, censored_types = NULL, ...) {
 
     if (data_type == "long") {
 
@@ -104,15 +116,17 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 
     stan_data <- prep_stan_data(model = model, data = data_events)
 
+    # Ambiguity matrix goes to 0 for data types that never get to be observed
+    stan_data$A[, censored_types] <- 0
+
     # assign fit
     if(!keep_transformed) stanfit <- stanmodels$simplexes
-    if(keep_transformed) stanfit  <- stanmodels$simplexes_retain_w
+    if(keep_transformed)  stanfit <- stanmodels$simplexes_retain_w
 
     sampling_args <- set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
     newfit <- do.call(rstan::sampling, sampling_args)
 
-    model$stan_objects  <- list()
-    model$stan_objects$data <- data
+    model$stan_objects  <- list(data = data)
 
     if(keep_fit) model$stan_objects$stan_fit <- newfit
 

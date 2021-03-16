@@ -53,6 +53,7 @@ for (i in 1:n_types) {
 
 
 w = A' * prob_of_types;
+w = w / sum(w);
 w_full = E * w;
 
 }
