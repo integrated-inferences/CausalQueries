@@ -75,7 +75,7 @@
 #'   update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0")) %>%
 #'   query_model(te("X", "Y"), using = "posteriors")
 #'
-#'# Learning nothing
+#'# Censored data: Learning nothing
 #' make_model("X->Y") %>%
 #'   update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0", "X0Y0", "X0Y1")) %>%
 #'   query_model(te("X", "Y"), using = "posteriors")

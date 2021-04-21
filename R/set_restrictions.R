@@ -24,6 +24,7 @@
 #' @param join_by A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
+#' @param update_types Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.
 #'
 #' @family restrictions
 #'
@@ -103,7 +104,7 @@
 #' set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 #' get_parameter_matrix(model)
 #'}
-set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE) {
+set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE, update_types = TRUE) {
 
 
     is_a_model(model)
@@ -124,11 +125,13 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 
     # Labels
     if (!is.null(labels))
-        model <- restrict_by_labels(model, labels = labels, keep = keep)
+        model <- restrict_by_labels(model, labels = labels,
+                                    keep = keep, update_types = update_types)
 
     # Statement
     if (!is.null(statement))
-        model <- restrict_by_query(model, statement = statement, join_by = join_by, keep = keep)
+        model <- restrict_by_query(model, statement = statement, join_by = join_by,
+                                   keep = keep, update_types = update_types)
 
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
@@ -180,7 +183,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
 #' @keywords internal
 #' @family restrictions
 
-restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
+restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, update_types = TRUE) {
 
     # nodal_types <- get_nodal_types(model)
     nodal_types <- model$nodal_types
@@ -244,7 +247,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE) {
 
 
     }
-    model$causal_types <- update_causal_types(model)
+    if(update_types) model$causal_types <- update_causal_types(model)
     model
 }
 
@@ -294,7 +297,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE) {
         model$parameters_df <- dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
     }
 
-    model$causal_types <- update_causal_types(model)
+    if(update_types) model$causal_types <- update_causal_types(model)
     model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
 
     return(model)

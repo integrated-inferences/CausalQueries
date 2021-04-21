@@ -4,7 +4,13 @@
 \alias{restrict_by_query}
 \title{Reduce nodal types}
 \usage{
-restrict_by_query(model, statement, join_by = "|", keep = FALSE)
+restrict_by_query(
+  model,
+  statement,
+  join_by = "|",
+  keep = FALSE,
+  update_types = TRUE
+)
 }
 \arguments{
 \item{model}{a model created by make_model()}

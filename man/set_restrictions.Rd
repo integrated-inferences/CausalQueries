@@ -9,7 +9,8 @@ set_restrictions(
   statement = NULL,
   join_by = "|",
   labels = NULL,
-  keep = FALSE
+  keep = FALSE,
+  update_types = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ set_restrictions(
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
+
+\item{update_types}{Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.}
 }
 \value{
 An object of class \code{model}. The causal types and nodal types in the model are reduced according to the stated restriction.

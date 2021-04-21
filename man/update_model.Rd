@@ -9,7 +9,8 @@ update_model(
   data = NULL,
   data_type = "long",
   keep_fit = FALSE,
-  keep_transformed = FALSE,
+  keep_transformed = TRUE,
+  censored_types = NULL,
   ...
 )
 }
@@ -24,6 +25,8 @@ Compact data must have entries for each member of each strategy family to produc
 \item{keep_fit}{Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`}
 
 \item{keep_transformed}{Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full}
+
+\item{censored_types}{vector of data types that are selected out of the data, eg c("X0Y0")}
 
 \item{...}{Options passed onto \code{\link[rstan]{stan}} call.}
 }
@@ -85,4 +88,13 @@ with(fully_confounded$posterior_distribution \%>\% data.frame(),
  plot(x1, x6, main = 'joint distribution of X0.Y00, X1.Y01')})
 }
 
+# Censored data types
+make_model("X->Y") \%>\%
+  update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0")) \%>\%
+  query_model(te("X", "Y"), using = "posteriors")
+
+# Censored data: Learning nothing
+make_model("X->Y") \%>\%
+  update_model(data.frame(X=1, Y=1), censored_types = c("X1Y0", "X0Y0", "X0Y1")) \%>\%
+  query_model(te("X", "Y"), using = "posteriors")
 }
