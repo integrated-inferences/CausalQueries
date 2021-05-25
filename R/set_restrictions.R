@@ -262,7 +262,7 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, upd
 #' @keywords internal
 #' @family restrictions
 
-restrict_by_labels <- function(model, labels, keep = FALSE) {
+restrict_by_labels <- function(model, labels, keep = FALSE, update_types = TRUE) {
 
     # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
     # name that doesn't match any of the nodes in the dag
