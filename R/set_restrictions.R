@@ -133,6 +133,11 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
         model <- restrict_by_query(model, statement = statement, join_by = join_by,
                                    keep = keep, update_types = update_types)
 
+    # Drop any unused rows from P
+    if (!is.null(model$P)) {
+        model$P <- dplyr::filter(model$P, rownames(model$P) %in% model$parameters_df$param_names)
+    }
+
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
         remaining_causal_type_names <- rownames(update_causal_types(model))
@@ -151,6 +156,7 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
             model$P <- model$P[keep, ]
         }
     }
+
 
     # Keep restricted types as attributes
     nodal_types1 <- model$nodal_types
@@ -294,7 +300,8 @@ restrict_by_labels <- function(model, labels, keep = FALSE, update_types = TRUE)
         if (keep)
             to_keep <- nt[nt %in% labels[[k]]]
         model$nodal_types[[j]] <- to_keep
-        model$parameters_df <- dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
+        model$parameters_df <-
+            dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
     }
 
     if(update_types) model$causal_types <- update_causal_types(model)
@@ -311,7 +318,7 @@ restrict_by_labels <- function(model, labels, keep = FALSE, update_types = TRUE)
 #' @keywords internal
 #' @examples
 #' model <- make_model('A->Y<-B')
-#' CausalQueries:::get_type_names(model$nodal_types)
+#' get_type_names(model$nodal_types)
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
         name <- names(nodal_types)[i]
@@ -345,7 +352,7 @@ unpack_wildcard <- function(x) {
 #' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
 #' @examples
-#' CausalQueries:::update_causal_types(make_model('X->Y'))
+#' update_causal_types(make_model('X->Y'))
 
 update_causal_types <- function(model) {
 
