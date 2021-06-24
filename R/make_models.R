@@ -118,12 +118,13 @@ make_model <- function(statement, add_causal_types = TRUE){
 
  model$parameters_df <- data.frame(
  	param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
+ 	gen = rep(1:m, lgths),
  	param_value   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
  	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
+ 	given = "",
  	node = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
   # param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
   nodal_type = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
-  gen = rep(1:m, lgths),
   priors       = 1,
   stringsAsFactors = FALSE
 
@@ -133,13 +134,9 @@ make_model <- function(statement, add_causal_types = TRUE){
  if(add_causal_types){
  model$causal_types <- update_causal_types(model)}
 
- # Add confounds if any provided
- # extract confounds df
 
- # Prep for export
- attr(model, "endogenous_nodes") <- endog_node
- attr(model, "exogenous_nodes")  <- exog_node
- class(model) <- "causal_model"
+
+ # Add confounds if any provided
 
  if(any(x$e=="<->")) {
 
@@ -166,11 +163,12 @@ make_model <- function(statement, add_causal_types = TRUE){
 
 	  }
 
+ # Prep for export
+ attr(model, "endogenous_nodes") <- endog_node
+ attr(model, "exogenous_nodes")  <- exog_node
+ class(model) <- "causal_model"
 
-
-
-
- model
+  model
 
 }
 
