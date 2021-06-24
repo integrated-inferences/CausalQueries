@@ -22,23 +22,23 @@ for(i in length(models)){
 		code = {
 
 			model1 <- make_model(models[i]) %>%
-				set_confound(list(X = "Y[X=1]==1"))%>%
+			  set_confound("X <-> Y")%>%
 				set_restrictions(restrictions[i])
 
 			model2 <- make_model(models[i])%>%
 				set_restrictions(restrictions[i]) %>%
-				set_confound(list(X = "Y[X=1]==1"))
+				set_confound("X <-> Y")
 
 			expect_equal(nrow(get_causal_types(model1)), nrow(get_causal_types(model2)))
 
 
 			model1 <- make_model(models[i]) %>%
-				set_confound(list(X = "Y[X=1]==1"))%>%
+			  set_confound("X <-> Y") %>%
 				set_restrictions(restrictions[i], keep = TRUE)
 
 			model2 <- make_model(models[i])%>%
 				set_restrictions(restrictions[i], keep = TRUE) %>%
-				set_confound(list(X = "Y[X=1]==1"))
+			  set_confound("X <-> Y")
 
 			expect_equal(nrow(get_causal_types(model1)), nrow(get_causal_types(model2)))
 

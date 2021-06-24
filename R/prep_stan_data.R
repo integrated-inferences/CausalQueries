@@ -16,32 +16,73 @@
 #' CausalQueries:::prep_stan_data(model, data)
 #' }
 #'
-prep_stan_data <- function(model, data) {
-
+prep_stan_data <- function(model, data, keep_transformed = TRUE) {
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")
+    parmap <- get_parmap(model)
+    # has_confounds <- !is.null(model$confounds_df)
+    map <- attr(parmap, "map")
+    n_paths <- nrow(map) # The ways params can produce a data type
 
-    A <- get_ambiguities_matrix(model)
-    P <- get_parameter_matrix(model)
+    # Parameter set handlers
     param_set <- model$parameters_df$param_set
     param_sets <- unique(param_set)
     n_param_sets <- length(param_sets)
-    E <- (get_data_families(model, mapping_only = TRUE))[data$event, ]
+    n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
+    l_ends <- as.array(cumsum(n_param_each))
+    ifelse(length(l_ends) == 1,
+           l_starts <- 1,
+           l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1))
+    names(l_starts) <- names(l_ends)
+
+    # Node set handlers
+    nodes_sets <- model$parameters_df %>%
+        mutate(i = 1:n()) %>%
+        group_by(node) %>%
+        summarize(n_starts = i[1], n_ends = i[n()], n_node_each = n()) %>%
+        arrange(n_starts)
+    n_starts <- nodes_sets$n_starts
+    n_ends <- nodes_sets$n_ends
+    n_sets <- nodes_sets$node
+    names(n_starts) <- names(n_ends) <- n_sets
+
+
+    E <-
+        (get_data_families(model, mapping_only = TRUE))[data$event,]
     strategies <- data$strategy
     n_strategies <- length(unique(strategies))
     w_starts <- which(!duplicated(strategies))
     k <- length(strategies)
     w_ends <- if (n_strategies < 2)
-        k else c(w_starts[2:n_strategies] - 1, k)
-    n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
-    l_ends <- as.array(cumsum(n_param_each))
-    ifelse(length(l_ends) == 1,  l_starts <- 1, l_starts <- c(1, l_ends[1:(n_param_sets - 1)] + 1))
-    names(l_starts) <- names(l_ends)
+        k
+    else
+        c(w_starts[2:n_strategies] - 1, k)
+    P <- get_parameter_matrix(model)
 
-    list(n_params = nrow(P), n_param_sets = n_param_sets, n_param_each = as.array(n_param_each), l_starts = as.array(l_starts),
-        l_ends = as.array(l_ends), lambdas_prior = get_priors(model), n_types = ncol(P), n_data = nrow(all_data_types(model,
-            possible_data = TRUE)), n_events = nrow(E), n_strategies = n_strategies, strategy_starts = as.array(w_starts),
-        strategy_ends = as.array(w_ends), P = P, not_P = 1 - P, A = A, E = E, Y = data$count)
+    list(
+        parmap = parmap,
+        map = map,
+        n_paths = n_paths,
+        n_params = nrow(parmap),
+        n_param_sets = n_param_sets,
+        n_param_each = as.array(n_param_each),
+        l_starts = as.array(l_starts),
+        l_ends = as.array(l_ends),
+        node_starts = n_starts,
+        node_ends = n_ends,
+        n_nodes = length(n_sets),
+        lambdas_prior = get_priors(model),
+        n_data = nrow(all_data_types(model,
+                                     possible_data = TRUE)),
+        n_events = nrow(E),
+        n_strategies = n_strategies,
+        strategy_starts = as.array(w_starts),
+        strategy_ends = as.array(w_ends),
+        keep_transformed = keep_transformed * 1,
+        E = E,
+        Y = data$count,
+        P = P,
+        n_types = ncol(P)
+    )
+
 }
-
-
