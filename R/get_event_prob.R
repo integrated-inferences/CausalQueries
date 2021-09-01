@@ -16,7 +16,8 @@
 get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL) {
 
     # draw_event uses a parameter vector that is either provided directly or else drawn from priors or
-    # posteriors a directly provided parameter vector is used instead of parameters contained in the
+    # posteriors
+    # a directly provided parameter vector is used instead of parameters contained in the
     # model
 
     if (!is.null(parameters))
@@ -42,3 +43,11 @@ get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_pr
     colnames(out) <- "event_prob"
     return(out)
 }
+
+# get_event_prob_2 <- function(model, parameters)
+#     (get_parmap(model) * parameters) %>%
+#     group_by(model$parameters_df$param_set) %>%
+#     summarize_all(sum) %>%
+#     select(-1) %>%
+#     summarize_all(prod) %>%
+#     t %>% data.frame %>% rename(event_prob = 1)

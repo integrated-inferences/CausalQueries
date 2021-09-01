@@ -130,6 +130,8 @@ make_model <- function(statement, add_causal_types = TRUE){
 
   )
 
+ class(model) <- "causal_model"
+
  # Add causal types
  if(add_causal_types){
  model$causal_types <- update_causal_types(model)}
@@ -166,7 +168,6 @@ make_model <- function(statement, add_causal_types = TRUE){
  # Prep for export
  attr(model, "endogenous_nodes") <- endog_node
  attr(model, "exogenous_nodes")  <- exog_node
- class(model) <- "causal_model"
 
   model
 
