@@ -71,6 +71,7 @@
 #'   nodes = list(c("X", "Y"), c("X", "M")),
 #'   subsets = list(TRUE, "is.na(X)"),
 #'   probs = list(.5, .2))
+#'
 
 make_data <- function(
 	model,
@@ -246,7 +247,6 @@ observe_data <- function(complete_data,
 #'
 
 make_data_single <- function(
-
 	model,
 	n = 1,
 	parameters = NULL,
@@ -265,9 +265,11 @@ make_data_single <- function(
 
 	# Generate event probabilities w if missing
 	if(is.null(w)){
-		if(is.null(P)) 	P <- get_parameter_matrix(model)
-		if(is.null(A)) 	A <- get_ambiguities_matrix(model)
-		w <- get_event_prob(model, P, A, parameters = parameters)}
+		# if(is.null(P)) 	P <- get_parameter_matrix(model)
+		# if(is.null(A)) 	A <- get_ambiguities_matrix(model)
+		# w <- get_event_prob(model, P, A, parameters = parameters)
+		w <- get_event_prob(model, parameters = parameters, A = A, P = P)
+		}
 
 	# Data drawn here
 	make_events(model, n = n,  parameters = parameters, w = w) %>%

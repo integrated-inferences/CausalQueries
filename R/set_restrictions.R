@@ -96,7 +96,7 @@
 #'
 #' # Restrictions can be  with wildcards
 #' model <- make_model('X->Y') %>%
-#' set_restrictions(labels = list(Y = '?0'))
+#' set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
 #' get_parameter_matrix(model)
 #'
 #' # Running example: there are only four causal types
@@ -104,7 +104,10 @@
 #' set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 #' get_parameter_matrix(model)
 #'}
-set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NULL, keep = FALSE, update_types = TRUE) {
+set_restrictions <- function(model, statement = NULL,
+                             join_by = "|", labels = NULL,
+                             keep = FALSE, update_types = TRUE,
+                             wildcard = FALSE) {
 
 
     is_a_model(model)
@@ -126,7 +129,9 @@ set_restrictions <- function(model, statement = NULL, join_by = "|", labels = NU
     # Labels
     if (!is.null(labels))
         model <- restrict_by_labels(model, labels = labels,
-                                    keep = keep, update_types = update_types)
+                                    keep = keep,
+                                    update_types = update_types,
+                                    wildcard = wildcard)
 
     # Statement
     if (!is.null(statement))
@@ -268,7 +273,8 @@ restrict_by_query <- function(model, statement, join_by = "|", keep = FALSE, upd
 #' @keywords internal
 #' @family restrictions
 
-restrict_by_labels <- function(model, labels, keep = FALSE, update_types = TRUE) {
+restrict_by_labels <- function(model, labels, keep = FALSE,
+                               update_types = TRUE, wildcard = FALSE) {
 
     # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
     # name that doesn't match any of the nodes in the dag
@@ -279,7 +285,8 @@ restrict_by_labels <- function(model, labels, keep = FALSE, update_types = TRUE)
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
 
     # If there are wild cards, spell them out
-    labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+    if(wildcard)
+        labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
 
     for (i in restricted_vars) {

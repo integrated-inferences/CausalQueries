@@ -1,4 +1,4 @@
-  functions{
+functions{
 
   row_vector col_sums(matrix X) {
     row_vector[cols(X)] s ;

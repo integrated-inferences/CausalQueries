@@ -25,13 +25,15 @@
 #' a <- update_model(model)
 #' make_parmap(model) %>% dim
 #'
-make_parmap <- function(model){
-    A <- get_ambiguities_matrix(model)
-    P <- get_parameter_matrix(model)
+make_parmap <- function(model, A = NULL, P = NULL){
+    if(is.null(A)) A <- get_ambiguities_matrix(model)
+    if(is.null(P)) P <- get_parameter_matrix(model)
 
     if(is.null(model$confounds_df)){
         type_matrix <- 1*((as.matrix(P)%*%as.matrix(A))>0)
-        attr(type_matrix, "map") <- diag(ncol(type_matrix))
+        map <- diag(ncol(type_matrix))
+        rownames(map) <- colnames(map) <- colnames(A)
+        attr(type_matrix, "map") <- map
         return(type_matrix)
     }
 
@@ -78,9 +80,9 @@ data_to_data <- function(M, A){
 #' @examples
 #' get_parmap(model = make_model('X->Y'))
 #'
-get_parmap <- function(model){
+get_parmap <- function(model, A = NULL, P = NULL){
     if(!is.null(model$parmap)) return(model$parmap)
-    make_parmap(model)
+    make_parmap(model, A, P)
 }
 
 

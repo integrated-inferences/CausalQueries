@@ -13,41 +13,65 @@
 #' get_event_prob(model = model, parameters = rep(1, 6))
 #' get_event_prob(model = model, parameters = 1:6)
 #' }
-get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL) {
+#'
+# get_event_prob <- function(model, P = NULL, A = NULL, parameters = NULL, type_prob = NULL) {
+#
+#     # draw_event uses a parameter vector that is either provided directly or else drawn
+#     # from priors or posteriors
+#     # a directly provided parameter vector is used instead of parameters contained in the
+#     # model
+#
+#     if (!is.null(parameters))
+#         parameters <- clean_param_vector(model, parameters)
+#     if (is.null(parameters))
+#         parameters <- get_parameters(model)
+#
+#     A <- get_ambiguities_matrix(model)
+#
+#     # Type probabilities
+#     if (is.null(type_prob))
+#         type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
+#
+#     # Event probabilities: this is for cases with only one possible data type
+#     if (ncol(A) == 1) {
+#         out <- matrix(1)
+#         rownames(out) <- colnames(A)
+#         return(out)
+#     }
+#
+#     out <- t(A) %*% type_prob
+#
+#     colnames(out) <- "event_prob"
+#     return(out)
+# }
 
-    # draw_event uses a parameter vector that is either provided directly or else drawn from priors or
-    # posteriors
-    # a directly provided parameter vector is used instead of parameters contained in the
-    # model
+get_event_prob <- function(model, parameters = NULL, A = NULL, P = NULL){
+
+    if(is.null(A)) A <- get_ambiguities_matrix(model)
+    if(is.null(P)) P <- get_parameter_matrix(model)
+
 
     if (!is.null(parameters))
         parameters <- clean_param_vector(model, parameters)
     if (is.null(parameters))
         parameters <- get_parameters(model)
 
-    A <- get_ambiguities_matrix(model)
+    parmap <- get_parmap(model, A = A, P = P)
+    map <- t(attr(parmap, "map"))
 
-    # Type probabilities
-    if (is.null(type_prob))
-        type_prob <- get_type_prob(model = model, P = P, parameters = parameters)
+    x <-
+        (parmap * parameters) %>%
+            data.frame() %>%
+            group_by(model$parameters_df$node) %>%
+            summarize_all(sum) %>%        # Probability of each node
+     select(-1) %>%
+     summarize_all(prod) %>%              # Probability of data type
+     t
 
-    # Event probabilities: this is for cases with only one possible data type
-    if (ncol(A) == 1) {
-        out <- matrix(1)
-        rownames(out) <- colnames(A)
-        return(out)
-    }
+    # Reorder and export
+    # rownames(x) == colnames(A)
+    map %*% x
+    # rownames(x) == colnames(A)
 
-    out <- t(A) %*% type_prob
-
-    colnames(out) <- "event_prob"
-    return(out)
 }
 
-# get_event_prob_2 <- function(model, parameters)
-#     (get_parmap(model) * parameters) %>%
-#     group_by(model$parameters_df$param_set) %>%
-#     summarize_all(sum) %>%
-#     select(-1) %>%
-#     summarize_all(prod) %>%
-#     t %>% data.frame %>% rename(event_prob = 1)
