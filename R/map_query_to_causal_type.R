@@ -75,7 +75,7 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
         .query <- unlist(strsplit(.query, ","))
         dos <- list()
 
-        # Walks through splitted expressions (i.e dos) and evaulates each expression when possible
+        # Walks through splitted expressions (i.e dos) and evaluates each expression when possible
         if(length(.query) == 0) {
             stop("\nquery does not return any causal types.\nNote that expressions of the form `Y[]==1` are not allowed for mapping queries to causal types.\nSpecify queries as (e.g.) `Y==1` or `Y[X=0] == 1` instead.")
         }
