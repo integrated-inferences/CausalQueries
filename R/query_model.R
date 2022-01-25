@@ -186,7 +186,13 @@ query_model <- function(model,
     model <- set_prior_distribution(model, n_draws = n_draws)}
 
   if(all(using == "parameters") & is.null(stats)) stats <- c(mean = mean)
-  if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd)}}
+  if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd,
+                                                                                           conf.low = function(x) {
+                                                                                             mean(x) - qt(1 - (0.05/2), length(x) - 1) * sd(x)/sqrt(length(x))
+                                                                                           },
+                                                                                           conf.upper = function(x) {
+                                                                                             mean(x) + qt(1 - (0.05/2), length(x) - 1) * sd(x)/sqrt(length(x))
+                                                                                           })}}
 
   # Make complete vector of names, with imputation if needed
   if(is.null(names(queries)))  names(queries) <- paste("Q", 1:length(queries))
@@ -251,3 +257,4 @@ query_model <- function(model,
   data.frame(out)
 
 }
+
