@@ -10,7 +10,8 @@ set_restrictions(
   join_by = "|",
   labels = NULL,
   keep = FALSE,
-  update_types = TRUE
+  update_types = TRUE,
+  wildcard = FALSE
 )
 }
 \arguments{
@@ -114,7 +115,7 @@ set_restrictions(labels = list(X = '0', Y = '00'))
 
 # Restrictions can be  with wildcards
 model <- make_model('X->Y') \%>\%
-set_restrictions(labels = list(Y = '?0'))
+set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
 get_parameter_matrix(model)
 
 # Running example: there are only four causal types
