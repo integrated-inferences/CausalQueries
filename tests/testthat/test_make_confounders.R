@@ -10,9 +10,6 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> Y")
 		expect_message(make_confounds_df(model))
-		expect_warning(model %>%
-		                 set_confound(list(X = 'X==1'))%>%
-		                 make_confounds_df())
 	}
 )
 
