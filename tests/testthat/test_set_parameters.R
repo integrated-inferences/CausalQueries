@@ -58,7 +58,7 @@ testthat::test_that(
   		set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
   		set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
                  parameters = list(c(.2, .8), c(.8, .2))) %>%
-  		get_parameters
+  		get_parameters()
 		expect_equal(sum(0.2 == out), 2)
 		}
 )
