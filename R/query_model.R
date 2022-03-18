@@ -187,7 +187,7 @@ query_model <- function(model,
 
   if(all(using == "parameters") & is.null(stats)) stats <- c(mean = mean)
   if(is.null(stats)) {if(!is.null(parameters)) {stats <- c(mean  = mean)} else {stats <- c(mean = mean, sd = sd,
-                                                                                           conf.low = function(x) {
+                                                                                           conf.lower = function(x) {
                                                                                              mean(x) - qt(1 - (0.05/2), length(x) - 1) * sd(x)/sqrt(length(x))
                                                                                            },
                                                                                            conf.upper = function(x) {
@@ -233,7 +233,7 @@ query_model <- function(model,
     if(is.null(v)) return(rep(NA, length(stats)))
 
     # return
-    sapply(stats, function(g) g(v))
+    round(sapply(stats, function(g) g(v)),3)
 
   }
 
