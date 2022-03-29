@@ -106,4 +106,5 @@ make_data(
   nodes = list(c("X", "Y"), c("X", "M")),
   subsets = list(TRUE, "is.na(X)"),
   probs = list(.5, .2))
+
 }
