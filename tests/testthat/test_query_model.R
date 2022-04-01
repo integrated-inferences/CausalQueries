@@ -26,7 +26,7 @@ testthat::test_that(
 
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]", case_level = TRUE)
 		expect_true(is.data.frame(q))
-
+    ## 		expect_true(q$conf.low < XXXX)
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]")
 		expect_true(is.data.frame(q))
 

@@ -192,8 +192,8 @@ query_model <- function(model,
     } else {
     stats <- c(mean = mean,
                sd = sd,
-               conf.lower = function(x) quantile(x, probs = 0.025),
-               conf.upper = function(x) quantile(x, probs = 0.975)
+               conf.low = function(x) quantile(x, probs = 0.025),
+               conf.high = function(x) quantile(x, probs = 0.975)
                )
     }}
 
