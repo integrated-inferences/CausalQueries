@@ -4,6 +4,7 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param type_prob A numeric vector. Type probabilities. (Not required).
+#' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
 #' @return An {array} of event probabilities
 #' @export
 #' @examples
@@ -45,19 +46,19 @@
 #     return(out)
 # }
 
-get_event_prob <- function(model, parameters = NULL, A = NULL, P = NULL){
+get_event_prob <- function(model, parameters = NULL, A = NULL, P = NULL, given = NULL){
 
-    if(is.null(A)) A <- get_ambiguities_matrix(model)
-    if(is.null(P)) P <- get_parameter_matrix(model)
-
-
+    if(is.null(A))
+        A <- get_ambiguities_matrix(model)
+    if(is.null(P))
+        P <- get_parameter_matrix(model)
     if (!is.null(parameters))
         parameters <- clean_param_vector(model, parameters)
     if (is.null(parameters))
         parameters <- get_parameters(model)
 
     parmap <- get_parmap(model, A = A, P = P)
-    map <- t(attr(parmap, "map"))
+    map    <- t(attr(parmap, "map"))
 
     x <-
         (parmap * parameters) %>%
@@ -68,10 +69,19 @@ get_event_prob <- function(model, parameters = NULL, A = NULL, P = NULL){
      summarize_all(prod) %>%              # Probability of data type
      t
 
-    # Reorder and export
-    # rownames(x) == colnames(A)
-    map %*% x
-    # rownames(x) == colnames(A)
+    # Reorder s.t. rownames(x) == colnames(A)
+    event_probs <- map %*% x
 
+    # Produce conditional probabilities in the event that data is given
+    if(!is.null(given))
+    event_probs <- model %>%
+        all_data_types(complete_data = TRUE) %>%
+        mutate(
+            event_probs = event_probs,
+            event_probs = ifelse(eval(parse(text = given)), event_probs, 0),
+            event_probs = event_probs/sum(event_probs)) %>%
+        select(event_probs) %>% as.matrix()
+
+    return(event_probs)
 }
 
