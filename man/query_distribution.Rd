@@ -8,7 +8,7 @@ query_distribution(
   model,
   query,
   given = TRUE,
-  using = "priors",
+  using = "parameters",
   parameters = NULL,
   type_distribution = NULL,
   verbose = FALSE,
