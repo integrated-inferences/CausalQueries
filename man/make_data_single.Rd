@@ -9,6 +9,7 @@ make_data_single(
   n = 1,
   parameters = NULL,
   param_type = NULL,
+  given = NULL,
   w = NULL,
   P = NULL,
   A = NULL
@@ -22,6 +23,8 @@ make_data_single(
 \item{parameters}{A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.}
 
 \item{param_type}{A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+
+\item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
 
 \item{w}{Vector of event probabilities can be provided directly. This is useful for speed for repeated data draws.}
 
@@ -39,13 +42,12 @@ Generate full dataset
 
 model <- make_model("X -> Y")
 
-# Simplest behavior uses by default  the parameter vector contained in model,
-# which is flat by default:
+# Simplest behavior uses by default the parameter vector contained in model
 CausalQueries:::make_data_single(model, n = 5)
 
 CausalQueries:::make_data_single(model, n = 5, param_type = "prior_draw")
 
-# Simulate multiple datasets is fastest if w is provided
+# Simulate multiple datasets. This is fastest if event probabilities (w) are  provided
 w <- get_event_prob(model)
 replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 

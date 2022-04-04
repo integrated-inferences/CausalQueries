@@ -42,18 +42,21 @@ testthat::test_that(
 	desc = "Check output.",
 
 	code = {
-		model <- make_model("X -> Y") %>%
-			set_confound(list(X = "Y[X=1]>Y[X=0]"))
+	  model <- make_model("X -> Y") %>%
+	    set_confound("X <-> Y")
+	  out <- make_priors(model,
+	                     statement = "X[]==1",
+	                     confound = list(X = "Y[X=1]>Y[X=0]"),
+	                     alphas = c(2))
+
+		expect_true(all(c(2) %in% out))
+
 		out <- make_priors(model,
-											 statement = "X[]==1",
-											 confound = list(X = "Y[X=1]>Y[X=0]", X = "Y[X=1]<Y[X=0]"),
-											 alphas = c(2, .5))
-		expect_true(all(c(2, .5) %in% out))
-		out <- make_priors(model,
-											 param_names = "X_0.0",
-											 param_set = "X_0",
-											 nodal_type="0",
-											 alphas=666)
+		                   param_names = "Y.00_X.0",
+		                   param_set = "Y.X.0",
+		                   nodal_type="00",
+		                   alphas=666)
+
 		expect_true(all(666 %in% out))
 	}
 )

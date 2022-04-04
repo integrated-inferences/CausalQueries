@@ -57,11 +57,8 @@ testthat::test_that(
 	desc = "Test functions on model X -> Y with confounding",
 
 	code = {
-		XY_conf <- make_model("X -> Y")
-		XY_conf <- set_confound(XY_conf,
-														list(X = "(Y[X=1]>Y[X=0])",
-																 X = "(Y[X=1]<Y[X=0])",
-																 X = "(Y[X=1]==1) & (Y[X=0]==1)"))
+		XY_conf <- make_model("X -> Y")%>%
+		  set_confound(., list(X = "Y"))
 
 		expect_equal(dim(get_parameter_matrix(XY_conf)), c(12,8))
 
@@ -89,7 +86,7 @@ testthat::test_that(
 
 		expect_true(is.data.frame(results))
 
-		expect_message(set_confound(XY_conf))
+		expect_error(set_confound(XY_conf))
 	}
 )
 

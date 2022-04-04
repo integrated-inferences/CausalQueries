@@ -325,7 +325,8 @@ restrict_by_labels <- function(model, labels, keep = FALSE,
 #' @keywords internal
 #' @examples
 #' model <- make_model('A->Y<-B')
-#' get_type_names(model$nodal_types)
+#'CausalQueries:::get_type_names(model$nodal_types)
+
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
         name <- names(nodal_types)[i]
@@ -359,7 +360,7 @@ unpack_wildcard <- function(x) {
 #' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
 #' @examples
-#' update_causal_types(make_model('X->Y'))
+#' CausalQueries:::update_causal_types(make_model('X->Y'))
 
 update_causal_types <- function(model) {
 

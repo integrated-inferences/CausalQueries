@@ -50,7 +50,7 @@ make_events <- function(model, n = 1, w = NULL, P = NULL, A = NULL,
             P <- get_parameter_matrix(model)
         if (is.null(A))
             A <- get_ambiguities_matrix(model)
-        w <- get_event_prob(model, P, A, parameters = parameters)
+        w <- get_event_prob(model = model, P = P, A = A, parameters = parameters)
     }
 
     # Draw events (Compact dataframe)

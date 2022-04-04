@@ -57,11 +57,6 @@ make_confounds_df <- function(model) {
         return(NULL)
     }
 
-    if (any(apply(model$P, 1, sum) == 0))
-        warning("
-\tSome rows in model$P sum to 0. Likely indicative of malformed confounds
-\t(such as the distribution of X depends on X) confounds_df may not be reliable.")
-
     # Correlations of the rows of the P matrix capture the qualitative nature of correlations of
     # parameters
     par_corr <- cor(t(model$P))
