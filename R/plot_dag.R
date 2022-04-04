@@ -59,7 +59,7 @@ plot_dag <- function(model = NULL,
 
     # Get statement
     statement <- model$statement
-    dagitty_statement <-  paste("dag{", statement, "}") %>% dagitty
+    dagitty_statement <-  paste("dag{", statement, "}") %>% dagitty::dagitty()
 
 
     # Add coordinates if provided (otherwise generated)
@@ -74,7 +74,7 @@ plot_dag <- function(model = NULL,
     }
 
     # Make the df
-    df <- dagitty_statement %>% tidy_dagitty()
+    df <- dagitty_statement %>% ggdag::tidy_dagitty()
     df$data <- df$data %>% mutate(
         update=paste0(name,to))
 
@@ -91,7 +91,7 @@ plot_dag <- function(model = NULL,
         ggplot(aes(x=x,y=y,xend=xend,yend=yend)) +
         geom_dag_point(colour=nodecol,shape=shape,
                        size=nodesize) +theme_dag() +
-        labs(title = TeX(repr_text(title) %>% str_remove_all('\\"'))) +
+        labs(title = latex2exp::TeX(repr::repr_text(title) %>% stringr::str_remove_all('\\"'))) +
         geom_dag_text(aes_string(label = 'name'),
                       show.legend = FALSE,
                       parse = TRUE,
