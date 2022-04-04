@@ -8,7 +8,7 @@ query_model(
   model,
   queries = NULL,
   given = NULL,
-  using = list("priors"),
+  using = list("parameters"),
   parameters = NULL,
   stats = NULL,
   n_draws = 4000,
