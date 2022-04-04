@@ -45,6 +45,7 @@ plot_dag <- function(model = NULL,
     if(is.null(model))
         stop("Model object must be provided")
     if(class(model)!="causal_model") stop("Model object must be of type causal_model")
+    if (is.null(x_coord) == !is.null(y_coord)) message("Coordinates should be provided for both x and y (or neither).")
     if (!is.null(x_coord) & !is.null(y_coord) & length(x_coord)!=length(y_coord)) stop("x and y coordinates must be of equal length")
     if (!is.null(x_coord) & !is.null(y_coord) & length(model$nodes)!=length(x_coord)) stop("length of coordinates supplied must equal number of nodes")
     if (!is.null(model$P) & is.null(model$confounds_df)) {
