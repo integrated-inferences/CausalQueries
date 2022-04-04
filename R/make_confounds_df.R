@@ -9,7 +9,7 @@
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> Y') %>%
-#' set_confound('X <-> Y', add_confounds_df  = FALSE)
+#' set_confound('X <-> Y')
 #' make_confounds_df(model)
 #'
 #' model <- make_model('X -> M -> Y; X <-> Y') %>%
@@ -18,11 +18,6 @@
 #'
 #' model <- make_model('X -> M -> Y; X <-> M; M <-> Y') %>%
 #' set_restrictions(c('M[X=1] == M[X=0]', 'Y[M=1]==Y[M=0]'))
-#' make_confounds_df(model)
-#'
-#' # The implied confounding is between X and M and also between X and Y
-#' model <- make_model('X -> M -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1] > Y[X=0]'), add_confounds_df = FALSE)
 #' make_confounds_df(model)
 #'
 #' model <- make_model('X -> M -> Y')

@@ -25,6 +25,7 @@
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
 #' @param update_types Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.
+#' @param wildcard Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.
 #'
 #' @family restrictions
 #'

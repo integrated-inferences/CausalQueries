@@ -3,7 +3,6 @@
 # `get_event_prob` draws event probability vector `w` given a single realization of parameters
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param type_prob A numeric vector. Type probabilities. (Not required).
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
 #' @return An {array} of event probabilities
 #' @export

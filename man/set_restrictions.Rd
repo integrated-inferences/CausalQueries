@@ -26,6 +26,8 @@ set_restrictions(
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
 
 \item{update_types}{Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.}
+
+\item{wildcard}{Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.}
 }
 \value{
 An object of class \code{model}. The causal types and nodal types in the model are reduced according to the stated restriction.

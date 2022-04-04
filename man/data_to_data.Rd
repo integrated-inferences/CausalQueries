@@ -6,6 +6,15 @@
 \usage{
 data_to_data(M, A)
 }
+\arguments{
+\item{M}{a matrix}
+
+\item{A}{a matrix}
+}
+\value{
+a matrix
+}
 \description{
 helper to generate a matrix mapping from names of M to names of A
 }
+\keyword{internal}

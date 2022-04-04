@@ -23,12 +23,12 @@ Depends:
 Imports:
     dagitty (>= 0.3-1),
     gtools (>= 3.9.2),
-    stats (>= 4.2.0),
+    stats (>= 4.1.1),
     randomizr (>= 0.22.0),
     rlang (>= 0.2.0),
     rstan (>= 2.18.1),
     rstantools (>= 2.0.0),
-    stringr (>= 1.4.0.9000)
+    stringr (>= 1.4.0)
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),

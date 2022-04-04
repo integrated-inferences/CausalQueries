@@ -61,6 +61,12 @@ make_parmap <- function(model, A = NULL, P = NULL){
     }
 
 #' helper to generate a matrix mapping from names of M to names of A
+#' @param M a matrix
+#' @param A a matrix
+#' @return a matrix
+#' @keywords internal
+#'
+#'
 data_to_data <- function(M, A){
     dnames <- colnames(A)
     out <- sapply(colnames(M), function(j) dnames %in% j )*1
