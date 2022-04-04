@@ -47,12 +47,10 @@
 #'
 #' # A single node graph is also possible
 #' model <- make_model("X")
-#' plot(model)
 #'
 #' # Unconnected nodes cannot
 #' \dontrun{
 #'  model <- make_model("X <-> Y")
-#'  plot(model)
 #' }
 
 make_model <- function(statement, add_causal_types = TRUE){
