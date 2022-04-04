@@ -17,6 +17,6 @@ Get type names
 }
 \examples{
 model <- make_model('A->Y<-B')
-get_type_names(model$nodal_types)
+CausalQueries:::get_type_names(model$nodal_types)
 }
 \keyword{internal}
