@@ -19,7 +19,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom graphics plot
-#' @importFrom daggity dagitty
+#' @importFrom dagitty dagitty
 #' @importFrom repr repr_text
 #' @importFrom stringr str_split
 #' @importFrom latex2exp TeX
