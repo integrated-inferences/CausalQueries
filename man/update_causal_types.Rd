@@ -16,6 +16,6 @@ A \code{data.frame} containing updated causal types in a model
 Update causal types based on nodal types
 }
 \examples{
-update_causal_types(make_model('X->Y'))
+CausalQueries:::update_causal_types(make_model('X->Y'))
 }
 \keyword{internal}
