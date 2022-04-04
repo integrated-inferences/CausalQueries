@@ -14,6 +14,7 @@ get_event_prob(model, parameters = NULL, A = NULL, P = NULL, given = NULL)
 \item{A}{A \code{data.frame}. Ambiguity matrix. Not required but may be provided to avoid repeated computation for simulations.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be provided to avoid repeated computation for simulations.}
+  
 \item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
 
 \item{type_prob}{A numeric vector. Type probabilities. (Not required).}
