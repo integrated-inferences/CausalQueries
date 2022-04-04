@@ -31,7 +31,8 @@ Imports:
     stringr (>= 1.4.0),
     ggdag (>= 0.2.4),
     latex2exp (>= 0.9.4),
-    repr (>= 1.1.4)
+    repr (>= 1.1.4),
+    ggplot2 (>= 3.3.5)
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
