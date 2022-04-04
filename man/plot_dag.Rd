@@ -6,12 +6,11 @@
 \usage{
 plot_dag(
   model = NULL,
-  x = NULL,
-  y = NULL,
+  x_coord = NULL,
+  y_coord = NULL,
   title = "",
   textcol = "white",
   textsize = 3.88,
-  obscure = NULL,
   shape = 16,
   nodecol = "black",
   nodesize = 16
@@ -20,17 +19,15 @@ plot_dag(
 \arguments{
 \item{model}{A \code{causal_model} object generated from \code{make_model}}
 
-\item{x}{A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated}
+\item{x_coord}{A vector of x coordinates for DAG nodes. If left empty, coordinates are randomly generated}
 
-\item{y}{A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated}
+\item{y_coord}{A vector of y coordinates for DAG nodes. If left empty, coordinates are randomly generated}
 
 \item{title}{String specifying title of graph}
 
 \item{textcol}{String specifying color of text labels}
 
 \item{textsize}{Numeric, size of text labels}
-
-\item{obscure}{A vector or string of the form "X->Y" that indicates if a given arrow should be hidden}
 
 \item{shape}{Indicates shape of node. Defaults to circular node.}
 

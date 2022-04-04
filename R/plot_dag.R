@@ -3,12 +3,11 @@
 #' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
 #'
 #' @param model A \code{causal_model} object generated from \code{make_model}
-#' @param x A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated
-#' @param y A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated
+#' @param x_coord A vector of x coordinates for DAG nodes. If left empty, coordinates are randomly generated
+#' @param y_coord A vector of y coordinates for DAG nodes. If left empty, coordinates are randomly generated
 #' @param title String specifying title of graph
 #' @param textcol String specifying color of text labels
 #' @param textsize Numeric, size of text labels
-#' @param obscure A vector or string of the form "X->Y" that indicates if a given arrow should be hidden
 #' @param shape Indicates shape of node. Defaults to circular node.
 #' @param nodelcol String indicating color of node that is accepted by ggplot's default palette
 #' @param nodesize Size of node.
@@ -33,12 +32,11 @@
 #'
 
 plot_dag <- function(model = NULL,
-                     x = NULL,
-                     y = NULL,
+                     x_coord = NULL,
+                     y_coord = NULL,
                      title = "",
                      textcol = 'white',
                      textsize = 3.88,
-                     obscure=NULL,
                      shape = 16,
                      nodecol = 'black',
                      nodesize = 16
@@ -47,8 +45,8 @@ plot_dag <- function(model = NULL,
     if(is.null(model))
         stop("Model object must be provided")
     if(class(model)!="causal_model") stop("Model object must be of type causal_model")
-    if (!is.null(x) & !is.null(y) & length(x)!=length(y)) stop("x and y coordinates must be of equal length")
-    if (!is.null(x) & !is.null(y) & length(model$nodes)!=length(x)) stop("length of coordinates supplied must equal number of nodes")
+    if (!is.null(x_coord) & !is.null(y_coord) & length(x_coord)!=length(y_coord)) stop("x and y coordinates must be of equal length")
+    if (!is.null(x_coord) & !is.null(y_coord) & length(model$nodes)!=length(x_coord)) stop("length of coordinates supplied must equal number of nodes")
     if (!is.null(model$P) & is.null(model$confounds_df)) {
         message("Model has a P matrix but no confounds_df. confounds_df generated on the fly. To avoid this message try model <- set_confounds_df(model)")
         model <- set_confounds_df(model)
@@ -58,18 +56,19 @@ plot_dag <- function(model = NULL,
     nodes <- model$nodes
 
     # Get statement
-    statement <- model$statement
-    dagitty_statement <-  paste("dag{", statement, "}") %>% dagitty::dagitty()
+
+    dagitty_statement <-  paste("dag{", model$statement, "}") %>%
+      dagitty::dagitty()
 
 
     # Add coordinates if provided (otherwise generated)
 
-    if(!is.null(x) & !is.null(y)){
-        names(x) <- nodes
-        names(y) <- nodes
+    if(!is.null(x_coord) & !is.null(y_coord)){
+        names(x_coord) <- nodes
+        names(y_coord) <- nodes
 
-        coordinates(dagitty_statement) <-
-            list(x = x , y = y) %>%
+        dagitty::coordinates(dagitty_statement) <-
+            list(x = x_coord , y = y_coord) %>%
             coords2df() %>% coords2list()
     }
 
@@ -78,13 +77,6 @@ plot_dag <- function(model = NULL,
     df$data <- df$data %>% mutate(
         update=paste0(name,to))
 
-    #matching bit is necessary because the dataframe doesn't always list all names in the order you first specify
-
-    # remove any arrows to be obscured
-    if (!is.null(obscure)) {obscoords<-data.frame(update = lapply(obscure %>%
-                                                                      str_split('->'),paste,collapse='') %>%
-                                                      unlist())
-    df$data$direction[match(obscoords$update,df$data$update)]<-NA}
 
     # Step 2: Format and export
     df %>%
