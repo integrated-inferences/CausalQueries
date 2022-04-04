@@ -9,6 +9,7 @@
 #' take parameters as the means or as draws from the prior or posterior.
 #' @param n Non negative integer. Number of observations. If not provided it is inferred from the  largest n_step.
 #' @param n_steps A \code{list}. Number of observations to be observed at each step
+#' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
 #' @param nodes A \code{list}. Which nodes to be observed at each step. If NULL all nodes are observed.
 #' @param probs A \code{list}. Observation probabilities at each step
 #' @param subsets A \code{list}. Strata within which observations are to be observed at each step. TRUE for all, otherwise an expression that evaluates to a logical condition.
@@ -72,6 +73,8 @@
 #'   subsets = list(TRUE, "is.na(X)"),
 #'   probs = list(.5, .2))
 #'
+#'# Example with given data
+#' make_data(model, given = "X==1 & Y==1", n = 5)
 
 make_data <- function(
 	model,
@@ -83,6 +86,7 @@ make_data <- function(
 	probs   = NULL,            # probs at each step
 	subsets = TRUE,         # subsets at each step
 	complete_data = NULL,
+	given = NULL,
 	verbose = TRUE,
 	...){
 
@@ -115,10 +119,14 @@ make_data <- function(
 
 	# Complete data
 	if(is.null(complete_data)) {
-		complete_data <- make_data_single(model, n = n, parameters = parameters)
+		complete_data <- make_data_single(model,
+		                                  n = n,
+		                                  parameters = parameters,
+		                                  given = given)
 	}
 
-	# Default behavior is to return complete data -- triggered if all data and all nodes sought in step 1
+	# Default behavior is to return complete data --
+	# triggered if all data and all nodes sought in step 1
 	if(all(model$nodes %in% nodes[[1]]))
 		if(probs[1]==1 || n_steps[1]==n) return(complete_data)
 
@@ -223,6 +231,7 @@ observe_data <- function(complete_data,
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n An integer. Number of observations.
+#' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
 #' @param parameters A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.
 #' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
 #' @param w Vector of event probabilities can be provided directly. This is useful for speed for repeated data draws.
@@ -235,13 +244,12 @@ observe_data <- function(complete_data,
 #'
 #' model <- make_model("X -> Y")
 #'
-#' # Simplest behavior uses by default  the parameter vector contained in model,
-#' # which is flat by default:
+#' # Simplest behavior uses by default the parameter vector contained in model
 #' CausalQueries:::make_data_single(model, n = 5)
 #'
 #' CausalQueries:::make_data_single(model, n = 5, param_type = "prior_draw")
 #'
-#' # Simulate multiple datasets is fastest if w is provided
+#' # Simulate multiple datasets. This is fastest if event probabilities (w) are  provided
 #' w <- get_event_prob(model)
 #' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
@@ -251,6 +259,7 @@ make_data_single <- function(
 	n = 1,
 	parameters = NULL,
 	param_type = NULL,
+	given = NULL,
 	w = NULL, P = NULL, A = NULL){
 
 	# Check that parameters sum to 1 in each param_set
@@ -265,10 +274,13 @@ make_data_single <- function(
 
 	# Generate event probabilities w if missing
 	if(is.null(w)){
-		# if(is.null(P)) 	P <- get_parameter_matrix(model)
-		# if(is.null(A)) 	A <- get_ambiguities_matrix(model)
-		# w <- get_event_prob(model, P, A, parameters = parameters)
-		w <- get_event_prob(model, parameters = parameters, A = A, P = P)
+
+	  	w <- get_event_prob(
+	  	  model,
+	  	  parameters = parameters,
+	  	  A = A,
+	  	  P = P,
+	  	  given = given)
 		}
 
 	# Data drawn here

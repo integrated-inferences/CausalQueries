@@ -14,6 +14,7 @@ make_data(
   probs = NULL,
   subsets = TRUE,
   complete_data = NULL,
+  given = NULL,
   verbose = TRUE,
   ...
 )
@@ -41,6 +42,8 @@ take parameters as the means or as draws from the prior or posterior.}
 \item{subsets}{A \code{list}. Strata within which observations are to be observed at each step. TRUE for all, otherwise an expression that evaluates to a logical condition.}
 
 \item{complete_data}{A \code{data.frame}. Dataset with complete observations. Optional.}
+
+\item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
 
 \item{verbose}{Logical. If TRUE prints step schedule.}
 
@@ -107,4 +110,6 @@ make_data(
   subsets = list(TRUE, "is.na(X)"),
   probs = list(.5, .2))
 
+# Example with given data
+make_data(model, given = "X==1 & Y==1", n = 5)
 }
