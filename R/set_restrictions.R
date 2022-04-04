@@ -360,7 +360,7 @@ unpack_wildcard <- function(x) {
 #' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
 #' @examples
-#' update_causal_types(make_model('X->Y'))
+#' CausalQueries:::update_causal_types(make_model('X->Y'))
 
 update_causal_types <- function(model) {
 
