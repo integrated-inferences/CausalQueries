@@ -26,7 +26,7 @@ plot_dag(
 
 \item{title}{String specifying title of graph}
 
-\item{textcol}{String specifying colour of text labels}
+\item{textcol}{String specifying color of text labels}
 
 \item{textsize}{Numeric, size of text labels}
 
@@ -36,7 +36,7 @@ plot_dag(
 
 \item{nodesize}{Size of node.}
 
-\item{nodelcol}{String indicating colour of node that is accepted by ggplot's default palette}
+\item{nodelcol}{String indicating color of node that is accepted by ggplot's default palette}
 }
 \value{
 A DAG plot in ggplot style.

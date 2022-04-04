@@ -6,11 +6,11 @@
 #' @param x A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated
 #' @param y A vector of coordinates for DAG nodes. If left empty, coordinates are randomly generated
 #' @param title String specifying title of graph
-#' @param textcol String specifying colour of text labels
+#' @param textcol String specifying color of text labels
 #' @param textsize Numeric, size of text labels
 #' @param obscure A vector or string of the form "X->Y" that indicates if a given arrow should be hidden
 #' @param shape Indicates shape of node. Defaults to circular node.
-#' @param nodelcol String indicating colour of node that is accepted by ggplot's default palette
+#' @param nodelcol String indicating color of node that is accepted by ggplot's default palette
 #' @param nodesize Size of node.
 #' @return A DAG plot in ggplot style.
 #'
