@@ -26,9 +26,13 @@ testthat::test_that(
 
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]", case_level = TRUE)
 		expect_true(is.data.frame(q))
-    ## 		expect_true(q$conf.low < XXXX)
+    expect_true(q$conf.low < 0 & q$conf.low > -0.01)
+    expect_true(q$conf.high < 0 & q$conf.high > -0.01)
+
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]")
 		expect_true(is.data.frame(q))
+		expect_true(q$conf.low > -0.75 & q$conf.low < -0.55)
+		expect_true(q$conf.high > 0.55 & q$conf.high < 0.75)
 
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = "parameters", parameters = c(.5, .5, 0, 0, 1, 0))
 		expect_true(is.data.frame(q))
@@ -51,6 +55,8 @@ testthat::test_that(
 		  query = "Y[X=1] - Y[X=0]",
 		  using = "posteriors")
 		expect_true(is.data.frame(q))
+		expect_true(q$conf.low > -0.55 & q$conf.low < -0.45)
+		expect_true(q$conf.high > 0.65 & q$conf.high < 0.75)
 
 			}
 )
