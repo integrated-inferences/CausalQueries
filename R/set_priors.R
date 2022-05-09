@@ -8,7 +8,7 @@
 #'
 #' * \code{node}, which restricts for example to parameters associated with node 'X'
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
+#' * \code{statement}, which restricts for example to nodal types that satisfy a statement such as 'Y[X=1] > Y[X=0]'
 #'
 #' * \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
@@ -29,9 +29,9 @@
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label A string. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param nodal_type A string. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
 #' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
-#' @param nodal_type A string. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param param_set A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names A string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @return A vector indicating the hyperparameters of the prior distribution of the nodal types.
@@ -67,23 +67,12 @@
 #' make_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
 #'
 #' # Passing a confound statement
-#' model <- make_model('X->Y') %>%
-#'  set_confound(list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]'))
+#' model <- make_model('X->Y; X<->Y')
 #'
-#' make_priors(model,
-#'             confound = list(X='Y[X=1] > Y[X=0]',
-#'                             X='Y[X=1] < Y[X=0]'),
-#'             alphas = c(3, 6))
+#' make_priors(model, node = "Y", given = "X.1", alphas = 1:4)
+#' make_priors(model, param_set='Y.X.0', alphas = 5)
+#' make_priors(model, param_set='Y.X.0', nodal_type = "01", alphas = 3)
 #'
-#' make_priors(model, confound= list(X='Y[X=1] > Y[X=0]'), alphas = 4)
-#' make_priors(model, param_set='X_1', alphas = 5)
-#' make_priors(model, param_names='X_2.1', alphas = .75)
-#'
-#' make_model('X -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))%>%
-#'   make_priors(statement = 'X[]==1',
-#'               confound = list(X = 'Y[X=1]>Y[X=0]', X = 'Y[X=1]<Y[X=0]'),
-#'               alphas = c(2, .5))
 
 make_priors <-
     function(model, alphas = NA, distribution = NA, node = NA, label = NA, statement = NA,

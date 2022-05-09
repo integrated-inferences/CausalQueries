@@ -39,18 +39,12 @@ testthat::test_that(
     P <- plot_dag(model,x_coord=x,y_coord=y)
     dat <- data.frame(name=model$nodes,x=x,y=y)
     expect_false(!any(P$data[match(P$data$name,model$nodes),c('name','x','y')]==dat))
+    expect_message(plot(model,x_coord=x))
+    expect_message(plot(model,y_coord=y))
   }
 )
 
-testthat::test_that(
 
-  desc = "Testing obscure",
 
-  code = {
-    model <- make_model('X -> K -> Y')
-    obs <- "X->K"
-    P <- plot_dag(model,obscure=obs)
-    expect_true(P$data %>% dplyr::filter(grepl("X",name) & grepl("K",to)) %>% .$direction %>%
-                  is.na())
-  }
-)
+
+
