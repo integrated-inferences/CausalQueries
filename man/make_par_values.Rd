@@ -28,7 +28,7 @@ make_par_values(
 
 \item{alter_at}{string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)}
 
-\item{node}{string indicating nodes for which v are to be altered}
+\item{node}{string indicating nodes which are to be altered}
 
 \item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
 
@@ -66,13 +66,13 @@ Forbidden statements include:
 model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
 #altering values using \code{alter_at}
-CausaQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
 
 #altering values using \code{param_names}
 CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
-CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 
 #altering values using a combination of other arguments
 CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")

@@ -4,17 +4,15 @@
 #'
 #' Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 #'
+#' * \code{node}, which restricts for example to parameters associated with node 'X'
+#'
 #' * \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 #'
-#' * \code{node}, which restricts for example to parameters associated with node 'X'
+#' * \code{param_names}, which restricts in specific parameters by naming them
 #'
 #' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
-#' * \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
-#'
-#' * \code{param_set}, which us useful when setting confound statements that produces several sets of parameters
-#'
-#' * \code{param_names}, which restricts in specific parameters by naming them
+#' * \code{param_set}, \code{param_set}, which are useful when setting confound statements that produces several sets of parameters
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -29,9 +27,9 @@
 #' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param node A string (or list of strings) indicating nodes for which priors are to be altered
 #' @param label A string. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param nodal_type A string. Equivalent to label. Label for nodal type indicating nodal types for which priors are to be altered
 #' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
-#' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
-#' @param nodal_type A string. Label for nodal type indicating nodal types for which priors are to be altered
+#' @param given A string that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
 #' @param param_set A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)
 #' @param param_names A string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @return A vector indicating the hyperparameters of the prior distribution of the nodal types.
@@ -66,34 +64,46 @@
 #' make_priors(model, statement = 'Y[M=1] > Y[M=0]', alphas = 3)
 #' make_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
 #'
-#' # Passing a confound statement
-#' model <- make_model('X->Y') %>%
-#'  set_confound(list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]'))
+#' # Models with confounding
+#' model <- make_model('X -> Y; X <-> Y')
+#' make_priors(model, node = "X", alphas = c(3, 6))
+#' make_priors(model, given = "X.1", alphas = 4)
+#' make_priors(model, param_set='Y.X.1', alphas = 5)
+#' make_priors(model, alter_at = "nodal_type == '01'", 2)
 #'
-#' make_priors(model,
-#'             confound = list(X='Y[X=1] > Y[X=0]',
-#'                             X='Y[X=1] < Y[X=0]'),
-#'             alphas = c(3, 6))
-#'
-#' make_priors(model, confound= list(X='Y[X=1] > Y[X=0]'), alphas = 4)
-#' make_priors(model, param_set='X_1', alphas = 5)
-#' make_priors(model, param_names='X_2.1', alphas = .75)
-#'
-#' make_model('X -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))%>%
-#'   make_priors(statement = 'X[]==1',
-#'               confound = list(X = 'Y[X=1]>Y[X=0]', X = 'Y[X=1]<Y[X=0]'),
-#'               alphas = c(2, .5))
 
 make_priors <-
-    function(model, alphas = NA, distribution = NA, node = NA, label = NA, statement = NA,
-             confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
+    function(model,
+             alphas = NA,
+             distribution = NA,
+             alter_at = NA,
+             node = NA,
+             nodal_type = NA,
+             param_set = NA,
+             given = NA,
+             label = NA,
+             statement = NA,
+             param_names = NA
+) {
     is_a_model(model)
-        make_par_values_multiple(
-            model, y=get_priors(model), x = alphas, distribution = distribution,
-            node = node, label = label, statement = statement,
-            confound = confound, nodal_type = nodal_type, param_names = param_names,
-            param_set = param_set, normalize = FALSE)
+
+      if(!is.na(label)) {
+        nodal_type <- label
+        message("label is deprecated; please use nodal_type")
+      }
+      make_par_values(
+            model,
+            alter = "priors",
+            x = alphas,
+            distribution = distribution,
+            alter_at = alter_at,
+            node = node,
+            nodal_type = nodal_type,
+            param_set = param_set,
+            given = given,
+            statement = statement,
+            param_names = param_names,
+            normalize = FALSE)
     }
 
 
@@ -124,15 +134,7 @@ make_priors <-
 #'
 #' @param model A model created with \code{make_model}
 #' @param priors A optional vector of positive reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df
-#' @param distribution String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
-#' @param node A string (or list of strings) indicating nodes for which priors are to be altered
-#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
-#' @param confound A confound statement (or list of statements) that restricts nodal types for which priors are to be altered
-#' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
-#' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+#' @param ... Arguments passed to \code{make_priors}
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
 #' @export
@@ -222,14 +224,11 @@ make_priors <-
 #'               alphas = c(2, .5))
 #' get_priors(model)
 
-set_priors <- function(model, priors = NULL, distribution = NA, alphas = NA, node = NA, label = NA,
-    statement = NA, confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
+set_priors <- function(model, priors = NULL, ...) {
 
     is_a_model(model)
     if (is.null(priors))
-        priors <- make_priors(model, distribution = distribution, alphas = alphas, node = node, label = label,
-            statement = statement, confound = confound, nodal_type = nodal_type, param_names = param_names,
-            param_set = param_set)
+        priors <- make_priors(model, ...)
 
     if (!is.null(priors) && isTRUE(!is.numeric(priors) | !all(priors >= 0)))
         stop("Argument priors must be a vector of non negative real numbers")

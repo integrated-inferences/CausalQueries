@@ -4,42 +4,14 @@
 \alias{set_priors}
 \title{Set prior distribution}
 \usage{
-set_priors(
-  model,
-  priors = NULL,
-  distribution = NA,
-  alphas = NA,
-  node = NA,
-  label = NA,
-  statement = NA,
-  confound = NA,
-  nodal_type = NA,
-  param_names = NA,
-  param_set = NA
-)
+set_priors(model, priors = NULL, ...)
 }
 \arguments{
 \item{model}{A model created with \code{make_model}}
 
 \item{priors}{A optional vector of positive reals indicating priors over all parameters. These are interpreted as arguments for Dirichlet distributions---one for each parameter set. To see the structure of parameter sets examine model$parameters_df}
 
-\item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
-
-\item{alphas}{Real positive numbers giving hyperparameters of the Dirichlet distribution}
-
-\item{node}{A string (or list of strings) indicating nodes for which priors are to be altered}
-
-\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
-
-\item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
-
-\item{confound}{A confound statement (or list of statements) that restricts nodal types for which priors are to be altered}
-
-\item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
-
-\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
-
-\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+\item{...}{Arguments passed to \code{make_priors}}
 }
 \value{
 An object of class \code{causal_model}. It essentially returns a list containing the elements comprising

@@ -8,13 +8,14 @@ make_priors(
   model,
   alphas = NA,
   distribution = NA,
+  alter_at = NA,
   node = NA,
+  nodal_type = NA,
+  param_set = NA,
+  given = NA,
   label = NA,
   statement = NA,
-  confound = NA,
-  nodal_type = NA,
-  param_names = NA,
-  param_set = NA
+  param_names = NA
 )
 }
 \arguments{
@@ -26,17 +27,17 @@ make_priors(
 
 \item{node}{A string (or list of strings) indicating nodes for which priors are to be altered}
 
+\item{nodal_type}{A string. Equivalent to label. Label for nodal type indicating nodal types for which priors are to be altered}
+
+\item{param_set}{A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+
+\item{given}{A string that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.}
+
 \item{label}{A string. Label for nodal type indicating nodal types for which priors are to be altered}
 
 \item{statement}{A causal query (or list of queries) that determines nodal types for which priors are to be altered}
 
-\item{confound}{A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.}
-
-\item{nodal_type}{A string. Label for nodal type indicating nodal types for which priors are to be altered}
-
 \item{param_names}{A string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
-
-\item{param_set}{A string. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
 }
 \value{
 A vector indicating the hyperparameters of the prior distribution of the nodal types.
@@ -49,17 +50,15 @@ A flexible function to generate priors for a model.
 \details{
 Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 
+* \code{node}, which restricts for example to parameters associated with node 'X'
+
 * \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 
-* \code{node}, which restricts for example to parameters associated with node 'X'
+* \code{param_names}, which restricts in specific parameters by naming them
 
 * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 
-* \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
-
-* \code{param_set}, which us useful when setting confound statements that produces several sets of parameters
-
-* \code{param_names}, which restricts in specific parameters by naming them
+* \code{param_set}, \code{param_set}, which are useful when setting confound statements that produces several sets of parameters
 
 Two arguments govern what values to apply:
 
@@ -95,24 +94,13 @@ make_priors(model, node =c('M', 'Y'), label = '11', alphas = 4)
 make_priors(model, statement = 'Y[M=1] > Y[M=0]', alphas = 3)
 make_priors(model, statement = c('Y[M=1] > Y[M=0]', 'M[X=1]== M[X=0]'), alphas = c(3, 2))
 
-# Passing a confound statement
-model <- make_model('X->Y') \%>\%
- set_confound(list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]'))
+# Models with confounding
+model <- make_model('X -> Y; X <-> Y')
+make_priors(model, node = "X", alphas = c(3, 6))
+make_priors(model, given = "X.1", alphas = 4)
+make_priors(model, param_set='Y.X.1', alphas = 5)
+make_priors(model, alter_at = "nodal_type == '01'", 2)
 
-make_priors(model,
-            confound = list(X='Y[X=1] > Y[X=0]',
-                            X='Y[X=1] < Y[X=0]'),
-            alphas = c(3, 6))
-
-make_priors(model, confound= list(X='Y[X=1] > Y[X=0]'), alphas = 4)
-make_priors(model, param_set='X_1', alphas = 5)
-make_priors(model, param_names='X_2.1', alphas = .75)
-
-make_model('X -> Y') \%>\%
-  set_confound(list(X = 'Y[X=1]>Y[X=0]'))\%>\%
-  make_priors(statement = 'X[]==1',
-              confound = list(X = 'Y[X=1]>Y[X=0]', X = 'Y[X=1]<Y[X=0]'),
-              alphas = c(2, .5))
 }
 \seealso{
 Other priors: 
