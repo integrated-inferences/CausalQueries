@@ -25,6 +25,8 @@ make_priors(
 
 \item{distribution}{String (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)}
 
+\item{alter_at}{A string giving a logic statement using column names of `parameters_df` to indicate what changes to make.}
+
 \item{node}{A string (or list of strings) indicating nodes for which priors are to be altered}
 
 \item{nodal_type}{A string. Equivalent to label. Label for nodal type indicating nodal types for which priors are to be altered}
@@ -41,24 +43,22 @@ make_priors(
 }
 \value{
 A vector indicating the hyperparameters of the prior distribution of the nodal types.
-
-For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
 }
 \description{
 A flexible function to generate priors for a model.
 }
 \details{
-Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
+Six arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 
 * \code{node}, which restricts for example to parameters associated with node 'X'
 
-* \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+* \code{nodal_type} (or \code{label}, deprecated) The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
 
 * \code{param_names}, which restricts in specific parameters by naming them
 
 * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 
-* \code{param_set}, \code{param_set}, which are useful when setting confound statements that produces several sets of parameters
+* \code{param_set}, \code{given}, which are useful when setting confound statements that produces several sets of parameters
 
 Two arguments govern what values to apply:
 

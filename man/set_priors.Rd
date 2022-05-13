@@ -21,15 +21,17 @@ a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached t
 A flexible function to add priors to a model.
 }
 \details{
-Four arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
-
-* \code{label} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+Six arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 
 * \code{node}, which restricts for example to parameters associated with node 'X'
 
+* \code{nodal_type} (or \code{label}, deprecated) The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+
+* \code{param_names}, which restricts in specific parameters by naming them
+
 * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 
-* \code{confound}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
+* \code{param_set}, \code{given}, which are useful when setting confound statements that produces several sets of parameters
 
 Two arguments govern what values to apply:
 
