@@ -30,7 +30,21 @@
 #'
 #' @examples
 #'
+#' # the below methods can be applied to either priors or param_values by specifying the desired option in \code{alter}
 #'
+#' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
+#'
+#' #altering values using \code{alter_at}
+#' CausaQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
+#'
+#' #altering values using \code{param_names}
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
+#'
+#' #altering values using \code{statement}
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#'
+#' #altering values using a combination of other arguments
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
 
 
 
