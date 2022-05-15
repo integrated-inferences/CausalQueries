@@ -14,7 +14,7 @@
 #'
 #' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
 #'
-#' * \code{param_names}, which restricts in specific parameters by naming them
+#' * \code{param_set}, \code{given}, which are useful when setting confound statements that produces several sets of parameters
 #'
 #' Two arguments govern what values to apply:
 #'
@@ -54,11 +54,12 @@ NULL
 #'
 #' @examples
 #'
-#' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
+#' # Pass all nodal types
+#' model <- make_model("Y <- X")
+#' make_priors(model, alphas = .4)
+#' make_priors(model, distribution = "jeffreys")
 #'
-#' #passing alphas to all parameters
-#' make_priors(model = model, alphas = 0.5)
-#' make_priors(model = model, distribution = "jeffreys")
+#' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 #'
 #' #altering values using \code{alter_at}
 #' make_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
@@ -67,7 +68,7 @@ NULL
 #' make_priors(model = model, alphas = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
 #'
 #' #altering values using \code{statement}
-#' make_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#' make_priors(model = model, alphas = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 #'
 #' #altering values using a combination of other arguments
 #' make_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
@@ -91,7 +92,7 @@ make_priors <- function(model,
     if(!is.na(label)){
         warning("label is depreciated, use nodal_type instead")
         nodal_type <- label
-    }
+        }
 
     make_par_values(
         model = model, alter = "priors", x = alphas, alter_at = alter_at,
@@ -114,12 +115,13 @@ make_priors <- function(model,
 #' @family priors
 #' @examples
 #'
+#' # Pass all nodal types
+#' model <- make_model("Y <- X")
+#' set_priors(model, alphas = .4)
+#' set_priors(model, distribution = "jeffreys")
+#'
 #' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 #'
-#' #passing alphas to all parameters
-#' set_priors(model = model, alphas = 0.5)
-#' set_priors(model = model, distribution = "jeffreys")
-#'
 #' #altering values using \code{alter_at}
 #' set_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
 #'
@@ -127,23 +129,7 @@ make_priors <- function(model,
 #' set_priors(model = model, alphas = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
 #'
 #' #altering values using \code{statement}
-#' set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
-#'
-#' #altering values using a combination of other arguments
-#' set_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")#' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
-#'
-#' #passing alphas to all parameters
-#' set_priors(model = model, alphas = 0.5)
-#' set_priors(model = model, distribution = "jeffreys")
-#'
-#' #altering values using \code{alter_at}
-#' set_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
-#'
-#' #altering values using \code{param_names}
-#' set_priors(model = model, alphas = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
-#'
-#' #altering values using \code{statement}
-#' set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#' set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 #'
 #' #altering values using a combination of other arguments
 #' set_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
