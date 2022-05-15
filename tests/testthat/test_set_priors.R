@@ -42,11 +42,9 @@ testthat::test_that(
 	desc = "Check output.",
 
 	code = {
-	  model <- make_model("X -> Y") %>%
-	    set_confound("X <-> Y")
+	  model <- make_model("X -> Y") %>% set_confound("X <-> Y")
 	  out <- make_priors(model,
 	                     statement = "X[]==1",
-	                     confound = list(X = "Y[X=1]>Y[X=0]"),
 	                     alphas = c(2))
 
 		expect_true(all(c(2) %in% out))
@@ -57,7 +55,7 @@ testthat::test_that(
 		                   nodal_type="00",
 		                   alphas=666)
 
-		expect_true(all(666 %in% out))
+		expect_true(out["Y.00_X.0"]==666)
 	}
 )
 
