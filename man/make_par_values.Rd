@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_par_values.R
 \name{make_par_values}
 \alias{make_par_values}
-\title{make_par_values_exp}
+\title{make_par_values}
 \usage{
 make_par_values(
   model,
@@ -47,17 +47,6 @@ make_par_values(
 \description{
 This is the one step function for make_priors and make_parameters.
 See \code{make_priors} for more help.
-}
-\details{
-Forbidden statements include:
-\itemize{
-  \item Setting \code{distribution} and \code{values} at the same time.
-  \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
-  \item Setting negative values.
-  \item specifying \code{alter_at} with any of \code{node}, \code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{param_names}
-  \item specifying \code{param_names} with any of \code{node},\code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{alter_at}
-  \item specifying \code{statement} with any of \code{node} or \code{nodal_type}
-}
 }
 \examples{
 

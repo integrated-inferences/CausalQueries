@@ -1,17 +1,7 @@
-#' make_par_values_exp
+#' make_par_values
 #'
 #' This is the one step function for make_priors and make_parameters.
 #' See \code{make_priors} for more help.
-#'
-#' Forbidden statements include:
-#' \itemize{
-#'   \item Setting \code{distribution} and \code{values} at the same time.
-#'   \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
-#'   \item Setting negative values.
-#'   \item specifying \code{alter_at} with any of \code{node}, \code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{param_names}
-#'   \item specifying \code{param_names} with any of \code{node},\code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{alter_at}
-#'   \item specifying \code{statement} with any of \code{node} or \code{nodal_type}
-#' }
 #'
 #' @param model model created with \code{make_model}
 #' @param alter character vector with one of "priors" or "param_value" specifying what to alter
@@ -225,10 +215,11 @@ make_par_values <- function(model,
   }
 
   if(!exists("command")){
-    stop("no parameters to alter values for specified. No change to values.")
+    message("no specific parameters to alter values for specified. Altering all parameters.")
+    to_alter <- rep(TRUE, length(y))
+  } else {
+    to_alter <- with(model$parameters_df, eval(parse(text = command)))
   }
-
-  to_alter <- with(model$parameters_df, eval(parse(text = command)))
 
   # Provide values unless a distribution is provided
   if(!is.na(distribution)){

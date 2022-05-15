@@ -20,7 +20,6 @@ get_priors(make_model('X -> Y'))
 }
 \seealso{
 Other priors: 
-\code{\link{make_priors}()},
-\code{\link{set_priors}()}
+\code{\link{prior_setting}}
 }
 \concept{priors}
