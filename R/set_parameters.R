@@ -1,17 +1,35 @@
+#' Setting parameters
+#'
+#' Functionality for altering parameters:
+#'
+#' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
+#' @param warning Logical. Whether to warn about parameter renormalization.
+#' @param ... Options passed onto \code{\link{make_priors}}.
+#' @inheritParams CausalQueries_internal_inherit_params
+#'
+#' @name parameter_setting
+NULL
+#> NULL
+
+
+
+
+
 #' Make a 'true' parameter vector
 #'
 #' A vector of 'true' parameters; possibly drawn from prior or posterior.
 #'
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
-#' @param warning Logical. Whether to warn about parameter renormalization.
+#' @rdname parameter_setting
+#'
 #' @param normalize Logical. If parameter given for a subset of a family the residual elements are normalized so that parameters in param_set sum to 1 and provided params are unaltered.
-#' @param ... Options passed onto \code{\link{make_priors}}.
+#'
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom rstan extract
 #' @export
 #' @family parameters
 #' @examples
+#'
+#' # make_parameters examples:
 #'
 #' # Simple examples
 #' model <- make_model('X -> Y')
@@ -24,17 +42,20 @@
 #' make_parameters(model, param_type = 'posterior_draw')
 #' make_parameters(model, param_type = 'posterior_mean')
 #'
-#' # Harder examples, using \code{define} and priors arguments to define
-#' # specific parameters using causal syntax
 #'
-#'# Using labels: Two values for two nodes with the same label
-#' make_model('X -> M -> Y') %>% make_parameters(label = "01", parameters = c(0,1))
 #'\donttest{
-#' # Using statement:
-#' make_model('X -> Y') %>%
-#'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
-#' make_model('X -> Y') %>%
-#'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), parameters = c(.2,0))
+#'
+#' #altering values using \code{alter_at}
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
+#'
+#' #altering values using \code{param_names}
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), param_names = c("Y.10","Y.01"))
+#'
+#' #altering values using \code{statement}
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#'
+#' #altering values using a combination of other arguments
+#' make_model("X -> Y") %>% make_parameters(model = model, parameters = c(0.5,0.25), node = "Y", nodal_type = c("00","01"))
 #'
 #' # Normalize renormalizes values not set so that value set is not renomalized
 #' make_parameters(make_model('X -> Y'),
@@ -76,7 +97,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     # New (from parameters)
     if (param_type == "define"){
       param_value <- make_par_values(model,
-                                     alter_at = "param_value",
+                                     alter = "param_value",
                                      x = parameters,
                                      normalize = normalize,
                                      ...)
@@ -133,30 +154,46 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' Add a true parameter vector to a model. Parameters can be created using arguments passed to
 #' \code{\link{make_parameters}} and \code{\link{make_priors}}.
 #'
-#' Argument 'param_type' is passed to make_priors and specifies  one of 'flat', 'prior_mean',
-#' 'posterior_mean', 'prior_draw', 'posterior_draw', and 'define'.
-#' With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise
-#' \code{flat} sets equal probabilities on each nodal param_type in each parameter set;
-#' \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
-#' take parameters as the means or as draws from the prior or posterior.
+#' @rdname parameter_setting
 #'
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @param param_type A character. String specifying type of parameters to set ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
-#' @param warning Logical. Whether to warn about parameter renormalization
-#' @param ... Arguments to be passed to make_parameters
 #' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with true vector of parameters attached to it.
 #' @export
 #' @family parameters
 #' @examples
+#'
+#' # set_parameters examples:
+#'
 #' make_model('X->Y') %>% set_parameters(1:6) %>% get_parameters()
 #'
-#' make_model('X -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
-#'   set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
-#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
-#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
-#'   get_parameters
+#' # Simple examples
+#' model <- make_model('X -> Y')
+#' data  <- simulate_data(model, n = 2)
+#' model <- update_model(model, data)
+#' set_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
+#' set_parameters(model, param_type = 'flat')
+#' set_parameters(model, param_type = 'prior_draw')
+#' set_parameters(model, param_type = 'prior_mean')
+#' set_parameters(model, param_type = 'posterior_draw')
+#' set_parameters(model, param_type = 'posterior_mean')
+#'
+#'
+#'\donttest{
+#'
+#' #altering values using \code{alter_at}
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
+#'
+#' #altering values using \code{param_names}
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), param_names = c("Y.10","Y.01"))
+#'
+#' #altering values using \code{statement}
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#'
+#' #altering values using a combination of other arguments
+#' make_model("X -> Y") %>% set_parameters(model = model, parameters = c(0.5,0.25), node = "Y", nodal_type = c("00","01"))
+#'
+#'
+#'   }
 
 set_parameters <- function(model, parameters = NULL, param_type = NULL, warning = FALSE, ...) {
 
@@ -185,13 +222,16 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 #'
 #' Extracts parameters as a named vector
 #'
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @param param_type A character. String specifying type of parameters to set ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define'). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal param_type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
+#' @rdname parameter_setting
+#'
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom gtools rdirichlet
 #' @family parameters
 #' @export
 #' @examples
+#'
+#' # get_parameters examples:
+#'
 #' get_parameters(make_model('X -> Y'))
 
 get_parameters <- function(model, param_type = NULL) {
