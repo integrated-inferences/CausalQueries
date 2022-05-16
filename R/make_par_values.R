@@ -168,7 +168,7 @@ make_par_values <- function(model,
       paste(., collapse = "','")%>%
       paste("c('",.,"')", sep = "")
 
-    command <- paste("(param_names %in% ", param_names, sep = "")
+    command <- paste("(param_names %in% ", param_names, ")", sep = "")
 
   }
 
@@ -288,6 +288,7 @@ make_par_values <- function(model,
   return(out)
 
 }
+
 
 
 
