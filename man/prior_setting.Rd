@@ -73,7 +73,7 @@ Functionality for altering priors:
 
 \code{make_priors} Generates priors for a model.
 
-A flexible function to add priors to a model.
+\code{set_priors}  Adds priors to a model.
 
 Extracts priors as a named vector
 }
