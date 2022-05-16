@@ -24,7 +24,7 @@
 #' make_parameters(model, param_type = 'posterior_draw')
 #' make_parameters(model, param_type = 'posterior_mean')
 #'
-#' # More complex examples, using \code{define} and priors arguments to define
+#' # Harder examples, using \code{define} and priors arguments to define
 #' # specific parameters using causal syntax
 #'
 #'# Using labels: Two values for two nodes with the same label
@@ -33,104 +33,96 @@
 #' # Using statement:
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
-#'
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), parameters = c(.2,0))
 #'
-#' # Normalize renormalizes the values that are *not* set so that values set are not renormalized:
-#'
+#' # Normalize renormalizes values not set so that value set is not renomalized
 #' make_parameters(make_model('X -> Y'),
-#'                statement = 'Y[X=1]>Y[X=0]',
-#'                 parameters = .5, normalize = TRUE)
-#'
-#' # If FALSE then all values in a set get normalized:
+#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
 #' make_parameters(make_model('X -> Y'),
 #'                statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
 #'
-#' # May be built up
-#' make_model('X -> Y; X <-> Y') %>%
-#'   set_parameters(given   = "X.0",
-#'                  parameters = 1:4) %>%
-#'   set_parameters(statement  = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
-#'   get_parameters
 #'   }
 
-make_parameters <- function(model,
-                            parameters = NULL,
-                            param_type = NULL,
-                            warning = TRUE,
-                            normalize = FALSE,
-                            ...) {
+make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
 
-    is_a_model(model)
-    if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
-        return(clean_param_vector(model, parameters))
+  is_a_model(model)
 
-    if (!is.null(param_type))
-        if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw",
-            "define"))) {
-            stop("param_type should be one of `flat`, `prior_mean`, `posterior_mean`, `prior_draw`, `posterior_draw`, or `define`")
-        }
+  if(!is.null(parameters) && (length(parameters) == length(get_parameters(model)))){
+
+    out <- clean_param_vector(model, parameters)
+
+  } else {
+
+    if (!is.null(param_type)){
+      if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define"))){
+        stop("param_type should be one of `flat`, `prior_mean`, `posterior_mean`, `prior_draw`, `posterior_draw`, or `define`")
+      }
+    }
 
     # Figure out if we need to use make_par_values
     par_args = list(...)
 
-    par_args_provided <-
-      sum(names(par_args) %in%
-            c("distribution", "parameters", "node", "label", "statement",
-        "given", "nodal_type", "param_set", "param_names"))
+    par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "param_names"))
 
-    if (par_args_provided > 0 & is.null(param_type))
-        param_type <- "define"
+    if (par_args_provided > 0 & is.null(param_type)){
+      param_type <- "define"
+    }
 
-    if (is.null(param_type))
-        param_type <- "prior_mean"
+    if (is.null(param_type)){
+      param_type <- "prior_mean"
+    }
 
-    # Magic
-
-    # New parameter vector
-    if (param_type == "define") {
-        param_value <-
-          make_par_values(
-            model,
-            alter = "param_value",
-            x = parameters,
-            normalize = normalize,
-            ...)
+    # New (from parameters)
+    if (param_type == "define"){
+      param_value <- make_par_values(model,
+                                     alter_at = "param_value",
+                                     x = parameters,
+                                     normalize = normalize,
+                                     ...)
     }
 
     # Flat lambda
-    if (param_type == "flat") {
-        param_value <- make_priors(model, distribution = "uniform")
+    if (param_type == "flat"){
+      param_value <- make_priors(model, distribution = "uniform")
     }
 
     # Prior mean
-    if (param_type == "prior_mean") {
-        param_value <- get_priors(model)
+    if (param_type == "prior_mean"){
+      param_value <- get_priors(model)
     }
 
     # Prior draw
-    if (param_type == "prior_draw") {
-        param_value <- make_prior_distribution(model, 1)
+    if (param_type == "prior_draw"){
+      param_value <- make_prior_distribution(model, 1)
     }
 
     # Posterior mean
-    if (param_type == "posterior_mean") {
-        if (is.null(model$posterior))
-            stop("Posterior distribution required")
-        param_value <- apply(model$posterior_distribution, 2, mean)
+    if (param_type == "posterior_mean"){
+
+      if(is.null(model$posterior)){
+        stop("Posterior distribution required")
+      }
+
+      param_value <- apply(model$posterior_distribution, 2, mean)
     }
 
     # Posterior draw
     if (param_type == "posterior_draw") {
-        if (is.null(model$posterior))
-            stop("Posterior distribution required")
-        df <- model$posterior_distribution
-        param_value <- df[sample(nrow(df), 1), ]
+
+      if (is.null(model$posterior)){
+        stop("Posterior distribution required")
+      }
+
+      df <- model$posterior_distribution
+      param_value <- df[sample(nrow(df), 1), ]
     }
 
-    # Clean: Check normalization, using data families
-    clean_param_vector(model, param_value)
+    out <- clean_param_vector(model, param_value)
+
+  }
+
+  return(out)
 
 }
 
@@ -159,32 +151,32 @@ make_parameters <- function(model,
 #' @examples
 #' make_model('X->Y') %>% set_parameters(1:6) %>% get_parameters()
 #'
-#' make_model('X -> Y; X <-> Y') %>%
-#'   set_parameters(given = "X.0", nodal_type = c("00", "11"), parameters  = 0) %>%
-#'   set_parameters(given = "X.1", nodal_type = c("01", "10"), parameters  = 0) %>%
+#' make_model('X -> Y') %>%
+#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
+#'   set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
+#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
+#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
 #'   get_parameters
-#'
-#' make_model('X -> Y; X <-> Y') %>%
-#'   set_parameters(param_type = "prior_draw") %>%
-#'   get_parameters
-
 
 set_parameters <- function(model, parameters = NULL, param_type = NULL, warning = FALSE, ...) {
 
-    # parameters are created unless a vector of full length is provided
-    if (length(parameters) != length(get_parameters(model))) {
+  # parameters are created unless a vector of full length is provided
+  if (length(parameters) != length(get_parameters(model))) {
 
-        if(!is.null(parameters))
-          parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
-
-        if(is.null(parameters))
-          parameters <- make_parameters(model, param_type = param_type, ...)
+    if(!is.null(parameters)){
+      parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
     }
 
-    model$parameters_df$param_value <- parameters
-    model$parameters_df <- clean_params(model$parameters_df, warning = warning)
+    if(is.null(parameters)){
+      parameters <- make_parameters(model, param_type = param_type, ...)
+    }
 
-    model
+  }
+
+  model$parameters_df$param_value <- parameters
+  model$parameters_df <- clean_params(model$parameters_df, warning = warning)
+
+  return(model)
 
 }
 
@@ -204,14 +196,15 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 
 get_parameters <- function(model, param_type = NULL) {
 
-    if (is.null(param_type)) {
-        x <- model$parameters_df$param_value
-        names(x) <- model$parameters_df$param_names
-    }
+  if (is.null(param_type)) {
+    x <- model$parameters_df$param_value
+    names(x) <- model$parameters_df$param_names
+  }
 
-    if (!is.null(param_type))
-        x <- make_parameters(model, param_type = param_type)
+  if (!is.null(param_type)){
+    x <- make_parameters(model, param_type = param_type)
+  }
 
-    x
+  return(x)
 
 }
