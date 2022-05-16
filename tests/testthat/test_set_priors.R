@@ -1,8 +1,4 @@
 
-
-
-
-
 context("Testing set_priors")
 
 testthat::skip_on_cran()
@@ -12,28 +8,24 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("X -> Y")
-		expect_warning(make_priors(model, label = c("X0", "Y1")))
-		expect_warning(make_priors(model, statement = c("Y[M=0] > Y[M=1]"), alphas = c(NA)))
-		model <- make_model("X -> Y")
-		#expect_warning(make_priors(model, label = c("X0", "Y1"), distribution = c("jeffreys")))
-		expect_warning(make_priors(model, node = c("X"), distribution = c( "uniform"), alphas = c(2)))
+		expect_error(make_priros(model = model, alphas = 0.5, node = "X", nodal_type = "00", label = "00"))
+		expect_warning(make_priors(model = model, alphas = 0.5, node = "X", label = "00"))
 	}
 )
 
 testthat::test_that(
 
-	desc = "Check errors.",
+	desc = "Check errors",
 
 	code = {
-		model <- make_model("X -> M -> Y")
-		expect_error(make_priors(model, statement = "Y[X=1] > Y[X=0]", alphas = 3))
-		expect_error(make_priors(model, statement = c("Y[M=0] > Y[M=1]"), alphas = -1))
-		expect_error(make_priors(model, statement = "X == 1", alphas = c(2, 0.5))) # Trying to replace  6  parameters with  2 values
-		expect_error(make_priors(model, distribution = c("certainty", "certainty", "jeffreys", "certainty"), node = c("X", "M", "Y", "Z")))
-		expect_error(make_priors(model, node = c("Z"), distribution = c( "uniform"))) # listed node must be in model
-		expect_error(make_priors(model, nodal_type=1, alphas= 23))
-		expect_error(set_priors(model, rnorm(10)))
-		expect_error(set_priors(model, priors = LETTERS))
+	  model <- CausalQueries::make_model("X -> Y")
+	  expect_error(set_priors(model = model, alphas = 0.5, alter_at = "param_names == 'X.0'", node = "X"))
+	  expect_error(set_priors(model = model, alphas = 0.5, param_names = "X.0", node = "X"))
+	  expect_error(set_priors(model = model, alphas = 0.5, nodal_type = "00", statement = "Y[X = 1] > Y[X = 0]"))
+	  expect_error(set_priors(model = model, alphas = 0.5, node = "Y", statement = "Y[X=1] > Y[X=0]"))
+	  expect_error(set_priors(model = model, alphas = 0.5, node = "Y", distribution = "uniform"))
+	  expect_error(set_priors(model = model, alphas = 0.5, alter_at = "a == 'X.0'"))
+	  expect_error(set_priors(model = model, alphas = 0.5, param_names = "abc"))
 	}
 )
 
@@ -42,20 +34,19 @@ testthat::test_that(
 	desc = "Check output.",
 
 	code = {
-	  model <- make_model("X -> Y") %>% set_confound("X <-> Y")
-	  out <- make_priors(model,
-	                     statement = "X[]==1",
-	                     alphas = c(2))
+	  model <- CausalQueries::make_model("X -> Y")
+	  out <- set_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'X' & nodal_type %in% c('0','1')")
+	  expect_equal(out$parameters_df$priors, c(0.5,0.25,1,1,1,1))
+	  out <- set_priors(model = model, alphas = c(0.5,0.25), node = "X", nodal_type = c("0","1"))
+	  expect_equal(out$parameters_df$priors, c(0.5,0.25,1,1,1,1))
+	  out <- set_priors(model = model, alphas = 0.5, param_names = "X.0")
+	  expect_equal(out$parameters_df$priors, c(0.5,1,1,1,1,1))
 
-		expect_true(all(c(2) %in% out))
-
-		out <- make_priors(model,
-		                   param_names = "Y.00_X.0",
-		                   param_set = "Y.X.0",
-		                   nodal_type="00",
-		                   alphas=666)
-
-		expect_true(out["Y.00_X.0"]==666)
+	  model <- CausalQueries::make_model("X -> Y; X <-> Y")
+	  out <- set_priors(mode = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0", param_set = "Y.X.0")
+	  expect_equal(out$parameters_df$priors, c(1,1,0.5,1,0.25,1,1,1,1,1))
+	  out <- set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+	  expect_equal(out$parameters_df$priors, c(1,1,1,1,0.5,1,1,1,0.25,1))
 	}
 )
 

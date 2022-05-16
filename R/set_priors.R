@@ -96,12 +96,15 @@ make_priors <- function(model,
         nodal_type <- label
         }
 
-    make_par_values(
+    out <- make_par_values(
         model = model, alter = "priors", x = alphas, alter_at = alter_at,
         node = node, nodal_type = nodal_type, param_set = param_set, given = given,
         statement = statement, param_names = param_names, distribution = distribution,
         normalize = FALSE
-    )
+        )
+
+    names(out) <- model$parameters_df$param_names
+    return(out)
 }
 
 
