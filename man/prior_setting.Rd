@@ -50,6 +50,8 @@ get_priors(model)
 
 \item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
 
+\item{label}{string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.}
+
 \item{param_set}{string indicating  the name of the set of parameters to be altered}
 
 \item{given}{string indicates the node on which the parameter to be altered depends}
@@ -69,7 +71,7 @@ A vector indicating the hyperparameters of the prior distribution of the nodal t
 \description{
 Functionality for altering priors:
 
-A flexible function to generate priors for a model.
+\code{make_priors} Generates priors for a model.
 
 A flexible function to add priors to a model.
 
