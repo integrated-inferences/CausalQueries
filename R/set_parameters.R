@@ -54,70 +54,82 @@
 make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
 
     is_a_model(model)
-    if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
-        return(clean_param_vector(model, parameters))
 
-    if (!is.null(param_type))
-        if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw",
-            "define"))) {
-            stop("param_type should be one of `flat`, `prior_mean`, `posterior_mean`, `prior_draw`, `posterior_draw`, or `define`")
+    if(!is.null(parameters) && (length(parameters) == length(get_parameters(model)))){
+
+        out <- clean_param_vector(model, parameters)
+
+    } else {
+
+        if (!is.null(param_type)){
+            if (!(param_type %in% c("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define"))){
+                stop("param_type should be one of `flat`, `prior_mean`, `posterior_mean`, `prior_draw`, `posterior_draw`, or `define`")
+            }
         }
 
-    # Figure out if we need to use make_par_values
-    par_args = list(...)
+        # Figure out if we need to use make_par_values
+        par_args = list(...)
 
-    par_args_provided <- sum(names(par_args) %in% c("distribution", "parameters", "node", "label", "statement",
-        "confound", "nodal_type", "param_set", "param_names"))
-    if (par_args_provided > 0 & is.null(param_type))
-        param_type <- "define"
+        par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "param_names"))
 
-    if (is.null(param_type))
-        param_type <- "prior_mean"
+        if (par_args_provided > 0 & is.null(param_type)){
+            param_type <- "define"
+        }
 
+        if (is.null(param_type)){
+            param_type <- "prior_mean"
+        }
 
-    # Magic
+        # New (from parameters)
+        if (param_type == "define"){
+            param_value <- make_par_values(model,
+                                           alter_at = "param_value",
+                                           x = parameters,
+                                           normalize = normalize,
+                                           ...)
+        }
 
-    # New (from parameters)
-    if (param_type == "define") {
-        param_value <- make_par_values_multiple(model,
-                                                y = get_parameters(model),
-                                                x = parameters,
-                                                normalize = normalize,
-                                                ...)
+        # Flat lambda
+        if (param_type == "flat"){
+            param_value <- make_priors(model, distribution = "uniform")
+        }
+
+        # Prior mean
+        if (param_type == "prior_mean"){
+            param_value <- get_priors(model)
+        }
+
+        # Prior draw
+        if (param_type == "prior_draw"){
+            param_value <- make_prior_distribution(model, 1)
+        }
+
+        # Posterior mean
+        if (param_type == "posterior_mean"){
+
+            if(is.null(model$posterior)){
+                stop("Posterior distribution required")
+            }
+
+            param_value <- apply(model$posterior_distribution, 2, mean)
+        }
+
+        # Posterior draw
+        if (param_type == "posterior_draw") {
+
+            if (is.null(model$posterior)){
+                stop("Posterior distribution required")
+            }
+
+            df <- model$posterior_distribution
+            param_value <- df[sample(nrow(df), 1), ]
+        }
+
+        out <- clean_param_vector(model, param_value)
+
     }
 
-    # Flat lambda
-    if (param_type == "flat") {
-        param_value <- make_priors(model, distribution = "uniform")
-    }
-
-    # Prior mean
-    if (param_type == "prior_mean") {
-        param_value <- get_priors(model)
-    }
-
-    # Prior draw
-    if (param_type == "prior_draw") {
-        param_value <- make_prior_distribution(model, 1)
-    }
-
-    # Posterior mean
-    if (param_type == "posterior_mean") {
-        if (is.null(model$posterior))
-            stop("Posterior distribution required")
-        param_value <- apply(model$posterior_distribution, 2, mean)
-    }
-
-    # Posterior draw
-    if (param_type == "posterior_draw") {
-        if (is.null(model$posterior))
-            stop("Posterior distribution required")
-        df <- model$posterior_distribution
-        param_value <- df[sample(nrow(df), 1), ]
-    }
-
-    # Clean: Check normalization, using data families
-    clean_param_vector(model, param_value)
+    return(out)
 
 }
 
