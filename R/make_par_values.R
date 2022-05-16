@@ -105,7 +105,7 @@ make_par_values <- function(model,
     stop("Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values.")
   }
 
-  if(!is.na(param_names) & any(!is.na(list(node, nodal_type, param_set, given, statement)))){
+  if(any(!is.na(param_names)) & any(!is.na(list(node, nodal_type, param_set, given, statement)))){
     stop("Specifying param_names with any of node, nodal_type, param_set, given or statement is redundant. No change to values.")
   }
 
@@ -148,7 +148,7 @@ make_par_values <- function(model,
 
   # construct command for param_names
 
-  if(!is.na(param_names)){
+  if(any(!is.na(param_names))){
 
     if(!is.character(param_names)){
       stop("param_names must be of type character. No change to values.")
