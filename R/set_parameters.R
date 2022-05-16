@@ -24,7 +24,7 @@
 #' make_parameters(model, param_type = 'posterior_draw')
 #' make_parameters(model, param_type = 'posterior_mean')
 #'
-#' # Harder examples, using \code{define} and priors arguments to define
+#' # More complex examples, using \code{define} and priors arguments to define
 #' # specific parameters using causal syntax
 #'
 #'# Using labels: Two values for two nodes with the same label
@@ -33,25 +33,34 @@
 #' # Using statement:
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]==Y[X=0]'), parameters = c(.2,0))
+#'
 #' make_model('X -> Y') %>%
 #'    make_parameters(statement = c('Y[X=1]>Y[X=0]', 'Y[X=1]<Y[X=0]'), parameters = c(.2,0))
 #'
-#' # Normalize renormalizes values not set so that value set is not renomalized
+#' # Normalize renormalizes the values that are *not* set so that values set are not renormalized:
+#'
 #' make_parameters(make_model('X -> Y'),
-#'                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
+#'                statement = 'Y[X=1]>Y[X=0]',
+#'                 parameters = .5, normalize = TRUE)
+#'
+#' # If FALSE then all values in a set get normalized:
 #' make_parameters(make_model('X -> Y'),
 #'                statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
 #'
 #' # May be built up
-#' make_model('X -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
-#'   set_parameters(confound   = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
-#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
+#' make_model('X -> Y; X <-> Y') %>%
+#'   set_parameters(given   = "X.0",
+#'                  parameters = 1:4) %>%
 #'   set_parameters(statement  = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
 #'   get_parameters
 #'   }
 
-make_parameters <- function(model, parameters = NULL, param_type = NULL, warning = TRUE, normalize = TRUE, ...) {
+make_parameters <- function(model,
+                            parameters = NULL,
+                            param_type = NULL,
+                            warning = TRUE,
+                            normalize = FALSE,
+                            ...) {
 
     is_a_model(model)
     if (!is.null(parameters) && (length(parameters) == length(get_parameters(model))))
@@ -66,24 +75,28 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     # Figure out if we need to use make_par_values
     par_args = list(...)
 
-    par_args_provided <- sum(names(par_args) %in% c("distribution", "parameters", "node", "label", "statement",
-        "confound", "nodal_type", "param_set", "param_names"))
+    par_args_provided <-
+      sum(names(par_args) %in%
+            c("distribution", "parameters", "node", "label", "statement",
+        "given", "nodal_type", "param_set", "param_names"))
+
     if (par_args_provided > 0 & is.null(param_type))
         param_type <- "define"
 
     if (is.null(param_type))
         param_type <- "prior_mean"
 
-
     # Magic
 
-    # New (from parameters)
+    # New parameter vector
     if (param_type == "define") {
-        param_value <- make_par_values_multiple(model,
-                                                y = get_parameters(model),
-                                                x = parameters,
-                                                normalize = normalize,
-                                                ...)
+        param_value <-
+          make_par_values(
+            model,
+            alter = "param_value",
+            x = parameters,
+            normalize = normalize,
+            ...)
     }
 
     # Flat lambda
@@ -146,19 +159,26 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #' @examples
 #' make_model('X->Y') %>% set_parameters(1:6) %>% get_parameters()
 #'
-#' make_model('X -> Y') %>%
-#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))  %>%
-#'   set_parameters(confound = list(X='Y[X=1]>Y[X=0]', X='Y[X=1]<=Y[X=0]'),
-#'                  parameters = list(c(.2, .8), c(.8, .2))) %>%
-#'   set_parameters(statement = 'Y[X=1]>Y[X=0]', parameters = .5) %>%
+#' make_model('X -> Y; X <-> Y') %>%
+#'   set_parameters(given = "X.0", nodal_type = c("00", "11"), parameters  = 0) %>%
+#'   set_parameters(given = "X.1", nodal_type = c("01", "10"), parameters  = 0) %>%
 #'   get_parameters
+#'
+#' make_model('X -> Y; X <-> Y') %>%
+#'   set_parameters(param_type = "prior_draw") %>%
+#'   get_parameters
+
 
 set_parameters <- function(model, parameters = NULL, param_type = NULL, warning = FALSE, ...) {
 
     # parameters are created unless a vector of full length is provided
     if (length(parameters) != length(get_parameters(model))) {
-        if(!is.null(parameters)) parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
-        if(is.null(parameters))  parameters <- make_parameters(model, param_type = param_type, ...)
+
+        if(!is.null(parameters))
+          parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
+
+        if(is.null(parameters))
+          parameters <- make_parameters(model, param_type = param_type, ...)
     }
 
     model$parameters_df$param_value <- parameters

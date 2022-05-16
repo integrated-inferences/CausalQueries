@@ -10,6 +10,7 @@ make_par_values(
   x = NA,
   alter_at = NA,
   node = NA,
+  label = NA,
   nodal_type = NA,
   param_set = NA,
   given = NA,
@@ -29,6 +30,8 @@ make_par_values(
 \item{alter_at}{string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)}
 
 \item{node}{string indicating nodes which are to be altered}
+
+\item{label}{string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.}
 
 \item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
 

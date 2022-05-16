@@ -8,6 +8,7 @@
 #' @param x vector of real non negative values to be substituted into "priors" or "param_value"
 #' @param alter_at string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)
 #' @param node string indicating nodes which are to be altered
+#' @param label string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.
 #' @param nodal_type string. Label for nodal type indicating nodal types for which values are to be altered
 #' @param param_set string indicating  the name of the set of parameters to be altered
 #' @param given string indicates the node on which the parameter to be altered depends
@@ -42,6 +43,7 @@ make_par_values <- function(model,
                             x = NA,
                             alter_at = NA,
                             node = NA,
+                            label = NA,
                             nodal_type = NA,
                             param_set = NA,
                             given = NA,
@@ -56,6 +58,16 @@ make_par_values <- function(model,
   # check inputs for model, alter, x, distribution
 
   CausalQueries:::is_a_model(model)
+
+  if(all(!is.na(c(nodal_type, label)))){
+    stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
+  }
+
+  if(!is.na(label)){
+    warning("label is depreciated, use nodal_type instead")
+    nodal_type <- label
+  }
+
 
   if(!is.character(alter)){
     stop("alter must be of type character. No change to values.")
@@ -237,7 +249,7 @@ make_par_values <- function(model,
 
     if ((length(x) != 1) & (length(x) != sum(to_alter))){
       stop(paste("Trying to replace ", sum(to_alter), " parameters with ", length(x), " values.",
-                 "You either specified a wrong number of values or yourd conditions do not match the expected number of model parameters.",
+                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
                  sep = ""))
     }
 
@@ -258,8 +270,11 @@ make_par_values <- function(model,
           warning("Provided values exceed 1 but normalization requested.")
         }
 
-        y[!to_alter & full_param_set==j] <- y[!to_alter & full_param_set == j] * sum(1 - sum(y[to_alter & full_param_set == j])) / sum(y[!to_alter & full_param_set == j])
-        y[full_param_set==j] <- y[full_param_set == j]/ sum(y[full_param_set == j])
+        y[!to_alter & full_param_set==j] <-
+          y[!to_alter & full_param_set == j] * sum(1 - sum(y[to_alter & full_param_set == j])) / sum(y[!to_alter & full_param_set == j])
+
+        y[full_param_set==j] <-
+          y[full_param_set == j] / sum(y[full_param_set == j])
 
       }
 
