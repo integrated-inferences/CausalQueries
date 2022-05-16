@@ -64,13 +64,15 @@ An object of class \code{causal_model}. It essentially returns a list containing
 a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
 }
 \description{
-Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
+Functions to generate and add priors to a model.
 
-A flexible function to generate priors for a model.
+\code{make_priors} Generates priors for a model.
 
-A flexible function to add priors to a model.
+\code{set_priors}  Adds priors to a model.
 }
 \details{
+Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
+
 * \code{alter_at} String specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. "node == 'X' & nodal_type %in% c('00','01')"
 
 * \code{node}, which restricts for example to parameters associated with node 'X'

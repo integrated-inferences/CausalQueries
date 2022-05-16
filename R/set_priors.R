@@ -1,5 +1,7 @@
 #' Setting priors
 #'
+#' Functions to generate and add priors to a model.
+#'
 #' Seven arguments govern *which* parameters should be altered. The default is 'all' but this can be reduced by specifying
 #'
 #' * \code{alter_at} String specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. "node == 'X' & nodal_type %in% c('00','01')"
@@ -43,7 +45,7 @@ NULL
 
 #' Make Priors
 #'
-#' A flexible function to generate priors for a model.
+#' \code{make_priors} Generates priors for a model.
 #'
 #' @rdname prior_setting
 #'
@@ -105,7 +107,7 @@ make_priors <- function(model,
 
 #' Set prior distribution
 #'
-#' A flexible function to add priors to a model.
+#' \code{set_priors}  Adds priors to a model.
 #'
 #' @rdname prior_setting
 #'
