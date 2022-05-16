@@ -1,5 +1,7 @@
 #' Setting priors
 #'
+#'  Functionality for prior setting:
+#'
 #'  Seven arguments govern which parameters should be altered. The default is 'all' but this can be reduced by specifying
 #'
 #' * \code{alter_at} String specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. "node == 'X' & nodal_type %in% c('00','01')"

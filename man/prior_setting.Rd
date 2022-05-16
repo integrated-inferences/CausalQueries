@@ -62,13 +62,13 @@ An object of class \code{causal_model}. It essentially returns a list containing
 a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
 }
 \description{
+Functionality for prior setting:
 
 A flexible function to generate priors for a model.
 
 A flexible function to add priors to a model.
 }
 \details{
-
 Seven arguments govern which parameters should be altered. The default is 'all' but this can be reduced by specifying
 
 * \code{alter_at} String specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. "node == 'X' & nodal_type %in% c('00','01')"
@@ -142,10 +142,10 @@ set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 set_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
 }
 \seealso{
-Other priors:
+Other priors: 
 \code{\link{get_priors}()}
 
-Other priors:
+Other priors: 
 \code{\link{get_priors}()}
 }
 \concept{priors}
