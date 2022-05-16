@@ -81,6 +81,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
       }
     }
 
+
     # Figure out if we need to use make_par_values
     par_args = list(...)
 
@@ -144,7 +145,6 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
   }
 
   return(out)
-
 }
 
 
