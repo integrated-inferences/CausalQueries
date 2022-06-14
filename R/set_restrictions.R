@@ -23,7 +23,7 @@
 #' @param statement  A quoted expressions defining the restriction. If values for some parents are not specified, statements should be surrounded by parentheses, for instance \code{(Y[A = 1] > Y[A=0])} will be interpreted for all combinations of other parents of Y set at possible levels they might take.
 #' @param join_by A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
-#' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. If restricting by \code{statement} \code{given} must either be NULL or of the same length as \code{statement}.
+#' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
 #' @param update_types Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.
 #' @param wildcard Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.
@@ -132,19 +132,37 @@ set_restrictions <- function(model,
         return(model)
     }
 
+    #check given
     if (!is.null(given)){
+
         given[sapply(given, is.null)] <- NA
-        given_test <- sapply(given, function(i) (!is.na(i) & !is.character(i)))
+        given_test <- sapply(given, function(i) (any(!is.na(i)) & !is.character(i)))
 
         if (any(given_test)){
-            stop(paste("Error in given argument: ", which(given_test),
-                       ". Given arguments must either be of type character or NULL or NA."))
+            stop(paste("Error in given argument: ", paste(which(given_test), collapse = ","),
+                       ". Given arguments must either be of type character or NULL or NA.", sep = ""))
         }
 
         if (length(statement) != length(given)){
-           stop("Mismatch in statement and given. Please specify a given for each statement. \n
-                For statements that should not have an attached given, specify given as any of NA,NULL,'',' '.")
+            stop("Mismatch in statement and given. Please specify a given for each statement.
+                 For statements that should not have an attached given, specify given as any of NA,NULL,'',' '.")
         }
+
+        given <- sapply(given, trimws)
+        given[sapply(given, function(i) all(i == ""))] <- NA
+
+        given_test <- sapply(given, function(i) !is.na(i) & !(i %in% model$parameters_df$given))
+        given_test_bool <- sapply(given_test, any)
+
+        if(any(given_test_bool)){
+            stop(paste("Error in given: ",
+                       paste(which(given_test_bool), collapse = ", "),
+                       ". ",
+                       paste(unlist(mapply(function(l,b) l[b], given, given_test)), collapse = ", "),
+                       " : not part of given.",
+                       sep = ""))
+        }
+
     }
 
 
@@ -217,6 +235,7 @@ set_restrictions <- function(model,
 #' @param model a model created by make_model()
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.
+#' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. \code{given} must either be NULL or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #' @keywords internal
@@ -237,10 +256,6 @@ restrict_by_query <- function(model,
         join_by <- rep(join_by, n_restrictions)
     } else if (length(join_by) != n_restrictions) {
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
-    }
-
-    if(!is.null(given)){
-        given <- lapply(given, function(i) trimws(paste(i, collapse = ", ")))
     }
 
     to_drop <- matrix(nrow = nrow(model$parameters_df), ncol = length(statement))
@@ -272,7 +287,7 @@ restrict_by_query <- function(model,
             (model$parameters_df$node %in% node)
 
         if(!is.null(given)){
-            if(!(given[[i]] %in% c("NA",""))){
+            if(!is.na(given)){
                 drop_rows <- drops_rows &
                     (model$parameters_df$given %in% given[[i]])
             }
@@ -304,6 +319,7 @@ restrict_by_query <- function(model,
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
+#' @given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When mixing labels that are further restricted by \code{given} and ones that are not, labels without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #' @keywords internal
