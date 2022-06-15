@@ -86,6 +86,11 @@
 #' set_restrictions(statement =  c('(Y[X = 1] == 1)', '(M[X = 1] == 1)'), join_by = '&', keep = TRUE)
 #' get_parameter_matrix(model)
 #'
+#' # Restrict using statements and given:
+#' model <- make_model("X -> Y -> Z; X <-> Z") %>%
+#'  set_restrictions(model,list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
+#' get_parameter_matrix(model)
+#'
 #' # Restrictions on levels for endogenous nodes aren't allowed
 #' \dontrun{
 #' model <- make_model('X->Y') %>%
@@ -105,6 +110,11 @@
 #' model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') %>%
 #' set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 #' get_parameter_matrix(model)
+#'
+#' # Restrict using labels and given:
+#' model <- make_model("X -> Y -> Z; X <-> Z") %>%
+#'  set_restrictions(model,labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
+#' get_parameter_matrix(model)
 #'}
 set_restrictions <- function(model,
                              statement = NULL,
@@ -116,20 +126,18 @@ set_restrictions <- function(model,
                              wildcard = FALSE) {
 
 
-    is_a_model(model)
+    CausalQueries:::is_a_model(model)
     nodal_types0 <- model$nodal_types
 
     if (!is.logical(keep))
         stop("`keep` should be either 'TRUE' or 'FALSE'")
 
     if (is.null(labels) & is.null(statement)) {
-        message("No restrictions provided: provide either a causal statement or nodal type labels.")
-        return(model)
+        stop("No restrictions provided: provide either a causal statement or nodal type labels.")
     }
 
     if (!is.null(labels) & !is.null(statement)) {
-        message("Provide either a causal statement or nodal type labels, not both.")
-        return(model)
+        stop("Provide either a causal statement or nodal type labels, not both.")
     }
 
     #check given
@@ -239,7 +247,6 @@ set_restrictions <- function(model,
 }
 
 
-#' Reduce nodal types
 #'
 #' @param model a model created by make_model()
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
@@ -271,7 +278,7 @@ restrict_by_query <- function(model,
 
     for(i in seq(1,length(statement))){
 
-        restriction <- CausalQueries:::map_query_to_nodal_type(model, query = statement[i], join_by[i])
+        restriction <- CausalQueries:::map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
         node <- restriction$node
         types <- names(restriction$types)[restriction$types]
         names(types) <- node
@@ -296,7 +303,7 @@ restrict_by_query <- function(model,
             (model$parameters_df$node %in% node)
 
         if(!is.null(given)){
-            if(!is.na(given[[i]])){
+            if(all(!is.na(given[[i]]))){
 
                 wrong_given <- !(given[[i]] %in% model$parameters_df[drop_rows,"given"])
 
@@ -307,7 +314,7 @@ restrict_by_query <- function(model,
                         "Check model$parameters_df for dependence structure between parameters."
                     ))
                 }
-                drop_rows <- drops_rows &
+                drop_rows <- drop_rows &
                     (model$parameters_df$given %in% given[[i]])
             }
         }
@@ -400,7 +407,7 @@ restrict_by_labels <- function(model,
         drop <- model$parameters_df$node == j & !(model$parameters_df$nodal_type %in% to_keep)
 
         if(!is.null(given)){
-            if(!is.na(given[[k]])){
+            if(all(!is.na(given[[k]]))){
                 wrong_given <- !(given[[k]] %in% model$parameters_df[drop,"given"])
 
                 if(any(wrong_given)){
@@ -480,7 +487,7 @@ update_causal_types <- function(model) {
     df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 
     # Add names
-    cnames <- causal_type_names(df)
+    cnames <- CausalQueries:::causal_type_names(df)
     rownames(df) <- do.call(paste, c(cnames, sep = "."))
 
     # Export

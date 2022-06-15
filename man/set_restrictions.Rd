@@ -108,6 +108,11 @@ model <- make_model('X->Y<-M; X -> M' ) \%>\%
 set_restrictions(statement =  c('(Y[X = 1] == 1)', '(M[X = 1] == 1)'), join_by = '&', keep = TRUE)
 get_parameter_matrix(model)
 
+# Restrict using statements and given:
+model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
+ set_restrictions(model,list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
+get_parameter_matrix(model)
+
 # Restrictions on levels for endogenous nodes aren't allowed
 \dontrun{
 model <- make_model('X->Y') \%>\%
@@ -126,6 +131,11 @@ get_parameter_matrix(model)
 # Running example: there are only four causal types
 model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') \%>\%
 set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
+get_parameter_matrix(model)
+
+# Restrict using labels and given:
+model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
+ set_restrictions(model,labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
 get_parameter_matrix(model)
 }
 }
