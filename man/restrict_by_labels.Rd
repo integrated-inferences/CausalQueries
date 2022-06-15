@@ -7,6 +7,7 @@
 restrict_by_labels(
   model,
   labels,
+  given = NULL,
   keep = FALSE,
   update_types = TRUE,
   wildcard = FALSE

@@ -143,9 +143,18 @@ set_restrictions <- function(model,
                        ". Given arguments must either be of type character or NULL or NA.", sep = ""))
         }
 
-        if (length(statement) != length(given)){
-            stop("Mismatch in statement and given. Please specify a given for each statement.
+        if (!is.null(statement)){
+            if (length(statement) != length(given)){
+                stop("Mismatch in statement and given. Please specify a given for each statement.
                  For statements that should not have an attached given, specify given as any of NA,NULL,'',' '.")
+            }
+        }
+
+        if (!is.null(labels)){
+            if (length(labels) != length(given)){
+                stop("Mismatch in label and given. Please specify a given for each label.
+                 For labels that should not have an attached given, specify given as any of NA,NULL,'',' '.")
+            }
         }
 
         given <- sapply(given, trimws)
@@ -287,7 +296,17 @@ restrict_by_query <- function(model,
             (model$parameters_df$node %in% node)
 
         if(!is.null(given)){
-            if(!is.na(given)){
+            if(!is.na(given[[i]])){
+
+                wrong_given <- !(given[[i]] %in% model$parameters_df[drop_rows,"given"])
+
+                if(any(wrong_given)){
+                    stop(paste(
+                        "Error in given set ", i, ". ",
+                        "Given ", paste(given[[i]][wrong_given], collapse = ", "), " not part of the restriction set defined by statement. ",
+                        "Check model$parameters_df for dependence structure between parameters."
+                    ))
+                }
                 drop_rows <- drops_rows &
                     (model$parameters_df$given %in% given[[i]])
             }
@@ -344,31 +363,62 @@ restrict_by_labels <- function(model,
     if(wildcard)
         labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
 
-
+    # Check if labels map to nodal types and givens are part of restriction set
     for (i in restricted_vars) {
         check <- model$parameters_df %>%
-            filter(node==i)
-        check <- check$nodal_type
+            dplyr::filter(node==i)
+
         labels_passed <- unlist(labels[[i]])
-        if (!all (labels_passed %in% check))
-            stop("labels passed are not mapped to nodal_type. Check model$parameters_df")
+
+        if (!all (labels_passed %in% check$nodal_type)){
+            wrong_labels <- paste(labels_passed[!(labels_passed %in% check$nodal_type)], collapse = ", ")
+            stop(paste(
+                "Error in label set ", i,". ",
+                "Nodal types ", wrong_labels, " do not exist for node ", i, ". ",
+                "Check model$parameters_df for correct mapping of labels to nodal_types.",
+                sep = ""
+            ))
+        }
+
     }
 
     # Reduce nodal_types
     for (k in 1:length(restricted_vars)) {
         j <- restricted_vars[k]
         nt <- model$nodal_types[[j]]
-        if (!keep)
+
+        if (!keep){
             to_keep <- nt[!(nt %in% labels[[k]])]
-        if (keep)
+        }
+
+        if (keep){
             to_keep <- nt[nt %in% labels[[k]]]
+        }
+
         model$nodal_types[[j]] <- to_keep
-        model$parameters_df <-
-            dplyr::filter(model$parameters_df, !(node == j & !(nodal_type %in% to_keep)))
+
+        drop <- model$parameters_df$node == j & !(model$parameters_df$nodal_type %in% to_keep)
+
+        if(!is.null(given)){
+            if(!is.na(given[[k]])){
+                wrong_given <- !(given[[k]] %in% model$parameters_df[drop,"given"])
+
+                if(any(wrong_given)){
+                    stop(paste(
+                        "Error in given set ", k, ". ",
+                        "Given ", paste(given[[k]][wrong_given], collapse = ", "), " not part of the restriction set defined by labels. ",
+                        "Check model$parameters_df for dependence structure between parameters."
+                    ))
+                }
+                drop <- drop & (model$parameters_df$given %in% given[[k]])
+            }
+        }
+
+        model$parameters_df <- model$parameters_df[!drop,]
     }
 
-    if(update_types) model$causal_types <- update_causal_types(model)
-    model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
+    if(update_types) model$causal_types <- CausalQueries:::update_causal_types(model)
+    model$parameters_df <- CausalQueries:::clean_params(model$parameters_df, warning = FALSE)
 
     return(model)
 
