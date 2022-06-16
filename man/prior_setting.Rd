@@ -18,6 +18,7 @@ make_priors(
   param_set = NA,
   given = NA,
   statement = NA,
+  join_by = "|",
   param_names = NA
 )
 
@@ -32,6 +33,7 @@ set_priors(
   param_set = NA,
   given = NA,
   statement = NA,
+  join_by = "|",
   param_names = NA
 )
 
@@ -57,6 +59,8 @@ get_priors(model)
 \item{given}{string indicates the node on which the parameter to be altered depends}
 
 \item{statement}{causal query that determines nodal types for which values are to be altered}
+
+\item{join_by}{string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
 
 \item{param_names}{string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 }

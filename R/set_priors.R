@@ -87,6 +87,7 @@ make_priors <- function(model,
                         param_set = NA,
                         given = NA,
                         statement = NA,
+                        join_by = "|",
                         param_names = NA){
 
     if(all(!is.na(c(nodal_type, label)))){
@@ -101,7 +102,7 @@ make_priors <- function(model,
     out <- make_par_values(
         model = model, alter = "priors", x = alphas, alter_at = alter_at,
         node = node, nodal_type = nodal_type, param_set = param_set, given = given,
-        statement = statement, param_names = param_names, distribution = distribution,
+        statement = statement, join_by = join_by, param_names = param_names, distribution = distribution,
         normalize = FALSE
         )
 
@@ -155,11 +156,12 @@ set_priors <- function(model,
                        param_set = NA,
                        given = NA,
                        statement = NA,
+                       join_by = "|",
                        param_names = NA){
 
     priors <- make_priors(model = model, alphas = alphas, distribution = distribution, alter_at = alter_at,
                           node = node, nodal_type = nodal_type, label = label, param_set = param_set,
-                          given = given, statement = statement, param_names = param_names)
+                          given = given, statement = statement, join_by = join_by, param_names = param_names)
 
     model$parameters_df$priors <- priors
 

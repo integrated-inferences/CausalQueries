@@ -13,6 +13,7 @@
 #' @param param_set string indicating  the name of the set of parameters to be altered
 #' @param given string indicates the node on which the parameter to be altered depends
 #' @param statement causal query that determines nodal types for which values are to be altered
+#' @param join_by string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).
 #' @param param_names string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @param distribution string indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param normalize logical. If TRUE normalizes such that param set probabilities sum to 1.
@@ -48,6 +49,7 @@ make_par_values <- function(model,
                             param_set = NA,
                             given = NA,
                             statement = NA,
+                            join_by = "|",
                             param_names = NA,
                             distribution = NA,
                             normalize = FALSE){
@@ -97,6 +99,18 @@ make_par_values <- function(model,
 
   if (!all(is.na(x)) && (min(x) < 0)){
     stop("arguments 'parameters' and 'alphas' must be non-negative.")
+  }
+
+  if(!is.character(join_by)){
+    stop("join_by must be of type character")
+  }
+
+  if(!(join_by %in% c("|","&"))){
+    stop("join_by must be one of '|' or '&'")
+  }
+
+  if(length(join_by) > 1){
+    stop("please only define one join_by")
   }
 
   # disallow redundant argument specification
@@ -196,7 +210,7 @@ make_par_values <- function(model,
 
       #if argument is statement get node and nodal type and construct command
       if(defined[j] == "statement"){
-        query <- CausalQueries:::map_query_to_nodal_type(model, statement)
+        query <- CausalQueries:::map_query_to_nodal_type(model, statement, join_by = join_by)
 
         node_j <- query$node%>%
           paste(., collapse = "','")%>%

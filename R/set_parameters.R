@@ -85,7 +85,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     # Figure out if we need to use make_par_values
     par_args = list(...)
 
-    par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "param_names"))
+    par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "join_by", "param_names"))
 
     if (par_args_provided > 0 & is.null(param_type)){
       param_type <- "define"
