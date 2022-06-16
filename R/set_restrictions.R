@@ -129,8 +129,9 @@ set_restrictions <- function(model,
     CausalQueries:::is_a_model(model)
     nodal_types0 <- model$nodal_types
 
-    if (!is.logical(keep))
+    if (!is.logical(keep)){
         stop("`keep` should be either 'TRUE' or 'FALSE'")
+    }
 
     if (is.null(labels) & is.null(statement)) {
         stop("No restrictions provided: provide either a causal statement or nodal type labels.")
@@ -363,14 +364,16 @@ restrict_by_labels <- function(model,
     restricted_vars <- names(labels)
     matches <- restricted_vars %in% model$nodes
 
-    if (!any(matches))
+    if (!any(matches)){
         stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
+    }
 
     # If there are wild cards, spell them out
-    if(wildcard)
+    if(wildcard){
         labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+    }
 
-    # Check if labels map to nodal types and givens are part of restriction set
+    # Check if labels map to nodal types
     for (i in restricted_vars) {
         check <- model$parameters_df %>%
             dplyr::filter(node==i)
@@ -494,3 +497,4 @@ update_causal_types <- function(model) {
     df
 
 }
+
