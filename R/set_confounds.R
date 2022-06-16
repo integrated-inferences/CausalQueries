@@ -152,18 +152,6 @@ set_confound <- function(model, confound = NULL) {
     class(model$P) <- c("parameter_matrix", "data.frame")
     rownames(model$parameters_df) <- NULL
 
-    # # Drop family if an entire set is empty
-    # sets <- unique(model$parameters_df$param_set)
-    # to_keep <-
-    #     sapply(sets, function(j) sum(model$P[model$parameters_df$param_set == j, ]) > 0)
-    #
-    # if (!all(to_keep)) {
-    #     keep <- model$parameters_df$param_set %in% sets[to_keep]
-    #     model$parameters_df <- dplyr::filter(model$parameters_df, keep)
-    #     model$P <- model$P[keep, ]
-    # }
-    #
-
     # Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
     confounds_df <- data.frame(names(confound), unlist(confound))
     colnames(confounds_df) <- c("node 1", "node 2")

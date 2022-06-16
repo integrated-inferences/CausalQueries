@@ -21,7 +21,7 @@ query_distribution(
 
 \item{query}{A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"}
 
-\item{given}{A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.}
+\item{given}{A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.}
 
 \item{using}{A character. Whether to use `priors`, `posteriors` or `parameters`}
 

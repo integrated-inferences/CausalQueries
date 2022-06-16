@@ -8,7 +8,7 @@
 #' @param using A character. Whether to use `priors`, `posteriors` or `parameters`
 #' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param given  A character. A quoted expression evaluates to logical statement. given allows estimand to be conditioned on *observational* distribution.
+#' @param given  A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
@@ -56,7 +56,7 @@ query_distribution <- function(model,
   # forgive the user:
   if(using == "posterior") using <- "posteriors"
   if(using == "prior")     using <- "priors"
-  if(given %in% c("TRUE", "All", "all", "ALL", "None", "none", "NONE")) given <- TRUE
+  if(given %in% c("TRUE", "All", "all", "ALL", "None", "none", "NONE", "")) given <- TRUE
 
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
     "`using` should be one of `priors`, `posteriors`, or `parameters`")
@@ -120,7 +120,7 @@ query_distribution <- function(model,
 #' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
 #' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
 #' @param using A character. Whether to use `priors`, `posteriors` or `parameters`.
-#' @param stats Functions to be applied to estimand distribution. If `NULL`, defaults to mean and standard deviation.
+#' @param stats Functions to be applied to estimand distribution. If `NULL`, defaults to mean, standard deviation, and 95% confidence interval.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.

@@ -6,133 +6,67 @@
 \usage{
 make_par_values(
   model,
-  y = get_priors(model),
+  alter = "priors",
   x = NA,
-  distribution = NA,
+  alter_at = NA,
   node = NA,
   label = NA,
-  statement = NA,
-  confound = NA,
   nodal_type = NA,
-  param_names = NA,
   param_set = NA,
+  given = NA,
+  statement = NA,
+  param_names = NA,
+  distribution = NA,
   normalize = FALSE
 )
 }
 \arguments{
-\item{model}{A model created with \code{make_model}}
+\item{model}{model created with \code{make_model}}
 
-\item{y}{Vector of real non negative values to be changed}
+\item{alter}{character vector with one of "priors" or "param_value" specifying what to alter}
 
-\item{x}{Vector of real non negative values to be substituted into y}
+\item{x}{vector of real non negative values to be substituted into "priors" or "param_value"}
 
-\item{distribution}{String indicating a common prior distribution (uniform, jeffreys or certainty)}
+\item{alter_at}{string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)}
 
-\item{node}{A string indicating nodes for which priors are to be altered}
+\item{node}{string indicating nodes which are to be altered}
 
-\item{label}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+\item{label}{string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.}
 
-\item{statement}{A causal query that determines nodal types for which priors are to be altered}
+\item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
 
-\item{confound}{A confound statement that restricts nodal types for which priors are to be altered}
+\item{param_set}{string indicating  the name of the set of parameters to be altered}
 
-\item{nodal_type}{String. Label for nodal type indicating nodal types for which priors are to be altered}
+\item{given}{string indicates the node on which the parameter to be altered depends}
 
-\item{param_names}{String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+\item{statement}{causal query that determines nodal types for which values are to be altered}
 
-\item{param_set}{String. Indicates the name of the set of parameters to be modified (useful when setting confounds)}
+\item{param_names}{string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 
-\item{normalize}{Logical. If TRUE normalizes such that param set probabilities sum to 1.}
+\item{distribution}{string indicating a common prior distribution (uniform, jeffreys or certainty)}
+
+\item{normalize}{logical. If TRUE normalizes such that param set probabilities sum to 1.}
 }
 \description{
 This is the one step function for make_priors and make_parameters.
 See \code{make_priors} for more help.
 }
-\details{
-Forbidden statements include:
-\itemize{
-  \item Setting \code{distribution} and \code{values} at the same time.
-  \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
-  \item Setting negative values.
-}
-}
 \examples{
-model <- make_model('X -> M -> Y; X -> Y')
 
-CausalQueries:::make_par_values(model, distribution = 'jeffreys')
+# the below methods can be applied to either priors or param_values by specifying the desired option in \code{alter}
 
-CausalQueries:::make_par_values(model, x = 3)
+model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
-# Selecting subsets:
+#altering values using \code{alter_at}
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
 
-# By node
-CausalQueries:::make_par_values(model, node = 'M', x = 8)
+#altering values using \code{param_names}
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
 
-# By nodal type statement
-CausalQueries:::make_par_values(model,
-        statement = '(Y[X=1, M = .] > Y[X=0, M = .])', x = 2)
+#altering values using \code{statement}
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 
-# By nodal type label (safest to provide node also)
-CausalQueries:::make_par_values(model, node = 'X', label = '0', x = 9)
-
-# By confound query: Applies only to types that are involved in confounding
-# Only alters named node in confound, even if other nodes are listed in 'nodes'
-confounds <- list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]')
-model     <- make_model('X->Y') \%>\% set_confound(confounds)
-CausalQueries:::make_par_values(model, confound = confounds[1], x = 3)
-CausalQueries:::make_par_values(model, node = 'Y', confound = confounds[1], x = 3)
-
-# A residual  confound condition can also be defined
-CausalQueries:::make_par_values(model,
-                                confound = list(X = '!(Y[X=1] > Y[X=0])'),
-                                x = 3)
-CausalQueries:::make_par_values(model,
-                                confound = list(X = '(Y[X=1] == Y[X=0])'),
-                                x = 3)
-
-# make_par_values can also be used for some vector valued statements
-model <- make_model('X -> M -> Y')
-CausalQueries:::make_par_values(model, node = c('X', 'Y'), x = 2)
-CausalQueries:::make_par_values(model, label = c('1', '01'), x = 2)
-
-# Incompatible conditions produce no change
-CausalQueries:::make_par_values(model, node = 'X', label = '01', x = 2)
-
-# If statement not satisfied by any cases then no change
-model <- make_model("X->Y")
-CausalQueries:::make_par_values(model, statement = '(Y[X=1] == 2)', x = .1)
-
-# Normalization: Take in a parameter vector and output is renormalized
-model <- make_model("X->Y")
-CausalQueries:::make_par_values(model,
-                                y = get_parameters(model),
-                                label = '01',
-                                x = .1,
-                                normalize = TRUE)
-CausalQueries:::make_par_values(model,
-                                y = get_parameters(model),
-                                statement = '(Y[X=1] == Y[X=0])',
-                                x = .1,
-                                normalize = TRUE)
-
-# Problematic examples
-\dontrun{
-CausalQueries:::make_par_values(model, x = 1:2)
-CausalQueries:::make_par_values(model,
-                                y = get_parameters(model),
-                                label = '01',
-                                x = 2,
-                                normalize = TRUE)
+#altering values using a combination of other arguments
+CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
 }
-
-}
-\seealso{
-Other priors: 
-\code{\link{get_priors}()},
-\code{\link{make_par_values_multiple}()},
-\code{\link{make_priors}()},
-\code{\link{make_values_task_list}()},
-\code{\link{set_priors}()}
-}
-\concept{priors}
 \keyword{internal}

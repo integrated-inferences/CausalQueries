@@ -1,358 +1,298 @@
-#' Make values task list
-#'
-#' A function to generate a list of parameter arguments.
-#'
-#'
-#' @param distribution A string (or list of strings) indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param x Real positive numbers. For priors these are hyperparameters of the Dirichlet distribution. For parameters these are probabilities.
-#' @param node A string (or list of strings) indicating nodes for which priors are to be altered
-#' @param label A string. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param statement A causal query (or list of queries) that determines nodal types for which priors are to be altered
-#' @param confound A confound named list that restricts nodal types for which priors are to be altered. Adjustments are limited to nodes in the named list.
-#' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
-#' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-#' @return  An \code{array} of parameter arguments.
-#'
-#' For instance \code{confound = list(X  = Y[X=1]> Y[X=0])} adjust parameters on X that are conditional on nodal types for Y.
-#'
-#' @family priors
-#' @examples
-#' CausalQueries:::make_values_task_list(node = 'X', x = 3)
-#' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = 2:3)
-#' CausalQueries:::make_values_task_list(node = c('X', 'Y'), x = list(1, 2:4))
-
-make_values_task_list <- function(distribution = NA, x = NA, node = NA, label = NA, statement = NA,
-																	confound = NA, nodal_type = NA, param_names = NA, param_set = NA) {
-
-	# Housekeeping regarding argument lengths
-	args <- list(distribution = distribution, x = x, node = node, label = label, statement = statement,
-							 confound = confound, nodal_type = nodal_type, param_names = param_names, param_set = param_set)
-	arg_length   <- unlist(lapply(args, length))
-
-	# All arguments turned to lists and looped through updating priors each time
-
-	if (sum(arg_length > 1) > 1) {
-		if (sd(arg_length[arg_length > 1]) > 0)
-			stop("Provided arguments of length >1 should be of the same length")
-	}
-
-	# Function uses mapply to generate task_list
-	f <- function(distribution, x, node, label, statement, confound, confound_names, nodal_type,
-								param_names, param_set) {
-
-		# Non NA confounds need to be in a named list
-		if (!is.na(confound)) {
-			confound <- list(confound)
-			names(confound) <- confound_names
-		}
-
-		list(distribution = distribution, x = x, node = node, label = label, statement = statement,
-				 confound = confound, nodal_type = nodal_type, param_names = param_names, param_set = param_set)
-	}
-	if (is.null(names(confound)))
-		names(confound) <- NA
-
-	mapply(f, distribution = distribution, x = x, node = node, label = label,
-				 statement = statement, confound = confound, confound_names = names(confound), nodal_type = nodal_type,
-				 param_names = param_names, param_set = param_set)
-}
-
-
 #' make_par_values
 #'
 #' This is the one step function for make_priors and make_parameters.
 #' See \code{make_priors} for more help.
 #'
-#' Forbidden statements include:
-#' \itemize{
-#'   \item Setting \code{distribution} and \code{values} at the same time.
-#'   \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
-#'   \item Setting negative values.
-#' }
-#'
-#' @param model A model created with \code{make_model}
-#' @param y Vector of real non negative values to be changed
-#' @param x Vector of real non negative values to be substituted into y
-#' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param node A string indicating nodes for which priors are to be altered
-#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param statement A causal query that determines nodal types for which priors are to be altered
-#' @param confound A confound statement that restricts nodal types for which priors are to be altered
-#' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
-#' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-#' @param normalize Logical. If TRUE normalizes such that param set probabilities sum to 1.
+#' @param model model created with \code{make_model}
+#' @param alter character vector with one of "priors" or "param_value" specifying what to alter
+#' @param x vector of real non negative values to be substituted into "priors" or "param_value"
+#' @param alter_at string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)
+#' @param node string indicating nodes which are to be altered
+#' @param label string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.
+#' @param nodal_type string. Label for nodal type indicating nodal types for which values are to be altered
+#' @param param_set string indicating  the name of the set of parameters to be altered
+#' @param given string indicates the node on which the parameter to be altered depends
+#' @param statement causal query that determines nodal types for which values are to be altered
+#' @param param_names string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+#' @param distribution string indicating a common prior distribution (uniform, jeffreys or certainty)
+#' @param normalize logical. If TRUE normalizes such that param set probabilities sum to 1.
 #'
 #' @keywords internal
 #'
-#' @family priors
 #' @examples
-#' model <- make_model('X -> M -> Y; X -> Y')
 #'
-#' CausalQueries:::make_par_values(model, distribution = 'jeffreys')
+#' # the below methods can be applied to either priors or param_values by specifying the desired option in \code{alter}
 #'
-#' CausalQueries:::make_par_values(model, x = 3)
+#' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 #'
-#' # Selecting subsets:
+#' #altering values using \code{alter_at}
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
 #'
-#' # By node
-#' CausalQueries:::make_par_values(model, node = 'M', x = 8)
+#' #altering values using \code{param_names}
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
 #'
-#' # By nodal type statement
-#' CausalQueries:::make_par_values(model,
-#'         statement = '(Y[X=1, M = .] > Y[X=0, M = .])', x = 2)
+#' #altering values using \code{statement}
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 #'
-#' # By nodal type label (safest to provide node also)
-#' CausalQueries:::make_par_values(model, node = 'X', label = '0', x = 9)
-#'
-#' # By confound query: Applies only to types that are involved in confounding
-#' # Only alters named node in confound, even if other nodes are listed in 'nodes'
-#' confounds <- list(X = 'Y[X=1] > Y[X=0]', X = 'Y[X=1] < Y[X=0]')
-#' model     <- make_model('X->Y') %>% set_confound(confounds)
-#' CausalQueries:::make_par_values(model, confound = confounds[1], x = 3)
-#' CausalQueries:::make_par_values(model, node = 'Y', confound = confounds[1], x = 3)
-#'
-#' # A residual  confound condition can also be defined
-#' CausalQueries:::make_par_values(model,
-#'                                 confound = list(X = '!(Y[X=1] > Y[X=0])'),
-#'                                 x = 3)
-#' CausalQueries:::make_par_values(model,
-#'                                 confound = list(X = '(Y[X=1] == Y[X=0])'),
-#'                                 x = 3)
-#'
-#' # make_par_values can also be used for some vector valued statements
-#' model <- make_model('X -> M -> Y')
-#' CausalQueries:::make_par_values(model, node = c('X', 'Y'), x = 2)
-#' CausalQueries:::make_par_values(model, label = c('1', '01'), x = 2)
-#'
-#' # Incompatible conditions produce no change
-#' CausalQueries:::make_par_values(model, node = 'X', label = '01', x = 2)
-#'
-#' # If statement not satisfied by any cases then no change
-#' model <- make_model("X->Y")
-#' CausalQueries:::make_par_values(model, statement = '(Y[X=1] == 2)', x = .1)
-#'
-#' # Normalization: Take in a parameter vector and output is renormalized
-#' model <- make_model("X->Y")
-#' CausalQueries:::make_par_values(model,
-#'                                 y = get_parameters(model),
-#'                                 label = '01',
-#'                                 x = .1,
-#'                                 normalize = TRUE)
-#' CausalQueries:::make_par_values(model,
-#'                                 y = get_parameters(model),
-#'                                 statement = '(Y[X=1] == Y[X=0])',
-#'                                 x = .1,
-#'                                 normalize = TRUE)
-#'
-#' # Problematic examples
-#' \dontrun{
-#' CausalQueries:::make_par_values(model, x = 1:2)
-#' CausalQueries:::make_par_values(model,
-#'                                 y = get_parameters(model),
-#'                                 label = '01',
-#'                                 x = 2,
-#'                                 normalize = TRUE)
-#' }
-#'
+#' #altering values using a combination of other arguments
+#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
+
 
 make_par_values <- function(model,
-														y = get_priors(model),
-														x = NA, distribution = NA, node = NA, label = NA, statement = NA,
-														confound = NA, nodal_type = NA, param_names = NA, param_set = NA,
-														normalize = FALSE) {
+                            alter = "priors",
+                            x = NA,
+                            alter_at = NA,
+                            node = NA,
+                            label = NA,
+                            nodal_type = NA,
+                            param_set = NA,
+                            given = NA,
+                            statement = NA,
+                            param_names = NA,
+                            distribution = NA,
+                            normalize = FALSE){
 
-	# 1. House keeping
-	# 1.0 Data from model
-	full_param_set <- model$parameters_df$param_set
-	full_node      <- model$parameters_df$node
+  full_param_set <- model$parameters_df$param_set
+  full_node      <- model$parameters_df$node
 
-	# 1.1 Initialize to_alter
-	to_alter  <- rep(TRUE, length(y))  # Subset to alter: Starts at full but can get reduced
+  # check inputs for model, alter, x, distribution
 
-	# 1.2. If neither a distribution or values vector provided (x) then return existing values (y)
-	if (all(is.na(distribution)) & all(is.na(x))) {
-		warning("neither distribution nor values provided; no change to values")
-		return(y)
-	}
+  CausalQueries:::is_a_model(model)
 
-	# 1.3. No distribution and values at the same time
-	if (!all(is.na(distribution)) & !all(is.na(x))) {
-		warning("values and distribution cannot be declared at the same time. try sequentially; no change to values")
-		return(y)
-	}
+  if(all(!is.na(c(nodal_type, label)))){
+    stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
+  }
 
-	if (!all(is.na(x)) && !is.numeric(x)) {
-	   stop("arguments 'parameters' and 'alphas' must be a numeric vector")
-	}
-
-
-	# 1.4. values negative
-	if (!all(is.na(x)) && (min(x) < 0))
-		stop("arguments 'parameters' and 'alphas' must be non-negative.")
+  if(!is.na(label)){
+    warning("label is depreciated, use nodal_type instead")
+    nodal_type <- label
+  }
 
 
-	# 1.5 distribution should be a scalar
-	if (max(length(distribution), length(confound), length(statement)) > 1)
-		stop("distribution, statement, and confound should be scalars in make_prior_single")
+  if(!is.character(alter)){
+    stop("alter must be of type character. No change to values.")
+  }
 
-	# 1.6 confound is a named list and if provided only the named node is changed
-	if (!is.na(confound) && any(is.na(node)))
-		node[is.na(node)] <- names(confound)
+  if(length(alter) != 1){
+    stop("must provide 1 value to alter. No change to values.")
+  }
 
-	# 1.7 label must be a character
-	if (all(!is.na(label)) | !is.na(nodal_type)) {
-		if (!is.character(label) && !is.character(nodal_type))
-			stop("arguments label and nodal_type must be a character")
-	}
+  if(!(alter %in% c("priors","param_value"))){
+    stop("type must be one of priors or param_value. No change to values.")
+  }
 
-	# A. Where to make changes?
+  if(alter == "priors"){
+    y <- model$parameters_df$priors
+  } else {
+    y <- model$parameters_df$param_value
+  }
 
-	# A1 Do not alter if node is not in listed nodes
-	if (!all(is.na(node))) {
-		if (!all(node %in% model$nodes))
-			stop("listed nodes must be nodes in the model")
-		to_alter[!(full_node %in% node)] <- FALSE
-	}
+  if (all(is.na(distribution)) & all(is.na(x))){
+    stop("neither distribution nor values provided. No change to values")
+  }
 
-	# A2 Do not alter if nodal type is not part of a given statement
-	if (!all(is.na(statement))) {
-		lnt <- map_query_to_nodal_type(model, statement)
-		l_types <- lnt$types
+  if (!all(is.na(x)) && !is.numeric(x)) {
+    stop("arguments 'parameters' and 'alphas' must be a numeric vector. No change to values.")
+  }
 
-		to_alter[!(full_node %in% lnt$node & model$parameters_df$nodal_type %in% names(l_types[l_types]))] <- FALSE
-	}
+  if (!all(is.na(x)) && (min(x) < 0)){
+    stop("arguments 'parameters' and 'alphas' must be non-negative.")
+  }
 
-	# A3 Do not alter if nodal type is not one of listed nodal types
-	if (!is.na(nodal_type))
-		label <- nodal_type
+  # disallow redundant argument specification
 
-	if (!all(is.na(label))) {
-		to_alter[!(model$parameters_df$nodal_type %in% label)] <- FALSE
-	}
+  if(!is.na(alter_at) & any(!is.na(list(node, nodal_type, param_set, given, statement, param_names)))){
+    stop("Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values.")
+  }
 
-	# A4 Do not alter if confound condition is not met: For instance if a condition is 'Y[X=1]>Y[X=0]'
-	# then any parameter that does *not* contribute to a causal type satisfying this condition is not
-	# modified
-	if (!all(is.na(confound))) {
-		P_short <- model$P[, map_query_to_causal_type(model, confound[[1]])$types]
-		to_alter[(apply(P_short, 1, sum) == 0)] <- FALSE
-	}
+  if(any(!is.na(param_names)) & any(!is.na(list(node, nodal_type, param_set, given, statement)))){
+    stop("Specifying param_names with any of node, nodal_type, param_set, given or statement is redundant. No change to values.")
+  }
 
-	# A5 Do not alter if parameter name is not in the model
-	if (!all(is.na(param_names))) {
-		to_alter[!(model$parameters_df$param_names %in% param_names)] <- FALSE
-	}
+  if(all(!is.na(list(nodal_type, statement)))){
+    stop("Specifying both nodal_type and statement is redundant. No change to values.")
+  }
 
-	# A6 Do not alter if parameter name is not in the model
-	if (!all(is.na(param_set))) {
-		to_alter[!(full_param_set %in% param_set)] <- FALSE
-	}
+  if(all(!is.na(list(node, statement)))){
+    stop("Specifying both node and statement is redundant. No change to values.")
+  }
 
-	# B. What values to provide?  Provide values unless a distribution is provided
-	if (!is.na(distribution)) {
-		if (!(distribution %in% c("uniform", "jeffreys", "certainty")))
-			stop("distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
-		x <- switch(distribution, uniform = 1, jeffreys = 0.5, certainty = 10000)
-	}
+  if(!all(is.na(distribution)) & !all(is.na(x))){
+    stop("values and distribution cannot be declared at the same time. Try sequentially. No change to values")
+  }
+
+  # construct command for alter_at
+
+  if(!is.na(alter_at)){
+
+    if(!is.character(alter_at)){
+      stop("alter_at must be of type character")
+    }
+
+    cols <- unlist(strsplit(alter_at, "\\& | \\| | \\|\\| | \\&\\&"))%>%
+      sapply(., function(i) strsplit(i, "\\== | \\%in% | \\!=")[[1]][1])%>%
+      trimws(., which = "both")
+
+    wrong_cols <- !(cols %in% c("parm_names","param_set","given","node","nodal_type"))
+
+    if(any(wrong_cols)){
+      stop(paste("In alter_at statement: specified columns;",
+                 paste(cols[wrong_cols], collapse = ","),
+                 "not in parameters_df. Please only specify column names present in parameters_df. This can be one of param_names, param_set, given, node or nodal_type. No change to values.",
+                 sep = " "))
+    }
+
+    command <- paste("(",alter_at,")", sep = "")
+
+  }
+
+  # construct command for param_names
+
+  if(any(!is.na(param_names))){
+
+    if(!is.character(param_names)){
+      stop("param_names must be of type character. No change to values.")
+    }
+
+    wrong_names <- !(param_names %in% model$parameters_df$param_names)
+
+    if(any(wrong_names)){
+      stop(paste("In param_names: specified parameters;",
+           paste(param_names[wrong_names], collapse = ","),
+           "not in model parameters. No change to values.",
+           sep = " ")
+           )
+    }
+
+    param_names <- param_names%>%
+      paste(., collapse = "','")%>%
+      paste("c('",.,"')", sep = "")
+
+    command <- paste("(param_names %in% ", param_names, ")", sep = "")
+
+  }
+
+  # construct command for remaining arguments
+
+  if(any(!is.na(list(node, nodal_type, param_set, given, statement)))){
+
+    args <- c("node","nodal_type","param_set","given","statement")
+    defined <- args[!is.na(list(node, nodal_type, param_set, given, statement))]
+
+    not_char <- sapply(eval(parse(text = paste("list(",paste(defined, collapse = ","),")"))),
+                       function(i) !is.character(i))
+
+    if(any(not_char)){
+      stop(paste(paste(defined[not_char], sep = ","),
+                 "must be of type character. No change to values.",
+                 sep = " ")
+           )
+    }
+
+    sub_mutate_at <- rep(NA, length(defined))
+
+    #construct commands defining where to mutate for each argument
+    for(j in 1:length(defined)){
+
+      #if argument is statement get node and nodal type and construct command
+      if(defined[j] == "statement"){
+        query <- CausalQueries:::map_query_to_nodal_type(model, statement)
+
+        node_j <- query$node%>%
+          paste(., collapse = "','")%>%
+          paste("c('",.,"')", sep = "")
+
+        nodal_type_j <- names(which(query$types))%>%
+          paste(., collapse = "','")%>%
+          paste("c('",.,"')", sep = "")
+
+        sub_mutate_at[j] <- paste("node %in% ", node_j, " & nodal_type %in% ", nodal_type_j, sep = "")
+
+        #construct commands for other arguments
+      } else {
+
+        vec <- eval(parse(text = paste("unlist(", defined[j], ")", sep = "")))%>%
+          paste(., collapse = "','")%>%
+          paste("c('",.,"')", sep = "")
+
+        sub_mutate_at[j] <- paste(defined[j], " %in% ", vec, sep = "")
+
+      }
+
+    }
+
+    command <- paste("(", paste(sub_mutate_at, collapse = " & "), ")", sep = "")
+
+  }
+
+  if(!exists("command")){
+    message("no specific parameters to alter values for specified. Altering all parameters.")
+    to_alter <- rep(TRUE, length(y))
+  } else {
+    to_alter <- with(model$parameters_df, eval(parse(text = command)))
+  }
+
+  # Provide values unless a distribution is provided
+  if(!is.na(distribution)){
+    if(!(distribution %in% c("uniform", "jeffreys", "certainty"))){
+      stop("distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
+    }
+    x <- switch(distribution, uniform = 1, jeffreys = 0.5, certainty = 10000)
+  }
 
 
-	# C MAGIC
+  if(sum(to_alter) == 0){
+    message("No change to values")
+    out <- y
 
-	if (sum(to_alter) == 0) {
-		message("No change to values")
-		return(y)
-	}
+  } else {
 
-	if ((length(x) != 1) & (length(x) != sum(to_alter)))
-		stop(paste("Trying to replace", length(to_alter), "parameters with", length(x), "values"))
+    if ((length(x) != 1) & (length(x) != sum(to_alter))){
+      stop(paste("Trying to replace ", sum(to_alter), " parameters with ", length(x), " values.",
+                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
+                 sep = ""))
+    }
 
-	# Make changes: No normalization
-	y[to_alter] <- x
 
-	# When used for parameters, normalization is usually required
-	# We normalize so that pars in a family set that has not been specified renormalize to
-	# the residual of what has been specified
-	if(normalize) {
-		sets_implicated <- unique(full_param_set[to_alter])
-		for(j in sets_implicated){
-			if(sum(y[to_alter & full_param_set==j])>1) warning("Provided values exceed 1 but normalization requested.")
-			y[!to_alter & full_param_set==j] <-
-				y[!to_alter & full_param_set==j] * sum(1 - sum(y[to_alter & full_param_set==j])) / sum(y[!to_alter & full_param_set==j])
-			y[full_param_set==j] <- y[full_param_set==j]/ sum(y[full_param_set==j])
-	   }
-	}
-	return(y)
+    # Make changes: No normalization
+    y[to_alter] <- x
+
+    # When used for parameters, normalization is usually required
+    # We normalize so that pars in a family set that has not been specified renormalize to
+    # the residual of what has been specified
+    if(normalize){
+
+      sets_implicated <- unique(full_param_set[to_alter])
+
+      for(j in sets_implicated){
+
+        if(sum(y[to_alter & full_param_set==j])>1){
+          warning("Provided values exceed 1 but normalization requested.")
+        }
+
+        y[!to_alter & full_param_set==j] <-
+          y[!to_alter & full_param_set == j] * sum(1 - sum(y[to_alter & full_param_set == j])) / sum(y[!to_alter & full_param_set == j])
+
+        y[full_param_set==j] <-
+          y[full_param_set == j] / sum(y[full_param_set == j])
+
+      }
+
+    }
+
+    out <- y
+
+  }
+
+
+  return(out)
+
 }
 
 
 
 
-#' Make par values multiple
-#'
-#' Internal function to create parameter vector when list like arguments are provided
-#'
-#' @param model A model created with \code{make_model}
-#' @param y Vector of real non negative values to be changed
-#' @param x Vector of real non negative values to be substituted into y
-#' @param distribution String indicating a common prior distribution (uniform, jeffreys or certainty)
-#' @param node A string indicating nodes for which priors are to be altered
-#' @param label String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param statement A causal query that determines nodal types for which priors are to be altered
-#' @param confound A confound statement that restricts nodal types for which priors are to be altered
-#' @param nodal_type String. Label for nodal type indicating nodal types for which priors are to be altered
-#' @param param_set String. Indicates the name of the set of parameters to be modified (useful when setting confounds)
-#' @param param_names String. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
-#' @param normalize Logical. If TRUE normalizes such that param set probabilities sum to 1.
-#' @keywords internal
-#' @family priors
 
-make_par_values_multiple <-
-	function(model, y=get_priors(model), x = NA, distribution = NA, node = NA, label = NA, statement = NA,
-					 confound = NA, nodal_type = NA, param_names = NA, param_set = NA,
-					 normalize = FALSE) {
 
-		# Housekeeping regarding argument lengths
-		args <- list(distribution = distribution, x = x, node = node, label = label, statement = statement,
-								 confound = confound, nodal_type = nodal_type, param_set = param_set)
-		arg_length   <- unlist(lapply(args, length))
 
-		# Easy case: If all but node, label, or x (replacement values) are of length 1 then simply apply make_par_values
-		for (j in c("node", "label", "x", "nodal_type", "param_set")) {
-			if (max(arg_length[names(args) != j]) == 1)
-				return(make_par_values(model, y, x = x, distribution = distribution, node = node,
-																			 label = label, statement = statement, confound = confound, nodal_type = nodal_type,
-																			 param_names = param_names, param_set = param_set, normalize = normalize))
-		}
-
-		# Harder case requires tasks list
-		task_list <- make_values_task_list(
-			distribution = distribution,
-			x = x,
-			node = node,
-			label = label,
-			statement = statement,
-			confound = confound,
-			nodal_type = nodal_type,
-			param_names = param_names,
-			param_set = param_set)
-
-		# Magic
-		#####################################################
-
-		for (i in 1:ncol(task_list)) {
-			y <- with(task_list[, i],
-
-					 	make_par_values(
-					 		model, y = y, x = x,
-					 		distribution = distribution, node = node, label = label,
-					 		statement = statement, confound = confound,
-					 		nodal_type = nodal_type, param_names = param_names,
-					 		param_set = param_set, normalize = normalize))
-		}
-
-		y
-
-	}
 

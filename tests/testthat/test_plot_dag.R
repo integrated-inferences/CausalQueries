@@ -33,19 +33,14 @@ testthat::test_that(
 
   code = {
     model <- make_model("X -> K -> Y")
-    expect_message(plot(model, labels = TRUE))
-  }
-)
+    x <- c(1,2,3)
+    y <- c(1,1,1)
+    P <- plot_dag(model,x_coord=x,y_coord=y)
+    dat <- data.frame(name=model$nodes,x=x,y=y)
+    expect_false(!any(P$data[match(P$data$name,model$nodes),c('name','x','y')]==dat))
+    expect_message(plot(model,x_coord=x))
+    expect_message(plot(model,y_coord=y))
 
-testthat::test_that(
-
-  desc = "Testing additional arguments",
-
-  code = {
-    model <- make_model("X -> K -> Y")
-    P <- plot(model, labels = TRUE,segment.size=20, colour="blue")
-    z <- P$layers[[2]]
-    expect_true(z$aes_params$colour=="blue" & z$aes_params$segment.size==20)
   }
 )
 
@@ -68,4 +63,5 @@ testthat::test_that(
     expect_message(plot(model),x_coord=c(1,2,3),y_coord=c(3,2,1))
   }
 )
+
 
