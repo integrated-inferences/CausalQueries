@@ -126,16 +126,20 @@ make_priors(model, distribution = "jeffreys")
 model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
 #altering values using \code{alter_at}
-make_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
+make_priors(model = model, alphas = c(0.5,0.25),
+alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
 
 #altering values using \code{param_names}
-make_priors(model = model, alphas = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
+make_priors(model = model, alphas = c(0.5,0.25),
+param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
-make_priors(model = model, alphas = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
+make_priors(model = model, alphas = c(0.5,0.25),
+statement = "Y[M=1] > Y[M=0]")
 
 #altering values using a combination of other arguments
-make_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
+make_priors(model = model, alphas = c(0.5,0.25),
+node = "Y", nodal_type = c("00","01"), given = "X.0")
 
 # set_priors examples:
 
@@ -147,16 +151,20 @@ set_priors(model, distribution = "jeffreys")
 model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
 #altering values using \code{alter_at}
-set_priors(model = model, alphas = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
+set_priors(model = model, alphas = c(0.5,0.25),
+alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
 
 #altering values using \code{param_names}
-set_priors(model = model, alphas = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
+set_priors(model = model, alphas = c(0.5,0.25),
+param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
-set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
+set_priors(model = model, alphas = c(0.5,0.25),
+statement = "Y[M=1] > Y[M=0]")
 
 #altering values using a combination of other arguments
-set_priors(model = model, alphas = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
+set_priors(model = model, alphas = c(0.5,0.25), node = "Y",
+nodal_type = c("00","01"), given = "X.0")
 
 # get_priors examples:
 

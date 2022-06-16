@@ -1,5 +1,11 @@
 # CausalQueries
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/macartan/CausalQueries/workflows/R-CMD-check/badge.svg)](https://github.com/macartan/CausalQueries/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
+<!-- badges: end -->
+
+
 `CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of `dagitty` functionality. Updating is implemented in `stan`. 
 
 See [here](https://macartan.github.io/causalmodels/) for a guide to using `CausalQueries` along with many examples of causal models  

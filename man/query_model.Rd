@@ -24,22 +24,22 @@ query_model(
 
 \item{given}{A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.}
 
-\item{using}{A character. Whether to use `priors`, `posteriors` or `parameters`.}
+\item{using}{A character. Whether to use priors, posteriors or parameters.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to specify (optional). By default, parameters is drawn from \code{model$parameters_df}.}
 
-\item{stats}{Functions to be applied to estimand distribution. If `NULL`, defaults to mean, standard deviation, and 95% confidence interval.}
+\item{stats}{Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95% confidence interval.}
 
 \item{n_draws}{An integer. Number of draws.}
 
-\item{expand_grid}{Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.}
+\item{expand_grid}{Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to FALSE.}
 
 \item{case_level}{Logical. If TRUE estimates the probability of the query for a case.}
 
 \item{query}{alias for queries}
 }
 \value{
-A \code{data.frame} with columns `Query`, `Given` and `Using` defined by corresponding input values. Further columns are generated as specified in `stats`.
+A \code{data.frame} with columns Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
 }
 \description{
 Calculated from a parameter vector, from a prior or from a posterior distribution

@@ -23,9 +23,9 @@ query_distribution(
 
 \item{given}{A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.}
 
-\item{using}{A character. Whether to use `priors`, `posteriors` or `parameters`}
+\item{using}{A character. Whether to use priors, posteriors or parameters}
 
-\item{parameters}{A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`}
+\item{parameters}{A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  \code{using} specifies \code{parameters}}
 
 \item{type_distribution}{A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior}
 
@@ -36,7 +36,7 @@ query_distribution(
 \item{case_level}{Logical. If TRUE estimates the probability of the query for a case.}
 }
 \value{
-A vector of draws from the distribution of the potential outcomes specified in `query`
+A vector of draws from the distribution of the potential outcomes specified in \code{query}
 }
 \description{
 Calculated distribution of a query from a prior or posterior distribution of parameters

@@ -17,6 +17,9 @@
 #' }
 #'
 prep_stan_data <- function(model, data, keep_transformed = TRUE) {
+
+    i <- NULL
+
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")
     parmap <- get_parmap(model)
