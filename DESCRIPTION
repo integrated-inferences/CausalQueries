@@ -22,7 +22,7 @@ Depends:
     Rcpp (>= 0.12.0)
 Imports:
     dagitty (>= 0.3-1),
-    DirichletReg (>= 0.7-1),
+    dirmult (>= 0.1.3-4),
     stats (>= 4.1.1),
     randomizr (>= 0.22.0),
     rlang (>= 0.2.0),
