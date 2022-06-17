@@ -233,7 +233,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 #' @rdname parameter_setting
 #'
 #' @return A vector of draws from the prior or distribution of parameters
-#' @importFrom gtools rdirichlet
+#' @importFrom DirichletReg rdirichlet
 #' @family parameters
 #' @export
 #' @examples
