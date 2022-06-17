@@ -20,8 +20,7 @@ The confounds_df can be manually provided however using set_confounds_df.
 \examples{
 \donttest{
 model <- make_model('X -> Y') \%>\%
-  set_confound(list('X <-> Y'), add_confounds_df = FALSE)
-model$confounds_df
+  set_confound(list('X <-> Y'))
 set_confounds_df(model)$confounds_df
 
 # An example where a restriction is applied after a confounding relation is set removes

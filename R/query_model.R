@@ -119,7 +119,7 @@ query_distribution <- function(model,
 #' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
 #' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
 #' @param using A character. Whether to use priors, posteriors or parameters.
-#' @param stats Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95% confidence interval.
+#' @param stats Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95\% confidence interval.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to FALSE.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
