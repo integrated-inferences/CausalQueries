@@ -248,6 +248,7 @@ set_restrictions <- function(model,
 }
 
 
+#' reduce nodal types using statement
 #'
 #' @param model a model created by make_model()
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
