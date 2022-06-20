@@ -7,7 +7,7 @@
 query_to_expression(query, node)
 }
 \arguments{
-\item{query}{A character string. An expression defining nodal types to interrogate \code{\link{reveal_outcomes}}}
+\item{query}{A character string. An expression defining nodal types to interrogate \code{\link{realise_outcomes}}}
 
 \item{node}{A character string. The quoted name of a node.}
 }

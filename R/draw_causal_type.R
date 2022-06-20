@@ -26,9 +26,10 @@
 #' make_data(model, parameters = type$causal_type)
 
 
-draw_causal_type <- function(model, ...)
-
+draw_causal_type <- function(model, ...){
+  param_value <- NULL
   set_parameters(model, ...)$parameters_df %>%
-  group_by(param_set) %>%
-  mutate(causal_type = rmultinom(1, 1, param_value)[,1]) %>%
-  ungroup()
+    group_by(param_set) %>%
+    mutate(causal_type = rmultinom(1, 1, param_value)[,1]) %>%
+    ungroup()
+}

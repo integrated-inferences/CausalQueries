@@ -100,17 +100,10 @@ testthat::test_that(
 		expect_error(make_events(model = model, w = w), "w has to be a matrix with named rows.")
 		w <- c(w)
 		expect_error(make_events(model = model, w = w), "w has to be a matrix.")
+		expect_error(make_events(model = model, param_type = "define"), "neither distribution nor values provided. No change to values")
 	}
 )
 
-testthat::test_that(
 
-	desc = "Check warnings.",
-
-	code = {
-		model <- make_model("X -> Y")
-		expect_warning(make_events(model = model, param_type = "define"), "neither distribution nor values provided; no change to values")
-	}
-)
 
 

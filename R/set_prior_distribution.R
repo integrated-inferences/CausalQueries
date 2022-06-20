@@ -6,7 +6,7 @@
 #' @param n_draws A scalar. Number of draws.
 #' @return A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
 #' @export
-#' @importFrom gtools rdirichlet
+#' @importFrom dirmult rdirichlet
 #' @family prior_distribution
 #' @examples
 #' make_model('X -> Y') %>% make_prior_distribution(n_draws = 5)

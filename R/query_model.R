@@ -4,15 +4,15 @@
 #'
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param parameters A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  `using` specifies `parameters`
-#' @param using A character. Whether to use `priors`, `posteriors` or `parameters`
+#' @param parameters A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  \code{using} specifies \code{parameters}
+#' @param using A character. Whether to use priors, posteriors or parameters
 #' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
-#' @return A vector of draws from the distribution of the potential outcomes specified in `query`
+#' @return A vector of draws from the distribution of the potential outcomes specified in \code{query}
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
@@ -116,16 +116,15 @@ query_distribution <- function(model,
 #' Calculated from a parameter vector, from a prior or from a posterior distribution
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#'
 #' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
 #' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
-#' @param using A character. Whether to use `priors`, `posteriors` or `parameters`.
-#' @param stats Functions to be applied to estimand distribution. If `NULL`, defaults to mean, standard deviation, and 95% confidence interval.
+#' @param using A character. Whether to use priors, posteriors or parameters.
+#' @param stats Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95\% confidence interval.
 #' @param n_draws An integer. Number of draws.
-#' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to `FALSE`.
+#' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to FALSE.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @param query alias for queries
-#' @return A \code{data.frame} with columns `Query`, `Given` and `Using` defined by corresponding input values. Further columns are generated as specified in `stats`.
+#' @return A \code{data.frame} with columns Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
@@ -192,8 +191,8 @@ query_model <- function(model,
     } else {
     stats <- c(mean = mean,
                sd = sd,
-               conf.low = function(x) quantile(x, probs = 0.025),
-               conf.high = function(x) quantile(x, probs = 0.975)
+               conf.low = function(x) stats::quantile(x, probs = 0.025),
+               conf.high = function(x) stats::quantile(x, probs = 0.975)
                )
     }}
 

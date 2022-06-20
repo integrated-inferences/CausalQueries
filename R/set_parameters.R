@@ -46,16 +46,20 @@ NULL
 #'\donttest{
 #'
 #' #altering values using \code{alter_at}
-#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25),
+#' alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
 #'
 #' #altering values using \code{param_names}
-#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), param_names = c("Y.10","Y.01"))
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25),
+#' param_names = c("Y.10","Y.01"))
 #'
 #' #altering values using \code{statement}
-#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5),
+#' statement = "Y[X=1] > Y[X=0]")
 #'
 #' #altering values using a combination of other arguments
-#' make_model("X -> Y") %>% make_parameters(model = model, parameters = c(0.5,0.25), node = "Y", nodal_type = c("00","01"))
+#' make_model("X -> Y") %>% make_parameters(parameters = c(0.5,0.25),
+#' node = "Y", nodal_type = c("00","01"))
 #'
 #' # Normalize renormalizes values not set so that value set is not renomalized
 #' make_parameters(make_model('X -> Y'),
@@ -85,7 +89,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
     # Figure out if we need to use make_par_values
     par_args = list(...)
 
-    par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "param_names"))
+    par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "join_by", "param_names"))
 
     if (par_args_provided > 0 & is.null(param_type)){
       param_type <- "define"
@@ -181,16 +185,20 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 #'\donttest{
 #'
 #' #altering values using \code{alter_at}
-#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25),
+#' alter_at = "node == 'Y' & nodal_type %in% c('00','01')")
 #'
 #' #altering values using \code{param_names}
-#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), param_names = c("Y.10","Y.01"))
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25),
+#' param_names = c("Y.10","Y.01"))
 #'
 #' #altering values using \code{statement}
-#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5),
+#' statement = "Y[X=1] > Y[X=0]")
 #'
 #' #altering values using a combination of other arguments
-#' make_model("X -> Y") %>% set_parameters(model = model, parameters = c(0.5,0.25), node = "Y", nodal_type = c("00","01"))
+#' make_model("X -> Y") %>% set_parameters(parameters = c(0.5,0.25),
+#' node = "Y", nodal_type = c("00","01"))
 #'
 #'
 #'   }
@@ -225,7 +233,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 #' @rdname parameter_setting
 #'
 #' @return A vector of draws from the prior or distribution of parameters
-#' @importFrom gtools rdirichlet
+#' @importFrom dirmult rdirichlet
 #' @family parameters
 #' @export
 #' @examples
@@ -248,3 +256,4 @@ get_parameters <- function(model, param_type = NULL) {
   return(x)
 
 }
+

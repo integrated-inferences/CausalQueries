@@ -49,6 +49,8 @@
 
 set_confound <- function(model, confound = NULL) {
 
+    given <- gen <- NULL
+
     if(!(all(model$parameters_df$given == "")))
         stop("Confounds have already been declared. Please declare confounds only once.")
 

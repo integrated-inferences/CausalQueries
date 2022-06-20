@@ -29,6 +29,7 @@ An object of class \code{causal_model}. The causal types and nodal types in the 
 }
 \description{
 reduce nodal types using statement
+
 }
 \seealso{
 Other restrictions: 

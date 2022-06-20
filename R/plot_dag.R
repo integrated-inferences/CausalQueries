@@ -41,6 +41,8 @@ plot_dag <- function(model = NULL,
                      nodecol = 'black',
                      nodesize = 16
 ) {
+
+    name <- to <- x <- y <- xend <- yend <- NULL
     # Checks
     if(is.null(model))
         stop("Model object must be provided")

@@ -13,6 +13,7 @@
 #' @param param_set string indicating  the name of the set of parameters to be altered
 #' @param given string indicates the node on which the parameter to be altered depends
 #' @param statement causal query that determines nodal types for which values are to be altered
+#' @param join_by string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).
 #' @param param_names string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
 #' @param distribution string indicating a common prior distribution (uniform, jeffreys or certainty)
 #' @param normalize logical. If TRUE normalizes such that param set probabilities sum to 1.
@@ -21,21 +22,27 @@
 #'
 #' @examples
 #'
-#' # the below methods can be applied to either priors or param_values by specifying the desired option in \code{alter}
+#' # the below methods can be applied to either priors or
+#' # param_values by specifying the desired option in \code{alter}
 #'
 #' model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 #'
 #' #altering values using \code{alter_at}
-#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
+#' CausalQueries:::make_par_values(model = model,
+#' x = c(0.5,0.25),
+#' alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
 #'
 #' #altering values using \code{param_names}
-#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
+#' CausalQueries:::make_par_values(model = model,
+#' x = c(0.5,0.25),
+#' param_names = c("Y.10_X.0","Y.10_X.1"))
 #'
 #' #altering values using \code{statement}
 #' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 #'
 #' #altering values using a combination of other arguments
-#' CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
+#' CausalQueries:::make_par_values(model = model,
+#' x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
 
 
 make_par_values <- function(model,
@@ -48,6 +55,7 @@ make_par_values <- function(model,
                             param_set = NA,
                             given = NA,
                             statement = NA,
+                            join_by = "|",
                             param_names = NA,
                             distribution = NA,
                             normalize = FALSE){
@@ -99,6 +107,18 @@ make_par_values <- function(model,
     stop("arguments 'parameters' and 'alphas' must be non-negative.")
   }
 
+  if(!is.character(join_by)){
+    stop("join_by must be of type character")
+  }
+
+  if(!(join_by %in% c("|","&"))){
+    stop("join_by must be one of '|' or '&'")
+  }
+
+  if(length(join_by) > 1){
+    stop("please only define one join_by")
+  }
+
   # disallow redundant argument specification
 
   if(!is.na(alter_at) & any(!is.na(list(node, nodal_type, param_set, given, statement, param_names)))){
@@ -130,8 +150,8 @@ make_par_values <- function(model,
     }
 
     cols <- unlist(strsplit(alter_at, "\\& | \\| | \\|\\| | \\&\\&"))%>%
-      sapply(., function(i) strsplit(i, "\\== | \\%in% | \\!=")[[1]][1])%>%
-      trimws(., which = "both")
+      sapply(function(i) strsplit(i, "\\== | \\%in% | \\!=")[[1]][1])%>%
+      trimws(which = "both")
 
     wrong_cols <- !(cols %in% c("parm_names","param_set","given","node","nodal_type"))
 
@@ -165,8 +185,8 @@ make_par_values <- function(model,
     }
 
     param_names <- param_names%>%
-      paste(., collapse = "','")%>%
-      paste("c('",.,"')", sep = "")
+      paste(collapse = "','")
+    param_names <- paste("c('",param_names,"')", sep = "")
 
     command <- paste("(param_names %in% ", param_names, ")", sep = "")
 
@@ -196,15 +216,15 @@ make_par_values <- function(model,
 
       #if argument is statement get node and nodal type and construct command
       if(defined[j] == "statement"){
-        query <- CausalQueries:::map_query_to_nodal_type(model, statement)
+        query <- CausalQueries:::map_query_to_nodal_type(model, statement, join_by = join_by)
 
         node_j <- query$node%>%
-          paste(., collapse = "','")%>%
-          paste("c('",.,"')", sep = "")
+          paste(collapse = "','")
+        node_j <- paste("c('",node_j,"')", sep = "")
 
         nodal_type_j <- names(which(query$types))%>%
-          paste(., collapse = "','")%>%
-          paste("c('",.,"')", sep = "")
+          paste(collapse = "','")
+        nodal_type_j <- paste("c('",nodal_type_j,"')", sep = "")
 
         sub_mutate_at[j] <- paste("node %in% ", node_j, " & nodal_type %in% ", nodal_type_j, sep = "")
 
@@ -212,8 +232,8 @@ make_par_values <- function(model,
       } else {
 
         vec <- eval(parse(text = paste("unlist(", defined[j], ")", sep = "")))%>%
-          paste(., collapse = "','")%>%
-          paste("c('",.,"')", sep = "")
+          paste(collapse = "','")
+        vec <- paste("c('",vec,"')", sep = "")
 
         sub_mutate_at[j] <- paste(defined[j], " %in% ", vec, sep = "")
 

@@ -15,6 +15,7 @@ make_par_values(
   param_set = NA,
   given = NA,
   statement = NA,
+  join_by = "|",
   param_names = NA,
   distribution = NA,
   normalize = FALSE
@@ -41,6 +42,8 @@ make_par_values(
 
 \item{statement}{causal query that determines nodal types for which values are to be altered}
 
+\item{join_by}{string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
+
 \item{param_names}{string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
 
 \item{distribution}{string indicating a common prior distribution (uniform, jeffreys or certainty)}
@@ -53,20 +56,26 @@ See \code{make_priors} for more help.
 }
 \examples{
 
-# the below methods can be applied to either priors or param_values by specifying the desired option in \code{alter}
+# the below methods can be applied to either priors or
+# param_values by specifying the desired option in \code{alter}
 
 model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
 #altering values using \code{alter_at}
-CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
+CausalQueries:::make_par_values(model = model,
+x = c(0.5,0.25),
+alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
 
 #altering values using \code{param_names}
-CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), param_names = c("Y.10_X.0","Y.10_X.1"))
+CausalQueries:::make_par_values(model = model,
+x = c(0.5,0.25),
+param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
 CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
 
 #altering values using a combination of other arguments
-CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
+CausalQueries:::make_par_values(model = model,
+x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0")
 }
 \keyword{internal}

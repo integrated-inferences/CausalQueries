@@ -1,9 +1,9 @@
-#' Reveal outcomes
+#' Realise outcomes
 #'
-#' Reveal outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.
+#' Realise outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.
 #' If a do operator is applied to any node then it takes the given value and all its descendants are generated accordingly.
 #'
-#' @details \code{reveal_outcomes} starts off by creating types (via \code{\link{get_nodal_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
+#' @details \code{realise_outcomes} starts off by creating types (via \code{\link{get_nodal_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param dos A named \code{list}. Do actions defining node values, e.g., \code{list(X = 0, M = 1)}.
 #' @param node A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.
@@ -12,15 +12,15 @@
 #' @examples
 #' \donttest{
 #' model <- make_model("X -> Y")
-#' reveal_outcomes(model)
+#' realise_outcomes(model)
 #'
 #' model <- make_model("X1->Y;X2->M;M->Y")
-#' reveal_outcomes(model, dos = list(X1 = 1, M = 0))
+#' realise_outcomes(model, dos = list(X1 = 1, M = 0))
 #'
 #' model <- make_model("X->M->Y")
-#' reveal_outcomes(model, dos = list(M = 1), node = "Y")
+#' realise_outcomes(model, dos = list(M = 1), node = "Y")
 #'}
-reveal_outcomes <- function(model, dos = NULL, node = NULL){
+realise_outcomes <- function(model, dos = NULL, node = NULL){
 
 	# Housekeeping
 	if(!is.null(node) & is.null(dos)) stop("Do actions must be specified when node is not NULL")
@@ -112,5 +112,26 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL){
 }
 
 
+
+
+
+
+
+#' Reveal outcomes
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead.
+#' @keywords internal
+#'
+reveal_outcomes <- function(model, dos = NULL, node = NULL) {
+  lifecycle::deprecate_warn(
+  "0.0.3.2",
+  "reveal_outcomes()",
+  details = "This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead."
+)
+realise_outcomes(model = model, dos = dos, node = node)
+}
 
 

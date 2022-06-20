@@ -4,3 +4,4 @@
 .gitignore
 cran-comments.md
 ^CRAN-RELEASE$
+^\.github$

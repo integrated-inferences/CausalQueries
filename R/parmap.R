@@ -17,6 +17,7 @@
 #' # Any ways (without paths splits)
 #' make_parmap(model) %*% (make_parmap(model) %>% attr("map"))
 #'
+#' \dontrun{
 #' model <- make_model("Y2 <- X1 -> Y1; Y2 <- X2 ->Y1; X1 <-> X2; Y1 <-> Y2")
 #' data <- CausalQueries:::minimal_event_data(model)
 #' check <- CausalQueries:::prep_stan_data(model, data, keep_transformed = TRUE)
@@ -24,8 +25,12 @@
 #' check$parlam
 #' a <- update_model(model)
 #' make_parmap(model) %>% dim
-#'
+#' }
+
 make_parmap <- function(model, A = NULL, P = NULL){
+
+    d <- NULL
+
     if(is.null(A)) A <- get_ambiguities_matrix(model)
     if(is.null(P)) P <- get_parameter_matrix(model)
 
