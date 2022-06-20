@@ -44,8 +44,12 @@ If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then
 \examples{
 
 \dontrun{
-model <- CausalQueries:::make_model('X -> K -> Y; X <-> Y')
-CausalQueries:::plot_dag(model)
+make_model('X -> K -> Y; X <-> Y') \%>\%
+  CausalQueries:::plot_dag()
+make_model('X -> K -> Y') \%>\%
+  set_confound('X <-> Y') \%>\%
+  CausalQueries:::plot_dag()
+CausalQueries:::plot_dag(model, x_coord = 1:3, y_coord = 1:3)
 }
 
 }

@@ -107,10 +107,6 @@ print.summary.parameter_matrix <- function(x, ...) {
     print(x)
     cat("\n \n param_set  (P)\n ")
     cat(paste0(param_set, collapse = "  "))
-    if (!is.null(attr(x, "confounds_df"))) {
-        cat("\n\n confounds (P)\n")
-        print(attr(x, "confounds_df"), row.names = FALSE )
-    }
 }
 
 

@@ -18,6 +18,8 @@ restrict_by_labels(
 
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model.}
 
+\item{given}{A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When mixing labels that are further restricted by \code{given} and ones that are not, labels without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.}
+
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \value{

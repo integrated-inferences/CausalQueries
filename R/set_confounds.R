@@ -1,6 +1,6 @@
 #' Set confound
 #'
-#' Adjust parameter matrix to allow confounding. To be called only by make_model.
+#' Adjust parameter matrix to allow confounding.
 #'
 #'
 #' Confounding between X and Y arises when the nodal types for X and Y are not independently distributed. In the X -> Y graph, for instance, there are 2 nodal types for X and 4 for Y. There are thus 8 joint nodal types:
@@ -18,41 +18,56 @@
 #' }
 #'
 #' This table has 8 interior elements and so an unconstrained joint distribution would have 7 degrees of freedom.
-#' A no confounding assumption means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y) = Pr(t^X)Pr(t^Y). In this case there would be 3 degrees of freedom for Y and 1 for X, totalling 4 rather than 7.
+#' A no confounding assumption means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y) = Pr(t^X)Pr(t^Y).
+#' In this case there would be 3 degrees of freedom for Y and 1 for X, totaling 4 rather than 7.
 #'
 #' \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
+#' For instance here two parameters (and one degree of freedom) govern the distribution of types X  and four parameters (with 3 degrees of freedom) govern  the types for Y given the type of X for a total of 1+3+3 = 7 degress of freedom.
 #'
-#' Allow  confounding by adding a bidirected edge in the model statement
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param confound A named \code{list}. It relates nodes to statements that identify causal types with which they are confounded
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the parameter matrix updated according to `confound`.
+#' @param confound A \code{list} of statements indicating pairs of nodes whose types are jointly distributed (e.g. list("A <-> B", "C <-> D")).
+#' @return An object of class \code{causal_model} with updated parameters_df and parameter matrix.
 #' @export
 #' @examples
 #'
 #' make_model('X -> Y; X <-> Y') %>%
 #' get_parameters()
 #'
-#'make_model("X -> Y") %>%
-#' set_confound("X <-> Y") %>%
+#' make_model('X -> M -> Y; X <-> Y') %>%
 #' get_parameters()
 #'
-#' make_model('X -> M -> Y; X <->Y') %>%
+#' model <- make_model('X -> M -> Y; X <-> Y; M <-> Y')
+#' model$parameters_df
+#'
+#' # Example where set_confound is implemented after restrictions
+#'make_model("A -> B -> C") %>%
+#' set_restrictions(increasing("A", "B")) %>%
+#' set_confound("B <-> C") %>%
 #' get_parameters()
 #'
 #' # Example where two parents are confounded
-#' model <- make_model('A -> B <- C; A <->C') %>%
-#'   set_parameters(c(.5, .5, 0.05, .95, .95, 0.05, rep(.0625, 16)))
-#' cor(simulate_data(model, n = 20))
+#' make_model('A -> B <- C; A <-> C') %>%
+#'   set_parameters(node = "C", c(0.05, .95, .95, 0.05)) %>%
+#'   make_data(n = 50) %>%
+#'   cor()
 #'
+#'  # Example with two confounds, added sequentially
+#' model <- make_model('A -> B -> C') %>%
+#'   set_confound(list("A <-> B", "B <-> C"))
+#' model$statement
+#' # plot(model)
+
 
 set_confound <- function(model, confound = NULL) {
+
+  if(grepl(";", confound)) stop("Please provide multipe confounds as a list")
 
     given <- gen <- NULL
 
     if(!(all(model$parameters_df$given == "")))
         stop("Confounds have already been declared. Please declare confounds only once.")
+
 
     # extract the node from the nodal type name
     node_from_type <- function(type)
@@ -85,6 +100,20 @@ set_confound <- function(model, confound = NULL) {
 
     names_P <- names(model$P)
     model$parameters_df$given <- ""
+
+
+    # Add confounds to model statement if not present already
+    # (Present if provided in first instance; not if provided later)
+    # Note need to check writing on both directions and deal with loose spacing
+    statement <- gsub(" ", "", model$statement)
+    order_1 <- paste0(names(confound), "<->", confound)
+    order_2 <- paste0(confound, "<->", names(confound))
+    for (j in 1:length(confound)) {
+      if(!grepl(order_1[j], statement) & !grepl(order_2[j], statement))
+       model$statement <-
+          paste(model$statement, ";",  paste(names(confound)[j], "<->", confound[j]))
+    }
+
 
     # Expand parameters_df
     ##################################################################################
@@ -154,13 +183,7 @@ set_confound <- function(model, confound = NULL) {
     class(model$P) <- c("parameter_matrix", "data.frame")
     rownames(model$parameters_df) <- NULL
 
-    # Make a dataset of conditioned_node and conditioned_on nodes for graphing confound relations
-    confounds_df <- data.frame(names(confound), unlist(confound))
-    colnames(confounds_df) <- c("node 1", "node 2")
-
     # Export
-    model$confounds_df <- confounds_df
-    attr(model$P, "confounds_df") <- model$confounds_df
     attr(model$P, "param_set") <- unique(model$parameters_df$param_set)
     model
 

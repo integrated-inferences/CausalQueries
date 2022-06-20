@@ -58,7 +58,7 @@ model_4 <- update_model(model, data_short, data_type = 'compact')
 
 # It is possible to implement updating without data, in which case the posterior
 # is a stan object that reflects the prior
-model5 <- update_model(model)
+model_5 <- update_model(model)
 
 
 # Censored data types

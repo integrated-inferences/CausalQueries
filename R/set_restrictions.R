@@ -247,7 +247,7 @@ set_restrictions <- function(model,
     return(model)
 }
 
-#' Reduce noal types using statement
+#' Reduce nodal types using statement
 #'
 #' @param model a model created by make_model()
 #' @param statement a list of character vectors specifying nodal types to be removed from the model. Use \code{get_nodal_types} to see syntax.
@@ -346,7 +346,7 @@ restrict_by_query <- function(model,
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
-#' @given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When mixing labels that are further restricted by \code{given} and ones that are not, labels without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
+#' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When mixing labels that are further restricted by \code{given} and ones that are not, labels without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
 #' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 #' @keywords internal

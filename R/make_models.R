@@ -37,8 +37,6 @@
 #' model <- make_model("X->Y; X <-> Y")
 #' model$P
 #' model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2")
-#' model$P
-#' model$confounds_df
 #' dim(model$P)
 #' model$P
 #' model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
@@ -76,7 +74,6 @@ make_model <- function(statement, add_causal_types = TRUE){
 
 	# allowable names
 	node_names <- unique(c(as.character(dag$parent), as.character(dag$children)))
-#	if(any(grepl("[.]", node_names))) stop("No dots in varnames please; try underscore?")
 	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try dots?")
 	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
 
@@ -121,7 +118,6 @@ make_model <- function(statement, add_causal_types = TRUE){
  	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
  	given = "",
  	node = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
-  # param        = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
   nodal_type = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
   priors       = 1,
   stringsAsFactors = FALSE
@@ -156,8 +152,7 @@ make_model <- function(statement, add_causal_types = TRUE){
 
 	 	# Check on ineligible confound statements
 	 	if(any(!(c(z$v, z$w) %in% nodes)))
-	 	stop("Confound relations (<->) must be between nodes contained in the dag
-	 				(i.e. that also have a direct relation (->).")
+	 	stop("Confound relations (<->) must be between nodes contained in the dag")
 
 	 	model <- set_confound(model, confounds)
 

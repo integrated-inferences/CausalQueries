@@ -5,7 +5,7 @@
 \alias{CausalQueries-package}
 \title{'CausalQueries'}
 \description{
-'CausalQueries' is a package that lets you declare binary causal models,
-update beliefs about causal types given data and calculate arbitrary estimands.
+'CausalQueries' is a package that lets you generate binary causal models,
+update over models given data and calculate arbitrary causal queries.
 Model definition makes use of dagitty syntax. Updating is implemented in 'stan'.
 }

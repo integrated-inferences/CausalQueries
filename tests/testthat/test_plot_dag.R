@@ -11,8 +11,7 @@ testthat::test_that(
     pdf(file = NULL)
     expect_silent(plot(model))
     model <- make_model("X -> M -> Y")  %>%
-      set_confound(confound = list(M = "Y[M=1]==1"))
-    model$confounds_df <- NULL
+      set_confound(confound = list("M <-> Y"))
     expect_that(plot_dag(model), shows_message())
   }
 )
