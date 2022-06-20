@@ -88,7 +88,7 @@
 #'
 #' # Restrict using statements and given:
 #' model <- make_model("X -> Y -> Z; X <-> Z") %>%
-#'  set_restrictions(model,list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
+#'  set_restrictions(list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
 #' get_parameter_matrix(model)
 #'
 #' # Restrictions on levels for endogenous nodes aren't allowed
@@ -113,7 +113,7 @@
 #'
 #' # Restrict using labels and given:
 #' model <- make_model("X -> Y -> Z; X <-> Z") %>%
-#'  set_restrictions(model,labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
+#'  set_restrictions(labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
 #' get_parameter_matrix(model)
 #'}
 set_restrictions <- function(model,
@@ -279,7 +279,7 @@ restrict_by_query <- function(model,
 
     for(i in seq(1,length(statement))){
 
-        restriction <- CausalQueries:::map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
+        restriction <- map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
         node <- restriction$node
         types <- names(restriction$types)[restriction$types]
         names(types) <- node
@@ -319,10 +319,10 @@ restrict_by_query <- function(model,
     }
 
     model$parameters_df <- model$parameters_df%>%
-        CausalQueries:::clean_params(warning = FALSE)
+        clean_params(warning = FALSE)
 
     if(update_types){
-        model$causal_types <- CausalQueries:::update_causal_types(model)
+        model$causal_types <- update_causal_types(model)
     }
 
     return(model)
@@ -415,8 +415,8 @@ restrict_by_labels <- function(model,
         model$parameters_df <- model$parameters_df[!drop,]
     }
 
-    if(update_types) model$causal_types <- CausalQueries:::update_causal_types(model)
-    model$parameters_df <- CausalQueries:::clean_params(model$parameters_df, warning = FALSE)
+    if(update_types) model$causal_types <- update_causal_types(model)
+    model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
 
     return(model)
 
@@ -478,7 +478,7 @@ update_causal_types <- function(model) {
     df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 
     # Add names
-    cnames <- CausalQueries:::causal_type_names(df)
+    cnames <- causal_type_names(df)
     rownames(df) <- do.call(paste, c(cnames, sep = "."))
 
     # Export

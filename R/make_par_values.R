@@ -65,7 +65,7 @@ make_par_values <- function(model,
 
   # check inputs for model, alter, x, distribution
 
-  CausalQueries:::is_a_model(model)
+  is_a_model(model)
 
   if(all(!is.na(c(nodal_type, label)))){
     stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
@@ -216,7 +216,7 @@ make_par_values <- function(model,
 
       #if argument is statement get node and nodal type and construct command
       if(defined[j] == "statement"){
-        query <- CausalQueries:::map_query_to_nodal_type(model, statement, join_by = join_by)
+        query <- map_query_to_nodal_type(model, statement, join_by = join_by)
 
         node_j <- query$node%>%
           paste(collapse = "','")
