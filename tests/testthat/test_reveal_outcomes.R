@@ -13,7 +13,7 @@ testthat::test_that(
 	desc = "error when dos is not parent",
 
 	code = {
-		expect_error(reveal_outcomes(model, dos = list(X = 1), node = "Y"))
+		expect_error(realise_outcomes(model, dos = list(X = 1), node = "Y"))
 	}
 )
 
@@ -22,8 +22,15 @@ testthat::test_that(
 	desc = "return when node stated",
 
 	code = {
-		expect_equal(nrow(reveal_outcomes(model, dos = list(X = 1), node = "M")), 4)
+		expect_equal(nrow(realise_outcomes(model, dos = list(X = 1), node = "M")), 4)
 	}
 )
 
 
+test_that("reveal_outcomes is deprecated", {
+  expect_snapshot({
+    x <- realise_outcomes(model, dos = list(X = 1), node = "M")
+    y <- reveal_outcomes(model, dos = list(X = 1), node = "M")
+    expect_equal(x, y)
+  })
+})

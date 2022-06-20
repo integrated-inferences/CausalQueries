@@ -18,11 +18,12 @@
 #' make_parmap(model) %*% (make_parmap(model) %>% attr("map"))
 #'
 #' \dontrun{
+#' # X1 and X2 are confounded and jointly determine Y1, Y2.
+#' # For instance for models in which X and Y take on four values rather than 2.
 #' model <- make_model("Y2 <- X1 -> Y1; Y2 <- X2 ->Y1; X1 <-> X2; Y1 <-> Y2")
 #' data <- CausalQueries:::minimal_event_data(model)
 #' check <- CausalQueries:::prep_stan_data(model, data, keep_transformed = TRUE)
 #' check$n_params
-#' check$parlam
 #' a <- update_model(model)
 #' make_parmap(model) %>% dim
 #' }
@@ -34,7 +35,7 @@ make_parmap <- function(model, A = NULL, P = NULL){
     if(is.null(A)) A <- get_ambiguities_matrix(model)
     if(is.null(P)) P <- get_parameter_matrix(model)
 
-    if(is.null(model$confounds_df)){
+    if(!grepl("<->", model$statement)){
         type_matrix <- 1*((as.matrix(P)%*%as.matrix(A))>0)
         map <- diag(ncol(type_matrix))
         rownames(map) <- colnames(map) <- colnames(A)

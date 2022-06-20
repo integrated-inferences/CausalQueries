@@ -54,7 +54,7 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
         continue = FALSE
     }
 
-    eval_var <- reveal_outcomes(model)
+    eval_var <- realise_outcomes(model)
 
     list_names <- colnames(eval_var)
     k <- ncol(eval_var) + 1
@@ -99,7 +99,7 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
 
         # Save result from last iteration and remove corresponding expression w_query
         var_length <- nchar(var)
-        data <- reveal_outcomes(model, dos)
+        data <- realise_outcomes(model, dos)
         eval_var[, k] <- as.numeric(data[, var])
 
 

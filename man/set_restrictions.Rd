@@ -9,6 +9,7 @@ set_restrictions(
   statement = NULL,
   join_by = "|",
   labels = NULL,
+  given = NULL,
   keep = FALSE,
   update_types = TRUE,
   wildcard = FALSE
@@ -22,6 +23,8 @@ set_restrictions(
 \item{join_by}{A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.}
 
 \item{labels}{A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.}
+
+\item{given}{A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.}
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
 
@@ -105,6 +108,11 @@ model <- make_model('X->Y<-M; X -> M' ) \%>\%
 set_restrictions(statement =  c('(Y[X = 1] == 1)', '(M[X = 1] == 1)'), join_by = '&', keep = TRUE)
 get_parameter_matrix(model)
 
+# Restrict using statements and given:
+model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
+ set_restrictions(model,list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
+get_parameter_matrix(model)
+
 # Restrictions on levels for endogenous nodes aren't allowed
 \dontrun{
 model <- make_model('X->Y') \%>\%
@@ -120,9 +128,14 @@ model <- make_model('X->Y') \%>\%
 set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
 get_parameter_matrix(model)
 
-# Running example: there are only four causal types
+# Deterministic model
 model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') \%>\%
 set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
+get_parameter_matrix(model)
+
+# Restrict using labels and given:
+model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
+ set_restrictions(model,labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
 get_parameter_matrix(model)
 }
 }

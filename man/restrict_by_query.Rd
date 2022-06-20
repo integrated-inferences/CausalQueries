@@ -2,12 +2,13 @@
 % Please edit documentation in R/set_restrictions.R
 \name{restrict_by_query}
 \alias{restrict_by_query}
-\title{Reduce nodal types}
+\title{Reduce nodal types using statement}
 \usage{
 restrict_by_query(
   model,
   statement,
   join_by = "|",
+  given = NULL,
   keep = FALSE,
   update_types = TRUE
 )
@@ -19,13 +20,15 @@ restrict_by_query(
 
 \item{join_by}{A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.}
 
+\item{given}{A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. \code{given} must either be NULL or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.}
+
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \value{
 An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 }
 \description{
-Reduce nodal types
+Reduce nodal types using statement
 }
 \seealso{
 Other restrictions: 

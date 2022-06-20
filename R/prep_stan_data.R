@@ -23,7 +23,7 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE) {
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")
     parmap <- get_parmap(model)
-    # has_confounds <- !is.null(model$confounds_df)
+
     map <- attr(parmap, "map")
     n_paths <- nrow(map) # The ways params can produce a data type
 

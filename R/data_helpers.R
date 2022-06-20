@@ -29,7 +29,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
     all_data <- all_data_types(model)
 
     # Get the realizations of the fundamental *possible* data events
-    possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
+    possible_data_types <- unique(data_type_names(model, realise_outcomes(model)))
     full_data <- filter(all_data, apply(all_data[, -1], 1, function(j) !any(is.na(j)))) %>% filter(event %in%
         possible_data_types)
 
@@ -101,10 +101,13 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #'    \item{unobserved_events}{A vector of character strings specifying the events not observed in the data}
 #' @examples
 #'\donttest{
+#'
 #' model <- make_model('X -> Y')
-#' df <- simulate_data(model, n = 10)
-#' df[1,1] <- ''
-#' collapse_data(df, model)
+#'
+#' df <- data.frame(X = c(0,1,NA), Y = c(0,0,1))
+#'
+#' df %>% collapse_data(model)
+#'
 #'
 #' collapse_data(df, model, drop_NA = FALSE)
 #'
@@ -112,7 +115,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #'
 #' collapse_data(df, model, summary = TRUE)
 #'
-#' data <- simulate_data(model, n = 0)
+#' data <- make_data(model, n = 0)
 #' collapse_data(data, model)
 #'
 #' model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
@@ -122,10 +125,8 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' data <- data.frame(X= 0:1)
 #' collapse_data(data, model)
 #'
-#' model <- make_model('X->Y')
-#' long_data <- simulate_data(model, n = 6)
-#' collapse_data(long_data, model)
 #' }
+#'
 
 
 collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summary = FALSE) {
@@ -294,7 +295,7 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
     df <- df[do.call(what = order, args = order_list), ]
 
     if (possible_data) {
-        possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
+        possible_data_types <- unique(data_type_names(model, realise_outcomes(model)))
         df <- dplyr::filter(df, event %in% possible_data_types)
     }
 

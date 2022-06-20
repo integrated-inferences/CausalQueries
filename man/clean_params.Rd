@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean_params.R
 \name{clean_params}
 \alias{clean_params}
-\title{Check parameters sum to 1 in paramset; normalize if needed; add names if needed}
+\title{Check parameters sum to 1 in param_set; normalize if needed; add names if needed}
 \usage{
 clean_params(parameters_df, warning = TRUE)
 }
@@ -15,7 +15,7 @@ clean_params(parameters_df, warning = TRUE)
 A parameters \code{data.frame}  with names and where parameters sum to 1.
 }
 \description{
-Check parameters sum to 1 in paramset; normalize if needed; add names if needed
+Check parameters sum to 1 in param_set; normalize if needed; add names if needed
 }
 \examples{
 \donttest{
