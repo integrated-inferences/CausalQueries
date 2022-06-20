@@ -126,7 +126,7 @@ set_restrictions <- function(model,
                              wildcard = FALSE) {
 
 
-    CausalQueries:::is_a_model(model)
+    is_a_model(model)
     nodal_types0 <- model$nodal_types
 
     if (!is.logical(keep)){
@@ -275,7 +275,7 @@ restrict_by_query <- function(model,
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
 
-    to_drop <- matrix(nrow = nrow(model$parameters_df), ncol = length(statement))
+    rows_implicated <- matrix(nrow = nrow(model$parameters_df), ncol = length(statement))
 
     for(i in seq(1,length(statement))){
 
@@ -284,29 +284,20 @@ restrict_by_query <- function(model,
         types <- names(restriction$types)[restriction$types]
         names(types) <- node
 
-        kept_types <- (nodal_types[[node]] %in% types[[node]])
 
         if(!keep){
-            kept_types <- !kept_types
+            types <- setdiff(nodal_types[[node]], types)
         }
 
-        if(sum(kept_types) == 0){
-            stop("nodal_types can't be entirely reduced. Revise conditions for node ", node)
-        }
+        model$nodal_types[[node]] <- unname(types)
 
-        kept_labels <- nodal_types[[node]][kept_types]
-        drop_labels <- nodal_types[[node]][!kept_types]
 
-        nodal_types[[node]] <- kept_labels
-        model$nodal_types <- nodal_types
-
-        drop_rows <- (model$parameters_df$nodal_type %in% drop_labels) &
-            (model$parameters_df$node %in% node)
+        drop <- (model$parameters_df$node %in% node) & !(model$parameters_df$nodal_type %in% types)
 
         if(!is.null(given)){
             if(all(!is.na(given[[i]]))){
 
-                wrong_given <- !(given[[i]] %in% model$parameters_df[drop_rows,"given"])
+                wrong_given <- !(given[[i]] %in% model$parameters_df[drop,"given"])
 
                 if(any(wrong_given)){
                     stop(paste(
@@ -315,23 +306,20 @@ restrict_by_query <- function(model,
                         "Check model$parameters_df for dependence structure between parameters."
                     ))
                 }
-                drop_rows <- drop_rows &
-                    (model$parameters_df$given %in% given[[i]])
+                rows <- drop & (model$parameters_df$given %in% given[[i]])
             }
         }
 
-        to_drop[,i] <- drop_rows
+        model$parameters_df <- model$parameters_df[!drop,]
+
+        if(!is.null(model$P)){
+            model$P <- model$P[!drop,]
+        }
 
     }
 
-    dropw_rows <- rowSums(to_drop) > 0
-
-    model$parameters_df <- model$parameters_df[!drop_rows,]%>%
+    model$parameters_df <- model$parameters_df%>%
         CausalQueries:::clean_params(warning = FALSE)
-
-    if(!is.null(model$P)){
-        model$P <- model$P[!drop_rows,]
-    }
 
     if(update_types){
         model$causal_types <- CausalQueries:::update_causal_types(model)

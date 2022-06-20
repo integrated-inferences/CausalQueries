@@ -40,6 +40,11 @@ testthat::test_that(
 		model_2 <- set_restrictions(model, statement = c("(Z[] == 1)"))
 		expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
 
+		model <- make_model("X -> Y <- Z; X -> Z")
+		model <- set_restrictions(model, statement = list("(Y[X = 1] == 1)", "(Z[X = 1] == 1)"), join_by = "&", keep = TRUE)
+		expect_true(all(model$parameters_df$param_names %in% c("X.0","X.1","Z.01","Z.11","Y.0101","Y.1101","Y.0111","Y.1111")))
+		expect_true(nrow(model$parameters_df) == 8)
+
 		# sequential addition of restrictions
 		model <- make_model("X -> Y <- Z")
 		model <- set_restrictions(model, statement = c("(X[] == 1)"))
