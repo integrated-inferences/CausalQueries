@@ -27,10 +27,11 @@ testthat::test_that(
 )
 
 
-test_that("reveal_outcomes is deprecated", {
+test_that(
+  desc = "reveal_outcomes is deprecated",
 
-    expect_warning(
-      CausalQueries:::reveal_outcomes(model, dos = list(X = 1), node = "M")
-    )
+  code = {
+    model <- make_model("X->M->Y")
+    expect_warning(CausalQueries:::reveal_outcomes(model, dos = list(X = 1), node = "M"))
   }
-})
+)

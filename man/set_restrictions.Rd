@@ -110,7 +110,7 @@ get_parameter_matrix(model)
 
 # Restrict using statements and given:
 model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
- set_restrictions(model,list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
+ set_restrictions(list(decreasing('X','Y'), decreasing('Y','Z')), given = c(NA,'X.0'))
 get_parameter_matrix(model)
 
 # Restrictions on levels for endogenous nodes aren't allowed
@@ -135,7 +135,7 @@ get_parameter_matrix(model)
 
 # Restrict using labels and given:
 model <- make_model("X -> Y -> Z; X <-> Z") \%>\%
- set_restrictions(model,labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
+ set_restrictions(labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
 get_parameter_matrix(model)
 }
 }
