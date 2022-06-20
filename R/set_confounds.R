@@ -61,7 +61,8 @@
 
 set_confound <- function(model, confound = NULL) {
 
-  if(grepl(";", confound)) stop("Please provide multipe confounds as a list")
+  if(any(lapply(confound, function(k) grepl(";", k)) %>% unlist))
+    stop("Please provide multipe confounds as a list")
 
     given <- gen <- NULL
 
