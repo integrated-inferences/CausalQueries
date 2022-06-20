@@ -88,7 +88,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
         data_events <- data
     }
 
-    stan_data <- CausalQueries:::prep_stan_data(model = model,
+    stan_data <- prep_stan_data(model = model,
                                 data = data_events,
                                 keep_transformed = keep_transformed*1)
 

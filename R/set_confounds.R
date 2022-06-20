@@ -63,7 +63,7 @@ set_confound <- function(model, confound = NULL) {
         sapply(strsplit(type, "_"), function(x) gsub('\\.', '', unique(x)), simplify = FALSE)
 
 
-    CausalQueries:::is_a_model(model)
+    is_a_model(model)
 
     # Housekeeping
     if (is.null(confound)) {
