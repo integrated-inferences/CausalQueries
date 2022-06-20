@@ -3,7 +3,7 @@
 
 
 
-context(desc = "Testing reveal_outcomes")
+context(desc = "Testing realise_outcomes")
 
 testthat::skip_on_cran()
 model <- make_model("X->M->Y")
@@ -28,9 +28,9 @@ testthat::test_that(
 
 
 test_that("reveal_outcomes is deprecated", {
-  expect_snapshot({
-    x <- realise_outcomes(model, dos = list(X = 1), node = "M")
-    y <- reveal_outcomes(model, dos = list(X = 1), node = "M")
-    expect_equal(x, y)
-  })
+
+    expect_warning(
+      CausalQueries:::reveal_outcomes(model, dos = list(X = 1), node = "M")
+    )
+  }
 })
