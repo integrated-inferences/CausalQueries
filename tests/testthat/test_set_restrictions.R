@@ -12,8 +12,14 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("X -> Y")
-		expect_message(set_restrictions(model, labels = NULL, statement = NULL))
-		expect_message(set_restrictions(model, labels = "X", statement =  "(X == 1)"))
+		expect_error(set_restrictions(model, labels = NULL, statement = NULL))
+		expect_error(set_restrictions(model, labels = "X", statement =  "(X == 1)"))
+		expect_error(set_restrictions(model, labels = "X", given = c(1,2,3)))
+		expect_error(set_restrictions(model, labels = "X", given = list(NA,NA)))
+		expect_error(set_restrictions(model, statement = decreasing('X','Y'), givene = list(NA,NA)))
+
+		model <- make_model("X -> Y -> Z; X <-> Z")
+		expect_error(set_restrictions(model, labels = "Z", given = "abc"))
 	}
 )
 
@@ -39,13 +45,21 @@ testthat::test_that(
 		model <- set_restrictions(model, statement = c("(X[] == 1)"))
 		model <- set_restrictions(model, statement = c("(Z[] == 1)"))
 		expect_true((attr(model, "restrictions")$Z == 1) && (attr(model, "restrictions")$X == 1))
+
+		model <- make_model("X -> Y <- Z")
+		model_1 <- set_restrictions(model, statement = c("(X[] == 1)"))
+		model_2 <- set_restrictions(model_1, statement = c("(Z[] == 1)"))
+		expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
+
+		model <- make_model("X -> Y -> Z; X <-> Z")
+		model <- set_restrictions(model, decreasing('Y','Z'), given = "X.0")
+		model <- dplyr::filter(model$parameters_df, given == "X.0")
+		expect_true(nrow(model) == 3)
+
 	}
 )
 
-model <- make_model("X -> Y <- Z")
-model_1 <- set_restrictions(model, statement = c("(X[] == 1)"))
-model_2 <- set_restrictions(model_1, statement = c("(Z[] == 1)"))
-expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
+
 
 
 context("Test restrict_by_query")
@@ -67,6 +81,10 @@ testthat::test_that(
 		model <- set_restrictions(model, statement =  c("(X[] == 1)", "(Z[] == 1)" ))
 		## nodal_types can't be entirely reduced. Revise conditions for node X
 		expect_error(set_restrictions(model, statement = c("(X[] == 0)")))
+
+		## defined givens not in given set
+		model <- make_model("X -> Y -> Z; X <-> Z")
+		expect_error(CausalQueries:::restrict_by_query(model, decreasing('Y','Z'), given = "abc"))
 	}
 )
 
@@ -81,6 +99,13 @@ testthat::test_that(
 		model <- make_model("X -> Y")
 		## Z is not in the model
 		expect_error(CausalQueries:::restrict_by_labels(model, labels = list(Z = "0")))
+
+		## nodal type does not exist for node
+		expect_error(CausalQueries:::restrict_by_labels(model,labels = list(Y = "0101")))
+
+		## defined givens not in given set
+		model <- make_model("X -> Y -> Z; X <-> Z")
+		expect_error(CausalQueries:::restrict_by_labels(model, labels = list(Z = "01"), given = "abc"))
 	}
 )
 
