@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_restrictions.R
 \name{restrict_by_query}
 \alias{restrict_by_query}
-\title{Reduce noal types using statement}
+\title{reduce nodal types using statement}
 \usage{
 restrict_by_query(
   model,
@@ -28,7 +28,8 @@ restrict_by_query(
 An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
 }
 \description{
-Reduce noal types using statement
+reduce nodal types using statement
+
 }
 \seealso{
 Other restrictions: 
