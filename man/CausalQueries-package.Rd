@@ -7,5 +7,5 @@
 \description{
 'CausalQueries' is a package that lets you declare binary causal models,
 update beliefs about causal types given data and calculate arbitrary estimands.
-Model definition makes use of dagitty functionality. Updating is implemented in 'stan'.
+Model definition makes use of dagitty syntax. Updating is implemented in 'stan'.
 }

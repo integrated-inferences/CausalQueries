@@ -29,7 +29,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
     all_data <- all_data_types(model)
 
     # Get the realizations of the fundamental *possible* data events
-    possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
+    possible_data_types <- unique(data_type_names(model, realise_outcomes(model)))
     full_data <- filter(all_data, apply(all_data[, -1], 1, function(j) !any(is.na(j)))) %>% filter(event %in%
         possible_data_types)
 
@@ -294,7 +294,7 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
     df <- df[do.call(what = order, args = order_list), ]
 
     if (possible_data) {
-        possible_data_types <- unique(data_type_names(model, reveal_outcomes(model)))
+        possible_data_types <- unique(data_type_names(model, realise_outcomes(model)))
         df <- dplyr::filter(df, event %in% possible_data_types)
     }
 

@@ -41,8 +41,8 @@ make_ambiguities_matrix <- function(model) {
     type_labels <- sapply(1:nrow(types), function(i) paste0(var_names, types[i, ], collapse = ""))
     # cbind(types, type_labels) # A check
 
-    # 2. Map types to data realizations. This is done in reveal_outcomes
-    data_realizations <- reveal_outcomes(model)
+    # 2. Map types to data realizations. This is done in realise_outcomes
+    data_realizations <- realise_outcomes(model)
     types$revealed_data <- apply(data_realizations, 1, paste0, collapse = "")
 
     # 3.  Create and return matrix A max_possible_data <- get_max_possible_data(model)
