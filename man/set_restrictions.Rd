@@ -128,7 +128,7 @@ model <- make_model('X->Y') \%>\%
 set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
 get_parameter_matrix(model)
 
-# Running example: there are only four causal types
+# Deterministic model
 model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') \%>\%
 set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'), keep = TRUE)
 get_parameter_matrix(model)
