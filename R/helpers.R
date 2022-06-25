@@ -305,7 +305,7 @@ is_a_model <- function(model){
   minimum_components <- c("dag", "step","nodes", "statement","nodal_types" )
   missing_components <- !minimum_components %in% names(model)
 
-  if(class(model) != "causal_model")
+  if(!is(model,"causal_model"))
     stop("Argument 'model' must be of class 'causal_model'")
   if(any(missing_components))
     stop("Model doesn't contain ",

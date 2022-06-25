@@ -218,7 +218,7 @@ drop_empty_families <- function(data_events) {
 #'
 expand_data <- function(data_events = NULL, model) {
 
-    if (class(model) != "causal_model")
+    if (!is(model, "causal_model"))
         stop("model should be a model generated with make_model")
     if (is.null(data_events))
         data_events <- minimal_event_data(model)

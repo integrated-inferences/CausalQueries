@@ -1,7 +1,7 @@
 Package: CausalQueries
 Type: Package
 Title: Make, Update, and Query Binary Causal Models
-Version: 0.0.3.2
+Version: 0.1.0.0
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("ctb")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("ctb")),
              person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
@@ -25,7 +25,6 @@ Imports:
     dagitty (>= 0.3-1),
     dirmult (>= 0.1.3-4),
     stats (>= 4.1.1),
-    randomizr (>= 0.22.0),
     rlang (>= 0.2.0),
     rstan (>= 2.18.1),
     rstantools (>= 2.0.0),

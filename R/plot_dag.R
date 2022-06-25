@@ -50,7 +50,7 @@ plot_dag <- function(model = NULL,
     # Checks
     if(is.null(model))
         stop("Model object must be provided")
-    if(class(model)!="causal_model") stop("Model object must be of type causal_model")
+    if(!is(model, "causal_model")) stop("Model object must be of type causal_model")
     if (is.null(x_coord) == !is.null(y_coord))
       message("Coordinates should be provided for both x and y (or neither).")
     if (!is.null(x_coord) & !is.null(y_coord) & length(x_coord)!=length(y_coord)) stop("x and y coordinates must be of equal length")
