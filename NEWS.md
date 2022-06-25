@@ -1,4 +1,4 @@
-# CausalQueries 0.1.0.0
+# CausalQueries 0.1.0
 
 This is a minor release introducing new and simplified functionality. 
 
