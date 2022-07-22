@@ -12,16 +12,14 @@
 make_parameter_matrix <- function(model) {
 
     types <- causal_type_names(get_causal_types(model))
-    pars <- model$parameters_df$param_names
+    pars <- paste0(model$parameters_df$node, model$parameters_df$nodal_type)
 
     # Which nodal_types correspond to a type
-     P <- sapply(1:nrow(types), function(i) {
-        type <- types[i, ]
-        sapply(pars, function(nodal_type) all(nodal_type %in% type))
-    }) * 1
+     P <- 1* apply(types, 1, function(j) pars %in% j) |>
+       data.frame()
 
     # Tidy up
-    colnames(P) <- do.call(paste, c(types, sep = "."))
+    colnames(P) <- rownames(types)
     rownames(P) <- model$parameters_df$param_names
     P <- as.data.frame(P)
     class(P) <- c("parameter_matrix", "data.frame")

@@ -149,7 +149,7 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
 
  # Add causal types
  if(add_causal_types)
- model$causal_types <- CausalQueries:::update_causal_types(model)
+ model$causal_types <- update_causal_types(model)
 
 
 
@@ -271,7 +271,8 @@ make_parameters_df <- function(nodal_types)
          param_names = paste0(node, ".", nodal_type)) %>%
   group_by(param_set) %>%
   mutate(param_value = 1/n(), gen =  cur_group_id()) %>%
-  ungroup()
+  ungroup() %>%
+  select(param_names, node, gen, param_set, nodal_type, given, param_value, priors)
 
 
 # function to make a parameters_df from nodal types

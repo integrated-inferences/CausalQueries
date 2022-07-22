@@ -4,7 +4,7 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(statement, add_causal_types = TRUE)
+make_model(statement, add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
 \item{statement}{A character. Statement describing causal
@@ -60,4 +60,23 @@ model <- make_model("X")
 \dontrun{
  model <- make_model("X <-> Y")
 }
+
+nodal_types <-
+  list(
+    A = c("0","1"),
+    B = c("0","1"),
+    C = c("0","1"),
+    D = c("0","1"),
+    E = c("0","1"),
+    Y = c(
+      "00000000000000000000000000000000",
+      "01010101010101010101010101010101",
+      "00110011001100110011001100110011",
+      "00001111000011110000111100001111",
+      "00000000111111110000000011111111",
+      "00000000000000001111111111111111",
+      "11111111111111111111111111111111" ))
+
+model <- make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
+          nodal_types = nodal_types)
 }
