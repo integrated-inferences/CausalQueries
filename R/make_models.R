@@ -265,7 +265,10 @@ make_parameters_df <- function(nodal_types)
 
   data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
              nodal_type = nodal_types %>% unlist) %>%
-  mutate(param_set = node, priors = 1, param_names = paste0(node, nodal_type)) %>%
+  mutate(param_set = node,
+         given = "",
+         priors = 1,
+         param_names = paste0(node, ".", nodal_type)) %>%
   group_by(param_set) %>%
   mutate(param_value = 1/n(), gen =  cur_group_id()) %>%
   ungroup()

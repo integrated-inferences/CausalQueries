@@ -144,7 +144,6 @@ set_confound <- function(model, confound = NULL) {
     ##################################################################################
 
     for(i in 1:length(confound)){
-    # for(i in 1:2){
 
     from_nodal_types <-
             model$parameters_df %>% filter(node == confound[i]) %>% pull(param_names)
