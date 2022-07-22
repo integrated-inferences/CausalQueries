@@ -50,12 +50,34 @@
 #' \dontrun{
 #'  model <- make_model("X <-> Y")
 #' }
+#'
+#' nodal_types <-
+#'   list(
+#'     A = c("0","1"),
+#'     B = c("0","1"),
+#'     C = c("0","1"),
+#'     D = c("0","1"),
+#'     E = c("0","1"),
+#'     Y = c(
+#'       "00000000000000000000000000000000",
+#'       "01010101010101010101010101010101",
+#'       "00110011001100110011001100110011",
+#'       "00001111000011110000111100001111",
+#'       "00000000111111110000000011111111",
+#'       "00000000000000001111111111111111",
+#'       "11111111111111111111111111111111" ))
+#'
+#' model <- make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
+#'           nodal_types = nodal_types)
 
-make_model <- function(statement, add_causal_types = TRUE){
+make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
 
-	if(length(statement) != 1) stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
 
-	if(!(is.character(statement))) stop("The model statement should be of type character.")
+	if(length(statement) != 1)
+	  stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
+
+	if(!(is.character(statement)))
+	  stop("The model statement should be of type character.")
 
 	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
 		data.frame(stringsAsFactors = FALSE)
@@ -100,35 +122,34 @@ make_model <- function(statement, add_causal_types = TRUE){
 
  nodes <- c(exog_node, endog_node)
 
+
  # Model is a list
- model <- list(dag = dag, step = "dag", nodes = nodes, statement = statement)
+  model <- list(dag = dag, step = "dag", nodes = nodes, statement = statement)
 
  # Nodal types
- nodal_types <- get_nodal_types(model, collapse = TRUE)
+ # Check
+  if(!is.null(nodal_types))
+    if(!all(names(nodal_types) %in% nodes))
+      stop("Check provided nodal_types are nodes in the model")
+
+ if(is.null(nodal_types))
+    nodal_types <- get_nodal_types(model, collapse = TRUE)
+
  model$nodal_types <- nodal_types
 
- # Parameters dataframe
- m  <- length(nodal_types)
- lgths <- lapply(nodal_types, length) %>% unlist
+ # Add nodal type interpretation
+ if(is.null(attr(nodal_types, "interpret")))
+ attr(nodal_types, "interpret") <- interpret_type(model)
 
- model$parameters_df <- data.frame(
- 	param_names  = unlist(sapply(1:m, function(i) paste0(names(nodal_types[i]), ".", nodal_types[i][[1]]))),
- 	gen = rep(1:m, lgths),
- 	param_value   = unlist(sapply(1:m, function(j) rep(1/length(nodal_types[[j]]), length(nodal_types[[j]])))),
- 	param_set    = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
- 	given = "",
- 	node = unlist(sapply(1:m, function(j) rep(names(nodal_types)[j], length(nodal_types[[j]])))),
-  nodal_type = unlist(sapply(1:m, function(i) nodal_types[i][[1]])),
-  priors       = 1,
-  stringsAsFactors = FALSE
+  # Parameters dataframe
+  model$parameters_df <- make_parameters_df(nodal_types)
 
-  )
-
+ # Add class
  class(model) <- "causal_model"
 
  # Add causal types
- if(add_causal_types){
- model$causal_types <- update_causal_types(model)}
+ if(add_causal_types)
+ model$causal_types <- CausalQueries:::update_causal_types(model)
 
 
 
@@ -162,7 +183,7 @@ make_model <- function(statement, add_causal_types = TRUE){
  attr(model, "endogenous_nodes") <- endog_node
  attr(model, "exogenous_nodes")  <- exog_node
 
-  model
+ model
 
 }
 
@@ -236,3 +257,31 @@ print.summary.causal_model <- function(x,  ...){
 	}
 
 }
+
+
+# function to make a parameters_df from nodal types
+
+make_parameters_df <- function(nodal_types)
+
+  data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
+             nodal_type = nodal_types %>% unlist) %>%
+  mutate(param_set = node, priors = 1, param_names = paste0(node, nodal_type)) %>%
+  group_by(param_set) %>%
+  mutate(param_value = 1/n(), gen =  cur_group_id()) %>%
+  ungroup()
+
+
+# function to make a parameters_df from nodal types
+
+simple_nodes <-
+  function(n = 5) {
+    N <- 2^n
+    s <- 0:(N-1)
+    nt <- ((sapply(0:n, function(j) ((s / 2^(j-1)) %% 2 ) >= 1))) |>
+      data.frame() |>
+      mutate(all = 1)
+
+    nt |> apply(2, paste0, collapse = "")
+  }
+
+

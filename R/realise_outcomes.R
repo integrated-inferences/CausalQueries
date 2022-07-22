@@ -48,6 +48,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL){
 			dos_rep        <- sapply(parents, function(p) rep(dos[p], length(nodal_label)))
 
 			data_realizations <- data.frame(dos_rep, nodal_label, stringsAsFactors = FALSE)
+
 			names(data_realizations) <- c(parents, node)
 			types <- data_realizations
 
@@ -74,7 +75,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL){
 
 		}
 
-	# Magic: Work though each endogeneous node in sequence and substitute its implied values
+	# Magic: Work though each endogenous node in sequence and substitute its implied values
 	for(j in 1:ncol(types_of_endogenous)) {
 		if(!(endogenous_vars[j] %in% in_dos)){   # skip if do applied to var
 
@@ -82,7 +83,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL){
 			child_type     <- types_of_endogenous[,j]
 			parents        <- parents_list[[var]]
 			nodal_type_var <- nodal_types[[var]]
-			nodal_label    <- apply(nodal_type_var, 1,paste, collapse ="")
+			nodal_label    <- apply(nodal_type_var, 1, paste, collapse ="")
 
 			J <- sapply(1:length(child_type), function(i){
 				type        <- child_type[i]
