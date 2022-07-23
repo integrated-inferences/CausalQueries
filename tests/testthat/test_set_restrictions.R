@@ -55,7 +55,9 @@ testthat::test_that(
 		expect_equal(attr(model_1, "restrictions")$X,attr(model_2, "restrictions")$Z)
 
 		model <- make_model("X -> Y -> Z; X <-> Z")
-		model <- set_restrictions(model, statement = decreasing('Y','Z'), given = "X.0")
+		 model <- set_restrictions(model,
+		                           statement = decreasing('Y','Z'),
+		                           given = "X.0")
 		df <- dplyr::filter(model$parameters_df, given == "X.0")
 		expect_true(nrow(df) == 3)
 

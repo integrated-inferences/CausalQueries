@@ -18,7 +18,7 @@ testthat::test_that(
 		w <- summary(x)
 		expect_true(class(x) == "nodal_types")
 		expect_true("summary.nodal_types" %in% class(w))
-    expect_output(print(x), "Nodal types satisfying query's condition")
+    expect_output(print(x), "Nodal types adding weight to query")
     b <- capture.output(print(x))
     test_output <- " query :  (Y[X=0]>Y[X=1]) "
     expect_false(any(grepl(test_output, b, fixed = TRUE)))

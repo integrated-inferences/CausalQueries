@@ -62,6 +62,9 @@ uncollapse_nodal_types <- function(nodal_types) {
     lapply(function(df) apply(df, 2, as.numeric)) |>
     lapply(data.frame)
 
+  # This is not elegant; to handle cases where a single nodal type exists
+  # otherwise it gets wrongly tranposed
+  for(j in 1:length(x)) if(length(nodal_types[[j]])==1)  x[[j]] <- t(x[[j]])
 
   for(j in 1:length(x)){
     # Add row names
