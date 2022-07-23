@@ -275,7 +275,8 @@ restrict_by_query <- function(model,
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
 
-    rows_implicated <- matrix(nrow = nrow(model$parameters_df), ncol = length(statement))
+    rows_implicated <- matrix(nrow = nrow(model$parameters_df),
+                              ncol = length(statement))
 
     for(i in seq(1,length(statement))){
 
@@ -285,9 +286,9 @@ restrict_by_query <- function(model,
         names(types) <- node
 
 
-        if(!keep){
+        if(!keep)
             types <- setdiff(nodal_types[[node]], types)
-        }
+
 
         model$nodal_types[[node]] <- unname(types)
 
@@ -297,7 +298,7 @@ restrict_by_query <- function(model,
         if(!is.null(given)){
             if(all(!is.na(given[[i]]))){
 
-                wrong_given <- !(given[[i]] %in% model$parameters_df[drop,"given"])
+                wrong_given <- !(given[[i]] %in% unlist(model$parameters_df[drop,"given"]))
 
                 if(any(wrong_given)){
                     stop(paste(
@@ -306,24 +307,24 @@ restrict_by_query <- function(model,
                         "Check model$parameters_df for dependence structure between parameters."
                     ))
                 }
-                rows <- drop & (model$parameters_df$given %in% given[[i]])
+                drop <- drop & (model$parameters_df$given %in% given[[i]])
             }
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
 
-        if(!is.null(model$P)){
+        if(!is.null(model$P))
             model$P <- model$P[!drop,]
-        }
+
 
     }
 
-    model$parameters_df <- model$parameters_df%>%
+    model$parameters_df <- model$parameters_df %>%
         clean_params(warning = FALSE)
 
-    if(update_types){
+    if(update_types)
         model$causal_types <- update_causal_types(model)
-    }
+
 
     return(model)
 }
