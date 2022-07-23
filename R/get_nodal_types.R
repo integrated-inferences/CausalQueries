@@ -54,11 +54,14 @@ get_nodal_types <- function(model, collapse = TRUE) {
 
 
 uncollapse_nodal_types <- function(nodal_types) {
+
   x <- nodal_types |>
     lapply(stringr::str_split, "")  |>
     lapply(data.frame) |>
     lapply(t)  |>
+    lapply(function(df) apply(df, 2, as.numeric)) |>
     lapply(data.frame)
+
 
   for(j in 1:length(x)){
     # Add row names

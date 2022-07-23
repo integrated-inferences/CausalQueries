@@ -40,6 +40,10 @@
 #' model <- make_model('M->Y; X->Y')
 #' query <- complements('X', 'M', 'Y')
 #' CausalQueries:::map_query_to_nodal_type(model, query)
+#'
+#' # Complex queries
+#' model <- make_model('X->Y')
+#' CausalQueries:::map_query_to_nodal_type(model, te("X", "Y"))
 
 map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
@@ -60,9 +64,11 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
 
     # Y: potential outcomes: possible nodal types (restrictions respected)
-    assign(node, t(data.frame(get_nodal_types(model, collapse = FALSE)[node])))
+    # dataset assigned to "node"
+    assign(node, get_nodal_types(model, collapse = FALSE)[[node]]  %>% t)
 
     # Magic: evaluate the query expression on potential outcomes
+    # This is a hard line; we use different values of Xs to pick out columns of Y potential outcomes (node)
     types <- with(Xs, eval(parse(text = Q)))
 
     # Add name for singletons
@@ -97,10 +103,15 @@ summary.nodal_types <- function(object, ...) {
 
 #' @export
 print.summary.nodal_types <- function(x, ...) {
+
+  if(length(unique(x$types)) > 2)
+    cat("\n\n Caution: This appears to be a complex query reporting coefficients on types and not simply identifying types\n\n")
+
     output_type <- class(x$types)
-    types_labels <- names(x$types)[x$types]
+
+    types_labels <- names(x$types)[x$types != 0]
     nt <- length(types_labels)
-    cat(paste("\nNodal types satisfying query's condition(s)"))
+    cat(paste("\nNodal types adding weight to query"))
 
     if (x$query != x$expanded_query)
         cat(paste("\n\n query : ", x$expanded_query, "\n\n")) else cat(paste("\n\n query : ", x$query, "\n\n"))
@@ -115,7 +126,7 @@ print.summary.nodal_types <- function(x, ...) {
         counter <- counter + 2
     }
 
-    cat(paste("\n\n Number of nodal types that meet query =", nt))
+    cat(paste("\n\n Number of nodal types that add weight to query =", nt))
     cat(paste("\n Total number of nodal types related to", x$node, "=", length(x$types)))
 
 }

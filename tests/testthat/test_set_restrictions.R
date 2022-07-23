@@ -1,8 +1,6 @@
 
 
 
-
-
 context("Testing set_restrictions")
 
 testthat::skip_on_cran()
