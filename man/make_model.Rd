@@ -77,6 +77,9 @@ nodal_types <-
       "00000000000000001111111111111111",
       "11111111111111111111111111111111" ))
 
-model <- make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
-          nodal_types = nodal_types)
+make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
+          nodal_types = nodal_types)$parameters_df
+
+nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
+make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
 }

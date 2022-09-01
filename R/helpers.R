@@ -302,7 +302,7 @@ var_in_query <- function(model, query) {
 #' @return An error message if argument is not a model.
 #' @keywords internal
 is_a_model <- function(model){
-  minimum_components <- c("dag", "step","nodes", "statement","nodal_types" )
+  minimum_components <- c("dag", "nodes", "statement", "nodal_types", "parameters_df" )
   missing_components <- !minimum_components %in% names(model)
 
   if(!is(model,"causal_model"))

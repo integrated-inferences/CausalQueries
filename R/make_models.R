@@ -22,7 +22,7 @@
 #' \item{dag}{A \code{data.frame} with columns `parent`and `children` indicating how nodes relate to each other.}
 #' \item{node}{A named \code{list} with the nodes in the model}
 #' \item{statement}{A character vector of the statement that defines the model}
-#' \item{nodal_types}{A named \code{list} with the nodal types in the model}
+#' \item{nodal_types}{Optional: A named \code{list} with the nodal types in the model. List should be ordered according to the causal ordering of nodes. If NULL nodal types are generated. If FALSE, a parameters data frame is not generated.}
 #' \item{parameters_df}{A \code{data.frame} with descriptive information of the parameters in the model}
 #' @examples
 #' make_model(statement = "X -> Y")
@@ -67,8 +67,12 @@
 #'       "00000000000000001111111111111111",
 #'       "11111111111111111111111111111111" ))
 #'
-#' model <- make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
-#'           nodal_types = nodal_types)
+#' make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
+#'           nodal_types = nodal_types)$parameters_df
+#'
+#' nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
+#' make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
+#' make_model("Z -> Y", nodal_types = FALSE)$parents_df
 
 make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
 
@@ -94,12 +98,12 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
 
 	names(dag) <- c("parent", "children")
 
-	# allowable names
+	# names and allowable names
 	node_names <- unique(c(as.character(dag$parent), as.character(dag$children)))
 	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try dots?")
 	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
 
-	# Procedure for unique ordering of nodes
+	# Procedure for unique ordering of nodes; ties broken by alphabet
 	if(all(dag$parent %in% dag$children)) stop("No root nodes provided.")
 
 	gen <- rep(NA, nrow(dag))
@@ -113,6 +117,7 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
   	gen[!xx & is.na(gen)] <- j
   }
 
+	# dag is now given a causal order which is preserved in the parameters_df
   dag <- dag[order(gen, dag[,1], dag[,2]),]
 
  endog_node <- as.character(rev(unique(rev(dag$children))))
@@ -120,17 +125,40 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
  .exog_node <- as.character(rev(unique(rev(dag$parent))))
  exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
 
+ # ordered nodes
  nodes <- c(exog_node, endog_node)
+
+ # parent count df
+
+ parents_df <-
+   data.frame(node = nodes, root = nodes %in% exog_node) |>
+   mutate(parents = sapply(node, function(n) nrow(dag %>% filter(children == n))))
 
 
  # Model is a list
-  model <- list(dag = dag, step = "dag", nodes = nodes, statement = statement)
+  model <- list(statement = statement, dag = dag, nodes = nodes,  parents_df = parents_df)
 
  # Nodal types
  # Check
   if(!is.null(nodal_types))
     if(!all(names(nodal_types) %in% nodes))
       stop("Check provided nodal_types are nodes in the model")
+
+  # Check ordering and completeness
+  if(!is.null(nodal_types) & !is.logical(nodal_types)){
+    if(!all(sort(names(nodal_types)) == sort(nodes)))
+      message(paste("Model not properly defined: If you provide nodal types you should do so for all nodes in model: ", paste(nodes, collapse = ", ")))
+    if(!all(names(nodal_types) == nodes)) {
+      message("Ordering of provided nodal types is being altered to match generation")
+      nodal_types <- lapply(nodes, function(n) nodal_types[[n]])
+      names(nodal_types) <- nodes
+      }
+  }
+
+  if(is.logical(nodal_types)){
+    add_causal_types <- FALSE
+    message(paste("Model not properly defined: nodal_types should be NULL or specified for all nodes in model: ", paste(nodes, collapse = ", ")))
+  }
 
  if(is.null(nodal_types))
     nodal_types <- get_nodal_types(model, collapse = TRUE)
@@ -142,6 +170,7 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
  attr(nodal_types, "interpret") <- interpret_type(model)
 
   # Parameters dataframe
+  if(!is.logical(nodal_types))
   model$parameters_df <- make_parameters_df(nodal_types)
 
  # Add class
@@ -180,14 +209,12 @@ make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
 	  }
 
  # Prep for export
- attr(model, "endogenous_nodes") <- endog_node
- attr(model, "exogenous_nodes")  <- exog_node
+ attr(model, "nonroot_nodes") <- endog_node
+ attr(model, "root_nodes")  <- exog_node
 
  model
 
 }
-
-
 
 #' @export
 print.causal_model <- function(x, ...) {
@@ -260,18 +287,20 @@ print.summary.causal_model <- function(x,  ...){
 
 
 # function to make a parameters_df from nodal types
+#' make_parameters_df(list(X = "1", Y = c("01", "10")))
 
 make_parameters_df <- function(nodal_types)
 
   data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
-             nodal_type = nodal_types %>% unlist) %>%
+             nodal_type = nodal_types %>% unlist) |>
   mutate(param_set = node,
          given = "",
          priors = 1,
-         param_names = paste0(node, ".", nodal_type)) %>%
-  group_by(param_set) %>%
-  mutate(param_value = 1/n(), gen =  cur_group_id()) %>%
-  ungroup() %>%
+         param_names = paste0(node, ".", nodal_type)) |>
+  group_by(param_set) |>
+  mutate(param_value = 1/n(), gen =  cur_group_id()) |>
+  ungroup() |>
+  mutate(gen = match(node, names(nodal_types))) |>
   select(param_names, node, gen, param_set, nodal_type, given, param_value, priors)
 
 

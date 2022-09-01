@@ -61,8 +61,8 @@ realise_outcomes <- function(model, dos = NULL, node = NULL){
 	if(is.null(node)) {
 
 		types           <- get_causal_types(model)
-		exogenous_vars  <- attr(model, "exogenous_nodes")
-		endogenous_vars <- attr(model, "endogenous_nodes")
+		exogenous_vars  <- attr(model, "root_nodes")
+		endogenous_vars <- attr(model, "nonroot_nodes")
 		types_of_exogenous         <- data.frame(types[, exogenous_vars])
 		names(types_of_exogenous)  <- exogenous_vars
 		types_of_endogenous        <- data.frame(types[, endogenous_vars], stringsAsFactors = FALSE)
