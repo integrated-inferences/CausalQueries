@@ -21,7 +21,7 @@ following components:
 \item{dag}{A \code{data.frame} with columns `parent`and `children` indicating how nodes relate to each other.}
 \item{node}{A named \code{list} with the nodes in the model}
 \item{statement}{A character vector of the statement that defines the model}
-\item{nodal_types}{A named \code{list} with the nodal types in the model}
+\item{nodal_types}{Optional: A named \code{list} with the nodal types in the model. List should be ordered according to the causal ordering of nodes. If NULL nodal types are generated. If FALSE, a parameters data frame is not generated.}
 \item{parameters_df}{A \code{data.frame} with descriptive information of the parameters in the model}
 }
 \description{
@@ -82,4 +82,5 @@ make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
 
 nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
 make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
+make_model("Z -> Y", nodal_types = FALSE)$parents_df
 }
