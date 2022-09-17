@@ -275,8 +275,8 @@ restrict_by_query <- function(model,
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
 
-    rows_implicated <- matrix(nrow = nrow(model$parameters_df),
-                              ncol = length(statement))
+    #rows_implicated <- matrix(nrow = nrow(model$parameters_df),
+    #                          ncol = length(statement))
 
     for(i in seq(1,length(statement))){
 
