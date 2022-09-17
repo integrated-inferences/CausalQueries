@@ -290,7 +290,7 @@ restrict_by_query <- function(model,
             types <- setdiff(nodal_types[[node]], types)
 
 
-        model$nodal_types[[node]] <- unname(types)
+        #model$nodal_types[[node]] <- unname(types)
 
 
         drop <- (model$parameters_df$node %in% node) & !(model$parameters_df$nodal_type %in% types)
@@ -312,6 +312,7 @@ restrict_by_query <- function(model,
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
+        model$nodal_types[[node]] <- dplyr::filter(model$parameters_df,node == node)$nodal_type
 
         if(!is.null(model$P))
             model$P <- model$P[!drop,]
@@ -394,7 +395,7 @@ restrict_by_labels <- function(model,
             to_keep <- nt[nt %in% labels[[k]]]
         }
 
-        model$nodal_types[[j]] <- to_keep
+        #model$nodal_types[[j]] <- to_keep
 
         drop <- model$parameters_df$node == j & !(model$parameters_df$nodal_type %in% to_keep)
 
@@ -414,6 +415,7 @@ restrict_by_labels <- function(model,
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
+        model$nodal_types[[j]] <- dplyr::filter(model$parameters_df,node == j)$nodal_type
     }
 
     if(update_types) model$causal_types <- update_causal_types(model)
