@@ -400,7 +400,7 @@ restrict_by_labels <- function(model,
 
         if(!is.null(given)){
             if(all(!is.na(given[[k]]))){
-                wrong_given <- !(given[[k]] %in% model$parameters_df[drop,"given"])
+                wrong_given <- !(given[[k]] %in% unlist(model$parameters_df[drop,"given"]))
 
                 if(any(wrong_given)){
                     stop(paste(
