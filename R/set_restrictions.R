@@ -275,9 +275,6 @@ restrict_by_query <- function(model,
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
 
-    #rows_implicated <- matrix(nrow = nrow(model$parameters_df),
-    #                          ncol = length(statement))
-
     for(i in seq(1,length(statement))){
 
         restriction <- map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
@@ -285,13 +282,9 @@ restrict_by_query <- function(model,
         types <- names(restriction$types)[restriction$types]
         names(types) <- node
 
-
-        if(!keep)
-            types <- setdiff(nodal_types[[node]], types)
-
-
-        #model$nodal_types[[node]] <- unname(types)
-
+        if(!keep){
+          types <- setdiff(nodal_types[[node]], types)
+        }
 
         drop <- (model$parameters_df$node %in% node) & !(model$parameters_df$nodal_type %in% types)
 
@@ -312,20 +305,20 @@ restrict_by_query <- function(model,
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
-        model$nodal_types[[node]] <- dplyr::filter(model$parameters_df,node == node)$nodal_type
+        model$nodal_types[[node]] <- unique(dplyr::filter(model$parameters_df,node == node)$nodal_type)
 
-        if(!is.null(model$P))
-            model$P <- model$P[!drop,]
+    }
 
-
+    if(!is.null(model$P)){
+      model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
     }
 
     model$parameters_df <- model$parameters_df %>%
         clean_params(warning = FALSE)
 
-    if(update_types)
-        model$causal_types <- update_causal_types(model)
-
+    if(update_types){
+      model$causal_types <- update_causal_types(model)
+    }
 
     return(model)
 }
@@ -395,8 +388,6 @@ restrict_by_labels <- function(model,
             to_keep <- nt[nt %in% labels[[k]]]
         }
 
-        #model$nodal_types[[j]] <- to_keep
-
         drop <- model$parameters_df$node == j & !(model$parameters_df$nodal_type %in% to_keep)
 
         if(!is.null(given)){
@@ -415,14 +406,20 @@ restrict_by_labels <- function(model,
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
-        model$nodal_types[[j]] <- dplyr::filter(model$parameters_df,node == j)$nodal_type
+        model$nodal_types[[j]] <- unique(dplyr::filter(model$parameters_df,node == j)$nodal_type)
     }
 
-    if(update_types) model$causal_types <- update_causal_types(model)
+    if(!is.null(model$P)){
+      model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
+    }
+
     model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
 
-    return(model)
+    if(update_types){
+      model$causal_types <- update_causal_types(model)
+    }
 
+    return(model)
 }
 
 
