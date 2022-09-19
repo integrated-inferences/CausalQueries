@@ -223,7 +223,10 @@ set_restrictions <- function(model,
         }
 
         model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
+        model$causal_types <- colnames(model$P)
     }
+
+
 
     # Remove any spare P matrix / parameters_df param_families
     if (!is.null(model$P)) {
