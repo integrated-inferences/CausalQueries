@@ -206,26 +206,15 @@ set_restrictions <- function(model,
     model <- model$model
 
     # Remove spare P matrix columns for causal types for which there are no component nodal types
-    if (!is.null(model$P)) {
+    if(!is.null(model$P)){
 
-        if(!is.null(given_drop)){
-          remaining_causal_type_names <- data.frame(expand.grid(get_nodal_types(model), stringsAsFactors = FALSE))
-          to_keep <- sapply(given_drop, function(i) with(remaining_causal_type_names,eval(parse(text = i))))
-          to_keep <- !as.logical(apply(to_keep,1,sum))
+      ct <- update_causal_types(model, restrict_given = given_drop)
+      remaining_causal_type_names <- rownames(ct)
 
-          remaining_causal_type_names <- causal_type_names(remaining_causal_type_names[to_keep,])
-          remaining_causal_type_names <- do.call(paste, c(remaining_causal_type_names, sep = "."))
+      model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
+      model$causal_types <- ct
 
-        } else {
-
-          remaining_causal_type_names <- rownames(update_causal_types(model))
-
-        }
-
-        model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
-        model$causal_types <- colnames(model$P)
     }
-
 
 
     # Remove any spare P matrix / parameters_df param_families
@@ -342,7 +331,7 @@ restrict_by_query <- function(model,
         clean_params(warning = FALSE)
 
     if(update_types){
-      model$causal_types <- update_causal_types(model)
+      model$causal_types <- update_causal_types(model,given_drop)
     }
 
     return(list("model" = model,"given_drop" = given_drop))
@@ -451,7 +440,7 @@ restrict_by_labels <- function(model,
     model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
 
     if(update_types){
-      model$causal_types <- update_causal_types(model)
+      model$causal_types <- update_causal_types(model,given_drop)
     }
 
     return(list("model" = model,"given_drop" = given_drop))
@@ -496,21 +485,28 @@ unpack_wildcard <- function(x) {
 
 #' Update causal types based on nodal types
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @param restrict_given a character vector of subsetting instructions for rows to be dropped from causal types data.frame.
 #' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
 #' @examples
 #' CausalQueries:::update_causal_types(make_model('X->Y'))
 
-update_causal_types <- function(model) {
-
-    possible_types <- get_nodal_types(model)
+update_causal_types <- function(model, restrict_given = NULL) {
 
 
     # Remove var name prefix from nodal types (Y00 -> 00) possible_types <- lapply(nodes, function(v)
     # gsub(v, '', possible_types[[v]])) names(possible_types) <- nodes
 
     # Get types as the combination of nodal types/possible_data. for X->Y: X0Y00, X1Y00, X0Y10, X1Y10...
-    df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
+    df <- data.frame(expand.grid(get_nodal_types(model), stringsAsFactors = FALSE))
+
+    if(!is.null(restrict_given)){
+
+      to_keep <- sapply(restrict_given, function(i) with(df,eval(parse(text = i))))
+      to_keep <- !as.logical(apply(to_keep,1,sum))
+      df <- df[to_keep,]
+
+    }
 
     # Add names
     cnames <- causal_type_names(df)
