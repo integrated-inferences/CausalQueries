@@ -190,8 +190,8 @@ set_restrictions <- function(model,
                                     labels = labels,
                                     keep = keep,
                                     given = given,
-                                    update_types = update_types,
-                                    wildcard = wildcard)
+                                    wildcard = wildcard,
+                                    update_types = update_types)
 
     # Statement
     if (!is.null(statement))
@@ -202,14 +202,26 @@ set_restrictions <- function(model,
                                    keep = keep,
                                    update_types = update_types)
 
-    # Drop any unused rows from P
-    if (!is.null(model$P)) {
-        model$P <- dplyr::filter(model$P, rownames(model$P) %in% model$parameters_df$param_names)
-    }
+    given_drop <- model$given_drop
+    model <- model$model
 
     # Remove spare P matrix columns for causal types for which there are no component nodal types
     if (!is.null(model$P)) {
-        remaining_causal_type_names <- rownames(update_causal_types(model))
+
+        if(!is.null(given_drop)){
+          remaining_causal_type_names <- data.frame(expand.grid(get_nodal_types(model), stringsAsFactors = FALSE))
+          to_keep <- sapply(given_drop, function(i) with(remaining_causal_type_names,eval(parse(text = i))))
+          to_keep <- !as.logical(apply(to_keep,1,sum))
+
+          remaining_causal_type_names <- causal_type_names(remaining_causal_type_names[to_keep,])
+          remaining_causal_type_names <- do.call(paste, c(remaining_causal_type_names, sep = "."))
+
+        } else {
+
+          remaining_causal_type_names <- rownames(update_causal_types(model))
+
+        }
+
         model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
     }
 
@@ -275,6 +287,8 @@ restrict_by_query <- function(model,
         stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
     }
 
+    given_drop <- vector(mode = "list", length = length(statement))
+
     for(i in seq(1,length(statement))){
 
         restriction <- map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
@@ -301,13 +315,21 @@ restrict_by_query <- function(model,
                     ))
                 }
                 drop <- drop & (model$parameters_df$given %in% given[[i]])
+
+                given_drop_node <- paste(model$parameters_df[drop,]$node, paste0("'",model$parameters_df[drop,]$nodal_type,"'"), sep = " == ")
+                given_drop_given <- paste0(gsub("_","' & ",gsub("\\."," == '",model$parameters_df[drop,]$given)),"'")
+
+                given_drop[[i]] <- paste(given_drop_node, given_drop_given, sep = " & ")
+
             }
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
-        model$nodal_types[[node]] <- unique(dplyr::filter(model$parameters_df,node == node)$nodal_type)
+        model$nodal_types[[node]] <- unique(model$parameters_df[model$parameters_df$node == node,"nodal_type"])
 
     }
+
+    given_drop <- unlist(Filter(Negate(is.null), given_drop))
 
     if(!is.null(model$P)){
       model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
@@ -320,7 +342,7 @@ restrict_by_query <- function(model,
       model$causal_types <- update_causal_types(model)
     }
 
-    return(model)
+    return(list("model" = model,"given_drop" = given_drop))
 }
 
 
@@ -375,6 +397,8 @@ restrict_by_labels <- function(model,
 
     }
 
+    given_drop <- vector(mode = "list", length = length(restricted_vars))
+
     # Reduce nodal_types
     for (k in 1:length(restricted_vars)) {
         j <- restricted_vars[k]
@@ -402,12 +426,20 @@ restrict_by_labels <- function(model,
                     ))
                 }
                 drop <- drop & (model$parameters_df$given %in% given[[k]])
+
+                given_drop_node <- paste(model$parameters_df[drop,]$node, paste0("'",model$parameters_df[drop,]$nodal_type,"'"), sep = " == ")
+                given_drop_given <- paste0(gsub("_","' & ",gsub("\\."," == '",model$parameters_df[drop,]$given)),"'")
+
+                given_drop[[k]] <- paste(given_drop_node, given_drop_given, sep = " & ")
+
             }
         }
 
         model$parameters_df <- model$parameters_df[!drop,]
         model$nodal_types[[j]] <- unique(dplyr::filter(model$parameters_df,node == j)$nodal_type)
     }
+
+    given_drop <- unlist(Filter(Negate(is.null), given_drop))
 
     if(!is.null(model$P)){
       model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
@@ -419,7 +451,7 @@ restrict_by_labels <- function(model,
       model$causal_types <- update_causal_types(model)
     }
 
-    return(model)
+    return(list("model" = model,"given_drop" = given_drop))
 }
 
 
