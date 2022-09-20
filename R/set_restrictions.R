@@ -25,7 +25,6 @@
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
 #' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
-#' @param update_types Logical. If `TRUE` the `causal_types` matrix gets updated after application of restrictions.
 #' @param wildcard Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.
 #'
 #' @family restrictions
@@ -122,133 +121,184 @@ set_restrictions <- function(model,
                              labels = NULL,
                              given = NULL,
                              keep = FALSE,
-                             update_types = TRUE,
                              wildcard = FALSE) {
+  CausalQueries:::is_a_model(model)
+  nodal_types0 <- model$nodal_types
 
+  if (!is.logical(keep)) {
+    stop("`keep` should be either 'TRUE' or 'FALSE'")
+  }
 
-    is_a_model(model)
-    nodal_types0 <- model$nodal_types
+  if (is.null(labels) & is.null(statement)) {
+    stop("No restrictions provided: provide either a causal statement or nodal type labels.")
+  }
 
-    if (!is.logical(keep)){
-        stop("`keep` should be either 'TRUE' or 'FALSE'")
+  if (!is.null(labels) & !is.null(statement)) {
+    stop("Provide either a causal statement or nodal type labels, not both.")
+  }
+
+  #check given
+  if (!is.null(given)) {
+    given[sapply(given, is.null)] <- NA
+    given_test <-
+      sapply(given, function(i)
+        (any(!is.na(i)) & !is.character(i)))
+
+    if (any(given_test)) {
+      stop(
+        paste(
+          "Error in given argument: ",
+          paste(which(given_test), collapse = ","),
+          ". Given arguments must either be of type character or NULL or NA.",
+          sep = ""
+        )
+      )
     }
 
-    if (is.null(labels) & is.null(statement)) {
-        stop("No restrictions provided: provide either a causal statement or nodal type labels.")
+    if (!is.null(statement)) {
+      if (length(statement) != length(given)) {
+        stop(
+          "Mismatch in statement and given. Please specify a given for each statement.
+                 For statements that should not have an attached given, specify given as any of NA,NULL,'',' '."
+        )
+      }
     }
 
-    if (!is.null(labels) & !is.null(statement)) {
-        stop("Provide either a causal statement or nodal type labels, not both.")
+    if (!is.null(labels)) {
+      if (length(labels) != length(given)) {
+        stop(
+          "Mismatch in label and given. Please specify a given for each label.
+                 For labels that should not have an attached given, specify given as any of NA,NULL,'',' '."
+        )
+      }
     }
 
-    #check given
-    if (!is.null(given)){
+    given <- sapply(given, trimws)
+    given[sapply(given, function(i)
+      all(i == ""))] <- NA
 
-        given[sapply(given, is.null)] <- NA
-        given_test <- sapply(given, function(i) (any(!is.na(i)) & !is.character(i)))
+    given_test <-
+      sapply(given, function(i)
+        ! is.na(i) & !(i %in% model$parameters_df$given))
+    given_test_bool <- sapply(given_test, any)
 
-        if (any(given_test)){
-            stop(paste("Error in given argument: ", paste(which(given_test), collapse = ","),
-                       ". Given arguments must either be of type character or NULL or NA.", sep = ""))
-        }
-
-        if (!is.null(statement)){
-            if (length(statement) != length(given)){
-                stop("Mismatch in statement and given. Please specify a given for each statement.
-                 For statements that should not have an attached given, specify given as any of NA,NULL,'',' '.")
-            }
-        }
-
-        if (!is.null(labels)){
-            if (length(labels) != length(given)){
-                stop("Mismatch in label and given. Please specify a given for each label.
-                 For labels that should not have an attached given, specify given as any of NA,NULL,'',' '.")
-            }
-        }
-
-        given <- sapply(given, trimws)
-        given[sapply(given, function(i) all(i == ""))] <- NA
-
-        given_test <- sapply(given, function(i) !is.na(i) & !(i %in% model$parameters_df$given))
-        given_test_bool <- sapply(given_test, any)
-
-        if(any(given_test_bool)){
-            stop(paste("Error in given: ",
-                       paste(which(given_test_bool), collapse = ", "),
-                       ". ",
-                       paste(unlist(mapply(function(l,b) l[b], given, given_test)), collapse = ", "),
-                       " : not part of given.",
-                       sep = ""))
-        }
-
+    if (any(given_test_bool)) {
+      stop(paste(
+        "Error in given: ",
+        paste(which(given_test_bool), collapse = ", "),
+        ". ",
+        paste(unlist(
+          mapply(function(l, b)
+            l[b], given, given_test)
+        ), collapse = ", "),
+        " : not part of given.",
+        sep = ""
+      ))
     }
 
+  }
 
-    # Labels
-    if (!is.null(labels))
-        model <- restrict_by_labels(model,
-                                    labels = labels,
-                                    keep = keep,
-                                    given = given,
-                                    wildcard = wildcard,
-                                    update_types = update_types)
 
-    # Statement
-    if (!is.null(statement))
-        model <- restrict_by_query(model,
-                                   statement = statement,
-                                   join_by = join_by,
-                                   given = given,
-                                   keep = keep,
-                                   update_types = update_types)
+  # Labels
+  if (!is.null(labels))
+    drop_params <- restrict_by_labels(
+      model,
+      labels = labels,
+      keep = keep,
+      given = given,
+      wildcard = wildcard
+    )
 
-    given_drop <- model$given_drop
-    model <- model$model
+  # Statement
+  if (!is.null(statement))
+    drop_params <- restrict_by_query(
+      model,
+      statement = statement,
+      join_by = join_by,
+      given = given,
+      keep = keep
+    )
 
-    # Remove spare P matrix columns for causal types for which there are no component nodal types
-    if(!is.null(model$P)){
+  if (is.null(model$P)) {
+    model <- set_parameter_matrix(model)
+  }
 
-      ct <- update_causal_types(model, restrict_given = given_drop)
-      remaining_causal_type_names <- rownames(ct)
+  #update p
+  if (!is.null(model$P)) {
+    #remove parameters implicated by restrictions from P (remove rows from P)
+    model$P <-
+      model$P[!(rownames(model$P) %in% drop_params$drop_params), ]
+    model$parameters_df <-
+      model$parameters_df[!(model$parameters_df$param_names %in% drop_params$drop_params), ]
 
-      model$P <- model$P[, colnames(model$P) %in% remaining_causal_type_names]
-      model$causal_types <- ct
+    #remove causal types without component nodal types (remove columns from P)
+    drop_ct <-
+      lapply(drop_params$drop_ct, function(i)
+        rownames(model$causal_types)[with(model$causal_types, eval(parse(text = i)))]) %>%
+      unlist() %>%
+      unique()
 
+    model$P <- model$P[, !(colnames(model$P) %in% drop_ct)]
+
+    #remove empty parameter families
+    sets <- unique(model$parameters_df$param_set)
+    keep <-
+      sapply(sets, function(j)
+        sum(model$P[model$parameters_df$param_set == j,]) > 0)
+    model$P <- model$P[keep, ]
+  }
+
+
+  # update parameters df
+  model$parameters_df <-
+    model$parameters_df[model$parameters_df$param_names == rownames(model$P), ]
+  model$parameters_df <-
+    clean_params(model$parameters_df, warning = FALSE)
+
+  # update causal types
+  model$causal_types <- colnames(model$P) %>%
+    {
+      s <- strsplit(.[1], "\\.")[[1]]
+      cnames <-
+        model$nodes[sapply(model$nodes, function(i)
+          any(grepl(i, s)))]
+      rnames <- .
+      s <-
+        strsplit(stringi::stri_replace_all_regex(., cnames, "", vectorize_all = FALSE),
+                 "\\.")
+
+      do.call(rbind, lapply(s, t)) %>%
+        as.data.frame() %>%
+        `names<-` (cnames) %>%
+        `rownames<-` (rnames)
     }
 
-
-    # Remove any spare P matrix / parameters_df param_families
-    if (!is.null(model$P)) {
-
-        # Drop family if an entire set is empty
-        sets <- unique(model$parameters_df$param_set)
-        to_keep <- sapply(sets, function(j) sum(model$P[model$parameters_df$param_set == j, ]) > 0)
-        if (!all(to_keep)) {
-            keep <- model$parameters_df$param_set %in% sets[to_keep]
-            model$parameters_df <- dplyr::filter(model$parameters_df, keep)
-            model$P <- model$P[keep, ]
-        }
-    }
+  # update nodal types
+  model$nodal_types <-
+    lapply(model$nodes, function(i)
+      unique(model$parameters_df[model$parameters_df$node == i, ]$nodal_type))
+  names(model$nodal_types) <- model$nodes
 
 
-    # Keep restricted types as attributes
-    nodal_types1 <- model$nodal_types
-    restrictions <- sapply(model$nodes, function(node) {
-        restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
-        nodal_types0[[node]][restricted]
-    }, simplify = FALSE, USE.NAMES = TRUE)
+  # Keep restricted types as attributes
+  nodal_types1 <- model$nodal_types
+  restrictions <- sapply(model$nodes, function(node) {
+    restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
+    nodal_types0[[node]][restricted]
+  }, simplify = FALSE, USE.NAMES = TRUE)
 
-    restrictions <- Filter(length, restrictions)
-    if (is.null(attr(model, "restrictions"))) {
-        attr(model, "restrictions") <- restrictions
-    } else {
-        restrictions0 <- attr(model, "restrictions")
-        attr(model, "restrictions") <- sapply(model$nodes, function(node) {
-            c(restrictions[[node]], restrictions0[[node]])
-        }, simplify = FALSE, USE.NAMES = TRUE)
-    }
+  restrictions <- Filter(length, restrictions)
+  if (is.null(attr(model, "restrictions"))) {
+    attr(model, "restrictions") <- restrictions
+  } else {
+    restrictions0 <- attr(model, "restrictions")
+    attr(model, "restrictions") <-
+      sapply(model$nodes, function(node) {
+        c(restrictions[[node]], restrictions0[[node]])
+      }, simplify = FALSE, USE.NAMES = TRUE)
+  }
 
-    return(model)
+  return(model)
 }
 
 #' Reduce nodal types using statement
@@ -258,7 +308,7 @@ set_restrictions <- function(model,
 #' @param join_by A string or a list of strings. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}.
 #' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. \code{given} must either be NULL or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+#' @return A list with two components: 1. a vector with parameters names of parameters implicated by the restrictions, 2. a vector of subsetting instructions used to identify implicated causal types
 #' @keywords internal
 #' @family restrictions
 
@@ -266,77 +316,71 @@ restrict_by_query <- function(model,
                               statement,
                               join_by = "|",
                               given = NULL,
-                              keep = FALSE,
-                              update_types = TRUE) {
+                              keep = FALSE) {
+  nodal_types <- model$nodal_types
 
-    nodal_types <- model$nodal_types
+  n_restrictions <- length(statement)
 
-    n_restrictions <- length(statement)
+  if (length(join_by) == 1) {
+    join_by <- rep(join_by, n_restrictions)
+  } else if (length(join_by) != n_restrictions) {
+    stop(
+      paste0(
+        "Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."
+      )
+    )
+  }
 
-    if (length(join_by) == 1) {
-        join_by <- rep(join_by, n_restrictions)
-    } else if (length(join_by) != n_restrictions) {
-        stop(paste0("Argument `join_by` must be either of length 1 or have the same lenght as `restriction` argument."))
+  drop_params <- vector(mode = "list", length = length(statement))
+
+  for (i in seq(1, length(statement))) {
+    restriction <-
+      map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
+    node <- restriction$node
+    types <- names(restriction$types)[restriction$types]
+    names(types) <- node
+
+    if (!keep) {
+      types <- setdiff(nodal_types[[node]], types)
     }
 
-    given_drop <- vector(mode = "list", length = length(statement))
+    drop <-
+      (model$parameters_df$node %in% node) &
+      !(model$parameters_df$nodal_type %in% types)
 
-    for(i in seq(1,length(statement))){
+    if (!is.null(given)) {
+      if (all(!is.na(given[[i]]))) {
+        wrong_given <-
+          !(given[[i]] %in% unlist(model$parameters_df[drop, "given"]))
 
-        restriction <- map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
-        node <- restriction$node
-        types <- names(restriction$types)[restriction$types]
-        names(types) <- node
-
-        if(!keep){
-          types <- setdiff(nodal_types[[node]], types)
+        if (any(wrong_given)) {
+          stop(
+            paste(
+              "Error in given set ",
+              i,
+              ". ",
+              "Given ",
+              paste(given[[i]][wrong_given], collapse = ", "),
+              " not part of the restriction set defined by statement. ",
+              "Check model$parameters_df for dependence structure between parameters."
+            )
+          )
         }
 
-        drop <- (model$parameters_df$node %in% node) & !(model$parameters_df$nodal_type %in% types)
+        drop <- drop & (model$parameters_df$given %in% given[[i]])
 
-        if(!is.null(given)){
-            if(all(!is.na(given[[i]]))){
-
-                wrong_given <- !(given[[i]] %in% unlist(model$parameters_df[drop,"given"]))
-
-                if(any(wrong_given)){
-                    stop(paste(
-                        "Error in given set ", i, ". ",
-                        "Given ", paste(given[[i]][wrong_given], collapse = ", "), " not part of the restriction set defined by statement. ",
-                        "Check model$parameters_df for dependence structure between parameters."
-                    ))
-                }
-                drop <- drop & (model$parameters_df$given %in% given[[i]])
-
-                given_drop_node <- paste(model$parameters_df[drop,]$node, paste0("'",model$parameters_df[drop,]$nodal_type,"'"), sep = " == ")
-                given_drop_given <- paste0(gsub("_","' & ",gsub("\\."," == '",model$parameters_df[drop,]$given)),"'")
-
-                given_drop[[i]] <- paste(given_drop_node, given_drop_given, sep = " & ")
-
-            }
-        }
-
-        model$parameters_df <- model$parameters_df[!drop,]
-        model$nodal_types[[node]] <- unique(model$parameters_df[model$parameters_df$node == node,"nodal_type"])
-
+      }
     }
 
-    given_drop <- unlist(Filter(Negate(is.null), given_drop))
+    drop_params[[i]] <- model$parameters_df[drop,]$param_names
+  }
 
-    if(!is.null(model$P)){
-      model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
-    }
+  drop_params <- unlist(drop_params)
+  drop_ct <-
+    paste0(gsub("_", "' & ", gsub("\\.", " == '", drop_params)), "'")
 
-    model$parameters_df <- model$parameters_df %>%
-        clean_params(warning = FALSE)
-
-    if(update_types){
-      model$causal_types <- update_causal_types(model,given_drop)
-    }
-
-    return(list("model" = model,"given_drop" = given_drop))
+  return(list(drop_params = drop_params, drop_ct = drop_ct))
 }
-
 
 #' Reduce nodal types using labels
 #'
@@ -345,7 +389,7 @@ restrict_by_query <- function(model,
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model.
 #' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When mixing labels that are further restricted by \code{given} and ones that are not, labels without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.
-#' @return An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+#' @return A list with two components: 1. a vector with parameters names of parameters implicated by the restrictions, 2. a vector of subsetting instructions used to identify implicated causal types
 #' @keywords internal
 #' @family restrictions
 
@@ -353,97 +397,103 @@ restrict_by_labels <- function(model,
                                labels,
                                given = NULL,
                                keep = FALSE,
-                               update_types = TRUE,
                                wildcard = FALSE) {
+  # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
+  # name that doesn't match any of the nodes in the dag
+  restricted_vars <- names(labels)
+  matches <- restricted_vars %in% model$nodes
 
-    # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
-    # name that doesn't match any of the nodes in the dag
-    restricted_vars <- names(labels)
-    matches <- restricted_vars %in% model$nodes
+  if (!any(matches)) {
+    stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
+  }
 
-    if (!any(matches)){
-        stop("Variables ", paste(names(labels[!matches]), "are not part of the model."))
+  # If there are wild cards, spell them out
+  if (wildcard) {
+    labels <-
+      lapply(labels, function(j)
+        unique(unlist(sapply(
+          j, unpack_wildcard
+        ))))
+  }
+
+  # Check if labels map to nodal types
+  for (i in restricted_vars) {
+    check <- model$parameters_df %>%
+      dplyr::filter(node == i)
+
+    labels_passed <- unlist(labels[[i]])
+
+    if (!all (labels_passed %in% check$nodal_type)) {
+      wrong_labels <-
+        paste(labels_passed[!(labels_passed %in% check$nodal_type)], collapse = ", ")
+      stop(
+        paste(
+          "Error in label set ",
+          i,
+          ". ",
+          "Nodal types ",
+          wrong_labels,
+          " do not exist for node ",
+          i,
+          ". ",
+          "Check model$parameters_df for correct mapping of labels to nodal_types.",
+          sep = ""
+        )
+      )
     }
 
-    # If there are wild cards, spell them out
-    if(wildcard){
-        labels <- lapply(labels, function(j) unique(unlist(sapply(j, unpack_wildcard))))
+  }
+
+  drop_params <-
+    vector(mode = "list", length = length(restricted_vars))
+
+  # Reduce nodal_types
+  for (k in 1:length(restricted_vars)) {
+    j <- restricted_vars[k]
+    nt <- model$nodal_types[[j]]
+
+    if (!keep) {
+      to_keep <- nt[!(nt %in% labels[[k]])]
     }
 
-    # Check if labels map to nodal types
-    for (i in restricted_vars) {
-        check <- model$parameters_df %>%
-            dplyr::filter(node==i)
+    if (keep) {
+      to_keep <- nt[nt %in% labels[[k]]]
+    }
 
-        labels_passed <- unlist(labels[[i]])
+    drop <-
+      model$parameters_df$node == j &
+      !(model$parameters_df$nodal_type %in% to_keep)
 
-        if (!all (labels_passed %in% check$nodal_type)){
-            wrong_labels <- paste(labels_passed[!(labels_passed %in% check$nodal_type)], collapse = ", ")
-            stop(paste(
-                "Error in label set ", i,". ",
-                "Nodal types ", wrong_labels, " do not exist for node ", i, ". ",
-                "Check model$parameters_df for correct mapping of labels to nodal_types.",
-                sep = ""
-            ))
+    if (!is.null(given)) {
+      if (all(!is.na(given[[k]]))) {
+        wrong_given <-
+          !(given[[k]] %in% unlist(model$parameters_df[drop, "given"]))
+
+        if (any(wrong_given)) {
+          stop(
+            paste(
+              "Error in given set ",
+              k,
+              ". ",
+              "Given ",
+              paste(given[[k]][wrong_given], collapse = ", "),
+              " not part of the restriction set defined by labels. ",
+              "Check model$parameters_df for dependence structure between parameters."
+            )
+          )
         }
-
+        drop <- drop & (model$parameters_df$given %in% given[[k]])
+      }
     }
 
-    given_drop <- vector(mode = "list", length = length(restricted_vars))
+    drop_params[[k]] <- model$parameters_df[drop, ]$param_names
+  }
 
-    # Reduce nodal_types
-    for (k in 1:length(restricted_vars)) {
-        j <- restricted_vars[k]
-        nt <- model$nodal_types[[j]]
+  drop_params <- unlist(drop_params)
+  drop_ct <-
+    paste0(gsub("_", "' & ", gsub("\\.", " == '", drop_params)), "'")
 
-        if (!keep){
-            to_keep <- nt[!(nt %in% labels[[k]])]
-        }
-
-        if (keep){
-            to_keep <- nt[nt %in% labels[[k]]]
-        }
-
-        drop <- model$parameters_df$node == j & !(model$parameters_df$nodal_type %in% to_keep)
-
-        if(!is.null(given)){
-            if(all(!is.na(given[[k]]))){
-                wrong_given <- !(given[[k]] %in% unlist(model$parameters_df[drop,"given"]))
-
-                if(any(wrong_given)){
-                    stop(paste(
-                        "Error in given set ", k, ". ",
-                        "Given ", paste(given[[k]][wrong_given], collapse = ", "), " not part of the restriction set defined by labels. ",
-                        "Check model$parameters_df for dependence structure between parameters."
-                    ))
-                }
-                drop <- drop & (model$parameters_df$given %in% given[[k]])
-
-                given_drop_node <- paste(model$parameters_df[drop,]$node, paste0("'",model$parameters_df[drop,]$nodal_type,"'"), sep = " == ")
-                given_drop_given <- paste0(gsub("_","' & ",gsub("\\."," == '",model$parameters_df[drop,]$given)),"'")
-
-                given_drop[[k]] <- paste(given_drop_node, given_drop_given, sep = " & ")
-
-            }
-        }
-
-        model$parameters_df <- model$parameters_df[!drop,]
-        model$nodal_types[[j]] <- unique(dplyr::filter(model$parameters_df,node == j)$nodal_type)
-    }
-
-    given_drop <- unlist(Filter(Negate(is.null), given_drop))
-
-    if(!is.null(model$P)){
-      model$P <- model$P[rownames(model$P) %in% model$parameters_df$param_names,]
-    }
-
-    model$parameters_df <- clean_params(model$parameters_df, warning = FALSE)
-
-    if(update_types){
-      model$causal_types <- update_causal_types(model,given_drop)
-    }
-
-    return(list("model" = model,"given_drop" = given_drop))
+  return(list(drop_params = drop_params, drop_ct = drop_ct))
 }
 
 

@@ -4,14 +4,7 @@
 \alias{restrict_by_query}
 \title{Reduce nodal types using statement}
 \usage{
-restrict_by_query(
-  model,
-  statement,
-  join_by = "|",
-  given = NULL,
-  keep = FALSE,
-  update_types = TRUE
-)
+restrict_by_query(model, statement, join_by = "|", given = NULL, keep = FALSE)
 }
 \arguments{
 \item{model}{a model created by make_model()}
@@ -25,7 +18,7 @@ restrict_by_query(
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{restriction}.}
 }
 \value{
-An object of class \code{causal_model}. The causal types and nodal types in the model are reduced according to the stated restriction.
+A list with two components: 1. a vector with parameters names of parameters implicated by the restrictions, 2. a vector of subsetting instructions used to identify implicated causal types
 }
 \description{
 Reduce nodal types using statement
