@@ -11,7 +11,8 @@ set_restrictions(
   labels = NULL,
   given = NULL,
   keep = FALSE,
-  wildcard = FALSE
+  wildcard = FALSE,
+  param_names = NULL
 )
 }
 \arguments{
