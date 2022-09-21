@@ -13,6 +13,11 @@
 
 clean_params <- function(parameters_df, warning = TRUE) {
 
+    if(nrow(parameters_df) == 0){
+      message("parameters_df is empty")
+      return(parameters_df)
+    }
+
     # Check positive
     if (min(parameters_df$priors) < 0)
         stop("Negative alpha arguments for priors are not allowed")

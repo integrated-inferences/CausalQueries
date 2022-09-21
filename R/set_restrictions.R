@@ -121,20 +121,22 @@ set_restrictions <- function(model,
                              labels = NULL,
                              given = NULL,
                              keep = FALSE,
-                             wildcard = FALSE) {
-  CausalQueries:::is_a_model(model)
-  nodal_types0 <- model$nodal_types
+                             wildcard = FALSE,
+                             param_names = NULL) {
+
+  is_a_model(model)
+
+  # Save entering features
+  nodal_types_0 <- model$nodal_types
+  restrictions_0 <- attr(model, "restrictions")
+
 
   if (!is.logical(keep)) {
     stop("`keep` should be either 'TRUE' or 'FALSE'")
   }
 
-  if (is.null(labels) & is.null(statement)) {
-    stop("No restrictions provided: provide either a causal statement or nodal type labels.")
-  }
-
-  if (!is.null(labels) & !is.null(statement)) {
-    stop("Provide either a causal statement or nodal type labels, not both.")
+  if (sum(!is.null(labels), !is.null(statement), !is.null(param_names)) !=1) {
+    stop("Provide *either* a causal statement or nodal type labels or param_names.")
   }
 
   #check given
@@ -199,9 +201,15 @@ set_restrictions <- function(model,
   }
 
 
-  # Labels
+  # 1 param_names
+  if (!is.null(param_names)){
+    if(!keep) drop_params <- param_names
+    if(keep) drop_params <- model$parameters_df$param_names[!(model$parameters_df$param_names %in% param_names)]
+  }
+
+  # 2 Labels
   if (!is.null(labels))
-    drop_params <- restrict_by_labels(
+    drop_params <- CausalQueries:::restrict_by_labels(
       model,
       labels = labels,
       keep = keep,
@@ -209,7 +217,7 @@ set_restrictions <- function(model,
       wildcard = wildcard
     )
 
-  # Statement
+  # 3 Statement
   if (!is.null(statement))
     drop_params <- restrict_by_query(
       model,
@@ -219,59 +227,44 @@ set_restrictions <- function(model,
       keep = keep
     )
 
-  if (is.null(model$P)) {
-    model <- set_parameter_matrix(model)
-  }
 
-  #update p
-  if (!is.null(model$P)) {
-    #remove parameters implicated by restrictions from P (remove rows from P)
+  ## Clean up
+
+  if (is.null(model$P)) model <- set_parameter_matrix(model)
+
+
+  # update P
+    # remove parameters implicated by restrictions from P (remove rows from P)
     model$P <-
-      model$P[!(rownames(model$P) %in% drop_params$drop_params), ]
+      model$P[!(rownames(model$P) %in% drop_params), ]
     model$parameters_df <-
-      model$parameters_df[!(model$parameters_df$param_names %in% drop_params$drop_params), ]
+      model$parameters_df[!(model$parameters_df$param_names %in% drop_params), ]
 
-    #remove causal types without component nodal types (remove columns from P)
-    drop_ct <-
-      lapply(drop_params$drop_ct, function(i)
-        rownames(model$causal_types)[with(model$causal_types, eval(parse(text = i)))]) %>%
-      unlist() %>%
-      unique()
+    # remove causal types without component nodal types (remove columns from P)
+    keep_ct <-
+      model$P |> group_by(g = model$parameters_df$node) |>
+      mutate(across(.cols = everything(), ~max(.x))) |>
+      slice(1) |> ungroup() |> select(-g) %>%
+      apply(2, prod)
 
-    model$P <- model$P[, !(colnames(model$P) %in% drop_ct)]
+    model$P <- select(model$P, names(keep_ct)[keep_ct==1])
 
     #remove empty parameter families
     sets <- unique(model$parameters_df$param_set)
-    keep <-
+    keep_f <-
       sapply(sets, function(j)
         sum(model$P[model$parameters_df$param_set == j,]) > 0)
-    model$P <- model$P[keep, ]
-  }
 
+    if(min(keep_f)==0)
+    model$P <- model$P[model$parameters_df$param_set %in% names(keep_f)[keep_f], ]
 
   # update parameters df
   model$parameters_df <-
-    model$parameters_df[model$parameters_df$param_names == rownames(model$P), ]
-  model$parameters_df <-
-    clean_params(model$parameters_df, warning = FALSE)
+    model$parameters_df[model$parameters_df$param_names %in% rownames(model$P), ] |>
+    CausalQueries:::clean_params(warning = FALSE)
 
   # update causal types
-  model$causal_types <- colnames(model$P) %>%
-    {
-      s <- strsplit(.[1], "\\.")[[1]]
-      cnames <-
-        model$nodes[sapply(model$nodes, function(i)
-          any(grepl(i, s)))]
-      rnames <- .
-      s <-
-        strsplit(stringi::stri_replace_all_regex(., cnames, "", vectorize_all = FALSE),
-                 "\\.")
-
-      do.call(rbind, lapply(s, t)) %>%
-        as.data.frame() %>%
-        `names<-` (cnames) %>%
-        `rownames<-` (rnames)
-    }
+  model$causal_types <- model$causal_types[names(keep_ct)[keep_ct==1], ]
 
   # update nodal types
   model$nodal_types <-
@@ -281,22 +274,25 @@ set_restrictions <- function(model,
 
 
   # Keep restricted types as attributes
-  nodal_types1 <- model$nodal_types
   restrictions <- sapply(model$nodes, function(node) {
-    restricted <- !nodal_types0[[node]] %in% nodal_types1[[node]]
-    nodal_types0[[node]][restricted]
+    restricted <- !(nodal_types_0[[node]] %in% model$nodal_types[[node]])
+    nodal_types_0[[node]][restricted]
   }, simplify = FALSE, USE.NAMES = TRUE)
 
   restrictions <- Filter(length, restrictions)
-  if (is.null(attr(model, "restrictions"))) {
-    attr(model, "restrictions") <- restrictions
-  } else {
-    restrictions0 <- attr(model, "restrictions")
-    attr(model, "restrictions") <-
-      sapply(model$nodes, function(node) {
-        c(restrictions[[node]], restrictions0[[node]])
-      }, simplify = FALSE, USE.NAMES = TRUE)
-  }
+
+  attr(model, "restrictions") <- {
+
+    if (is.null(restrictions_0)) {
+
+            restrictions
+
+      } else {
+
+      sapply(model$nodes,
+             function(node) c(restrictions[[node]], restrictions_0[[node]]),
+             simplify = FALSE, USE.NAMES = TRUE)
+  }}
 
   return(model)
 }
@@ -375,11 +371,7 @@ restrict_by_query <- function(model,
     drop_params[[i]] <- model$parameters_df[drop,]$param_names
   }
 
-  drop_params <- unlist(drop_params)
-  drop_ct <-
-    paste0(gsub("_", "' & ", gsub("\\.", " == '", drop_params)), "'")
-
-  return(list(drop_params = drop_params, drop_ct = drop_ct))
+  unlist(drop_params)
 }
 
 #' Reduce nodal types using labels
@@ -489,11 +481,7 @@ restrict_by_labels <- function(model,
     drop_params[[k]] <- model$parameters_df[drop, ]$param_names
   }
 
-  drop_params <- unlist(drop_params)
-  drop_ct <-
-    paste0(gsub("_", "' & ", gsub("\\.", " == '", drop_params)), "'")
-
-  return(list(drop_params = drop_params, drop_ct = drop_ct))
+  unlist(drop_params)
 }
 
 

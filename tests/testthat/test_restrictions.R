@@ -73,3 +73,65 @@ testthat::test_that(
 )
 
 
+
+testthat::test_that(
+
+  desc = "sequential restricting types with confounds",
+
+  code = {
+    model  <-
+
+      make_model("X->Y; X <-> Y") |>
+      set_restrictions(labels = list(Y = c("01")),
+                       given = c('X.1'))|>
+      set_restrictions(labels = list(Y = c("11")),
+                       given = c('X.1'))
+
+    expect_true(nrow(model$parameters_df)==8)
+    expect_true(all(get_ambiguities_matrix(model) %>% apply(2, sum)== c(2,2,2,1)))
+  }
+)
+
+testthat::test_that(
+
+  desc = "restrict by param_names with keep = FALSE",
+
+  code = {
+    model  <-
+
+      make_model("X->Y; X <-> Y") |>
+      set_restrictions(param_names = c("X.0", "Y.11_X.1"))
+
+    expect_true(nrow(model$parameters_df)==4)
+    expect_true(all(get_ambiguities_matrix(model) %>% apply(2, sum)== c(2,1)))
+  }
+)
+
+testthat::test_that(
+
+  desc = "restrict too much",
+
+  code = {
+    model  <-
+
+   expect_message(make_model("X->Y; X <-> Y") |>
+                           set_restrictions(param_names = c("X.0", "Y.11_X.1"), keep = TRUE),
+                         "parameters_df is empty")
+  }
+)
+
+
+testthat::test_that(
+
+  desc = "reduce to single causal type by param_names using  keep = FALSE",
+
+  code = {
+    model  <-
+
+      make_model("X->Y; X <-> Y") |>
+      set_restrictions(param_names = c("X.0", "Y.11_X.0"), keep = TRUE)
+
+    expect_true(nrow(model$parameters_df)==2)
+    expect_true(all(get_ambiguities_matrix(model) %>% apply(2, sum)== 1))
+  }
+)
