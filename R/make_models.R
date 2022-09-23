@@ -74,147 +74,175 @@
 #' make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
 #' make_model("Z -> Y", nodal_types = FALSE)$parents_df
 
-make_model <- function(statement, add_causal_types = TRUE, nodal_types = NULL){
+make_model <-
+  function(statement,
+           add_causal_types = TRUE,
+           nodal_types = NULL) {
+    if (length(statement) != 1)
+      stop(
+        "The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model."
+      )
+
+    if (!(is.character(statement)))
+      stop("The model statement should be of type character.")
+
+    x <-
+      dagitty::edges(dagitty::dagitty(paste0("dag{", statement, "}"))) %>%
+      data.frame(stringsAsFactors = FALSE)
+
+    if (nrow(x) == 0) {
+      dag <- data.frame(v = statement, w = NA)
+    } else {
+      dag  <- x %>%
+        dplyr::filter(e == "->") %>%
+        dplyr::select(v, w)
+    }
+
+    if (length(x) > 0 && any(!(unlist(x[, 1:2]) %in% unlist(dag))))
+      stop("Graph should not contain isolates.")
+
+    names(dag) <- c("parent", "children")
+
+    # names and allowable names
+    node_names <-
+      unique(c(as.character(dag$parent), as.character(dag$children)))
+    if (any(grepl("-", 	node_names)))
+      stop("No hyphens in varnames please; try dots?")
+    if (any(grepl("_", node_names)))
+      stop("No underscores in varnames please; try dots?")
+
+    # Procedure for unique ordering of nodes; ties broken by alphabet
+    if (all(dag$parent %in% dag$children))
+      stop("No root nodes provided.")
+
+    gen <- rep(NA, nrow(dag))
+    j <- 1
+    # assign 1 to exogenous nodes
+    gen[!(dag$parent %in% dag$children)] <- j
+    while (sum(is.na(gen)) > 0) {
+      j <- j + 1
+      xx <- (dag$parent %in% dag$children[is.na(gen)])
+      if (all(xx[is.na(gen)]))
+        stop(paste("Cycling at generation", j))
+      gen[!xx & is.na(gen)] <- j
+    }
+
+    # dag is now given a causal order which is preserved in the parameters_df
+    dag <- dag[order(gen, dag[, 1], dag[, 2]), ]
+
+    endog_node <- as.character(rev(unique(rev(dag$children))))
+    if (all(is.na(endog_node)))
+      endog_node <- NULL
+    .exog_node <- as.character(rev(unique(rev(dag$parent))))
+    exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
+
+    # ordered nodes
+    nodes <- c(exog_node, endog_node)
+
+    # parent count df
+
+    parents_df <-
+      data.frame(node = nodes, root = nodes %in% exog_node) |>
+      mutate(parents = sapply(node, function(n)
+        nrow(dag %>% filter(children == n))))
 
 
-	if(length(statement) != 1)
-	  stop("The length of the character vector of the statement is unequal to 1. Please provide only 1 causal model.")
+    # Model is a list
+    model <-
+      list(
+        statement = statement,
+        dag = dag,
+        nodes = nodes,
+        parents_df = parents_df
+      )
 
-	if(!(is.character(statement)))
-	  stop("The model statement should be of type character.")
+    # Nodal types
+    # Check
+    if (!is.null(nodal_types))
+      if (!all(names(nodal_types) %in% nodes))
+        stop("Check provided nodal_types are nodes in the model")
 
-	x <- dagitty::edges(dagitty::dagitty(	paste0("dag{", statement, "}"))) %>%
-		data.frame(stringsAsFactors = FALSE)
-
-	if(nrow(x)==0){ dag <- data.frame(v = statement, w = NA)
-	} else {
-	dag  <- x %>%
-		dplyr::filter(e=="->") %>%
-		dplyr::select(v,w)
-	}
-
-	if(length(x)>0 && any(!(unlist(x[,1:2]) %in% unlist(dag))))
-		stop("Graph should not contain isolates.")
-
-	names(dag) <- c("parent", "children")
-
-	# names and allowable names
-	node_names <- unique(c(as.character(dag$parent), as.character(dag$children)))
-	if(any(grepl("-", 	node_names))) stop("No hyphens in varnames please; try dots?")
-	if(any(grepl("_", node_names))) stop("No underscores in varnames please; try dots?")
-
-	# Procedure for unique ordering of nodes; ties broken by alphabet
-	if(all(dag$parent %in% dag$children)) stop("No root nodes provided.")
-
-	gen <- rep(NA, nrow(dag))
-	j <- 1
-	# assign 1 to exogenous nodes
-	gen[!(dag$parent %in% dag$children)] <- j
-	while(sum(is.na(gen))>0) {
-		j <- j+1
-		xx <- (dag$parent %in% dag$children[is.na(gen)])
-		if(all(xx[is.na(gen)])) stop(paste("Cycling at generation", j))
-  	gen[!xx & is.na(gen)] <- j
-  }
-
-	# dag is now given a causal order which is preserved in the parameters_df
-  dag <- dag[order(gen, dag[,1], dag[,2]),]
-
- endog_node <- as.character(rev(unique(rev(dag$children))))
- if(all(is.na(endog_node))) endog_node <- NULL
- .exog_node <- as.character(rev(unique(rev(dag$parent))))
- exog_node  <- .exog_node[!(.exog_node %in% endog_node)]
-
- # ordered nodes
- nodes <- c(exog_node, endog_node)
-
- # parent count df
-
- parents_df <-
-   data.frame(node = nodes, root = nodes %in% exog_node) |>
-   mutate(parents = sapply(node, function(n) nrow(dag %>% filter(children == n))))
-
-
- # Model is a list
-  model <- list(statement = statement, dag = dag, nodes = nodes,  parents_df = parents_df)
-
- # Nodal types
- # Check
-  if(!is.null(nodal_types))
-    if(!all(names(nodal_types) %in% nodes))
-      stop("Check provided nodal_types are nodes in the model")
-
-  # Check ordering and completeness
-  if(!is.null(nodal_types) & !is.logical(nodal_types)){
-    if(!all(sort(names(nodal_types)) == sort(nodes)))
-      message(paste("Model not properly defined: If you provide nodal types you should do so for all nodes in model: ", paste(nodes, collapse = ", ")))
-    if(!all(names(nodal_types) == nodes)) {
-      message("Ordering of provided nodal types is being altered to match generation")
-      nodal_types <- lapply(nodes, function(n) nodal_types[[n]])
-      names(nodal_types) <- nodes
+    # Check ordering and completeness
+    if (!is.null(nodal_types) & !is.logical(nodal_types)) {
+      if (!all(sort(names(nodal_types)) == sort(nodes)))
+        message(
+          paste(
+            "Model not properly defined: If you provide nodal types you should do so for all nodes in model: ",
+            paste(nodes, collapse = ", ")
+          )
+        )
+      if (!all(names(nodal_types) == nodes)) {
+        message("Ordering of provided nodal types is being altered to match generation")
+        nodal_types <- lapply(nodes, function(n)
+          nodal_types[[n]])
+        names(nodal_types) <- nodes
       }
+    }
+
+    if (is.logical(nodal_types)) {
+      add_causal_types <- FALSE
+      message(
+        paste(
+          "Model not properly defined: nodal_types should be NULL or specified for all nodes in model: ",
+          paste(nodes, collapse = ", ")
+        )
+      )
+    }
+
+    if (is.null(nodal_types))
+      nodal_types <- get_nodal_types(model, collapse = TRUE)
+
+    model$nodal_types <- nodal_types
+
+    # Add nodal type interpretation
+    if (is.null(attr(nodal_types, "interpret")))
+      attr(nodal_types, "interpret") <- interpret_type(model)
+
+    # Parameters dataframe
+    if (!is.logical(nodal_types))
+      model$parameters_df <- make_parameters_df(nodal_types)
+
+    # Add class
+    class(model) <- "causal_model"
+
+    # Add causal types
+    if (add_causal_types)
+      model$causal_types <- update_causal_types(model)
+
+
+
+    # Add confounds if any provided
+
+    if (any(x$e == "<->")) {
+      confounds <- NULL
+
+      z  <- x %>% dplyr::filter(e == "<->") %>% dplyr::select(v, w)
+      z$v <- as.character(z$v)
+      z$w <- as.character(z$w)
+
+      # Reorder by reverse causal order (thus in X -> Y we have type_Y conditional on type_X)
+      for (i in 1:nrow(z)) {
+        z[i, ] <- rev(nodes[nodes %in% sapply(z[i, ], as.character)])
+      }
+      # Generate confounds list
+      confounds <- as.list(as.character(z$w))
+      names(confounds) <- z$v
+
+      # Check on ineligible confound statements
+      if (any(!(c(z$v, z$w) %in% nodes)))
+        stop("Confound relations (<->) must be between nodes contained in the dag")
+
+      model <- set_confound(model, confounds)
+
+    }
+
+    # Prep for export
+    attr(model, "nonroot_nodes") <- endog_node
+    attr(model, "root_nodes")  <- exog_node
+
+    model
+
   }
-
-  if(is.logical(nodal_types)){
-    add_causal_types <- FALSE
-    message(paste("Model not properly defined: nodal_types should be NULL or specified for all nodes in model: ", paste(nodes, collapse = ", ")))
-  }
-
- if(is.null(nodal_types))
-    nodal_types <- get_nodal_types(model, collapse = TRUE)
-
- model$nodal_types <- nodal_types
-
- # Add nodal type interpretation
- if(is.null(attr(nodal_types, "interpret")))
- attr(nodal_types, "interpret") <- interpret_type(model)
-
-  # Parameters dataframe
-  if(!is.logical(nodal_types))
-  model$parameters_df <- make_parameters_df(nodal_types)
-
- # Add class
- class(model) <- "causal_model"
-
- # Add causal types
- if(add_causal_types)
- model$causal_types <- update_causal_types(model)
-
-
-
- # Add confounds if any provided
-
- if(any(x$e=="<->")) {
-
-	 	confounds <- NULL
-
-	 	z  <- x %>% dplyr::filter(e=="<->") %>% dplyr::select(v,w)
-	 	z$v <- as.character(z$v)
-	 	z$w <- as.character(z$w)
-
-	 	# Reorder by reverse causal order (thus in X -> Y we have type_Y conditional on type_X)
-	 	for(i in 1:nrow(z)){
-	 		z[i,] <- rev(nodes[nodes %in% sapply(z[i,], as.character)])
-	 	}
-	 	# Generate confounds list
-	 	confounds <- as.list(as.character(z$w))
-	 	names(confounds) <- z$v
-
-	 	# Check on ineligible confound statements
-	 	if(any(!(c(z$v, z$w) %in% nodes)))
-	 	stop("Confound relations (<->) must be between nodes contained in the dag")
-
-	 	model <- set_confound(model, confounds)
-
-	  }
-
- # Prep for export
- attr(model, "nonroot_nodes") <- endog_node
- attr(model, "root_nodes")  <- exog_node
-
- model
-
-}
 
 #' @export
 print.causal_model <- function(x, ...) {
@@ -309,16 +337,18 @@ make_parameters_df <- function(nodal_types)
 #' @return a vector of nodal types
 #' @export
 
-simple_nodes <-
-  function(n = 5) {
-    N <- 2^n
-    s <- 0:(N-1)
-    nt <- ((sapply(0:n, function(j) ((s / 2^(j-1)) %% 2 ) >= 1))) |>
-      data.frame() |>
-      mutate(all = 1)
+simple_nodes <- function(n = 5) {
+  N <- 2 ^ n
+  s <- 0:(N - 1)
+  nt <- ((sapply(0:n, function(j)
+    ((
+      s / 2 ^ (j - 1)
+    ) %% 2) >= 1))) |>
+    data.frame() |>
+    mutate(all = 1)
 
-    nt |> apply(2, paste0, collapse = "")
-  }
+  nt |> apply(2, paste0, collapse = "")
+}
 
 
 #' function to generate nodal types for interactions
@@ -376,24 +406,26 @@ interacted_nodes <- function(nodal_types, nodes = NULL, interaction_order = 2L, 
     types_i <- try(combn(types_i,interaction_order), silent = TRUE)
 
     if(!is(types_i,"try-error")){
-      n_pairs <- ncol(types_i)
 
-      types_i <- apply(types_i,1,function(j) strsplit(j,"")%>%
-                         lapply(.,function(k) as.logical(as.numeric(k))))
+      ret <- lapply(1:ncol(types_i), function(j) {
+        types_ii <- strsplit(types_i[, j], "") %>%
+          lapply(., function(k)
+            as.logical(as.numeric(k)))
 
-      ret <- vector(mode = "list",length = n_pairs)
+        types <- sapply(interaction_operation, function(l) {
+          Reduce(l, types_ii) %>%
+            as.numeric() %>%
+            as.character() %>%
+            paste(., collapse = "")
+        }) %>%
+          unname()
 
-      command <- lapply(interaction_operation, function(op) paste("types_i[[",1:interaction_order,"]][[j]]",sep = "",collapse = op))%>%
-        lapply(., function(op) paste0("paste(as.numeric(",op,"),collapse = '')"))%>%
-        unlist()%>%
-        paste(collapse = " , ")%>%
-        paste0("ret[[j]] <- c(",.,")")
+        return(types)
 
-      for(j in 1:n_pairs){
-        eval(parse(text = command))
-      }
+      }) %>%
+        unlist()
 
-      nodal_types[[i]] <- c(nodal_types[[i]],unlist(ret))
+      nodal_types[[i]] <- c(nodal_types[[i]],ret)
     }
 
   }
