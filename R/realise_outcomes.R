@@ -87,11 +87,11 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = FALS
 	# Magic: Work though each endogenous node in sequence and substitute its implied values
 	endogenous_vars <- endogenous_vars[!(endogenous_vars %in% in_dos)]
 
-	data_realizations <- CQBigModel::realise_outcome_c(d = data_realizations,
-	                                                   endogenous_nodes = endogenous_vars,
-	                                                   parents_list = parents_list,
-	                                                   nodal_types_collapsed = nodal_types_collapsed,
-	                                                   nodal_types = nodal_types)
+	data_realizations <- realise_outcome_c(d = data_realizations,
+	                                       endogenous_nodes = endogenous_vars,
+	                                       parents_list = parents_list,
+	                                       nodal_types_collapsed = nodal_types_collapsed,
+	                                       nodal_types = nodal_types)
 
 	# add rownames
 	if(add_rownames){

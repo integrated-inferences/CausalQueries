@@ -33,11 +33,11 @@ Imports:
     latex2exp (>= 0.9.4),
     repr (>= 1.1.4),
     ggplot2 (>= 3.3.5),
-    lifecycle (>= 1.0.1),
-    CQBigModel,
+    lifecycle (>= 1.0.1)
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
+    RcppArmadillo,
     RcppEigen (>= 0.3.3.3.0),
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)

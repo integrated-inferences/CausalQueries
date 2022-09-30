@@ -21,7 +21,7 @@ get_type_prob <- function(model, P = NULL, parameters = NULL) {
         P <- get_parameter_matrix(model)
 
     # Type probabilities
-    CQBigModel::get_type_prob_c(P = as.matrix(P), parameters = parameters)
+    get_type_prob_c(P = as.matrix(P), parameters = parameters)
 }
 
 #' Draw matrix of type probabilities, before or after estimation
@@ -58,7 +58,7 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
         param_dist <- get_param_dist(model, using, n_draws = n_draws)
 
     # Seem to be no speed gains via matrix multiplication instead of apply
-    res <- CQBigModel::get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
+    res <- get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
     rownames(res) <- colnames(P)
     return(res)
 }
