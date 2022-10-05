@@ -314,22 +314,28 @@ print.summary.causal_model <- function(x,  ...){
 }
 
 
-# function to make a parameters_df from nodal types
+#' function to make a parameters_df from nodal types
+#' @param nodal_types a list of nodal types
+#' @keywords internal
+#' @examples
+#'
 #' make_parameters_df(list(X = "1", Y = c("01", "10")))
 
-make_parameters_df <- function(nodal_types)
+make_parameters_df <- function(nodal_types){
+  pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
+                    nodal_type = nodal_types %>% unlist) |>
+    mutate(param_set = node,
+           given = "",
+           priors = 1,
+           param_names = paste0(node, ".", nodal_type)) |>
+    group_by(param_set) |>
+    mutate(param_value = 1/n(), gen =  cur_group_id()) |>
+    ungroup() |>
+    mutate(gen = match(node, names(nodal_types))) |>
+    select(param_names, node, gen, param_set, nodal_type, given, param_value, priors)
 
-  data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
-             nodal_type = nodal_types %>% unlist) |>
-  mutate(param_set = node,
-         given = "",
-         priors = 1,
-         param_names = paste0(node, ".", nodal_type)) |>
-  group_by(param_set) |>
-  mutate(param_value = 1/n(), gen =  cur_group_id()) |>
-  ungroup() |>
-  mutate(gen = match(node, names(nodal_types))) |>
-  select(param_names, node, gen, param_set, nodal_type, given, param_value, priors)
+  return(pdf)
+}
 
 
 #' function to make a parameters_df from nodal types

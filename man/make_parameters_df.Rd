@@ -2,10 +2,18 @@
 % Please edit documentation in R/make_models.R
 \name{make_parameters_df}
 \alias{make_parameters_df}
-\title{make_parameters_df(list(X = "1", Y = c("01", "10")))}
+\title{function to make a parameters_df from nodal types}
 \usage{
 make_parameters_df(nodal_types)
 }
+\arguments{
+\item{nodal_types}{a list of nodal types}
+}
 \description{
+function to make a parameters_df from nodal types
+}
+\examples{
+
 make_parameters_df(list(X = "1", Y = c("01", "10")))
 }
+\keyword{internal}
