@@ -28,6 +28,10 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = FALS
 	  stop("Do actions must be specified when node is not NULL")
 	}
 
+  if(length(model$nodes) == 1){
+    return(get_causal_types(model))
+  }
+
   nodal_types <- get_nodal_types(model, collapse = FALSE)
   nodal_types_collapsed <- get_nodal_types(model, collapse = TRUE)
   parents_list  <- get_parents(model)
