@@ -74,7 +74,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
         rownames(E) <- E$event
     }
 
-    E
+    return(E)
 
 
 }
@@ -133,9 +133,11 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
 
     # Add missing nodes and order correctly
     nodes <- model$nodes
-    if (any(!(nodes %in% names(data))))
-        data[nodes[!(nodes %in% names(data))]] <- NA
-    data <- data[, nodes]
+    if (any(!(nodes %in% names(data)))){
+      data[nodes[!(nodes %in% names(data))]] <- NA
+    }
+
+    data <- as.data.frame(data[, nodes])
 
     if (nrow(data) == 0 | all(is.na(data))) {
         data_events <- minimal_event_data(model)
@@ -197,7 +199,7 @@ drop_empty_families <- function(data_events) {
             data_events <- dplyr::filter(data_events, strategy != j)
         }
     }
-    data_events
+    return(data_events)
 
 }
 
@@ -236,7 +238,7 @@ expand_data <- function(data_events = NULL, model) {
     xx <- unlist(sapply(1:nrow(df), function(i) replicate(df[i, ncol(df)], df[i, vars])))
     out <- data.frame(matrix(xx, ncol = length(vars), byrow = TRUE))
     names(out) <- vars
-    out
+    return(out)
 }
 
 
@@ -256,7 +258,7 @@ data_type_names <- function(model, data) {
     data[data == ""] <- NA
     out <- apply(data, 1, function(j) paste(paste0(vars[!is.na(j)], j[!is.na(j)]), collapse = ""))
     out[out == ""] <- "None"
-    out
+    return(out)
 }
 
 #' All data types
@@ -307,7 +309,7 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
     }
     rownames(df) <- df$event
 
-    df
+    return(df)
 }
 
 #' Creates a compact data frame for case with no data
@@ -320,9 +322,11 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
 #' CausalQueries:::minimal_event_data(model)
 #' }
 
-minimal_event_data <-
-    function(model)
-        simulate_data(model, n = 1) %>% collapse_data(model) %>% mutate(count = 0)
+minimal_event_data <- function(model){
+  simulate_data(model, n = 1) %>%
+    collapse_data(model) %>%
+    mutate(count = 0)
+}
 
 
 #' Creates a data frame for case with no data
@@ -338,6 +342,6 @@ minimal_data <- function(model) {
     vars <- model$nodes
     df <- data.frame(t(rep(NA, length(vars))))
     names(df) <- vars
-    df
+    return(df)
 }
 
