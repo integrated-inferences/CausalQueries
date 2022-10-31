@@ -30,7 +30,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 
     # Get the realizations of the fundamental *possible* data events
     possible_data_types <- unique(data_type_names(model, realise_outcomes(model)))
-    full_data <- filter(all_data, apply(all_data[, -1], 1, function(j) !any(is.na(j)))) %>% filter(event %in%
+    full_data <- filter(all_data, apply(all_data[, -1, drop = FALSE], 1, function(j) !any(is.na(j)))) %>% filter(event %in%
         possible_data_types)
 
     # Make E: Sign matrix used to see if data is *inconsistent* with reduced type
@@ -137,7 +137,7 @@ collapse_data <- function(data, model, drop_NA = TRUE, drop_family = FALSE, summ
       data[nodes[!(nodes %in% names(data))]] <- NA
     }
 
-    data <- as.data.frame(data[, nodes])
+    data <- data[, nodes, drop = FALSE]
 
     if (nrow(data) == 0 | all(is.na(data))) {
         data_events <- minimal_event_data(model)
