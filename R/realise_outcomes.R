@@ -29,7 +29,14 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = FALS
 	}
 
   if(length(model$nodes) == 1){
-    return(get_causal_types(model))
+
+    data_realizations <- get_causal_types(model)
+
+    if(add_rownames){
+      rownames(data_realizations) <- gsub("[[:alpha:]]","",rownames(data_realizations))
+    }
+
+    return(data_realizations)
   }
 
   nodal_types <- get_nodal_types(model, collapse = FALSE)
