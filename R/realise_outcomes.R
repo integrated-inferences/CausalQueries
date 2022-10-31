@@ -21,7 +21,7 @@
 #' model <- make_model("X->M->Y")
 #' realise_outcomes(model, dos = list(M = 1), node = "Y")
 #'}
-realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = FALSE){
+realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){
 
 	# Housekeeping
 	if(!is.null(node) & is.null(dos)){
