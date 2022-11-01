@@ -92,6 +92,14 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
                                 data = data_events,
                                 keep_transformed = keep_transformed*1)
 
+    if(stan_data$n_nodes == 1){
+      stan_data$n_param_each <- as.array(stan_data$n_param_each)
+      stan_data$l_starts <- as.array(stan_data$l_starts)
+      stan_data$l_ends <- as.array(stan_data$l_ends)
+      stan_data$node_starts <- as.array(stan_data$node_starts)
+      stan_data$node_ends <- as.array(stan_data$node_ends)
+    }
+
     # Parmpa goes to 0 for data types that never get to be observed
     if(!is.null(censored_types))
     stan_data$parmap[, censored_types] <- 0
@@ -107,7 +115,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
     if(keep_fit) model$stan_objects$stan_fit <- newfit
 
     model$posterior_distribution <- extract(newfit, pars = "lambdas")$lambdas
-    colnames(model$posterior_distribution) <- get_parameter_names(model)
+        colnames(model$posterior_distribution) <- get_parameter_names(model)
 
     model$stan_objects$type_distribution <- extract(newfit, pars = "prob_of_types")$prob_of_types
         colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
@@ -116,5 +124,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
         colnames(model$stan_objects$w_full) <- rownames(stan_data$E)
 
     model
+
 }
+
 
