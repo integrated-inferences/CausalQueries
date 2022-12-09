@@ -12,6 +12,8 @@ relations using \link{dagitty} syntax. Only directed relations are permitted.
 For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
 \item{add_causal_types}{Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.}
+
+\item{nodal_types}{List of nodal types associated with model nodes}
 }
 \value{
 An object of class \code{causal_model}.

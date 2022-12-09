@@ -13,6 +13,7 @@
 #' relations using \link{dagitty} syntax. Only directed relations are permitted.
 #' For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
 #' @param add_causal_types Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.
+#' @param nodal_types List of nodal types associated with model nodes
 #' @export
 #'
 #' @return An object of class \code{causal_model}.
@@ -316,6 +317,7 @@ print.summary.causal_model <- function(x,  ...){
 
 #' function to make a parameters_df from nodal types
 #' @param nodal_types a list of nodal types
+#' @export
 #' @keywords internal
 #' @examples
 #'
