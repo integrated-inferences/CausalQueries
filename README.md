@@ -1,7 +1,6 @@
 # CausalQueries
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/macartan/CausalQueries/workflows/R-CMD-check/badge.svg)](https://github.com/macartan/CausalQueries/actions)
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)
 [![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<Redirect-URL>)
