@@ -52,15 +52,26 @@ vector<lower=0, upper=1>[n_paths] w_0;
 vector<lower=0, upper=1>[n_data] w;
 vector[n_events] w_full;
 
+// Cases in which a parameter set has only one value need special handling
+// they have no gamma components and sum_gamma needs to be made manually
 for (i in 1:n_param_sets) {
 
-sum_gammas[i] =
-1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
+if (l_starts[i] >= l_ends[i]) {
+  sum_gammas[i] = 1;
+  // syntax here to return unity as a vector
+  lambdas[l_starts[i]] = lambdas_prior[1]/lambdas_prior[1];
+  }
+else if (l_starts[i] < l_ends[i]) {
 
-lambdas[l_starts[i]:l_ends[i]] =
-append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
+  sum_gammas[i] =
+  1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
 
-}
+  lambdas[l_starts[i]:l_ends[i]] =
+  append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
+
+  }
+  }
+
 
 
 // Mapping from parameters to data types

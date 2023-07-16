@@ -227,3 +227,15 @@ testthat::test_that(
 	}
 )
 
+
+testthat::test_that(
+
+  desc = "degenerate nodes",
+
+  code = {
+    model <- make_model("X->Y") |> set_restrictions("X[]==1")
+    updated <- suppressWarnings(update_model(model, iter = 600))
+    expect_true(class(updated) == "causal_model")
+  }
+)
+

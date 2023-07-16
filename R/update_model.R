@@ -100,7 +100,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
       stan_data$node_ends <- as.array(stan_data$node_ends)
     }
 
-    # Parmpa goes to 0 for data types that never get to be observed
+    # Parmap goes to 0 for data types that never get to be observed
     if(!is.null(censored_types))
     stan_data$parmap[, censored_types] <- 0
 
