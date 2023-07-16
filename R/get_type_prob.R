@@ -57,7 +57,6 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
     if (is.null(param_dist))
         param_dist <- get_param_dist(model, using, n_draws = n_draws)
 
-    # Seem to be no speed gains via matrix multiplication instead of apply
     res <- get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
     rownames(res) <- colnames(P)
     return(res)

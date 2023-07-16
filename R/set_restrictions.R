@@ -23,6 +23,7 @@
 #' @param statement  A quoted expressions defining the restriction. If values for some parents are not specified, statements should be surrounded by parentheses, for instance \code{(Y[A = 1] > Y[A=0])} will be interpreted for all combinations of other parents of Y set at possible levels they might take.
 #' @param join_by A string. The logical operator joining expanded types when \code{statement} contains wildcard (\code{.}). Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{'|'}, otherwise it defaults to \code{NULL}. Note that join_by joins within statements, not across statements.
 #' @param labels A list of character vectors specifying nodal types to be kept or removed from the model. Use \code{get_nodal_types} to see syntax. Note that \code{labels} gets overwritten by \code{statement} if \code{statement} is not NULL.
+#' @param param_names A character vector of names of parameters to restrict on.
 #' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
 #' @param wildcard Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.
@@ -119,10 +120,10 @@ set_restrictions <- function(model,
                              statement = NULL,
                              join_by = "|",
                              labels = NULL,
+                             param_names = NULL,
                              given = NULL,
                              keep = FALSE,
-                             wildcard = FALSE,
-                             param_names = NULL) {
+                             wildcard = FALSE) {
 
   is_a_model(model)
 

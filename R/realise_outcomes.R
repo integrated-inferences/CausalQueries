@@ -24,9 +24,9 @@
 realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){
 
 	# Housekeeping
-	if(!is.null(node) & is.null(dos)){
-	  stop("Do actions must be specified when node is not NULL")
-	}
+  if(!is.null(node) & is.null(dos)) {
+    stop("Do actions must be specified when node is not NULL")
+  }
 
   if(length(model$nodes) == 1){
 
@@ -59,7 +59,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 		}
 
 		nodal_type_var <- nodal_types[[node]]
-		dos_rep <- as.character(sapply(parents, function(p) rep(dos[p], nrow(nodal_type_var))))
+		dos_rep <- sapply(parents, function(p) as.character(rep(dos[p], nrow(nodal_type_var))))
 
 		data_realizations <- data.frame(dos_rep, rownames(nodal_type_var), stringsAsFactors = FALSE)
 		names(data_realizations) <- c(parents, node)
@@ -98,7 +98,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 	# Magic: Work though each endogenous node in sequence and substitute its implied values
 	endogenous_vars <- endogenous_vars[!(endogenous_vars %in% in_dos)]
 
-	data_realizations <- realise_outcome_c(d = data_realizations,
+	data_realizations <- CausalQueries:::realise_outcome_c(d = data_realizations,
 	                                       endogenous_nodes = endogenous_vars,
 	                                       parents_list = parents_list,
 	                                       nodal_types_collapsed = nodal_types_collapsed,

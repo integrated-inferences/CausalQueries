@@ -13,6 +13,7 @@
 #' relations using \link{dagitty} syntax. Only directed relations are permitted.
 #' For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
 #' @param add_causal_types Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.
+#' @param nodal_types List of nodal types associated with model nodes
 #' @export
 #'
 #' @return An object of class \code{causal_model}.
@@ -316,6 +317,7 @@ print.summary.causal_model <- function(x,  ...){
 
 #' function to make a parameters_df from nodal types
 #' @param nodal_types a list of nodal types
+#' @export
 #' @keywords internal
 #' @examples
 #'
@@ -338,105 +340,4 @@ make_parameters_df <- function(nodal_types){
 }
 
 
-#' function to make a parameters_df from nodal types
-#' @param n number of parents node to construct nodal types for
-#' @return a vector of nodal types
-#' @export
-
-simple_nodes <- function(n = 5) {
-  N <- 2 ^ n
-  s <- 0:(N - 1)
-  nt <- ((sapply(0:n, function(j)
-    ((
-      s / 2 ^ (j - 1)
-    ) %% 2) >= 1))) |>
-    data.frame() |>
-    mutate(all = 1)
-
-  nt |> apply(2, paste0, collapse = "")
-}
-
-
-#' function to generate nodal types for interactions
-#' @param nodal_types a named list of nodal types
-#' @param nodes a character vector specifying the names of nodes to generate interactions for. Defaults to all nodes
-#' @param interaction_order an integer specifying the type of interaction. Defaults to two-way interaction
-#' @param interaction_operation the logical operations to apply to construct interactions. Defaults to AND and OR operation for standard interactions.
-#' @return a named list of previous and interaction nodal types for all nodes
-#' @export
-
-interacted_nodes <- function(nodal_types, nodes = NULL, interaction_order = 2L, interaction_operation = c("&","|")){
-
-  if(is.null(names(nodal_types))){
-    stop("nodal_types should be a named list")
-  }
-
-  if(!is.numeric(interaction_order)){
-    stop("interaction order should be numeric")
-  }
-
-  if(!is.character(interaction_operation)){
-    stop("interaction_operation should be of type character")
-  }
-
-  if(any(!unique(unlist(strsplit(interaction_operation,""))) %in% c("&","|","!"))){
-    stop("interaction operations should only be composed of '!','|' or '&'")
-  }
-
-  if(!is.null(nodes)){
-
-    if(!is.character(nodes)){
-      stop("nodes should be of type character")
-    }
-
-    wrong_nodes <- !(nodes %in% names(nodal_types))
-
-    if(any(wrong_nodes)){
-      stop(
-        paste(paste(nodes[wrong_nodes],collapse = ", "),
-              "not in specified nodal_types",sep = " ")
-      )
-    }
-  }
-
-  if(is.null(nodes)){
-    nodes <- names(nodal_types)
-  }
-
-  node_id <- match(nodes, names(nodal_types))
-
-  for(i in node_id){
-
-    types_i <- nodal_types[[i]][c(-1,-length(nodal_types[[i]]))]
-
-    types_i <- try(combn(types_i,interaction_order), silent = TRUE)
-
-    if(!is(types_i,"try-error")){
-
-      ret <- lapply(1:ncol(types_i), function(j) {
-        types_ii <- strsplit(types_i[, j], "") %>%
-          lapply(., function(k)
-            as.logical(as.numeric(k)))
-
-        types <- sapply(interaction_operation, function(l) {
-          Reduce(l, types_ii) %>%
-            as.numeric() %>%
-            as.character() %>%
-            paste(., collapse = "")
-        }) %>%
-          unname()
-
-        return(types)
-
-      }) %>%
-        unlist()
-
-      nodal_types[[i]] <- c(nodal_types[[i]],ret)
-    }
-
-  }
-
-  return(nodal_types)
-
-}
 

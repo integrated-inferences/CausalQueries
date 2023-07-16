@@ -9,5 +9,9 @@
 #' @importFrom utils globalVariables
 #' @useDynLib CausalQueries, .registration = TRUE
 
-globalVariables(names = c("posterior", "prob", "restrict", "n", "model", "data", "%>%", "node", "nodal_type",
-    "param_set", "event", "count", "strategy",  "distinct", "e", "v", "w"))
+globalVariables(names = c("posterior", "prob", "restrict", "n", "model", "data",
+                          "%>%", "node", "nodal_type","param_set", "event",
+                          "count", "strategy",  "distinct", "e", "v", "w",
+                          "gen","children","given","param_value","priors",
+                          "g"
+    ))
