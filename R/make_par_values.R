@@ -246,7 +246,8 @@ make_par_values <- function(model,
   }
 
   if(!exists("command")){
-    message("no specific parameters to alter values for specified. Altering all parameters.")
+    if(!is.na(distribution))
+       message("no specific parameters to alter values for specified. Altering all parameters.")
     to_alter <- rep(TRUE, length(y))
   } else {
     to_alter <- with(model$parameters_df, eval(parse(text = command)))

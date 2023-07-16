@@ -95,7 +95,7 @@ make_priors <- function(model,
                         param_names = NA){
 
     if(all(!is.na(c(nodal_type, label)))){
-        stop("cannot define both nodeal_type and label simultaniously")
+        stop("cannot define both nodal_type and label simultaniously")
     }
 
     if(!is.na(label)){
