@@ -96,6 +96,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 	}
 
 	# Magic: Work though each endogenous node in sequence and substitute its implied values
+  # Call c++ function from src
 	endogenous_vars <- endogenous_vars[!(endogenous_vars %in% in_dos)]
 
 	data_realizations <- CausalQueries:::realise_outcome_c(d = data_realizations,

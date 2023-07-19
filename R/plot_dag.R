@@ -19,19 +19,16 @@
 #' @import ggplot2
 #' @importFrom graphics plot
 #' @importFrom dagitty dagitty
-#' @importFrom repr repr_text
 #' @importFrom stringr str_split
 #' @importFrom latex2exp TeX
 #'
 #' @examples
 #'
 #' \dontrun{
-#' make_model('X -> K -> Y; X <-> Y') %>%
-#'   CausalQueries:::plot_dag()
-#' make_model('X -> K -> Y') %>%
-#'   set_confound('X <-> Y') %>%
-#'   CausalQueries:::plot_dag()
-#' CausalQueries:::plot_dag(model, x_coord = 1:3, y_coord = 1:3)
+#' model <- make_model('X -> K -> Y; X <-> Y')
+#'
+#' model |> CausalQueries:::plot_dag()
+#' model |> CausalQueries:::plot_dag(x_coord = 1:3, y_coord = 1:3, title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
 
@@ -87,7 +84,7 @@ plot_dag <- function(model = NULL,
         ggplot(aes(x=x,y=y,xend=xend,yend=yend)) +
         geom_dag_point(colour=nodecol,shape=shape,
                        size=nodesize) +theme_dag() +
-        labs(title = latex2exp::TeX(repr::repr_text(title) %>% stringr::str_remove_all('\\"'))) +
+        labs(title = latex2exp::TeX(title)) +
         geom_dag_text(aes_string(label = 'name'),
                       show.legend = FALSE,
                       parse = TRUE,
