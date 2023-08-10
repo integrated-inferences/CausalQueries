@@ -23,6 +23,13 @@ the case level causal type."><!-- mathjax --><script src="https://cdnjs.cloudfla
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -89,16 +96,16 @@ the case level causal type.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node    gen param_set nodal_type given param_value priors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>          0.220      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>          0.780      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>          0.451      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>          0.148      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>          0.102      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>          0.300      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>          0.189      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>          0.144      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>          0.322      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>          0.345      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>         0.832       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>         0.168       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>         0.675       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>         0.196       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>         0.059<span style="text-decoration: underline;">1</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>         0.070<span style="text-decoration: underline;">4</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>         0.375       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>         0.056<span style="text-decoration: underline;">7</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>         0.075<span style="text-decoration: underline;">4</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>         0.493       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: causal_type &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Draw type given specified parameters</span></span></span>
@@ -124,7 +131,7 @@ the case level causal type.</p>
 <span class="r-in"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">%&gt;%</span> <span class="fu">draw_causal_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_data.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, parameters <span class="op">=</span> <span class="va">type</span><span class="op">$</span><span class="va">causal_type</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

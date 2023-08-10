@@ -21,6 +21,13 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -73,11 +80,11 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_param_dist</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span>, using <span class="op">=</span> <span class="st">'priors'</span>, n_draws <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Prior distribution added to model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            X.0       X.1      Y.00       Y.10       Y.01       Y.11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.6058168 0.3941832 0.3064228 0.33246017 0.27828086 0.08283619</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.8214438 0.1785562 0.2245067 0.03144111 0.39330823 0.35074395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.7068565 0.2931435 0.4107094 0.28883676 0.27846019 0.02199362</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.8251174 0.1748826 0.2218648 0.43232375 0.00249824 0.34331319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            X.0         X.1       Y.00       Y.10       Y.01       Y.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.9041764 0.095823593 0.20880451 0.43453442 0.01875343 0.33790764</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.3714022 0.628597806 0.43856544 0.07459751 0.23724007 0.24959698</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.4535682 0.546431803 0.08925218 0.11989902 0.21898265 0.57186616</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.9978999 0.002100075 0.66586078 0.15122126 0.15526631 0.02765164</span>
 <span class="r-in"><span><span class="fu">get_param_dist</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span>, using <span class="op">=</span> <span class="st">'parameters'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  X.0  X.1 Y.00 Y.10 Y.01 Y.11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.50 0.50 0.25 0.25 0.25 0.25 </span>

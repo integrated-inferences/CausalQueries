@@ -38,6 +38,13 @@
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="articles/getting-started.html">Getting started</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
@@ -59,7 +66,10 @@
 <!-- badges: start -->
 
 <p><code>CausalQueries</code> is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of <code>dagitty</code> functionality. Updating is implemented in <code>stan</code>.</p>
-<p>See <a href="https://macartan.github.io/causalmodels/" class="external-link">here</a> for a guide to using <code>CausalQueries</code> along with many examples of causal models</p>
+<ul>
+<li><p>See vignettes for a guide to getting started.</p></li>
+<li><p>See <a href="https://macartan.github.io/causalmodels/" class="external-link">here</a> for a guide to using <code>CausalQueries</code> along with many examples of causal models</p></li>
+</ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -74,9 +84,9 @@
 </h2>
 <p>Causal models are defined by:</p>
 <ul>
-<li>A <strong>directed acyclic graph</strong> (DAG), which provides the set of (binary) variables, a causal ordering between them, and a set of assumptions regarding conditional independence. If there is no arrow from A to B then a change in A never induces a change in B.</li>
+<li>A <strong>directed acyclic graph</strong> (DAG), which provides the set of variables, a causal ordering between them, and a set of assumptions regarding conditional independence. If there is no arrow from <code>A</code> to <code>B</code> then a change in <code>A</code> never induces a change in <code>B</code>.</li>
 <li>
-<strong>Functional forms</strong>. In this binary world we do not need functional forms in the usual sense. The DAG implies a set of “causal types.” Units are classed together as of the same causal type if they respond to the same way to other variables. For instance, a type might be the set of units for which <code>X=1</code> and for which <code>Y=1</code> if and only if <code>X=1</code>. The set of causal types grows rapidly with the number of nodes and the number of nodes pointing into any given node. In this setting imposing functional forms is the same as placing <em>restrictions on causal types</em>: such restrictions reduce complexity but require substantive assumptions. An example of a restriction might be “<code>Y</code> is monotonic in <code>X</code>.”</li>
+<strong>Functional forms</strong>. Functional forms describe the causal relationships between nodes. You often have to make strong assumptions when you specify a functional form; fortunately however if variables are categorical we do not need functional forms in the usual sense. The DAG implies a set of “causal types.” Units can be classed together as of the same causal type if they respond to the same way to other variables. For instance, a type might be the set of units for which <code>X=1</code> and for which <code>Y=1</code> if and only if <code>X=1</code>. The set of causal types grows rapidly with the number of nodes and the number of nodes pointing into any given node. In this setting imposing functional forms is the same as placing <em>restrictions on causal types</em>: such restrictions reduce complexity but require substantive assumptions. An example of a restriction might be “<code>Y</code> is monotonic in <code>X</code>.”</li>
 <li>
 <strong>Priors.</strong> In the standard case, the DAG plus any restrictions imply a set of parameters that combine to form causal types. These are the parameters we want to learn about. To learn about them we first provide priors over the parameters. With priors specified the causal model is complete (it is a “probabilistic causal model”) and we are ready for inference.</li>
 </ul>
@@ -91,33 +101,8 @@
 <p>Our goal is to form beliefs over parameters but also over more substantive estimands:</p>
 <ul>
 <li><p>With a causal model in hand and data available about some or all of the nodes, it is possible to make use of a generic <code>stan</code> model that generates posteriors over the parameter vector.</p></li>
-<li><p>Given updated (or prior) beliefs about parameters it is possible to calculate causal estimands of inference from a causal model. For example “What is the probably that <code>X</code> was the cause of <code>Y</code> given <code>X=1</code>, <code>Y=1</code> and <code>Z=1</code>.”</p></li>
+<li><p>Given updated (or prior) beliefs about parameters it is possible to calculate causal estimands of inference from a causal model. For example “What is the probability that <code>X</code> was the cause of <code>Y</code> given <code>X=1</code>, <code>Y=1</code> and <code>Z=1</code>.”</p></li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h2>
-<p>Here is an example of a model in which <code>X</code> causes <code>M</code> and <code>M</code> causes <code>Y</code>. There is, in addition, unobservable confounding between <code>X</code> and <code>Y</code>. This is an example of a model in which you might use information on <code>M</code> to figure out whether <code>X</code> caused <code>Y</code>.</p>
-<p>The DAG is defined using <code>dagitty</code> syntax like this:</p>
-<pre><code><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y"</span><span class="op">)</span></span></code></pre>
-<p>To add the confounding we have to allow an additional parameter that allows a possibly different assignment probability for <code>X</code> given a causal type for <code>Y</code>.</p>
-<pre><code><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/set_confound.html">set_confound</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">"Y[X=1] == 1"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
-<p>We then set priors thus:</p>
-<pre><code><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prior_setting.html">set_priors</a></span><span class="op">(</span><span class="va">model</span>, distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span></code></pre>
-<p>You can plot the dag, making use of functions in the <code>dagitty</code> package.</p>
-<p><code>{r} plot(model)</code></p>
-<p>You can draw data from the model, like this:</p>
-<pre><code><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_data.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre>
-<p>Updating is done like this:</p>
-<pre><code><span><span class="va">updated_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">)</span></span></code></pre>
-<p>Finally you can calculate an estimand of interest like this:</p>
-<pre><code><span><span class="va">CoE</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/query_distribution.html">query_distribution</a></span><span class="op">(</span></span>
-<span>                   model <span class="op">=</span> <span class="va">updated_model</span>, </span>
-<span>                   using <span class="op">=</span> <span class="st">"posteriors"</span>,</span>
-<span>                   query <span class="op">=</span> <span class="st">"Y[X=0] == 0"</span>,</span>
-<span>                   subset <span class="op">=</span> <span class="st">"X==1 &amp; Y==1"</span></span>
-<span>                   <span class="op">)</span></span></code></pre>
-<p>This uses the posterior distribution and the model to assess the “causes of effects” estimand: the probability that <code>X=1</code> was the cause of <code>Y=1</code> in those cases in which <code>X=1</code> and <code>Y=1</code>. The approach is to imagine a set of “do” operations on the model, that control the level of <code>X</code> and to inquire about the level of <code>Y</code> given these operations, and then to assess how likely is is that <code>Y</code> would be 0 if <code>X</code> were fixed at 0 within a set that naturally take on particular values of <code>X</code> and <code>Y</code>. By the same token this posterior can be calculated conditional on observations of <code>M</code>, allowing an assessment of how data on mediators alters inference about the causes of effects.</p>
 </div>
 <div class="section level2">
 <h2 id="credits-etc">Credits etc<a class="anchor" aria-label="anchor" href="#credits-etc"></a>

@@ -21,6 +21,13 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -74,12 +81,12 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y'</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">make_prior_distribution</span><span class="op">(</span>n_draws <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            X.0        X.1       Y.00       Y.10       Y.01       Y.11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.3736244 0.62637562 0.16465480 0.39996733 0.08911577 0.34626209</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.5203217 0.47967829 0.18923972 0.21673865 0.09929946 0.49472216</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.6649770 0.33502295 0.21469711 0.57909531 0.04912821 0.15707937</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.3722936 0.62770638 0.46764106 0.08338932 0.31585577 0.13311386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.9025386 0.09746137 0.02440183 0.30710006 0.63098277 0.03751534</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            X.0       X.1      Y.00       Y.10       Y.01      Y.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.7015890 0.2984110 0.0330107 0.08816921 0.21763966 0.6611804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.7875378 0.2124622 0.1832942 0.06319877 0.55107438 0.2024327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.8366797 0.1633203 0.4373604 0.11220818 0.24120257 0.2092288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.4990508 0.5009492 0.1845242 0.42668006 0.21047197 0.1783237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.6913871 0.3086129 0.1922845 0.56297699 0.02397312 0.2207654</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

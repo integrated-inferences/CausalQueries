@@ -1,6 +1,8 @@
 pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2023-08-09T21:41Z
+articles:
+  front-door: front-door.html
+  getting-started: getting-started.html
+last_built: 2023-08-10T22:53Z
 

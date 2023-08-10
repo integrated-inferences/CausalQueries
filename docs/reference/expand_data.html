@@ -21,6 +21,13 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -72,11 +79,11 @@
 <span class="r-in"><span><span class="fu"><a href="make_events.html">make_events</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span>  <span class="fu">expand_data</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X M Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0 1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1 0 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 1 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1 1 1</span>
 <span class="r-in"><span><span class="fu"><a href="make_events.html">make_events</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span>  <span class="fu">expand_data</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    X  M  Y</span>

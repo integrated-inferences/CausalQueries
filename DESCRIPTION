@@ -51,3 +51,4 @@ Remotes:
     till-tietz/CQBigModel
 SystemRequirements: GNU make
 Biarch: true
+VignetteBuilder: knitr
