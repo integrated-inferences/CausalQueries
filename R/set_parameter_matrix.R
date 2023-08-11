@@ -60,16 +60,12 @@ get_parameter_matrix <- function(model) {
 #' model <- set_parameter_matrix(model, P = P)
 set_parameter_matrix <- function(model, P = NULL) {
 
-    if (!is.null(model$P)) {
-        message("Parameter matrix already contained in model; no action taken")
-        return(model)
-    }
+  if(is.null(P)) {
+    P <- make_parameter_matrix(model)
+  }
+  model$P <- P
 
-    if (is.null(P))
-        P <- make_parameter_matrix(model)
-    model$P <- P
-
-    model
+  return(model)
 }
 
 
