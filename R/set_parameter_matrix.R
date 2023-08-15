@@ -60,10 +60,13 @@ get_parameter_matrix <- function(model) {
 #' model <- set_parameter_matrix(model, P = P)
 set_parameter_matrix <- function(model, P = NULL) {
 
-  if(is.null(P)) {
-    P <- make_parameter_matrix(model)
+  if(is.null(P) & is.null(model$P)) {
+    model$P <- make_parameter_matrix(model)
   }
-  model$P <- P
+
+  if(!is.null(P)) {
+    model$P <- P
+  }
 
   return(model)
 }
