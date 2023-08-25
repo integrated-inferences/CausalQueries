@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
 
 ```{r setup, message = FALSE, warning = FALSE}
 library(CausalQueries)
-library(knitr)
 library(fabricatr)
+library(knitr)
 ```
 
 # Make a model

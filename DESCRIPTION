@@ -1,13 +1,13 @@
 Package: CausalQueries
 Type: Package
 Title: Make, Update, and Query Binary Causal Models
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("ctb")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("ctb")),
              person("Macartan", "Humphreys", email = "mh2245@columbia.edu", role = c("aut")),
              person("Till", "Tietz", email = "ttietz2014@gmail.com", role = c("aut","cre")),
              person("Alan", "Jacobs", email = "alan.jacobs@ubc.ca", role = c("aut")),
-	         person("Merlin", "Heidemanns", email = "mnh2123@columbia.edu ", role = c("ctb")),
+	           person("Merlin", "Heidemanns", email = "mnh2123@columbia.edu ", role = c("ctb")),
              person("Lily", "Medina", email = "lilymiru@gmail.com", role = c("aut")),
              person("Julio", "Solis", email = "juliosolisar@gmail.com", role = c("ctb")),
              person("Georgiy", "Syunyaev", email = "gs2716@columbia.edu", role = c("ctb")))
@@ -31,7 +31,6 @@ Imports:
     stringr (>= 1.4.0),
     ggdag (>= 0.2.4),
     latex2exp (>= 0.9.4),
-    repr (>= 1.1.4),
     ggplot2 (>= 3.3.5),
     lifecycle (>= 1.0.1)
 LinkingTo: 

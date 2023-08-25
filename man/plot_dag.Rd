@@ -31,9 +31,9 @@ plot_dag(
 
 \item{shape}{Indicates shape of node. Defaults to circular node.}
 
-\item{nodesize}{Size of node.}
+\item{nodecol}{String indicating color of node that is accepted by ggplot's default palette}
 
-\item{nodelcol}{String indicating color of node that is accepted by ggplot's default palette}
+\item{nodesize}{Size of node.}
 }
 \value{
 A DAG plot in ggplot style.
@@ -44,12 +44,15 @@ If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then
 \examples{
 
 \dontrun{
-make_model('X -> K -> Y; X <-> Y') \%>\%
+model <- make_model('X -> K -> Y; X <-> Y')
+
+model |>
   CausalQueries:::plot_dag()
-make_model('X -> K -> Y') \%>\%
-  set_confound('X <-> Y') \%>\%
-  CausalQueries:::plot_dag()
-CausalQueries:::plot_dag(model, x_coord = 1:3, y_coord = 1:3)
+model |>
+  CausalQueries:::plot_dag(
+    x_coord = 1:3,
+    y_coord = 1:3,
+    title = "Mixed text and math: $\\\\alpha^2 + \\\\Gamma$")
 }
 
 }

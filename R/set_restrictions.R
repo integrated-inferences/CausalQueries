@@ -210,7 +210,7 @@ set_restrictions <- function(model,
 
   # 2 Labels
   if (!is.null(labels))
-    drop_params <- CausalQueries:::restrict_by_labels(
+    drop_params <- restrict_by_labels(
       model,
       labels = labels,
       keep = keep,
@@ -262,7 +262,7 @@ set_restrictions <- function(model,
   # update parameters df
   model$parameters_df <-
     model$parameters_df[model$parameters_df$param_names %in% rownames(model$P), ] |>
-    CausalQueries:::clean_params(warning = FALSE)
+    clean_params(warning = FALSE)
 
   # update causal types
   model$causal_types <- model$causal_types[names(keep_ct)[keep_ct==1], ]

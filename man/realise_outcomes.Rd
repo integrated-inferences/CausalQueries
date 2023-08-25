@@ -13,7 +13,7 @@ realise_outcomes(model, dos = NULL, node = NULL, add_rownames = TRUE)
 
 \item{node}{A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.}
 
-\item{add_rownames}{logical indicating whether to add causal types as rownmaes to the ouput}
+\item{add_rownames}{logical indicating whether to add causal types as rownames to the output}
 }
 \value{
 A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .

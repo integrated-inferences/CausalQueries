@@ -210,9 +210,7 @@ set_parameters <- function(model, parameters = NULL, param_type = NULL, warning 
 
     if(!is.null(parameters)){
       parameters <- make_parameters(model, parameters = parameters, param_type = "define", ...)
-    }
-
-    if(is.null(parameters)){
+    } else {
       parameters <- make_parameters(model, param_type = param_type, ...)
     }
 

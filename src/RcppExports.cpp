@@ -36,18 +36,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// realise_outcome_c
-DataFrame realise_outcome_c(DataFrame d, std::vector<std::string> endogenous_nodes, List parents_list, List nodal_types_collapsed, List nodal_types);
-RcppExport SEXP _CausalQueries_realise_outcome_c(SEXP dSEXP, SEXP endogenous_nodesSEXP, SEXP parents_listSEXP, SEXP nodal_types_collapsedSEXP, SEXP nodal_typesSEXP) {
+// realise_outcomes_c
+std::vector<std::vector<std::string>> realise_outcomes_c(std::vector<std::vector<std::string>>& real, const std::vector<std::vector<int>>& parents_list, const std::vector<int>& endogenous_vars, const int& n_types);
+RcppExport SEXP _CausalQueries_realise_outcomes_c(SEXP realSEXP, SEXP parents_listSEXP, SEXP endogenous_varsSEXP, SEXP n_typesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type d(dSEXP);
-    Rcpp::traits::input_parameter< std::vector<std::string> >::type endogenous_nodes(endogenous_nodesSEXP);
-    Rcpp::traits::input_parameter< List >::type parents_list(parents_listSEXP);
-    Rcpp::traits::input_parameter< List >::type nodal_types_collapsed(nodal_types_collapsedSEXP);
-    Rcpp::traits::input_parameter< List >::type nodal_types(nodal_typesSEXP);
-    rcpp_result_gen = Rcpp::wrap(realise_outcome_c(d, endogenous_nodes, parents_list, nodal_types_collapsed, nodal_types));
+    Rcpp::traits::input_parameter< std::vector<std::vector<std::string>>& >::type real(realSEXP);
+    Rcpp::traits::input_parameter< const std::vector<std::vector<int>>& >::type parents_list(parents_listSEXP);
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type endogenous_vars(endogenous_varsSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n_types(n_typesSEXP);
+    rcpp_result_gen = Rcpp::wrap(realise_outcomes_c(real, parents_list, endogenous_vars, n_types));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -57,7 +56,7 @@ RcppExport SEXP _rcpp_module_boot_stan_fit4simplexes_mod();
 static const R_CallMethodDef CallEntries[] = {
     {"_CausalQueries_get_type_prob_c", (DL_FUNC) &_CausalQueries_get_type_prob_c, 2},
     {"_CausalQueries_get_type_prob_multiple_c", (DL_FUNC) &_CausalQueries_get_type_prob_multiple_c, 2},
-    {"_CausalQueries_realise_outcome_c", (DL_FUNC) &_CausalQueries_realise_outcome_c, 5},
+    {"_CausalQueries_realise_outcomes_c", (DL_FUNC) &_CausalQueries_realise_outcomes_c, 4},
     {"_rcpp_module_boot_stan_fit4simplexes_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4simplexes_mod, 0},
     {NULL, NULL, 0}
 };
