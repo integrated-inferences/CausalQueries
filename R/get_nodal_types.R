@@ -70,7 +70,7 @@ uncollapse_nodal_types <- function(nodal_types) {
     # Add row names
     rownames(x[[j]]) <- apply(x[[j]], 1, paste, collapse ="")
     # Add col names
-    colnames(x[[j]]) <- CausalQueries:::perm(rep(1, log(ncol(x[[j]]),2))) %>%
+    colnames(x[[j]]) <- perm(rep(1, log(ncol(x[[j]]),2))) %>%
       apply(1, paste, collapse = "")
     }
 
@@ -156,7 +156,7 @@ collapse_nodal_types <- function(nodal_types, include_node_names = FALSE) {
 #' CausalQueries:::type_matrix(2)
 #' }
 type_matrix <- function(parent_n) {
-    type_mat <- CausalQueries:::perm(rep(1, 2^parent_n))
+    type_mat <- perm(rep(1, 2^parent_n))
     if (parent_n == 0) {
         labels <- NULL
     } else {
