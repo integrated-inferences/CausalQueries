@@ -1,4 +1,12 @@
-This is a patch release fixing flagged documentation issues and a minor bug. 
+This is a resubmit of a patch release fixing documentation issues and a bug in `realise_outcomes()`. 
+
+**Invalid URI issue is resolved:**
+
+   Found the following (possibly) invalid file URI:  
+     URI: Redirect-URL  
+       From: README.md  
+
+This "Redirect-URL" is not an URL.
 
 ## Test environments
 
