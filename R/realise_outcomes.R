@@ -12,14 +12,18 @@
 #' @export
 #' @examples
 #' \donttest{
-#' model <- make_model("X -> Y")
-#' realise_outcomes(model)
+#' make_model("X -> Y") |>
+#'   realise_outcomes()
 #'
-#' model <- make_model("X1->Y;X2->M;M->Y")
-#' realise_outcomes(model, dos = list(X1 = 1, M = 0))
+#'make_model("X -> Y <- W") |>
+#' set_restrictions(labels = list(X = "1", Y="0010"), keep = TRUE) |>
+#'  realise_outcomes()
 #'
-#' model <- make_model("X->M->Y")
-#' realise_outcomes(model, dos = list(M = 1), node = "Y")
+#' make_model("X1->Y; X2->M; M->Y") |>
+#' realise_outcomes(dos = list(X1 = 1, M = 0))
+#'
+#' make_model("X->M->Y") |>
+#' realise_outcomes(dos = list(M = 1), node = "Y")
 #'}
 
 realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){

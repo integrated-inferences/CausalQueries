@@ -272,6 +272,7 @@ set_restrictions <- function(model,
     lapply(model$nodes, function(i)
       unique(model$parameters_df[model$parameters_df$node == i, ]$nodal_type))
   names(model$nodal_types) <- model$nodes
+  attr(model$nodal_types, "interpret") <- interpret_type(model)
 
 
   # Keep restricted types as attributes

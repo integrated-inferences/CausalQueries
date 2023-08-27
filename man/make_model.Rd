@@ -58,7 +58,7 @@ model$parameters_df
 # A single node graph is also possible
 model <- make_model("X")
 
-# Unconnected nodes cannot
+# Unconnected nodes not allowed
 \dontrun{
  model <- make_model("X <-> Y")
 }

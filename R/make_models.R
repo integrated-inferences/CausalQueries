@@ -47,7 +47,7 @@
 #' # A single node graph is also possible
 #' model <- make_model("X")
 #'
-#' # Unconnected nodes cannot
+#' # Unconnected nodes not allowed
 #' \dontrun{
 #'  model <- make_model("X <-> Y")
 #' }
@@ -193,11 +193,14 @@ make_model <-
     if (is.null(nodal_types))
       nodal_types <- get_nodal_types(model, collapse = TRUE)
 
+
+    # Add nodal types to model
     model$nodal_types <- nodal_types
 
     # Add nodal type interpretation
     if (is.null(attr(nodal_types, "interpret")))
-      attr(nodal_types, "interpret") <- interpret_type(model)
+      attr(model$nodal_types, "interpret") <- interpret_type(model)
+
 
     # Parameters dataframe
     if (!is.logical(nodal_types))
@@ -209,7 +212,6 @@ make_model <-
     # Add causal types
     if (add_causal_types)
       model$causal_types <- update_causal_types(model)
-
 
 
     # Add confounds if any provided
@@ -278,7 +280,7 @@ print.summary.causal_model <- function(x,  ...){
 
 			cat(paste0(nt[1:stop_at], collapse = "  ") )
 
-			if(stop_at != length(nt)) cat(paste0(length(nt) - 16, " nodal types omitted"))
+			if(stop_at != length(nt)) cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
 			cat("\n\n")
 			print(interpret)
 			cat("\n")
