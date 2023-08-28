@@ -10,3 +10,5 @@ cran-comments.md
 ^pkgdown$
 ^doc$
 ^Meta$
+^CRAN-SUBMISSION$
+

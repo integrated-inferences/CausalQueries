@@ -3,7 +3,6 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)
-[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<Redirect-URL>)
 <!-- badges: end -->
 
 
@@ -26,8 +25,8 @@ install.packages("CausalQueries")
 To install the latest development release :
 
 ```
-install.packages("remotes")
-remotes::install_github("macartan/CausalQueries")
+install.packages("devtools")
+devtools::install_github("integrated-inferences/CausalQueries")
 ```
 
 ## Causal models
@@ -53,4 +52,4 @@ Our goal is to form beliefs over parameters but also over more substantive estim
 
 ## Credits etc
 
-The approach used in `CausalQueries` is a generalization of the `biqq` models described in "Mixing Methods: A Bayesian Approach" (Humphreys and Jacobs, 2015,  https://doi.org/10.1017/S0003055415000453). The conceptual extension makes use of work on probabilistic causal models described in Pearl's *Causality* (Pearl, 2009,  https://doi.org/10.1017/CBO9780511803161). The approach to generating a generic `stan` function that can take data from arbitrary models was developed in key contributions by Jasper Cooper (http://jasper-cooper.com/) and Georgiy Syunyaev (http://gsyunyaev.com/).  Lily Medina (https://lilymedina.github.io/) did the magical work of pulling it all together and developing approaches to characterizing confounding and defining estimands. Julio Solis has done wonders to simplify the specification of priors.    
+The approach used in `CausalQueries` is a generalization of the `biqq` models described in ["Mixing Methods: A Bayesian Approach"](https://www.cambridge.org/core/journals/american-political-science-review/article/abs/mixing-methods-a-bayesian-approach/BB1DFC2FDA3D7F2224F3341042FEA5F4) (Humphreys and Jacobs, 2015). The conceptual extension makes use of work on probabilistic causal models described in Pearl's [*Causality*](https://www.cambridge.org/core/books/causality/B0046844FAE10CBF274D4ACBDAEB5F5B) (Pearl, 2009). The approach to generating a generic `stan` function that can take data from arbitrary models was developed in key contributions by [Jasper Cooper](https://www.linkedin.com/in/jasper-jack-cooper/) and [Georgiy Syunyaev]( https://gsyunyaev.com/). [Lily Medina](https://lilymedina.github.io/) did the magical work of pulling it all together and developing approaches to characterizing confounding and defining estimands. Julio Solis has done wonders to simplify the specification of priors.    
