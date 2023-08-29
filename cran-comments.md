@@ -2,7 +2,7 @@ This is a resubmit of a patch release fixing documentation issues and a bug in `
 
 ## Fixed Issues
 
-Following issue has been fixed: 
+Following issues have been fixed: 
 
 ```
  --run-donttest  
@@ -25,6 +25,22 @@ colnames<-
 
 * setting `init_r` to values < 2 in `update_model` resolves the issue locally 
 * moved the examples to dontrun for this resubmit as they are not critical to the function
+
+```
+Possibly misspelled words in DESCRIPTION:
+  estimands (14:123)
+```
+
+* estimands is the correct spelling 
+
+```
+* checking Rd line widths ... NOTE
+Rd file 'update_model.Rd':
+  \examples lines wider than 100 characters:
+       update_model(data.frame(X=c(1,1), Y=c(1,1)), censored_types = c("X1Y0", "X0Y0", "X0Y1"), init_r = 1) %>%
+```
+
+* linewidth has been adjusted 
 
 ## Test environments
 
