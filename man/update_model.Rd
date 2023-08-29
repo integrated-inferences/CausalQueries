@@ -54,19 +54,23 @@ model_2 <- update_model(model, data_long, keep_transformed = FALSE)
 model_3 <- update_model(model, data_short)
 model_4 <- update_model(model, data_short, data_type = 'compact')
 
-# It is possible to implement updating without data, in which case the posterior
-# is a stan object that reflects the prior
+# It is possible to implement updating without data, in which
+# case the posterior is a stan object that reflects the prior
 model_5 <- update_model(model)
 
 
 # Censored data types
 make_model("X->Y") \%>\%
-  update_model(data.frame(X=c(1,1), Y=c(1,1)), censored_types = c("X1Y0"), init_r = 1) \%>\%
+  update_model(data.frame(X=c(1,1), Y=c(1,1)),
+  censored_types = c("X1Y0"),
+  init_r = 1) \%>\%
   query_model(te("X", "Y"), using = "posteriors")
 
 # Censored data: Learning nothing
 make_model("X->Y") \%>\%
-  update_model(data.frame(X=c(1,1), Y=c(1,1)), censored_types = c("X1Y0", "X0Y0", "X0Y1"), init_r = 1) \%>\%
+  update_model(data.frame(X=c(1,1), Y=c(1,1)),
+  censored_types = c("X1Y0", "X0Y0", "X0Y1"),
+  init_r = 1) \%>\%
   query_model(te("X", "Y"), using = "posteriors")
 }
 }
