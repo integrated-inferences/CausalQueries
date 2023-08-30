@@ -59,14 +59,12 @@ make_par_values <- function(model,
                             param_names = NA,
                             distribution = NA,
                             normalize = FALSE){
+  is_a_model(model)
 
   full_param_set <- model$parameters_df$param_set
   full_node      <- model$parameters_df$node
 
   # check inputs for model, alter, x, distribution
-
-  is_a_model(model)
-
   if(all(!is.na(c(nodal_type, label)))){
     stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
   }
