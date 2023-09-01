@@ -162,19 +162,21 @@ print.summary.causal_types <- function(x, ...) {
     output_type <- class(x$types)
     if (output_type == "logical") {
         types1 <- x$types[x$types]
+        n_cond_types <- length(types1)
         cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query, "\n\n"))
 
         if (length(types1)%%2 != 0) {
             types1[length(types1) + 1] <- ""
         }
         counter <- 2
+
         while (counter <= length(types1)) {
             cat(paste0(names(types1[(counter - 1):counter]), collapse = "  "))
             cat("\n")
             counter <- counter + 2
         }
 
-        cat(paste("\n\n Number of causal types that meet condition(s) = ", length(types1)))
+        cat(paste("\n\n Number of causal types that meet condition(s) = ", n_cond_types))
         cat(paste("\n Total number of causal types in model = ", length(x$types)))
     } else if (output_type == "numeric") {
         print(x$types)

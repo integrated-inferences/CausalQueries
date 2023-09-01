@@ -58,11 +58,11 @@
 #' get_query_types(model, query, "causal_type")
 #'}
 get_query_types <- function(model, query, map = "causal_type", join_by = "|"){
-	if(!(map%in%c("causal_type", "nodal_type"))){
+	if(!(map %in% c("causal_type", "nodal_type"))) {
 		stop("map must be either causal_type or nodal_type")
-	}else if (map=="causal_type"){
+	} else if (map == "causal_type") {
 		map_query_to_causal_type(model, query, join_by)
-	}else{
+	} else {
 		map_query_to_nodal_type(model, query, join_by)
 	}
 }
