@@ -93,15 +93,7 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 
     stan_data <- prep_stan_data(model = model,
                                 data = data_events,
-                                keep_transformed = keep_transformed*1)
-
-    if(stan_data$n_nodes == 1){
-      stan_data$n_param_each <- as.array(stan_data$n_param_each)
-      stan_data$l_starts <- as.array(stan_data$l_starts)
-      stan_data$l_ends <- as.array(stan_data$l_ends)
-      stan_data$node_starts <- as.array(stan_data$node_starts)
-      stan_data$node_ends <- as.array(stan_data$node_ends)
-    }
+                                keep_transformed = keep_transformed)
 
     # Parmap goes to 0 for data types that never get to be observed
     if(!is.null(censored_types))
@@ -110,7 +102,9 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
     # assign fit
     stanfit <- stanmodels$simplexes
 
-    sampling_args <- set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
+    sampling_args <-
+      set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
+
     newfit <- do.call(rstan::sampling, sampling_args)
 
     model$stan_objects  <- list(data = data)

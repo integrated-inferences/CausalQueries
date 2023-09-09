@@ -50,8 +50,7 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE) {
     names(n_starts) <- names(n_ends) <- n_sets
 
 
-    E <-
-        (get_data_families(model, mapping_only = TRUE))[data$event,]
+    E <- (get_data_families(model, mapping_only = TRUE))[data$event,]
     strategies <- data$strategy
     n_strategies <- length(unique(strategies))
     w_starts <- which(!duplicated(strategies))
@@ -60,6 +59,7 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE) {
         k
     else
         c(w_starts[2:n_strategies] - 1, k)
+
     P <- get_parameter_matrix(model)
 
     list(
@@ -71,17 +71,16 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE) {
         n_param_each = as.array(n_param_each),
         l_starts = as.array(l_starts),
         l_ends = as.array(l_ends),
-        node_starts = n_starts,
-        node_ends = n_ends,
+        node_starts = as.array(n_starts),
+        node_ends = as.array(n_ends),
         n_nodes = length(n_sets),
         lambdas_prior = get_priors(model),
-        n_data = nrow(all_data_types(model,
-                                     possible_data = TRUE)),
+        n_data = all_data_types(model, possible_data = TRUE) |> nrow(),
         n_events = nrow(E),
         n_strategies = n_strategies,
         strategy_starts = as.array(w_starts),
         strategy_ends = as.array(w_ends),
-        keep_transformed = keep_transformed * 1,
+        keep_transformed = as.numeric(keep_transformed),
         E = E,
         Y = data$count,
         P = P,
