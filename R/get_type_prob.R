@@ -55,7 +55,9 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
 
     # Do one at a time
     if (is.null(param_dist))
-        param_dist <- get_param_dist(model, using, n_draws = n_draws)
+      param_dist <-
+        get_param_dist(model, using, n_draws = n_draws) |>
+        as.matrix()
 
     res <- get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
     rownames(res) <- colnames(P)
