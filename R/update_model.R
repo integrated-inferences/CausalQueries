@@ -111,11 +111,15 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 
     if(keep_fit) model$stan_objects$stan_fit <- newfit
 
-    model$posterior_distribution <- extract(newfit, pars = "lambdas")$lambdas
-        colnames(model$posterior_distribution) <- get_parameter_names(model)
+    model$posterior_distribution <-
+      extract(newfit, pars = "lambdas")$lambdas |> as.data.frame()
 
-    model$stan_objects$type_distribution <- extract(newfit, pars = "prob_of_types")$prob_of_types
-        colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    colnames(model$posterior_distribution) <- get_parameter_names(model)
+
+    model$stan_objects$type_distribution <-
+      extract(newfit, pars = "prob_of_types")$prob_of_types
+
+    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
 
     model$stan_objects$w_full <- extract(newfit, pars = "w_full")$w_full
         colnames(model$stan_objects$w_full) <- rownames(stan_data$E)
