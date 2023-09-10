@@ -50,6 +50,11 @@ get_query_types(model, '(X[] == 1)', map="nodal_type")
 query <- '(M[X=1] == M[X=0])'
 get_query_types(model, query, map="nodal_type")
 
+# Nested do operations
+get_query_types(
+ model = make_model('A -> B -> C -> D'),
+ query = '(D[C=C[B=B[A=1]], A=0] > D[C=C[B=B[A=0]], A=0])')
+
 # Helpers
 model <- make_model('M->Y; X->Y')
 query <- complements('X', 'M', 'Y')
@@ -61,7 +66,8 @@ model <- make_model('X -> M -> Y; X->Y')
 query <- 'Y[M=M[X=0], X=1]==1'
 get_query_types(model, query, map= "causal_type")
 
-query <- '(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])'
+query <- '(Y[X = 1, M = 1] >  Y[X = 0, M = 1]) &
+          (Y[X = 1, M = 0] >  Y[X = 0, M = 0])'
 get_query_types(model, query, "causal_type")
 
 query <- 'Y[X=1] == Y[X=0]'

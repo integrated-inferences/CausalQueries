@@ -42,37 +42,40 @@ query_model(
 A \code{data.frame} with columns Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
 }
 \description{
-Calculated from a parameter vector, from a prior or from a posterior distribution
+Calculated from a parameter vector, from a prior or from a posterior distribution.
+}
+\details{
+Queries can condition on observed or counterfactual quantities. Nested or "complex" counterfacttual queries of the form \code{Y[X=1, M[X=0]]} are allowed.
 }
 \examples{
 model <- make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 10000)
 
 \donttest{
-estimands_df <-query_model(
-               model,
-               query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-               using = c("parameters", "priors"),
-               expand_grid = TRUE)
+query_model(
+  model,
+  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  using = c("parameters", "priors"),
+  expand_grid = TRUE)
 
-estimands_df <-query_model(
-               model,
-               query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-               using = c("parameters", "priors"),
-               expand_grid = FALSE)
+query_model(
+  model,
+  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  using = c("parameters", "priors"),
+  expand_grid = FALSE)
 
-estimands_df <- query_model(
-                model,
-                using = list( "parameters", "priors"),
-                query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
-                given = list(TRUE,  "Y==0 & X==1"),
-                expand_grid = TRUE)
+query_model(
+  model,
+  using = list( "parameters", "priors"),
+  query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
+  given = list(TRUE,  "Y==0 & X==1"),
+  expand_grid = TRUE)
 
-# An example: a stat representing uncertainty of token causation
+# An example of a custom statistic: uncertainty of token causation
 token_var <- function(x) mean(x)*(1-mean(x))
-estimands_df <- query_model(
-                model,
-                using = list( "parameters", "priors"),
-                query = "Y[X=1] > Y[X=0]",
-                stats = c(mean = mean, sd = sd, token_var = token_var))
+query_model(
+  model,
+  using = list( "parameters", "priors"),
+  query = "Y[X=1] > Y[X=0]",
+  stats = c(mean = mean, sd = sd, token_var = token_var))
 }
 }

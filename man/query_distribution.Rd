@@ -43,30 +43,67 @@ Calculated distribution of a query from a prior or posterior distribution of par
 }
 \examples{
 model <- make_model("X -> Y") \%>\%
-         set_prior_distribution() \%>\%
-         set_parameter_matrix()
+         set_parameters(c(.5, .5, .1, .2, .3, .4))
  \donttest{
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+ # simple  queries
+ query_distribution(model, query = "(Y[X=1] > Y[X=0])")
 
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
- distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
- distribution <- query_distribution(model,
-                                    query = "(Y[X=1] > Y[X=0])",
-                                    given = "X==1 & Y==1",
-                                    verbose = TRUE)
- distribution <- query_distribution(model,
-                                    query = "(Y[X=1] > Y[X=0])",
-                                    given = "X==1 & Y==1",
-                                    case_level = TRUE,
-                                    verbose = TRUE)
- distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
- distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
- df    <- simulate_data(model, n = 3)
- updated_model <- update_model(model, df)
- query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
- updated_model <- update_model(model, df, keep_transformed = TRUE)
- query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+ # linear queries
+ query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+
+ # queries conditional on observables
+ query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y ==1")
+
+ # Linear query conditional on potential outcomes
+ query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
+
+ # Use join_by to amend query interpretation
+ query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+
+ # Probability of causation query with verbose output
+ query_distribution(model,
+    query = "(Y[X=1] > Y[X=0])",
+    given = "X==1 & Y==1",
+    using = "priors",
+    verbose = TRUE)  |> head()
+
+ # Case level probability of causation query with verbose output
+ query_distribution(model,
+    query = "(Y[X=1] > Y[X=0])",
+    given = "X==1 & Y==1",
+    case_level = TRUE,
+    using = "priors",
+    verbose = TRUE)
+
+ # Query posterior
+ update_model(model, make_data(model, n = 3)) |>
+ query_distribution(query = "(Y[X=1] - Y[X=0])", using = "posteriors") |>
+ head()
+
+ # Case level queries provide the inference for a case, which is a scalar
+ # The case level query *updates* on the given information
+ # For instance, here we have a model for which we are quite sure that X causes Y but we do not
+ # know whether it works through two positive effects or two negative effects
+ # Thus we do not know if M=0 would suggest an effect or no effect
+
+ set.seed(1)
+ model <-
+   make_model("X -> M -> Y") |>
+   update_model(data.frame(X = rep(0:1, 8), Y = rep(0:1, 8)), iter = 10000)
+ Q <- "Y[X=1] > Y[X=0]"
+ G <- "X==1 & Y==1 & M==1"
+ QG <- "(Y[X=1] > Y[X=0]) & (X==1 & Y==1 & M==1)"
+
+ # In this case these are very different:
+ query_distribution(model, Q, given = G, using = "posteriors") |> mean()
+ query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+
+ # These are equivalent:
+ # 1. Case level query via function
+ query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+
+ # 2. Case level query by hand using Bayes
+ mean(query_distribution(model, QG, using = "posteriors") )/
+ mean(query_distribution(model, G, using = "posteriors"))
 }
 }

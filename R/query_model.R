@@ -17,41 +17,79 @@
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>%
-#'          set_prior_distribution() %>%
-#'          set_parameter_matrix()
+#'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
-#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'  # simple  queries
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])")
 #'
-#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "X==1")
-#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
-#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==1")
-#'  distribution <- query_distribution(model, query = "(Y[X=1] > Y[X=0])")
-#'  distribution <- query_distribution(model,
-#'                                     query = "(Y[X=1] > Y[X=0])",
-#'                                     given = "X==1 & Y==1",
-#'                                     verbose = TRUE)
-#'  distribution <- query_distribution(model,
-#'                                     query = "(Y[X=1] > Y[X=0])",
-#'                                     given = "X==1 & Y==1",
-#'                                     case_level = TRUE,
-#'                                     verbose = TRUE)
-#'  distribution <- query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
-#'  distribution <- query_distribution(model, query = "(Y[X=1] - Y[X=0])", using = "parameters")
-#'  df    <- simulate_data(model, n = 3)
-#'  updated_model <- update_model(model, df)
-#'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
-#'  updated_model <- update_model(model, df, keep_transformed = TRUE)
-#'  query_distribution( updated_model , query = "(Y[X=1] - Y[X=0])", using = "posteriors")
+#'  # linear queries
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
+#'
+#'  # queries conditional on observables
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y ==1")
+#'
+#'  # Linear query conditional on potential outcomes
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
+#'
+#'  # Use join_by to amend query interpretation
+#'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
+#'
+#'  # Probability of causation query with verbose output
+#'  query_distribution(model,
+#'     query = "(Y[X=1] > Y[X=0])",
+#'     given = "X==1 & Y==1",
+#'     using = "priors",
+#'     verbose = TRUE)  |> head()
+#'
+#'  # Case level probability of causation query with verbose output
+#'  query_distribution(model,
+#'     query = "(Y[X=1] > Y[X=0])",
+#'     given = "X==1 & Y==1",
+#'     case_level = TRUE,
+#'     using = "priors",
+#'     verbose = TRUE)
+#'
+#'  # Query posterior
+#'  update_model(model, make_data(model, n = 3)) |>
+#'  query_distribution(query = "(Y[X=1] - Y[X=0])", using = "posteriors") |>
+#'  head()
+#'
+#'  # Case level queries provide the inference for a case, which is a scalar
+#'  # The case level query *updates* on the given information
+#'  # For instance, here we have a model for which we are quite sure that X causes Y but we do not
+#'  # know whether it works through two positive effects or two negative effects
+#'  # Thus we do not know if M=0 would suggest an effect or no effect
+#'
+#'  set.seed(1)
+#'  model <-
+#'    make_model("X -> M -> Y") |>
+#'    update_model(data.frame(X = rep(0:1, 8), Y = rep(0:1, 8)), iter = 10000)
+#'  Q <- "Y[X=1] > Y[X=0]"
+#'  G <- "X==1 & Y==1 & M==1"
+#'  QG <- "(Y[X=1] > Y[X=0]) & (X==1 & Y==1 & M==1)"
+#'
+#'  # In this case these are very different:
+#'  query_distribution(model, Q, given = G, using = "posteriors") |> mean()
+#'  query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+#'
+#'  # These are equivalent:
+#'  # 1. Case level query via function
+#'  query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+#'
+#'  # 2. Case level query by hand using Bayes
+#'  mean(query_distribution(model, QG, using = "posteriors") )/
+#'  mean(query_distribution(model, G, using = "posteriors"))
 #' }
-query_distribution <- function(model,
-                               query,
-                               given = TRUE,
-                               using  = "parameters",
-                               parameters = NULL, # Use for example if true parameters known
-                               type_distribution = NULL,
-                               verbose = FALSE,
-                               join_by = "|",
-                               case_level = FALSE) {
+query_distribution <-
+  function(model,
+           query,
+           given = TRUE,
+           using  = "parameters",
+           parameters = NULL,
+           type_distribution = NULL,
+           verbose = FALSE,
+           join_by = "|",
+           case_level = FALSE) {
 
   # forgive the user:
   if(using == "posterior") using <- "posteriors"
@@ -61,13 +99,15 @@ query_distribution <- function(model,
   if(!(using %in% c("priors", "posteriors", "parameters"))) stop(
     "`using` should be one of `priors`, `posteriors`, or `parameters`")
 
-  if(!is.logical(given)) given <- map_query_to_causal_type(model, given)$types
+  given_types <- given
 
-  if(all(!given)) {message("No units in given"); return() }
+  if(!is.logical(given)) given_types <- map_query_to_causal_type(model, given)$types
+
+  if(all(!given_types)) {message("No units in given"); return() }
 
 
   # Evaluation of query on vector of causal types
-  x <- (map_query_to_causal_type(model, query = query)$types)[given]
+  x <- (map_query_to_causal_type(model, query = query)$types)[given_types]
 
   # Parameters specified
   if(using =="parameters"){
@@ -76,7 +116,7 @@ query_distribution <- function(model,
       if(is.null(parameters)) parameters <- get_parameters(model)
       type_distribution <- get_type_prob(model, parameters = parameters)}
 
-    type_distribution <- type_distribution[given]
+    type_distribution <- type_distribution[given_types]
 
     # always case level if using = parameters
     # return(weighted.mean(x, type_distribution[given]))
@@ -90,7 +130,7 @@ query_distribution <- function(model,
   if(is.null(type_distribution))
     type_distribution <- get_type_prob_multiple(model, using = using, P = model$P)
 
-  type_distribution <- matrix(type_distribution[given, ], ncol = ncol(type_distribution))
+  type_distribution <- matrix(type_distribution[given_types, ], ncol = ncol(type_distribution))
 
   # Subsetting implemented on type_distribution prior to take weighted mean
   # This gets the distribution of conditional values
@@ -106,14 +146,18 @@ query_distribution <- function(model,
   if(verbose) print(paste("mean = ", round(mean(estimand), 3), "; sd = ", round(sd(estimand),3)))
 
 
+  # names(out) <- ifelse(is.logical(given), query, paste(query, " | ", given))
 
-  estimand
+  estimand |> unlist() |> as.vector()
+
 }
 
 
 #' Generate estimands dataframe
 #'
-#' Calculated from a parameter vector, from a prior or from a posterior distribution
+#' Calculated from a parameter vector, from a prior or from a posterior distribution.
+#'
+#' Queries can condition on observed or counterfactual quantities. Nested or "complex" counterfacttual queries of the form \code{Y[X=1, M[X=0]]} are allowed.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
@@ -130,44 +174,46 @@ query_distribution <- function(model,
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
 #' \donttest{
-#' estimands_df <-query_model(
-#'                model,
-#'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-#'                using = c("parameters", "priors"),
-#'                expand_grid = TRUE)
+#' query_model(
+#'   model,
+#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   using = c("parameters", "priors"),
+#'   expand_grid = TRUE)
 #'
-#' estimands_df <-query_model(
-#'                model,
-#'                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-#'                using = c("parameters", "priors"),
-#'                expand_grid = FALSE)
+#' query_model(
+#'   model,
+#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   using = c("parameters", "priors"),
+#'   expand_grid = FALSE)
 #'
-#' estimands_df <- query_model(
-#'                 model,
-#'                 using = list( "parameters", "priors"),
-#'                 query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
-#'                 given = list(TRUE,  "Y==0 & X==1"),
-#'                 expand_grid = TRUE)
+#' query_model(
+#'   model,
+#'   using = list( "parameters", "priors"),
+#'   query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
+#'   given = list(TRUE,  "Y==0 & X==1"),
+#'   expand_grid = TRUE)
 #'
-#' # An example: a stat representing uncertainty of token causation
+#' # An example of a custom statistic: uncertainty of token causation
 #' token_var <- function(x) mean(x)*(1-mean(x))
-#' estimands_df <- query_model(
-#'                 model,
-#'                 using = list( "parameters", "priors"),
-#'                 query = "Y[X=1] > Y[X=0]",
-#'                 stats = c(mean = mean, sd = sd, token_var = token_var))
+#' query_model(
+#'   model,
+#'   using = list( "parameters", "priors"),
+#'   query = "Y[X=1] > Y[X=0]",
+#'   stats = c(mean = mean, sd = sd, token_var = token_var))
 #'}
 
-query_model <- function(model,
-                        queries    = NULL,
-                        given      = NULL,
-                        using      = list("parameters"),
-                        parameters = NULL,
-                        stats      = NULL,
-                        n_draws    = 4000,
-                        expand_grid = FALSE,
-                        case_level = FALSE,
-                        query = NULL){
+query_model <-
+
+  function(model,
+           queries    = NULL,
+           given      = NULL,
+           using      = list("parameters"),
+           parameters = NULL,
+           stats      = NULL,
+           n_draws    = 4000,
+           expand_grid = FALSE,
+           case_level = FALSE,
+           query = NULL) {
 
   is_a_model(model)
   if(is.null(query) & is.null(queries))  stop("No query provided.")
@@ -191,8 +237,8 @@ query_model <- function(model,
     } else {
     stats <- c(mean = mean,
                sd = sd,
-               conf.low = function(x) stats::quantile(x, probs = 0.025),
-               conf.high = function(x) stats::quantile(x, probs = 0.975)
+               cred.low = function(x) stats::quantile(x, probs = 0.025),
+               cred.high = function(x) stats::quantile(x, probs = 0.975)
                )
     }}
 
