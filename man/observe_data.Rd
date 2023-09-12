@@ -34,7 +34,7 @@ Observe data, given a strategy
 }
 \examples{
 model <- make_model("X -> Y")
-df <- simulate_data(model, n = 8)
+df <- make_data(model, n = 8)
 # Observe X values only
 observe_data(complete_data = df, nodes_to_observe = "X")
 # Observe half the Y values for cases with observed X = 1

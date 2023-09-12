@@ -28,7 +28,7 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("X -> Y")
-		df <- simulate_data(model, n = 8)
+		df <- make_data(model, n = 8)
 		out <- observe_data(complete_data = df,
      observed = observe_data(complete_data = df,
                              nodes_to_observe = c("X", "Y")),

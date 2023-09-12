@@ -3,7 +3,7 @@
 
 
 
-context("Testing prep_qbiqq_data")
+context("Testing prep_stan_data")
 
 testthat::skip_on_cran()
 testthat::test_that(
@@ -12,7 +12,7 @@ testthat::test_that(
 
 	code = {
 		model <- make_model('X->Y')
-		data  <-  collapse_data(simulate_data(model, n = 6), model)
+		data  <-  collapse_data(make_data(model, n = 6), model)
 		expect_error(prep_stan_data(model, data[, 1:2]))
 	}
 )

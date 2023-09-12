@@ -19,6 +19,6 @@ Provides names to data types
 }
 \examples{
 model <- make_model('X -> Y')
-data <- simulate_data(model, n = 2)
+data <- make_data(model, n = 2)
 data_type_names(model, data)
 }
