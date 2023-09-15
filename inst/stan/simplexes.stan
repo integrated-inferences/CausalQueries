@@ -44,38 +44,37 @@ vector<lower=0>[n_params - n_param_sets] gamma;
 }
 
 transformed parameters {
-vector<lower=0>[n_params] lambdas;
+vector<lower=0, upper=1>[n_params] lambdas;
 vector<lower=1>[n_param_sets] sum_gammas;
 matrix[n_params, n_paths] parlam;
 matrix[n_nodes, n_paths] parlam2;
 vector<lower=0, upper=1>[n_paths] w_0;
 vector<lower=0, upper=1>[n_data] w;
-vector[n_events] w_full;
+vector<lower=0, upper=1>[n_events] w_full;
 
 // Cases in which a parameter set has only one value need special handling
 // they have no gamma components and sum_gamma needs to be made manually
 for (i in 1:n_param_sets) {
 
-if (l_starts[i] >= l_ends[i]) {
-  sum_gammas[i] = 1;
-  // syntax here to return unity as a vector
-  lambdas[l_starts[i]] = lambdas_prior[1]/lambdas_prior[1];
+  if (l_starts[i] >= l_ends[i]) {
+    sum_gammas[i] = 1;
+    // syntax here to return unity as a vector
+    lambdas[l_starts[i]] = lambdas_prior[1]/lambdas_prior[1];
+    }
+
+  else if (l_starts[i] < l_ends[i]) {
+    sum_gammas[i] =
+    1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
+
+    lambdas[l_starts[i]:l_ends[i]] =
+    append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
+    }
   }
-else if (l_starts[i] < l_ends[i]) {
-
-  sum_gammas[i] =
-  1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
-
-  lambdas[l_starts[i]:l_ends[i]] =
-  append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
-
-  }
-  }
-
 
 
 // Mapping from parameters to data types
-parlam  = rep_matrix(lambdas, n_paths) .* parmap; // (usual case): [n_par * n_data] * [n_par * n_data]
+// (usual case): [n_par * n_data] * [n_par * n_data]
+parlam  = rep_matrix(lambdas, n_paths) .* parmap;
 
 // Sum probability over nodes on each path
 for (i in 1:n_nodes) {
@@ -90,8 +89,11 @@ for (i in 1:n_paths) {
  // last (if confounding): map to n_data columns instead of n_paths
 
  w = map'*w_0;
+
+ // Ensure weights sum to 1
  w = w / sum(w);
 
+ // Extend to cover all data types
  w_full = E * w;
 
 }

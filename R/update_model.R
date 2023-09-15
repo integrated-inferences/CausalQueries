@@ -93,12 +93,8 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 
     stan_data <- prep_stan_data(model = model,
                                 data = data_events,
-                                keep_transformed = keep_transformed)
-
-    # Parmap goes to 0 for data types that never get to be observed
-    if(!is.null(censored_types))
-    stan_data$parmap[, censored_types] <- 0
-
+                                keep_transformed = keep_transformed,
+                                censored_types = censored_types)
     # assign fit
     stanfit <- stanmodels$simplexes
 

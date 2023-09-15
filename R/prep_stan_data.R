@@ -16,7 +16,7 @@
 #' CausalQueries:::prep_stan_data(model, data)
 #' }
 #'
-prep_stan_data <- function(model, data, keep_transformed = TRUE) {
+prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types = NULL) {
 
     i <- NULL
 
@@ -61,6 +61,10 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE) {
         c(w_starts[2:n_strategies] - 1, k)
 
     P <- get_parameter_matrix(model)
+
+    # Parmap goes to 0 for data types that never get to be observed
+    if(!is.null(censored_types))
+      parmap[, censored_types] <- 0
 
     list(
         parmap = parmap,

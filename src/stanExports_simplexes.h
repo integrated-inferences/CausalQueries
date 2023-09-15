@@ -76,74 +76,74 @@ stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
                                                       " (in 'string', line 33, column 0 to column 47)",
-                                                      " (in 'string', line 36, column 0 to column 34)",
+                                                      " (in 'string', line 36, column 0 to column 43)",
                                                       " (in 'string', line 37, column 0 to column 41)",
                                                       " (in 'string', line 38, column 0 to column 33)",
                                                       " (in 'string', line 39, column 0 to column 33)",
                                                       " (in 'string', line 40, column 0 to column 38)",
                                                       " (in 'string', line 41, column 0 to column 35)",
-                                                      " (in 'string', line 42, column 0 to column 24)",
-                                                      " (in 'string', line 52, column 2 to line 53, column 56)",
-                                                      " (in 'string', line 54, column 2 to line 55, column 78)",
-                                                      " (in 'string', line 51, column 34 to line 56, column 3)",
-                                                      " (in 'string', line 51, column 5 to line 56, column 3)",
-                                                      " (in 'string', line 47, column 2 to column 20)",
-                                                      " (in 'string', line 49, column 2 to column 59)",
-                                                      " (in 'string', line 46, column 30 to line 50, column 3)",
-                                                      " (in 'string', line 46, column 0 to line 56, column 3)",
+                                                      " (in 'string', line 42, column 0 to column 42)",
+                                                      " (in 'string', line 52, column 4 to line 53, column 58)",
+                                                      " (in 'string', line 54, column 4 to line 55, column 80)",
+                                                      " (in 'string', line 51, column 36 to line 56, column 5)",
+                                                      " (in 'string', line 51, column 7 to line 56, column 5)",
+                                                      " (in 'string', line 47, column 4 to column 22)",
+                                                      " (in 'string', line 49, column 4 to column 61)",
+                                                      " (in 'string', line 46, column 32 to line 50, column 5)",
+                                                      " (in 'string', line 46, column 2 to line 56, column 5)",
                                                       " (in 'string', line 45, column 26 to line 57, column 3)",
                                                       " (in 'string', line 45, column 0 to line 57, column 3)",
-                                                      " (in 'string', line 59, column 0 to column 49)",
-                                                      " (in 'string', line 62, column 1 to column 66)",
-                                                      " (in 'string', line 61, column 21 to line 63, column 2)",
-                                                      " (in 'string', line 61, column 0 to line 63, column 2)",
-                                                      " (in 'string', line 66, column 2 to column 29)",
-                                                      " (in 'string', line 65, column 21 to line 67, column 2)",
-                                                      " (in 'string', line 65, column 0 to line 67, column 2)",
-                                                      " (in 'string', line 69, column 1 to column 14)",
-                                                      " (in 'string', line 70, column 1 to column 16)",
-                                                      " (in 'string', line 71, column 1 to column 16)",
-                                                      " (in 'string', line 88, column 0 to column 30)",
-                                                      " (in 'string', line 91, column 3 to column 56)",
-                                                      " (in 'string', line 90, column 21 to line 92, column 1)",
-                                                      " (in 'string', line 90, column 0 to line 92, column 1)",
-                                                      " (in 'string', line 89, column 26 to line 92, column 2)",
-                                                      " (in 'string', line 89, column 0 to line 92, column 2)",
-                                                      " (in 'string', line 94, column 4 to column 43)",
-                                                      " (in 'string', line 93, column 27 to line 95, column 2)",
-                                                      " (in 'string', line 93, column 1 to line 95, column 2)",
-                                                      " (in 'string', line 76, column 2 to column 100)",
-                                                      " (in 'string', line 77, column 2 to column 50)",
-                                                      " (in 'string', line 75, column 26 to line 78, column 2)",
-                                                      " (in 'string', line 75, column 0 to line 78, column 2)",
-                                                      " (in 'string', line 81, column 2 to line 82, column 88)",
-                                                      " (in 'string', line 80, column 26 to line 83, column 2)",
-                                                      " (in 'string', line 80, column 0 to line 83, column 2)",
+                                                      " (in 'string', line 60, column 0 to column 49)",
+                                                      " (in 'string', line 63, column 1 to column 66)",
+                                                      " (in 'string', line 62, column 21 to line 64, column 2)",
+                                                      " (in 'string', line 62, column 0 to line 64, column 2)",
+                                                      " (in 'string', line 67, column 2 to column 29)",
+                                                      " (in 'string', line 66, column 21 to line 68, column 2)",
+                                                      " (in 'string', line 66, column 0 to line 68, column 2)",
+                                                      " (in 'string', line 70, column 1 to column 14)",
+                                                      " (in 'string', line 72, column 1 to column 16)",
+                                                      " (in 'string', line 74, column 1 to column 16)",
+                                                      " (in 'string', line 91, column 0 to column 30)",
+                                                      " (in 'string', line 94, column 3 to column 56)",
+                                                      " (in 'string', line 93, column 21 to line 95, column 1)",
+                                                      " (in 'string', line 93, column 0 to line 95, column 1)",
+                                                      " (in 'string', line 92, column 26 to line 95, column 2)",
+                                                      " (in 'string', line 92, column 0 to line 95, column 2)",
+                                                      " (in 'string', line 97, column 4 to column 43)",
+                                                      " (in 'string', line 96, column 27 to line 98, column 2)",
+                                                      " (in 'string', line 96, column 1 to line 98, column 2)",
+                                                      " (in 'string', line 79, column 2 to column 100)",
+                                                      " (in 'string', line 80, column 2 to column 50)",
+                                                      " (in 'string', line 78, column 26 to line 81, column 2)",
+                                                      " (in 'string', line 78, column 0 to line 81, column 2)",
+                                                      " (in 'string', line 84, column 2 to line 85, column 88)",
+                                                      " (in 'string', line 83, column 26 to line 86, column 2)",
+                                                      " (in 'string', line 83, column 0 to line 86, column 2)",
                                                       " (in 'string', line 9, column 0 to column 22)",
                                                       " (in 'string', line 10, column 0 to column 21)",
                                                       " (in 'string', line 11, column 0 to column 21)",
                                                       " (in 'string', line 12, column 0 to column 26)",
                                                       " (in 'string', line 13, column 0 to column 21)",
-                                                      " (in 'string', line 14, column 26 to column 38)",
-                                                      " (in 'string', line 14, column 0 to column 40)",
+                                                      " (in 'string', line 14, column 6 to column 18)",
+                                                      " (in 'string', line 14, column 0 to column 46)",
                                                       " (in 'string', line 15, column 0 to column 20)",
                                                       " (in 'string', line 16, column 0 to column 22)",
                                                       " (in 'string', line 17, column 0 to column 26)",
                                                       " (in 'string', line 18, column 0 to column 39)",
                                                       " (in 'string', line 19, column 16 to column 24)",
                                                       " (in 'string', line 19, column 0 to column 40)",
-                                                      " (in 'string', line 20, column 22 to column 34)",
-                                                      " (in 'string', line 20, column 0 to column 36)",
-                                                      " (in 'string', line 21, column 20 to column 32)",
-                                                      " (in 'string', line 21, column 0 to column 34)",
-                                                      " (in 'string', line 22, column 25 to column 32)",
-                                                      " (in 'string', line 22, column 0 to column 34)",
-                                                      " (in 'string', line 23, column 23 to column 30)",
-                                                      " (in 'string', line 23, column 0 to column 32)",
-                                                      " (in 'string', line 24, column 29 to column 41)",
-                                                      " (in 'string', line 24, column 0 to column 43)",
-                                                      " (in 'string', line 25, column 27 to column 39)",
-                                                      " (in 'string', line 25, column 0 to column 41)",
+                                                      " (in 'string', line 20, column 6 to column 18)",
+                                                      " (in 'string', line 20, column 0 to column 42)",
+                                                      " (in 'string', line 21, column 6 to column 18)",
+                                                      " (in 'string', line 21, column 0 to column 40)",
+                                                      " (in 'string', line 22, column 6 to column 13)",
+                                                      " (in 'string', line 22, column 0 to column 40)",
+                                                      " (in 'string', line 23, column 6 to column 13)",
+                                                      " (in 'string', line 23, column 0 to column 38)",
+                                                      " (in 'string', line 24, column 6 to column 18)",
+                                                      " (in 'string', line 24, column 0 to column 49)",
+                                                      " (in 'string', line 25, column 6 to column 18)",
+                                                      " (in 'string', line 25, column 0 to column 47)",
                                                       " (in 'string', line 26, column 7 to column 15)",
                                                       " (in 'string', line 26, column 17 to column 24)",
                                                       " (in 'string', line 26, column 0 to column 28)",
@@ -156,10 +156,10 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 29, column 24 to column 32)",
                                                       " (in 'string', line 29, column 33 to column 39)",
                                                       " (in 'string', line 29, column 0 to column 43)",
-                                                      " (in 'string', line 30, column 15 to column 23)",
-                                                      " (in 'string', line 30, column 0 to column 25)",
+                                                      " (in 'string', line 30, column 6 to column 14)",
+                                                      " (in 'string', line 30, column 0 to column 31)",
                                                       " (in 'string', line 33, column 16 to column 39)",
-                                                      " (in 'string', line 36, column 16 to column 24)",
+                                                      " (in 'string', line 36, column 25 to column 33)",
                                                       " (in 'string', line 37, column 16 to column 28)",
                                                       " (in 'string', line 38, column 7 to column 15)",
                                                       " (in 'string', line 38, column 17 to column 24)",
@@ -167,8 +167,8 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 39, column 16 to column 23)",
                                                       " (in 'string', line 40, column 25 to column 32)",
                                                       " (in 'string', line 41, column 25 to column 31)",
-                                                      " (in 'string', line 42, column 7 to column 15)",
-                                                      " (in 'string', line 88, column 7 to column 14)",
+                                                      " (in 'string', line 42, column 25 to column 33)",
+                                                      " (in 'string', line 91, column 7 to column 14)",
                                                       " (in 'string', line 3, column 15 to column 22)",
                                                       " (in 'string', line 3, column 4 to column 27)",
                                                       " (in 'string', line 4, column 4 to column 40)",
@@ -845,6 +845,12 @@ public:
         current_statement__ = 2;
         check_greater_or_equal(function__, "lambdas[sym1__]",
                                lambdas[(sym1__ - 1)], 0);}
+      current_statement__ = 2;
+      for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
+        current_statement__ = 2;
+        current_statement__ = 2;
+        check_less_or_equal(function__, "lambdas[sym1__]",
+                            lambdas[(sym1__ - 1)], 1);}
       current_statement__ = 3;
       for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
         current_statement__ = 3;
@@ -873,6 +879,18 @@ public:
         current_statement__ = 7;
         current_statement__ = 7;
         check_less_or_equal(function__, "w[sym1__]", w[(sym1__ - 1)], 1);}
+      current_statement__ = 8;
+      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
+        current_statement__ = 8;
+        current_statement__ = 8;
+        check_greater_or_equal(function__, "w_full[sym1__]",
+                               w_full[(sym1__ - 1)], 0);}
+      current_statement__ = 8;
+      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
+        current_statement__ = 8;
+        current_statement__ = 8;
+        check_less_or_equal(function__, "w_full[sym1__]",
+                            w_full[(sym1__ - 1)], 1);}
       {
         current_statement__ = 41;
         for (int i = 1; i <= n_param_sets; ++i) {
@@ -1057,6 +1075,12 @@ public:
         current_statement__ = 2;
         check_greater_or_equal(function__, "lambdas[sym1__]",
                                lambdas[(sym1__ - 1)], 0);}
+      current_statement__ = 2;
+      for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
+        current_statement__ = 2;
+        current_statement__ = 2;
+        check_less_or_equal(function__, "lambdas[sym1__]",
+                            lambdas[(sym1__ - 1)], 1);}
       current_statement__ = 3;
       for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
         current_statement__ = 3;
@@ -1085,6 +1109,18 @@ public:
         current_statement__ = 7;
         current_statement__ = 7;
         check_less_or_equal(function__, "w[sym1__]", w[(sym1__ - 1)], 1);}
+      current_statement__ = 8;
+      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
+        current_statement__ = 8;
+        current_statement__ = 8;
+        check_greater_or_equal(function__, "w_full[sym1__]",
+                               w_full[(sym1__ - 1)], 0);}
+      current_statement__ = 8;
+      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
+        current_statement__ = 8;
+        current_statement__ = 8;
+        check_less_or_equal(function__, "w_full[sym1__]",
+                            w_full[(sym1__ - 1)], 1);}
       if (emit_transformed_parameters__) {
         for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
           vars__.emplace_back(lambdas[(sym1__ - 1)]);}
