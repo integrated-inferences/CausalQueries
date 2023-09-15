@@ -135,3 +135,25 @@ testthat::test_that(
     expect_true(all(get_ambiguities_matrix(model) %>% apply(2, sum)== 1))
   }
 )
+
+
+
+testthat::test_that(
+
+  desc = "distributions removed if restrictions re-set",
+
+  code = {
+    model  <-
+      make_model("X->Y") |>
+      update_model() |>
+      set_prior_distribution() |>
+      set_restrictions(statement = "Y[X=1] > Y[X=0]")
+
+    expect_true(is.null(model$posterior_distribution))
+    expect_true(is.null(model$prior_distribution))
+    expect_true(is.null(model$stan_objects))
+
+  }
+)
+
+
