@@ -14,28 +14,28 @@ int<lower=1> n_paths;
 int<lower=1> n_types;
 int<lower=1> n_param_sets;
 int<lower=1> n_nodes;
-int<lower=1> n_param_each[n_param_sets];
+array[n_param_sets] int<lower=1> n_param_each;
 int<lower=1> n_data;
 int<lower=1> n_events;
 int<lower=1> n_strategies;
 int<lower=0, upper=1> keep_transformed;
 
 vector<lower=0>[n_params] lambdas_prior;
-int<lower=1> l_starts[n_param_sets];
-int<lower=1> l_ends[n_param_sets];
+array[n_param_sets] int<lower=1> l_starts;
+array[n_param_sets] int<lower=1> l_ends;
 
-int<lower=1> node_starts[n_nodes];
-int<lower=1> node_ends[n_nodes];
+array[n_nodes] int<lower=1> node_starts;
+array[n_nodes] int<lower=1> node_ends;
 
-int<lower=1> strategy_starts[n_strategies];
-int<lower=1> strategy_ends[n_strategies];
+array[n_strategies] int<lower=1> strategy_starts;
+array[n_strategies] int<lower=1> strategy_ends;
 
 matrix[n_params, n_types] P;
 
 matrix[n_params, n_paths] parmap;
 matrix[n_paths, n_data] map;
 matrix<lower=0,upper=1>[n_events,n_data] E;
-int<lower=0> Y[n_events];
+array[n_events] int<lower=0> Y;
 
 }
 
