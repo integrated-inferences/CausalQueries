@@ -59,14 +59,12 @@ make_par_values <- function(model,
                             param_names = NA,
                             distribution = NA,
                             normalize = FALSE){
-
-  full_param_set <- model$parameters_df$param_set
-  full_node      <- model$parameters_df$node
-
-  # check inputs for model, alter, x, distribution
-
   is_a_model(model)
 
+  full_param_set <- model$parameters_df$param_set
+  full_node <- model$parameters_df$node
+
+  # check inputs for model, alter, x, distribution
   if(all(!is.na(c(nodal_type, label)))){
     stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
   }
@@ -120,7 +118,6 @@ make_par_values <- function(model,
   }
 
   # disallow redundant argument specification
-
   if(!is.na(alter_at) & any(!is.na(list(node, nodal_type, param_set, given, statement, param_names)))){
     stop("Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values.")
   }
@@ -141,17 +138,35 @@ make_par_values <- function(model,
     stop("values and distribution cannot be declared at the same time. Try sequentially. No change to values")
   }
 
-  # construct command for alter_at
+  #disallow multiple statements
+  if(!is.na(statement) & length(statement) > 1) {
+    stop("please specify only one statement")
+  }
 
+  # construct commands for alter_at
   if(!is.na(alter_at)){
 
     if(!is.character(alter_at)){
       stop("alter_at must be of type character")
     }
 
-    cols <- unlist(strsplit(alter_at, "\\& | \\| | \\|\\| | \\&\\&"))%>%
-      sapply(function(i) strsplit(i, "\\== | \\%in% | \\!=")[[1]][1])%>%
+    # extract logical operations that join filter statements
+    join <- stringr::str_extract_all(alter_at, "\\& | \\| | \\|\\| | \\&\\&")[[1]] |>
+      trimws(which = "both") |>
+      stringr::str_pad(width = 4, side = "both")
+
+    # extract filter statements
+    operation <- unlist(strsplit(alter_at, trimws(join, which = "both")))
+
+    # extract operands from filter statements
+    operand <- sapply(operation, function(i) stringr::str_extract_all(i, "\\%in% | \\== | \\!=")[[1]]) |>
       trimws(which = "both")
+
+    # check if correct columns are specified in filter statements
+    cols <- mapply(function(operation, operand) {
+      sub(paste(operand, ".*", sep = ""), "", operation) |>
+        trimws(which = "both")
+    }, operation, operand)
 
     wrong_cols <- !(cols %in% c("parm_names","param_set","given","node","nodal_type"))
 
@@ -162,18 +177,34 @@ make_par_values <- function(model,
                  sep = " "))
     }
 
-    command <- paste("(",alter_at,")", sep = "")
+    # split filter statements into column + operand and filter values
+    sets <- mapply(function(operation,operand) {
+      split <- strsplit(operation, operand)[[1]]
+      list(paste(paste("param_df", split[1], sep = "$"), operand, sep = " "),
+           eval(parse(text = split[2])))
+    }, operation, operand, SIMPLIFY = FALSE)
 
+    # call expand.grid on filter values >> this allows for the construction of a unique filter
+    # command for each parameter
+    commands <- lapply(sets, function(i) i[[2]]) |>
+      expand.grid(stringsAsFactors = FALSE)
+
+    # construct filter commands
+    for(i in 1:length(sets)) {
+      commands[[i]] <- paste(sets[[i]][[1]],paste("'",commands[[i]],"'", sep = ""), sep = " ")
+    }
+
+    commands <- apply(commands, 1, function(row) paste(row, collapse = join))
   }
 
-  # construct command for param_names
-
+  # construct commands for param_names
   if(any(!is.na(param_names))){
 
     if(!is.character(param_names)){
       stop("param_names must be of type character. No change to values.")
     }
 
+    # check if correct param_names specified
     wrong_names <- !(param_names %in% model$parameters_df$param_names)
 
     if(any(wrong_names)){
@@ -184,18 +215,15 @@ make_par_values <- function(model,
            )
     }
 
-    param_names <- param_names%>%
-      paste(collapse = "','")
-    param_names <- paste("c('",param_names,"')", sep = "")
-
-    command <- paste("(param_names %in% ", param_names, ")", sep = "")
-
+    # construct commands for param_names
+    param_names <- c("Y.10_X.0","Y.10_X.1")
+    commands <- paste("param_df$param_names == ", "'", param_names, "'", sep = "")
   }
 
   # construct command for remaining arguments
-
   if(any(!is.na(list(node, nodal_type, param_set, given, statement)))){
 
+    # check which arguments are given
     args <- c("node","nodal_type","param_set","given","statement")
     defined <- args[!is.na(list(node, nodal_type, param_set, given, statement))]
 
@@ -206,52 +234,40 @@ make_par_values <- function(model,
       stop(paste(paste(defined[not_char], sep = ","),
                  "must be of type character. No change to values.",
                  sep = " ")
-           )
+      )
     }
 
-    sub_mutate_at <- rep(NA, length(defined))
+    sets <- as.list(rep(NA,4))
+    names <- c("node","nodal_type","param_set","given")
+    names(sets) <- names
 
-    #construct commands defining where to mutate for each argument
-    for(j in 1:length(defined)){
-
-      #if argument is statement get node and nodal type and construct command
-      if(defined[j] == "statement"){
+    # construct commands defining where to filter for each argument
+    for(i in 1:length(defined)){
+      #if argument is statement place filter values in node and nodal_type position for argument list
+      if(defined[i] == "statement"){
         query <- map_query_to_nodal_type(model, statement, join_by = join_by)
-
-        node_j <- query$node%>%
-          paste(collapse = "','")
-        node_j <- paste("c('",node_j,"')", sep = "")
-
-        nodal_type_j <- names(which(query$types))%>%
-          paste(collapse = "','")
-        nodal_type_j <- paste("c('",nodal_type_j,"')", sep = "")
-
-        sub_mutate_at[j] <- paste("node %in% ", node_j, " & nodal_type %in% ", nodal_type_j, sep = "")
-
-        #construct commands for other arguments
+        sets[["node"]] <- query$node
+        sets[["nodal_type"]]<- names(which(query$types))
       } else {
-
-        vec <- eval(parse(text = paste("unlist(", defined[j], ")", sep = "")))%>%
-          paste(collapse = "','")
-        vec <- paste("c('",vec,"')", sep = "")
-
-        sub_mutate_at[j] <- paste(defined[j], " %in% ", vec, sep = "")
-
+        #place filter values in argument list
+        sets[[defined[i]]] <- eval(parse(text = paste("unlist(", defined[i], ")", sep = "")))
       }
-
     }
 
-    command <- paste("(", paste(sub_mutate_at, collapse = " & "), ")", sep = "")
+    # expand.grid on argument list >> this allows for the construction of a unique filter
+    # command for each parameter
+    commands <- expand.grid(sets,stringsAsFactors = FALSE)
+
+    # construct commands
+    for(i in 1:length(sets)) {
+      commands[[i]] <- paste(paste("param_df$", names[i], sep = ""), "==", paste("'",commands[[i]],"'", sep = ""), sep = " ")
+    }
+
+    commands <- commands[,defined, drop = FALSE]
+    commands <- apply(commands, 1, function(row) paste(row, collapse = " & "))
 
   }
 
-  if(!exists("command")){
-    if(!is.na(distribution))
-       message("no specific parameters to alter values for specified. Altering all parameters.")
-    to_alter <- rep(TRUE, length(y))
-  } else {
-    to_alter <- with(model$parameters_df, eval(parse(text = command)))
-  }
 
   # Provide values unless a distribution is provided
   if(!is.na(distribution)){
@@ -261,19 +277,44 @@ make_par_values <- function(model,
     x <- switch(distribution, uniform = 1, jeffreys = 0.5, certainty = 10000)
   }
 
+  # check if correct number of values specified
+  if(!exists("commands")) {
+    n_to_alter <- length(y)
+  } else {
+    n_to_alter <- length(commands)
+  }
 
+  if((n_to_alter > 0) & (length(x) != 1) & (length(x) != n_to_alter)) {
+    stop(paste("Trying to replace ", n_to_alter, " parameters with ", length(x), " values.",
+               "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
+               sep = ""))
+  }
+
+
+  # generate where to alter
+  if(!exists("commands")){
+    if(!is.na(distribution)){
+      message("no specific parameters to alter values for specified. Altering all parameters.")
+    }
+    to_alter <- rep(TRUE, length(y))
+  } else {
+    # reorder new parameter values according to the parameter order in parameters_df
+    param_df <- model$parameters_df
+    names <- sapply(commands, function(i) {
+      eval(parse(text = paste("param_df[", i, ",][['param_names']]")))
+    })
+
+    names(x) <- names
+    x <- x[param_df$param_names]
+    to_alter <- !is.na(x)
+    x <- x[to_alter]
+  }
+
+  # apply changes
   if(sum(to_alter) == 0){
     message("No change to values")
     out <- y
-
   } else {
-
-    if ((length(x) != 1) & (length(x) != sum(to_alter))){
-      stop(paste("Trying to replace ", sum(to_alter), " parameters with ", length(x), " values.",
-                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
-                 sep = ""))
-    }
-
 
     # Make changes: No normalization
     y[to_alter] <- x
@@ -304,7 +345,6 @@ make_par_values <- function(model,
     out <- y
 
   }
-
 
   return(out)
 
