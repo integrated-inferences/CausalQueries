@@ -101,24 +101,25 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 66, column 21 to line 68, column 2)",
                                                       " (in 'string', line 66, column 0 to line 68, column 2)",
                                                       " (in 'string', line 70, column 1 to column 14)",
-                                                      " (in 'string', line 72, column 1 to column 16)",
-                                                      " (in 'string', line 74, column 1 to column 16)",
-                                                      " (in 'string', line 91, column 0 to column 30)",
-                                                      " (in 'string', line 94, column 3 to column 56)",
-                                                      " (in 'string', line 93, column 21 to line 95, column 1)",
-                                                      " (in 'string', line 93, column 0 to line 95, column 1)",
-                                                      " (in 'string', line 92, column 26 to line 95, column 2)",
-                                                      " (in 'string', line 92, column 0 to line 95, column 2)",
-                                                      " (in 'string', line 97, column 4 to column 43)",
-                                                      " (in 'string', line 96, column 27 to line 98, column 2)",
-                                                      " (in 'string', line 96, column 1 to line 98, column 2)",
-                                                      " (in 'string', line 79, column 2 to column 100)",
-                                                      " (in 'string', line 80, column 2 to column 50)",
-                                                      " (in 'string', line 78, column 26 to line 81, column 2)",
-                                                      " (in 'string', line 78, column 0 to line 81, column 2)",
-                                                      " (in 'string', line 84, column 2 to line 85, column 88)",
-                                                      " (in 'string', line 83, column 26 to line 86, column 2)",
-                                                      " (in 'string', line 83, column 0 to line 86, column 2)",
+                                                      " (in 'string', line 72, column 1 to column 20)",
+                                                      " (in 'string', line 73, column 1 to column 16)",
+                                                      " (in 'string', line 75, column 1 to column 16)",
+                                                      " (in 'string', line 92, column 0 to column 30)",
+                                                      " (in 'string', line 95, column 3 to column 56)",
+                                                      " (in 'string', line 94, column 21 to line 96, column 1)",
+                                                      " (in 'string', line 94, column 0 to line 96, column 1)",
+                                                      " (in 'string', line 93, column 26 to line 96, column 2)",
+                                                      " (in 'string', line 93, column 0 to line 96, column 2)",
+                                                      " (in 'string', line 98, column 4 to column 43)",
+                                                      " (in 'string', line 97, column 27 to line 99, column 2)",
+                                                      " (in 'string', line 97, column 1 to line 99, column 2)",
+                                                      " (in 'string', line 80, column 2 to column 100)",
+                                                      " (in 'string', line 81, column 2 to column 50)",
+                                                      " (in 'string', line 79, column 26 to line 82, column 2)",
+                                                      " (in 'string', line 79, column 0 to line 82, column 2)",
+                                                      " (in 'string', line 85, column 2 to line 86, column 88)",
+                                                      " (in 'string', line 84, column 26 to line 87, column 2)",
+                                                      " (in 'string', line 84, column 0 to line 87, column 2)",
                                                       " (in 'string', line 9, column 0 to column 22)",
                                                       " (in 'string', line 10, column 0 to column 21)",
                                                       " (in 'string', line 11, column 0 to column 21)",
@@ -168,7 +169,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 40, column 25 to column 32)",
                                                       " (in 'string', line 41, column 25 to column 31)",
                                                       " (in 'string', line 42, column 25 to column 33)",
-                                                      " (in 'string', line 91, column 7 to column 14)",
+                                                      " (in 'string', line 92, column 7 to column 14)",
                                                       " (in 'string', line 3, column 15 to column 22)",
                                                       " (in 'string', line 3, column 4 to column 27)",
                                                       " (in 'string', line 4, column 4 to column 40)",
@@ -185,16 +186,16 @@ col_sums(const T0__& X_arg__, std::ostream* pstream__) {
   (void) DUMMY_VAR__;  // suppress unused var warning
   
   try {
-    current_statement__ = 95;
+    current_statement__ = 96;
     validate_non_negative_index("s", "cols(X)", cols(X));
     Eigen::Matrix<local_scalar_t__, 1, -1> s;
     s = Eigen::Matrix<local_scalar_t__, 1, -1>(cols(X));
     stan::math::fill(s, DUMMY_VAR__);
     
-    current_statement__ = 97;
+    current_statement__ = 98;
     assign(s, nil_index_list(), multiply(rep_row_vector(1, rows(X)), X),
       "assigning variable s");
-    current_statement__ = 98;
+    current_statement__ = 99;
     return s;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -264,120 +265,120 @@ public:
       pos__ = std::numeric_limits<int>::min();
       
       pos__ = 1;
-      current_statement__ = 45;
+      current_statement__ = 46;
       context__.validate_dims("data initialization","n_params","int",
           context__.to_vec());
       n_params = std::numeric_limits<int>::min();
       
-      current_statement__ = 45;
-      n_params = context__.vals_i("n_params")[(1 - 1)];
-      current_statement__ = 45;
-      current_statement__ = 45;
-      check_greater_or_equal(function__, "n_params", n_params, 1);
       current_statement__ = 46;
+      n_params = context__.vals_i("n_params")[(1 - 1)];
+      current_statement__ = 46;
+      current_statement__ = 46;
+      check_greater_or_equal(function__, "n_params", n_params, 1);
+      current_statement__ = 47;
       context__.validate_dims("data initialization","n_paths","int",
           context__.to_vec());
       n_paths = std::numeric_limits<int>::min();
       
-      current_statement__ = 46;
-      n_paths = context__.vals_i("n_paths")[(1 - 1)];
-      current_statement__ = 46;
-      current_statement__ = 46;
-      check_greater_or_equal(function__, "n_paths", n_paths, 1);
       current_statement__ = 47;
+      n_paths = context__.vals_i("n_paths")[(1 - 1)];
+      current_statement__ = 47;
+      current_statement__ = 47;
+      check_greater_or_equal(function__, "n_paths", n_paths, 1);
+      current_statement__ = 48;
       context__.validate_dims("data initialization","n_types","int",
           context__.to_vec());
       n_types = std::numeric_limits<int>::min();
       
-      current_statement__ = 47;
-      n_types = context__.vals_i("n_types")[(1 - 1)];
-      current_statement__ = 47;
-      current_statement__ = 47;
-      check_greater_or_equal(function__, "n_types", n_types, 1);
       current_statement__ = 48;
+      n_types = context__.vals_i("n_types")[(1 - 1)];
+      current_statement__ = 48;
+      current_statement__ = 48;
+      check_greater_or_equal(function__, "n_types", n_types, 1);
+      current_statement__ = 49;
       context__.validate_dims("data initialization","n_param_sets","int",
           context__.to_vec());
       n_param_sets = std::numeric_limits<int>::min();
       
-      current_statement__ = 48;
-      n_param_sets = context__.vals_i("n_param_sets")[(1 - 1)];
-      current_statement__ = 48;
-      current_statement__ = 48;
-      check_greater_or_equal(function__, "n_param_sets", n_param_sets, 1);
       current_statement__ = 49;
+      n_param_sets = context__.vals_i("n_param_sets")[(1 - 1)];
+      current_statement__ = 49;
+      current_statement__ = 49;
+      check_greater_or_equal(function__, "n_param_sets", n_param_sets, 1);
+      current_statement__ = 50;
       context__.validate_dims("data initialization","n_nodes","int",
           context__.to_vec());
       n_nodes = std::numeric_limits<int>::min();
       
-      current_statement__ = 49;
-      n_nodes = context__.vals_i("n_nodes")[(1 - 1)];
-      current_statement__ = 49;
-      current_statement__ = 49;
-      check_greater_or_equal(function__, "n_nodes", n_nodes, 1);
       current_statement__ = 50;
+      n_nodes = context__.vals_i("n_nodes")[(1 - 1)];
+      current_statement__ = 50;
+      current_statement__ = 50;
+      check_greater_or_equal(function__, "n_nodes", n_nodes, 1);
+      current_statement__ = 51;
       validate_non_negative_index("n_param_each", "n_param_sets",
                                   n_param_sets);
-      current_statement__ = 51;
+      current_statement__ = 52;
       context__.validate_dims("data initialization","n_param_each","int",
           context__.to_vec(n_param_sets));
       n_param_each = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
       
-      current_statement__ = 51;
+      current_statement__ = 52;
       assign(n_param_each, nil_index_list(),
         context__.vals_i("n_param_each"), "assigning variable n_param_each");
-      current_statement__ = 51;
+      current_statement__ = 52;
       for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
-        current_statement__ = 51;
-        current_statement__ = 51;
+        current_statement__ = 52;
+        current_statement__ = 52;
         check_greater_or_equal(function__, "n_param_each[sym1__]",
                                n_param_each[(sym1__ - 1)], 1);}
-      current_statement__ = 52;
+      current_statement__ = 53;
       context__.validate_dims("data initialization","n_data","int",
           context__.to_vec());
       n_data = std::numeric_limits<int>::min();
       
-      current_statement__ = 52;
-      n_data = context__.vals_i("n_data")[(1 - 1)];
-      current_statement__ = 52;
-      current_statement__ = 52;
-      check_greater_or_equal(function__, "n_data", n_data, 1);
       current_statement__ = 53;
+      n_data = context__.vals_i("n_data")[(1 - 1)];
+      current_statement__ = 53;
+      current_statement__ = 53;
+      check_greater_or_equal(function__, "n_data", n_data, 1);
+      current_statement__ = 54;
       context__.validate_dims("data initialization","n_events","int",
           context__.to_vec());
       n_events = std::numeric_limits<int>::min();
       
-      current_statement__ = 53;
-      n_events = context__.vals_i("n_events")[(1 - 1)];
-      current_statement__ = 53;
-      current_statement__ = 53;
-      check_greater_or_equal(function__, "n_events", n_events, 1);
       current_statement__ = 54;
+      n_events = context__.vals_i("n_events")[(1 - 1)];
+      current_statement__ = 54;
+      current_statement__ = 54;
+      check_greater_or_equal(function__, "n_events", n_events, 1);
+      current_statement__ = 55;
       context__.validate_dims("data initialization","n_strategies","int",
           context__.to_vec());
       n_strategies = std::numeric_limits<int>::min();
       
-      current_statement__ = 54;
-      n_strategies = context__.vals_i("n_strategies")[(1 - 1)];
-      current_statement__ = 54;
-      current_statement__ = 54;
-      check_greater_or_equal(function__, "n_strategies", n_strategies, 1);
       current_statement__ = 55;
+      n_strategies = context__.vals_i("n_strategies")[(1 - 1)];
+      current_statement__ = 55;
+      current_statement__ = 55;
+      check_greater_or_equal(function__, "n_strategies", n_strategies, 1);
+      current_statement__ = 56;
       context__.validate_dims("data initialization","keep_transformed","int",
           context__.to_vec());
       keep_transformed = std::numeric_limits<int>::min();
       
-      current_statement__ = 55;
+      current_statement__ = 56;
       keep_transformed = context__.vals_i("keep_transformed")[(1 - 1)];
-      current_statement__ = 55;
-      current_statement__ = 55;
+      current_statement__ = 56;
+      current_statement__ = 56;
       check_greater_or_equal(function__, "keep_transformed",
                              keep_transformed, 0);
-      current_statement__ = 55;
-      current_statement__ = 55;
-      check_less_or_equal(function__, "keep_transformed", keep_transformed, 1);
       current_statement__ = 56;
-      validate_non_negative_index("lambdas_prior", "n_params", n_params);
+      current_statement__ = 56;
+      check_less_or_equal(function__, "keep_transformed", keep_transformed, 1);
       current_statement__ = 57;
+      validate_non_negative_index("lambdas_prior", "n_params", n_params);
+      current_statement__ = 58;
       context__.validate_dims("data initialization","lambdas_prior","double",
           context__.to_vec(n_params));
       lambdas_prior = Eigen::Matrix<double, -1, 1>(n_params);
@@ -385,132 +386,132 @@ public:
       
       {
         std::vector<local_scalar_t__> lambdas_prior_flat__;
-        current_statement__ = 57;
+        current_statement__ = 58;
         assign(lambdas_prior_flat__, nil_index_list(),
           context__.vals_r("lambdas_prior"),
           "assigning variable lambdas_prior_flat__");
-        current_statement__ = 57;
+        current_statement__ = 58;
         pos__ = 1;
-        current_statement__ = 57;
+        current_statement__ = 58;
         for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
-          current_statement__ = 57;
+          current_statement__ = 58;
           assign(lambdas_prior,
             cons_list(index_uni(sym1__), nil_index_list()),
             lambdas_prior_flat__[(pos__ - 1)],
             "assigning variable lambdas_prior");
-          current_statement__ = 57;
+          current_statement__ = 58;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 57;
+      current_statement__ = 58;
       for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
-        current_statement__ = 57;
-        current_statement__ = 57;
+        current_statement__ = 58;
+        current_statement__ = 58;
         check_greater_or_equal(function__, "lambdas_prior[sym1__]",
                                lambdas_prior[(sym1__ - 1)], 0);}
-      current_statement__ = 58;
-      validate_non_negative_index("l_starts", "n_param_sets", n_param_sets);
       current_statement__ = 59;
+      validate_non_negative_index("l_starts", "n_param_sets", n_param_sets);
+      current_statement__ = 60;
       context__.validate_dims("data initialization","l_starts","int",
           context__.to_vec(n_param_sets));
       l_starts = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
       
-      current_statement__ = 59;
+      current_statement__ = 60;
       assign(l_starts, nil_index_list(), context__.vals_i("l_starts"),
         "assigning variable l_starts");
-      current_statement__ = 59;
+      current_statement__ = 60;
       for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
-        current_statement__ = 59;
-        current_statement__ = 59;
+        current_statement__ = 60;
+        current_statement__ = 60;
         check_greater_or_equal(function__, "l_starts[sym1__]",
                                l_starts[(sym1__ - 1)], 1);}
-      current_statement__ = 60;
-      validate_non_negative_index("l_ends", "n_param_sets", n_param_sets);
       current_statement__ = 61;
+      validate_non_negative_index("l_ends", "n_param_sets", n_param_sets);
+      current_statement__ = 62;
       context__.validate_dims("data initialization","l_ends","int",
           context__.to_vec(n_param_sets));
       l_ends = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
       
-      current_statement__ = 61;
+      current_statement__ = 62;
       assign(l_ends, nil_index_list(), context__.vals_i("l_ends"),
         "assigning variable l_ends");
-      current_statement__ = 61;
+      current_statement__ = 62;
       for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
-        current_statement__ = 61;
-        current_statement__ = 61;
+        current_statement__ = 62;
+        current_statement__ = 62;
         check_greater_or_equal(function__, "l_ends[sym1__]",
                                l_ends[(sym1__ - 1)], 1);}
-      current_statement__ = 62;
-      validate_non_negative_index("node_starts", "n_nodes", n_nodes);
       current_statement__ = 63;
+      validate_non_negative_index("node_starts", "n_nodes", n_nodes);
+      current_statement__ = 64;
       context__.validate_dims("data initialization","node_starts","int",
           context__.to_vec(n_nodes));
       node_starts = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
       
-      current_statement__ = 63;
+      current_statement__ = 64;
       assign(node_starts, nil_index_list(), context__.vals_i("node_starts"),
         "assigning variable node_starts");
-      current_statement__ = 63;
+      current_statement__ = 64;
       for (int sym1__ = 1; sym1__ <= n_nodes; ++sym1__) {
-        current_statement__ = 63;
-        current_statement__ = 63;
+        current_statement__ = 64;
+        current_statement__ = 64;
         check_greater_or_equal(function__, "node_starts[sym1__]",
                                node_starts[(sym1__ - 1)], 1);}
-      current_statement__ = 64;
-      validate_non_negative_index("node_ends", "n_nodes", n_nodes);
       current_statement__ = 65;
+      validate_non_negative_index("node_ends", "n_nodes", n_nodes);
+      current_statement__ = 66;
       context__.validate_dims("data initialization","node_ends","int",
           context__.to_vec(n_nodes));
       node_ends = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
       
-      current_statement__ = 65;
+      current_statement__ = 66;
       assign(node_ends, nil_index_list(), context__.vals_i("node_ends"),
         "assigning variable node_ends");
-      current_statement__ = 65;
+      current_statement__ = 66;
       for (int sym1__ = 1; sym1__ <= n_nodes; ++sym1__) {
-        current_statement__ = 65;
-        current_statement__ = 65;
+        current_statement__ = 66;
+        current_statement__ = 66;
         check_greater_or_equal(function__, "node_ends[sym1__]",
                                node_ends[(sym1__ - 1)], 1);}
-      current_statement__ = 66;
+      current_statement__ = 67;
       validate_non_negative_index("strategy_starts", "n_strategies",
                                   n_strategies);
-      current_statement__ = 67;
+      current_statement__ = 68;
       context__.validate_dims("data initialization","strategy_starts","int",
           context__.to_vec(n_strategies));
       strategy_starts = std::vector<int>(n_strategies, std::numeric_limits<int>::min());
       
-      current_statement__ = 67;
+      current_statement__ = 68;
       assign(strategy_starts, nil_index_list(),
         context__.vals_i("strategy_starts"),
         "assigning variable strategy_starts");
-      current_statement__ = 67;
+      current_statement__ = 68;
       for (int sym1__ = 1; sym1__ <= n_strategies; ++sym1__) {
-        current_statement__ = 67;
-        current_statement__ = 67;
+        current_statement__ = 68;
+        current_statement__ = 68;
         check_greater_or_equal(function__, "strategy_starts[sym1__]",
                                strategy_starts[(sym1__ - 1)], 1);}
-      current_statement__ = 68;
+      current_statement__ = 69;
       validate_non_negative_index("strategy_ends", "n_strategies",
                                   n_strategies);
-      current_statement__ = 69;
+      current_statement__ = 70;
       context__.validate_dims("data initialization","strategy_ends","int",
           context__.to_vec(n_strategies));
       strategy_ends = std::vector<int>(n_strategies, std::numeric_limits<int>::min());
       
-      current_statement__ = 69;
+      current_statement__ = 70;
       assign(strategy_ends, nil_index_list(),
         context__.vals_i("strategy_ends"), "assigning variable strategy_ends");
-      current_statement__ = 69;
+      current_statement__ = 70;
       for (int sym1__ = 1; sym1__ <= n_strategies; ++sym1__) {
-        current_statement__ = 69;
-        current_statement__ = 69;
+        current_statement__ = 70;
+        current_statement__ = 70;
         check_greater_or_equal(function__, "strategy_ends[sym1__]",
                                strategy_ends[(sym1__ - 1)], 1);}
-      current_statement__ = 70;
-      validate_non_negative_index("P", "n_params", n_params);
       current_statement__ = 71;
-      validate_non_negative_index("P", "n_types", n_types);
+      validate_non_negative_index("P", "n_params", n_params);
       current_statement__ = 72;
+      validate_non_negative_index("P", "n_types", n_types);
+      current_statement__ = 73;
       context__.validate_dims("data initialization","P","double",
           context__.to_vec(n_params, n_types));
       P = Eigen::Matrix<double, -1, -1>(n_params, n_types);
@@ -518,28 +519,28 @@ public:
       
       {
         std::vector<local_scalar_t__> P_flat__;
-        current_statement__ = 72;
+        current_statement__ = 73;
         assign(P_flat__, nil_index_list(), context__.vals_r("P"),
           "assigning variable P_flat__");
-        current_statement__ = 72;
+        current_statement__ = 73;
         pos__ = 1;
-        current_statement__ = 72;
+        current_statement__ = 73;
         for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
-          current_statement__ = 72;
+          current_statement__ = 73;
           for (int sym2__ = 1; sym2__ <= n_params; ++sym2__) {
-            current_statement__ = 72;
+            current_statement__ = 73;
             assign(P,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               P_flat__[(pos__ - 1)], "assigning variable P");
-            current_statement__ = 72;
+            current_statement__ = 73;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 73;
-      validate_non_negative_index("parmap", "n_params", n_params);
       current_statement__ = 74;
-      validate_non_negative_index("parmap", "n_paths", n_paths);
+      validate_non_negative_index("parmap", "n_params", n_params);
       current_statement__ = 75;
+      validate_non_negative_index("parmap", "n_paths", n_paths);
+      current_statement__ = 76;
       context__.validate_dims("data initialization","parmap","double",
           context__.to_vec(n_params, n_paths));
       parmap = Eigen::Matrix<double, -1, -1>(n_params, n_paths);
@@ -547,28 +548,28 @@ public:
       
       {
         std::vector<local_scalar_t__> parmap_flat__;
-        current_statement__ = 75;
+        current_statement__ = 76;
         assign(parmap_flat__, nil_index_list(), context__.vals_r("parmap"),
           "assigning variable parmap_flat__");
-        current_statement__ = 75;
+        current_statement__ = 76;
         pos__ = 1;
-        current_statement__ = 75;
+        current_statement__ = 76;
         for (int sym1__ = 1; sym1__ <= n_paths; ++sym1__) {
-          current_statement__ = 75;
+          current_statement__ = 76;
           for (int sym2__ = 1; sym2__ <= n_params; ++sym2__) {
-            current_statement__ = 75;
+            current_statement__ = 76;
             assign(parmap,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               parmap_flat__[(pos__ - 1)], "assigning variable parmap");
-            current_statement__ = 75;
+            current_statement__ = 76;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 76;
-      validate_non_negative_index("map", "n_paths", n_paths);
       current_statement__ = 77;
-      validate_non_negative_index("map", "n_data", n_data);
+      validate_non_negative_index("map", "n_paths", n_paths);
       current_statement__ = 78;
+      validate_non_negative_index("map", "n_data", n_data);
+      current_statement__ = 79;
       context__.validate_dims("data initialization","map","double",
           context__.to_vec(n_paths, n_data));
       map = Eigen::Matrix<double, -1, -1>(n_paths, n_data);
@@ -576,28 +577,28 @@ public:
       
       {
         std::vector<local_scalar_t__> map_flat__;
-        current_statement__ = 78;
+        current_statement__ = 79;
         assign(map_flat__, nil_index_list(), context__.vals_r("map"),
           "assigning variable map_flat__");
-        current_statement__ = 78;
+        current_statement__ = 79;
         pos__ = 1;
-        current_statement__ = 78;
+        current_statement__ = 79;
         for (int sym1__ = 1; sym1__ <= n_data; ++sym1__) {
-          current_statement__ = 78;
+          current_statement__ = 79;
           for (int sym2__ = 1; sym2__ <= n_paths; ++sym2__) {
-            current_statement__ = 78;
+            current_statement__ = 79;
             assign(map,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               map_flat__[(pos__ - 1)], "assigning variable map");
-            current_statement__ = 78;
+            current_statement__ = 79;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 79;
-      validate_non_negative_index("E", "n_events", n_events);
       current_statement__ = 80;
-      validate_non_negative_index("E", "n_data", n_data);
+      validate_non_negative_index("E", "n_events", n_events);
       current_statement__ = 81;
+      validate_non_negative_index("E", "n_data", n_data);
+      current_statement__ = 82;
       context__.validate_dims("data initialization","E","double",
           context__.to_vec(n_events, n_data));
       E = Eigen::Matrix<double, -1, -1>(n_events, n_data);
@@ -605,87 +606,87 @@ public:
       
       {
         std::vector<local_scalar_t__> E_flat__;
-        current_statement__ = 81;
+        current_statement__ = 82;
         assign(E_flat__, nil_index_list(), context__.vals_r("E"),
           "assigning variable E_flat__");
-        current_statement__ = 81;
+        current_statement__ = 82;
         pos__ = 1;
-        current_statement__ = 81;
+        current_statement__ = 82;
         for (int sym1__ = 1; sym1__ <= n_data; ++sym1__) {
-          current_statement__ = 81;
+          current_statement__ = 82;
           for (int sym2__ = 1; sym2__ <= n_events; ++sym2__) {
-            current_statement__ = 81;
+            current_statement__ = 82;
             assign(E,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               E_flat__[(pos__ - 1)], "assigning variable E");
-            current_statement__ = 81;
+            current_statement__ = 82;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 81;
+      current_statement__ = 82;
       for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
-        current_statement__ = 81;
+        current_statement__ = 82;
         for (int sym2__ = 1; sym2__ <= n_data; ++sym2__) {
-          current_statement__ = 81;
-          current_statement__ = 81;
+          current_statement__ = 82;
+          current_statement__ = 82;
           check_greater_or_equal(function__, "E[sym1__, sym2__]",
                                  rvalue(E,
                                    cons_list(index_uni(sym1__),
                                      cons_list(index_uni(sym2__),
                                        nil_index_list())), "E"), 0);}}
-      current_statement__ = 81;
+      current_statement__ = 82;
       for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
-        current_statement__ = 81;
+        current_statement__ = 82;
         for (int sym2__ = 1; sym2__ <= n_data; ++sym2__) {
-          current_statement__ = 81;
-          current_statement__ = 81;
+          current_statement__ = 82;
+          current_statement__ = 82;
           check_less_or_equal(function__, "E[sym1__, sym2__]",
                               rvalue(E,
                                 cons_list(index_uni(sym1__),
                                   cons_list(index_uni(sym2__),
                                     nil_index_list())), "E"), 1);}}
-      current_statement__ = 82;
-      validate_non_negative_index("Y", "n_events", n_events);
       current_statement__ = 83;
+      validate_non_negative_index("Y", "n_events", n_events);
+      current_statement__ = 84;
       context__.validate_dims("data initialization","Y","int",
           context__.to_vec(n_events));
       Y = std::vector<int>(n_events, std::numeric_limits<int>::min());
       
-      current_statement__ = 83;
+      current_statement__ = 84;
       assign(Y, nil_index_list(), context__.vals_i("Y"),
         "assigning variable Y");
-      current_statement__ = 83;
-      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
-        current_statement__ = 83;
-        current_statement__ = 83;
-        check_greater_or_equal(function__, "Y[sym1__]", Y[(sym1__ - 1)], 0);}
       current_statement__ = 84;
+      for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
+        current_statement__ = 84;
+        current_statement__ = 84;
+        check_greater_or_equal(function__, "Y[sym1__]", Y[(sym1__ - 1)], 0);}
+      current_statement__ = 85;
       gamma_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 84;
+      current_statement__ = 85;
       gamma_1dim__ = (n_params - n_param_sets);
-      current_statement__ = 84;
+      current_statement__ = 85;
       validate_non_negative_index("gamma", "n_params - n_param_sets",
                                   gamma_1dim__);
-      current_statement__ = 85;
-      validate_non_negative_index("lambdas", "n_params", n_params);
       current_statement__ = 86;
-      validate_non_negative_index("sum_gammas", "n_param_sets", n_param_sets);
+      validate_non_negative_index("lambdas", "n_params", n_params);
       current_statement__ = 87;
-      validate_non_negative_index("parlam", "n_params", n_params);
+      validate_non_negative_index("sum_gammas", "n_param_sets", n_param_sets);
       current_statement__ = 88;
-      validate_non_negative_index("parlam", "n_paths", n_paths);
+      validate_non_negative_index("parlam", "n_params", n_params);
       current_statement__ = 89;
-      validate_non_negative_index("parlam2", "n_nodes", n_nodes);
+      validate_non_negative_index("parlam", "n_paths", n_paths);
       current_statement__ = 90;
-      validate_non_negative_index("parlam2", "n_paths", n_paths);
+      validate_non_negative_index("parlam2", "n_nodes", n_nodes);
       current_statement__ = 91;
-      validate_non_negative_index("w_0", "n_paths", n_paths);
+      validate_non_negative_index("parlam2", "n_paths", n_paths);
       current_statement__ = 92;
-      validate_non_negative_index("w", "n_data", n_data);
+      validate_non_negative_index("w_0", "n_paths", n_paths);
       current_statement__ = 93;
-      validate_non_negative_index("w_full", "n_events", n_events);
+      validate_non_negative_index("w", "n_data", n_data);
       current_statement__ = 94;
+      validate_non_negative_index("w_full", "n_events", n_events);
+      current_statement__ = 95;
       validate_non_negative_index("prob_of_types", "n_types", n_types);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -834,9 +835,12 @@ public:
       assign(w, nil_index_list(), multiply(transpose(map), w_0),
         "assigning variable w");
       current_statement__ = 27;
-      assign(w, nil_index_list(), divide(stan::model::deep_copy(w), sum(w)),
+      assign(w, nil_index_list(), add(stan::model::deep_copy(w), 0.00000001),
         "assigning variable w");
       current_statement__ = 28;
+      assign(w, nil_index_list(), divide(stan::model::deep_copy(w), sum(w)),
+        "assigning variable w");
+      current_statement__ = 29;
       assign(w_full, nil_index_list(), multiply(E, w),
         "assigning variable w_full");
       current_statement__ = 2;
@@ -892,9 +896,9 @@ public:
         check_less_or_equal(function__, "w_full[sym1__]",
                             w_full[(sym1__ - 1)], 1);}
       {
-        current_statement__ = 41;
+        current_statement__ = 42;
         for (int i = 1; i <= n_param_sets; ++i) {
-          current_statement__ = 38;
+          current_statement__ = 39;
           lp_accum__.add(
             dirichlet_lpdf<false>(
               rvalue(lambdas,
@@ -903,13 +907,13 @@ public:
               rvalue(lambdas_prior,
                 cons_list(index_min_max(l_starts[(i - 1)], l_ends[(i - 1)]),
                   nil_index_list()), "lambdas_prior")));
-          current_statement__ = 39;
+          current_statement__ = 40;
           lp_accum__.add(
             (-n_param_each[(i - 1)] * stan::math::log(sum_gammas[(i - 1)])));
         }
-        current_statement__ = 44;
+        current_statement__ = 45;
         for (int i = 1; i <= n_strategies; ++i) {
-          current_statement__ = 42;
+          current_statement__ = 43;
           lp_accum__.add(
             multinomial_lpmf<false>(
               rvalue(Y,
@@ -1064,9 +1068,12 @@ public:
       assign(w, nil_index_list(), multiply(transpose(map), w_0),
         "assigning variable w");
       current_statement__ = 27;
-      assign(w, nil_index_list(), divide(stan::model::deep_copy(w), sum(w)),
+      assign(w, nil_index_list(), add(stan::model::deep_copy(w), 0.00000001),
         "assigning variable w");
       current_statement__ = 28;
+      assign(w, nil_index_list(), divide(stan::model::deep_copy(w), sum(w)),
+        "assigning variable w");
+      current_statement__ = 29;
       assign(w_full, nil_index_list(), multiply(E, w),
         "assigning variable w_full");
       current_statement__ = 2;
@@ -1154,11 +1161,11 @@ public:
       prob_of_types = Eigen::Matrix<double, -1, 1>(n_types);
       stan::math::fill(prob_of_types, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 34;
+      current_statement__ = 35;
       if (logical_eq(keep_transformed, 1)) {
-        current_statement__ = 32;
+        current_statement__ = 33;
         for (int i = 1; i <= n_types; ++i) {
-          current_statement__ = 30;
+          current_statement__ = 31;
           assign(prob_of_types, cons_list(index_uni(i), nil_index_list()),
             prod(
               subtract(
@@ -1173,9 +1180,9 @@ public:
                     cons_list(index_uni(i), nil_index_list())), "P"))),
             "assigning variable prob_of_types");}
       } 
-      current_statement__ = 37;
+      current_statement__ = 38;
       if (logical_eq(keep_transformed, 0)) {
-        current_statement__ = 35;
+        current_statement__ = 36;
         assign(prob_of_types, nil_index_list(), rep_vector(1, n_types),
           "assigning variable prob_of_types");
       } 
