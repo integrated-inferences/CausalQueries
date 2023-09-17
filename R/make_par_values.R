@@ -262,6 +262,11 @@ make_par_values <- function(model,
       commands[[i]] <- paste(paste("param_df$", names[i], sep = ""), "==", paste("'",commands[[i]],"'", sep = ""), sep = " ")
     }
 
+    if("statement" %in% defined) {
+      defined <- defined[!defined == "statement"]
+      defined <- c(defined, "node", "nodal_type")
+    }
+                
     commands <- commands[,defined, drop = FALSE]
     commands <- apply(commands, 1, function(row) paste(row, collapse = " & "))
 
