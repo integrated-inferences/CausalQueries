@@ -216,7 +216,6 @@ make_par_values <- function(model,
     }
 
     # construct commands for param_names
-    param_names <- c("Y.10_X.0","Y.10_X.1")
     commands <- paste("param_df$param_names == ", "'", param_names, "'", sep = "")
   }
 
