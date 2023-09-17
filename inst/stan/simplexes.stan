@@ -90,10 +90,7 @@ for (i in 1:n_paths) {
 
  w = map'*w_0;
 
- // Ensure weights sum to 1
- w = w / sum(w);
-
- // Extend to cover all data types
+  // Extend/reduce to cover all observed data types
  w_full = E * w;
 
 }
@@ -107,9 +104,10 @@ for (i in 1:n_param_sets) {
  }
 
 // Multinomials
+// Note with censoring event_probabilities might not sum to 1
 for (i in 1:n_strategies) {
   target += multinomial_lpmf(
-  Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]);
+  Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]/sum(w_full[strategy_starts[i]:strategy_ends[i]]));
  }
 
 }
