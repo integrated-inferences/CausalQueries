@@ -293,25 +293,35 @@ make_par_values <- function(model,
     param_df <- model$parameters_df
     names <- sapply(commands, function(i) {
       eval(parse(text = paste("param_df[", i, ",][['param_names']]")))
-    })
+    }, simplify = FALSE) |>
+      unlist()
 
-    # check / ensure that the number of parameters to alter and number of specified values match
-    if((nrow(names) > 1) & (length(x) == 1)) {
-      x <- rep(x, nrow(names))
+
+    # check if conditions are under-specified
+    if((length(x) != 1) & (length(commands) != length(names))) {
+      stop("A specified condition matches multiple parameters. If your model contains confounding your condition applies across multiple param_sets.
+           In these cases, it is unclear which value should be applied to which parameter. Try specifying the 'param_set' option to clarify which value should
+           be applied to which parameter.")
     }
 
-    if((nrow(names) > 0) & (length(x) != nrow(names))) {
-      stop(paste("Trying to replace ", nrow(names), " parameters with ", length(x), " values.",
-                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.
-                 If your model contains confounding multiple parameters may match your conditions as conditions can apply over multiple param_sets.
-                 Try specifying the 'param_set' option in addition to your current conditions.",
-                 sep = ""))
+    # ensure the unambiguous single value case passes checks
+    if((length(names) > 1) & (length(x) == 1)) {
+      x <- rep(x, length(names))
     }
 
+    n_vals <- length(x)
 
     names(x) <- names
     x <- x[param_df$param_names]
     to_alter <- !is.na(x)
+
+    # check that specified number of values match specified number of parameters to alter
+    if(sum(to_alter) != n_vals) {
+      stop(paste("Trying to replace ", sum(to_alter), " parameters with ", n_vals, " values.",
+                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
+                 sep = ""))
+    }
+
     x <- x[to_alter]
   }
 
