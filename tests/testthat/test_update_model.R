@@ -153,7 +153,7 @@ testthat::test_that(
 	code = {
 		model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2") %>%
 			       set_restrictions("Y2[X=1] > Y2[X=0]") %>%
-			       set_priors(statement = "Y1[X=1] > Y1[X=0]", alphas = 3)
+			       set_priors(statement = "Y1[X=1] > Y1[X=0]", param_set = c("Y1.X.0","Y1.X.1"), alphas = c(3,3))
 
 		data <- simulate_data(model, n = 5)
 

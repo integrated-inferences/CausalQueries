@@ -50,7 +50,7 @@ testthat::test_that(
     model <- CausalQueries::make_model("X -> Y; X <-> Y")
     out <- CausalQueries:::make_par_values(mode = model, x = c(0.5,0.25), node = "Y", nodal_type = c("00","01"), given = "X.0", param_set = "Y.X.0")
     expect_equal(out, c(1,1,0.5,1,0.25,1,1,1,1,1))
-    out <- CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+    out <- CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]", param_set = c("Y.X.0","Y.X.1"))
     expect_equal(out, c(1,1,1,1,0.5,1,1,1,0.25,1))
   }
 

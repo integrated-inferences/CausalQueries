@@ -266,7 +266,7 @@ make_par_values <- function(model,
       defined <- defined[!defined == "statement"]
       defined <- c(defined, "node", "nodal_type")
     }
-                
+
     commands <- commands[,defined, drop = FALSE]
     commands <- apply(commands, 1, function(row) paste(row, collapse = " & "))
 
@@ -294,6 +294,10 @@ make_par_values <- function(model,
                sep = ""))
   }
 
+  if((n_to_alter > 1) & (length(x) == 1)) {
+    x <- rep(x, n_to_alter)
+  }
+
 
   # generate where to alter
   if(!exists("commands")){
@@ -307,6 +311,8 @@ make_par_values <- function(model,
     names <- sapply(commands, function(i) {
       eval(parse(text = paste("param_df[", i, ",][['param_names']]")))
     })
+
+    if(length(x) == 1 & sum())
 
     names(x) <- names
     x <- x[param_df$param_names]
