@@ -281,28 +281,11 @@ make_par_values <- function(model,
     x <- switch(distribution, uniform = 1, jeffreys = 0.5, certainty = 10000)
   }
 
-  # check if correct number of values specified
-  if(!exists("commands")) {
-    n_to_alter <- length(y)
-  } else {
-    n_to_alter <- length(commands)
-  }
-
-  if((n_to_alter > 0) & (length(x) != 1) & (length(x) != n_to_alter)) {
-    stop(paste("Trying to replace ", n_to_alter, " parameters with ", length(x), " values.",
-               "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
-               sep = ""))
-  }
-
-  if((n_to_alter > 1) & (length(x) == 1)) {
-    x <- rep(x, n_to_alter)
-  }
-
 
   # generate where to alter
   if(!exists("commands")){
     if(!is.na(distribution)){
-      message("no specific parameters to alter values for specified. Altering all parameters.")
+      message("No specific parameters to alter values for specified. Altering all parameters.")
     }
     to_alter <- rep(TRUE, length(y))
   } else {
@@ -312,7 +295,19 @@ make_par_values <- function(model,
       eval(parse(text = paste("param_df[", i, ",][['param_names']]")))
     })
 
-    if(length(x) == 1 & sum())
+    # check / ensure that the number of parameters to alter and number of specified values match
+    if((nrow(names) > 1) & (length(x) == 1)) {
+      x <- rep(x, nrow(names))
+    }
+
+    if((nrow(names) > 0) & (length(x) != nrow(names))) {
+      stop(paste("Trying to replace ", nrow(names), " parameters with ", length(x), " values.",
+                 "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.
+                 If your model contains confounding multiple parameters may match your conditions as conditions can apply over multiple param_sets.
+                 Try specifying the 'param_set' option in addition to your current conditions.",
+                 sep = ""))
+    }
+
 
     names(x) <- names
     x <- x[param_df$param_names]
@@ -322,7 +317,7 @@ make_par_values <- function(model,
 
   # apply changes
   if(sum(to_alter) == 0){
-    message("No change to values")
+    message("Conditions do not match any parameters. No change to values.")
     out <- y
   } else {
 
