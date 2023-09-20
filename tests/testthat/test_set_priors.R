@@ -9,7 +9,7 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> Y")
 		expect_error(make_priros(model = model, alphas = 0.5, node = "X", nodal_type = "00", label = "00"))
-		expect_warning(make_priors(model = model, alphas = 0.5, node = "X", label = "00"))
+		expect_warning(make_priors(model = model, alphas = 0.5, node = "Y", label = "00"))
 	}
 )
 
