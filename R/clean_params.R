@@ -53,7 +53,7 @@ clean_param_vector <- function(model, parameters) {
 
     parameters <- as.vector(parameters)
 
-    if(!is.vector(parameters)) {
+    if(!is.atomic(parameters)) {
       stop("parameters should be a vector")
     }
 
