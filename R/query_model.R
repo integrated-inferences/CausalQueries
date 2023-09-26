@@ -470,8 +470,8 @@ get_estimands <- function(jobs, given_types, query_types, type_distributions) {
     case_level_i <- jobs[i, "case_level"]
 
     x <- query_types[(query_types$model_names == model_name_i & query_types$queries == queries_i), "type_vec"][[1]]
-    given <- given_types[(query_types$model_names == model_name_i & query_types$given == given_i), "type_vec"][[1]]
-    type_distribution <- type_distributions[(query_types$model_names == model_name_i & query_types$using == using_i),"type_distribution"][[1]]
+    given <- given_types[(given_types$model_names == model_name_i & given_types$given == given_i), "type_vec"][[1]]
+    type_distribution <- type_distributions[(type_distributions$model_names == model_name_i & type_distributions$using == using_i),"type_distribution"][[1]]
     x <- x[given]
 
     if(all(!given)) {
