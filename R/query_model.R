@@ -80,13 +80,15 @@
 #'  mean(query_distribution(model, G, using = "posteriors"))
 #' }
 query_distribution <- function(model,
-                               query,
+                               queries,
                                given = NULL,
                                using  = "parameters",
                                parameters = NULL,
+                               n_draws = 4000,
                                type_distribution = NULL,
                                join_by = "|",
-                               case_level = FALSE) {
+                               case_level = FALSE,
+                               query = NULL) {
 
   if(is(model, "causal_model")) {
     model <- list(model)
@@ -96,10 +98,14 @@ query_distribution <- function(model,
     stop("Please specify a single causal model in the `model` argument. You can pass a `causal_model` object directly or wrap it in a `list`.")
   }
 
+  if(!is.null(query)) {
+    queries <- query
+  }
+
   args_checked <- check_args(model = model,
                              using = using,
                              given = given,
-                             query = query,
+                             queries = queries,
                              fun = "query_distribution")
 
   given <- args_checked$given
@@ -237,7 +243,7 @@ query_model <- function(model,
   args_checked <- check_args(model = model,
                              using = using,
                              given = given,
-                             query = query,
+                             queries = queries,
                              fun = "query_model")
 
   given <- args_checked$given
@@ -350,14 +356,14 @@ query_model <- function(model,
 #' @return list of altered arguments
 #' @keywords internal
 
-check_args <- function(model, using, given, query, fun) {
+check_args <- function(model, using, given, queries, fun) {
   lapply(model, function(m) is_a_model(m))
 
   using[using == "posterior"] <- "posteriors"
   using[using == "prior"] <- "priors"
 
   if((fun == "query_distribution") && is.null(given)) {
-    given <- rep("ALL", length(query))
+    given <- rep("ALL", length(queries))
   }
 
   if((fun == "query_model") && is.null(given)) {
@@ -368,7 +374,7 @@ check_args <- function(model, using, given, query, fun) {
     stop("`given` must be a vector of strings specifying given statements or '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' for no givens.")
   }
 
-  if((fun == "query_distribution") && (!is.null(given)) && (length(given) != length(query))) {
+  if((fun == "query_distribution") && (!is.null(given)) && (length(given) != length(queries))) {
     stop("You must specify a given for each query. Use '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' to indicate no given.")
   }
 
