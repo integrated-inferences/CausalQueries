@@ -269,8 +269,20 @@ query_model <- function(model,
 
   ## generate required data structures
   # generate model names
-  model_names <- paste("model", 1:length(model), sep = "_")
-  names(model) <- model_names
+  if(!is.null(names(model))) {
+    model_names <- names(model)
+  } else {
+    model_names <- paste("model", 1:length(model), sep = "_")
+    names(model) <- model_names
+  }
+
+
+
+  # query names
+  query_names <- names(queries)
+  if(!is.null(query_names)) {
+    names(query_names) <- unlist(queries)
+  }
 
   # realise_outcomes
   realisations <- lapply(model, function(m) realise_outcomes(model = m))
@@ -284,15 +296,15 @@ query_model <- function(model,
                         queries,
                         case_level,
                         stringsAsFactors = FALSE)
-    names(jobs) <- c("model_names","using","given","queries","cas_level")
+    names(jobs) <- c("model_names","using","given","queries","case_level")
   } else {
     jobs <- lapply(model_names, function(m) {
       data.frame(
         model_names = m,
-        using = using,
-        given = given,
-        queries = queries,
-        case_level = case_level,
+        using = unlist(using),
+        given = unlist(given),
+        queries = unlist(queries),
+        case_level = unlist(case_level),
         stringsAsFactors = FALSE)
     }) |>
       dplyr::bind_rows()
@@ -334,8 +346,21 @@ query_model <- function(model,
   }
 
   estimands <- lapply(estimands, function(e) sapply(stats, function(s) s(e)) |> t())
-  estimands <- do.call(rbind, estimands)
-  #TODO generate names
+  estimands <- as.data.frame(do.call(rbind, estimands))
+
+  # prepare output
+  query_id <- jobs |>
+    dplyr::select(model_names, queries, given, using, case_level) |>
+    dplyr::mutate(given = ifelse(given == "ALL","-",given))
+
+  colnames(query_id) <- c("model","query","given","using","case_level")
+
+  if(!is.null(query_names)) {
+    query_id$query <- query_names[query_id$query]
+  }
+
+  estimands <- cbind(query_id, estimands)
+
   return(estimands)
 }
 
