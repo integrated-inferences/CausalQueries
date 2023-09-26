@@ -10,7 +10,6 @@
 #' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
 #' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
-#' @param verbose Logical. Whether to print mean and standard deviation of the estimand on the console.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @return A vector of draws from the distribution of the potential outcomes specified in \code{query}
 #' @importFrom stats sd weighted.mean
@@ -86,90 +85,67 @@ query_distribution <- function(model,
                                using  = "parameters",
                                parameters = NULL,
                                type_distribution = NULL,
-                               verbose = FALSE,
                                join_by = "|",
                                case_level = FALSE) {
 
-  # forgive the user:
-  if(using == "posterior") {
-    using <- "posteriors"
+  if(is(model, "causal_model")) {
+    model <- list(model)
   }
 
-  if(using == "prior") {
-    using <- "priors"
+  if(length(model) > 1) {
+    stop("Please specify a single causal model in the `model` argument. You can pass a `causal_model` object directly or wrap it in a `list`.")
   }
 
-  # check args
-  if(is.null(given)) {
-    given = rep("ALL", length(query))
-  }
+  args_checked <- check_args(model = model,
+                             using = using,
+                             given = given,
+                             query = query,
+                             fun = "query_distribution")
 
-  if(!is.null(given) && !is.character(given)) {
-    stop("given must be a vector of strings specifying given statements or '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' for no givens.")
-  }
+  given <- args_checked$given
+  using <- args_checked$using
 
-  if(!is.null(given) && (length(given) != length(query))) {
-    stop("You must specify a given for each query. Use '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' to indicate no given.")
-  }
+  model_names <- "model_1"
+  names(model) <- model_names
 
-  if(!(using %in% c("priors", "posteriors", "parameters"))) {
-    stop("`using` should be one of `priors`, `posteriors`, or `parameters`")
-  }
+  #TODO query names
 
-  # turn givens into logical vectors
-  given[given %in% c('', 'All', 'ALL', 'all', 'None', 'none', 'NONE', 'TRUE')] <- "ALL"
-  unique_given <- unique(given)
-  given_types <- lapply(unique_given, function(i) {
-    if(i == "ALL") {
-      given_types_i <- TRUE
-    } else {
-      given_types_i <- CausalQueries:::map_query_to_causal_type(model, given)$types
-    }
-    return(given_types_i)
-  })
-  names(given_types) <- unique_given
+  realisations <- lapply(model, function(m) realise_outcomes(model = m))
+  names(realisations) <- model_names
 
-  # get type distribution
-  if(is.null(type_distribution)) {
-    if(using == "parameters" && is.null(parameters)) {
-      parameters <- get_parameters(model)
-    }
+  jobs <- lapply(model_names, function(m) {
+    data.frame(
+      model_names = m,
+      using = unlist(using),
+      given = unlist(given),
+      queries = unlist(queries),
+      case_level = unlist(case_level),
+      stringsAsFactors = FALSE)
+  }) |>
+    dplyr::bind_rows()
 
-    if(using == "parameters") {
-      type_distribution <- CausalQueries:::get_type_prob(model, parameters = parameters)
-    } else {
-      type_distribution <- CausalQueries:::get_type_prob_multiple(model, using = using, P = model$P)
-    }
-  }
+  # only generate necessary data structures for unique subsets of jobs
+  # handle givens
+  given_types <- queries_to_types(jobs = jobs,
+                                  model = model,
+                                  query_col = "given",
+                                  realisations = realisations)
+  # handle queries
+  query_types <- queries_to_types(jobs = jobs,
+                                  model = model,
+                                  query_col = "queries",
+                                  realisations = realisations)
+  # handle type distributions
+  type_distributions <- get_type_distributions(jobs = jobs,
+                                               model = model,
+                                               n_draws = n_draws,
+                                               parameters = parameters)
 
-  # get given names to construct informative estimand names
-  query_names <- names(query)
-  given_names <- given
-  given_names[given_names == "ALL"] <- ""
-
-  # get estimands
-  estimands <- vector(mode = "list", length = length(query))
-
-  for(i in 1:length(estimands)) {
-    # Evaluation of query on vector of causal types
-    given_i <- given[i]
-    x <- (CausalQueries:::map_query_to_causal_type(model, query = query[[i]])$types)[given_types[[given_i]]]
-
-    if(using == "parameters") {
-      # always case level when using parameters
-      estimand <- sum(x * type_distribution[given_types[[given_i]]]) / sum(type_distribution[given_types[[given_i]]])
-    } else {
-      # case level
-      if(!case_level) {
-        estimand <- (x %*% type_distribution[given_types[[given_i]],, drop = FALSE]) / apply(type_distribution[given_types[[given_i]],, drop = FALSE], 2, sum)
-      }
-      # population level
-      if(case_level) {
-        estimand <- mean(x %*% type_distribution[given_types[[given_i]],, drop = FALSE]) /mean( apply(type_distribution[given_types[[given_i]],, drop = FALSE], 2, sum))
-      }
-    }
-    estimands[[i]] <- as.vector(unlist(estimand))
-  }
+  ## get estimands
+  estimands <- get_estimands(jobs = jobs,
+                             given_types = given_types,
+                             query_types = query_types,
+                             type_distributions = type_distributions)
 
   return(estimands)
 }
@@ -275,8 +251,6 @@ query_model <- function(model,
     model_names <- paste("model", 1:length(model), sep = "_")
     names(model) <- model_names
   }
-
-
 
   # query names
   query_names <- names(queries)
