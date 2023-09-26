@@ -1,7 +1,8 @@
 
 #' Get values of types according to a query
 #'
-#'@inheritParams CausalQueries_internal_inherit_params
+#' @inheritParams CausalQueries_internal_inherit_params
+#' @param eval_var \code{data.frame} returned by a call to \code{\link{realise_outcome}}) for the supplied model. This is used for optimization when evaluating multiple queries on the same modle.
 #' @noRd
 #' @keywords internal
 #' @return A \code{list} containing the types and the evaluated expression.
@@ -28,7 +29,7 @@
 #' query <- '(Y[X = .]==1)'
 #' CausalQueries:::map_query_to_causal_type(model, query)
 #'}
-map_query_to_causal_type <- function(model, query, join_by = "|") {
+map_query_to_causal_type <- function(model, query, eval_var = NULL, join_by = "|") {
 
     if (length(query) > 1L)
         stop("Please specify a query of length 1L.")
@@ -54,7 +55,9 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
         continue = FALSE
     }
 
-    eval_var <- realise_outcomes(model)
+    if(is.null(eval_var)) {
+      eval_var <- realise_outcomes(model)
+    }
 
     list_names <- colnames(eval_var)
     k <- ncol(eval_var) + 1
@@ -140,7 +143,7 @@ map_query_to_causal_type <- function(model, query, join_by = "|") {
 
     class(return_list) <- "causal_types"
 
-    return_list
+    return(return_list)
 
 }
 
