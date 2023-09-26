@@ -89,7 +89,7 @@ query_distribution <- function(model,
                                join_by = "|",
                                case_level = FALSE,
                                query = NULL) {
-
+  ## check arguments
   if(is(model, "causal_model")) {
     model <- list(model)
   }
@@ -106,16 +106,19 @@ query_distribution <- function(model,
                              using = using,
                              given = given,
                              queries = queries,
+                             case_level = case_level,
                              fun = "query_distribution")
 
   given <- args_checked$given
   using <- args_checked$using
 
+  ## generate required data structures
+  # generate model names
   model_names <- "model_1"
   names(model) <- model_names
 
-  #TODO query names
 
+  # generate outcome realisations
   realisations <- lapply(model, function(m) realise_outcomes(model = m))
   names(realisations) <- model_names
 
@@ -151,7 +154,25 @@ query_distribution <- function(model,
   estimands <- get_estimands(jobs = jobs,
                              given_types = given_types,
                              query_types = query_types,
-                             type_distributions = type_distributions)
+                             type_distributions = type_distributions) |>
+    as.data.frame()
+
+  ## prepare output
+  if(!is.null(names(queries))) {
+    colnames(estimands) <- make.unique(names(queries), sep = "_")
+  } else {
+    query_names <- jobs$queries
+    given_names <- jobs$given
+    given_names <- sapply(given_names, function(g) {
+      if(g == "ALL") {
+        gn <- ""
+      } else {
+        gn <- paste(" | ", g, sep = "")
+      }
+      return(gn)
+    })
+    colnames(estimands) <- make.unique(paste(query_names, given_names, sep = ""), sep = "_")
+  }
 
   return(estimands)
 }
@@ -244,6 +265,7 @@ query_model <- function(model,
                              using = using,
                              given = given,
                              queries = queries,
+                             case_level = case_level,
                              fun = "query_model")
 
   given <- args_checked$given
@@ -328,7 +350,7 @@ query_model <- function(model,
   estimands <- lapply(estimands, function(e) sapply(stats, function(s) s(e)) |> t())
   estimands <- as.data.frame(do.call(rbind, estimands))
 
-  # prepare output
+  ## prepare output
   query_id <- jobs |>
     dplyr::select(model_names, queries, given, using, case_level) |>
     dplyr::mutate(given = ifelse(given == "ALL","-",given))
@@ -356,7 +378,7 @@ query_model <- function(model,
 #' @return list of altered arguments
 #' @keywords internal
 
-check_args <- function(model, using, given, queries, fun) {
+check_args <- function(model, using, given, queries, case_level, fun) {
   lapply(model, function(m) is_a_model(m))
 
   using[using == "posterior"] <- "posteriors"
@@ -383,6 +405,14 @@ check_args <- function(model, using, given, queries, fun) {
   }
 
   given[given %in% c('', 'All', 'ALL', 'all', 'None', 'none', 'NONE', 'TRUE')] <- "ALL"
+
+  if((fun == "query_distribution") && (length(using) > 1)) {
+    stop("You can only specify a single value for the `using` argument.")
+  }
+
+  if((fun == "query_distribution") && (length(case_level) > 1)) {
+    stop("You can only specify a single value for the `case_level` argument.")
+  }
 
   return(list(given = given, using = using))
 }
