@@ -19,7 +19,13 @@
 #'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
 #'  # simple  queries
-#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])")
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])", using = "priors") |>
+#'    head()
+#'
+#'  # multiple  queries
+#'  query_distribution(model,
+#'    query = list("(Y[X=1] > Y[X=0])", "(Y[X=1] < Y[X=0])"), using = "priors")|>
+#'    head()
 #'
 #'  # linear queries
 #'  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
@@ -199,32 +205,37 @@ query_distribution <- function(model,
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
 #'
 #' \donttest{
-#' query_model(
-#'   model,
-#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
-#'   using = c("parameters", "priors"),
-#'   expand_grid = TRUE)
+#'
+#' # `expand_grid= TRUE` requests the Cartesian product of arguments
+#'
+#' models <- list(
+#'  M1 = make_model("X -> Y"),
+#'  M2 = make_model("X -> Y") |> set_restrictions("Y[X=1] < Y[X=0]")
+#'  )
+#'
 #'
 #' query_model(
-#'   model,
+#'   models,
 #'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   given = c(TRUE,  "Y==1 & X==1"),
 #'   using = c("parameters", "priors"),
 #'   expand_grid = FALSE)
 #'
 #' query_model(
-#'   model,
-#'   using = list( "parameters", "priors"),
-#'   query = list(ATE = "Y[X=1] - Y[X=0]", Is_B = "Y[X=1] > Y[X=0]"),
-#'   given = list(TRUE,  "Y==0 & X==1"),
+#'   models,
+#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   given = c(TRUE,  "Y==1 & X==1"),
+#'   using = c("parameters", "priors"),
 #'   expand_grid = TRUE)
 #'
 #' # An example of a custom statistic: uncertainty of token causation
-#' token_var <- function(x) mean(x)*(1-mean(x))
+#' f <- function(x) mean(x)*(1-mean(x))
+#'
 #' query_model(
 #'   model,
 #'   using = list( "parameters", "priors"),
 #'   query = "Y[X=1] > Y[X=0]",
-#'   stats = c(mean = mean, sd = sd, token_var = token_var))
+#'   stats = c(mean = mean, sd = sd, token_variance = f))
 #'}
 
 query_model <- function(model,
