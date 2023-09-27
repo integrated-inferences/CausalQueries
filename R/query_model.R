@@ -9,7 +9,7 @@
 #' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
-#' @param type_distribution A numeric vector. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
+#' @param type_distribution A numeric vector. If provided this saves on processing time, otherwise calculated from model; may be based on prior or posterior
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @return A vector of draws from the distribution of the potential outcomes specified in \code{query}
 #' @importFrom stats sd weighted.mean
@@ -25,6 +25,13 @@
 #'  # multiple  queries
 #'  query_distribution(model,
 #'    query = list("(Y[X=1] > Y[X=0])", "(Y[X=1] < Y[X=0])"), using = "priors")|>
+#'    head()
+#'
+#'  # multiple queries and givens
+#'  query_distribution(model,
+#'    query = list("(Y[X=1] > Y[X=0])", "(Y[X=1] < Y[X=0])"),
+#'    given = list("Y==1", "(Y[X=1] <= Y[X=0])"),
+#'    using = "priors")|>
 #'    head()
 #'
 #'  # linear queries
@@ -75,11 +82,13 @@
 #'
 #'  # In this case these are very different:
 #'  query_distribution(model, Q, given = G, using = "posteriors") |> mean()
-#'  query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+#'  query_distribution(model, Q, given = G, using = "posteriors",
+#'    case_level = TRUE)
 #'
 #'  # These are equivalent:
 #'  # 1. Case level query via function
-#'  query_distribution(model, Q, given = G, using = "posteriors", case_level = TRUE)
+#'  query_distribution(model, Q, given = G, using = "posteriors",
+#'    case_level = TRUE)
 #'
 #'  # 2. Case level query by hand using Bayes
 #'  mean(query_distribution(model, QG, using = "posteriors") )/
