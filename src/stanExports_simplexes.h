@@ -71,7 +71,7 @@ using stan::model::index_multi;
 using stan::model::index_omni;
 using stan::model::nil_index_list;
 using namespace stan::math;
-using stan::math::pow; 
+using stan::math::pow;
 stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
@@ -174,6 +174,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 4, column 4 to column 40)",
                                                       " (in 'string', line 5, column 4 to column 14)",
                                                       " (in 'string', line 2, column 32 to line 6, column 3)"};
+
 template <typename T0__>
 Eigen::Matrix<stan::promote_args_t<stan::value_type_t<T0__>>, 1, -1>
 col_sums(const T0__& X_arg__, std::ostream* pstream__) {
@@ -183,14 +184,14 @@ col_sums(const T0__& X_arg__, std::ostream* pstream__) {
   (void) propto__;
   local_scalar_t__ DUMMY_VAR__(std::numeric_limits<double>::quiet_NaN());
   (void) DUMMY_VAR__;  // suppress unused var warning
-  
+
   try {
     current_statement__ = 95;
     validate_non_negative_index("s", "cols(X)", cols(X));
     Eigen::Matrix<local_scalar_t__, 1, -1> s;
     s = Eigen::Matrix<local_scalar_t__, 1, -1>(cols(X));
     stan::math::fill(s, DUMMY_VAR__);
-    
+
     current_statement__ = 97;
     assign(s, nil_index_list(), multiply(rep_row_vector(1, rows(X)), X),
       "assigning variable s");
@@ -199,14 +200,14 @@ col_sums(const T0__& X_arg__, std::ostream* pstream__) {
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
   }
-  
+
 }
 struct col_sums_functor__ {
 template <typename T0__>
 Eigen::Matrix<stan::promote_args_t<stan::value_type_t<T0__>>, 1, -1>
-operator()(const T0__& X, std::ostream* pstream__)  const 
+operator()(const T0__& X, std::ostream* pstream__)  const
 {
 return col_sums(X, pstream__);
 }
@@ -237,38 +238,38 @@ private:
   Eigen::Matrix<double, -1, -1> E;
   std::vector<int> Y;
   int gamma_1dim__;
- 
+
 public:
   ~model_simplexes() { }
-  
+
   inline std::string model_name() const final { return "model_simplexes"; }
   inline std::vector<std::string> model_compile_info() const noexcept {
     return std::vector<std::string>{"stanc_version = stanc3 v2.26.1-4-gd72b68b7-dirty", "stancflags = "};
   }
-  
-  
+
+
   model_simplexes(stan::io::var_context& context__,
                   unsigned int random_seed__ = 0,
                   std::ostream* pstream__ = nullptr) : model_base_crtp(0) {
     using local_scalar_t__ = double ;
-    boost::ecuyer1988 base_rng__ = 
+    boost::ecuyer1988 base_rng__ =
         stan::services::util::create_rng(random_seed__, 0);
     (void) base_rng__;  // suppress unused var warning
     static const char* function__ = "model_simplexes_namespace::model_simplexes";
     (void) function__;  // suppress unused var warning
     local_scalar_t__ DUMMY_VAR__(std::numeric_limits<double>::quiet_NaN());
     (void) DUMMY_VAR__;  // suppress unused var warning
-    
+
     try {
       int pos__;
       pos__ = std::numeric_limits<int>::min();
-      
+
       pos__ = 1;
       current_statement__ = 45;
       context__.validate_dims("data initialization","n_params","int",
           context__.to_vec());
       n_params = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 45;
       n_params = context__.vals_i("n_params")[(1 - 1)];
       current_statement__ = 45;
@@ -278,7 +279,7 @@ public:
       context__.validate_dims("data initialization","n_paths","int",
           context__.to_vec());
       n_paths = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 46;
       n_paths = context__.vals_i("n_paths")[(1 - 1)];
       current_statement__ = 46;
@@ -288,7 +289,7 @@ public:
       context__.validate_dims("data initialization","n_types","int",
           context__.to_vec());
       n_types = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 47;
       n_types = context__.vals_i("n_types")[(1 - 1)];
       current_statement__ = 47;
@@ -298,7 +299,7 @@ public:
       context__.validate_dims("data initialization","n_param_sets","int",
           context__.to_vec());
       n_param_sets = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 48;
       n_param_sets = context__.vals_i("n_param_sets")[(1 - 1)];
       current_statement__ = 48;
@@ -308,7 +309,7 @@ public:
       context__.validate_dims("data initialization","n_nodes","int",
           context__.to_vec());
       n_nodes = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 49;
       n_nodes = context__.vals_i("n_nodes")[(1 - 1)];
       current_statement__ = 49;
@@ -321,7 +322,7 @@ public:
       context__.validate_dims("data initialization","n_param_each","int",
           context__.to_vec(n_param_sets));
       n_param_each = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 51;
       assign(n_param_each, nil_index_list(),
         context__.vals_i("n_param_each"), "assigning variable n_param_each");
@@ -335,7 +336,7 @@ public:
       context__.validate_dims("data initialization","n_data","int",
           context__.to_vec());
       n_data = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 52;
       n_data = context__.vals_i("n_data")[(1 - 1)];
       current_statement__ = 52;
@@ -345,7 +346,7 @@ public:
       context__.validate_dims("data initialization","n_events","int",
           context__.to_vec());
       n_events = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 53;
       n_events = context__.vals_i("n_events")[(1 - 1)];
       current_statement__ = 53;
@@ -355,7 +356,7 @@ public:
       context__.validate_dims("data initialization","n_strategies","int",
           context__.to_vec());
       n_strategies = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 54;
       n_strategies = context__.vals_i("n_strategies")[(1 - 1)];
       current_statement__ = 54;
@@ -365,7 +366,7 @@ public:
       context__.validate_dims("data initialization","keep_transformed","int",
           context__.to_vec());
       keep_transformed = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 55;
       keep_transformed = context__.vals_i("keep_transformed")[(1 - 1)];
       current_statement__ = 55;
@@ -382,7 +383,7 @@ public:
           context__.to_vec(n_params));
       lambdas_prior = Eigen::Matrix<double, -1, 1>(n_params);
       stan::math::fill(lambdas_prior, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> lambdas_prior_flat__;
         current_statement__ = 57;
@@ -413,7 +414,7 @@ public:
       context__.validate_dims("data initialization","l_starts","int",
           context__.to_vec(n_param_sets));
       l_starts = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 59;
       assign(l_starts, nil_index_list(), context__.vals_i("l_starts"),
         "assigning variable l_starts");
@@ -429,7 +430,7 @@ public:
       context__.validate_dims("data initialization","l_ends","int",
           context__.to_vec(n_param_sets));
       l_ends = std::vector<int>(n_param_sets, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 61;
       assign(l_ends, nil_index_list(), context__.vals_i("l_ends"),
         "assigning variable l_ends");
@@ -445,7 +446,7 @@ public:
       context__.validate_dims("data initialization","node_starts","int",
           context__.to_vec(n_nodes));
       node_starts = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 63;
       assign(node_starts, nil_index_list(), context__.vals_i("node_starts"),
         "assigning variable node_starts");
@@ -461,7 +462,7 @@ public:
       context__.validate_dims("data initialization","node_ends","int",
           context__.to_vec(n_nodes));
       node_ends = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 65;
       assign(node_ends, nil_index_list(), context__.vals_i("node_ends"),
         "assigning variable node_ends");
@@ -478,7 +479,7 @@ public:
       context__.validate_dims("data initialization","strategy_starts","int",
           context__.to_vec(n_strategies));
       strategy_starts = std::vector<int>(n_strategies, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 67;
       assign(strategy_starts, nil_index_list(),
         context__.vals_i("strategy_starts"),
@@ -496,7 +497,7 @@ public:
       context__.validate_dims("data initialization","strategy_ends","int",
           context__.to_vec(n_strategies));
       strategy_ends = std::vector<int>(n_strategies, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 69;
       assign(strategy_ends, nil_index_list(),
         context__.vals_i("strategy_ends"), "assigning variable strategy_ends");
@@ -515,7 +516,7 @@ public:
           context__.to_vec(n_params, n_types));
       P = Eigen::Matrix<double, -1, -1>(n_params, n_types);
       stan::math::fill(P, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> P_flat__;
         current_statement__ = 72;
@@ -544,7 +545,7 @@ public:
           context__.to_vec(n_params, n_paths));
       parmap = Eigen::Matrix<double, -1, -1>(n_params, n_paths);
       stan::math::fill(parmap, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> parmap_flat__;
         current_statement__ = 75;
@@ -573,7 +574,7 @@ public:
           context__.to_vec(n_paths, n_data));
       map = Eigen::Matrix<double, -1, -1>(n_paths, n_data);
       stan::math::fill(map, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> map_flat__;
         current_statement__ = 78;
@@ -602,7 +603,7 @@ public:
           context__.to_vec(n_events, n_data));
       E = Eigen::Matrix<double, -1, -1>(n_events, n_data);
       stan::math::fill(E, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> E_flat__;
         current_statement__ = 81;
@@ -650,7 +651,7 @@ public:
       context__.validate_dims("data initialization","Y","int",
           context__.to_vec(n_events));
       Y = std::vector<int>(n_events, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 83;
       assign(Y, nil_index_list(), context__.vals_i("Y"),
         "assigning variable Y");
@@ -661,7 +662,7 @@ public:
         check_greater_or_equal(function__, "Y[sym1__]", Y[(sym1__ - 1)], 0);}
       current_statement__ = 84;
       gamma_1dim__ = std::numeric_limits<int>::min();
-      
+
       current_statement__ = 84;
       gamma_1dim__ = (n_params - n_param_sets);
       current_statement__ = 84;
@@ -690,16 +691,16 @@ public:
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
     }
     num_params_r__ = 0U;
-    
+
     try {
       num_params_r__ += gamma_1dim__;
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
     }
   }
   template <bool propto__, bool jacobian__, typename VecR, typename VecI, stan::require_vector_like_t<VecR>* = nullptr, stan::require_vector_like_vt<std::is_integral, VecI>* = nullptr>
@@ -715,12 +716,12 @@ public:
     stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
     local_scalar_t__ DUMMY_VAR__(std::numeric_limits<double>::quiet_NaN());
     (void) DUMMY_VAR__;  // suppress unused var warning
-    
+
     try {
       Eigen::Matrix<local_scalar_t__, -1, 1> gamma;
       gamma = Eigen::Matrix<local_scalar_t__, -1, 1>(gamma_1dim__);
       stan::math::fill(gamma, DUMMY_VAR__);
-      
+
       current_statement__ = 1;
       gamma = in__.vector(gamma_1dim__);
       current_statement__ = 1;
@@ -740,31 +741,31 @@ public:
       Eigen::Matrix<local_scalar_t__, -1, 1> lambdas;
       lambdas = Eigen::Matrix<local_scalar_t__, -1, 1>(n_params);
       stan::math::fill(lambdas, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, 1> sum_gammas;
       sum_gammas = Eigen::Matrix<local_scalar_t__, -1, 1>(n_param_sets);
       stan::math::fill(sum_gammas, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, -1> parlam;
       parlam = Eigen::Matrix<local_scalar_t__, -1, -1>(n_params, n_paths);
       stan::math::fill(parlam, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, -1> parlam2;
       parlam2 = Eigen::Matrix<local_scalar_t__, -1, -1>(n_nodes, n_paths);
       stan::math::fill(parlam2, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, 1> w_0;
       w_0 = Eigen::Matrix<local_scalar_t__, -1, 1>(n_paths);
       stan::math::fill(w_0, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, 1> w;
       w = Eigen::Matrix<local_scalar_t__, -1, 1>(n_data);
       stan::math::fill(w, DUMMY_VAR__);
-      
+
       Eigen::Matrix<local_scalar_t__, -1, 1> w_full;
       w_full = Eigen::Matrix<local_scalar_t__, -1, 1>(n_events);
       stan::math::fill(w_full, DUMMY_VAR__);
-      
+
       current_statement__ = 18;
       for (int i = 1; i <= n_param_sets; ++i) {
         current_statement__ = 16;
@@ -804,7 +805,7 @@ public:
                                                                     - i)),
                       nil_index_list()), "gamma")), sum_gammas[(i - 1)]),
               "assigning variable lambdas");
-          } 
+          }
         }}
       current_statement__ = 19;
       assign(parlam, nil_index_list(),
@@ -906,12 +907,12 @@ public:
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
     }
     lp_accum__.add(lp__);
     return lp_accum__.sum();
-    } // log_prob_impl() 
-    
+    } // log_prob_impl()
+
   template <typename RNG, typename VecR, typename VecI, typename VecVar, stan::require_vector_like_vt<std::is_floating_point, VecR>* = nullptr, stan::require_vector_like_vt<std::is_integral, VecI>* = nullptr, stan::require_std_vector_vt<std::is_floating_point, VecVar>* = nullptr>
   inline void write_array_impl(RNG& base_rng__, VecR& params_r__,
                                VecI& params_i__, VecVar& vars__,
@@ -929,12 +930,12 @@ public:
     stan::math::accumulator<double> lp_accum__;
     local_scalar_t__ DUMMY_VAR__(std::numeric_limits<double>::quiet_NaN());
     (void) DUMMY_VAR__;  // suppress unused var warning
-    
+
     try {
       Eigen::Matrix<double, -1, 1> gamma;
       gamma = Eigen::Matrix<double, -1, 1>(gamma_1dim__);
       stan::math::fill(gamma, std::numeric_limits<double>::quiet_NaN());
-      
+
       current_statement__ = 1;
       gamma = in__.vector(gamma_1dim__);
       current_statement__ = 1;
@@ -946,37 +947,37 @@ public:
       Eigen::Matrix<double, -1, 1> lambdas;
       lambdas = Eigen::Matrix<double, -1, 1>(n_params);
       stan::math::fill(lambdas, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, 1> sum_gammas;
       sum_gammas = Eigen::Matrix<double, -1, 1>(n_param_sets);
       stan::math::fill(sum_gammas, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, -1> parlam;
       parlam = Eigen::Matrix<double, -1, -1>(n_params, n_paths);
       stan::math::fill(parlam, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, -1> parlam2;
       parlam2 = Eigen::Matrix<double, -1, -1>(n_nodes, n_paths);
       stan::math::fill(parlam2, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, 1> w_0;
       w_0 = Eigen::Matrix<double, -1, 1>(n_paths);
       stan::math::fill(w_0, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, 1> w;
       w = Eigen::Matrix<double, -1, 1>(n_data);
       stan::math::fill(w, std::numeric_limits<double>::quiet_NaN());
-      
+
       Eigen::Matrix<double, -1, 1> w_full;
       w_full = Eigen::Matrix<double, -1, 1>(n_events);
       stan::math::fill(w_full, std::numeric_limits<double>::quiet_NaN());
-      
+
       for (int sym1__ = 1; sym1__ <= gamma_1dim__; ++sym1__) {
         vars__.emplace_back(gamma[(sym1__ - 1)]);}
       if (logical_negation((primitive_value(emit_transformed_parameters__) ||
             primitive_value(emit_generated_quantities__)))) {
         return ;
-      } 
+      }
       current_statement__ = 18;
       for (int i = 1; i <= n_param_sets; ++i) {
         current_statement__ = 16;
@@ -1016,7 +1017,7 @@ public:
                                                                     - i)),
                       nil_index_list()), "gamma")), sum_gammas[(i - 1)]),
               "assigning variable lambdas");
-          } 
+          }
         }}
       current_statement__ = 19;
       assign(parlam, nil_index_list(),
@@ -1110,14 +1111,14 @@ public:
           vars__.emplace_back(w[(sym1__ - 1)]);}
         for (int sym1__ = 1; sym1__ <= n_events; ++sym1__) {
           vars__.emplace_back(w_full[(sym1__ - 1)]);}
-      } 
+      }
       if (logical_negation(emit_generated_quantities__)) {
         return ;
-      } 
+      }
       Eigen::Matrix<double, -1, 1> prob_of_types;
       prob_of_types = Eigen::Matrix<double, -1, 1>(n_types);
       stan::math::fill(prob_of_types, std::numeric_limits<double>::quiet_NaN());
-      
+
       current_statement__ = 34;
       if (logical_eq(keep_transformed, 1)) {
         current_statement__ = 32;
@@ -1136,22 +1137,22 @@ public:
                   cons_list(index_omni(),
                     cons_list(index_uni(i), nil_index_list())), "P"))),
             "assigning variable prob_of_types");}
-      } 
+      }
       current_statement__ = 37;
       if (logical_eq(keep_transformed, 0)) {
         current_statement__ = 35;
         assign(prob_of_types, nil_index_list(), rep_vector(1, n_types),
           "assigning variable prob_of_types");
-      } 
+      }
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
         vars__.emplace_back(prob_of_types[(sym1__ - 1)]);}
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
     }
-    } // write_array_impl() 
-    
+    } // write_array_impl()
+
   template <typename VecVar, typename VecI, stan::require_std_vector_t<VecVar>* = nullptr, stan::require_vector_like_vt<std::is_integral, VecI>* = nullptr>
   inline void transform_inits_impl(const stan::io::var_context& context__,
                                    VecI& params_i__, VecVar& vars__,
@@ -1159,16 +1160,16 @@ public:
     using local_scalar_t__ = double;
     vars__.clear();
     vars__.reserve(num_params_r__);
-    
+
     try {
       int pos__;
       pos__ = std::numeric_limits<int>::min();
-      
+
       pos__ = 1;
       Eigen::Matrix<double, -1, 1> gamma;
       gamma = Eigen::Matrix<double, -1, 1>(gamma_1dim__);
       stan::math::fill(gamma, std::numeric_limits<double>::quiet_NaN());
-      
+
       {
         std::vector<local_scalar_t__> gamma_flat__;
         current_statement__ = 1;
@@ -1187,7 +1188,7 @@ public:
       Eigen::Matrix<double, -1, 1> gamma_free__;
       gamma_free__ = Eigen::Matrix<double, -1, 1>(gamma_1dim__);
       stan::math::fill(gamma_free__, std::numeric_limits<double>::quiet_NaN());
-      
+
       current_statement__ = 1;
       for (int sym1__ = 1; sym1__ <= gamma_1dim__; ++sym1__) {
         current_statement__ = 1;
@@ -1199,12 +1200,12 @@ public:
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
       // Next line prevents compiler griping about no return
-      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***"); 
+      throw std::runtime_error("*** IF YOU SEE THIS, PLEASE REPORT A BUG ***");
     }
-    } // transform_inits_impl() 
-    
+    } // transform_inits_impl()
+
   inline void get_param_names(std::vector<std::string>& names__) const {
-    
+
     names__.clear();
     names__.emplace_back("gamma");
     names__.emplace_back("lambdas");
@@ -1215,40 +1216,40 @@ public:
     names__.emplace_back("w");
     names__.emplace_back("w_full");
     names__.emplace_back("prob_of_types");
-    } // get_param_names() 
-    
+    } // get_param_names()
+
   inline void get_dims(std::vector<std::vector<size_t>>& dimss__) const {
     dimss__.clear();
     dimss__.emplace_back(std::vector<size_t>{
                                              static_cast<size_t>(gamma_1dim__)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_params)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{
                                              static_cast<size_t>(n_param_sets)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_params),
                                              static_cast<size_t>(n_paths)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_nodes),
                                              static_cast<size_t>(n_paths)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_paths)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_data)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_events)});
-    
+
     dimss__.emplace_back(std::vector<size_t>{static_cast<size_t>(n_types)});
-    
-    } // get_dims() 
-    
+
+    } // get_dims()
+
   inline void constrained_param_names(
                                       std::vector<std::string>& param_names__,
                                       bool emit_transformed_parameters__ = true,
                                       bool emit_generated_quantities__ = true) const
     final {
-    
+
     for (int sym1__ = 1; sym1__ <= gamma_1dim__; ++sym1__) {
       {
         param_names__.emplace_back(std::string() + "gamma" + '.' + std::to_string(sym1__));
@@ -1289,22 +1290,22 @@ public:
           param_names__.emplace_back(std::string() + "w_full" + '.' + std::to_string(sym1__));
         }}
     }
-    
+
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
         {
           param_names__.emplace_back(std::string() + "prob_of_types" + '.' + std::to_string(sym1__));
         }}
     }
-    
-    } // constrained_param_names() 
-    
+
+    } // constrained_param_names()
+
   inline void unconstrained_param_names(
                                         std::vector<std::string>& param_names__,
                                         bool emit_transformed_parameters__ = true,
                                         bool emit_generated_quantities__ = true) const
     final {
-    
+
     for (int sym1__ = 1; sym1__ <= gamma_1dim__; ++sym1__) {
       {
         param_names__.emplace_back(std::string() + "gamma" + '.' + std::to_string(sym1__));
@@ -1345,29 +1346,29 @@ public:
           param_names__.emplace_back(std::string() + "w_full" + '.' + std::to_string(sym1__));
         }}
     }
-    
+
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
         {
           param_names__.emplace_back(std::string() + "prob_of_types" + '.' + std::to_string(sym1__));
         }}
     }
-    
-    } // unconstrained_param_names() 
-    
+
+    } // unconstrained_param_names()
+
   inline std::string get_constrained_sizedtypes() const {
     stringstream s__;
     s__ << "[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" << gamma_1dim__ << "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" << n_params << "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" << n_param_sets << "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" << n_params << ",\"cols\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" << n_nodes << ",\"cols\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" << n_data << "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" << n_events << "},\"block\":\"transformed_parameters\"},{\"name\":\"prob_of_types\",\"type\":{\"name\":\"vector\",\"length\":" << n_types << "},\"block\":\"generated_quantities\"}]";
     return s__.str();
-    } // get_constrained_sizedtypes() 
-    
+    } // get_constrained_sizedtypes()
+
   inline std::string get_unconstrained_sizedtypes() const {
     stringstream s__;
     s__ << "[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" << gamma_1dim__ << "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" << n_params << "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" << n_param_sets << "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" << n_params << ",\"cols\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" << n_nodes << ",\"cols\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" << n_paths << "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" << n_data << "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" << n_events << "},\"block\":\"transformed_parameters\"},{\"name\":\"prob_of_types\",\"type\":{\"name\":\"vector\",\"length\":" << n_types << "},\"block\":\"generated_quantities\"}]";
     return s__.str();
-    } // get_unconstrained_sizedtypes() 
-    
-  
+    } // get_unconstrained_sizedtypes()
+
+
     // Begin method overload boilerplate
     template <typename RNG>
     inline void write_array(RNG& base_rng,
@@ -1406,7 +1407,7 @@ public:
                         std::ostream* pstream = nullptr) const {
       return log_prob_impl<propto__, jacobian__>(params_r, params_i, pstream);
     }
-  
+
     inline void transform_inits(const stan::io::var_context& context,
                          Eigen::Matrix<double, Eigen::Dynamic, 1>& params_r,
                          std::ostream* pstream = nullptr) const final {
@@ -1423,7 +1424,7 @@ public:
                                 std::vector<double>& vars,
                                 std::ostream* pstream = nullptr) const final {
       transform_inits_impl(context, params_i, vars, pstream);
-    }        
+    }
 };
 }
 using stan_model = model_simplexes_namespace::model_simplexes;

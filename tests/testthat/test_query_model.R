@@ -15,7 +15,7 @@ testthat::test_that(
 
 		model <- make_model("X -> Y") %>% update_model(data.frame(X=0, Y=0), refresh = 0)
 
-		q <- query_distribution(model, query = "Y[X=1] - Y[X=0]", verbose = TRUE, using = "parameters", parameters = 1:6)
+		q <- query_distribution(model, query = "Y[X=1] - Y[X=0]", using = "parameters", parameters = 1:6)
 		expect_true(q > 0.0555 & q < 0.0556)
 
 		expect_message(query_model(model, query =  "X==1", given = "X==2"))
@@ -29,11 +29,11 @@ testthat::test_that(
     expect_true(q$cred.low < -.5 & q$cred.low > -0.7)
     expect_true(q$cred.high < .7 & q$cred.high > .5)
 
-		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = "parameters", parameters = c(.5, .5, 0, 0, 1, 0))
+		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = "parameters", parameters = list(c(.5, .5, 0, 0, 1, 0)))
 		expect_true(is.data.frame(q))
 
-		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = c("priors", "parameters"), parameters = c(.5, .5, 0, 0, 1, 0))
-		expect_true(round(q[2,5]) == 1)
+		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = c("priors", "parameters"), parameters = list(c(.5, .5, 0, 0, 1, 0)))
+		expect_true(round(q[2,6]) == 1)
 
 		q <-query_model(
 		                model,

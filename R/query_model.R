@@ -121,7 +121,7 @@ query_distribution <- function(model,
   }
 
   if((!is.null(parameters)) && (!is.list(parameters))) {
-    paramters <- list(parameters)
+    parameters <- list(parameters)
   }
 
   if((!is.null(parameters)) && (length(parameters) > 1)) {
@@ -351,13 +351,15 @@ query_model <- function(model,
     names(jobs) <- c("model_names","using","given","queries","case_level")
   } else {
     jobs <- lapply(model_names, function(m) {
-      data.frame(
+      jobs_m <- data.frame(
         model_names = m,
         using = unlist(using),
         given = unlist(given),
         queries = unlist(queries),
         case_level = unlist(case_level),
         stringsAsFactors = FALSE)
+      rownames(jobs_m) <- NULL
+      return(jobs_m)
     }) |>
       dplyr::bind_rows()
   }
@@ -564,7 +566,7 @@ get_estimands <- function(jobs, given_types, query_types, type_distributions) {
     x <- x[given]
 
     if(all(!given)) {
-      estimands <- NA
+      estimand <- NA
       message("No units given. `NA` estimand.")
     } else {
       # using parameters
