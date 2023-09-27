@@ -116,6 +116,14 @@ query_distribution <- function(model,
     stop("Please only specify one set of parameters for your model.")
   }
 
+  if((!is.null(type_distribution)) && (!is.list(type_distribution))) {
+    type_distributions <- list(type_distribution)
+  }
+
+  if((!is.null(type_distribution)) && (length(type_distribution) > 1)) {
+    stop("Please only specify one type_distribution for your model.")
+  }
+
   args_checked <- check_args(model = model,
                              using = unlist(using),
                              given = unlist(given),
@@ -133,6 +141,10 @@ query_distribution <- function(model,
 
   if(!is.null(parameters)) {
     names(parameters) <- model_names
+  }
+
+  if(!is.null(type_distribution)) {
+    names(type_distributions) <- model_names
   }
 
   # generate outcome realisations
@@ -319,10 +331,10 @@ query_model <- function(model,
   # create jobs
   if(expand_grid) {
     jobs <- expand.grid(model_names,
-                        using,
-                        given,
-                        queries,
-                        case_level,
+                        unlist(using),
+                        unlist(given),
+                        unlist(queries),
+                        unlist(case_level),
                         stringsAsFactors = FALSE)
     names(jobs) <- c("model_names","using","given","queries","case_level")
   } else {
