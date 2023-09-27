@@ -108,6 +108,14 @@ query_distribution <- function(model,
     queries <- query
   }
 
+  if((!is.null(parameters)) && (!is.list(parameters))) {
+    paramters <- list(parameters)
+  }
+
+  if((!is.null(parameters)) && (length(parameters) > 1)) {
+    stop("Please only specify one set of parameters for your model.")
+  }
+
   args_checked <- check_args(model = model,
                              using = unlist(using),
                              given = unlist(given),
@@ -123,6 +131,9 @@ query_distribution <- function(model,
   model_names <- "model_1"
   names(model) <- model_names
 
+  if(!is.null(parameters)) {
+    names(parameters) <- model_names
+  }
 
   # generate outcome realisations
   realisations <- lapply(model, function(m) realise_outcomes(model = m))
@@ -289,6 +300,10 @@ query_model <- function(model,
   } else {
     model_names <- paste("model", 1:length(model), sep = "_")
     names(model) <- model_names
+  }
+
+  if(!is.null(parameters)) {
+    names(parameters) <- model_names
   }
 
   # query names
