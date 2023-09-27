@@ -109,8 +109,8 @@ query_distribution <- function(model,
   }
 
   args_checked <- check_args(model = model,
-                             using = using,
-                             given = given,
+                             using = unlist(using),
+                             given = unlist(given),
                              queries = queries,
                              case_level = case_level,
                              fun = "query_distribution")
@@ -273,8 +273,8 @@ query_model <- function(model,
 
   # check that parameters are specified for each model + named
   args_checked <- check_args(model = model,
-                             using = using,
-                             given = given,
+                             using = unlist(using),
+                             given = unlist(given),
                              queries = queries,
                              case_level = case_level,
                              fun = "query_model")
