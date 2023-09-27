@@ -343,23 +343,21 @@ query_model <- function(model,
   # create jobs
   if(expand_grid) {
     jobs <- expand.grid(model_names,
-                        unlist(using),
-                        unlist(given),
-                        unlist(queries),
-                        unlist(case_level),
+                        unname(unlist(using)),
+                        unname(unlist(given)),
+                        unname(unlist(queries)),
+                        unname(unlist(case_level)),
                         stringsAsFactors = FALSE)
     names(jobs) <- c("model_names","using","given","queries","case_level")
   } else {
     jobs <- lapply(model_names, function(m) {
-      jobs_m <- data.frame(
+      data.frame(
         model_names = m,
-        using = unlist(using),
-        given = unlist(given),
-        queries = unlist(queries),
-        case_level = unlist(case_level),
+        using = unname(unlist(using)),
+        given = unname(unlist(given)),
+        queries = unname(unlist(queries)),
+        case_level = unname(unlist(case_level)),
         stringsAsFactors = FALSE)
-      rownames(jobs_m) <- NULL
-      return(jobs_m)
     }) |>
       dplyr::bind_rows()
   }
