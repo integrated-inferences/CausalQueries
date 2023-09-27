@@ -4,14 +4,16 @@
 #'
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param parameters A vector of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  \code{using} specifies \code{parameters}
+#' @param parameters A vector or list of vectors of real numbers in [0,1].  A true parameter vector to be used instead of parameters attached to the model in case  \code{using} specifies \code{parameters}
 #' @param using A character. Whether to use priors, posteriors or parameters
-#' @param query A character. A query on potential outcomes such as "Y[X=1] - Y[X=0]"
+#' @param queries A character vector or list of character vectors specifying queries on potential outcomes such as "Y[X=1] - Y[X=0]"
 #' @param join_by A character. The logical operator joining expanded types when \code{query} contains wildcard (\code{.}). Can take values \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction contains wildcard (\code{.}) and \code{join_by} is not specified, it defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param given  A character. A quoted expression evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
-#' @param type_distribution A numeric vector. If provided this saves on processing time, otherwise calculated from model; may be based on prior or posterior
+#' @param given  A character vector specifying givens for each query. A given is a quoted expression that evaluates to logical statement. \code{given} allows the query to be conditioned on *observational* distribution. A value of TRUE is interpreted as no conditioning.
+#' @param n_draws An integer. Number of draws.
+#' @param type_distribution A numeric vector or list of numeric vectors. If provided saves calculation, otherwise calculated from model; may be based on prior or posterior
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
-#' @return A vector of draws from the distribution of the potential outcomes specified in \code{query}
+#' @param query alias for queries
+#' @return A \code{DataFrame} where columns contain draws from the distribution of the potential outcomes specified in \code{query}
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
@@ -46,20 +48,18 @@
 #'  # Use join_by to amend query interpretation
 #'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
 #'
-#'  # Probability of causation query with verbose output
+#'  # Probability of causation query
 #'  query_distribution(model,
 #'     query = "(Y[X=1] > Y[X=0])",
 #'     given = "X==1 & Y==1",
-#'     using = "priors",
-#'     verbose = TRUE)  |> head()
+#'     using = "priors")  |> head()
 #'
-#'  # Case level probability of causation query with verbose output
+#'  # Case level probability of causation query
 #'  query_distribution(model,
 #'     query = "(Y[X=1] > Y[X=0])",
 #'     given = "X==1 & Y==1",
 #'     case_level = TRUE,
-#'     using = "priors",
-#'     verbose = TRUE)
+#'     using = "priors")
 #'
 #'  # Query posterior
 #'  update_model(model, make_data(model, n = 3)) |>
@@ -91,8 +91,8 @@
 #'    case_level = TRUE)
 #'
 #'  # 2. Case level query by hand using Bayes
-#'  mean(query_distribution(model, QG, using = "posteriors") )/
-#'  mean(query_distribution(model, G, using = "posteriors"))
+#'  mean(query_distribution(model, QG, using = "posteriors")[[1]])/
+#'  mean(query_distribution(model, G, using = "posteriors")[[1]])
 #' }
 query_distribution <- function(model,
                                queries,
@@ -220,18 +220,18 @@ query_distribution <- function(model,
 #'
 #' Calculated from a parameter vector, from a prior or from a posterior distribution.
 #'
-#' Queries can condition on observed or counterfactual quantities. Nested or "complex" counterfacttual queries of the form \code{Y[X=1, M[X=0]]} are allowed.
+#' Queries can condition on observed or counterfactual quantities. Nested or "complex" counterfactual queries of the form \code{Y[X=1, M[X=0]]} are allowed.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param queries A vector of characters. Query on potential outcomes such as "Y[X=1] - Y[X=0]".
-#' @param given A character. A quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
-#' @param using A character. Whether to use priors, posteriors or parameters.
+#' @param queries A vector of strings or list of strings specifying queries on potential outcomes such as "Y[X=1] - Y[X=0]".
+#' @param given A vector or list of strings specifying givens. A givne is a quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
+#' @param using A vector or list of strings. Whether to use priors, posteriors or parameters.
 #' @param stats Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95\% confidence interval.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of provided lists are examined. If not then each list is cycled through separately. Defaults to FALSE.
 #' @param case_level Logical. If TRUE estimates the probability of the query for a case.
 #' @param query alias for queries
-#' @return A \code{data.frame} with columns Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
+#' @return A \code{DataFrame} with columns Model, Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") %>% set_prior_distribution(n_draws = 10000)
@@ -437,6 +437,10 @@ check_args <- function(model, using, given, queries, case_level, fun) {
 
   if((fun == "query_model") && is.null(given)) {
     given <- "ALL"
+  }
+
+  if(is.logical(given)) {
+    given <- as.character(given)
   }
 
   if(!is.null(given) && !is.character(given)) {
