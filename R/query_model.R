@@ -76,23 +76,26 @@
 #'  model <-
 #'    make_model("X -> M -> Y") |>
 #'    update_model(data.frame(X = rep(0:1, 8), Y = rep(0:1, 8)), iter = 10000)
+#'
 #'  Q <- "Y[X=1] > Y[X=0]"
 #'  G <- "X==1 & Y==1 & M==1"
 #'  QG <- "(Y[X=1] > Y[X=0]) & (X==1 & Y==1 & M==1)"
 #'
 #'  # In this case these are very different:
-#'  query_distribution(model, Q, given = G, using = "posteriors") |> mean()
+#'  query_distribution(model, Q, given = G, using = "posteriors")[[1]] |> mean()
 #'  query_distribution(model, Q, given = G, using = "posteriors",
 #'    case_level = TRUE)
 #'
 #'  # These are equivalent:
 #'  # 1. Case level query via function
-#'  query_distribution(model, Q, given = G, using = "posteriors",
-#'    case_level = TRUE)
+#'  query_distribution(model, Q, given = G,
+#'     using = "posteriors", case_level = TRUE)
 #'
 #'  # 2. Case level query by hand using Bayes
-#'  mean(query_distribution(model, QG, using = "posteriors")[[1]])/
-#'  mean(query_distribution(model, G, using = "posteriors")[[1]])
+#'  distribution <- query_distribution(
+#'     model, list(QG = QG, G = G), using = "posteriors")
+#'
+#'  mean(distribution$QG)/mean(distribution$G)
 #' }
 query_distribution <- function(model,
                                queries,
