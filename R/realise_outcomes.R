@@ -178,7 +178,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL) {
   details = "This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead."
 )
   warning("This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead.")
-realise_outcomes(model = model, dos = dos, node = node)
+  realise_outcomes(model = model, dos = dos, node = node)
 }
 
 

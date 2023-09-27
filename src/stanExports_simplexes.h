@@ -294,6 +294,7 @@ public:
       current_statement__ = 46;
       check_greater_or_equal(function__, "n_types", n_types, 1);
       current_statement__ = 47;
+
       context__.validate_dims("data initialization","n_param_sets","int",
           context__.to_vec());
       n_param_sets = std::numeric_limits<int>::min();
@@ -361,6 +362,7 @@ public:
       current_statement__ = 53;
       check_greater_or_equal(function__, "n_strategies", n_strategies, 1);
       current_statement__ = 54;
+
       context__.validate_dims("data initialization","keep_transformed","int",
           context__.to_vec());
       keep_transformed = std::numeric_limits<int>::min();
@@ -460,7 +462,7 @@ public:
       context__.validate_dims("data initialization","node_ends","int",
           context__.to_vec(n_nodes));
       node_ends = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
-      
+
       current_statement__ = 64;
       assign(node_ends, nil_index_list(), context__.vals_i("node_ends"),
         "assigning variable node_ends");
@@ -597,6 +599,7 @@ public:
       current_statement__ = 79;
       validate_non_negative_index("E", "n_data", n_data);
       current_statement__ = 80;
+
       context__.validate_dims("data initialization","E","double",
           context__.to_vec(n_events, n_data));
       E = Eigen::Matrix<double, -1, -1>(n_events, n_data);
@@ -614,6 +617,7 @@ public:
           current_statement__ = 80;
           for (int sym2__ = 1; sym2__ <= n_events; ++sym2__) {
             current_statement__ = 80;
+
             assign(E,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),

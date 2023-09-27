@@ -12,13 +12,13 @@ testthat::test_that(
 
 			code = {
 				 model <- make_model('X->Y')
-				 long_data <- simulate_data(model, n = 6)
+				 long_data <- make_data(model, n = 6)
 				 data <- collapse_data(long_data, model)
 				 expect_true(class(data) == "data.frame")
 				 expect_true(unique(data$strategy) == "XY")
 
 				 model <- make_model('X->Y')
-				 data <- simulate_data(model, n = 3)
+				 data <- make_data(model, n = 3)
 				 Z <- c(0, 0, 0)
 				 data <- cbind(data, Z)
 				 nodes <- model$nodes
@@ -75,10 +75,10 @@ testthat::test_that(
 
 	code = {
 		model <- make_model('X -> Y')
-		data <- simulate_data(model, n = 4)%>%
+		data <- make_data(model, n = 4)%>%
 						collapse_data( model, drop_family = TRUE)
 		expect_true(!"strategy" %in% colnames(data))
-		data <- simulate_data(model, n = 4)%>%
+		data <- make_data(model, n = 4)%>%
 						collapse_data( model, summary = TRUE)
 		expect_true(class(data) == "list")
 		expect_equal(names(data), c("data_events","observed_events", "unobserved_events"))

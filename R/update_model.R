@@ -4,7 +4,7 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @param data_type Either 'long' (as made by  \code{\link{simulate_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
+#' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full

@@ -119,7 +119,7 @@ get_data_families <- function(model, drop_impossible = TRUE, drop_all_NA = TRUE,
 #' collapse_data(data, model)
 #'
 #' model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
-#' df <- simulate_data(model, n = 10)
+#' df <- make_data(model, n = 10)
 #' df[1,1] <- ''
 #' collapse_data(df, model)
 #' data <- data.frame(X= 0:1)
@@ -249,7 +249,7 @@ expand_data <- function(data_events = NULL, model) {
 #' @return A vector of strings of data types
 #' @examples
 #' model <- make_model('X -> Y')
-#' data <- simulate_data(model, n = 2)
+#' data <- make_data(model, n = 2)
 #' data_type_names(model, data)
 #' @export
 data_type_names <- function(model, data) {
@@ -323,7 +323,7 @@ all_data_types <- function(model, complete_data = FALSE, possible_data = FALSE, 
 #' }
 
 minimal_event_data <- function(model){
-  simulate_data(model, n = 1) %>%
+  make_data(model, n = 1) %>%
     collapse_data(model) %>%
     mutate(count = 0)
 }

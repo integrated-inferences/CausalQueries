@@ -63,7 +63,7 @@ Extracts parameters as a named vector
 
 # Simple examples
 model <- make_model('X -> Y')
-data  <- simulate_data(model, n = 2)
+data  <- make_data(model, n = 2)
 model <- update_model(model, data)
 make_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
 make_parameters(model, param_type = 'flat')
@@ -105,7 +105,7 @@ make_model('X->Y') \%>\% set_parameters(1:6) \%>\% get_parameters()
 
 # Simple examples
 model <- make_model('X -> Y')
-data  <- simulate_data(model, n = 2)
+data  <- make_data(model, n = 2)
 model <- update_model(model, data)
 set_parameters(model, parameters = c(.25, .75, 1.25,.25, .25, .25))
 set_parameters(model, param_type = 'flat')
@@ -138,6 +138,6 @@ node = "Y", nodal_type = c("00","01"))
 
 # get_parameters examples:
 
-get_parameters(make_model('X -> Y'))
+make_model('X -> Y') |> get_parameters()
 }
 \concept{parameters}
