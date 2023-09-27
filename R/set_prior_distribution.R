@@ -17,10 +17,12 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 
     priors <- model$parameters_df$priors
 
-    parameters <- unlist(sapply(param_sets, function(v) rdirichlet(n_draws, priors[model$parameters_df$param_set ==
-        v])))
-
-    prior_distribution <- matrix(parameters, nrow = n_draws)
+    prior_distribution <-
+      sapply(param_sets,
+             function(v)
+               rdirichlet(n_draws, priors[model$parameters_df$param_set == v]),
+             simplify = FALSE) |>
+      as.data.frame()
 
     colnames(prior_distribution) <- model$parameters_df$param_names
 

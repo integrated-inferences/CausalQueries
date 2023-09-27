@@ -42,17 +42,21 @@
 #'
 #'
 #' # Censored data types
-#' make_model("X->Y") %>%
-#'   update_model(data.frame(X=c(1,1), Y=c(1,1)),
-#'   censored_types = c("X1Y0"),
-#'   init_r = 1) %>%
+#' # We update less than we might because we are aware of filtered data
+#' uncensored <-  make_model("X->Y") %>%
+#'   update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
 #'   query_model(te("X", "Y"), using = "posteriors")
 #'
-#' # Censored data: Learning nothing
+#' censored <- make_model("X->Y") %>%
+#'   update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
+#'   censored_types = c("X1Y0")) %>%
+#'   query_model(te("X", "Y"), using = "posteriors")
+#'
+#' # Censored data: We learning nothing because the data
+#' # we see is the only data we could ever see
 #' make_model("X->Y") %>%
-#'   update_model(data.frame(X=c(1,1), Y=c(1,1)),
-#'   censored_types = c("X1Y0", "X0Y0", "X0Y1"),
-#'   init_r = 1) %>%
+#'   update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
+#'   censored_types = c("X1Y0", "X0Y0", "X0Y1")) %>%
 #'   query_model(te("X", "Y"), using = "posteriors")
 #'}
 
@@ -93,38 +97,34 @@ update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALS
 
     stan_data <- prep_stan_data(model = model,
                                 data = data_events,
-                                keep_transformed = keep_transformed*1)
-
-    if(stan_data$n_nodes == 1){
-      stan_data$n_param_each <- as.array(stan_data$n_param_each)
-      stan_data$l_starts <- as.array(stan_data$l_starts)
-      stan_data$l_ends <- as.array(stan_data$l_ends)
-      stan_data$node_starts <- as.array(stan_data$node_starts)
-      stan_data$node_ends <- as.array(stan_data$node_ends)
-    }
-
-    # Parmap goes to 0 for data types that never get to be observed
-    if(!is.null(censored_types))
-    stan_data$parmap[, censored_types] <- 0
-
+                                keep_transformed = keep_transformed,
+                                censored_types = censored_types)
     # assign fit
     stanfit <- stanmodels$simplexes
 
-    sampling_args <- set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
+    sampling_args <-
+      set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
+
     newfit <- do.call(rstan::sampling, sampling_args)
 
     model$stan_objects  <- list(data = data)
 
     if(keep_fit) model$stan_objects$stan_fit <- newfit
 
-    model$posterior_distribution <- extract(newfit, pars = "lambdas")$lambdas
-        colnames(model$posterior_distribution) <- get_parameter_names(model)
+    # Retain posterior distribution
+    model$posterior_distribution <-
+      extract(newfit, pars = "lambdas")$lambdas |> as.data.frame()
+    colnames(model$posterior_distribution) <- get_parameter_names(model)
 
-    model$stan_objects$type_distribution <- extract(newfit, pars = "prob_of_types")$prob_of_types
-        colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    # Retain type distribution
+    model$stan_objects$type_distribution <-
+      extract(newfit, pars = "prob_of_types")$prob_of_types
 
-    model$stan_objects$w_full <- extract(newfit, pars = "w_full")$w_full
-        colnames(model$stan_objects$w_full) <- rownames(stan_data$E)
+    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+
+    # Retain event (pre-censoring) probabilities
+    model$stan_objects$w <- extract(newfit, pars = "w")$w
+        colnames(model$stan_objects$w) <- colnames(stan_data$E)
 
     model
 

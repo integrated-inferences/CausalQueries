@@ -60,17 +60,21 @@ model_5 <- update_model(model)
 
 
 # Censored data types
-make_model("X->Y") \%>\%
-  update_model(data.frame(X=c(1,1), Y=c(1,1)),
-  censored_types = c("X1Y0"),
-  init_r = 1) \%>\%
+# We update less than we might because we are aware of filtered data
+uncensored <-  make_model("X->Y") \%>\%
+  update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
   query_model(te("X", "Y"), using = "posteriors")
 
-# Censored data: Learning nothing
+censored <- make_model("X->Y") \%>\%
+  update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
+  censored_types = c("X1Y0")) \%>\%
+  query_model(te("X", "Y"), using = "posteriors")
+
+# Censored data: We learning nothing because the data
+# we see is the only data we could ever see
 make_model("X->Y") \%>\%
-  update_model(data.frame(X=c(1,1), Y=c(1,1)),
-  censored_types = c("X1Y0", "X0Y0", "X0Y1"),
-  init_r = 1) \%>\%
+  update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
+  censored_types = c("X1Y0", "X0Y0", "X0Y1")) \%>\%
   query_model(te("X", "Y"), using = "posteriors")
 }
 }

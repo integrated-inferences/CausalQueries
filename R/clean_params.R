@@ -51,7 +51,13 @@ clean_params <- function(parameters_df, warning = TRUE) {
 #' @return A vector of named parameters summing to 1.
 clean_param_vector <- function(model, parameters) {
 
-    model$parameters_df$param_value <- as.vector(parameters)
+    parameters <- as.vector(parameters)
+
+    if(!is.atomic(parameters)) {
+      stop("parameters should be a vector")
+    }
+
+    model$parameters_df$param_value <- parameters
     x <- clean_params(model$parameters_df, warning = FALSE)$param_value
     names(x) <- model$parameters_df$param_names
     x

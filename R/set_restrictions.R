@@ -296,6 +296,15 @@ set_restrictions <- function(model,
              simplify = FALSE, USE.NAMES = TRUE)
   }}
 
+  # Remove existing distributions
+  # Distributions are no longer valid
+  if(!is.null(model$prior_distribution))
+    model$prior_distribution <- NULL
+  if(!is.null(model$posterior_distribution))
+    model$posterior_distribution <- NULL
+  if(!is.null(model$stan_objects))
+    model$stan_objects <- NULL
+
   return(model)
 }
 

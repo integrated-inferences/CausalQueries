@@ -115,7 +115,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 
     # Prior draw
     if (param_type == "prior_draw"){
-      param_value <- make_prior_distribution(model, 1)
+      param_value <- make_prior_distribution(model, 1) |> unlist()
     }
 
     # Posterior mean
@@ -136,7 +136,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
       }
 
       df <- model$posterior_distribution
-      param_value <- df[sample(nrow(df), 1), ]
+      param_value <- df[sample(nrow(df), 1), ] |> unlist()
     }
 
     out <- clean_param_vector(model, param_value)

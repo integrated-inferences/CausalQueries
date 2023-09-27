@@ -9,7 +9,7 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> Y")
 		expect_error(make_priros(model = model, alphas = 0.5, node = "X", nodal_type = "00", label = "00"))
-		expect_warning(make_priors(model = model, alphas = 0.5, node = "X", label = "00"))
+		expect_warning(make_priors(model = model, alphas = 0.5, node = "Y", label = "00"))
 	}
 )
 
@@ -49,7 +49,7 @@ testthat::test_that(
 	  expect_equal(out$parameters_df$priors, c(X.0=1,X.1 = 1, Y.00_X.0 = .5,Y.10_X.0 = 1, Y.01_X.0 = .25,
 	    Y.11_X.0 = 1,Y.00_X.1 =  1, Y.10_X.1 = 1,Y.01_X.1 = 1,Y.11_X.1 = 1))
 
-	  out <- set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]")
+	  out <- set_priors(model = model, alphas = c(0.5,0.25), statement = "Y[X=1] > Y[X=0]", param_set = c("Y.X.0","Y.X.1"))
 	  expect_equal(out$parameters_df$priors, c(X.0=1,X.1 = 1,Y.00_X.0 = 1,Y.10_X.0 = 1, Y.01_X.0 = 0.5,
 	                                           Y.11_X.0 = 1,Y.00_X.1 =  1, Y.10_X.1 = 1,Y.01_X.1 = 0.25,Y.11_X.1 = 1))
 	}

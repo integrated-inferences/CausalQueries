@@ -17,3 +17,15 @@ testthat::test_that(
 	}
 )
 
+
+
+testthat::skip_on_cran()
+testthat::test_that(
+
+  desc = "Check priors distribution for one node models.",
+
+  code = {
+    expect_equal(make_model("X") %>% set_prior_distribution(n_draws = 10) %>% get_prior_distribution() %>% ncol(), 2)
+  }
+)
+
