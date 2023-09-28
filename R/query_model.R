@@ -163,6 +163,10 @@ query_distribution <- function(model,
   realisations <- lapply(model, function(m) realise_outcomes(model = m))
   names(realisations) <- model_names
 
+  # prevent bugs from query helpers
+  given <- sapply(given, as.character)
+  queries <- sapply(queries, as.character)
+
   jobs <- lapply(model_names, function(m) {
     data.frame(
       model_names = m,
@@ -339,6 +343,10 @@ query_model <- function(model,
   # realise_outcomes
   realisations <- lapply(model, function(m) realise_outcomes(model = m))
   names(realisations) <- model_names
+
+  # prevent bugs from query helpers
+  given <- sapply(given, as.character)
+  queries <- sapply(queries, as.character)
 
   # create jobs
   if(expand_grid) {
