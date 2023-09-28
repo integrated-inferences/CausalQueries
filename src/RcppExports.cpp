@@ -13,13 +13,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // get_type_prob_c
-std::vector<double> get_type_prob_c(arma::mat P, std::vector<double> parameters);
+std::vector<double> get_type_prob_c(const arma::mat& P, const std::vector<double>& parameters);
 RcppExport SEXP _CausalQueries_get_type_prob_c(SEXP PSEXP, SEXP parametersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type P(PSEXP);
-    Rcpp::traits::input_parameter< std::vector<double> >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type parameters(parametersSEXP);
     rcpp_result_gen = Rcpp::wrap(get_type_prob_c(P, parameters));
     return rcpp_result_gen;
 END_RCPP
