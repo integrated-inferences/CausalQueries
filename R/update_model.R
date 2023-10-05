@@ -61,10 +61,15 @@
 #'}
 
 
-update_model <- function(model, data = NULL, data_type = "long", keep_fit = FALSE,
+update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
                          keep_transformed = TRUE, censored_types = NULL, ...) {
 
-    if (data_type == "long") {
+   # Guess data_type
+  if(is.null(data_type))
+    data_type <- ifelse(all(c("event", "strategy", "count") %in% names(data)), "compact", "long")
+
+  # Checks on data_types
+  if (data_type == "long") {
 
         if (is.null(data)) {
 

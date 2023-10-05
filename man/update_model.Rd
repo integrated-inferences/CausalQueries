@@ -7,7 +7,7 @@
 update_model(
   model,
   data = NULL,
-  data_type = "long",
+  data_type = NULL,
   keep_fit = FALSE,
   keep_transformed = TRUE,
   censored_types = NULL,
