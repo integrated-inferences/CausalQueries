@@ -297,11 +297,19 @@ make_par_values <- function(model,
       unlist()
 
 
-    # check if conditions are under-specified
+    # warn if conditions are under-specified
     if((length(x) != 1) & (length(commands) != length(names))) {
-      stop("A specified condition matches multiple parameters. If your model contains confounding your condition applies across multiple param_sets.
-           In these cases, it is unclear which value should be applied to which parameter. Try specifying the 'param_set' option to clarify which value should
-           be applied to which parameter.")
+      warning("A specified condition matches multiple parameters. In these cases it is unclear which parameter value should be assigned to which parameter. Assignment thus defaults to the order in which parameters appear in 'parameters_df'.
+              \n We advise checking that parameter assignment was carried out as you intended. ")
+    }
+
+    # forgive user when specifying across
+    if(all(grepl("_", names))) {
+      warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' option to more clearly indicate parameters whose values you wish to alter.")
+
+      if(length(x) != length(names)) {
+        x <- rep(x, each = length(names)/length(commands))
+      }
     }
 
     # ensure the unambiguous single value case passes checks
