@@ -412,11 +412,12 @@ restrict_by_labels <- function(model,
 
   # If there are wild cards, spell them out
   if (wildcard) {
-    labels <-
-      lapply(labels, function(j)
-        unique(unlist(sapply(
-          j, unpack_wildcard
-        ))))
+    labels <- lapply(labels, function(j) {
+      sapply(j, unpack_wildcard) |>
+        unlist() |>
+        as.vector() |>
+        unique()
+    })
   }
 
   # Check if labels map to nodal types

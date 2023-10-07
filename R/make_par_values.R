@@ -299,9 +299,9 @@ make_par_values <- function(model,
 
     # check if conditions are under-specified
     if((length(x) != 1) & (length(commands) != length(names))) {
-      stop("A specified condition matches multiple parameters. If your model contains confounding your condition applies across multiple param_sets.
-           In these cases, it is unclear which value should be applied to which parameter. Try specifying the 'param_set' option to clarify which value should
-           be applied to which parameter.")
+      warning("A specified condition matches multiple parameters. In these cases it is unclear which parameter value should be assigned to which parameter. Assignment thus defaults to the order in which parameters appear in 'parameters_df'.
+              \n If your model contains confounding your condition may apply across multiple param_sets. In these cases you can clarify parameter assignment by specifying the 'param_set' option.
+              \n We advise checking that parameter assignment was carried out as you intended. ")
     }
 
     # ensure the unambiguous single value case passes checks
