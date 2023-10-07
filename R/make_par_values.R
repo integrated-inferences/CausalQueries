@@ -304,7 +304,7 @@ make_par_values <- function(model,
     }
 
     # forgive user when specifying across
-    if(all(grepl("_", names)) && (length(x) != length(names))) {
+    if(all(grepl("_", names))) {
       warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' option to more clearly indicate parameters whose values you wish to alter.")
       x <- rep(x, each = length(names)/length(commands))
     }
