@@ -26,7 +26,6 @@
 #' @param param_names A character vector of names of parameters to restrict on.
 #' @param given A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.
-#' @param wildcard Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.
 #'
 #' @family restrictions
 #'
@@ -103,7 +102,7 @@
 #'
 #' # Restrictions can be  with wildcards
 #' model <- make_model('X->Y') %>%
-#' set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
+#' set_restrictions(labels = list(Y = '?0'))
 #' get_parameter_matrix(model)
 #'
 #' # Deterministic model
@@ -122,8 +121,7 @@ set_restrictions <- function(model,
                              labels = NULL,
                              param_names = NULL,
                              given = NULL,
-                             keep = FALSE,
-                             wildcard = FALSE) {
+                             keep = FALSE) {
 
   is_a_model(model)
 
@@ -214,8 +212,7 @@ set_restrictions <- function(model,
       model,
       labels = labels,
       keep = keep,
-      given = given,
-      wildcard = wildcard
+      given = given
     )
 
   # 3 Statement
@@ -399,8 +396,7 @@ restrict_by_query <- function(model,
 restrict_by_labels <- function(model,
                                labels,
                                given = NULL,
-                               keep = FALSE,
-                               wildcard = FALSE) {
+                               keep = FALSE) {
   # Stop if none of the names of the labels vector matches nodes in dag Stop if there's any labels
   # name that doesn't match any of the nodes in the dag
   restricted_vars <- names(labels)
@@ -411,14 +407,13 @@ restrict_by_labels <- function(model,
   }
 
   # If there are wild cards, spell them out
-  if (wildcard) {
-    labels <- lapply(labels, function(j) {
-      sapply(j, unpack_wildcard) |>
-        unlist() |>
-        as.vector() |>
-        unique()
-    })
-  }
+  labels <- lapply(labels, function(j) {
+    sapply(j, unpack_wildcard) |>
+      unlist() |>
+      as.vector() |>
+      unique()
+  })
+
 
   # Check if labels map to nodal types
   for (i in restricted_vars) {
@@ -508,8 +503,8 @@ restrict_by_labels <- function(model,
 get_type_names <- function(nodal_types) {
     unlist(sapply(1:length(nodal_types), function(i) {
         name <- names(nodal_types)[i]
-        a <- nodal_types[[i]]
-        paste(name, a, sep = ".")
+        types <- nodal_types[[i]]
+        paste(name, types, sep = ".")
     }))
 }
 
@@ -523,8 +518,10 @@ get_type_names <- function(nodal_types) {
 unpack_wildcard <- function(x) {
     splitstring <- strsplit(x, "")[[1]]
     n_wild <- sum(splitstring == "?")
-    if (n_wild == 0)
-        return(x)
+    if (n_wild == 0) {
+      return(x)
+    }
+
     variations <- perm(rep(1, n_wild))
     apply(variations, 1, function(j) {
         z <- splitstring
