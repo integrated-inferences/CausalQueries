@@ -11,8 +11,7 @@ set_restrictions(
   labels = NULL,
   param_names = NULL,
   given = NULL,
-  keep = FALSE,
-  wildcard = FALSE
+  keep = FALSE
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ set_restrictions(
 \item{given}{A character vector or list of character vectors specifying nodes on which the parameter set to be restricted depends. When restricting by \code{statement}, \code{given} must either be \code{NULL} or of the same length as \code{statement}. When mixing statements that are further restricted by \code{given} and ones that are not, statements without \code{given} restrictions should have \code{given} specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.}
 
 \item{keep}{Logical. If `FALSE`, removes and if `TRUE` keeps only causal types specified by \code{statement} or \code{labels}.}
-
-\item{wildcard}{Logical. If `TRUE` allows for use of wildcards in restriction string. Default `FALSE`.}
 }
 \value{
 An object of class \code{model}. The causal types and nodal types in the model are reduced according to the stated restriction.
@@ -125,7 +122,7 @@ set_restrictions(labels = list(X = '0', Y = '00'))
 
 # Restrictions can be  with wildcards
 model <- make_model('X->Y') \%>\%
-set_restrictions(labels = list(Y = '?0'), wildcard = TRUE)
+set_restrictions(labels = list(Y = '?0'))
 get_parameter_matrix(model)
 
 # Deterministic model
