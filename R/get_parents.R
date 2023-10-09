@@ -9,7 +9,9 @@
 #' model <- make_model('X -> K -> Y')
 #' get_parents(model)
 
-get_parents <- function(model)
-	sapply(model$nodes, function(j)
-		paste(model$dag$parent)[paste(model$dag$children) == j])
+get_parents <- function(model) {
+  sapply(model$nodes, function(j) {
+    paste(model$dag$parent)[paste(model$dag$children) == j]
+  })
+}
 

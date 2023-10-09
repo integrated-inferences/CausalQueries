@@ -39,10 +39,6 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
       stop("Do actions must be specified when node is not NULL")
     }
 
-    if(!all(get_parents(model)[[node]] %in% names(dos))) {
-      stop("Please specify givens for all parents of the node you specified")
-    }
-
   }
 
   # get causal types
@@ -61,38 +57,52 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
   # case with node specified
   if(!is.null(node)) {
     # generate data realizations
-    parents <- get_parents(model)[[node]]
+    parents <- get_parents(model)
+    sub_dag <- traverse_dag(node = node, dag = parents, dos = names(dos))
 
-    if(any(!names(dos) %in% parents)) {
-      conjugation <- ifelse (sum(!names(dos) %in% parents)>1, "are not parents of", "is not a parent of")
-      subjects <- paste0(names(dos)[!names(dos) %in% parents], collapse = ", ")
-      if(all(!names(dos) %in% parents)){
+    if(any(!names(dos) %in% sub_dag)) {
+      conjugation <- ifelse (sum(!names(dos) %in% sub_dag)>1, "are not a cause of", "is not a cause of")
+      subjects <- paste0(names(dos)[!names(dos) %in% sub_dag], collapse = ", ")
+      if(all(!names(dos) %in% sub_dag)){
         stop(paste(subjects, conjugation, node))
       } else {
         warning(paste(subjects, conjugation, node))
       }
     }
 
-    nodal_types <- get_nodal_types(model)[[node]]
-    data_realizations <- data.frame(sapply(parents, function(p) as.character(rep(dos[p], length(nodal_types)))),
-                                    nodal_types,
-                                    stringsAsFactors = FALSE)
-    colnames <- c(parents, node)
-    names(data_realizations) <- colnames
+    nodal_types <- get_nodal_types(model)
+    nodal_types <- nodal_types[sort(match(sub_dag, names(nodal_types)))]
+    data_realizations <- expand.grid(nodal_types, stringsAsFactors = FALSE)
+
+    nodes <- names(nodal_types)
+    colnames <- nodes
+    names(data_realizations) <- nodes
+
+    # rownames
+    if(add_rownames) {
+      types <- data_realizations
+    }
+
+    # put dos into data_realizations df
+    if(!is.null(dos)) {
+      data_realizations[,names(dos)] <- lapply(dos,as.character)
+    }
+
+    # generate parents_list
+    parents_list <- parents[nodes]
+
+    for(i in 1:length(dos)) {
+      parents_list[[names(dos)[i]]] <- character(0)
+    }
+
+    # get variables to work through
+    endogenous_vars <- names(parents_list)[sapply(parents_list, length) != 0]
+    endogenous_vars <- which(endogenous_vars == nodes) - 1
 
     # replace parent names with parent col positions in data_realizations df
     # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
-    parents_list <- as.list(rep(-1,length(parents)))
-    parents_list <- c(parents_list, list((1:length(parents)) - 1))
-    names(parents_list) <- c(parents,node)
+    parents_list <- parents_to_int(parents_list, nodes)
 
-    # get variables to work through
-    endogenous_vars <- which(colnames(data_realizations) == node) - 1
-
-    # rownames
-    if(add_rownames){
-      types <- data_realizations[,endogenous_vars + 1, drop = FALSE]
-    }
 
     # turn data_realizations df into list to pass as std::vector<std::vector<std::string>>
     n_types <- nrow(data_realizations)
@@ -104,16 +114,7 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
   if(is.null(node)) {
     # replace parent names with parent col positions in data_realizations df
     # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
-    parents_list  <- get_parents(model) |>
-      lapply(function(i) {
-        if (length(i) > 0) {
-          sapply(i, function(j)
-            which(j == model$nodes)) |>
-            unname() - 1
-        } else {
-          -1
-        }
-      })
+    parents_list  <- parents_to_int(get_parents(model), model$nodes)
 
     # rownames
     if(add_rownames) {
@@ -148,19 +149,63 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 
   # add rownames
   if(add_rownames){
-    if(!is.null(node)) {
-      attr(data_realizations, "type_names") <- rownames(data_realizations) <- apply(types, 1, FUN = function(x) paste0(x))
-    } else {
-      rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
-      type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
-      attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
-    }
+    rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
+    type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
+    attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
   }
 
   return(data_realizations)
 }
 
 
+#' Helper to generate a sub-DAG by recursively traversing a DAG from a given node until a root node or a node with a do-operation is reached
+#' @param node a string specifying a node in the DAG
+#' @param dag a named list of character vectors specifying all nodes in the DAG and their respective parents
+#' @return a character vector of nodes
+#' @keywords internal
+#' Used in realise_outcomes
+
+traverse_dag <- function(node, dag, dos = character(0)) {
+  if (node %in% names(dag)) {
+    if (node %in% dos) {
+      return(node)
+    } else {
+      parents <- dag[[node]]
+      if (length(parents) == 0) {
+        return(node)
+      } else {
+        parent_list <- c(node)
+        for (parent in parents) {
+          parent_list <- c(parent_list, traverse_dag(parent, dag, dos))
+        }
+        return(unique(parent_list))
+      }
+    }
+  } else {
+    stop("Node not found in the DAG")
+  }
+}
+
+#' Helper to turn parents_list into a list of data_realizations column positions
+#' @param parents_list a named list of character vectors specifying all nodes in the DAG and their respective parents
+#' @return a list of column positions
+#' @keywords internal
+#' Used in realise_outcomes
+
+parents_to_int <- function(parents_list, position_set) {
+  out <- parents_list |>
+    lapply(function(i) {
+      if (length(i) > 0) {
+        sapply(i, function(j)
+          which(j == position_set)) |>
+          unname() - 1
+      } else {
+        -1
+      }
+    })
+
+  return(out)
+}
 
 
 #' Reveal outcomes
@@ -180,5 +225,7 @@ reveal_outcomes <- function(model, dos = NULL, node = NULL) {
   warning("This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead.")
   realise_outcomes(model = model, dos = dos, node = node)
 }
+
+
 
 
