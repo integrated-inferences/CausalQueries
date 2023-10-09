@@ -29,26 +29,19 @@
 realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){
 
   # check dos + node specification
-  if(!is.null(node)) {
-
-    if(length(node) > 1) {
-      stop("Please specify only one node")
-    }
-
+  if((!is.null(node)) && (length(node) > 1)) {
+    stop("Please specify only one node")
   }
-
-  # get causal types
-  data_realizations <- get_causal_types(model)
 
   # case with trivial single node model
   if(length(model$nodes) == 1) {
+    data_realizations <- get_causal_types(model)
     if (add_rownames) {
       rownames(data_realizations) <-
         gsub("[[:alpha:]]", "", rownames(data_realizations))
     }
     return(data_realizations)
   }
-
 
   # case with node specified
   if(!is.null(node)) {
@@ -86,14 +79,13 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
       types <- data_realizations
     }
 
-
     # generate parents_list
     parents_list <- as.list(rep(-1,length(parents)))
     parents_list <- c(parents_list, list((1:length(parents)) - 1))
     names(parents_list) <- nodes
 
     # get variables to work through
-    endogenous_vars <- node
+    endogenous_vars <- length(nodes) - 1
 
     # turn data_realizations df into list to pass as std::vector<std::vector<std::string>>
     n_types <- nrow(data_realizations)
@@ -103,6 +95,8 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 
   # case without node specified
   if(is.null(node)) {
+    # get data realizations
+    data_realizations <- get_causal_types(model)
     # replace parent names with parent col positions in data_realizations df
     # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
     parents_list  <- parents_to_int(get_parents(model), model$nodes)
