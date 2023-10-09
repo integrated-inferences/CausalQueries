@@ -29,23 +29,13 @@
 realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){
 
   # check dos + node specification
-  if(!is.null(node)) {
-
-    if(length(node) > 1) {
-      stop("Please specify only one node")
-    }
-
-    if(is.null(dos)) {
-      stop("Do actions must be specified when node is not NULL")
-    }
-
+  if((!is.null(node)) && (length(node) > 1)) {
+    stop("Please specify only one node")
   }
-
-  # get causal types
-  data_realizations <- get_causal_types(model)
 
   # case with trivial single node model
   if(length(model$nodes) == 1) {
+    data_realizations <- get_causal_types(model)
     if (add_rownames) {
       rownames(data_realizations) <-
         gsub("[[:alpha:]]", "", rownames(data_realizations))
@@ -53,28 +43,34 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
     return(data_realizations)
   }
 
-
   # case with node specified
   if(!is.null(node)) {
     # generate data realizations
-    parents <- get_parents(model)
-    sub_dag <- traverse_dag(node = node, dag = parents, dos = names(dos))
+    parents <- get_parents(model)[[node]]
 
-    if(any(!names(dos) %in% sub_dag)) {
-      conjugation <- ifelse (sum(!names(dos) %in% sub_dag)>1, "are not a cause of", "is not a cause of")
-      subjects <- paste0(names(dos)[!names(dos) %in% sub_dag], collapse = ", ")
-      if(all(!names(dos) %in% sub_dag)){
+    if(any(!names(dos) %in% parents)) {
+      conjugation <- ifelse (sum(!names(dos) %in% parents)>1, "are not a parent of", "is not a parent of")
+      subjects <- paste0(names(dos)[!names(dos) %in% parents], collapse = ", ")
+      if(all(!names(dos) %in% parents)){
         stop(paste(subjects, conjugation, node))
       } else {
         warning(paste(subjects, conjugation, node))
       }
     }
 
-    nodal_types <- get_nodal_types(model)
-    nodal_types <- nodal_types[sort(match(sub_dag, names(nodal_types)))]
-    data_realizations <- expand.grid(nodal_types, stringsAsFactors = FALSE)
+    nodes <- c(parents, node)
+    nodal_types <- get_nodal_types(model)[nodes]
 
-    nodes <- names(nodal_types)
+    # treat parents as exogenous and add dos
+    for(p in parents) {
+      if(p %in% names(dos)) {
+        nodal_types[[p]] <- as.character(dos[[p]])
+      } else {
+        nodal_types[[p]] <- c("0","1")
+      }
+    }
+
+    data_realizations <- expand.grid(nodal_types, stringsAsFactors = FALSE)
     colnames <- nodes
     names(data_realizations) <- nodes
 
@@ -83,26 +79,13 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
       types <- data_realizations
     }
 
-    # put dos into data_realizations df
-    if(!is.null(dos)) {
-      data_realizations[,names(dos)] <- lapply(dos,as.character)
-    }
-
     # generate parents_list
-    parents_list <- parents[nodes]
-
-    for(i in 1:length(dos)) {
-      parents_list[[names(dos)[i]]] <- character(0)
-    }
+    parents_list <- as.list(rep(-1,length(parents)))
+    parents_list <- c(parents_list, list((1:length(parents)) - 1))
+    names(parents_list) <- nodes
 
     # get variables to work through
-    endogenous_vars <- names(parents_list)[sapply(parents_list, length) != 0]
-    endogenous_vars <- which(endogenous_vars == nodes) - 1
-
-    # replace parent names with parent col positions in data_realizations df
-    # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
-    parents_list <- parents_to_int(parents_list, nodes)
-
+    endogenous_vars <- length(nodes) - 1
 
     # turn data_realizations df into list to pass as std::vector<std::vector<std::string>>
     n_types <- nrow(data_realizations)
@@ -112,6 +95,8 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
 
   # case without node specified
   if(is.null(node)) {
+    # get data realizations
+    data_realizations <- get_causal_types(model)
     # replace parent names with parent col positions in data_realizations df
     # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
     parents_list  <- parents_to_int(get_parents(model), model$nodes)
@@ -157,34 +142,6 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
   return(data_realizations)
 }
 
-
-#' Helper to generate a sub-DAG by recursively traversing a DAG from a given node until a root node or a node with a do-operation is reached
-#' @param node a string specifying a node in the DAG
-#' @param dag a named list of character vectors specifying all nodes in the DAG and their respective parents
-#' @return a character vector of nodes
-#' @keywords internal
-#' Used in realise_outcomes
-
-traverse_dag <- function(node, dag, dos = character(0)) {
-  if (node %in% names(dag)) {
-    if (node %in% dos) {
-      return(node)
-    } else {
-      parents <- dag[[node]]
-      if (length(parents) == 0) {
-        return(node)
-      } else {
-        parent_list <- c(node)
-        for (parent in parents) {
-          parent_list <- c(parent_list, traverse_dag(parent, dag, dos))
-        }
-        return(unique(parent_list))
-      }
-    }
-  } else {
-    stop("Node not found in the DAG")
-  }
-}
 
 #' Helper to turn parents_list into a list of data_realizations column positions
 #' @param parents_list a named list of character vectors specifying all nodes in the DAG and their respective parents
