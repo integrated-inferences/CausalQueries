@@ -3,7 +3,7 @@
 \docType{data}
 \name{democracy_data}
 \alias{democracy_data}
-\title{Democracy Data}
+\title{Development and Democratization: Data for replication of analysis in *Integrated Inferences*}
 \format{
 A data frame with 84 rows and 5 nodes:
 \describe{

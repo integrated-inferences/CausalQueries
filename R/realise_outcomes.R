@@ -3,6 +3,9 @@
 #' Realise outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.
 #' If a do operator is applied to any node then it takes the given value and all its descendants are generated accordingly.
 #'
+#' If a node is not specified all outcomes are realised for all possible causal types consistent with the model.
+#' If a node is specified then outcomes of Y are returned conditional on different values of parents, whether or not these values of the parents obtain given restrictions under the model.
+#'
 #' @details \code{realise_outcomes} starts off by creating types (via \code{\link{get_nodal_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param dos A named \code{list}. Do actions defining node values, e.g., \code{list(X = 0, M = 1)}.
@@ -15,12 +18,16 @@
 #' make_model("X -> Y") |>
 #'   realise_outcomes()
 #'
-#'make_model("X -> Y <- W") |>
+#' make_model("X -> Y <- W") |>
 #' set_restrictions(labels = list(X = "1", Y="0010"), keep = TRUE) |>
 #'  realise_outcomes()
 #'
 #' make_model("X1->Y; X2->M; M->Y") |>
 #' realise_outcomes(dos = list(X1 = 1, M = 0))
+#'
+#' # With node specified
+#' make_model("X->M->Y") |>
+#' realise_outcomes(node = "Y")
 #'
 #' make_model("X->M->Y") |>
 #' realise_outcomes(dos = list(M = 1), node = "Y")

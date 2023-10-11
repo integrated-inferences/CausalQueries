@@ -10,6 +10,7 @@ update_model(
   data_type = NULL,
   keep_fit = FALSE,
   keep_transformed = TRUE,
+  keep_w = FALSE,
   censored_types = NULL,
   ...
 )
@@ -25,6 +26,8 @@ Compact data must have entries for each member of each strategy family to produc
 \item{keep_fit}{Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`}
 
 \item{keep_transformed}{Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full}
+
+\item{keep_w}{Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`}
 
 \item{censored_types}{vector of data types that are selected out of the data, eg c("X0Y0")}
 
