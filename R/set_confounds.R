@@ -22,7 +22,7 @@
 #' In this case there would be 3 degrees of freedom for Y and 1 for X, totaling 4 rather than 7.
 #'
 #' \code{set_confounds} lets you relax this assumption by increasing the number of parameters characterizing the joint distribution. Using the fact that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a) rather than simply P(B).
-#' For instance here two parameters (and one degree of freedom) govern the distribution of types X  and four parameters (with 3 degrees of freedom) govern  the types for Y given the type of X for a total of 1+3+3 = 7 degress of freedom.
+#' For instance here two parameters (and one degree of freedom) govern the distribution of types X  and four parameters (with 3 degrees of freedom) govern  the types for Y given the type of X for a total of 1+3+3 = 7 degrees of freedom.
 #'
 #'
 #' @inheritParams CausalQueries_internal_inherit_params

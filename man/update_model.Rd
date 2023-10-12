@@ -29,12 +29,12 @@ Compact data must have entries for each member of each strategy family to produc
 
 \item{keep_event_probabilities}{Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`}
 
-\item{censored_types}{vector of data types that are selected out of the data, eg c("X0Y0")}
+\item{censored_types}{vector of data types that are selected out of the data, e.g. c("X0Y0")}
 
 \item{...}{Options passed onto \code{\link[rstan]{stan}} call.}
 }
 \value{
-An object of class \code{causal_model}. The returned modesl is a list containing the elements comprising
+An object of class \code{causal_model}. The returned model is a list containing the elements comprising
 a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
 }
 \description{

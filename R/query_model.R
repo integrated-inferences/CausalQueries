@@ -231,7 +231,7 @@ query_distribution <- function(model,
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param queries A vector of strings or list of strings specifying queries on potential outcomes such as "Y[X=1] - Y[X=0]".
-#' @param given A vector or list of strings specifying givens. A givne is a quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
+#' @param given A vector or list of strings specifying givens. A given is a quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.
 #' @param using A vector or list of strings. Whether to use priors, posteriors or parameters.
 #' @param stats Functions to be applied to estimand distribution. If NULL, defaults to mean, standard deviation, and 95\% confidence interval.
 #' @param n_draws An integer. Number of draws.

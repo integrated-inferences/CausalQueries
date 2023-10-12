@@ -22,7 +22,7 @@ query_model(
 
 \item{queries}{A vector of strings or list of strings specifying queries on potential outcomes such as "Y[X=1] - Y[X=0]".}
 
-\item{given}{A vector or list of strings specifying givens. A givne is a quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.}
+\item{given}{A vector or list of strings specifying givens. A given is a quoted expression that evaluates to a logical statement. Allows estimand to be conditioned on *observational* (or counterfactual) distribution.}
 
 \item{using}{A vector or list of strings. Whether to use priors, posteriors or parameters.}
 

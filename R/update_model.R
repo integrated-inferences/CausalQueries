@@ -9,9 +9,9 @@
 #' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
 #' @param keep_event_probabilities Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full
-#' @param censored_types vector of data types that are selected out of the data, eg c("X0Y0")
+#' @param censored_types vector of data types that are selected out of the data, e.g. c("X0Y0")
 #' @param ... Options passed onto \code{\link[rstan]{stan}} call.
-#' @return An object of class \code{causal_model}. The returned modesl is a list containing the elements comprising
+#' @return An object of class \code{causal_model}. The returned model is a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
 #' @import methods
 #' @import Rcpp
