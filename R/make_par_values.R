@@ -306,7 +306,7 @@ make_par_values <- function(model,
 
     # forgive user when specifying across
     if(all(grepl("_", names))) {
-      if((!grepl("param_set", statement)) | all(is.na(param_set))){
+      if((!is.na(statement) && !grepl("param_set", statement)) | all(is.na(param_set))){
         warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' option to more clearly indicate parameters whose values you wish to alter.")
       }
 
@@ -322,17 +322,16 @@ make_par_values <- function(model,
 
     n_vals <- length(x)
 
-    names(x) <- names
-    x <- x[param_df$param_names]
-    to_alter <- !is.na(x)
-
-    # check that specified number of values match specified number of parameters to alter
-    if(sum(to_alter) != n_vals) {
-      stop(paste("Trying to replace ", sum(to_alter), " parameters with ", n_vals, " values.",
+    # check if specified number of parameters values matches number of parameters to alter
+    if(length(names) != n_vals) {
+      stop(paste("Trying to replace ", length(names), " parameters with ", n_vals, " values.",
                  "You either specified a wrong number of values or your conditions do not match the expected number of model parameters.",
                  sep = ""))
     }
 
+    names(x) <- names
+    x <- x[param_df$param_names]
+    to_alter <- !is.na(x)
     x <- x[to_alter]
   }
 
