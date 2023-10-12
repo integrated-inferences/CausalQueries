@@ -291,13 +291,6 @@ print.summary.causal_model <- function(x,  ...){
 
 		print(sapply(nodal_types , length, USE.NAMES = TRUE))
 
-  if(!is.null(x$P)){
-  	cat("\n ------------------------------------------------------------------------------------------\n")
-  	cat("\nParameter matrix: \n")
-  	print(x$P)
-  	}
-
-
 
   if(!is.null(x$causal_types)){
   		cat("\nNumber of unit types:")

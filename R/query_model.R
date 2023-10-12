@@ -421,6 +421,10 @@ query_model <- function(model,
 
   estimands <- cbind(query_id, estimands)
 
+  if(length(model) == 1) {
+    estimands <- estimands[,colnames(estimands) != "model"]
+  }
+
   return(estimands)
 }
 
