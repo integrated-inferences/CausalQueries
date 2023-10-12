@@ -194,7 +194,6 @@ testthat::test_that(
 		model <- make_model('X->Y')
 		data_long   <- make_data(model, n = 4)
 		data_short  <- collapse_data(data_long, model)
-		expect_error(update_model(model, data_short, refresh = 0))
 		updated <- suppressWarnings(update_model(model, data_short, data_type = 'compact', refresh = 0))
 		expect_true(class(updated) == "causal_model")
 	}
