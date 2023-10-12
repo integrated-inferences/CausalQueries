@@ -7,11 +7,11 @@
 #' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
 #'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
 #' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
-#' @param keep_w Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`
+#' @param keep_event_probabilities Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full
 #' @param censored_types vector of data types that are selected out of the data, eg c("X0Y0")
 #' @param ... Options passed onto \code{\link[rstan]{stan}} call.
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
+#' @return An object of class \code{causal_model}. The returned modesl is a list containing the elements comprising
 #' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
 #' @import methods
 #' @import Rcpp
@@ -63,7 +63,7 @@
 
 
 update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
-                         keep_transformed = TRUE, keep_w = FALSE, censored_types = NULL, ...) {
+                         keep_transformed = TRUE, keep_event_probabilities = FALSE, censored_types = NULL, ...) {
 
    # Guess data_type
   if(is.null(data_type))
@@ -129,7 +129,7 @@ update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
     colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
 
     # Retain event (pre-censoring) probabilities
-    if(keep_w){
+    if(keep_event_probabilities){
     model$stan_objects$w <- extract(newfit, pars = "w")$w
         colnames(model$stan_objects$w) <- colnames(stan_data$E)
     }

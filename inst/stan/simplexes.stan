@@ -67,7 +67,8 @@ for (i in 1:n_param_sets) {
     1 + sum(gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]);
 
     lambdas[l_starts[i]:l_ends[i]] =
-    append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) / sum_gammas[i];
+    append_row(1, gamma[(l_starts[i] - (i-1)):(l_ends[i] - i)]) /
+      sum_gammas[i];
     }
   }
 
@@ -99,7 +100,8 @@ model {
 
 // Dirichlet distributions (earlier versions used gamma)
 for (i in 1:n_param_sets) {
-  target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]]  | lambdas_prior[l_starts[i] :l_ends[i]]);
+  target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]]  |
+    lambdas_prior[l_starts[i] :l_ends[i]]);
   target += -n_param_each[i] * log(sum_gammas[i]);
  }
 
@@ -107,13 +109,14 @@ for (i in 1:n_param_sets) {
 // Note with censoring event_probabilities might not sum to 1
 for (i in 1:n_strategies) {
   target += multinomial_lpmf(
-  Y[strategy_starts[i]:strategy_ends[i]] | w_full[strategy_starts[i]:strategy_ends[i]]/sum(w_full[strategy_starts[i]:strategy_ends[i]]));
+  Y[strategy_starts[i]:strategy_ends[i]] |
+    w_full[strategy_starts[i]:strategy_ends[i]]/
+     sum(w_full[strategy_starts[i]:strategy_ends[i]]));
  }
 
 }
 
 // Option to export distribution of causal types
-// Note if clause used here to effectively turn off this block if not required
 generated quantities{
 
 vector[n_types] prob_of_types;

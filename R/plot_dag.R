@@ -1,6 +1,6 @@
 #' Plots a DAG in ggplot style using a causal model input
 #'
-#' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs.
+#' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs. Builds on functionality from ggdag and dagitty.
 #'
 #' @param model A \code{causal_model} object generated from \code{make_model}
 #' @param x_coord A vector of x coordinates for DAG nodes. If left empty, coordinates are randomly generated
