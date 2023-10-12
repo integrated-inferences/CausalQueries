@@ -47,6 +47,8 @@
 
 map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
+    # check if query has been properly specified
+    query <- check_query(query)
     # Get outcome var (preceding square brackets)
     node <- unique(st_within(query))
     if(is.null(node[[1]])) stop("No outcome variable specified. If required, specify roots as X[]==1 not X==1.")
@@ -194,7 +196,7 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
     # Add dots to query parts
     w_query <- gsub("\\(|\\)", "", query) %>%
         stringr::str_split(operators) %>%
-        unlist %>%
+        unlist() %>%
         sapply(function(x) trimws(x)) %>%
         sapply(add_dots, model = model)
     w_query <- gsub(" ", "", w_query)
@@ -208,8 +210,9 @@ expand_nodal_expression <- function(model, query, node, join_by = "|")	{
     }
 
     # Expand
-    if(grepl("\\.", query))
-        query <- expand_wildcard(query, join_by = join_by, verbose = FALSE)
+    if(grepl("\\.", query)) {
+      query <- expand_wildcard(query, join_by = join_by, verbose = FALSE)
+    }
 
     # Return
     query

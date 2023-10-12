@@ -37,6 +37,9 @@ map_query_to_causal_type <- function(model, query, join_by = "|", eval_var = NUL
     if (grepl(".", query, fixed = TRUE))
         query <- expand_wildcard(query, join_by = join_by)
 
+    # check if query has been properly specified
+    query <- check_query(query)
+
     # Global Variables
     i <- 0
     list_names <- ""
