@@ -65,11 +65,11 @@ testthat::test_that(
 
 		expect_true(class(set_parameters(model)) == "causal_model")
 
-		a <- make_model('X -> Y') %>%
-  		set_confound("X <-> Y")  %>%
-  		set_parameters(statement = 'Y[X=1]>Y[X=0]', param_set = c("Y.X.0","Y.X.1"),
-  		               parameters = c(.2, .8))%>%
-  		get_parameters()
+		a <- make_model('X -> Y') |>
+  		set_confound("X <-> Y")
+
+	  a <- suppressWarnings(set_parameters(a,statement = 'Y[X=1]>Y[X=0]', param_set = c("Y.X.0","Y.X.1"), parameters = c(.2, .8)))
+  	a <- get_parameters(a)
 		expect_equal(sum(0.2 == a), 1)
 
 		}

@@ -17,7 +17,7 @@
 #' }
 #'
 prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types = NULL) {
-
+    i <- NULL
     # check data is in correct compact form
     if (!all(c("event", "strategy", "count") %in% names(data)))
         stop("Data should contain columns `event`, `strategy` and `count`")
@@ -48,7 +48,7 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types 
     # 2 Data parsing: allowing for censored types
     data <- data[!c(data$event %in% censored_types), ]
 
-    E <- data.frame((CausalQueries:::get_data_families(model, mapping_only = TRUE)))[data$event,] |>
+    E <- data.frame((get_data_families(model, mapping_only = TRUE)))[data$event,] |>
       as.matrix()
 
     strategies <- data$strategy

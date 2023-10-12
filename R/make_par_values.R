@@ -298,14 +298,17 @@ make_par_values <- function(model,
 
 
     # warn if conditions are under-specified
-    if((length(x) != 1) & (length(commands) != length(names))) {
+    if((length(x) != 1) && (length(commands) != length(names))) {
       warning("A specified condition matches multiple parameters. In these cases it is unclear which parameter value should be assigned to which parameter. Assignment thus defaults to the order in which parameters appear in 'parameters_df'.
               \n We advise checking that parameter assignment was carried out as you intended. ")
     }
 
+
     # forgive user when specifying across
     if(all(grepl("_", names))) {
-      warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' option to more clearly indicate parameters whose values you wish to alter.")
+      if((!grepl("param_set", statement)) | all(is.na(param_set))){
+        warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' option to more clearly indicate parameters whose values you wish to alter.")
+      }
 
       if(length(x) != length(names)) {
         x <- rep(x, each = length(names)/length(commands))
