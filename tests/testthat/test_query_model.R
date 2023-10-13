@@ -33,7 +33,7 @@ testthat::test_that(
 		expect_true(is.data.frame(q))
 
 		q <- query_model(model, query = "Y[X=1] - Y[X=0]", using = c("priors", "parameters"), parameters = list(c(.5, .5, 0, 0, 1, 0)))
-		expect_true(round(q[2,6]) == 1)
+		expect_true(round(q[2,5]) == 1)
 
 		q <-query_model(
 		                model,

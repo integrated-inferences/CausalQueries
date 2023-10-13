@@ -34,7 +34,7 @@ testthat::test_that(
 		model <- make_model("X -> M -> Y; X->Y")
 		query <- "(Y[X = .]==1)"
 		out <- map_query_to_causal_type(model, query)
-		expect_equal(out$query, "(Y[X=0]==1 | Y[X=1]==1)")
+		expect_equal(out$query, "(Y[X=0]==1|Y[X=1]==1)")
 		expect_equal(ncol(out$evaluated_nodes), 5)
 		expect_equal(nrow(out$evaluated_nodes), 128)
 		expect_equal(length(out$type_list), 96)

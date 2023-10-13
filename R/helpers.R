@@ -362,28 +362,28 @@ check_query <- function(query) {
   query <- unlist(strsplit(query, ""))
 
   q <-c()
-  in_do_set <- FALSE
   do_warn <- 0
   non_do_warn <- 0
+  nest_level <- 0
 
   for(i in 1:length(query)) {
     write <- TRUE
 
     if(query[i] == "[") {
-      in_do_set <- TRUE
+      nest_level <- nest_level + 1
     }
 
     if(query[i] == "]") {
-      in_do_set <- FALSE
+      nest_level <- nest_level - 1
     }
 
     if(i > 1) {
-      if(in_do_set && (query[i-1] == "=") && (query[i] == "=")) {
+      if((nest_level != 0) && (query[i-1] == "=") && (query[i] == "=")) {
         write <- FALSE
         do_warn <- do_warn + 1
       }
 
-      if(!in_do_set && (query[i-1] == "=") && !(query[i-2] %in% c(">","<","!","=")) && (query[i] != "=")) {
+      if((nest_level == 0) && (query[i-1] == "=") && !(query[i-2] %in% c(">","<","!","=")) && (query[i] != "=")) {
         q <- c(q,"=")
         non_do_warn <- non_do_warn + 1
       }
