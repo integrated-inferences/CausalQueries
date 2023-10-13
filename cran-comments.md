@@ -1,7 +1,21 @@
-This is a major release introducing non backwards compatible changes to querying functionality. 
+**Resubmission**: This is a major release introducing non backwards compatible changes to querying functionality. 
 This release additionally fixes bugs related to parameter, parameter matrix, prior and restriction setting, 
 updating with censored data and query specification. It finally eliminates computational bottlenecks and improves 
 speed and usability. 
+
+## Resolved Issues 
+
+Issue: 
+
+```
+Flavor: r-devel-linux-x86_64-debian-gcc
+Check: Rd files, Result: NOTE
+  checkRd: (-1) get_event_prob.Rd:21: Lost braces
+      21 | An {array} of event probabilities
+         |    ^
+```
+
+has been fixed.
 
 ## Test environments
 

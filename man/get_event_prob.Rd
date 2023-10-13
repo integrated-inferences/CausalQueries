@@ -18,7 +18,7 @@ get_event_prob(model, parameters = NULL, A = NULL, P = NULL, given = NULL)
 \item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
 }
 \value{
-An {array} of event probabilities
+An array of event probabilities
 }
 \description{
 Draw event probabilities
