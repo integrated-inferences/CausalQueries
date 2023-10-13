@@ -435,7 +435,7 @@ query_model <- function(model,
 #' @param model passed from parent function
 #' @param using passed from parent function
 #' @param given passed from parent function
-#' @param query passed from parent function
+#' @param queries passed from parent function
 #' @param fun string specifying the name of the parent function
 #' @return list of altered arguments
 #' @keywords internal

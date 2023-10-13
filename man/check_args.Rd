@@ -13,9 +13,9 @@ check_args(model, using, given, queries, case_level, fun)
 
 \item{given}{passed from parent function}
 
-\item{fun}{string specifying the name of the parent function}
+\item{queries}{passed from parent function}
 
-\item{query}{passed from parent function}
+\item{fun}{string specifying the name of the parent function}
 }
 \value{
 list of altered arguments
