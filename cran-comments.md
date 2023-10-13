@@ -21,7 +21,7 @@ speed and usability.
 ❯ checking for GNU extensions in Makefiles ... NOTE
   GNU make is a SystemRequirements.
 ```
-Explanation: GNU make is required for packages build using rstantools. The requirement is specified in the DESCRIPTION file.
+Explanation: GNU make is required for packages built using rstantools. The requirement is specified in the DESCRIPTION file.
 
 
 
