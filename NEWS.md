@@ -109,7 +109,37 @@ We resolved this issue by pruning the `w` vector when the multinomial is run. Th
 Previously `wildcards` in `set_restrictions()` were erroneously interpreted as valid nodal types, leading to errors and undefined behavior. Proper unpacking and mapping of `wildcards` to existing nodal types has been restored. 
 
 
-#### 4. Allowing overwriting of a Parameter Matrix 
+#### 4. Checks for Misspecified Queries
+
+Previously misspecifications in queries like `Y[X==1]=1` would lead to undefined behavior when mapping queries to nodal or causal types. We now correct misspecified queries internally and warn about the misspecification. For example; running:
+
+```
+model <- CausalQueries::make_model("X -> Y")
+get_query_types(model, "Y[X=1]=1")
+```
+
+now produces
+
+```
+Causal types satisfying query's condition(s)  
+
+ query =  Y[X=1]==1 
+
+X0.Y01  X1.Y01
+X0.Y11  X1.Y11
+
+
+ Number of causal types that meet condition(s) =  4
+ Total number of causal types in model =  8
+Warning message:
+In check_query(query) :
+  statements to the effect that the realization of a node should equal some value should be specified with `==` not `=`. 
+  The query has been changed accordingly: Y[X=1]==1
+
+```
+
+
+#### 5. Allowing overwriting of a Parameter Matrix 
 
 Previously a parameter matrix `P` that was attached to a `causal_model` object could not be overwritten. Overwrites are now possible.   
 
