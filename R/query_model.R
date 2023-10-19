@@ -537,7 +537,7 @@ get_type_distributions <- function(jobs, model, n_draws, parameters = NULL) {
       parameters[[model_i]] <- get_parameters(model[[model_i]])
     }
 
-    if((using_i == "priors") && is.null(model[[model_i]]$priors_distribution)) {
+    if((using_i == "priors") && is.null(model[[model_i]]$prior_distribution)) {
       model[[model_i]] <- set_prior_distribution(model[[model_i]], n_draws = n_draws)
     }
 
