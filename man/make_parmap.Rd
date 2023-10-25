@@ -35,10 +35,11 @@ make_parmap(model) \%*\% (make_parmap(model) \%>\% attr("map"))
 # X1 and X2 are confounded and jointly determine Y1, Y2.
 # For instance for models in which X and Y take on four values rather than 2.
 model <- make_model("Y2 <- X1 -> Y1; Y2 <- X2 ->Y1; X1 <-> X2; Y1 <-> Y2")
-data <- CausalQueries:::minimal_event_data(model)
-check <- CausalQueries:::prep_stan_data(model, data, keep_transformed = TRUE)
-check$n_params
-a <- update_model(model)
-make_parmap(model) \%>\% dim
+parmap <- make_parmap(model)
+parmap |> dim()
+
+CausalQueries:::prep_stan_data(
+  model,
+  CausalQueries:::minimal_event_data(model))$n_params
 }
 }

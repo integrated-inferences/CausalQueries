@@ -61,7 +61,10 @@
 
 set_confound <- function(model, confound = NULL) {
 
-  if(any(lapply(confound, function(k) grepl(";", k)) %>% unlist))
+  is_a_model(model)
+
+
+  if(any(confound |> lapply(function(k) grepl(";", k)) |> unlist()))
     stop("Please provide multipe confounds as a list")
 
     given <- gen <- NULL
@@ -76,16 +79,15 @@ set_confound <- function(model, confound = NULL) {
 
     # extract the conditions from the nodal type name
     conditions_from_type <- function(type)
-        sapply(strsplit(type, "_"), function(x) gsub('\\.', '', unique(x)), simplify = FALSE)
-
-
-    is_a_model(model)
+        sapply(strsplit(type, "_"), function(x)
+          gsub('\\.', '', unique(x)), simplify = FALSE)
 
     # Housekeeping
     if (is.null(confound)) {
         message("No confound provided")
         return(model)
     }
+
     if (is.null(model$P))
         model <- set_parameter_matrix(model)
 
@@ -99,30 +101,22 @@ set_confound <- function(model, confound = NULL) {
         }}
 
 
-    names_P <- names(model$P)
-    model$parameters_df$given <- ""
-
-
-    # Add confounds to model statement if not present already
-    # (Present if provided in first instance; not if provided later)
-    # Note need to check writing on both directions and deal with loose spacing
-    statement <- gsub(" ", "", model$statement)
-    order_1 <- paste0(names(confound), "<->", confound)
-    order_2 <- paste0(confound, "<->", names(confound))
-    for (j in 1:length(confound)) {
-      if(!grepl(order_1[j], statement) & !grepl(order_2[j], statement))
-       model$statement <-
-          paste(model$statement, ";",  paste(names(confound)[j], "<->", confound[j]))
-    }
+    # Add confounds to model statement
+    model$statement <-
+          paste0(model$statement, "; ",
+                 paste(names(confound), "<->", confound, collapse = "; "))
 
 
     # Expand parameters_df
     ##################################################################################
+    names_P <- names(model$P)
 
     for(i in 1:length(confound)){
 
     from_nodal_types <-
-            model$parameters_df %>% filter(node == confound[i]) %>% pull(param_names)
+            model$parameters_df %>%
+      filter(node == confound[i]) %>%
+      mutate(x = paste0(node, ".", nodal_type)) |> pull(x) |> unique()
 
     to_add <-
         lapply(from_nodal_types, function(j)
@@ -145,8 +139,10 @@ set_confound <- function(model, confound = NULL) {
 
     for(i in 1:length(confound)){
 
-    from_nodal_types <-
-            model$parameters_df %>% filter(node == confound[i]) %>% pull(param_names)
+      from_nodal_types <-
+        model$parameters_df %>%
+        filter(node == confound[i]) %>%
+        mutate(x = paste0(node, ".", nodal_type)) |> pull(x) |> unique()
 
     to_add <-
         lapply(from_nodal_types, function(j){
@@ -159,11 +155,15 @@ set_confound <- function(model, confound = NULL) {
     # ie. (Z| (X1), (Y00|X0)
     row_elements <- conditions_from_type(rownames(newP)) # nodal types in parnames (list)
     for(k in 1:length(row_elements)){
-         to_zero <- sapply(row_elements[k][[1]],
-                              function(nd) sapply(nd, function(ndd) grepl(ndd, names_P))) %>% apply(1, prod)
-          newP[k, to_zero==0] <- 0}
+         to_zero <-
+           sapply(row_elements[k][[1]],
+                  function(nd) sapply(nd, function(ndd) grepl(ndd, names_P))) %>%
+           apply(1, prod)
+         newP[k, to_zero==0] <- 0
+         }
 
-    newP}) %>%
+    newP}
+    ) %>%
       bind_rows
 
     to_add <- filter(to_add, apply(to_add, 1, sum) != 0)  # Remove impossible rows with all zeros
