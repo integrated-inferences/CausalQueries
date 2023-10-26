@@ -335,9 +335,12 @@ query_model <- function(model,
   }
 
   # query names
+  queries <- unlist(queries)
   query_names <- names(queries)
-  if(!is.null(query_names)) {
-    names(query_names) <- unlist(queries)
+  no_query_names <- is.null(query_names)
+  if(no_query_names) {
+    query_names <- paste("Q", 1:length(queries), sep = "")
+    names(queries) <- query_names
   }
 
   # realise_outcomes
@@ -353,21 +356,27 @@ query_model <- function(model,
     jobs <- expand.grid(model_names,
                         unname(unlist(using)),
                         unname(unlist(given)),
-                        unname(unlist(queries)),
+                        query_names,
                         unname(unlist(case_level)),
                         stringsAsFactors = FALSE)
-    names(jobs) <- c("model_names","using","given","queries","case_level")
+    names(jobs) <- c("model_names","using","given","query_name","case_level")
   } else {
     jobs <- lapply(model_names, function(m) {
       data.frame(
         model_names = m,
         using = unname(unlist(using)),
         given = unname(unlist(given)),
-        queries = unname(unlist(queries)),
+        query_name = query_names,
         case_level = unname(unlist(case_level)),
         stringsAsFactors = FALSE)
     }) |>
       dplyr::bind_rows()
+  }
+
+  # merge queries onto jobs 
+  jobs$queries <- queries[jobs$query_name]
+  if(no_query_names) {
+    jobs$query_name <- jobs$queries
   }
 
   # only generate necessary data structures for unique subsets of jobs
@@ -414,10 +423,6 @@ query_model <- function(model,
     dplyr::mutate(given = ifelse(given == "ALL","-",given))
 
   colnames(query_id) <- c("model","query","given","using","case_level")
-
-  if(!is.null(query_names)) {
-    query_id$query <- query_names[query_id$query]
-  }
 
   estimands <- cbind(query_id, estimands)
 
