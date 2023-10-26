@@ -419,7 +419,7 @@ query_model <- function(model,
 
   ## prepare output
   query_id <- jobs |>
-    dplyr::select(model_names, queries, given, using, case_level) |>
+    dplyr::select(model_names, query_name, given, using, case_level) |>
     dplyr::mutate(given = ifelse(given == "ALL","-",given))
 
   colnames(query_id) <- c("model","query","given","using","case_level")
