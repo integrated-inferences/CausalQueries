@@ -400,8 +400,8 @@ query_model <- function(model,
     } else {
       stats <- c(mean = mean,
                  sd = sd,
-                 cred.low = function(x) stats::quantile(x, probs = 0.025, na.rm = TRUE),
-                 cred.high = function(x) stats::quantile(x, probs = 0.975, na.rm = TRUE))
+                 cred.low = function(x) unname(stats::quantile(x, probs = 0.025, na.rm = TRUE)),
+                 cred.high = function(x) unname(stats::quantile(x, probs = 0.975, na.rm = TRUE)))
     }
   }
 
