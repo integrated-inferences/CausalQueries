@@ -21,11 +21,12 @@
 #' # X1 and X2 are confounded and jointly determine Y1, Y2.
 #' # For instance for models in which X and Y take on four values rather than 2.
 #' model <- make_model("Y2 <- X1 -> Y1; Y2 <- X2 ->Y1; X1 <-> X2; Y1 <-> Y2")
-#' data <- CausalQueries:::minimal_event_data(model)
-#' check <- CausalQueries:::prep_stan_data(model, data, keep_transformed = TRUE)
-#' check$n_params
-#' a <- update_model(model)
-#' make_parmap(model) %>% dim
+#' parmap <- make_parmap(model)
+#' parmap |> dim()
+#'
+#' CausalQueries:::prep_stan_data(
+#'   model,
+#'   CausalQueries:::minimal_event_data(model))$n_params
 #' }
 
 make_parmap <- function(model, A = NULL, P = NULL){
@@ -35,6 +36,8 @@ make_parmap <- function(model, A = NULL, P = NULL){
     if(is.null(A)) A <- get_ambiguities_matrix(model)
     if(is.null(P)) P <- get_parameter_matrix(model)
 
+    # if no confounding, parmap is just P*A
+
     if(!grepl("<->", model$statement)){
         type_matrix <- 1*((as.matrix(P)%*%as.matrix(A))>0)
         map <- diag(ncol(type_matrix))
@@ -43,9 +46,10 @@ make_parmap <- function(model, A = NULL, P = NULL){
         return(type_matrix)
     }
 
-    # If confounding parmap has to split according to
+    # If confounding, parmap has to split according to
     # distinct conditioning paths
     data_names <- colnames(A)[A%*%(1:ncol(A))]
+
     type <-
         apply(P, 2, function(j)
             paste(model$parameters_df$given[j==1], collapse = " "))
@@ -55,6 +59,10 @@ make_parmap <- function(model, A = NULL, P = NULL){
         mutate(type = type, d = data_names) %>%
         group_by(d, type) %>% summarize_all(max) %>%
         ungroup
+
+    # reorder -- so that order is consistent with
+    .type_matrix <- .type_matrix[order(match(.type_matrix$d, colnames(A))),]
+
 
     type_matrix <- .type_matrix %>% select(-d, -type) %>% t()
     colnames(type_matrix) <- .type_matrix$d
