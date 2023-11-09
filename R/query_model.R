@@ -288,6 +288,9 @@ query_model <- function(model,
                         case_level = FALSE,
                         query = NULL) {
 
+  # handle global variables
+  query_name <- NULL
+
   # if single model passed to function place it in a list
   if(is(model, "causal_model")) {
     model <- list(model)
@@ -373,7 +376,7 @@ query_model <- function(model,
       dplyr::bind_rows()
   }
 
-  # merge queries onto jobs 
+  # merge queries onto jobs
   jobs$queries <- queries[jobs$query_name]
   if(no_query_names) {
     jobs$query_name <- jobs$queries

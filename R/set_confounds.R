@@ -61,6 +61,9 @@
 
 set_confound <- function(model, confound = NULL) {
 
+  # handle global variables
+  x <- NULL
+
   is_a_model(model)
 
 
