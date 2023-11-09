@@ -98,7 +98,7 @@ for (i in 1:n_paths) {
 
 model {
 
-// Dirichlet distributions (earlier versions used gamma)
+// Dirichlet distributions
 for (i in 1:n_param_sets) {
   target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]]  |
     lambdas_prior[l_starts[i] :l_ends[i]]);
