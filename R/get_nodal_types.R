@@ -25,13 +25,15 @@
 #'
 get_nodal_types <- function(model, collapse = TRUE) {
   # 1 Extract nodal types if these exist (and collapsed format sought)
-  if (collapse & !is.null(model$nodal_types))
+  if (collapse & !is.null(model$nodal_types)) {
     return(model$nodal_types)
+  }
 
   # 1b Extract nodal types if these exist
   # (and uncollapse if uncollapse sought)
-  if (!collapse & !is.null(model$nodal_types))
+  if (!collapse & !is.null(model$nodal_types)) {
     return(uncollapse_nodal_types(model$nodal_types))
+  }
 
   # 2. Create and interpret list of nodal types
   nodal_types <- make_nodal_types(model)
@@ -44,7 +46,6 @@ get_nodal_types <- function(model, collapse = TRUE) {
     })
     names(nodal_types) <- model$nodes
   }
-
 
   # 3. Optionally provide in collapsed form
   if (collapse) {
@@ -79,9 +80,11 @@ uncollapse_nodal_types <- function(nodal_types) {
 
   # This is not elegant; to handle cases where a single nodal type exists
   # otherwise it gets wrongly tranposed
-  for (j in 1:length(x))
-    if (length(nodal_types[[j]]) == 1)
+  for (j in 1:length(x)) {
+    if (length(nodal_types[[j]]) == 1) {
       x[[j]] <- t(x[[j]])
+    }
+  }
 
   for (j in 1:length(x)) {
     # Add row names
@@ -118,8 +121,9 @@ make_nodal_types <- function(model,
   nodal_types_labels <-
     lapply(1:length(nodal_types), function(i) {
       labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
-      if (include_node_names)
+      if (include_node_names) {
         return(paste0(names(nodal_types)[i], labels))
+      }
       labels
     })
 
@@ -159,8 +163,9 @@ collapse_nodal_types <- function(nodal_types,
       var <- names(nodal_types)[i]
       mat <- as.matrix(nodal_types[[i]])
       labels <- apply(mat, 1, paste, collapse = "")
-      if (include_node_names)
+      if (include_node_names) {
         return(paste0(var, labels))
+      }
       paste0(labels)
     })
     names(types) <- names(nodal_types)

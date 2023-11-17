@@ -17,11 +17,10 @@
 #'
 get_ambiguities_matrix <- function(model) {
     is_a_model(model)
-    if (!is.null(model$A))
-        return(model$A)
-
-    make_ambiguities_matrix(model)
-
+    if (!is.null(model$A)) {
+      return(model$A)
+    }
+    return(make_ambiguities_matrix(model))
 }
 
 #' Make ambiguities matrix
@@ -70,9 +69,7 @@ make_ambiguities_matrix <- function(model) {
     A <- matrix(A, ncol = length(type_labels))
     colnames(A) <- type_labels
     rownames(A) <- data_names
-
-    t(A)
-
+    return(t(A))
 }
 
 
@@ -90,13 +87,12 @@ make_ambiguities_matrix <- function(model) {
 #' @export
 #'
 set_ambiguities_matrix <- function(model, A = NULL) {
-
-    if (is.null(A))
-        A <- make_ambiguities_matrix(model)
+    if(is.null(A)) {
+      A <- make_ambiguities_matrix(model)
+    }
     model$A <- A
     class(model$A) <- c("ambiguities_matrix")
-    model
-
+    return(model)
 }
 
 

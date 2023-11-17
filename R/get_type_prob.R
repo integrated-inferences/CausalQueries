@@ -1,8 +1,10 @@
 #' Get type probabilities
 #'
-#' Gets probability of vector of causal types given a single realization of parameters, possibly drawn from model priors.
+#' Gets probability of vector of causal types given a single
+#' realization of parameters, possibly drawn from model priors.
 #'
-#' By default, parameters is drawn from `using` argument (either from priors, posteriors, or from model$parameters)
+#' By default, parameters is drawn from `using` argument
+#' (either from priors, posteriors, or from model$parameters)
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types
@@ -11,7 +13,9 @@
 #' get_type_prob(model = make_model('X->Y'))
 #' get_type_prob(model = make_model('X->Y'), parameters = 1:6)
 #'
-get_type_prob <- function(model, P = NULL, parameters = NULL) {
+get_type_prob <- function(model,
+                          P = NULL,
+                          parameters = NULL) {
 
     if(!is.null(parameters)) {
       parameters <- clean_param_vector(model, parameters)
@@ -43,7 +47,12 @@ get_type_prob <- function(model, P = NULL, parameters = NULL) {
 #' get_type_prob_multiple(model, using = 'priors', n_draws = 3)
 #' get_type_prob_multiple(model, using = 'parameters', n_draws = 3)
 
-get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n_draws = 4000, param_dist = NULL, P = NULL) {
+get_type_prob_multiple <- function(model,
+                                   using = "priors",
+                                   parameters = NULL,
+                                   n_draws = 4000,
+                                   param_dist = NULL,
+                                   P = NULL) {
     # Pull from stan object
     if(!is.null(model$stan_objects$type_distribution) & using == "posteriors") {
       return(t(model$stan_objects$type_distribution))
@@ -66,7 +75,6 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
         as.matrix()
     }
 
-
     res <- get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
     rownames(res) <- colnames(P)
     return(res)
@@ -84,12 +92,13 @@ get_type_prob_multiple <- function(model, using = "priors", parameters = NULL, n
 #' get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)
 #' get_param_dist(model = make_model('X->Y'), using = 'parameters')
 
-get_param_dist <- function(model, using, n_draws = 4000) {
+get_param_dist <- function(model,
+                           using,
+                           n_draws = 4000) {
 
     if(using == "parameters") {
       return(get_parameters(model))
     }
-
 
     if(using == "priors") {
         if(is.null(model$prior_distribution)) {
