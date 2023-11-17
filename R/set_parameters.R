@@ -82,7 +82,7 @@ make_parameters <- function(model, parameters = NULL, param_type = NULL, warning
 
 
     # Figure out if we need to use make_par_values
-    par_args = list(...)
+    par_args <- list(...)
 
     par_args_provided <- sum(names(par_args) %in% c("distribution", "alter_at", "node", "nodal_type", "label", "param_set", "given", "statement", "join_by", "param_names"))
 

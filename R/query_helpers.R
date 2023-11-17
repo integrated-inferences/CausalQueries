@@ -17,7 +17,7 @@ increasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
+    statement <- paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
 
     class(statement) <- "statement"
 
@@ -43,7 +43,7 @@ non_decreasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
+    statement <- paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
 
     class(statement) <- "statement"
 
@@ -68,7 +68,7 @@ decreasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
+    statement <- paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
 
     class(statement) <- "statement"
 
@@ -93,7 +93,7 @@ non_increasing <- function(X, Y) {
 
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
+    statement <- paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
 
     class(statement) <- "statement"
 
@@ -123,7 +123,7 @@ interacts <- function(X1, X2, Y) {
 
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ",
+    statement <- paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ",
         "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
 
     class(statement) <- "statement"
@@ -151,7 +151,7 @@ complements <- function(X1, X2, Y) {
 
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ",
+    statement <- paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ",
         "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
 
     class(statement) <- "statement"
@@ -184,7 +184,7 @@ substitutes <- function(X1, X2, Y) {
 
     check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ",
+    statement <- paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ",
         "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
 
     class(statement) <- "statement"
@@ -219,7 +219,7 @@ substitutes <- function(X1, X2, Y) {
 te <- function(X, Y) {
     check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
 
-    statement = paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
+    statement <- paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
 
     class(statement) <- "statement"
 

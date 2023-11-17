@@ -307,7 +307,11 @@ make_par_values <- function(model,
     # forgive user when specifying across
     if(all(grepl("_", names))) {
       if((!is.na(statement) && (!grepl("param_set", statement) || !grepl("given", statement))) | (all(is.na(param_set)) && all(is.na(given)))){
-        warning("You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.")
+        warning("You are altering parameters on confounded nodes.
+                Alterations will be applied across all 'param_sets'.
+                If this is not the alteration behavior you intended,
+                try specifying the 'param_set' or 'given' option to more clearly
+                indicate parameters whose values you wish to alter.")
       }
 
       if(length(x) != length(names)) {
