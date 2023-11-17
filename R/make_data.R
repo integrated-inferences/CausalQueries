@@ -142,7 +142,7 @@ make_data <- function(
 	observed[,] <- FALSE
 
 	# Go step by step
-	j = 1
+	j <- 1
 	while(j <= length(nodes)) {
 
 	  pars <- roster[j, ]
@@ -155,7 +155,7 @@ make_data <- function(
 			m    = pars$n_steps,
 			subset = pars$subsets)
 
-		j = j + 1
+		j <- j + 1
 
 	}
 

@@ -55,7 +55,7 @@ map_query_to_causal_type <- function(model, query, join_by = "|", eval_var = NUL
         stop("Either '[' or ']' missing.")
     }
     if (length(bracket_starts) == 0) {
-        continue = FALSE
+        continue <- FALSE
     }
 
     if(is.null(eval_var)) {

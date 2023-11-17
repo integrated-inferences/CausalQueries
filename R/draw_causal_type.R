@@ -1,6 +1,7 @@
 #' Draw a single causal type given a parameter vector
 #'
-#' Output is a parameter dataframe recording both parameters (case level priors) and
+#' Output is a parameter dataframe recording both parameters
+#' (case level priors) and
 #' the case level causal type.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params

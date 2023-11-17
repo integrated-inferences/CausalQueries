@@ -1,6 +1,8 @@
-#' Development and Democratization: Data for replication of analysis in *Integrated Inferences*
+#' Development and Democratization: Data for replication of analysis in
+#' *Integrated Inferences*
 #'
-#' A dataset containing information on inequality, democracy, mobilization, and international pressure.
+#' A dataset containing information on inequality, democracy, mobilization,
+#' and international pressure.
 #' Made by \code{devtools::use_data(democracy_data, CausalQueries)}
 #'
 #' @format A data frame with 84 rows and 5 nodes:
@@ -18,8 +20,14 @@
 
 #' Lipids: Data for Chickering and Pearl replication
 #'
-#' A compact dataset containing information on an encouragement, (Z, cholestyramine prescription), a treatment (X, usage), and an outcome (Y, cholesterol).
-#' From David Maxwell Chickering and Judea Pearl: "A Clinician’s Tool for Analyzing Non-compliance", AAAI-96 Proceedings. Chickering and Pearl in turn draw the data from Efron, Bradley, and David Feldman. "Compliance as an explanatory variable in clinical trials." Journal of the American Statistical Association 86.413 (1991): 9-17.
+#' A compact dataset containing information on an encouragement,
+#' (Z, cholestyramine prescription), a treatment (X, usage), and
+#' an outcome (Y, cholesterol).
+#' From David Maxwell Chickering and Judea Pearl: "A Clinician’s Tool for
+#' Analyzing Non-compliance", AAAI-96 Proceedings. Chickering and Pearl in turn
+#' draw the data from Efron, Bradley, and David Feldman.
+#' "Compliance as an explanatory variable in clinical trials."
+#' Journal of the American Statistical Association 86.413 (1991): 9-17.
 #'
 #' @format A data frame with 8 rows and 3 columns:
 #' \describe{
@@ -31,9 +39,11 @@
 "lipids_data"
 
 
-#' Institutions and growth: Data for replication of analysis in *Integrated Inferences*
+#' Institutions and growth: Data for replication of analysis in
+#' *Integrated Inferences*
 #'
-#' A  dataset containing dichotomized versions of variables in  Rodrik, Subramanian, and Trebbi (2004).
+#' A  dataset containing dichotomized versions of variables in
+#' Rodrik, Subramanian, and Trebbi (2004).
 #'
 #' @format A data frame with 79 rows and 5 columns:
 #' \describe{

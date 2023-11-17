@@ -1,6 +1,7 @@
 #' Draw event probabilities
 #'
-# `get_event_prob` draws event probability vector `w` given a single realization of parameters
+#' `get_event_prob` draws event probability vector `w` given a single
+#' realization of parameters
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
@@ -15,7 +16,11 @@
 #' }
 #'
 
-get_event_prob <- function(model, parameters = NULL, A = NULL, P = NULL, given = NULL){
+get_event_prob <- function(model,
+                           parameters = NULL,
+                           A = NULL,
+                           P = NULL,
+                           given = NULL){
 
     if(is.null(A))
         A <- get_ambiguities_matrix(model)
