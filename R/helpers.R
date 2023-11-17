@@ -85,7 +85,8 @@ st_within <- function(x,
 
 #' Recursive substitution
 #'
-#' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#' Applies \code{gsub()} from multiple patterns to multiple
+#' replacements with 1:1 mapping.
 #' @return Returns multiple expression with substituted elements
 #' @keywords internal
 #' @param x A character vector.
@@ -357,7 +358,8 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' Whether a query contains an exact string
 #' @param var Variable name
 #' @param query An expression in string format.
-#' @return A logical expression indicating whether a variable is included in a query
+#' @return A logical expression indicating whether a variable
+#'   is included in a query
 #' @keywords internal
 #' Used in map_query_to_nodal_types
 
@@ -400,7 +402,8 @@ is_a_model <- function(model){
 
 #' Check whether a model is improper
 #'
-#' Compute the sum of causal types probabilities. A model is flagged as improper if the sum is different than one.
+#' Compute the sum of causal types probabilities. A model is flagged as
+#'   improper if the sum is different than one.
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A logical expression indicating whether a model is improper
 #' @keywords internal
