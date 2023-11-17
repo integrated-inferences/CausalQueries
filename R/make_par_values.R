@@ -59,88 +59,22 @@ make_par_values <- function(model,
                             param_names = NA,
                             distribution = NA,
                             normalize = FALSE){
-  is_a_model(model)
 
   full_param_set <- model$parameters_df$param_set
   full_node <- model$parameters_df$node
 
-  # check inputs for model, alter, x, distribution
-  if(all(!is.na(c(nodal_type, label)))){
-    stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
-  }
+  # Stops
+  make_par_values_stops(
+    model, alter = alter, x = x, alter_at = alter_at, node = node,
+    label = label, nodal_type = nodal_type, param_set = param_set,
+    given = given, statement = statement, join_by = join_by,
+    param_names = param_names, distribution = distribution)
 
-  if(!is.na(label)){
-    warning("label is depreciated, use nodal_type instead")
-    nodal_type <- label
-  }
-
-
-  if(!is.character(alter)){
-    stop("alter must be of type character. No change to values.")
-  }
-
-  if(length(alter) != 1){
-    stop("must provide 1 value to alter. No change to values.")
-  }
-
-  if(!(alter %in% c("priors","param_value"))){
-    stop("type must be one of priors or param_value. No change to values.")
-  }
-
+  # What to alter
   if(alter == "priors"){
     y <- model$parameters_df$priors
   } else {
     y <- model$parameters_df$param_value
-  }
-
-  if (all(is.na(distribution)) & all(is.na(x))){
-    stop("neither distribution nor values provided. No change to values")
-  }
-
-  if (!all(is.na(x)) && !is.numeric(x)) {
-    stop("arguments 'parameters' and 'alphas' must be a numeric vector. No change to values.")
-  }
-
-  if (!all(is.na(x)) && (min(x) < 0)){
-    stop("arguments 'parameters' and 'alphas' must be non-negative.")
-  }
-
-  if(!is.character(join_by)){
-    stop("join_by must be of type character")
-  }
-
-  if(!(join_by %in% c("|","&"))){
-    stop("join_by must be one of '|' or '&'")
-  }
-
-  if(length(join_by) > 1){
-    stop("please only define one join_by")
-  }
-
-  # disallow redundant argument specification
-  if(!is.na(alter_at) & any(!is.na(list(node, nodal_type, param_set, given, statement, param_names)))){
-    stop("Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values.")
-  }
-
-  if(any(!is.na(param_names)) & any(!is.na(list(node, nodal_type, param_set, given, statement)))){
-    stop("Specifying param_names with any of node, nodal_type, param_set, given or statement is redundant. No change to values.")
-  }
-
-  if(all(!is.na(list(nodal_type, statement)))){
-    stop("Specifying both nodal_type and statement is redundant. No change to values.")
-  }
-
-  if(all(!is.na(list(node, statement)))){
-    stop("Specifying both node and statement is redundant. No change to values.")
-  }
-
-  if(!all(is.na(distribution)) & !all(is.na(x))){
-    stop("values and distribution cannot be declared at the same time. Try sequentially. No change to values")
-  }
-
-  #disallow multiple statements
-  if(!is.na(statement) & length(statement) > 1) {
-    stop("please specify only one statement")
   }
 
   # construct commands for alter_at
@@ -376,9 +310,98 @@ make_par_values <- function(model,
 }
 
 
+#' make_par_values
+#'
+#' helper to remove stops and reduce complexity of make_par_values
+
+make_par_values_stops <-
+
+    function(model,
+           alter = "priors",
+           x = NA,
+           alter_at = NA,
+           node = NA,
+           label = NA,
+           nodal_type = NA,
+           param_set = NA,
+           given = NA,
+           statement = NA,
+           join_by = "|",
+           param_names = NA,
+           distribution = NA){
+
+    is_a_model(model)
+
+    # check inputs for model, alter, x, distribution
+    if(all(!is.na(c(nodal_type, label)))){
+      stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
+    }
+
+    if(!is.na(label)){
+      warning("label is depreciated, use nodal_type instead")
+      nodal_type <- label
+    }
 
 
+    if(!is.character(alter)){
+      stop("alter must be of type character. No change to values.")
+    }
 
+    if(length(alter) != 1){
+      stop("must provide 1 value to alter. No change to values.")
+    }
 
+    if(!(alter %in% c("priors","param_value"))){
+      stop("type must be one of priors or param_value. No change to values.")
+    }
 
+    if (all(is.na(distribution)) & all(is.na(x))){
+      stop("neither distribution nor values provided. No change to values")
+    }
 
+    if (!all(is.na(x)) && !is.numeric(x)) {
+      stop("arguments 'parameters' and 'alphas' must be a numeric vector. No change to values.")
+    }
+
+    if (!all(is.na(x)) && (min(x) < 0)){
+      stop("arguments 'parameters' and 'alphas' must be non-negative.")
+    }
+
+    if(!is.character(join_by)){
+      stop("join_by must be of type character")
+    }
+
+    if(!(join_by %in% c("|","&"))){
+      stop("join_by must be one of '|' or '&'")
+    }
+
+    if(length(join_by) > 1){
+      stop("please only define one join_by")
+    }
+
+    # disallow redundant argument specification
+    if(!is.na(alter_at) & any(!is.na(list(node, nodal_type, param_set, given, statement, param_names)))){
+      stop("Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values.")
+    }
+
+    if(any(!is.na(param_names)) & any(!is.na(list(node, nodal_type, param_set, given, statement)))){
+      stop("Specifying param_names with any of node, nodal_type, param_set, given or statement is redundant. No change to values.")
+    }
+
+    if(all(!is.na(list(nodal_type, statement)))){
+      stop("Specifying both nodal_type and statement is redundant. No change to values.")
+    }
+
+    if(all(!is.na(list(node, statement)))){
+      stop("Specifying both node and statement is redundant. No change to values.")
+    }
+
+    if(!all(is.na(distribution)) & !all(is.na(x))){
+      stop("values and distribution cannot be declared at the same time. Try sequentially. No change to values")
+    }
+
+    #disallow multiple statements
+    if(!is.na(statement) & length(statement) > 1) {
+      stop("please specify only one statement")
+    }
+  }
