@@ -37,3 +37,12 @@ testthat::test_that(
     expect_message(clean_params(model$parameters_df))
   }
 )
+
+testthat::test_that(
+  desc = "check atomic inputs",
+  code = {
+    model <- make_model('X -> Y')
+    expect_error(CausalQueries:::clean_param_vector(model, list(1)))
+  }
+)
+
