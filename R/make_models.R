@@ -92,8 +92,10 @@ make_model <- function(statement,
 
     if (length(statement) != 1) {
       stop(
-        "The length of the character vector of the statement is unequal to 1.
-        Please provide only 1 causal model."
+        paste(
+          "The length of the character vector of the statement is unequal to 1.",
+          "Please provide only 1 causal model."
+        )
       )
     }
 
@@ -190,14 +192,18 @@ make_model <- function(statement,
       if(!all(sort(names(nodal_types)) == sort(nodes))) {
         message(
           paste(
-            "Model not properly defined: If you provide nodal types you should do so for all nodes in model: ",
+            "Model not properly defined: If you provide nodal types you should",
+            "do so for all nodes in model: ",
             paste(nodes, collapse = ", ")
           )
         )
       }
 
       if(!all(names(nodal_types) == nodes)) {
-        message("Ordering of provided nodal types is being altered to match generation")
+        message(paste(
+          "Ordering of provided nodal types is being altered to",
+          "match generation"
+        ))
         nodal_types <- lapply(nodes, function(n)
           nodal_types[[n]])
         names(nodal_types) <- nodes
@@ -208,7 +214,8 @@ make_model <- function(statement,
       add_causal_types <- FALSE
       message(
         paste(
-          "Model not properly defined: nodal_types should be NULL or specified for all nodes in model: ",
+          "Model not properly defined: nodal_types should be NULL or specified",
+          "for all nodes in model: ",
           paste(nodes, collapse = ", ")
         )
       )
@@ -259,8 +266,10 @@ make_model <- function(statement,
 
       # Check on ineligible confound statements
       if (any(!(c(z$v, z$w) %in% nodes))) {
-        stop("Confound relations (<->) must be between
-             nodes contained in the dag")
+        stop(paste(
+          "Confound relations (<->) must be between",
+          "nodes contained in the dag"
+        ))
       }
       model <- set_confound(model, confounds)
     }

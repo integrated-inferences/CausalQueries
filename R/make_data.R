@@ -18,7 +18,8 @@
 #'   If NULL all nodes are observed.
 #' @param probs A \code{list}. Observation probabilities at each step
 #' @param subsets A \code{list}. Strata within which observations are to be
-#'   observed at each step. TRUE for all, otherwise an expression that evaluates to a logical condition.
+#'   observed at each step. TRUE for all, otherwise an expression that
+#'   evaluates to a logical condition.
 #' @param complete_data A \code{data.frame}. Dataset with complete
 #'   observations. Optional.
 #' @param verbose Logical. If TRUE prints step schedule.
@@ -92,10 +93,10 @@ make_data <- function(
 	n   = NULL,
 	parameters = NULL,
 	param_type = NULL,
-	nodes    = NULL,  # nodes revealed at each step
-	n_steps = NULL,         # n at each step
-	probs   = NULL,            # probs at each step
-	subsets = TRUE,         # subsets at each step
+	nodes    = NULL,
+	n_steps = NULL,
+	probs   = NULL,
+	subsets = TRUE,
 	complete_data = NULL,
 	given = NULL,
 	verbose = TRUE,
