@@ -3,7 +3,8 @@
 \docType{data}
 \name{institutions_data}
 \alias{institutions_data}
-\title{Institutions and growth: Data for replication of analysis in *Integrated Inferences*}
+\title{Institutions and growth: Data for replication of analysis in
+*Integrated Inferences*}
 \format{
 A data frame with 79 rows and 5 columns:
 \describe{
@@ -21,6 +22,7 @@ A data frame with 79 rows and 5 columns:
 institutions_data
 }
 \description{
-A  dataset containing dichotomized versions of variables in  Rodrik, Subramanian, and Trebbi (2004).
+A  dataset containing dichotomized versions of variables in
+Rodrik, Subramanian, and Trebbi (2004).
 }
 \keyword{datasets}

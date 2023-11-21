@@ -21,12 +21,14 @@ get_event_prob(model, parameters = NULL, A = NULL, P = NULL, given = NULL)
 An array of event probabilities
 }
 \description{
-Draw event probabilities
+`get_event_prob` draws event probability vector `w` given a single
+realization of parameters
 }
 \examples{
 \donttest{
 model <- make_model('X -> Y')
 get_event_prob(model = model)
+get_event_prob(model = model, given = "X==1")
 get_event_prob(model = model, parameters = rep(1, 6))
 get_event_prob(model = model, parameters = 1:6)
 }

@@ -106,36 +106,6 @@ testthat::test_that(
 	}
 )
 
-testthat::test_that(
-
-	desc = "include_vars",
-
-	code = {
-
-		model <- make_model("X->Y")
-		expect_true(CausalQueries:::includes_var("X", "X==1"))
-
-		expect_true(!(CausalQueries:::includes_var("Y", "X==1")))
-		a <- CausalQueries:::var_in_query(model, "X==1")
-
-		expect_true(a == "X")
-	}
-)
-
-
-
-
-testthat::test_that(
-
-  desc = "var_in_query",
-
-  code = {
-
-    model <- make_model("X->Y")
-    query = "Y ==1"
-    expect_true(CausalQueries:::var_in_query(model, query)== "Y")
-  }
-)
 
 
 testthat::test_that(

@@ -17,10 +17,12 @@ get_type_prob(model, P = NULL, parameters = NULL)
 A vector with probabilities of vector of causal types
 }
 \description{
-Gets probability of vector of causal types given a single realization of parameters, possibly drawn from model priors.
+Gets probability of vector of causal types given a single
+realization of parameters, possibly drawn from model priors.
 }
 \details{
-By default, parameters is drawn from `using` argument (either from priors, posteriors, or from model$parameters)
+By default, parameters is drawn from `using` argument
+(either from priors, posteriors, or from model$parameters)
 }
 \examples{
 get_type_prob(model = make_model('X->Y'))

@@ -353,29 +353,6 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 }
 
 
-
-#' Whether a query contains an exact string
-#' @param var Variable name
-#' @param query An expression in string format.
-#' @return A logical expression indicating whether a variable is included in a query
-#' @keywords internal
-#' Used in map_query_to_nodal_types
-
-includes_var <- function(var, query) {
-  length(grep(paste0("\\<", var, "\\>"), query)) > 0
-}
-
-
-#' List of nodes contained in query
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @return A vector indicating which variables are included in a query
-#' @keywords internal
-
-var_in_query <- function(model, query) {
-    v <- model$nodes
-    v[sapply(v, includes_var, query = query)]
-}
-
 #' Check whether argument is a model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
@@ -462,9 +439,8 @@ check_query <- function(query) {
   if (non_do_warn != 0) {
     warning(
       paste(
-        "statements to the effect that the realization of a node should equal
-        some value should be specified with `==` not `=`. The query has been
-        changed accordingly:",
+        "conditions regarding realized values of a node should be
+        specified with `==` not `=`. Query changed accordingly:",
         query,
         sep = " "
       )

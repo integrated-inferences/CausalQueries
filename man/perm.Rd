@@ -7,7 +7,9 @@
 perm(max = rep(1, 2))
 }
 \arguments{
-\item{max}{A vector of integers. The maximum value of an integer value starting at 0. Defaults to 1. The number of permutation is defined by \code{max}'s length}
+\item{max}{A vector of integers. The maximum value of an integer value
+starting at 0. Defaults to 1. The number of permutation is defined
+by \code{max}'s length}
 }
 \value{
 A \code{matrix} of permutations

@@ -19,15 +19,19 @@ st_within(
 
 \item{right}{A character string. Regular expression to serve as a look behind.}
 
-\item{rm_left}{An integer. Number of bites after left-side match to remove from result. Defaults to -1.}
+\item{rm_left}{An integer. Number of bites after left-side match to remove
+from result. Defaults to -1.}
 
-\item{rm_right}{An integer. Number of bites after right-side match to remove from result. Defaults to 0.}
+\item{rm_right}{An integer. Number of bites after right-side match to remove
+from result. Defaults to 0.}
 }
 \value{
 A character vector.
 }
 \description{
-Returns a substring enclosed by two regular expression patterns. By default returns the name of the arguments being indexed by squared brackets (\code{[]}) in a string containing an expression.
+Returns a substring enclosed by two regular expression patterns.
+By default returns the name of the arguments being indexed by
+squared brackets (\code{[]}) in a string containing an expression.
 }
 \examples{
 a <- '(XX[Y=0] == 1) > (XX[Y=1] == 0)'

@@ -9,7 +9,8 @@ collapse_nodal_types(nodal_types, include_node_names = FALSE)
 \arguments{
 \item{nodal_types}{A list of nodal types.}
 
-\item{include_node_names}{Logical, if TRUE returns names X0, X1; otherwise returns 0, 1}
+\item{include_node_names}{Logical, if TRUE returns names X0, X1;
+otherwise returns 0, 1}
 }
 \value{
 A \code{list} containing nodes with nodal types in a vector form.
