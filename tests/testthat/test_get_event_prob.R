@@ -29,3 +29,16 @@ testthat::test_that(
 )
 
 
+testthat::test_that(
+
+  desc = "Testing given",
+
+  code = {
+    p <- make_model('X ->  Y') |> get_event_prob(given = "X!=Y") |>
+      data.frame() |>
+      pull(event_probs)
+    expect_true(all(p == c(0, .5, .5, 0)))
+  }
+)
+
+

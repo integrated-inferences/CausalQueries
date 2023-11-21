@@ -11,6 +11,7 @@
 #' \donttest{
 #' model <- make_model('X -> Y')
 #' get_event_prob(model = model)
+#' get_event_prob(model = model, given = "X==1")
 #' get_event_prob(model = model, parameters = rep(1, 6))
 #' get_event_prob(model = model, parameters = 1:6)
 #' }
@@ -21,14 +22,6 @@ get_event_prob <- function(model,
                            A = NULL,
                            P = NULL,
                            given = NULL){
-
-    if(is.null(A)) {
-      A <- get_ambiguities_matrix(model)
-    }
-
-    if(is.null(P)) {
-      P <- get_parameter_matrix(model)
-    }
 
     if (!is.null(parameters)) {
       parameters <- clean_param_vector(model, parameters)

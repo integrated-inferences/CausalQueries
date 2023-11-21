@@ -122,3 +122,36 @@ testthat::test_that(
 	}
 )
 
+
+
+
+testthat::test_that(
+
+  desc = "var_in_query",
+
+  code = {
+
+    model <- make_model("X->Y")
+    query = "Y ==1"
+    expect_true(CausalQueries:::var_in_query(model, query)== "Y")
+  }
+)
+
+
+testthat::test_that(
+
+  desc = "is_a_model",
+
+  code = {
+    model_1 <- model_2 <-  make_model("X->Y")
+    model_2$dag <- NULL
+    model_3 <- "THIS"
+
+    expect_no_error(CausalQueries:::is_a_model(model_1))
+    expect_error(CausalQueries:::is_a_model(model_2))
+    expect_error(CausalQueries:::is_a_model(model_3))
+
+  }
+)
+
+
