@@ -155,3 +155,16 @@ testthat::test_that(
 )
 
 
+testthat::test_that(
+  desc = "check_query",
+  code = {
+    query =
+    expect_no_error(CausalQueries:::check_query("D[C=B[A=1]] == 1"))
+    expect_warning(CausalQueries:::check_query("D[C=B[A=1] == 1"))
+  }
+)
+
+
+
+
+

@@ -398,53 +398,6 @@ is_a_model <- function(model){
 }
 
 
-#' Check whether a model is improper
-#'
-#' Compute the sum of causal types probabilities. A model is flagged as improper if the sum is different than one.
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @return A logical expression indicating whether a model is improper
-#' @keywords internal
-
-is_improper <- function(model){
-  parameters <- suppressMessages(get_param_dist(model,
-                                                n_draws = 1,
-                                                using = "priors"))
-  prob_of_s <- get_type_prob(model, model$P, parameters = parameters)
-  round(sum(prob_of_s), 6) != "1"
-}
-
-#' Generate strategy statements given data
-#'
-#' Helper to generate statements of the form "X = 1 & Y = 0"
-#' from realized data on one observation
-#'
-#' @param data A data frame with one row
-#' @param strategies A list of strategies where each strategy
-#'   is a set of nodes to be observed
-#' @keywords helper
-#' @export
-#' @return A string
-#' @examples
-#'  data.frame(X = 1, M = 0, Y = NA) %>%
-#'  strategy_statements(list(c("X", "M", "Y"), "X", "Y"))
-#'
-strategy_statements <- function(data, strategies){
-
-  if(nrow(data) !=1) {
-    stop("strategy_statements is designed for single row datasets")
-  }
-
-  if(!is.list(strategies)) {
-    stop("please provide strategies within a list (e.g.(list(c('X', 'Y'))")
-  }
-
-  lapply(strategies, function(s)
-    (sapply(s, function(x)
-      paste(x, "==", data[x]))[sapply(s, function(x)
-        ! is.na(data[x]))]) %>%
-      paste(collapse = " & "))
-
-}
 
 
 #' Warn about improper query specification and apply fixes
