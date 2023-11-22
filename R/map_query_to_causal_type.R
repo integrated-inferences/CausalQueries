@@ -37,11 +37,13 @@ map_query_to_causal_type <- function(model,
                                      join_by = "|",
                                      eval_var = NULL) {
 
-    if (length(query) > 1L)
-        stop("Please specify a query of length 1L.")
+    if (length(query) > 1L) {
+      stop("Please specify a query of length 1L.")
+    }
 
-    if (grepl(".", query, fixed = TRUE))
-        query <- expand_wildcard(query, join_by = join_by)
+    if (grepl(".", query, fixed = TRUE)) {
+      query <- expand_wildcard(query, join_by = join_by)
+    }
 
     # check if query has been properly specified
     query <- check_query(query)
@@ -51,7 +53,8 @@ map_query_to_causal_type <- function(model,
     list_names <- ""
     continue <- TRUE
 
-    # strip whitespaces split query into single characters locate opening brackets and reverse oder
+    # strip whitespaces split query into single characters
+    # locate opening brackets and reverse oder
     w_query <- gsub(" ", "", query)
     w_query <- unlist(strsplit(query, ""))
     bracket_starts <- rev(grep("\\[", w_query))
@@ -60,11 +63,12 @@ map_query_to_causal_type <- function(model,
     if (length(bracket_starts) != length(bracket_ends)) {
         stop("Either '[' or ']' missing.")
     }
+
     if (length(bracket_starts) == 0) {
         continue <- FALSE
     }
 
-    if(is.null(eval_var)) {
+    if (is.null(eval_var)) {
       eval_var <- realise_outcomes(model)
     }
 
@@ -74,8 +78,8 @@ map_query_to_causal_type <- function(model,
     while (continue) {
         i <- i + 1
 
-        # start at the latest found '[' find the closest subsequent ']' remove brackets and extract
-        # expression
+        # start at the latest found '[' find the closest subsequent ']'
+        # remove brackets and extract expression
         .query <- w_query[(bracket_starts[i]):length(w_query)]
         .bracket_ends <- grep("\\]", .query)[1]
         .query <- .query[1:.bracket_ends]
@@ -87,21 +91,32 @@ map_query_to_causal_type <- function(model,
         .query <- unlist(strsplit(.query, ","))
         dos <- list()
 
-        # Walks through splitted expressions (i.e dos) and evaluates each expression when possible
-        if(length(.query) == 0) {
-            stop("\nquery does not return any causal types.\nNote that expressions of the form `Y[]==1` are not allowed for mapping queries to causal types.\nSpecify queries as (e.g.) `Y==1` or `Y[X=0] == 1` instead.")
+        # Walks through splitted expressions (i.e dos) and evaluates
+        # each expression when possible
+        if (length(.query) == 0) {
+          stop(
+            paste(
+              "\nquery does not return any causal types.",
+              "\nNote that expressions of the form `Y[]==1` are not allowed",
+              "for mapping queries to causal types.\nSpecify queries as",
+              "(e.g.) `Y==1` or `Y[X=0] == 1` instead."
+            )
+          )
         }
-        for (j in 1:length(.query)) {
-            do <- unlist(strsplit(.query[j], ""))
-            stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
-            var_name <- paste0(do[1:stop], collapse = "")
-            var_name <- gsub(" ", "", var_name)
-            value <- c(eval(parse(text = paste0(do, collapse = "")), envir = eval_var))
-            vars <- model$nodes
-            if (!var_name %in% vars)
-                stop(paste("Variable", var_name, "is not part of the model."))
-            dos[[j]] <- value
-            names(dos)[[j]] <- var_name
+
+        for (j in seq_along(.query)) {
+          do <- unlist(strsplit(.query[j], ""))
+          stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
+          var_name <- paste0(do[1:stop], collapse = "")
+          var_name <- gsub(" ", "", var_name)
+          value <- c(eval(parse(text = paste0(do, collapse = "")),
+                          envir = eval_var))
+          vars <- model$nodes
+          if (!var_name %in% vars) {
+            stop(paste("Variable", var_name, "is not part of the model."))
+          }
+          dos[[j]] <- value
+          names(dos)[[j]] <- var_name
         }
 
         b <- 1:bracket_starts[i]
@@ -109,16 +124,17 @@ map_query_to_causal_type <- function(model,
         var <- st_within(var)
         var <- var[length(var)]
 
-        # Save result from last iteration and remove corresponding expression w_query
+        # Save result from last iteration and remove corresponding
+        # expression w_query
         var_length <- nchar(var)
         data <- realise_outcomes(model, dos)
         eval_var[, k] <- as.numeric(data[, var])
 
-
         .bracket_ends <- bracket_starts[i] + .bracket_ends - 1
         s <- seq(bracket_starts[i] - var_length, .bracket_ends)
         list_names[k] <- paste0(w_query[s], collapse = "")
-        names(list_names)[k] <- names(eval_var)[k] <- w_query[s[1]] <- paste0("var", k)
+        names(list_names)[k] <-
+          names(eval_var)[k] <- w_query[s[1]] <- paste0("var", k)
         w_query[s[2:length(s)]] <- ""
         k <- k + 1
 
@@ -148,7 +164,10 @@ map_query_to_causal_type <- function(model,
         type_list <- NULL
 
     # Return
-    return_list <- list(types = types, query = query, evaluated_nodes = eval_var, type_list = type_list)
+    return_list <- list(types = types,
+                        query = query,
+                        evaluated_nodes = eval_var,
+                        type_list = type_list)
 
     class(return_list) <- "causal_types"
 
@@ -175,7 +194,11 @@ print.summary.causal_types <- function(x, ...) {
     if (output_type == "logical") {
         types1 <- x$types[x$types]
         n_cond_types <- length(types1)
-        cat(paste("\nCausal types satisfying query's condition(s)  \n\n query = ", x$query, "\n\n"))
+        cat(paste(
+          "\nCausal types satisfying query's condition(s)  \n\n query = ",
+          x$query,
+          "\n\n"
+        ))
 
         if (length(types1)%%2 != 0) {
             types1[length(types1) + 1] <- ""
@@ -188,14 +211,20 @@ print.summary.causal_types <- function(x, ...) {
             counter <- counter + 2
         }
 
-        cat(paste("\n\n Number of causal types that meet condition(s) = ", n_cond_types))
-        cat(paste("\n Total number of causal types in model = ", length(x$types)))
+        cat(paste(
+          "\n\n Number of causal types that meet condition(s) = ",
+          n_cond_types
+        ))
+
+        cat(paste(
+          "\n Total number of causal types in model = ",
+          length(x$types)))
+
     } else if (output_type == "numeric") {
         print(x$types)
     } else {
         print(x)
     }
-
 }
 
 

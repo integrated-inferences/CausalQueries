@@ -29,58 +29,61 @@
 #'   CausalQueries:::minimal_event_data(model))$n_params
 #' }
 
-make_parmap <- function(model, A = NULL, P = NULL){
+make_parmap <- function(model, A = NULL, P = NULL) {
+  d <- NULL
 
-    d <- NULL
+  if (is.null(A)) {
+    A <- get_ambiguities_matrix(model)
+  }
 
-    if(is.null(A)) A <- get_ambiguities_matrix(model)
-    if(is.null(P)) P <- get_parameter_matrix(model)
+  if (is.null(P)) {
+    P <- get_parameter_matrix(model)
+  }
 
-    # if no confounding, parmap is just P*A
+  # if no confounding, parmap is just P*A
+  if (!grepl("<->", model$statement)) {
+    type_matrix <- 1 * ((as.matrix(P) %*% as.matrix(A)) > 0)
+    map <- diag(ncol(type_matrix))
+    rownames(map) <- colnames(map) <- colnames(A)
+    attr(type_matrix, "map") <- map
+    return(type_matrix)
+  }
 
-    if(!grepl("<->", model$statement)){
-        type_matrix <- 1*((as.matrix(P)%*%as.matrix(A))>0)
-        map <- diag(ncol(type_matrix))
-        rownames(map) <- colnames(map) <- colnames(A)
-        attr(type_matrix, "map") <- map
-        return(type_matrix)
-    }
+  # If confounding, parmap has to split according to
+  # distinct conditioning paths
+  data_names <- colnames(A)[A %*% (1:ncol(A))]
 
-    # If confounding, parmap has to split according to
-    # distinct conditioning paths
-    data_names <- colnames(A)[A%*%(1:ncol(A))]
+  type <- apply(P, 2, function(j) {
+    paste(model$parameters_df$given[j == 1], collapse = " ")
+  })
 
-    type <-
-        apply(P, 2, function(j)
-            paste(model$parameters_df$given[j==1], collapse = " "))
+  .type_matrix <- t(P) %>%
+    data.frame() %>%
+    mutate(type = type, d = data_names) %>%
+    group_by(d, type) %>% summarize_all(max) %>%
+    ungroup
 
-    .type_matrix <- t(P) %>%
-        data.frame() %>%
-        mutate(type = type, d = data_names) %>%
-        group_by(d, type) %>% summarize_all(max) %>%
-        ungroup
-
-    # reorder -- so that order is consistent with
-    .type_matrix <- .type_matrix[order(match(.type_matrix$d, colnames(A))),]
+  # reorder -- so that order is consistent with
+  .type_matrix <- .type_matrix[order(match(.type_matrix$d, colnames(A))), ]
 
 
-    type_matrix <- .type_matrix %>% select(-d, -type) %>% t()
-    colnames(type_matrix) <- .type_matrix$d
+  type_matrix <- .type_matrix %>%
+    select(-d, -type) %>%
+    t()
 
-    # type_matrix <- type_matrix[,match(colnames(type_matrix), colnames(A))]
+  colnames(type_matrix) <- .type_matrix$d
 
-    attr(type_matrix, "map") <- data_to_data(type_matrix, A)
-    type_matrix
-
-    }
+  # type_matrix <- type_matrix[,match(colnames(type_matrix), colnames(A))]
+  attr(type_matrix, "map") <- data_to_data(type_matrix, A)
+  type_matrix
+}
 
 #' helper to generate a matrix mapping from names of M to names of A
 #' @param M a matrix
 #' @param A a matrix
 #' @return a matrix
 #' @keywords internal
-#'
-#'
+
 data_to_data <- function(M, A){
     dnames <- colnames(A)
     out <- sapply(colnames(M), function(j) dnames %in% j )*1
