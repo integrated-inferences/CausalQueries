@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_par_values.R
 \name{make_par_values_stops}
 \alias{make_par_values_stops}
-\title{make_par_values}
+\title{make_par_values_stops}
 \usage{
 make_par_values_stops(
   model,
@@ -19,6 +19,33 @@ make_par_values_stops(
   param_names = NA,
   distribution = NA
 )
+}
+\arguments{
+\item{model}{model created with \code{make_model}}
+
+\item{alter}{character vector with one of "priors" or "param_value" specifying what to alter}
+
+\item{x}{vector of real non negative values to be substituted into "priors" or "param_value"}
+
+\item{alter_at}{string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)}
+
+\item{node}{string indicating nodes which are to be altered}
+
+\item{label}{string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.}
+
+\item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
+
+\item{param_set}{string indicating  the name of the set of parameters to be altered}
+
+\item{given}{string indicates the node on which the parameter to be altered depends}
+
+\item{statement}{causal query that determines nodal types for which values are to be altered}
+
+\item{join_by}{string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
+
+\item{param_names}{string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+
+\item{distribution}{string indicating a common prior distribution (uniform, jeffreys or certainty)}
 }
 \description{
 helper to remove stops and reduce complexity of make_par_values

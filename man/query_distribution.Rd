@@ -68,10 +68,12 @@ model <- make_model("X -> Y") \%>\%
  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 
  # queries conditional on observables
- query_distribution(model, query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y ==1")
+ query_distribution(model,
+   query = "(Y[X=1] > Y[X=0])", given = "X==1 & Y ==1")
 
  # Linear query conditional on potential outcomes
- query_distribution(model, query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
+ query_distribution(model,
+   query = "(Y[X=1] - Y[X=0])", given = "Y[X=1]==0")
 
  # Use join_by to amend query interpretation
  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
@@ -96,7 +98,7 @@ model <- make_model("X -> Y") \%>\%
 
  # Case level queries provide the inference for a case, which is a scalar
  # The case level query *updates* on the given information
- # For instance, here we have a model for which we are quite sure that X causes Y but we do not
+ # For instance, we are quite sure that X causes Y but we do not
  # know whether it works through two positive effects or two negative effects
  # Thus we do not know if M=0 would suggest an effect or no effect
 
@@ -125,4 +127,5 @@ model <- make_model("X -> Y") \%>\%
 
  mean(distribution$QG)/mean(distribution$G)
 }
+
 }

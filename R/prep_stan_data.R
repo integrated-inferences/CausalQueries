@@ -11,16 +11,21 @@
 #' data  <-  collapse_data(make_data(model, n = 6), model)
 #' CausalQueries:::prep_stan_data(model, data)
 #'
-#' model <- make_model('X->Y') %>% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
+#' model <- make_model('X->Y') |>
+#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 #' data  <-  collapse_data(make_data(model, n = 6), model)
 #' CausalQueries:::prep_stan_data(model, data)
 #' }
 #'
-prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types = NULL) {
-    i <- NULL
+prep_stan_data <-
+  function(model,
+           data,
+           keep_transformed = TRUE,
+           censored_types = NULL) {
+
     # check data is in correct compact form
     if (!all(c("event", "strategy", "count") %in% names(data)))
-        stop("Data should contain columns `event`, `strategy` and `count`")
+      stop("Data should contain columns `event`, `strategy` and `count`")
 
     # 1 Parameter set handlers
     param_set  <- model$parameters_df$param_set
@@ -34,10 +39,11 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types 
     names(l_starts) <- names(l_ends)
 
     # 2 Node set handlers
-    nodes_sets <- model$parameters_df %>%
-      dplyr::mutate(i = 1:n()) %>%
-      dplyr::group_by(node) %>%
-      dplyr::summarize(n_starts = i[1], n_ends = i[n()], n_node_each = n()) %>%
+    i <- NULL     # Addresses binding issue
+    nodes_sets <- model$parameters_df |>
+      dplyr::mutate(i = 1:n()) |>
+      dplyr::group_by(node) |>
+      dplyr::summarize(n_starts = i[1], n_ends = i[n()], n_node_each = n()) |>
       dplyr::arrange(n_starts)
     n_starts <- nodes_sets$n_starts
     n_ends <- nodes_sets$n_ends
@@ -48,8 +54,12 @@ prep_stan_data <- function(model, data, keep_transformed = TRUE, censored_types 
     # 2 Data parsing: allowing for censored types
     data <- data[!c(data$event %in% censored_types), ]
 
-    E <- data.frame((get_data_families(model, mapping_only = TRUE)))[data$event,] |>
-      as.matrix()
+    data_families <-
+      model |>
+      get_data_families(mapping_only = TRUE)|>
+      data.frame()
+
+    E <- data_families[data$event,] |> as.matrix()
 
     strategies <- data$strategy
     n_strategies <- length(unique(strategies))

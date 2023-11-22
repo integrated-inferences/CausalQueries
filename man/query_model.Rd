@@ -14,7 +14,9 @@ query_model(
   n_draws = 4000,
   expand_grid = FALSE,
   case_level = FALSE,
-  query = NULL
+  query = NULL,
+  cred_low = 0.025,
+  cred_high = 0.975
 )
 }
 \arguments{
@@ -37,15 +39,22 @@ query_model(
 \item{case_level}{Logical. If TRUE estimates the probability of the query for a case.}
 
 \item{query}{alias for queries}
+
+\item{cred_low}{lower credibility value: defaults to 0.025}
+
+\item{cred_high}{upper credibility value: defaults to 0.975}
 }
 \value{
 A \code{DataFrame} with columns Model, Query, Given and Using defined by corresponding input values. Further columns are generated as specified in \code{stats}.
 }
 \description{
-Calculated from a parameter vector, from a prior or from a posterior distribution.
+Calculated from a parameter vector, from a prior or from a posterior
+distribution.
 }
 \details{
-Queries can condition on observed or counterfactual quantities. Nested or "complex" counterfactual queries of the form \code{Y[X=1, M[X=0]]} are allowed.
+Queries can condition on observed or counterfactual quantities.
+Nested or "complex" counterfactual queries of the
+form \code{Y[X=1, M[X=0]]} are allowed.
 }
 \examples{
 model <- make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 10000)
@@ -62,14 +71,16 @@ models <- list(
 
 query_model(
   models,
-  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
   given = c(TRUE,  "Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = FALSE)
 
 query_model(
   models,
-  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
   given = c(TRUE,  "Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = TRUE)

@@ -314,9 +314,22 @@ make_par_values <- function(model,
 }
 
 
-#' make_par_values
+#' make_par_values_stops
 #'
 #' helper to remove stops and reduce complexity of make_par_values
+#' @param model model created with \code{make_model}
+#' @param alter character vector with one of "priors" or "param_value" specifying what to alter
+#' @param x vector of real non negative values to be substituted into "priors" or "param_value"
+#' @param alter_at string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)
+#' @param node string indicating nodes which are to be altered
+#' @param label string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.
+#' @param nodal_type string. Label for nodal type indicating nodal types for which values are to be altered
+#' @param param_set string indicating  the name of the set of parameters to be altered
+#' @param given string indicates the node on which the parameter to be altered depends
+#' @param statement causal query that determines nodal types for which values are to be altered
+#' @param join_by string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).
+#' @param param_names string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'
+#' @param distribution string indicating a common prior distribution (uniform, jeffreys or certainty)
 
 make_par_values_stops <-
 

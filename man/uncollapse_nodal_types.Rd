@@ -7,7 +7,7 @@
 uncollapse_nodal_types(nodal_types)
 }
 \arguments{
-\item{nodal_types}{A list of nodal types.}
+\item{nodal_types}{A list of nodal types in collapsed form ('01', '11') etc..}
 }
 \value{
 A \code{list} containing nodes with nodal types in data.frame form
@@ -18,7 +18,7 @@ uncollapse nodal types
 \examples{
 
 model <- make_model('X -> K -> Y')
-(nodal_types <- get_nodal_types(model , collapse = FALSE))
+(nodal_types <- get_nodal_types(model , collapse = TRUE))
 CausalQueries:::uncollapse_nodal_types(nodal_types)
 }
 \keyword{internal}

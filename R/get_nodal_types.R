@@ -59,13 +59,14 @@ get_nodal_types <- function(model, collapse = TRUE) {
 }
 
 #' uncollapse nodal types
-#' @param nodal_types A list of nodal types.
+#'
+#' @param nodal_types A list of nodal types in collapsed form ('01', '11') etc..
 #' @return A \code{list} containing nodes with nodal types in data.frame form
 #' @keywords internal
 #' @examples
 #'
 #' model <- make_model('X -> K -> Y')
-#' (nodal_types <- get_nodal_types(model , collapse = FALSE))
+#' (nodal_types <- get_nodal_types(model , collapse = TRUE))
 #' CausalQueries:::uncollapse_nodal_types(nodal_types)
 
 
@@ -78,8 +79,8 @@ uncollapse_nodal_types <- function(nodal_types) {
       apply(df, 2, as.numeric)) |>
     lapply(data.frame)
 
-  # This is not elegant; to handle cases where a single nodal type exists
-  # otherwise it gets wrongly tranposed
+  # To handle cases where a single nodal type exists
+  # otherwise it gets wrongly transposed
   for (j in 1:length(x)) {
     if (length(nodal_types[[j]]) == 1) {
       x[[j]] <- t(x[[j]])
