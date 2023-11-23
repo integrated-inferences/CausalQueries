@@ -14,7 +14,8 @@ nodes_in_statement <- function(nodes, statement) {
 #' Returns a list with the nodes that are not directly pointing into a node
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
-#'@return Returns a list with the nodes that are not directly pointing into a node
+#'@return Returns a list with the nodes that are not directly
+#'  pointing into a node
 #'@keywords internal
 
 list_non_parents <- function(model, node) {
@@ -25,8 +26,10 @@ list_non_parents <- function(model, node) {
 #' Adds a wildcard for every missing parent
 #'@inheritParams CausalQueries_internal_inherit_params
 #'@param parents A vector of characters. The \code{node}'s parents
-#'@param missing_parents A vector of characters.  The \code{node}'s missing parents
-#'@return A causal query expression with all parents nodes set to either 0, 1 or wildcard '.'
+#'@param missing_parents A vector of characters.  The \code{node}'s
+#'  missing parents
+#'@return A causal query expression with all parents nodes set to
+#'  either 0, 1 or wildcard '.'
 #'@keywords internal
 
 add_wildcard <- function(node,
@@ -34,9 +37,16 @@ add_wildcard <- function(node,
                          parents,
                          missing_parents) {
     if (all(parents %in% missing_parents)) {
-        q <- paste0(node, "[", paste0(missing_parents, " = . ", collapse = ", "), "]")
+        q <- paste0(node,
+                    "[",
+                    paste0(missing_parents, " = . ", collapse = ", "),
+                    "]")
     } else if (length(missing_parents) > 0) {
-        q <- gsub("\\]", paste0(", ", paste0(missing_parents, " = . ", collapse = ", "), "\\]"), statement)
+        q <- gsub("\\]",
+                  paste0(", ",
+                         paste0(missing_parents, " = . ", collapse = ", "),
+                         "\\]"),
+                  statement)
     }
     return(q)
 }

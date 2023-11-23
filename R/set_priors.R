@@ -1,37 +1,51 @@
 #' Setting priors
 #'
-#'  Functionality for altering priors:
+#' Functionality for altering priors:
 #'
-#'  Seven arguments govern which parameters should be altered. The default is 'all' but this can be reduced by specifying
+#' Seven arguments govern which parameters should be altered. The default is
+#' 'all' but this can be reduced by specifying
 #'
-#' * \code{alter_at} String specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. "node == 'X' & nodal_type %in% c('00','01')"
+#' * \code{alter_at} String specifying filtering operations to be applied to
+#'   parameters_df, yielding a logical vector indicating parameters for which
+#'   values should be altered. "node == 'X' & nodal_type %in% c('00','01')"
 #'
-#' * \code{node}, which restricts for example to parameters associated with node 'X'
+#' * \code{node}, which restricts for example to parameters associated with node
+#'   'X'
 #'
-#' * \code{label} or \code{nodal_type} The label of a particular nodal type, written either in the form Y0000 or Y.Y0000
+#' * \code{label} or \code{nodal_type} The label of a particular nodal type,
+#'   written either in the form Y0000 or Y.Y0000
 #'
 #' * \code{param_set} The param_set of a parameter.
 #'
 #' * \code{given} Given parameter set of a parameter.
 #'
-#' * \code{statement}, which restricts for example to nodal types that satisfy the statement 'Y[X=1] > Y[X=0]'
+#' * \code{statement}, which restricts for example to nodal types that satisfy
+#'   the statement 'Y[X=1] > Y[X=0]'
 #'
-#' * \code{param_set}, \code{given}, which are useful when setting confound statements that produces several sets of parameters
+#' * \code{param_set}, \code{given}, which are useful when setting confound
+#'   statements that produce several sets of parameters
 #'
 #' Two arguments govern what values to apply:
 #'
-#' * \code{alphas} is one or more non negative numbers and
+#' * \code{alphas} is one or more non-negative numbers and
 #'
-#' * \code{distribution} indicates one of a common class: uniform, jeffreys, or 'certain'
+#' * \code{distribution} indicates one of a common class: uniform, Jeffreys, or
+#'   'certain'
 #'
 #' Forbidden statements include:
 #' \itemize{
 #'   \item Setting \code{distribution} and \code{values} at the same time.
-#'   \item Setting a \code{distribution} other than uniform, jeffreys or certainty.
+#'   \item Setting a \code{distribution} other than uniform, Jeffreys, or
+#'     certainty.
 #'   \item Setting negative values.
-#'   \item specifying \code{alter_at} with any of \code{node}, \code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{param_names}
-#'   \item specifying \code{param_names} with any of \code{node},\code{nodal_type},\code{param_set},\code{given},\code{statement} or \code{alter_at}
-#'   \item specifying \code{statement} with any of \code{node} or \code{nodal_type}
+#'   \item specifying \code{alter_at} with any of \code{node},
+#'     \code{nodal_type}, \code{param_set}, \code{given}, \code{statement}, or
+#'     \code{param_names}
+#'   \item specifying \code{param_names} with any of \code{node},
+#'     \code{nodal_type}, \code{param_set}, \code{given}, \code{statement}, or
+#'     \code{alter_at}
+#'   \item specifying \code{statement} with any of \code{node} or
+#'     \code{nodal_type}
 #' }
 #'
 #'
@@ -40,16 +54,17 @@ NULL
 #> NULL
 
 
-
 #' Make Priors
 #'
 #' \code{make_priors} Generates priors for a model.
 #'
 #' @rdname prior_setting
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Real positive numbers giving hyperparameters of the
+#'   Dirichlet distribution
 #' @inheritParams make_par_values
 #'
-#' @return A vector indicating the hyperparameters of the prior distribution of the nodal types.
+#' @return A vector indicating the hyperparameters of the prior distribution
+#'   of the nodal types.
 #'
 #' @family priors
 #' @export
@@ -94,24 +109,33 @@ make_priors <- function(model,
                         join_by = "|",
                         param_names = NA){
 
-    if(all(!is.na(c(nodal_type, label)))){
-        stop("cannot define both nodal_type and label simultaniously")
-    }
+  if (all(!is.na(c(nodal_type, label)))) {
+    stop("cannot define both nodal_type and label simultaniously")
+  }
 
-    if(!is.na(label)){
-        warning("label is depreciated, use nodal_type instead")
-        nodal_type <- label
-        }
+  if (!is.na(label)) {
+    warning("label is depreciated, use nodal_type instead")
+    nodal_type <- label
+  }
 
-    out <- make_par_values(
-        model = model, alter = "priors", x = alphas, alter_at = alter_at,
-        node = node, nodal_type = nodal_type, param_set = param_set, given = given,
-        statement = statement, join_by = join_by, param_names = param_names, distribution = distribution,
-        normalize = FALSE
-        )
+  out <- make_par_values(
+    model = model,
+    alter = "priors",
+    x = alphas,
+    alter_at = alter_at,
+    node = node,
+    nodal_type = nodal_type,
+    param_set = param_set,
+    given = given,
+    statement = statement,
+    join_by = join_by,
+    param_names = param_names,
+    distribution = distribution,
+    normalize = FALSE
+  )
 
-    names(out) <- model$parameters_df$param_names
-    return(out)
+  names(out) <- model$parameters_df$param_names
+  return(out)
 }
 
 
@@ -121,10 +145,13 @@ make_priors <- function(model,
 #'
 #' @rdname prior_setting
 #'
-#' @param alphas Real positive numbers giving hyperparameters of the Dirichlet distribution
+#' @param alphas Real positive numbers giving hyperparameters of
+#'   the Dirichlet distribution
 #' @inheritParams make_par_values
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached to it.
+#' @return An object of class \code{causal_model}. It essentially returns a
+#'   list containing the elements comprising a model
+#'   (e.g. 'statement', 'nodal_types' and 'DAG') with the `priors` attached
+#'   to it.
 #' @export
 #' @family priors
 #' @examples
@@ -167,13 +194,24 @@ set_priors <- function(model,
                        join_by = "|",
                        param_names = NA){
 
-    priors <- make_priors(model = model, alphas = alphas, distribution = distribution, alter_at = alter_at,
-                          node = node, nodal_type = nodal_type, label = label, param_set = param_set,
-                          given = given, statement = statement, join_by = join_by, param_names = param_names)
+  priors <- make_priors(
+    model = model,
+    alphas = alphas,
+    distribution = distribution,
+    alter_at = alter_at,
+    node = node,
+    nodal_type = nodal_type,
+    label = label,
+    param_set = param_set,
+    given = given,
+    statement = statement,
+    join_by = join_by,
+    param_names = param_names
+  )
 
-    model$parameters_df$priors <- priors
+  model$parameters_df$priors <- priors
 
-    return(model)
+  return(model)
 
 }
 
@@ -185,7 +223,8 @@ set_priors <- function(model,
 #' @rdname prior_setting
 #'
 #' @param model A model object generated by make_model().
-#' @return A vector indicating the hyperparameters of the prior distribution of the nodal types.
+#' @return A vector indicating the hyperparameters of the prior distribution
+#'   of the nodal types.
 #' @export
 #' @family priors
 #' @examples

@@ -12,7 +12,8 @@ set_sampling_args(object, user_dots = list(), user_adapt_delta = NULL, ...)
 
 \item{user_dots}{A list. User commands.}
 
-\item{user_adapt_delta}{A double between 0 and 1. Adapt delta passed by the user}
+\item{user_adapt_delta}{A double between 0 and 1.
+Adapt delta passed by the user}
 
 \item{...}{further arguments to be passed to 'stan'}
 }

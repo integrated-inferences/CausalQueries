@@ -36,7 +36,8 @@ perm <- function(max = rep(1, 2)) {
 #'
 #' @param x A character string.
 #' @param left A character string. Regular expression to serve as look ahead.
-#' @param right A character string. Regular expression to serve as a look behind.
+#' @param right A character string. Regular expression to
+#'   serve as a look behind.
 #' @param rm_left An integer. Number of bites after left-side match to remove
 #'   from result. Defaults to -1.
 #' @param rm_right An integer. Number of bites after right-side match to remove
@@ -85,7 +86,8 @@ st_within <- function(x,
 
 #' Recursive substitution
 #'
-#' Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+#' Applies \code{gsub()} from multiple patterns to multiple
+#' replacements with 1:1 mapping.
 #' @return Returns multiple expression with substituted elements
 #' @keywords internal
 #' @param x A character vector.
@@ -269,8 +271,10 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
     orig <- st_within(to_expand, left = "\\(", right = "\\)", rm_left = 1)
     if (is.list(orig)) {
         if (is.null(orig[[1]])){
-            message("No parentheses indicated. Global expansion assumed.
-                    See expand_wildcard.")
+            message(
+              paste("No parentheses indicated. Global expansion assumed.",
+                    "See expand_wildcard.")
+              )
         orig <- to_expand}
     }
     skeleton <- gsub_many(to_expand,
@@ -370,12 +374,11 @@ is_a_model <- function(model){
   if(!is(model,"causal_model"))
     stop("Argument 'model' must be of class 'causal_model'")
   if(any(missing_components))
-    stop("Model doesn't contain ",
-         paste(minimum_components[missing_components], collapse = ", "))
+    stop(paste(
+      "Model doesn't contain",
+      paste(minimum_components[missing_components], collapse = ", ")
+    ))
 }
-
-
-
 
 #' Warn about improper query specification and apply fixes
 #'
@@ -428,8 +431,8 @@ check_query <- function(query) {
   if (do_warn != 0) {
     warning(
       paste(
-        "do operations should be specified with `=` not `==`.
-        The query has been changed accordingly:",
+        "do operations should be specified with `=` not `==`.",
+        "The query has been changed accordingly:",
         query,
         sep = " "
       )
@@ -439,8 +442,9 @@ check_query <- function(query) {
   if (non_do_warn != 0) {
     warning(
       paste(
-        "conditions regarding realized values of a node should be
-        specified with `==` not `=`. Query changed accordingly:",
+        "statements to the effect that the realization of a node should equal",
+        "some value should be specified with `==` not `=`. The query has been",
+        "changed accordingly:",
         query,
         sep = " "
       )

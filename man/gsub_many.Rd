@@ -19,6 +19,7 @@ gsub_many(x, pattern_vector, replacement_vector, ...)
 Returns multiple expression with substituted elements
 }
 \description{
-Applies \code{gsub()} from multiple patterns to multiple replacements with 1:1 mapping.
+Applies \code{gsub()} from multiple patterns to multiple
+replacements with 1:1 mapping.
 }
 \keyword{internal}

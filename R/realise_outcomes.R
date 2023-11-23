@@ -1,17 +1,28 @@
 #' Realise outcomes
 #'
-#' Realise outcomes for all causal types. Calculated by sequentially calculating endogenous nodes.
-#' If a do operator is applied to any node then it takes the given value and all its descendants are generated accordingly.
+#' Realise outcomes for all causal types. Calculated by sequentially
+#' calculating endogenous nodes. If a do operator is applied to any node then
+#' it takes the given value and all its descendants are generated accordingly.
 #'
-#' If a node is not specified all outcomes are realised for all possible causal types consistent with the model.
-#' If a node is specified then outcomes of Y are returned conditional on different values of parents, whether or not these values of the parents obtain given restrictions under the model.
+#' If a node is not specified all outcomes are realised for all possible
+#' causal types consistent with the model. If a node is specified then outcomes
+#' of Y are returned conditional on different values of parents, whether or
+#' not these values of the parents obtain given restrictions under the model.
 #'
-#' @details \code{realise_outcomes} starts off by creating types (via \code{\link{get_nodal_types}}). It then takes types of endogenous and reveals their outcome based on the value that their parents took. Exogenous nodes outcomes correspond to their type.
+#' @details \code{realise_outcomes} starts off by creating types
+#'   (via \code{\link{get_nodal_types}}). It then takes types of endogenous
+#'   and reveals their outcome based on the value that their parents took.
+#'   Exogenous nodes outcomes correspond to their type.
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param dos A named \code{list}. Do actions defining node values, e.g., \code{list(X = 0, M = 1)}.
-#' @param node A character. An optional quoted name of the node whose outcome should be revealed. If specified all values of parents need to be specified via \code{dos}.
-#' @param add_rownames logical indicating whether to add causal types as rownames to the output
-#' @return A \code{data.frame} object of revealed data for each node (columns) given causal / nodal type (rows) .
+#' @param dos A named \code{list}. Do actions defining node values,
+#'   e.g., \code{list(X = 0, M = 1)}.
+#' @param node A character. An optional quoted name of the node whose
+#'   outcome should be revealed. If specified all values of parents need
+#'   to be specified via \code{dos}.
+#' @param add_rownames logical indicating whether to add causal types
+#'   as rownames to the output
+#' @return A \code{data.frame} object of revealed data for each node (columns)
+#'   given causal / nodal type (rows) .
 #' @export
 #' @examples
 #' \donttest{
@@ -33,7 +44,10 @@
 #' realise_outcomes(dos = list(M = 1), node = "Y")
 #'}
 
-realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE){
+realise_outcomes <- function(model,
+                             dos = NULL,
+                             node = NULL,
+                             add_rownames = TRUE){
 
   # check dos + node specification
   if((!is.null(node)) && (length(node) > 1)) {
@@ -56,7 +70,9 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
     parents <- get_parents(model)[[node]]
 
     if(any(!names(dos) %in% parents)) {
-      conjugation <- ifelse (sum(!names(dos) %in% parents)>1, "are not a parent of", "is not a parent of")
+      conjugation <- ifelse (sum(!names(dos) %in% parents) > 1,
+                             "are not a parent of",
+                             "is not a parent of")
       subjects <- paste0(names(dos)[!names(dos) %in% parents], collapse = ", ")
       if(all(!names(dos) %in% parents)){
         stop(paste(subjects, conjugation, node))
@@ -94,7 +110,8 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
     # get variables to work through
     endogenous_vars <- length(nodes) - 1
 
-    # turn data_realizations df into list to pass as std::vector<std::vector<std::string>>
+    # turn data_realizations df into list to pass as
+    # std::vector<std::vector<std::string>>
     n_types <- nrow(data_realizations)
     data_realizations <- as.list(data_realizations)
   }
@@ -105,7 +122,8 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
     # get data realizations
     data_realizations <- get_causal_types(model)
     # replace parent names with parent col positions in data_realizations df
-    # allows for faster access when df is converted to std::vector<std::vector<std::string>> in c++
+    # allows for faster access when df is converted to
+    # std::vector<std::vector<std::string>> in c++
     parents_list  <- parents_to_int(get_parents(model), model$nodes)
 
     # rownames
@@ -122,9 +140,12 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
     # get variables to work through
     endogenous_vars <- attr(model, "nonroot_nodes")
     endogenous_vars <- endogenous_vars[!endogenous_vars %in% names(dos)]
-    endogenous_vars <- unname(sapply(endogenous_vars, function(i) which(i == model$nodes))) - 1
+    endogenous_vars <-
+      unname(vapply(endogenous_vars, function(i)
+        which(i == model$nodes), numeric(1))) - 1
 
-    # turn data_realizations df into list to pass as std::vector<std::vector<std::string>>
+    # turn data_realizations df into list to pass as
+    # std::vector<std::vector<std::string>>
     n_types <- nrow(data_realizations)
     data_realizations <- as.list(data_realizations)
   }
@@ -142,16 +163,21 @@ realise_outcomes <- function(model, dos = NULL, node = NULL, add_rownames = TRUE
   # add rownames
   if(add_rownames){
     rownames(data_realizations) <- apply(types, 1, paste, collapse = ".")
-    type_names <- matrix(sapply(1:ncol(types), function(j) paste0(names(types)[j], types[,j])), ncol = ncol(types))
-    attr(data_realizations, "type_names") <- apply(type_names, 1, paste,  collapse = ".")
+    type_names <-
+      matrix(vapply(seq_along(types), function(j) {
+        paste0(names(types)[j], types[, j])
+      }, character(nrow(types))),
+      ncol = ncol(types))
+    attr(data_realizations, "type_names") <-
+      apply(type_names, 1, paste,  collapse = ".")
   }
-
   return(data_realizations)
 }
 
 
 #' Helper to turn parents_list into a list of data_realizations column positions
-#' @param parents_list a named list of character vectors specifying all nodes in the DAG and their respective parents
+#' @param parents_list a named list of character vectors specifying all
+#'   nodes in the DAG and their respective parents
 #' @return a list of column positions
 #' @keywords internal
 #' Used in realise_outcomes
@@ -177,16 +203,19 @@ parents_to_int <- function(parents_list, position_set) {
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead.
+#' This function was deprecated because the name causes clashes with
+#' DeclareDesign. Use realise_outcomes instead.
 #' @keywords internal
 #'
 reveal_outcomes <- function(model, dos = NULL, node = NULL) {
   lifecycle::deprecate_warn(
   "0.0.3.2",
   "reveal_outcomes()",
-  details = "This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead."
+  details = paste("This function was deprecated because the name causes",
+                  "clashes with DeclareDesign. Use realise_outcomes instead.")
 )
-  warning("This function was deprecated because the name causes clashes with DeclareDesign. Use realise_outcomes instead.")
+  warning(paste("This function was deprecated because the name causes clashes",
+                "with DeclareDesign. Use realise_outcomes instead."))
   realise_outcomes(model = model, dos = dos, node = node)
 }
 

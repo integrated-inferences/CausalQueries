@@ -14,14 +14,14 @@
 #' increasing('A', 'B')
 #'}
 increasing <- function(X, Y) {
+  check_string_input(param_list = list(X, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+  statement <- paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
 
-    statement <- paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
@@ -40,14 +40,14 @@ increasing <- function(X, Y) {
 #' non_decreasing('A', 'B')
 #'}
 non_decreasing <- function(X, Y) {
+  check_string_input(param_list = list(X, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+  statement <- paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
 
-    statement <- paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
@@ -65,14 +65,14 @@ non_decreasing <- function(X, Y) {
 #' decreasing('A', 'B')
 #'}
 decreasing <- function(X, Y) {
+  check_string_input(param_list = list(X, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+  statement <- paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
 
-    statement <- paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
@@ -90,14 +90,14 @@ decreasing <- function(X, Y) {
 #' non_increasing('A', 'B')
 #'}
 non_increasing <- function(X, Y) {
+  check_string_input(param_list = list(X, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+  statement <- paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
 
-    statement <- paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
@@ -120,15 +120,42 @@ non_increasing <- function(X, Y) {
 #'}
 
 interacts <- function(X1, X2, Y) {
+  check_string_input(param_list = list(X1, X2, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+  statement <-
+    paste0(
+      "((",
+      Y,
+      "[",
+      X1,
+      " =1, ",
+      X2,
+      " = 1]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 1])) != ",
+      "((",
+      Y,
+      "[",
+      X1,
+      " =1, ",
+      X2,
+      " = 0]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 0]))"
+    )
 
-    statement <- paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) != ",
-        "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
@@ -148,22 +175,50 @@ interacts <- function(X1, X2, Y) {
 #'complements('A', 'B', 'W')
 #'}
 complements <- function(X1, X2, Y) {
+  check_string_input(param_list = list(X1, X2, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+  statement <-
+    paste0(
+      "((",
+      Y,
+      "[",
+      X1,
+      " =1, ",
+      X2,
+      " = 1]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 1])) > ",
+      "((",
+      Y,
+      "[",
+      X1,
+      " =1, ",
+      X2,
+      " = 0]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 0]))"
+    )
 
-    statement <- paste0("((", Y, "[", X1, " =1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) > ",
-        "((", Y, "[", X1, " =1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 
 
 #' Make statement for substitutes
 #'
-#' Generate a statement for X1, X1 substitute for each other in the production of Y
+#' Generate a statement for X1, X1 substitute for each other
+#' in the production of Y
 #'
 #' @param X1 A character. The quoted name of the input node 1.
 #' @param X2 A character. The quoted name of the input node 2.
@@ -181,15 +236,42 @@ complements <- function(X1, X2, Y) {
 #'          using = 'parameters')
 #'}
 substitutes <- function(X1, X2, Y) {
+  check_string_input(param_list = list(X1, X2, Y),
+                     call_name = deparse(sys.call()))
 
-    check_string_input(param_list = list(X1, X2, Y), call_name = deparse(sys.call()))
+  statement <-
+    paste0(
+      "((",
+      Y,
+      "[",
+      X1,
+      " = 1, ",
+      X2,
+      " = 1]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 1])) < ",
+      "((",
+      Y,
+      "[",
+      X1,
+      " = 1, ",
+      X2,
+      " = 0]) - (",
+      Y,
+      "[",
+      X1,
+      " = 0, ",
+      X2,
+      " = 0]))"
+    )
 
-    statement <- paste0("((", Y, "[", X1, " = 1, ", X2, " = 1]) - (", Y, "[", X1, " = 0, ", X2, " = 1])) < ",
-        "((", Y, "[", X1, " = 1, ", X2, " = 0]) - (", Y, "[", X1, " = 0, ", X2, " = 0]))")
+  class(statement) <- "statement"
 
-    class(statement) <- "statement"
-
-    statement
+  statement
 }
 
 #' Make treatment effect statement (positive)
@@ -217,13 +299,14 @@ substitutes <- function(X1, X2, Y) {
 #' }
 #'
 te <- function(X, Y) {
-    check_string_input(param_list = list(X, Y), call_name = deparse(sys.call()))
+  check_string_input(param_list = list(X, Y),
+                     call_name = deparse(sys.call()))
 
-    statement <- paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
+  statement <- paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
 
-    class(statement) <- "statement"
+  class(statement) <- "statement"
 
-    statement
+  statement
 }
 
 
@@ -234,8 +317,11 @@ te <- function(X, Y) {
 #' @keywords internal
 #' @return If appropriate, it returns error message.
 check_string_input <- function(param_list = list(), call_name = NULL) {
-    for (i in 1:length(param_list)) if (!is.character(param_list[[i]]))
+    for (i in seq_along(param_list)) {
+      if (!is.character(param_list[[i]])) {
         stop(paste0("Provide node names as strings in function: ", call_name))
+      }
+    }
 }
 
 

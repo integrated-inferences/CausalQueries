@@ -19,9 +19,11 @@ plot_dag(
 \arguments{
 \item{model}{A \code{causal_model} object generated from \code{make_model}}
 
-\item{x_coord}{A vector of x coordinates for DAG nodes. If left empty, coordinates are randomly generated}
+\item{x_coord}{A vector of x coordinates for DAG nodes.
+If left empty, coordinates are randomly generated}
 
-\item{y_coord}{A vector of y coordinates for DAG nodes. If left empty, coordinates are randomly generated}
+\item{y_coord}{A vector of y coordinates for DAG nodes.
+If left empty, coordinates are randomly generated}
 
 \item{title}{String specifying title of graph}
 
@@ -31,7 +33,8 @@ plot_dag(
 
 \item{shape}{Indicates shape of node. Defaults to circular node.}
 
-\item{nodecol}{String indicating color of node that is accepted by ggplot's default palette}
+\item{nodecol}{String indicating color of node that is accepted by
+ggplot's default palette}
 
 \item{nodesize}{Size of node.}
 }
@@ -39,7 +42,9 @@ plot_dag(
 A DAG plot in ggplot style.
 }
 \description{
-If confounds are indicated (provided in \code{attr(model$P, 'confounds')}), then these are represented as bidirectional arcs. Builds on functionality from ggdag and dagitty.
+If confounds are indicated (provided in \code{attr(model$P, 'confounds')}),
+then these are represented as bidirectional arcs. Builds on functionality
+from ggdag and dagitty.
 }
 \examples{
 

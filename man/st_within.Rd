@@ -17,7 +17,8 @@ st_within(
 
 \item{left}{A character string. Regular expression to serve as look ahead.}
 
-\item{right}{A character string. Regular expression to serve as a look behind.}
+\item{right}{A character string. Regular expression to
+serve as a look behind.}
 
 \item{rm_left}{An integer. Number of bites after left-side match to remove
 from result. Defaults to -1.}

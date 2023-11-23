@@ -24,31 +24,45 @@ make_par_values(
 \arguments{
 \item{model}{model created with \code{make_model}}
 
-\item{alter}{character vector with one of "priors" or "param_value" specifying what to alter}
+\item{alter}{character vector with one of "priors" or "param_value"
+specifying what to alter}
 
-\item{x}{vector of real non negative values to be substituted into "priors" or "param_value"}
+\item{x}{vector of real non negative values to be substituted into
+"priors" or "param_value"}
 
-\item{alter_at}{string specifying filtering operations to be applied to parameters_df, yielding a logical vector indicating parameters for which values should be altered. (see examples)}
+\item{alter_at}{string specifying filtering operations to be applied to
+parameters_df, yielding a logical vector indicating parameters for which
+values should be altered. (see examples)}
 
 \item{node}{string indicating nodes which are to be altered}
 
-\item{label}{string. Label for nodal type indicating nodal types for which values are to be altered. Equivalent to nodal_type.}
+\item{label}{string. Label for nodal type indicating nodal types for which
+values are to be altered. Equivalent to nodal_type.}
 
-\item{nodal_type}{string. Label for nodal type indicating nodal types for which values are to be altered}
+\item{nodal_type}{string. Label for nodal type indicating nodal types for
+which values are to be altered}
 
-\item{param_set}{string indicating  the name of the set of parameters to be altered}
+\item{param_set}{string indicating  the name of the set of parameters
+to be altered}
 
-\item{given}{string indicates the node on which the parameter to be altered depends}
+\item{given}{string indicates the node on which the parameter
+to be altered depends}
 
-\item{statement}{causal query that determines nodal types for which values are to be altered}
+\item{statement}{causal query that determines nodal types for
+which values are to be altered}
 
-\item{join_by}{string specifying the logical operator joining expanded types when \code{statement} contains wildcards. Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
+\item{join_by}{string specifying the logical operator joining expanded
+types when \code{statement} contains wildcards.
+Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
 
-\item{param_names}{string. The name of specific parameter in the form of, for example, 'X.1', 'Y.01'}
+\item{param_names}{vector of strings. The name of specific parameter in
+the form of, for example, 'X.1', 'Y.01'}
 
-\item{distribution}{string indicating a common prior distribution (uniform, jeffreys or certainty)}
+\item{distribution}{string indicating a common prior distribution
+(uniform, jeffreys or certainty)}
 
-\item{normalize}{logical. If TRUE normalizes such that param set probabilities sum to 1.}
+\item{normalize}{logical. If TRUE normalizes such that param
+set probabilities sum to 1.}
 }
 \description{
 This is the one step function for make_priors and make_parameters.
@@ -72,7 +86,9 @@ x = c(0.5,0.25),
 param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
-CausalQueries:::make_par_values(model = model, x = c(0.5,0.25), statement = "Y[M=1] > Y[M=0]")
+CausalQueries:::make_par_values(model = model,
+                                x = c(0.5,0.25),
+                                statement = "Y[M=1] > Y[M=0]")
 
 #altering values using a combination of other arguments
 CausalQueries:::make_par_values(model = model,

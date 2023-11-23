@@ -281,8 +281,8 @@ expand_data <- function(data_events = NULL, model) {
 
   if ((!is.data.frame(data_events) & !is.matrix(data_events)) |
       any(!c("event", "count") %in% colnames(data_events))) {
-    stop("data_events should be a data frame or a
-         matrix with columns `event` and `count`")
+    stop(paste("data_events should be a data frame or a",
+               "matrix with columns `event` and `count`"))
   }
 
   if ("strategy" %in% names(data_events)) {

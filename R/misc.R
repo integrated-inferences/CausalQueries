@@ -10,14 +10,17 @@ n_check <- function(n) {
     cond1 <- !(round(n) == n)
     cond2 <- n < 0
     cond_joint <- cond1 | cond2
-    if (cond_joint)
-        stop("Number of observation has to be an integer greater than 0.")
+    if (cond_joint) {
+      stop("Number of observation has to be an integer greater than 0.")
+    }
 }
 
 #' default_stan_control
 #'
-#' @param adapt_delta A double between 0 and 1. It determines \code{adapt_delta}
-#' @param max_treedepth A positive integer. It determines  \code{maximum_tree_depth}
+#' @param adapt_delta A double between 0 and 1. It determines
+#'   \code{adapt_delta}
+#' @param max_treedepth A positive integer. It determines
+#'   \code{maximum_tree_depth}
 #' @details Sets controls to default unless otherwise specified.
 #' @return A \code{list} containing arguments to be passed to \code{stan}
 #' @keywords internal
@@ -35,13 +38,16 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #'
 #' @param object A \code{stanfit} object.
 #' @param user_dots A list. User commands.
-#' @param user_adapt_delta A double between 0 and 1. Adapt delta passed by the user
+#' @param user_adapt_delta A double between 0 and 1.
+#'   Adapt delta passed by the user
 #' @param ... further arguments to be passed to 'stan'
 #' @details Set the sampling arguments
 #' @return A \code{list} with arguments to be passed to \code{stan}
 #' @keywords internal
 
-set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NULL, ...) {
+set_sampling_args <- function(object,
+                              user_dots = list(),
+                              user_adapt_delta = NULL, ...) {
     args <- list(object = object, ...)
     unms <- names(user_dots)
     for (j in seq_along(user_dots)) {
@@ -62,5 +68,4 @@ set_sampling_args <- function(object, user_dots = list(), user_adapt_delta = NUL
     }
     args$save_warmup <- FALSE
     return(args)
-
 }

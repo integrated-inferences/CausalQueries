@@ -7,7 +7,8 @@
 parents_to_int(parents_list, position_set)
 }
 \arguments{
-\item{parents_list}{a named list of character vectors specifying all nodes in the DAG and their respective parents}
+\item{parents_list}{a named list of character vectors specifying all
+nodes in the DAG and their respective parents}
 }
 \value{
 a list of column positions

@@ -17,21 +17,23 @@
 #' CausalQueries:::prep_stan_data(model, data)
 #' }
 #'
-prep_stan_data <-
-  function(model,
-           data,
-           keep_transformed = TRUE,
-           censored_types = NULL) {
 
+prep_stan_data <- function(model,
+                           data,
+                           keep_transformed = TRUE,
+                           censored_types = NULL) {
+    i <- NULL
     # check data is in correct compact form
-    if (!all(c("event", "strategy", "count") %in% names(data)))
+    if (!all(c("event", "strategy", "count") %in% names(data))) {
       stop("Data should contain columns `event`, `strategy` and `count`")
-
+    }
     # 1 Parameter set handlers
     param_set  <- model$parameters_df$param_set
     param_sets <- unique(param_set)
     n_param_sets <- length(param_sets)
-    n_param_each <- sapply(param_sets, function(j) sum(param_set == j))
+    n_param_each <- vapply(param_sets, function(j) {
+      sum(param_set == j)
+    }, numeric(1))
     l_ends <- as.array(cumsum(n_param_each))
     ifelse(length(l_ends) == 1,
            l_starts <- 1,
@@ -39,12 +41,15 @@ prep_stan_data <-
     names(l_starts) <- names(l_ends)
 
     # 2 Node set handlers
-    i <- NULL     # Addresses binding issue
-    nodes_sets <- model$parameters_df |>
-      dplyr::mutate(i = 1:n()) |>
-      dplyr::group_by(node) |>
-      dplyr::summarize(n_starts = i[1], n_ends = i[n()], n_node_each = n()) |>
+  i <- NULL
+    nodes_sets <- model$parameters_df %>%
+      dplyr::mutate(i = 1:n()) %>%
+      dplyr::group_by(node) %>%
+      dplyr::summarize(n_starts = i[1],
+                       n_ends = i[n()],
+                       n_node_each = n()) %>%
       dplyr::arrange(n_starts)
+
     n_starts <- nodes_sets$n_starts
     n_ends <- nodes_sets$n_ends
     n_sets <- nodes_sets$node
@@ -65,10 +70,12 @@ prep_stan_data <-
     n_strategies <- length(unique(strategies))
     w_starts <- which(!duplicated(strategies))
     k <- length(strategies)
-    w_ends <- {if (n_strategies < 2)
+    w_ends <- {
+      if (n_strategies < 2) {
         k
-    else
+      } else {
         c(w_starts[2:n_strategies] - 1, k)
+      }
     }
 
     P <- get_parameter_matrix(model)
@@ -107,5 +114,4 @@ prep_stan_data <-
         P = P,
         n_types = ncol(P)
     )
-
 }

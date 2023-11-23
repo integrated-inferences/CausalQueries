@@ -1,25 +1,37 @@
 #' Make data
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param param_type A character. String specifying type of parameters to make
-#' ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define").
-#' With param_type set to \code{define} use arguments to be passed to \code{make_priors};
-#' otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set;
-#' \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw}
-#' take parameters as the means or as draws from the prior or posterior.
-#' @param n Non negative integer. Number of observations. If not provided it is inferred from the  largest n_step.
-#' @param n_steps A \code{list}. Number of observations to be observed at each step
+#' @param param_type A character. String specifying type of parameters to
+#'   make ("flat", "prior_mean", "posterior_mean", "prior_draw",
+#'   "posterior_draw", "define"). With param_type set to \code{define} use
+#'   arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
+#'   equal probabilities on each nodal type in each parameter set;
+#'   \code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
+#'   \code{posterior_draw} take parameters as the means or as draws
+#'   from the prior or posterior.
+#' @param n Non negative integer. Number of observations.
+#'   If not provided it is inferred from the  largest n_step.
+#' @param n_steps A \code{list}. Number of observations to be
+#'   observed at each step
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
-#' @param nodes A \code{list}. Which nodes to be observed at each step. If NULL all nodes are observed.
+#' @param nodes A \code{list}. Which nodes to be observed at each step.
+#'   If NULL all nodes are observed.
 #' @param probs A \code{list}. Observation probabilities at each step
-#' @param subsets A \code{list}. Strata within which observations are to be observed at each step. TRUE for all, otherwise an expression that evaluates to a logical condition.
-#' @param complete_data A \code{data.frame}. Dataset with complete observations. Optional.
+#' @param subsets A \code{list}. Strata within which observations are to be
+#'   observed at each step. TRUE for all, otherwise an expression that
+#'   evaluates to a logical condition.
+#' @param complete_data A \code{data.frame}. Dataset with complete
+#'   observations. Optional.
 #' @param verbose Logical. If TRUE prints step schedule.
-#' @param ... additional arguments that can be passed to \code{link{make_parameters}}
+#' @param ... additional arguments that can be passed to
+#'   \code{link{make_parameters}}
 #' @return A \code{data.frame} with simulated data.
 #' @export
 #' @details
-#' Note that default behavior is not to take account of whether a node has already been observed when determining whether to select or not. One can however specifically request observation of nodes that have not been previously observed.
+#' Note that default behavior is not to take account of whether a node has
+#' already been observed when determining whether to select or not. One can
+#' however specifically request observation of nodes that have not been
+#' previously observed.
 #' @examples
 #'
 #' # Simple draws
@@ -81,41 +93,77 @@ make_data <- function(
 	n   = NULL,
 	parameters = NULL,
 	param_type = NULL,
-	nodes    = NULL,  # nodes revealed at each step
-	n_steps = NULL,         # n at each step
-	probs   = NULL,            # probs at each step
-	subsets = TRUE,         # subsets at each step
+	nodes    = NULL,
+	n_steps = NULL,
+	probs   = NULL,
+	subsets = TRUE,
 	complete_data = NULL,
 	given = NULL,
 	verbose = TRUE,
 	...){
 
   # n_step, n consistency
-  if(!is.null(n)) n_check(n)
-  if(!is.null(n_steps) & !is.null(n)) if(max(n_steps %>% unlist) > n) stop("n_step larger than n")
-  if(!is.null(n_steps) & is.null(n)) n <- max(n_steps %>% unlist)
-  if(is.null(n_steps) & is.null(n)) n <- 1
+  if(!is.null(n)) {
+    n_check(n)
+  }
+
+  if(!is.null(n_steps) & !is.null(n)) {
+    if(max(n_steps %>% unlist) > n) {
+      stop("n_step larger than n")
+    }
+  }
+
+  if(!is.null(n_steps) & is.null(n)) {
+    n <- max(n_steps %>% unlist)
+  }
+
+  if(is.null(n_steps) & is.null(n)) {
+    n <- 1
+  }
 
 	# n_steps and probs reconciliation
-	if(!is.null(n_steps) & !is.null(probs)) warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
-  if(is.null(n_steps) & is.null(probs)) n_steps <- n
-  if(is.null(n_steps)) n_steps <- NA
-  if(is.null(probs))   probs <- 1
+	if(!is.null(n_steps) & !is.null(probs)) {
+	  warning("Both `n_steps` and `prob` specified. `n_steps` overrides `probs`.")
+	}
+
+  if(is.null(n_steps) & is.null(probs)) {
+    n_steps <- n
+  }
+
+  if(is.null(n_steps)) {
+    n_steps <- NA
+  }
+
+  if(is.null(probs)) {
+    probs <- 1
+  }
 
 	# Check that parameters sum to 1 in each param_set
-	if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
+	if(!is.null(parameters)) {
+	  parameters <- clean_param_vector(model, parameters)
+	}
 
-	# If parameters not provided, make or take from model
-	if(is.null(parameters)) {
-		if(!is.null(param_type)){
-			parameters <- make_parameters(model, param_type = param_type, ...)
-		} else {
-			parameters 	 <- get_parameters(model) }}
+  # If parameters not provided, make or take from model
+  if (is.null(parameters)) {
+    if (!is.null(param_type)) {
+      parameters <- make_parameters(model, param_type = param_type, ...)
+    } else {
+      parameters 	 <- get_parameters(model)
+    }
+  }
 
 	# Check nodes
-	if(is.null(nodes))  nodes <- list(model$nodes)
-	if(!is.list(nodes)) nodes <- list(nodes) # Lets one step nodes be provided as vector
-	if(!(all(unlist(nodes) %in% model$nodes))) stop("All listed nodes should be in model")
+	if(is.null(nodes)) {
+	  nodes <- list(model$nodes)
+	}
+
+	if(!is.list(nodes)) {
+	  nodes <- list(nodes) # Lets one step nodes be provided as vector
+	}
+
+	if(!(all(unlist(nodes) %in% model$nodes))) {
+	  stop("All listed nodes should be in model")
+	}
 
 	# Complete data
 	if(is.null(complete_data)) {
@@ -127,15 +175,26 @@ make_data <- function(
 
 	# Default behavior is to return complete data --
 	# triggered if all data and all nodes sought in step 1
-	if(all(model$nodes %in% nodes[[1]]))
-		if(probs[1]==1 || n_steps[1]==n) return(complete_data)
+	if(all(model$nodes %in% nodes[[1]])) {
+	  if(probs[1]==1 || n_steps[1]==n) {
+	    return(complete_data)
+	  }
+	}
 
-	# Otherwise, gradually reveal
+  # Otherwise, gradually reveal
+  # Check length consistency
+  roster <-
+    tibble(
+      node_names = lapply(nodes, paste, collapse = ", ") %>% unlist,
+      nodes = nodes,
+      n_steps = n_steps %>% unlist,
+      probs = probs %>% unlist,
+      subsets = subsets %>% unlist
+    )
 
-	# Check length consistency
-	roster <- tibble(node_names = lapply(nodes, paste, collapse = ", ") %>% unlist,
-	                 nodes = nodes, n_steps = n_steps %>% unlist, probs = probs%>% unlist, subsets = subsets%>% unlist)
-	if(verbose) print(roster)
+  if (verbose) {
+    print(roster)
+  }
 
 	observed <- complete_data
 
@@ -161,8 +220,7 @@ make_data <- function(
 
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
-	observed_data
-
+	return(observed_data)
 }
 
 
@@ -173,9 +231,14 @@ make_data <- function(
 #' @param observed A \code{data.frame}. Data observed.
 #' @param nodes_to_observe  A list. Nodes to observe.
 #' @param prob A scalar. Observation probability.
-#' @param m A integer. Number of units to observe; if specified, \code{m} overrides \code{prob}.
-#' @param subset A character.  Logical statement that can be applied to rows of complete data. For instance observation for some nodes might depend on observed values of other nodes; or observation may only be sought if data not already observed!
-#' @return A \code{data.frame} with logical values indicating which nodes to observe in each row of `complete_data`.
+#' @param m A integer. Number of units to observe; if specified, \code{m}
+#'   overrides \code{prob}.
+#' @param subset A character.  Logical statement that can be applied to rows
+#'   of complete data. For instance observation for some nodes might depend on
+#'   observed values of other nodes; or observation may only be sought if
+#'   data not already observed!
+#' @return A \code{data.frame} with logical values indicating which nodes
+#'   to observe in each row of `complete_data`.
 #' @importFrom stats runif
 #' @importFrom dplyr tibble
 #' @export
@@ -190,7 +253,8 @@ make_data <- function(
 #'      nodes_to_observe = "Y", prob = .5,
 #'      subset = "X==1")
 
-# A strategy consists of a. names of types to reveal  b. number of these to reveal c. subset from which to reveal them
+# A strategy consists of a. names of types to reveal  b. number of these
+# to reveal c. subset from which to reveal them
 
 observe_data <- function(complete_data,
 												 observed = NULL,
@@ -199,9 +263,18 @@ observe_data <- function(complete_data,
 												 m = NULL,
 												 subset = TRUE){
 
-	if(is.null(observed)) {observed <- complete_data; observed[,] <- FALSE}
-	if(is.null(nodes_to_observe)) nodes_to_observe <- names(complete_data)
-	if(is.null(m)) m <- NA
+	if(is.null(observed)) {
+	  observed <- complete_data; observed[,] <- FALSE
+	}
+
+	if(is.null(nodes_to_observe)) {
+	  nodes_to_observe <- names(complete_data)
+	}
+
+	if(is.null(m)) {
+	  m <- NA
+	}
+
 	# Prep observed data dataframe
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
@@ -213,17 +286,19 @@ observe_data <- function(complete_data,
 	  sub <- rep(TRUE, nrow(observed_data))
 	}
 
-	if(!any(sub)) message("Empty subset")
+	if(!any(sub)) {
+	  message("Empty subset")
+	}
 
 	# Target to reveal
-	if(is.na(m)){
+	if(is.na(m)) {
 	  E <- prob*sum(sub) # Expected number selected
 	  m <- floor(E)  + (runif(1) <  E - floor(E)) # Get best m
 	}
 
 	observed[sample((1:length(sub))[sub], m), nodes_to_observe] <- TRUE
 
-	observed
+	return(observed)
 }
 
 
@@ -232,11 +307,22 @@ observe_data <- function(complete_data,
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n An integer. Number of observations.
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
-#' @param parameters A numeric vector. Values of parameters may be specified. By default, parameters is drawn from priors.
-#' @param param_type A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.
-#' @param w Vector of event probabilities can be provided directly. This is useful for speed for repeated data draws.
-#' @param P A \code{matrix}. Parameter matrix that can be used to generate w if w is not provided
-#' @param A A \code{matrix}. Ambiguity matrix that can be used to generate w if w is not provided
+#' @param parameters A numeric vector. Values of parameters may be specified.
+#'   By default, parameters is drawn from priors.
+#' @param param_type A character. String specifying type of parameters to make
+#'   ("flat", "prior_mean", "posterior_mean", "prior_draw",
+#'   "posterior_draw", "define). With param_type set to \code{define} use
+#'   arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
+#'   equal probabilities on each nodal type in each parameter set;
+#'   \code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
+#'   \code{posterior_draw} take parameters as the means or as draws
+#'   from the prior or posterior.
+#' @param w Vector of event probabilities can be provided directly.
+#'   This is useful for speed for repeated data draws.
+#' @param P A \code{matrix}. Parameter matrix that can be used to
+#'   generate w if w is not provided
+#' @param A A \code{matrix}. Ambiguity matrix that can be used
+#'   to generate w if w is not provided
 #' @return A \code{data.frame} of simulated data.
 #' @keywords internal
 #'
@@ -249,7 +335,8 @@ observe_data <- function(complete_data,
 #'
 #' CausalQueries:::make_data_single(model, n = 5, param_type = "prior_draw")
 #'
-#' # Simulate multiple datasets. This is fastest if event probabilities (w) are  provided
+#' # Simulate multiple datasets. This is fastest if
+#' # event probabilities (w) are  provided
 #' w <- get_event_prob(model)
 #' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
@@ -260,21 +347,22 @@ make_data_single <- function(
 	parameters = NULL,
 	param_type = NULL,
 	given = NULL,
-	w = NULL, P = NULL, A = NULL){
+	w = NULL, P = NULL, A = NULL) {
 
 	# Check that parameters sum to 1 in each param_set
 	# if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
 
   # If parameters not provided, take from model
 	if(is.null(parameters)) {
-		if(!is.null(param_type)){
+		if(!is.null(param_type)) {
 			parameters <- make_parameters(model, param_type = param_type)
 		} else {
-			parameters 	 <- get_parameters(model) }}
+			parameters 	 <- get_parameters(model)
+		}
+	 }
 
 	# Generate event probabilities w if missing
-	if(is.null(w)){
-
+	if(is.null(w)) {
 	  	w <- get_event_prob(
 	  	  model,
 	  	  parameters = parameters,
