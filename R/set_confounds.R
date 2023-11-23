@@ -93,9 +93,10 @@ set_confound <- function(model, confound = NULL) {
 
 
   # extract the node from the nodal type name
-  node_from_type <- function(type)
+  node_from_type <- function(type) {
     sapply(strsplit(type, "\\."), function(x)
       x[[1]])
+  }
 
   # extract the conditions from the nodal type name
   conditions_from_type <- function(type)

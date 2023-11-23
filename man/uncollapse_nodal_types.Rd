@@ -18,7 +18,7 @@ uncollapse nodal types
 \examples{
 
 model <- make_model('X -> K -> Y')
-(nodal_types <- get_nodal_types(model , collapse = FALSE))
+(nodal_types <- get_nodal_types(model , collapse = TRUE))
 CausalQueries:::uncollapse_nodal_types(nodal_types)
 }
 \keyword{internal}

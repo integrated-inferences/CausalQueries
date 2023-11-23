@@ -65,7 +65,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' @examples
 #'
 #' model <- make_model('X -> K -> Y')
-#' (nodal_types <- get_nodal_types(model , collapse = FALSE))
+#' (nodal_types <- get_nodal_types(model , collapse = TRUE))
 #' CausalQueries:::uncollapse_nodal_types(nodal_types)
 
 
@@ -73,7 +73,7 @@ uncollapse_nodal_types <- function(nodal_types) {
   x <- nodal_types |>
     lapply(stringr::str_split, "")  |>
     lapply(data.frame) |>
-    lapply(t)  |>
+    lapply(t) |>
     lapply(function(df)
       apply(df, 2, as.numeric)) |>
     lapply(data.frame)
