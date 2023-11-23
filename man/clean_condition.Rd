@@ -7,7 +7,8 @@
 clean_condition(condition)
 }
 \arguments{
-\item{condition}{A character string. Condition that refers to a unique position (possible outcome) in a nodal type.}
+\item{condition}{A character string. Condition that refers to a unique
+position (possible outcome) in a nodal type.}
 }
 \value{
 A properly spaced string.

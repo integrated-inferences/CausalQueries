@@ -8,10 +8,11 @@ make_model(statement, add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
 \item{statement}{A character. Statement describing causal
-relations using \link{dagitty} syntax. Only directed relations are permitted.
-For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
+relations using \link{dagitty} syntax. Only directed relations are
+permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
-\item{add_causal_types}{Logical. Whether to create and attach causal types to \code{model}. Defaults to `TRUE`.}
+\item{add_causal_types}{Logical. Whether to create and attach causal
+types to \code{model}. Defaults to `TRUE`.}
 
 \item{nodal_types}{List of nodal types associated with model nodes}
 }
@@ -21,22 +22,30 @@ An object of class \code{causal_model}.
 An object of class \code{"causal_model"} is a list containing at least the
 following components:
 \item{statement}{A character vector of the statement that defines the model}
-\item{dag}{A \code{data.frame} with columns `parent`and `children` indicating how nodes relate to each other.}
+\item{dag}{A \code{data.frame} with columns `parent`and `children`
+  indicating how nodes relate to each other.}
 \item{nodes}{A named \code{list} with the nodes in the model}
-\item{parents_df}{A \code{data.frame} listing nodes, whether they are root nodes or not, and the number of parents they have}
-\item{nodal_types}{Optional: A named \code{list} with the nodal types in the model. List should be ordered according to the causal ordering of nodes. If NULL nodal types are generated. If FALSE, a parameters data frame is not generated.}
-\item{parameters_df}{A \code{data.frame} with descriptive information of the parameters in the model}
-\item{causal_types}{A \code{data.frame} listing causal types and the  nodal types that produce them}
+\item{parents_df}{A \code{data.frame} listing nodes, whether they are
+  root nodes or not, and the number of parents they have}
+\item{nodal_types}{Optional: A named \code{list} with the nodal types in
+  the model. List should be ordered according to the causal ordering of
+  nodes. If NULL nodal types are generated. If FALSE, a parameters data
+  frame is not generated.}
+\item{parameters_df}{A \code{data.frame} with descriptive information
+  of the parameters in the model}
+\item{causal_types}{A \code{data.frame} listing causal types and the
+  nodal types that produce them}
 }
 \description{
-\code{make_model} uses \link{dagitty} syntax and functionality to specify nodes and edges of a
-graph. Implied causal types are calculated and default priors are provided under the
-assumption of no confounding.
+\code{make_model} uses \link{dagitty} syntax and functionality to
+specify nodes and edges of a graph. Implied causal types are calculated
+and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, \code{P}, by
-providing restrictions on causal types, and/or by providing informative priors on parameters.
-The default setting for a causal model have flat (uniform) priors and parameters
-putting equal weight on each parameter within each parameter set. These can be
-adjust with \code{set_priors} and \code{set_parameters}
+providing restrictions on causal types, and/or by providing informative
+priors on parameters. The default setting for a causal model have flat
+(uniform) priors and parameters putting equal weight on each parameter
+within each parameter set. These can be adjust with \code{set_priors}
+and \code{set_parameters}
 }
 \examples{
 make_model(statement = "X -> Y")

@@ -9,12 +9,14 @@ expand_wildcard(to_expand, join_by = "|", verbose = TRUE)
 \arguments{
 \item{to_expand}{A character vector of length 1L.}
 
-\item{join_by}{A logical operator. Used to connect causal statements: \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
+\item{join_by}{A logical operator. Used to connect causal statements:
+\emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 
 \item{verbose}{Logical. Whether to print expanded query on the console.}
 }
 \value{
-A character string with the expanded expression. Wildcard '.' is replaced by 0 and 1.
+A character string with the expanded expression.
+  Wildcard '.' is replaced by 0 and 1.
 }
 \description{
 Expand statement containing wildcard
@@ -32,5 +34,4 @@ expand_wildcard('Y[X=1, M=.] > Y[X=1, M=.]')
 
 # Expressions not requiring expansion are allowed
 expand_wildcard('(Y[X=1])')
-
 }

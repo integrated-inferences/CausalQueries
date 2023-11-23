@@ -7,19 +7,24 @@
 drop_empty_families(data_events)
 }
 \arguments{
-\item{data_events}{A \code{data.frame}. It must be compatible with nodes in \code{model}. The default columns are \code{event}, \code{strategy} and \code{count}.}
+\item{data_events}{A \code{data.frame}. It must be compatible with nodes in
+\code{model}. The default columns are
+\code{event}, \code{strategy} and \code{count}.}
 }
 \value{
-Returns data events with strategies (excluding  strategy families that contain no observed data)
+Returns data events with strategies (excluding  strategy families
+  that contain no observed data)
 }
 \description{
 Drop empty families
 }
 \examples{
 \donttest{
-data_events <- data.frame(event = c('X0Y0', 'Y0'), strategy = c('XY', 'Y'), count = 1:0)
+data_events <- data.frame(event = c('X0Y0', 'Y0'),
+                          strategy = c('XY', 'Y'),
+                          count = 1:0)
 CausalQueries:::drop_empty_families(data_events)
- }
+}
 
 }
 \keyword{internal}

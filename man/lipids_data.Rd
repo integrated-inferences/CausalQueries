@@ -19,7 +19,13 @@ A data frame with 8 rows and 3 columns:
 lipids_data
 }
 \description{
-A compact dataset containing information on an encouragement, (Z, cholestyramine prescription), a treatment (X, usage), and an outcome (Y, cholesterol).
-From David Maxwell Chickering and Judea Pearl: "A Clinician’s Tool for Analyzing Non-compliance", AAAI-96 Proceedings. Chickering and Pearl in turn draw the data from Efron, Bradley, and David Feldman. "Compliance as an explanatory variable in clinical trials." Journal of the American Statistical Association 86.413 (1991): 9-17.
+A compact dataset containing information on an encouragement,
+(Z, cholestyramine prescription), a treatment (X, usage), and
+an outcome (Y, cholesterol).
+From David Maxwell Chickering and Judea Pearl: "A Clinician’s Tool for
+Analyzing Non-compliance", AAAI-96 Proceedings. Chickering and Pearl in turn
+draw the data from Efron, Bradley, and David Feldman.
+"Compliance as an explanatory variable in clinical trials."
+Journal of the American Statistical Association 86.413 (1991): 9-17.
 }
 \keyword{datasets}

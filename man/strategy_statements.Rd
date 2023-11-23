@@ -9,13 +9,15 @@ strategy_statements(data, strategies)
 \arguments{
 \item{data}{A data frame with one row}
 
-\item{strategies}{A list of strategies where each strategy is a set of nodes to be observed}
+\item{strategies}{A list of strategies where each strategy
+is a set of nodes to be observed}
 }
 \value{
 A string
 }
 \description{
-Helper to generate statements of the form "X = 1 & Y = 0" from realized data on one observation
+Helper to generate statements of the form "X = 1 & Y = 0"
+from realized data on one observation
 }
 \examples{
  data.frame(X = 1, M = 0, Y = NA) \%>\%

@@ -7,7 +7,8 @@
 nodes_in_statement(nodes, statement)
 }
 \arguments{
-\item{nodes}{A vector of characters. It should contain quoted names of the nodes in \code{model}}
+\item{nodes}{A vector of characters. It should contain quoted names of
+the nodes in \code{model}}
 
 \item{statement}{A character. A quoted causal statement.}
 }

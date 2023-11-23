@@ -13,10 +13,12 @@ add_wildcard(node, statement, parents, missing_parents)
 
 \item{parents}{A vector of characters. The \code{node}'s parents}
 
-\item{missing_parents}{A vector of characters.  The \code{node}'s missing parents}
+\item{missing_parents}{A vector of characters.  The \code{node}'s
+missing parents}
 }
 \value{
-A causal query expression with all parents nodes set to either 0, 1 or wildcard '.'
+A causal query expression with all parents nodes set to
+ either 0, 1 or wildcard '.'
 }
 \description{
 Adds a wildcard for every missing parent
