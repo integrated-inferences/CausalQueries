@@ -43,9 +43,9 @@ make_ambiguities_matrix <- function(model) {
     types <- get_causal_types(model)
     var_names <- colnames(types)
     type_labels <-
-      sapply(1:nrow(types), function(i) {
+      vapply(seq_len(nrow(types)), function(i) {
         paste0(var_names, types[i,], collapse = "")
-      })
+      }, character(1))
     # cbind(types, type_labels) # A check
 
     # 2. Map types to data realizations. This is done in realise_outcomes
@@ -63,9 +63,9 @@ make_ambiguities_matrix <- function(model) {
             collapse = "")
 
     # 4. Generate A
-    A <-
-      sapply(1:nrow(types), function(i)
-        (types$revealed_data[i] == fundamental_data) * 1)
+    A <- vapply(seq_len(nrow(types)), function(i) {
+      (types$revealed_data[i] == fundamental_data) * 1
+    }, numeric(1))
     A <- matrix(A, ncol = length(type_labels))
     colnames(A) <- type_labels
     rownames(A) <- data_names

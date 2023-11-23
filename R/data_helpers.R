@@ -297,7 +297,7 @@ expand_data <- function(data_events = NULL, model) {
 
   vars <- model$nodes
   df <- merge(all_data_types(model), data_events, by.x = "event")
-  xx <- unlist(sapply(1:nrow(df), function(i) {
+  xx <- unlist(lapply(seq_len(nrow(df)), function(i) {
     replicate(df[i, ncol(df)], df[i, vars])
   }))
   out <- data.frame(matrix(xx, ncol = length(vars), byrow = TRUE))
