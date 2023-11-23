@@ -36,12 +36,15 @@
 #'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
 #'  # simple  queries
-#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])", using = "priors") |>
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])",
+#'                     using = "priors") |>
 #'    head()
 #'
 #'  # multiple  queries
 #'  query_distribution(model,
-#'    query = list("(Y[X=1] > Y[X=0])", "(Y[X=1] < Y[X=0])"), using = "priors")|>
+#'      query = list("(Y[X=1] > Y[X=0])",
+#'                   "(Y[X=1] < Y[X=0])"),
+#'      using = "priors")|>
 #'    head()
 #'
 #'  # multiple queries and givens
@@ -548,8 +551,14 @@ check_args <- function(model, using, given, queries, case_level, fun) {
     ))
   }
 
-  given[given %in% c('', 'All', 'ALL', 'all', 'None', 'none', 'NONE', 'TRUE')] <-
-    "ALL"
+  given[given %in% c('',
+                     'All',
+                     'ALL',
+                     'all',
+                     'None',
+                     'none',
+                     'NONE',
+                     'TRUE')] <- "ALL"
 
   if((fun == "query_distribution") && (length(using) > 1)) {
     stop("You can only specify a single value for the `using` argument.")
@@ -567,9 +576,12 @@ check_args <- function(model, using, given, queries, case_level, fun) {
 #'
 #' @param jobs \code{DataFrame} of argument combinations
 #' @param model a list of models
-#' @param query_col string specifying the name of the column in jobs holding queries to be evaluated
-#' @param realisations list of \code{DataFrame} outputs from calls to \code{realise_outcomes}
-#' @return jobs \code{DataFrame} with a nested column of \code{map_query_to_nodal_type} outputs
+#' @param query_col string specifying the name of the column in jobs
+#'   holding queries to be evaluated
+#' @param realisations list of \code{DataFrame} outputs from calls
+#'   to \code{realise_outcomes}
+#' @return jobs \code{DataFrame} with a nested column of
+#'   \code{map_query_to_nodal_type} outputs
 #' @keywords internal
 
 queries_to_types <- function(jobs,
@@ -580,7 +592,7 @@ queries_to_types <- function(jobs,
     dplyr::distinct(jobs, (!!as.name("model_names")), (!!as.name(query_col)))
   types <- vector(mode = "list", length = nrow(unique_jobs))
 
-  for (i in 1:nrow(unique_jobs)) {
+  for (i in seq_len(nrow(unique_jobs))) {
     model_i <- unique_jobs[i, "model_names"]
 
     if ((query_col == "given") &&
@@ -618,7 +630,7 @@ get_type_distributions <- function(jobs,
     parameters <- list()
   }
 
-  for (i in 1:nrow(unique_jobs)) {
+  for (i in seq_len(nrow(unique_jobs))) {
     model_i <- unique_jobs[i, "model_names"]
     using_i <- unique_jobs[i, "using"]
 
@@ -663,7 +675,7 @@ get_estimands <- function(jobs,
                           type_distributions) {
   estimands <- vector(mode = "list", length = nrow(jobs))
 
-  for (i in 1:nrow(jobs)) {
+  for (i in seq_len(nrow(jobs))) {
     model_name_i <- jobs[i, "model_names"]
     using_i <- jobs[i, "using"]
     given_i <- jobs[i, "given"]

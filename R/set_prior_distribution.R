@@ -1,10 +1,12 @@
 #' Make a prior distribution from priors
 #'
-#' Create a `n_param`x `n_draws` database of possible lambda draws to be attached to the model.
+#' Create a `n_param`x `n_draws` database of possible lambda draws to be
+#' attached to the model.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
-#' @return A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
+#' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
+#'   lambda draws
 #' @export
 #' @importFrom dirmult rdirichlet
 #' @family prior_distribution
@@ -37,21 +39,29 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
-#' @return A `data.frame` with dimension `n_param`x `n_draws` of possible lambda draws
+#' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
+#'   lambda draws
 #' @export
 #' @family prior_distribution
 #' @examples
-#' make_model('X -> Y') %>% set_prior_distribution(n_draws = 5) %>% get_prior_distribution()
-#' make_model('X -> Y') %>% get_prior_distribution(3)
+#' make_model('X -> Y') %>%
+#'   set_prior_distribution(n_draws = 5) %>%
+#'   get_prior_distribution()
+#' make_model('X -> Y') %>%
+#'   get_prior_distribution(3)
 #'
+
 get_prior_distribution <- function(model, n_draws = 4000) {
+  if (!is.null(model$prior_distribution)) {
+    return(model$prior_distribution)
+  }
 
-    if (!is.null(model$prior_distribution))
-        return(model$prior_distribution)
+  message(paste(
+    "The model does not have an attached prior distribution;",
+    "generated on the fly"
+  ))
 
-    message("The model does not have an attached prior distribution; generated on the fly")
-
-    make_prior_distribution(model, n_draws)
+  make_prior_distribution(model, n_draws)
 }
 
 #' Add prior distribution draws
@@ -60,18 +70,23 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
-#' @return An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `prior_distribution` attached to it.
+#' @return An object of class \code{causal_model}. It essentially returns a
+#'   list containing the elements comprising a model
+#'   (e.g. 'statement', 'nodal_types' and 'DAG') with the `prior_distribution`
+#'   attached to it.
 #' @export
 #' @family prior_distribution
 #' @examples
-#' make_model('X -> Y') %>% set_prior_distribution(n_draws = 5) %>% get_prior_distribution()
+#' make_model('X -> Y') %>%
+#'   set_prior_distribution(n_draws = 5) %>%
+#'   get_prior_distribution()
 #'
+
 set_prior_distribution <- function(model, n_draws = 4000) {
+  model$prior_distribution <-
+    make_prior_distribution(model, n_draws = n_draws)
 
-    model$prior_distribution <- make_prior_distribution(model, n_draws = n_draws)
-
-    model
+  model
 
 }
 
