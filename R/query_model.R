@@ -118,6 +118,7 @@
 #'
 #'  mean(distribution$QG)/mean(distribution$G)
 #' }
+#'
 query_distribution <- function(model,
                                queries,
                                given = NULL,
@@ -129,7 +130,7 @@ query_distribution <- function(model,
                                case_level = FALSE,
                                query = NULL) {
   ## check arguments
-  if(is(model, "causal_model")) {
+  if (is(model, "causal_model")) {
     model <- list(model)
   }
 
@@ -142,32 +143,36 @@ query_distribution <- function(model,
     )
   }
 
-  if(!is.null(query)) {
+  if (!is.null(query)) {
     queries <- query
   }
 
-  if((!is.null(parameters)) && (!is.list(parameters))) {
+  if ((!is.null(parameters)) && (!is.list(parameters))) {
     parameters <- list(parameters)
   }
 
-  if((!is.null(parameters)) && (length(parameters) > 1)) {
+  if ((!is.null(parameters)) && (length(parameters) > 1)) {
     stop("Please only specify one set of parameters for your model.")
   }
 
-  if((!is.null(type_distribution)) && (!is.list(type_distribution))) {
+  if ((!is.null(type_distribution)) &&
+      (!is.list(type_distribution))) {
     type_distributions <- list(type_distribution)
   }
 
-  if((!is.null(type_distribution)) && (length(type_distribution) > 1)) {
+  if ((!is.null(type_distribution)) &&
+      (length(type_distribution) > 1)) {
     stop("Please only specify one type_distribution for your model.")
   }
 
-  args_checked <- check_args(model = model,
-                             using = unlist(using),
-                             given = unlist(given),
-                             queries = queries,
-                             case_level = case_level,
-                             fun = "query_distribution")
+  args_checked <- check_args(
+    model = model,
+    using = unlist(using),
+    given = unlist(given),
+    queries = queries,
+    case_level = case_level,
+    fun = "query_distribution"
+  )
 
   given <- args_checked$given
   using <- args_checked$using
@@ -177,16 +182,18 @@ query_distribution <- function(model,
   model_names <- "model_1"
   names(model) <- model_names
 
-  if(!is.null(parameters)) {
+  if (!is.null(parameters)) {
     names(parameters) <- model_names
   }
 
-  if(!is.null(type_distribution)) {
+  if (!is.null(type_distribution)) {
     names(type_distributions) <- model_names
   }
 
   # generate outcome realisations
-  realisations <- lapply(model, function(m) realise_outcomes(model = m))
+  realisations <-
+    lapply(model, function(m)
+      realise_outcomes(model = m))
   names(realisations) <- model_names
 
   # prevent bugs from query helpers
@@ -200,32 +207,41 @@ query_distribution <- function(model,
       given = unlist(given),
       queries = unlist(queries),
       case_level = unlist(case_level),
-      stringsAsFactors = FALSE)
+      stringsAsFactors = FALSE
+    )
   }) |>
     dplyr::bind_rows()
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
-  given_types <- queries_to_types(jobs = jobs,
-                                  model = model,
-                                  query_col = "given",
-                                  realisations = realisations)
+  given_types <- queries_to_types(
+    jobs = jobs,
+    model = model,
+    query_col = "given",
+    realisations = realisations
+  )
   # handle queries
-  query_types <- queries_to_types(jobs = jobs,
-                                  model = model,
-                                  query_col = "queries",
-                                  realisations = realisations)
+  query_types <- queries_to_types(
+    jobs = jobs,
+    model = model,
+    query_col = "queries",
+    realisations = realisations
+  )
   # handle type distributions
-  type_distributions <- get_type_distributions(jobs = jobs,
-                                               model = model,
-                                               n_draws = n_draws,
-                                               parameters = parameters)
+  type_distributions <- get_type_distributions(
+    jobs = jobs,
+    model = model,
+    n_draws = n_draws,
+    parameters = parameters
+  )
 
   ## get estimands
-  estimands <- get_estimands(jobs = jobs,
-                             given_types = given_types,
-                             query_types = query_types,
-                             type_distributions = type_distributions) |>
+  estimands <- get_estimands(
+    jobs = jobs,
+    given_types = given_types,
+    query_types = query_types,
+    type_distributions = type_distributions
+  ) |>
     as.data.frame()
 
   ## prepare output
@@ -296,14 +312,16 @@ query_distribution <- function(model,
 #'
 #' query_model(
 #'   models,
-#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   query = list(ATE = "Y[X=1] - Y[X=0]",
+#'                Share_positive = "Y[X=1] > Y[X=0]"),
 #'   given = c(TRUE,  "Y==1 & X==1"),
 #'   using = c("parameters", "priors"),
 #'   expand_grid = FALSE)
 #'
 #' query_model(
 #'   models,
-#'   query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+#'   query = list(ATE = "Y[X=1] - Y[X=0]",
+#'                Share_positive = "Y[X=1] > Y[X=0]"),
 #'   given = c(TRUE,  "Y==1 & X==1"),
 #'   using = c("parameters", "priors"),
 #'   expand_grid = TRUE)
@@ -327,54 +345,58 @@ query_model <- function(model,
                         n_draws = 4000,
                         expand_grid = FALSE,
                         case_level = FALSE,
-                        query = NULL) {
-
+                        query = NULL,
+                        cred_low  = 0.025,
+                        cred_high  = 0.975) {
   # handle global variables
   query_name <- NULL
 
   # if single model passed to function place it in a list
-  if(is(model, "causal_model")) {
+  if (is(model, "causal_model")) {
     model <- list(model)
   }
 
   ## check arguments
-  if(!is.null(query) & !is.null(queries)) {
+  if (!is.null(query) & !is.null(queries)) {
     stop("Please provide either queries or query.")
   }
 
-  if(!is.null(query)) {
+  if (!is.null(query)) {
     queries <- query
   }
 
-  if((!is.null(parameters)) && (!is.list(parameters))) {
+  if ((!is.null(parameters)) && (!is.list(parameters))) {
     stop("Please specify parameters as a list of parameter vectors.")
   }
 
-  if((!is.null(parameters)) && (length(model) != length(parameters))) {
+  if ((!is.null(parameters)) &&
+      (length(model) != length(parameters))) {
     stop("Please specify parameters for each model.")
   }
 
   # check that parameters are specified for each model + named
-  args_checked <- check_args(model = model,
-                             using = unlist(using),
-                             given = unlist(given),
-                             queries = queries,
-                             case_level = case_level,
-                             fun = "query_model")
+  args_checked <- check_args(
+    model = model,
+    using = unlist(using),
+    given = unlist(given),
+    queries = queries,
+    case_level = case_level,
+    fun = "query_model"
+  )
 
   given <- args_checked$given
   using <- args_checked$using
 
   ## generate required data structures
   # generate model names
-  if(!is.null(names(model))) {
+  if (!is.null(names(model))) {
     model_names <- names(model)
   } else {
     model_names <- paste("model", 1:length(model), sep = "_")
     names(model) <- model_names
   }
 
-  if(!is.null(parameters)) {
+  if (!is.null(parameters)) {
     names(parameters) <- model_names
   }
 
@@ -392,6 +414,7 @@ query_model <- function(model,
   realisations <- lapply(model, function(m) {
     realise_outcomes(model = m)
   })
+  
   names(realisations) <- model_names
 
   # prevent bugs from query helpers
@@ -399,14 +422,21 @@ query_model <- function(model,
   queries <- vapply(queries, as.character, character(1))
 
   # create jobs
-  if(expand_grid) {
-    jobs <- expand.grid(model_names,
-                        unname(unlist(using)),
-                        unname(unlist(given)),
-                        query_names,
-                        unname(unlist(case_level)),
-                        stringsAsFactors = FALSE)
-    names(jobs) <- c("model_names","using","given","query_name","case_level")
+  if (expand_grid) {
+    jobs <- expand.grid(
+      model_names,
+      unname(unlist(using)),
+      unname(unlist(given)),
+      query_names,
+      unname(unlist(case_level)),
+      stringsAsFactors = FALSE
+    )
+    names(jobs) <-
+      c("model_names",
+        "using",
+        "given",
+        "query_name",
+        "case_level")
   } else {
     jobs <- lapply(model_names, function(m) {
       data.frame(
@@ -415,39 +445,48 @@ query_model <- function(model,
         given = unname(unlist(given)),
         query_name = query_names,
         case_level = unname(unlist(case_level)),
-        stringsAsFactors = FALSE)
+        stringsAsFactors = FALSE
+      )
     }) |>
       dplyr::bind_rows()
   }
 
   # merge queries onto jobs
   jobs$queries <- queries[jobs$query_name]
-  if(no_query_names) {
+  if (no_query_names) {
     jobs$query_name <- jobs$queries
   }
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
-  given_types <- queries_to_types(jobs = jobs,
-                                  model = model,
-                                  query_col = "given",
-                                  realisations = realisations)
+  given_types <- queries_to_types(
+    jobs = jobs,
+    model = model,
+    query_col = "given",
+    realisations = realisations
+  )
   # handle queries
-  query_types <- queries_to_types(jobs = jobs,
-                                  model = model,
-                                  query_col = "queries",
-                                  realisations = realisations)
+  query_types <- queries_to_types(
+    jobs = jobs,
+    model = model,
+    query_col = "queries",
+    realisations = realisations
+  )
   # handle type distributions
-  type_distributions <- get_type_distributions(jobs = jobs,
-                                               model = model,
-                                               n_draws = n_draws,
-                                               parameters = parameters)
+  type_distributions <- get_type_distributions(
+    jobs = jobs,
+    model = model,
+    n_draws = n_draws,
+    parameters = parameters
+  )
 
   ## get estimands
-  estimands <- get_estimands(jobs = jobs,
-                             given_types = given_types,
-                             query_types = query_types,
-                             type_distributions = type_distributions)
+  estimands <- get_estimands(
+    jobs = jobs,
+    given_types = given_types,
+    query_types = query_types,
+    type_distributions = type_distributions
+  )
 
   # compute statistics
   if (is.null(stats)) {
@@ -473,20 +512,21 @@ query_model <- function(model,
     lapply(estimands, function(e)
       sapply(stats, function(s)
         s(e)) |> t())
-
+             
   estimands <- as.data.frame(do.call(rbind, estimands))
 
   ## prepare output
   query_id <- jobs |>
     dplyr::select(model_names, query_name, given, using, case_level) |>
-    dplyr::mutate(given = ifelse(given == "ALL","-",given))
+    dplyr::mutate(given = ifelse(given == "ALL", "-", given))
 
-  colnames(query_id) <- c("model","query","given","using","case_level")
+  colnames(query_id) <-
+    c("model", "query", "given", "using", "case_level")
 
   estimands <- cbind(query_id, estimands)
 
-  if(length(model) == 1) {
-    estimands <- estimands[,colnames(estimands) != "model"]
+  if (length(model) == 1) {
+    estimands <- estimands[, colnames(estimands) != "model"]
   }
 
   return(estimands)
@@ -504,23 +544,38 @@ query_model <- function(model,
 #' @return list of altered arguments
 #' @keywords internal
 
-check_args <- function(model, using, given, queries, case_level, fun) {
-  lapply(model, function(m) is_a_model(m))
+check_args <-
+  function(model,
+           using,
+           given,
+           queries,
+           case_level,
+           fun) {
+    lapply(model, function(m)
+      is_a_model(m))
 
-  using[using == "posterior"] <- "posteriors"
-  using[using == "prior"] <- "priors"
+    using[using == "posterior"] <- "posteriors"
+    using[using == "prior"] <- "priors"
 
-  if((fun == "query_distribution") && is.null(given)) {
-    given <- rep("ALL", length(queries))
-  }
+    if ((fun == "query_distribution") && is.null(given)) {
+      given <- rep("ALL", length(queries))
+    }
 
-  if((fun == "query_model") && is.null(given)) {
-    given <- "ALL"
-  }
+    if ((fun == "query_model") && is.null(given)) {
+      given <- "ALL"
+    }
 
-  if(is.logical(given)) {
-    given <- as.character(given)
-  }
+    if (is.logical(given)) {
+      given <- as.character(given)
+    }
+
+    if (!is.null(given) && !is.character(given)) {
+      stop(
+        "`given` must be a vector of strings specifying given statements
+         or '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' for
+        no givens."
+      )
+    }
 
   if (!is.null(given) && !is.character(given)) {
     stop(
@@ -560,16 +615,12 @@ check_args <- function(model, using, given, queries, case_level, fun) {
                      'NONE',
                      'TRUE')] <- "ALL"
 
-  if((fun == "query_distribution") && (length(using) > 1)) {
-    stop("You can only specify a single value for the `using` argument.")
-  }
+    if ((fun == "query_distribution") && (length(case_level) > 1)) {
+      stop("You can only specify a single value for the `case_level` argument.")
+    }
 
-  if((fun == "query_distribution") && (length(case_level) > 1)) {
-    stop("You can only specify a single value for the `case_level` argument.")
+    return(list(given = given, using = using))
   }
-
-  return(list(given = given, using = using))
-}
 
 
 #' helper to get types from queries
@@ -655,10 +706,9 @@ get_type_distributions <- function(jobs,
                                using = using_i,
                                P = model[[model_i]]$P)
     }
+    unique_jobs$type_distribution <- distributions
+    return(unique_jobs)
   }
-  unique_jobs$type_distribution <- distributions
-  return(unique_jobs)
-}
 
 #' helper to get estimands
 #'
@@ -720,9 +770,7 @@ get_estimands <- function(jobs,
             mean(apply(type_distribution[given, , drop = FALSE], 2, sum))
         }
       }
+      estimands[[i]] <- as.vector(unlist(estimand))
     }
-    estimands[[i]] <- as.vector(unlist(estimand))
+    return(estimands)
   }
-  return(estimands)
-}
-

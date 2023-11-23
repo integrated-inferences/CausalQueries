@@ -106,19 +106,35 @@ testthat::test_that(
 	}
 )
 
+
+
 testthat::test_that(
 
-	desc = "include_vars",
+  desc = "is_a_model",
 
-	code = {
+  code = {
+    model_1 <- model_2 <-  make_model("X->Y")
+    model_2$dag <- NULL
+    model_3 <- "THIS"
 
-		model <- make_model("X->Y")
-		expect_true(CausalQueries:::includes_var("X", "X==1"))
+    expect_no_error(CausalQueries:::is_a_model(model_1))
+    expect_error(CausalQueries:::is_a_model(model_2))
+    expect_error(CausalQueries:::is_a_model(model_3))
 
-		expect_true(!(CausalQueries:::includes_var("Y", "X==1")))
-		a <- CausalQueries:::var_in_query(model, "X==1")
-
-		expect_true(a == "X")
-	}
+  }
 )
+
+
+testthat::test_that(
+  desc = "check_query",
+  code = {
+    query =
+    expect_no_error(CausalQueries:::check_query("D[C=B[A=1]] == 1"))
+    expect_warning(CausalQueries:::check_query("D[C=B[A=1] == 1"))
+  }
+)
+
+
+
+
 

@@ -14,7 +14,9 @@ query_model(
   n_draws = 4000,
   expand_grid = FALSE,
   case_level = FALSE,
-  query = NULL
+  query = NULL,
+  cred_low = 0.025,
+  cred_high = 0.975
 )
 }
 \arguments{
@@ -49,6 +51,10 @@ separately. Defaults to FALSE.}
 query for a case.}
 
 \item{query}{alias for queries}
+
+\item{cred_low}{lower credibility value: defaults to 0.025}
+
+\item{cred_high}{upper credibility value: defaults to 0.975}
 }
 \value{
 A \code{DataFrame} with columns Model, Query, Given and Using
@@ -79,14 +85,16 @@ models <- list(
 
 query_model(
   models,
-  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
   given = c(TRUE,  "Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = FALSE)
 
 query_model(
   models,
-  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
   given = c(TRUE,  "Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = TRUE)

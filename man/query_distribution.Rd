@@ -147,4 +147,5 @@ model <- make_model("X -> Y") \%>\%
 
  mean(distribution$QG)/mean(distribution$G)
 }
+
 }

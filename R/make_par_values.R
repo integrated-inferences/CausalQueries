@@ -267,7 +267,7 @@ make_par_values <- function(model,
 }
 
 
-#' make_par_values
+#' make_par_values_stops
 #'
 #' helper to remove stops and reduce complexity of make_par_values
 #'

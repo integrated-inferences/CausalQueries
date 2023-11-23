@@ -33,6 +33,7 @@ realization of parameters
 \donttest{
 model <- make_model('X -> Y')
 get_event_prob(model = model)
+get_event_prob(model = model, given = "X==1")
 get_event_prob(model = model, parameters = rep(1, 6))
 get_event_prob(model = model, parameters = 1:6)
 }

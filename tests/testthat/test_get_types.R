@@ -16,7 +16,7 @@ testthat::test_that(
 		expect_error(map_query_to_causal_type(model, query), "Please specify a query of length 1L.")
 		query <- "(Y[Z = .]==1)"
 		expect_error(map_query_to_causal_type(model, query), "Variable Z is not part of the model.")
-		query <- "(Y[Z = . == 1)"
+		query <- "(Y[)"
 		expect_error(map_query_to_causal_type(model, query),"Either '[' or ']' missing.", fixed = TRUE)
 		query <- "(Y[] == 1)"
 		expect_error(map_query_to_causal_type(model, query))

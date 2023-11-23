@@ -11,11 +11,13 @@
 #' data  <-  collapse_data(make_data(model, n = 6), model)
 #' CausalQueries:::prep_stan_data(model, data)
 #'
-#' model <- make_model('X->Y') %>% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
+#' model <- make_model('X->Y') |>
+#'   set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 #' data  <-  collapse_data(make_data(model, n = 6), model)
 #' CausalQueries:::prep_stan_data(model, data)
 #' }
 #'
+
 prep_stan_data <- function(model,
                            data,
                            keep_transformed = TRUE,
@@ -39,6 +41,7 @@ prep_stan_data <- function(model,
     names(l_starts) <- names(l_ends)
 
     # 2 Node set handlers
+  i <- NULL
     nodes_sets <- model$parameters_df %>%
       dplyr::mutate(i = 1:n()) %>%
       dplyr::group_by(node) %>%
@@ -56,10 +59,12 @@ prep_stan_data <- function(model,
     # 2 Data parsing: allowing for censored types
     data <- data[!c(data$event %in% censored_types), ]
 
-    E <- data.frame(
-      (get_data_families(model, mapping_only = TRUE))
-      )[data$event,] |>
-      as.matrix()
+    data_families <-
+      model |>
+      get_data_families(mapping_only = TRUE)|>
+      data.frame()
+
+    E <- data_families[data$event,] |> as.matrix()
 
     strategies <- data$strategy
     n_strategies <- length(unique(strategies))

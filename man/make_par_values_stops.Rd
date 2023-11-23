@@ -66,4 +66,6 @@ set probabilities sum to 1.}
 \description{
 helper to remove stops and reduce complexity of make_par_values
 }
+
 \keyword{internal}
+

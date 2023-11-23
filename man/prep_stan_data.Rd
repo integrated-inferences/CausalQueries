@@ -25,7 +25,8 @@ model <- make_model('X->Y')
 data  <-  collapse_data(make_data(model, n = 6), model)
 CausalQueries:::prep_stan_data(model, data)
 
-model <- make_model('X->Y') \%>\% set_confound(list(X = 'Y[X=1]>Y[X=0]'))
+model <- make_model('X->Y') |>
+  set_confound(list(X = 'Y[X=1]>Y[X=0]'))
 data  <-  collapse_data(make_data(model, n = 6), model)
 CausalQueries:::prep_stan_data(model, data)
 }
