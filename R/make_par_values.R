@@ -157,12 +157,11 @@ make_par_values <- function(model,
     # reorder new parameter values according to the
     # parameter order in parameters_df
     param_df <- model$parameters_df
-    names <- sapply(commands, function(i) {
+    names <- vapply(commands, function(i) {
       eval(parse(text = paste(
         "param_df[", i, ",][['param_names']]"
       )))
-    }, simplify = FALSE) |>
-      unlist()
+    }, character(1))
 
 
     # warn if conditions are under-specified

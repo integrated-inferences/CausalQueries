@@ -167,8 +167,11 @@ make_model <- function(statement,
 
     parents_df <-
       data.frame(node = nodes, root = nodes %in% exog_node) |>
-      mutate(parents = sapply(node, function(n)
-        nrow(dag %>% filter(children == n))))
+      dplyr::mutate(parents = vapply(node, function(n) {
+        dag |>
+          dplyr::filter(children == n) |>
+          nrow()
+      }, numeric(1)))
 
     # Model is a list
     model <-
@@ -251,13 +254,15 @@ make_model <- function(statement,
     if (any(x$e == "<->")) {
       confounds <- NULL
 
-      z  <- x %>% dplyr::filter(e == "<->") %>% dplyr::select(v, w)
+      z  <- x |>
+        dplyr::filter(e == "<->") |>
+        dplyr::select(v, w)
       z$v <- as.character(z$v)
       z$w <- as.character(z$w)
 
       # Reorder by reverse causal order (thus in X -> Y we have
       # type_Y conditional on type_X)
-      for (i in 1:nrow(z)) {
+      for (i in seq_len(nrow(z))) {
         z[i, ] <- rev(nodes[nodes %in% sapply(z[i, ], as.character)])
       }
       # Generate confounds list
@@ -296,53 +301,54 @@ summary.causal_model <- function(object, ...) {
 }
 
 #' @export
-print.summary.causal_model <- function(x,  ...){
+print.summary.causal_model <- function(x,  ...) {
+  cat("\nStatement: \n")
+  print(x$statement)
+  cat("\nDAG: \n")
+  print(x$dag)
+  cat("\n ------------------------------------------------------------------\n")
+  cat("\nNodal types: \n")
 
-	cat("\nStatement: \n")
-	print(x$statement)
-	cat("\nDAG: \n")
-	print(x$dag)
-	cat("\n ------------------------------------------------------------------\n")
-	cat("\nNodal types: \n")
+  nodal_types <- get_nodal_types(x)
+  nodes <- x$nodes
 
-	nodal_types <- get_nodal_types(x)
-		nodes <- x$nodes
-		sapply(nodes, function(n){
-			nt <- nodal_types[[n]]
-			interpret <- attr(nodal_types, "interpret")[[n]]
-			stop_at <- min(length(nt), 16)
-			cat(paste0("$", n,"\n"))
+  for (n in nodes) {
+    nt <- nodal_types[[n]]
+    interpret <- attr(nodal_types, "interpret")[[n]]
+    stop_at <- min(length(nt), 16)
+    cat(paste0("$", n, "\n"))
 
-			cat(paste0(nt[1:stop_at], collapse = "  ") )
+    cat(paste0(nt[1:stop_at], collapse = "  "))
 
-			if(stop_at != length(nt)) {
-			  cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
-			}
-			cat("\n\n")
-			print(interpret)
-			cat("\n")
-		})
-		cat("\nNumber of types by node\n")
+    if (stop_at != length(nt)) {
+      cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
+    }
+    cat("\n\n")
+    print(interpret)
+    cat("\n")
+  }
 
-		print(sapply(nodal_types , length, USE.NAMES = TRUE))
+  cat("\nNumber of types by node\n")
+
+  print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
 
 
-  if(!is.null(x$causal_types)){
-  		cat("\nNumber of unit types:")
-  		cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
-	}
+  if (!is.null(x$causal_types)) {
+    cat("\nNumber of unit types:")
+    cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+  }
 
-	if(!is.null(attr(x,"restrictions"))){
-		restrictions <- attr(x,"restrictions")
-		cat("\n ----------------------------------------------------------------\n")
-		cat("\nRestrictions: \n")
-		sapply(x$nodes, function(node){
-			cat(paste0(node,
-			           ": ",
-			           length(restrictions[[node]]),
-			           " restricted types \n"))
-		})
-	}
+  if (!is.null(attr(x, "restrictions"))) {
+    restrictions <- attr(x, "restrictions")
+    cat("\n ----------------------------------------------------------------\n")
+    cat("\nRestrictions: \n")
+    for (node in x$nodes) {
+      cat(paste0(node,
+                 ": ",
+                 length(restrictions[[node]]),
+                 " restricted types \n"))
+    }
+  }
 }
 
 
@@ -357,16 +363,16 @@ print.summary.causal_model <- function(x,  ...){
 make_parameters_df <- function(nodal_types){
   pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
                     nodal_type = nodal_types %>% unlist) |>
-    mutate(param_set = node,
+    dplyr::mutate(param_set = node,
            given = "",
            priors = 1,
            param_names = paste0(node, ".", nodal_type)) |>
-    group_by(param_set) |>
-    mutate(param_value = 1/n(), gen =  cur_group_id()) |>
-    ungroup() |>
-    mutate(gen = match(node, names(nodal_types))) |>
-    select(param_names, node, gen, param_set, nodal_type,
-           given, param_value, priors)
+    dplyr::group_by(param_set) |>
+    dplyr::mutate(param_value = 1/n(), gen =  cur_group_id()) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(gen = match(node, names(nodal_types))) |>
+    dplyr::select(param_names, node, gen, param_set, nodal_type,
+                  given, param_value, priors)
 
   return(pdf)
 }

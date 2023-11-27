@@ -85,12 +85,13 @@ make_parmap <- function(model, A = NULL, P = NULL) {
 #' @keywords internal
 
 data_to_data <- function(M, A){
-    dnames <- colnames(A)
-    out <- sapply(colnames(M), function(j) dnames %in% j )*1
-    rownames(out) <- dnames
-    out %>% t
+  dnames <- colnames(A)
+  out <- vapply(colnames(M), function(j) {
+    as.integer(dnames %in% j)
+  }, numeric(length(dnames)))
+  rownames(out) <- dnames
+  t(out)
 }
-
 
 
 #' Get parmap: a matrix mapping from parameters to data types
@@ -104,7 +105,9 @@ data_to_data <- function(M, A){
 #' get_parmap(model = make_model('X->Y'))
 #'
 get_parmap <- function(model, A = NULL, P = NULL){
-    if(!is.null(model$parmap)) return(model$parmap)
+    if(!is.null(model$parmap)) {
+      return(model$parmap)
+    }
     make_parmap(model, A, P)
 }
 
