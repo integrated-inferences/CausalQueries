@@ -285,7 +285,8 @@ query_distribution <- function(model,
 #'   posteriors or parameters.
 #' @param stats Functions to be applied to estimand distribution.
 #'   If NULL, defaults to mean, standard deviation,
-#'   and 95\% confidence interval.
+#'   and 95\% confidence interval. Functions should return a single numeric
+#'   value.
 #' @param n_draws An integer. Number of draws.
 #' @param expand_grid Logical. If \code{TRUE} then all combinations of
 #'   provided lists are examined. If not then each list is cycled through
@@ -392,7 +393,7 @@ query_model <- function(model,
   if (!is.null(names(model))) {
     model_names <- names(model)
   } else {
-    model_names <- paste("model", 1:length(model), sep = "_")
+    model_names <- paste("model", seq_along(model), sep = "_")
     names(model) <- model_names
   }
 
@@ -406,7 +407,7 @@ query_model <- function(model,
   no_query_names <- is.null(query_names)
 
   if(no_query_names) {
-    query_names <- paste("Q", 1:length(queries), sep = "")
+    query_names <- paste("Q", seq_along(queries), sep = "")
     names(queries) <- query_names
   }
 
@@ -509,9 +510,12 @@ query_model <- function(model,
   }
 
   estimands <-
-    lapply(estimands, function(e)
-      sapply(stats, function(s)
-        s(e)) |> t())
+    lapply(estimands, function(e) {
+      vapply(stats, function(s) {
+        s(e)
+      }, numeric(1)) |>
+        t()
+    })
 
   estimands <- as.data.frame(do.call(rbind, estimands))
 
@@ -551,8 +555,10 @@ check_args <-
            queries,
            case_level,
            fun) {
-    lapply(model, function(m)
-      is_a_model(m))
+
+    lapply(model, function(m) {
+      is_a_model(m)
+    })
 
     using[using == "posterior"] <- "posteriors"
     using[using == "prior"] <- "priors"
