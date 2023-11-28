@@ -15,8 +15,7 @@ query_model(
   expand_grid = FALSE,
   case_level = FALSE,
   query = NULL,
-  cred_low = 0.025,
-  cred_high = 0.975
+  cred = 95
 )
 }
 \arguments{
@@ -52,6 +51,8 @@ separately. Defaults to FALSE.}
 query for a case.}
 
 \item{query}{alias for queries}
+
+\item{cred}{size of the credible interval ranging between 0 and 100}
 }
 \value{
 A \code{DataFrame} with columns Model, Query, Given and Using

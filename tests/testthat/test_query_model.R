@@ -63,8 +63,7 @@ testthat::test_that(
 		  model,
 		  query = "Y[X=1] - Y[X=0]",
 		  using = "posteriors",
-		  cred_low = .01,
-		  cred_high = .99)
+		  cred = 98)
 
 		expect_true(is.data.frame(q))
 		expect_true(q$cred.low > -0.55 & q$cred.low < -0.45)

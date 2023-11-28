@@ -77,13 +77,16 @@ model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
 
 #altering values using \code{alter_at}
 CausalQueries:::make_par_values(model = model,
-x = c(0.5,0.25),
-alter_at = "node == 'Y' & nodal_type \%in\% c('00','01') & given == 'X.0'")
+                                x = c(0.5,0.25),
+                                alter_at = paste(
+                                  "node == 'Y' &",
+                                  "nodal_type \%in\% c('00','01') &",
+                                  "given == 'X.0'"))
 
 #altering values using \code{param_names}
 CausalQueries:::make_par_values(model = model,
-x = c(0.5,0.25),
-param_names = c("Y.10_X.0","Y.10_X.1"))
+                                x = c(0.5,0.25),
+                                param_names = c("Y.10_X.0","Y.10_X.1"))
 
 #altering values using \code{statement}
 CausalQueries:::make_par_values(model = model,

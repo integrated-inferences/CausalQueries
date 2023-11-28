@@ -294,6 +294,7 @@ query_distribution <- function(model,
 #' @param case_level Logical. If TRUE estimates the probability of the
 #'   query for a case.
 #' @param query alias for queries
+#' @param cred size of the credible interval ranging between 0 and 100
 #' @return A \code{DataFrame} with columns Model, Query, Given and Using
 #'   defined by corresponding input values. Further columns are generated
 #'   as specified in \code{stats}.
@@ -347,8 +348,7 @@ query_model <- function(model,
                         expand_grid = FALSE,
                         case_level = FALSE,
                         query = NULL,
-                        cred_low  = 0.025,
-                        cred_high  = 0.975) {
+                        cred = 95) {
   # handle global variables
   query_name <- NULL
 
@@ -494,16 +494,17 @@ query_model <- function(model,
     if (!is.null(parameters)) {
       stats <- c(mean = mean)
     } else {
+      cred <- pmax(pmin(cred[1], 100), 0)
       stats <- c(
         mean = mean,
         sd = sd,
         cred.low = function(x)
           unname(stats::quantile(
-            x, probs = cred_low, na.rm = TRUE
+            x, probs = ((100 - cred) / 200), na.rm = TRUE
           )),
         cred.high = function(x)
           unname(stats::quantile(
-            x, probs = cred_high, na.rm = TRUE
+            x, probs = (1 - (100 - cred) / 200), na.rm = TRUE
           ))
       )
     }

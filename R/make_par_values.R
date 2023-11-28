@@ -43,13 +43,16 @@
 #'
 #' #altering values using \code{alter_at}
 #' CausalQueries:::make_par_values(model = model,
-#' x = c(0.5,0.25),
-#' alter_at = "node == 'Y' & nodal_type %in% c('00','01') & given == 'X.0'")
+#'                                 x = c(0.5,0.25),
+#'                                 alter_at = paste(
+#'                                   "node == 'Y' &",
+#'                                   "nodal_type %in% c('00','01') &",
+#'                                   "given == 'X.0'"))
 #'
 #' #altering values using \code{param_names}
 #' CausalQueries:::make_par_values(model = model,
-#' x = c(0.5,0.25),
-#' param_names = c("Y.10_X.0","Y.10_X.1"))
+#'                                 x = c(0.5,0.25),
+#'                                 param_names = c("Y.10_X.0","Y.10_X.1"))
 #'
 #' #altering values using \code{statement}
 #' CausalQueries:::make_par_values(model = model,
@@ -160,11 +163,12 @@ make_par_values <- function(model,
     # reorder new parameter values according to the
     # parameter order in parameters_df
     param_df <- model$parameters_df
-    names <- vapply(commands, function(i) {
+    names <- lapply(commands, function(i) {
       eval(parse(text = paste(
         "param_df[", i, ",][['param_names']]"
       )))
-    }, character(1))
+    }) |>
+      unlist()
 
 
     # warn if conditions are under-specified
@@ -184,11 +188,9 @@ make_par_values <- function(model,
     # forgive user when specifying across
     if (all(grepl("_", names))) {
       if ((!is.na(statement) &&
-           (
-             !grepl("param_set", statement) ||
-             !grepl("given", statement)
-           )) |
-          (all(is.na(param_set)) && all(is.na(given)))) {
+           (!grepl("param_set", statement) || !grepl("given", statement))) |
+           (all(is.na(param_set)) && all(is.na(given)))
+          ) {
         warning(
           paste(
             "You are altering parameters on confounded nodes.",
