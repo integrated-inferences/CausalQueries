@@ -13,7 +13,9 @@ testthat::test_that(
 	code = {
 		object <- NULL
 		user_dots <- list(control = list(user_adapt_delta = 10))
-		out <- CausalQueries:::set_sampling_args(object = object, user_dots = user_dots, user_adapt_delta = 10)
+		out <- CausalQueries:::set_sampling_args(object = object,
+		                                         user_dots = user_dots,
+		                                         user_adapt_delta = 10)
 		expect_equal(out$control$adapt_delta, 10)
 	}
 )

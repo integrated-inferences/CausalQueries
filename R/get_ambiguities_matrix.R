@@ -65,7 +65,7 @@ make_ambiguities_matrix <- function(model) {
     # 4. Generate A
     A <- vapply(seq_len(nrow(types)), function(i) {
       (types$revealed_data[i] == fundamental_data) * 1
-    }, numeric(1))
+    }, numeric(length(fundamental_data)))
     A <- matrix(A, ncol = length(type_labels))
     colnames(A) <- type_labels
     rownames(A) <- data_names

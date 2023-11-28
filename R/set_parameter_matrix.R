@@ -127,7 +127,7 @@ print.summary.parameter_matrix <- function(x, ...) {
 #' }
 
 causal_type_names <- function(causal_types) {
-  for (j in (1:ncol(causal_types))) {
+  for (j in seq_len(ncol(causal_types))) {
     causal_types[, j] <-
       paste0(names(causal_types)[j], causal_types[, j])
   }

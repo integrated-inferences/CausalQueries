@@ -72,16 +72,21 @@ st_within <- function(x,
     }
 
     # find the closest punctuation or space
-    starts <- sapply(stops, function(s) {
+    starts <- vapply(stops, function(s) {
       dif <- s - puncts
       dif <- dif[dif > 0]
-      ifelse(length(dif) == 0, ret <-
-               NA, ret <- puncts[which(dif == min(dif))])
+      ifelse(length(dif) == 0,
+             ret <- NA,
+             ret <- puncts[which(dif == min(dif))])
       return(ret)
-    })
+    }, numeric(1))
+
     drop <- is.na(starts) | is.na(stops)
-    sapply(1:length(starts), function(i) if (!drop[i])
-        substr(x, starts[i] + rm_left, stops[i] + rm_right))
+    sapply(seq_along(starts), function(i) {
+      if (!drop[i]) {
+        substr(x, starts[i] + rm_left, stops[i] + rm_right)
+      }
+    })
 }
 
 #' Recursive substitution
@@ -168,28 +173,29 @@ interpret_type <- function(model,
     if (is.null(position)) {
       position <-
         lapply(types, function(i)
-          ifelse(length(i) == 0, return(NA), return(1:nrow(i))))
+          ifelse(length(i) == 0, return(NA), return(seq_len(nrow(i)))))
     } else {
       if (!all(names(position) %in% names(types))) {
         stop("One or more names in `position` not found in model.")
       }
     }
 
-    interpret <- lapply(1:length(position), function(i) {
+    interpret <- lapply(seq_along(position), function(i) {
       positions <- position[[i]]
       type <- types[[names(position)[i]]]
       pos_elements <- type[positions,]
 
       if (!all(is.na(positions))) {
         interpret <-
-          sapply(1:nrow(pos_elements), function(row)
+          vapply(seq_len(nrow(pos_elements)), function(row)
             paste0(parents[[names(position)[i]]],
-                   " = ", pos_elements[row,], collapse = " & "))
+                   " = ", pos_elements[row,], collapse = " & "),
+            character(1))
         interpret <-
           paste0(paste0(c(names(position)[i], " | "), collapse = ""), interpret)
         # Create 'Y*[*]**'-type representations
         asterisks <- rep("*", nrow(type))
-        asterisks_ <- sapply(positions, function(s) {
+        asterisks_ <- vapply(positions, function(s) {
           if (s < length(asterisks)) {
             if (s == 1) {
               paste0(c("[*]", asterisks[(s + 1):length(asterisks)]),
@@ -202,7 +208,7 @@ interpret_type <- function(model,
           } else {
             paste0(c(asterisks[1:(s - 1)], "[*]"), collapse = "")
           }
-        })
+        }, character(1))
         display <- paste0(names(position)[i], asterisks_)
       } else {
         interpret <-
@@ -221,22 +227,22 @@ interpret_type <- function(model,
     names(interpret) <- names(position)
 
     if (!is.null(condition)) {
-        conditions <- sapply(condition, clean_condition)
+        conditions <- vapply(condition, clean_condition, character(1))
         interpret_ <- lapply(interpret, function(i) {
-            slct <- sapply(conditions, function(cond) {
+            slct <- vapply(conditions, function(cond) {
                 a <- trimws(strsplit(cond, "&|\\|")[[1]])
-                sapply(i$interpretation, function(bi) {
+                vapply(i$interpretation, function(bi) {
                   b <- trimws(strsplit(bi, "&|\\|")[[1]])
                   all(a %in% b)
-                })
-            })
+                }, logical(1))
+            }, logical(length(i$interpretation)))
             i <- i[rowSums(slct) > 0, ]
             if (nrow(i) == 0) {
               i <- NULL
             }
             i
         })
-        interpret <- interpret_[!sapply(interpret_, is.null)]
+        interpret <- interpret_[!vapply(interpret_, is.null, logical(1))]
     }
 
     return(interpret)
@@ -267,29 +273,33 @@ interpret_type <- function(model,
 #' # Expressions not requiring expansion are allowed
 #' expand_wildcard('(Y[X=1])')
 
-expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
+expand_wildcard <- function(to_expand,
+                            join_by = "|",
+                            verbose = TRUE) {
     orig <- st_within(to_expand, left = "\\(", right = "\\)", rm_left = 1)
     if (is.list(orig)) {
         if (is.null(orig[[1]])){
             message(
               paste("No parentheses indicated. Global expansion assumed.",
-                    "See expand_wildcard.")
-              )
-        orig <- to_expand}
+                    "See expand_wildcard")
+            )
+        orig <- to_expand
+      }
     }
     skeleton <- gsub_many(to_expand,
                           orig,
-                          paste0("%expand%", 1:length(orig)),
+                          paste0("%expand%", seq_along(orig)),
                           fixed = TRUE)
     expand_it <- grepl("\\.", orig)
 
-    expanded_types <- lapply(1:length(orig), function(i) {
+    expanded_types <- lapply(seq_along(orig), function(i) {
         if (!expand_it[i])
             return(orig[i]) else {
             exp_types <- strsplit(orig[i], ".", fixed = TRUE)[[1]]
             a <- gregexpr("\\w{1}\\s*(?=(=\\s*\\.){1})", orig[i], perl = TRUE)
             matcha <- trimws(unlist(regmatches(orig[i], a)))
-            rep_n <- sapply(unique(matcha), function(e) sum(matcha == e))
+            rep_n <- vapply(unique(matcha), function(e) sum(matcha == e),
+                            numeric(1))
             n_types <- length(unique(matcha))
             grid <- replicate(n_types, expr(c(0, 1)))
             type_values <- do.call(expand.grid, grid)
@@ -307,18 +317,18 @@ expand_wildcard <- function(to_expand, join_by = "|", verbose = TRUE) {
     })
 
     if (!is.null(join_by)) {
-        oper <- sapply(expanded_types, function(l) {
+        oper <- vapply(expanded_types, function(l) {
             paste0(l, collapse = paste0(" ", join_by, " "))
-        })
+        }, character(1))
 
         oper_return <- gsub_many(skeleton,
-                                 paste0("%expand%", 1:length(orig)),
+                                 paste0("%expand%", seq_along(orig)),
                                  oper)
     } else {
         oper <- do.call(cbind, expanded_types)
         oper_return <- apply(oper, 1, function(i) {
           gsub_many(skeleton,
-                    paste0("%expand%", 1:length(orig)),
+                    paste0("%expand%", seq_along(orig)),
                     i)
         })
     }
@@ -371,13 +381,16 @@ is_a_model <- function(model){
                           "parameters_df" )
   missing_components <- !minimum_components %in% names(model)
 
-  if(!is(model,"causal_model"))
+  if(!is(model,"causal_model")) {
     stop("Argument 'model' must be of class 'causal_model'")
-  if(any(missing_components))
+  }
+
+  if(any(missing_components)) {
     stop(paste(
       "Model doesn't contain",
       paste(minimum_components[missing_components], collapse = ", ")
     ))
+  }
 }
 
 #' Warn about improper query specification and apply fixes
@@ -395,7 +408,7 @@ check_query <- function(query) {
   non_do_warn <- 0
   nest_level <- 0
 
-  for (i in 1:length(query)) {
+  for (i in seq_along(query)) {
     write <- TRUE
 
     if (query[i] == "[") {

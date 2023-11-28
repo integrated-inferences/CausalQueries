@@ -104,7 +104,7 @@ realise_outcomes <- function(model,
 
     # generate parents_list
     parents_list <- as.list(rep(-1,length(parents)))
-    parents_list <- c(parents_list, list((1:length(parents)) - 1))
+    parents_list <- c(parents_list, list((seq_along(parents)) - 1))
     names(parents_list) <- nodes
 
     # get variables to work through
@@ -186,8 +186,9 @@ parents_to_int <- function(parents_list, position_set) {
   out <- parents_list |>
     lapply(function(i) {
       if (length(i) > 0) {
-        sapply(i, function(j)
-          which(j == position_set)) |>
+        vapply(i, function(j) {
+          which(j == position_set)
+        }, numeric(1)) |>
           unname() - 1
       } else {
         -1

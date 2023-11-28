@@ -44,7 +44,8 @@ testthat::test_that(
 
 		q <-query_model(
 		                model,
-		                query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0]"),
+		                query = list(ATE = "Y[X=1] - Y[X=0]",
+		                             Share_positive = "Y[X=1] > Y[X=0]"),
 		                using = c("parameters", "priors", "posteriors"),
 		                expand_grid = TRUE, stats = NULL)
 		expect_true(is.data.frame(q))

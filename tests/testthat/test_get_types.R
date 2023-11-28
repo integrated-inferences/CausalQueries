@@ -13,11 +13,14 @@ testthat::test_that(
 	code = {
 		model <- make_model("X -> M -> Y; X->Y")
 		query <- c("(Y[X = .]==1)", "(Y[X = 0] == 0)")
-		expect_error(map_query_to_causal_type(model, query), "Please specify a query of length 1L.")
+		expect_error(map_query_to_causal_type(model, query),
+		             "Please specify a query of length 1L.")
 		query <- "(Y[Z = .]==1)"
-		expect_error(map_query_to_causal_type(model, query), "Variable Z is not part of the model.")
+		expect_error(map_query_to_causal_type(model, query),
+		             "Variable Z is not part of the model.")
 		query <- "(Y[)"
-		expect_error(map_query_to_causal_type(model, query),"Either '[' or ']' missing.", fixed = TRUE)
+		expect_error(map_query_to_causal_type(model, query),
+		             "Either '[' or ']' missing.", fixed = TRUE)
 		query <- "(Y[] == 1)"
 		expect_error(map_query_to_causal_type(model, query))
 	}

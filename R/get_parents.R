@@ -10,8 +10,10 @@
 #' get_parents(model)
 
 get_parents <- function(model) {
-  sapply(model$nodes, function(j) {
+  parents <- lapply(model$nodes, function(j) {
     paste(model$dag$parent)[paste(model$dag$children) == j]
   })
+  names(parents) <- model$nodes
+  return(parents)
 }
 

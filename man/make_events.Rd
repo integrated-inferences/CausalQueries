@@ -22,7 +22,8 @@ make_events(
 
 \item{n}{An integer. Number of observations.}
 
-\item{w}{A numeric matrix. A `n_parameters x 1` matrix of event probabilities with named rows.}
+\item{w}{A numeric matrix. A `n_parameters x 1` matrix of event
+probabilities with named rows.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
 provided to avoid repeated computation for simulations.}
@@ -34,17 +35,27 @@ provided to avoid repeated computation for simulations.}
 specify (optional). By default, parameters is drawn from
 \code{model$parameters_df}.}
 
-\item{param_type}{A character. String specifying type of parameters to make ('flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw', 'define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character. String specifying type of parameters to make
+'flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw',
+'define. With param_type set to \code{define} use arguments to be passed
+to \code{make_priors}; otherwise \code{flat} sets equal probabilities on
+each nodal type in each parameter set; \code{prior_mean},
+\code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take
+parameters as the means or as draws from the prior or posterior.}
 
-\item{include_strategy}{Logical. Whether to include a 'strategy' vector. Defaults to FALSE. Strategy vector does not vary with full data but expected by some functions.}
+\item{include_strategy}{Logical. Whether to include a 'strategy' vector.
+Defaults to FALSE. Strategy vector does not vary with full data but
+expected by some functions.}
 
-\item{...}{Arguments to be passed to make_priors if param_type == \code{define}}
+\item{...}{Arguments to be passed to make_priors if
+param_type == \code{define}}
 }
 \value{
 A \code{data.frame} of events
 }
 \description{
-Draw \code{n} events given event probabilities. Draws full data only. For incomplete data see
+Draw \code{n} events given event probabilities.
+Draws full data only. For incomplete data see
 \code{\link{make_data}}.
 }
 \examples{

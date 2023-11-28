@@ -130,7 +130,10 @@ make_par_values <- function(model,
   # Provide values unless a distribution is provided
   if (!is.na(distribution)) {
     if (!(distribution %in% c("uniform", "jeffreys", "certainty"))) {
-      stop("distribution should be either 'uniform', 'jeffreys', or 'certainty'.")
+      stop(paste(
+        "distribution should be either",
+        "'uniform', 'jeffreys', or 'certainty'."
+      ))
     }
     x <-
       switch(
@@ -157,12 +160,11 @@ make_par_values <- function(model,
     # reorder new parameter values according to the
     # parameter order in parameters_df
     param_df <- model$parameters_df
-    names <- sapply(commands, function(i) {
+    names <- vapply(commands, function(i) {
       eval(parse(text = paste(
         "param_df[", i, ",][['param_names']]"
       )))
-    }, simplify = FALSE) |>
-      unlist()
+    }, character(1))
 
 
     # warn if conditions are under-specified
@@ -210,7 +212,8 @@ make_par_values <- function(model,
 
     n_vals <- length(x)
 
-    # check if specified number of parameters values matches number of parameters to alter
+    # check if specified number of parameters values matches
+    # number of parameters to alter
     if (length(names) != n_vals) {
       stop(
         paste(
@@ -319,7 +322,12 @@ make_par_values_stops <- function(model,
 
   # check inputs for model, alter, x, distribution
   if (all(!is.na(c(nodal_type, label)))) {
-    stop("cannot define both nodal_type and label simultaniously; use nodal_type only")
+    stop(
+      paste(
+        "cannot define both nodal_type and label simultaniously;",
+        "use nodal_type only"
+      )
+    )
   }
 
   if (!is.na(label)) {
@@ -345,7 +353,12 @@ make_par_values_stops <- function(model,
   }
 
   if (!all(is.na(x)) && !is.numeric(x)) {
-    stop("arguments 'parameters' and 'alphas' must be a numeric vector. No change to values.")
+    stop(
+      paste(
+        "arguments 'parameters' and 'alphas' must be a numeric vector.",
+        "No change to values."
+      )
+    )
   }
 
   if (!all(is.na(x)) && (min(x) < 0)) {
@@ -370,7 +383,10 @@ make_par_values_stops <- function(model,
         list(node, nodal_type, param_set, given, statement, param_names)
       ))) {
     stop(
-      "Specifying alter_at with any of node, nodal_type, param_set, given, statement or param_names is redundant. No change to values."
+      paste(
+        "Specifying alter_at with any of node, nodal_type, param_set,",
+        "given, statement or param_names is redundant. No change to values."
+      )
     )
   }
 
@@ -379,21 +395,35 @@ make_par_values_stops <- function(model,
         node, nodal_type, param_set, given, statement
       )))) {
     stop(
-      "Specifying param_names with any of node, nodal_type, param_set, given or statement is redundant. No change to values."
+      paste(
+        "Specifying param_names with any of node, nodal_type,",
+        "param_set, given or statement is redundant. No change to values."
+      )
     )
   }
 
   if (all(!is.na(list(nodal_type, statement)))) {
-    stop("Specifying both nodal_type and statement is redundant. No change to values.")
+    stop(
+      paste(
+        "Specifying both nodal_type and statement is redundant.",
+        "No change to values."
+      )
+    )
   }
 
   if (all(!is.na(list(node, statement)))) {
-    stop("Specifying both node and statement is redundant. No change to values.")
+    stop(paste(
+      "Specifying both node and statement is redundant.",
+      "No change to values."
+    ))
   }
 
   if (!all(is.na(distribution)) & !all(is.na(x))) {
     stop(
-      "values and distribution cannot be declared at the same time. Try sequentially. No change to values"
+      paste(
+        "values and distribution cannot be declared at the same time.",
+        "Try sequentially. No change to values"
+      )
     )
   }
 

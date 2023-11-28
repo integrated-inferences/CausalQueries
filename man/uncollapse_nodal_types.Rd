@@ -7,7 +7,7 @@
 uncollapse_nodal_types(nodal_types)
 }
 \arguments{
-\item{nodal_types}{A list of nodal types.}
+\item{nodal_types}{A list of nodal types in collapsed form ('01', '11') etc..}
 }
 \value{
 A \code{list} containing nodes with nodal types in data.frame form

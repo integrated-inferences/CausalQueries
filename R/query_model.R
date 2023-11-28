@@ -414,7 +414,7 @@ query_model <- function(model,
   realisations <- lapply(model, function(m) {
     realise_outcomes(model = m)
   })
-  
+
   names(realisations) <- model_names
 
   # prevent bugs from query helpers
@@ -498,11 +498,11 @@ query_model <- function(model,
         sd = sd,
         cred.low = function(x)
           unname(stats::quantile(
-            x, probs = 0.025, na.rm = TRUE
+            x, probs = cred_low, na.rm = TRUE
           )),
         cred.high = function(x)
           unname(stats::quantile(
-            x, probs = 0.975, na.rm = TRUE
+            x, probs = cred_high, na.rm = TRUE
           ))
       )
     }
@@ -512,7 +512,7 @@ query_model <- function(model,
     lapply(estimands, function(e)
       sapply(stats, function(s)
         s(e)) |> t())
-             
+
   estimands <- as.data.frame(do.call(rbind, estimands))
 
   ## prepare output
@@ -706,9 +706,10 @@ get_type_distributions <- function(jobs,
                                using = using_i,
                                P = model[[model_i]]$P)
     }
-    unique_jobs$type_distribution <- distributions
-    return(unique_jobs)
   }
+  unique_jobs$type_distribution <- distributions
+  return(unique_jobs)
+}
 
 #' helper to get estimands
 #'
@@ -719,58 +720,62 @@ get_type_distributions <- function(jobs,
 #' @return a list of estimands
 #' @keywords internal
 
-get_estimands <- function(jobs,
-                          given_types,
-                          query_types,
-                          type_distributions) {
-  estimands <- vector(mode = "list", length = nrow(jobs))
+  get_estimands <- function(jobs,
+                            given_types,
+                            query_types,
+                            type_distributions) {
+    estimands <- vector(mode = "list", length = nrow(jobs))
 
-  for (i in seq_len(nrow(jobs))) {
-    model_name_i <- jobs[i, "model_names"]
-    using_i <- jobs[i, "using"]
-    given_i <- jobs[i, "given"]
-    queries_i <- jobs[i, "queries"]
-    case_level_i <- jobs[i, "case_level"]
+    for (i in seq_len(nrow(jobs))) {
+      model_name_i <- jobs[i, "model_names"]
+      using_i <- jobs[i, "using"]
+      given_i <- jobs[i, "given"]
+      queries_i <- jobs[i, "queries"]
+      case_level_i <- jobs[i, "case_level"]
 
-    x <-
-      query_types[(query_types$model_names == model_name_i &
-                     query_types$queries == queries_i), "type_vec"][[1]]
-    given <-
-      given_types[(given_types$model_names == model_name_i &
-                     given_types$given == given_i), "type_vec"][[1]]
-    type_distribution <-
-      type_distributions[(
-        type_distributions$model_names == model_name_i &
-          type_distributions$using == using_i
-      ), "type_distribution"][[1]]
-    x <- x[given]
+      x <-
+        query_types[(query_types$model_names == model_name_i &
+                       query_types$queries == queries_i), "type_vec"][[1]]
+      given <-
+        given_types[(given_types$model_names == model_name_i &
+                       given_types$given == given_i), "type_vec"][[1]]
+      type_distribution <-
+        type_distributions[(
+          type_distributions$model_names == model_name_i &
+            type_distributions$using == using_i
+        ), "type_distribution"][[1]]
+      x <- x[given]
 
-    if (all(!given)) {
-      estimand <- NA
-      message("No units given. `NA` estimand.")
-    } else {
-      # using parameters
-      if (using_i == "parameters") {
-        # always case level when using parameters
-        estimand <-
-          sum(x * type_distribution[given]) / sum(type_distribution[given])
-      }
-      # using priors or posteriors
-      if (using_i != "parameters") {
-        # population level
-        if (!case_level_i) {
+      if (all(!given)) {
+        estimand <- NA
+        message("No units given. `NA` estimand.")
+      } else {
+        # using parameters
+        if (using_i == "parameters") {
+          # always case level when using parameters
           estimand <-
-            (x %*% type_distribution[given, , drop = FALSE]) /
-            apply(type_distribution[given, , drop = FALSE], 2, sum)
+            sum(x * type_distribution[given]) / sum(type_distribution[given])
         }
-        # case level
-        if (case_level_i) {
-          estimand <-
-            mean(x %*% type_distribution[given, , drop = FALSE]) /
-            mean(apply(type_distribution[given, , drop = FALSE], 2, sum))
+        # using priors or posteriors
+        if (using_i != "parameters") {
+          # population level
+          if (!case_level_i) {
+            estimand <-
+              (x %*% type_distribution[given, , drop = FALSE]) /
+              apply(type_distribution[given, , drop = FALSE], 2, sum)
+          }
+          # case level
+          if (case_level_i) {
+            estimand <-
+              mean(x %*% type_distribution[given, , drop = FALSE]) /
+              mean(apply(type_distribution[given, , drop = FALSE], 2, sum))
+          }
         }
       }
       estimands[[i]] <- as.vector(unlist(estimand))
     }
     return(estimands)
   }
+
+
+

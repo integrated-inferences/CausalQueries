@@ -296,7 +296,7 @@ observe_data <- function(complete_data,
 	  m <- floor(E)  + (runif(1) <  E - floor(E)) # Get best m
 	}
 
-	observed[sample((1:length(sub))[sub], m), nodes_to_observe] <- TRUE
+	observed[sample((seq_along(sub))[sub], m), nodes_to_observe] <- TRUE
 
 	return(observed)
 }

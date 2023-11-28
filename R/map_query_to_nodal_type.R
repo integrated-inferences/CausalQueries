@@ -222,7 +222,7 @@ add_dots <- function(q, model) {
                       missing_parents)
   }
 
-  q
+  return(q)
 }
 
 
@@ -242,9 +242,10 @@ expand_nodal_expression <- function(model,
   w_query <- gsub("\\(|\\)", "", query) %>%
     stringr::str_split(operators) %>%
     unlist() %>%
-    sapply(function(x)
-      trimws(x)) %>%
-    sapply(add_dots, model = model)
+    vapply(function(x) {
+      trimws(x)
+    }, character(1)) %>%
+    vapply(add_dots, model = model, character(1))
   w_query <- gsub(" ", "", w_query)
 
   # Rejoin to complete query
@@ -260,8 +261,7 @@ expand_nodal_expression <- function(model,
     query <- expand_wildcard(query, join_by = join_by, verbose = FALSE)
   }
 
-  # Return
-  query
+  return(query)
 }
 
 #' Helper to turn query into a data expression
@@ -269,7 +269,6 @@ expand_nodal_expression <- function(model,
 #' @return A cleaned query expression
 #' @inheritParams CausalQueries_internal_inherit_params
 query_to_expression <- function(query, node){
-
     query <- gsub("=","==", query)
     query <- gsub("====","==", query)
     query <- gsub(">==",">=", query)
@@ -278,6 +277,6 @@ query_to_expression <- function(query, node){
     query <- gsub("~==","~=", query)
     query <- gsub(","," & ", query)
     query <- gsub("\\]", ", \\]", query)
-    query
+    return(query)
 }
 

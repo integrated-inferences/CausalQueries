@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_par_values.R
 \name{make_par_values_stops}
 \alias{make_par_values_stops}
-\title{make_par_values}
+\title{make_par_values_stops}
 \usage{
 make_par_values_stops(
   model,
@@ -66,6 +66,4 @@ set probabilities sum to 1.}
 \description{
 helper to remove stops and reduce complexity of make_par_values
 }
-
 \keyword{internal}
-

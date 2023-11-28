@@ -15,7 +15,10 @@ te(X, Y)
 A character statement of class \code{statement}
 }
 \description{
-Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
+Generate a statement for (Y(1) - Y(0)). This statement when applied to
+a model returns an element in (1,0,-1) and not a set of cases.
+This is useful for some purposes such as querying a model, but not for
+uses that require a list of types, such as \code{set_restrictions}.
 }
 \examples{
 \donttest{

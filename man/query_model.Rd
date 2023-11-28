@@ -51,10 +51,6 @@ separately. Defaults to FALSE.}
 query for a case.}
 
 \item{query}{alias for queries}
-
-\item{cred_low}{lower credibility value: defaults to 0.025}
-
-\item{cred_high}{upper credibility value: defaults to 0.975}
 }
 \value{
 A \code{DataFrame} with columns Model, Query, Given and Using

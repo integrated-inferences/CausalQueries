@@ -90,18 +90,18 @@ set_confound <- function(model, confound = NULL) {
     ))
   }
 
-
-
   # extract the node from the nodal type name
   node_from_type <- function(type) {
-    sapply(strsplit(type, "\\."), function(x)
-      x[[1]])
+    vapply(strsplit(type, "\\."), function(x) {
+      x[[1]]
+    }, character(1))
   }
 
   # extract the conditions from the nodal type name
-  conditions_from_type <- function(type)
-    sapply(strsplit(type, "_"), function(x)
-      gsub('\\.', '', unique(x)), simplify = FALSE)
+  conditions_from_type <- function(type) {
+    lapply(strsplit(type, "_"), function(x)
+      gsub('\\.', '', unique(x)))
+  }
 
   # Housekeeping
   if (is.null(confound)) {
@@ -109,15 +109,15 @@ set_confound <- function(model, confound = NULL) {
     return(model)
   }
 
-  if (is.null(model$P))
+  if (is.null(model$P)) {
     model <- set_parameter_matrix(model)
+  }
 
   # Turn A <-> B format to lists
-  for (j in 1:length(confound)) {
+  for (j in seq_along(confound)) {
     if (grepl("<->", confound[[j]])) {
-      z <- sapply(strsplit(confound[[j]], "<->"), trimws)
-      z <-
-        rev(model$nodes[model$nodes %in% sapply(z, as.character)])
+      z <- vapply(strsplit(confound[[j]], "<->"), trimws, character(2))
+      z <- rev(model$nodes[model$nodes %in% as.character(z)])
       confound[j] <- as.character(z[2])
       names(confound)[j] <- z[1]
     }
@@ -131,92 +131,97 @@ set_confound <- function(model, confound = NULL) {
            paste(names(confound), "<->", confound, collapse = "; "))
 
 
-  # Expand parameters_df
-  ##################################################################################
+  # Expand parameters_df ------------------------------------------------------
   names_P <- names(model$P)
 
-  for (i in 1:length(confound)) {
+  for (i in seq_along(confound)) {
     from_nodal_types <-
-      model$parameters_df %>%
-      filter(node == confound[i]) %>%
-      mutate(x = paste0(node, ".", nodal_type)) |> pull(x) |> unique()
+      model$parameters_df |>
+      dplyr::filter(node == confound[i]) |>
+      dplyr::mutate(x = paste0(node, ".", nodal_type)) |>
+      dplyr::pull(x) |>
+      unique()
 
     to_add <-
       lapply(from_nodal_types, function(j)
-        model$parameters_df %>%
-          filter(node == names(confound)[i]) %>%
-          mutate(
+        model$parameters_df |>
+          dplyr::filter(node == names(confound)[i]) |>
+          dplyr::mutate(
             given = ifelse(given == "", j, paste0(given, ", ", j)),
             param_names = paste0(param_names, "_", j),
             param_set = paste0(param_set, ".", j)
-          )) %>% bind_rows
+          )) |>
+      dplyr::bind_rows()
 
     model$parameters_df <-
       rbind(filter(model$parameters_df, node != names(confound)[i]),
-            to_add) %>%
-      arrange(gen, param_set)
+            to_add) |>
+      dplyr::arrange(gen, param_set)
   }
 
 
-  # P matrix expand
-  ##################################################################################
+  # P matrix expand -----------------------------------------------------------
 
-  for (i in 1:length(confound)) {
+  for (i in seq_along(confound)) {
     from_nodal_types <-
-      model$parameters_df %>%
-      filter(node == confound[i]) %>%
-      mutate(x = paste0(node, ".", nodal_type)) |> pull(x) |> unique()
+      model$parameters_df |>
+      dplyr::filter(node == confound[i]) |>
+      dplyr::mutate(x = paste0(node, ".", nodal_type)) |>
+      dplyr::pull(x) |>
+      unique()
 
     to_add <-
       lapply(from_nodal_types, function(j) {
-        newP <- model$P %>%
-          filter(node_from_type(rownames(model$P)) == names(confound)[i])
+        newP <- model$P |>
+          dplyr::filter(node_from_type(rownames(model$P)) == names(confound)[i])
         rownames(newP) <- paste0(rownames(newP), "_", j)
 
         # delete relevant entries: need to figure if *all* conditioning
         # nodes are in observed data. Sometimes never: eg:"X.1_Y.00_X.0"
         # ie. (Z| (X1), (Y00|X0)
-        row_elements <-
-          conditions_from_type(rownames(newP)) # nodal types in parnames (list)
-        for (k in 1:length(row_elements)) {
-          to_zero <-
-            sapply(row_elements[k][[1]],
-                   function(nd)
-                     sapply(nd, function(ndd)
-                       grepl(ndd, names_P))) %>%
+        row_elements <- conditions_from_type(rownames(newP))
+
+        for (k in seq_along(row_elements)) {
+          to_zero <- vapply(row_elements[k][[1]], function(nd) {
+            vapply(nd, function(ndd) {
+              grepl(ndd, names_P)
+            }, logical(length(names_P)))
+          }, logical(length(names_P))) |>
             apply(1, prod)
           newP[k, to_zero == 0] <- 0
         }
 
         newP
-      }) %>%
-      bind_rows
+      }) |>
+      dplyr::bind_rows()
 
-    to_add <-
-      filter(to_add, apply(to_add, 1, sum) != 0)  # Remove impossible rows with all zeros
+    # Remove impossible rows with all zeros
+    to_add <- filter(to_add, apply(to_add, 1, sum) != 0)
 
     # Add in
-    model$P <-
-      model$P %>%
-      filter(node_from_type(rownames(model$P)) != names(confound)[i]) %>%
+    model$P <- model$P |>
+      dplyr::filter(node_from_type(rownames(model$P)) != names(confound)[i]) |>
       rbind(to_add)
   }
 
-  # Clean up
-  ##################################################################################
+  # Clean up ------------------------------------------------------------------
   # Remove existing distributions
   # Distributions are no longer valid
-  if (!is.null(model$prior_distribution))
+  if (!is.null(model$prior_distribution)) {
     model$prior_distribution <- NULL
-  if (!is.null(model$posterior_distribution))
+  }
+
+  if (!is.null(model$posterior_distribution)) {
     model$posterior_distribution <- NULL
-  if (!is.null(model$stan_objects))
+  }
+
+  if (!is.null(model$stan_objects)) {
     model$stan_objects <- NULL
+  }
 
   # P reorder
-  model$parameters_df <-
-    model$parameters_df %>%
-    filter(param_names %in% row.names(model$P))
+  model$parameters_df <- model$parameters_df |>
+    dplyr::filter(param_names %in% row.names(model$P))
 
   model$P <-
     model$P[match(model$parameters_df$param_names, rownames(model$P)), ]
@@ -225,10 +230,8 @@ set_confound <- function(model, confound = NULL) {
   rownames(model$parameters_df) <- NULL
 
   # Export
-  attr(model$P, "param_set") <-
-    unique(model$parameters_df$param_set)
-  model
-
+  attr(model$P, "param_set") <- unique(model$parameters_df$param_set)
+  return(model)
 }
 
 set_confounds <- set_confound

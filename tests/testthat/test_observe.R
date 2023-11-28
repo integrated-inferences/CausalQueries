@@ -75,12 +75,14 @@ testthat::test_that(
 	desc = "m overrides p (observe)",
 
 	code = {
-		obs <- observe_data(complete_data    = df,
-								  	observed        = observe_data(complete_data = df, nodes_to_observe = "X"),
-									  nodes_to_observe = "Y",
-										prob            = 1,
-										m               = 2,
-										subset          = "X==1")
+	  obs <- observe_data(
+	    complete_data = df,
+	    observed = observe_data(complete_data = df, nodes_to_observe = "X"),
+	    nodes_to_observe = "Y",
+	    prob = 1,
+	    m = 2,
+	    subset = "X==1"
+	  )
 
 		expect_equal(sum(obs$Y), 2)
 	}
