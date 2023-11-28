@@ -10,7 +10,8 @@ testthat::skip_on_cran()
 dags <- c("X -> Y", "X -> M -> Y", "X -> Y; Z -> Y")
 
 exogenous  <- c("X[] == 0", "X[] == 0", "X[] == 0")
-monotonicity  <- c("Y[X = 0] > Y[X=1]", "Y[M = 0] > Y[M =1]", "Y[X = 0, Z = 0] > Y[X = 1, Z = 1]")
+monotonicity  <- c("Y[X = 0] > Y[X=1]", "Y[M = 0] > Y[M =1]",
+                   "Y[X = 0, Z = 0] > Y[X = 1, Z = 1]")
 cases   <- c("Y==0", "Y[X = 0] > Y[X=1]", "Y == 0")
 
 for(i in length(dags)){
@@ -34,7 +35,9 @@ for(i in length(dags)){
 		code = {
 			model <- make_model(dags[i])
 		  rest_model <-	set_restrictions(model, monotonicity[i])
-			expect_true(length(get_nodal_types(model)$Y) > length(get_nodal_types(rest_model)$Y) )
+			expect_true(
+			  length(get_nodal_types(model)$Y) > length(get_nodal_types(rest_model)$Y)
+			)
 		}
 	)
 
@@ -56,7 +59,8 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("Y <- X")
-		expect_error(model <- set_restrictions(model, "Y[X=1] > Y[X=0]", keep="HELLO"))
+		expect_error(model <- set_restrictions(model, "Y[X=1] > Y[X=0]",
+		                                       keep="HELLO"))
 	}
 )
 
@@ -88,7 +92,8 @@ testthat::test_that(
                        given = c('X.1'))
 
     expect_true(nrow(model$parameters_df)==8)
-    expect_true(all(get_ambiguities_matrix(model) %>% apply(2, sum)== c(2,2,2)))
+    expect_true(all(get_ambiguities_matrix(model) %>%
+                      apply(2, sum) == c(2,2,2)))
   }
 )
 
@@ -115,7 +120,8 @@ testthat::test_that(
     model  <-
 
    expect_message(make_model("X->Y; X <-> Y") |>
-                           set_restrictions(param_names = c("X.0", "Y.11_X.1"), keep = TRUE),
+                           set_restrictions(param_names = c("X.0", "Y.11_X.1"),
+                                            keep = TRUE),
                          "parameters_df is empty")
   }
 )

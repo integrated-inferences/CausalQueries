@@ -37,9 +37,12 @@ get_type_prob <- function(model,
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @param using A character. It indicates whether to use `priors`, `posteriors` or `parameters`.
-#' @param n_draws An integer. If no prior distribution is provided, generate prior distribution with \code{n_draws} number of draws.
-#' @param param_dist A \code{matrix}.  Distribution of parameters. Optional for speed.
+#' @param using A character. It indicates whether to use
+#'   `priors`, `posteriors` or `parameters`.
+#' @param n_draws An integer. If no prior distribution is provided, generate
+#'   prior distribution with \code{n_draws} number of draws.
+#' @param param_dist A \code{matrix}.  Distribution of parameters.
+#'   Optional for speed.
 #' @return A \code{matrix} of type probabilities.
 #' @export
 #' @examples

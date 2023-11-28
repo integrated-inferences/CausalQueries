@@ -33,7 +33,8 @@ testthat::test_that(
 	desc = "Positive integer number of observations.",
 
 	code = {
-		expect_error(make_data(model, n = -1), "Number of observation has to be an integer greater than 0.")
+		expect_error(make_data(model, n = -1),
+		             "Number of observation has to be an integer greater than 0.")
 	}
 )
 
@@ -50,12 +51,15 @@ testthat::test_that(
 		expect_silent(make_events(model = model, parameters = NULL))
 		w <- matrix(softmax(rnorm(4)), nrow = 4, ncol = 1)
 		rownames(w) <- c("A", "B", "C", "D")
-		expect_equal(as.character(make_events(model = model, w = w)[, 1]), rownames(w))
+		expect_equal(as.character(make_events(model = model, w = w)[, 1]),
+		             rownames(w))
 		w[, 1] <- c(1, 0, 0, 0)
 		expect_equal(make_events(model = model, w = w, n = 10)[1, 2], 10)
-		expect_equal(colnames(make_events(model = model, include_strategy = TRUE))[2], "strategy")
+		expect_equal(colnames(make_events(model = model,
+		                                  include_strategy = TRUE))[2], "strategy")
 
-		out <- make_events(model = model, include_strategy = TRUE, clean_params = TRUE, parameters = c(1, 0, 0, 0, 1, 0))
+		out <- make_events(model = model, include_strategy = TRUE,
+		                   clean_params = TRUE, parameters = c(1, 0, 0, 0, 1, 0))
 		expect_equal(out$count[1], 1)
 	}
 )
@@ -68,15 +72,20 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("X -> Y")
-		expect_is(make_events(model = model, param_type = "flat"), "data.frame")
-		expect_is(make_events(model = model, param_type = "prior_mean"), "data.frame")
+		expect_is(make_events(model = model, param_type = "flat"),
+		          "data.frame")
+		expect_is(make_events(model = model, param_type = "prior_mean"),
+		          "data.frame")
 		error_message <- "Posterior distribution required"
-		expect_error(make_events(model = model, param_type = "posterior_mean"), error_message)
-		expect_error(make_events(model = model, param_type = "posterior_draw"), error_message)
-		expect_is(make_events(model = model, param_type = "prior_mean"), "data.frame")
+		expect_error(make_events(model = model, param_type = "posterior_mean"),
+		             error_message)
+		expect_error(make_events(model = model, param_type = "posterior_draw"),
+		             error_message)
+		expect_is(make_events(model = model, param_type = "prior_mean"),
+		          "data.frame")
 	}
 )
-# ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define)
+
 testthat::test_that(
 
 	desc = "Check output.",
@@ -97,10 +106,13 @@ testthat::test_that(
 		softmax <- function(x) return(exp(x)/sum(exp(x)))
 		model <- make_model("X -> Y")
 		w <- matrix(softmax(rnorm(4)), nrow = 4, ncol = 1)
-		expect_error(make_events(model = model, w = w), "w has to be a matrix with named rows.")
+		expect_error(make_events(model = model, w = w),
+		             "w has to be a matrix with named rows.")
 		w <- c(w)
 		expect_error(make_events(model = model, w = w), "w has to be a matrix.")
-		expect_error(make_events(model = model, param_type = "define"), "neither distribution nor values provided. No change to values")
+		expect_error(
+		  make_events(model = model, param_type = "define"),
+		  "neither distribution nor values provided. No change to values")
 	}
 )
 

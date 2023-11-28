@@ -93,8 +93,8 @@ make_model <- function(statement,
     if (length(statement) != 1) {
       stop(
         paste(
-          "The length of the character vector of the statement is unequal to 1.",
-          "Please provide only 1 causal model."
+          "The length of the character vector of the statement",
+          "is unequal to 1. Please provide only 1 causal model."
         )
       )
     }
@@ -263,7 +263,7 @@ make_model <- function(statement,
       # Reorder by reverse causal order (thus in X -> Y we have
       # type_Y conditional on type_X)
       for (i in seq_len(nrow(z))) {
-        z[i, ] <- rev(nodes[nodes %in% sapply(z[i, ], as.character)])
+        z[i, ] <- rev(nodes[nodes %in% as.character(z[i,])])
       }
       # Generate confounds list
       confounds <- as.list(as.character(z$w))

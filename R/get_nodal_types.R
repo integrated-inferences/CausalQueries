@@ -81,13 +81,13 @@ uncollapse_nodal_types <- function(nodal_types) {
 
   # To handle cases where a single nodal type exists
   # otherwise it gets wrongly transposed
-  for (j in 1:length(x)) {
+  for (j in seq_along(x)) {
     if (length(nodal_types[[j]]) == 1) {
       x[[j]] <- t(x[[j]])
     }
   }
 
-  for (j in 1:length(x)) {
+  for (j in seq_along(x)) {
     # Add row names
     rownames(x[[j]]) <- apply(x[[j]], 1, paste, collapse = "")
     # Add col names
@@ -120,7 +120,7 @@ make_nodal_types <- function(model,
   nodal_types <- lapply(lapply(parents, length), type_matrix)
 
   nodal_types_labels <-
-    lapply(1:length(nodal_types), function(i) {
+    lapply(seq_along(nodal_types), function(i) {
       labels <- apply(nodal_types[[i]], 1, paste, collapse = "")
       if (include_node_names) {
         return(paste0(names(nodal_types)[i], labels))
@@ -160,7 +160,7 @@ collapse_nodal_types <- function(nodal_types,
     }
 
     # Otherwise collapse
-    types <- lapply(1:length(nodal_types), function(i) {
+    types <- lapply(seq_along(nodal_types), function(i) {
       var <- names(nodal_types)[i]
       mat <- as.matrix(nodal_types[[i]])
       labels <- apply(mat, 1, paste, collapse = "")

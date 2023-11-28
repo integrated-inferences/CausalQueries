@@ -19,7 +19,7 @@
 #' x <- CausalQueries:::map_query_to_causal_type(model, query)
 #' CausalQueries:::map_query_to_causal_type(model, query)
 #'
-#' query <- '(Y[X=1, M = 1] >  Y[X=0, M = 1]) & (Y[X=1, M = 0] >  Y[X=0, M = 0])'
+#' query <- '(Y[X=1, M = 1] > Y[X=0, M = 1]) & (Y[X=1, M = 0] > Y[X=0, M = 0])'
 #' CausalQueries:::map_query_to_causal_type(model, query)
 #'
 #' query <- 'Y[X=1] == Y[X=0]'

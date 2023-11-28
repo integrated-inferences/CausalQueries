@@ -276,7 +276,10 @@ substitutes <- function(X1, X2, Y) {
 
 #' Make treatment effect statement (positive)
 #'
-#' Generate a statement for (Y(1) - Y(0)). This statement when applied to a model returns an element in (1,0,-1) and not a set of cases. This is useful for some purposes such as querying a model, but not for uses that require a list of types, such as \code{set_restrictions}.
+#' Generate a statement for (Y(1) - Y(0)). This statement when applied to
+#' a model returns an element in (1,0,-1) and not a set of cases.
+#' This is useful for some purposes such as querying a model, but not for
+#' uses that require a list of types, such as \code{set_restrictions}.
 #'
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node

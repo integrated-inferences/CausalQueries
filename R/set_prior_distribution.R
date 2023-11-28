@@ -20,15 +20,16 @@ make_prior_distribution <- function(model, n_draws = 4000) {
     priors <- model$parameters_df$priors
 
     prior_distribution <-
-      sapply(param_sets,
-             function(v)
-               rdirichlet(n_draws, priors[model$parameters_df$param_set == v]),
-             simplify = FALSE) |>
+      lapply(param_sets, function(v) {
+        dirmult::rdirichlet(n_draws, priors[model$parameters_df$param_set == v])
+      })
+
+    prior_distribution <- do.call("cbind", prior_distribution) |>
       as.data.frame()
 
     colnames(prior_distribution) <- model$parameters_df$param_names
 
-    prior_distribution
+    return(prior_distribution)
 
 }
 
@@ -61,7 +62,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
     "generated on the fly"
   ))
 
-  make_prior_distribution(model, n_draws)
+  return(make_prior_distribution(model, n_draws))
 }
 
 #' Add prior distribution draws
@@ -86,7 +87,6 @@ set_prior_distribution <- function(model, n_draws = 4000) {
   model$prior_distribution <-
     make_prior_distribution(model, n_draws = n_draws)
 
-  model
-
+  return(model)
 }
 

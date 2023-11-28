@@ -34,19 +34,30 @@ get_parameters(model, param_type = NULL)
 specify (optional). By default, parameters is drawn from
 \code{model$parameters_df}.}
 
-\item{param_type}{A character. String specifying type of parameters to make ("flat", "prior_mean", "posterior_mean", "prior_draw", "posterior_draw", "define). With param_type set to \code{define} use arguments to be passed to \code{make_priors}; otherwise \code{flat} sets equal probabilities on each nodal type in each parameter set; \code{prior_mean}, \code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take parameters as the means or as draws from the prior or posterior.}
+\item{param_type}{A character. String specifying type of parameters to make
+"flat", "prior_mean", "posterior_mean", "prior_draw",
+"posterior_draw", "define. With param_type set to \code{define} use
+arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
+equal probabilities on each nodal type in each parameter set;
+\code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
+\code{posterior_draw} take parameters as the means or as draws
+from the prior or posterior.}
 
 \item{warning}{Logical. Whether to warn about parameter renormalization.}
 
-\item{normalize}{Logical. If parameter given for a subset of a family the residual elements are normalized so that parameters in param_set sum to 1 and provided params are unaltered.}
+\item{normalize}{Logical. If parameter given for a subset of a family the
+residual elements are normalized so that parameters in param_set sum
+to 1 and provided params are unaltered.}
 
 \item{...}{Options passed onto \code{\link{make_priors}}.}
 }
 \value{
 A vector of draws from the prior or distribution of parameters
 
-An object of class \code{causal_model}. It essentially returns a list containing the elements comprising
-a model (e.g. 'statement', 'nodal_types' and 'DAG') with true vector of parameters attached to it.
+An object of class \code{causal_model}. It essentially returns a
+  list containing the elements comprising a model
+  (e.g. 'statement', 'nodal_types' and 'DAG') with true vector of
+  parameters attached to it.
 
 A vector of draws from the prior or distribution of parameters
 }
@@ -55,8 +66,9 @@ Functionality for altering parameters:
 
 A vector of 'true' parameters; possibly drawn from prior or posterior.
 
-Add a true parameter vector to a model. Parameters can be created using arguments passed to
-\code{\link{make_parameters}} and \code{\link{make_priors}}.
+Add a true parameter vector to a model. Parameters can be created using
+arguments passed to \code{\link{make_parameters}} and
+\code{\link{make_priors}}.
 
 Extracts parameters as a named vector
 }
@@ -98,7 +110,8 @@ node = "Y", nodal_type = c("00","01"))
 make_parameters(make_model('X -> Y'),
                statement = 'Y[X=1]>Y[X=0]', parameters = .5)
 make_parameters(make_model('X -> Y'),
-               statement = 'Y[X=1]>Y[X=0]', parameters = .5, normalize = FALSE)
+               statement = 'Y[X=1]>Y[X=0]', parameters = .5,
+               normalize = FALSE)
 
   }
 

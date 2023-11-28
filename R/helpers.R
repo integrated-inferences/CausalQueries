@@ -82,9 +82,11 @@ st_within <- function(x,
     }, numeric(1))
 
     drop <- is.na(starts) | is.na(stops)
-    vapply(seq_along(starts), function(i) if (!drop[i])
-        substr(x, starts[i] + rm_left, stops[i] + rm_right),
-        character(1))
+    sapply(seq_along(starts), function(i) {
+      if (!drop[i]) {
+        substr(x, starts[i] + rm_left, stops[i] + rm_right)
+      }
+    })
 }
 
 #' Recursive substitution
@@ -171,7 +173,7 @@ interpret_type <- function(model,
     if (is.null(position)) {
       position <-
         lapply(types, function(i)
-          ifelse(length(i) == 0, return(NA), return(1:nrow(i))))
+          ifelse(length(i) == 0, return(NA), return(seq_len(nrow(i)))))
     } else {
       if (!all(names(position) %in% names(types))) {
         stop("One or more names in `position` not found in model.")
@@ -279,13 +281,14 @@ expand_wildcard <- function(to_expand,
         if (is.null(orig[[1]])){
             message(
               paste("No parentheses indicated. Global expansion assumed.",
-                    "See expand_wildcard.")
-              )
-        orig <- to_expand}
+                    "See expand_wildcard")
+            )
+        orig <- to_expand
+      }
     }
     skeleton <- gsub_many(to_expand,
                           orig,
-                          paste0("%expand%", 1:length(orig)),
+                          paste0("%expand%", seq_along(orig)),
                           fixed = TRUE)
     expand_it <- grepl("\\.", orig)
 
@@ -319,13 +322,13 @@ expand_wildcard <- function(to_expand,
         }, character(1))
 
         oper_return <- gsub_many(skeleton,
-                                 paste0("%expand%", 1:length(orig)),
+                                 paste0("%expand%", seq_along(orig)),
                                  oper)
     } else {
         oper <- do.call(cbind, expanded_types)
         oper_return <- apply(oper, 1, function(i) {
           gsub_many(skeleton,
-                    paste0("%expand%", 1:length(orig)),
+                    paste0("%expand%", seq_along(orig)),
                     i)
         })
     }

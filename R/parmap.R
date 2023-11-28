@@ -51,7 +51,7 @@ make_parmap <- function(model, A = NULL, P = NULL) {
 
   # If confounding, parmap has to split according to
   # distinct conditioning paths
-  data_names <- colnames(A)[A %*% (1:ncol(A))]
+  data_names <- colnames(A)[A %*% (seq_len(ncol(A)))]
 
   type <- apply(P, 2, function(j) {
     paste(model$parameters_df$given[j == 1], collapse = " ")

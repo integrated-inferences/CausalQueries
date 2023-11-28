@@ -38,7 +38,9 @@ testthat::test_that(
 		data <- make_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
 		expect_equal(dim(data), c(1,2))
 
-		updated <- posterior <- suppressWarnings(update_model(XY_noconf, data, refresh = 0))
+		updated <-
+		  posterior <-
+		  suppressWarnings(update_model(XY_noconf, data, refresh = 0))
 		expect_true(!is.null(posterior))
 
 		ATE <- "Y[X=1] - Y[X=0]"
@@ -67,7 +69,8 @@ testthat::test_that(
 		expect_equal(c(1, 2), dim(data))
 
 
-		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0, keep_transformed = TRUE))
+		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0,
+		                                           keep_transformed = TRUE))
 		expect_true(!is.null(posterior))
 
 		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0))
@@ -76,7 +79,8 @@ testthat::test_that(
 		prior_ate <- query_distribution(model = posterior,
 																			 query = "(Y[X=1] - Y[X=0])",
 																			 using = "priors")
-		post_ate <- query_distribution(posterior, "c(Y[X=1] - Y[X=0])", using = "posteriors")
+		post_ate <- query_distribution(posterior, "c(Y[X=1] - Y[X=0])",
+		                               using = "posteriors")
 
 		results <- query_model(
 			posterior,
@@ -153,13 +157,17 @@ testthat::test_that(
 	code = {
 		model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2") |>
 			       set_restrictions("Y2[X=1] > Y2[X=0]")
-		model <- suppressWarnings(set_priors(model, statement = "Y1[X=1] > Y1[X=0]", param_set = c("Y1.X.0","Y1.X.1"), alphas = c(3,3)))
+		model <- suppressWarnings(set_priors(model,
+		                                     statement = "Y1[X=1] > Y1[X=0]",
+		                                     param_set = c("Y1.X.0","Y1.X.1"),
+		                                     alphas = c(3,3)))
 
 		data <- make_data(model, n = 5)
 
 		posterior <- suppressWarnings(update_model(model, data, refresh = 0))
 
-    posterior_parameter_draw <- make_parameters(posterior, param_type = "posterior_draw")
+    posterior_parameter_draw <- make_parameters(posterior,
+                                                param_type = "posterior_draw")
     expect_true(length(posterior_parameter_draw) == 16)
 
 		results <- query_model(
@@ -180,7 +188,9 @@ testthat::test_that(
 	desc = "update_model using keep_fit",
 
 	code = {
-		updated <- suppressWarnings(update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0))
+		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_fit = TRUE,
+		                                         refresh = 0))
 		expect_true(class(updated) == "causal_model")
 	}
 )
@@ -194,7 +204,10 @@ testthat::test_that(
 		model <- make_model('X->Y')
 		data_long   <- make_data(model, n = 4)
 		data_short  <- collapse_data(data_long, model)
-		updated <- suppressWarnings(update_model(model, data_short, data_type = 'compact', refresh = 0))
+		updated <- suppressWarnings(update_model(model,
+		                                         data_short,
+		                                         data_type = 'compact',
+		                                         refresh = 0))
 		expect_true(class(updated) == "causal_model")
 	}
 )
@@ -205,9 +218,19 @@ testthat::test_that(
 	desc = "Test stan arguments",
 
 	code = {
-		updated <- suppressWarnings(update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(adapt_delta = 0.5)))
+	  updated <- suppressWarnings(update_model(
+	    make_model("X->Y"),
+	    keep_fit = TRUE,
+	    refresh = 0,
+	    control = list(adapt_delta = 0.5)
+	  ))
 		expect_true(class(updated) == "causal_model")
-		updated <- suppressWarnings(update_model(make_model("X->Y"), keep_fit = TRUE, refresh = 0, control = list(max_treedepth = 20)))
+		updated <- suppressWarnings(update_model(
+		  make_model("X->Y"),
+		  keep_fit = TRUE,
+		  refresh = 0,
+		  control = list(max_treedepth = 20)
+		))
 		expect_true(class(updated) == "causal_model")
 	}
 )

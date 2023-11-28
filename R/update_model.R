@@ -1,18 +1,28 @@
 #' Fit causal model using 'stan'
 #'
-#' Takes a model and data and returns a model object with data attached and a posterior model
+#' Takes a model and data and returns a model object with data
+#' attached and a posterior model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or 'compact' (as made by \code{\link{collapse_data}}).
-#'  Compact data must have entries for each member of each strategy family to produce a valid simplex.
-#' @param keep_fit Logical. Whether to append the  \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
-#' @param keep_event_probabilities Logical. Whether to keep the distribution of event probabilities. Defaults to `FALSE`
-#' @param keep_transformed Logical. Whether to keep transformed parameters, prob_of_types, P_lambdas, w, w_full
-#' @param censored_types vector of data types that are selected out of the data, e.g. c("X0Y0")
+#' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or
+#'   'compact' (as made by \code{\link{collapse_data}}). Compact data must
+#'   have entries for each member of each strategy family to produce a
+#'   valid simplex.
+#' @param keep_fit Logical. Whether to append the
+#'   \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
+#' @param keep_event_probabilities Logical. Whether to keep the distribution
+#'   of event probabilities. Defaults to `FALSE`
+#' @param keep_transformed Logical. Whether to keep transformed parameters,
+#'   prob_of_types, P_lambdas, w, w_full
+#' @param censored_types vector of data types that are selected out of
+#'   the data, e.g. c("X0Y0")
 #' @param ... Options passed onto \code{\link[rstan]{stan}} call.
-#' @return An object of class \code{causal_model}. The returned model is a list containing the elements comprising
-#' a model (e.g. 'statement', 'nodal_types' and 'DAG') with the `posterior_distribution` returned by \code{\link[rstan]{stan}} attached to it.
+#' @return An object of class \code{causal_model}. The returned model is
+#'   a list containing the elements comprising a model
+#'   (e.g. 'statement', 'nodal_types' and 'DAG') with the
+#'   `posterior_distribution` returned by \code{\link[rstan]{stan}}
+#'   attached to it.
 #' @import methods
 #' @import Rcpp
 #' @import rstantools
@@ -62,44 +72,49 @@
 #'}
 
 
-update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
-                         keep_transformed = TRUE, keep_event_probabilities = FALSE, censored_types = NULL, ...) {
+update_model <- function(model,
+                         data = NULL,
+                         data_type = NULL,
+                         keep_fit = FALSE,
+                         keep_transformed = TRUE,
+                         keep_event_probabilities = FALSE,
+                         censored_types = NULL, ...) {
 
-   # Guess data_type
-  if(is.null(data_type))
-    data_type <- ifelse(all(c("event", "strategy", "count") %in% names(data)), "compact", "long")
+  # Guess data_type
+  if (is.null(data_type)) {
+    data_type <- ifelse(all(c("event", "strategy", "count") %in% names(data)),
+                        "compact", "long")
+  }
 
   # Checks on data_types
   if (data_type == "long") {
+    if (is.null(data)) {
+      message("No data provided")
+      data_events <- minimal_event_data(model)
 
-        if (is.null(data)) {
+    } else {
+      if (nrow(data) == 0 | all(is.na(data))) {
+        message("No data provided")
+        data_events <- minimal_event_data(model)
 
-            message("No data provided")
-            data_events <- minimal_event_data(model)
+      } else {
+        if (!any(model$nodes %in% names(data)))
+          stop("Data should contain columns corresponding to model nodes")
 
-        } else {
-
-            if (nrow(data) == 0 | all(is.na(data))) {
-
-                message("No data provided")
-                data_events <- minimal_event_data(model)
-
-            } else {
-
-                if (!any(model$nodes %in% names(data)))
-                  stop("Data should contain columns corresponding to model nodes")
-
-                data_events <- collapse_data(data, model)
-            }
-
-        }
+        data_events <- collapse_data(data, model)
+      }
     }
+  }
 
-    if (data_type == "compact") {
-        if (!all(c("event", "strategy", "count") %in% names(data)))
-            stop("Compact data should contain columnes `event`, `strategy` and `count`")
-        data_events <- data
+  if (data_type == "compact") {
+    if (!all(c("event", "strategy", "count") %in% names(data))) {
+      stop(paste(
+        "Compact data should contain columnes",
+        "`event`, `strategy` and `count`"
+      ))
     }
+    data_events <- data
+  }
 
     stan_data <- prep_stan_data(model = model,
                                 data = data_events,
@@ -108,18 +123,22 @@ update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
     # assign fit
     stanfit <- stanmodels$simplexes
 
-    sampling_args <-
-      set_sampling_args(object = stanfit, user_dots = list(...), data = stan_data)
+    sampling_args <- set_sampling_args(object = stanfit,
+                                       user_dots = list(...),
+                                       data = stan_data)
 
     newfit <- do.call(rstan::sampling, sampling_args)
 
     model$stan_objects  <- list(data = data)
 
-    if(keep_fit) model$stan_objects$stan_fit <- newfit
+    if(keep_fit) {
+      model$stan_objects$stan_fit <- newfit
+    }
 
     # Retain posterior distribution
     model$posterior_distribution <-
-      extract(newfit, pars = "lambdas")$lambdas |> as.data.frame()
+      extract(newfit, pars = "lambdas")$lambdas |>
+      as.data.frame()
     colnames(model$posterior_distribution) <- get_parameter_names(model)
 
     # Retain type distribution
@@ -129,12 +148,12 @@ update_model <- function(model, data = NULL, data_type = NULL, keep_fit = FALSE,
     colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
 
     # Retain event (pre-censoring) probabilities
-    if(keep_event_probabilities){
-    model$stan_objects$w <- extract(newfit, pars = "w")$w
-        colnames(model$stan_objects$w) <- colnames(stan_data$E)
+    if (keep_event_probabilities) {
+      model$stan_objects$w <- extract(newfit, pars = "w")$w
+      colnames(model$stan_objects$w) <- colnames(stan_data$E)
     }
 
-    model
+    return(model)
 
 }
 
