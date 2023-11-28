@@ -39,7 +39,8 @@ specify (optional). By default, parameters is drawn from
 
 \item{stats}{Functions to be applied to estimand distribution.
 If NULL, defaults to mean, standard deviation,
-and 95\% confidence interval.}
+and 95\% confidence interval. Functions should return a single numeric
+value.}
 
 \item{n_draws}{An integer. Number of draws.}
 

@@ -82,11 +82,13 @@ st_within <- function(x,
     }, numeric(1))
 
     drop <- is.na(starts) | is.na(stops)
-    sapply(seq_along(starts), function(i) {
+    vapply(seq_along(starts), function(i) {
       if (!drop[i]) {
         substr(x, starts[i] + rm_left, stops[i] + rm_right)
+      } else {
+        as.character(NA)
       }
-    })
+    }, character(1))
 }
 
 #' Recursive substitution
@@ -277,15 +279,15 @@ expand_wildcard <- function(to_expand,
                             join_by = "|",
                             verbose = TRUE) {
     orig <- st_within(to_expand, left = "\\(", right = "\\)", rm_left = 1)
-    if (is.list(orig)) {
-        if (is.null(orig[[1]])){
-            message(
-              paste("No parentheses indicated. Global expansion assumed.",
-                    "See expand_wildcard")
-            )
-        orig <- to_expand
-      }
+
+    if(is.na(orig[1])) {
+      message(
+        paste("No parentheses indicated. Global expansion assumed.",
+              "See expand_wildcard")
+      )
+      orig <- to_expand
     }
+
     skeleton <- gsub_many(to_expand,
                           orig,
                           paste0("%expand%", seq_along(orig)),

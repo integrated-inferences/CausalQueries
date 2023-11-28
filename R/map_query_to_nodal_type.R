@@ -53,7 +53,7 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
     # Get outcome var (preceding square brackets)
     node <- unique(st_within(query))
 
-    if (is.null(node[[1]])) {
+    if (is.na(node[1])) {
       stop(
         paste(
           "No outcome variable specified.",
