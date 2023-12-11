@@ -157,7 +157,7 @@ query_distribution <- function(model,
 
   if ((!is.null(type_distribution)) &&
       (!is.list(type_distribution))) {
-    type_distributions <- list(type_distribution)
+    type_distributions <- type_distribution <- list(type_distribution)
   }
 
   if ((!is.null(type_distribution)) &&
@@ -576,16 +576,8 @@ check_args <-
       given <- as.character(given)
     }
 
-    if (!is.null(given) && !is.character(given)) {
-      stop(
-        "`given` must be a vector of strings specifying given statements
-         or '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or 'TRUE' for
-        no givens."
-      )
-    }
-
   if (!is.null(given) && !is.character(given)) {
-    stop(
+      stop(
       paste(
         "`given` must be a vector of strings specifying given",
         "statements or '', 'All', 'ALL', 'all', 'None', 'none', 'NONE' or",
