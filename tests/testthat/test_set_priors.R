@@ -52,6 +52,8 @@ testthat::test_that(
 	  expect_error(set_priors(model = model,
 	                          alphas = 0.5,
 	                          param_names = "abc"))
+	  expect_error(make_model("X -> M -> Y") |>
+	                 set_priors(model = model, alphas = c(0.2), node = "X", nodal_type =  c('0'), label =  "X.0"))
 	}
 )
 
