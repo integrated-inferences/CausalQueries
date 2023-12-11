@@ -40,6 +40,11 @@ testthat::test_that(
     x <- CausalQueries:::collapse_nodal_types(nodal_types)
     expect_identical(x, nodal_types)
 
+    model$nodal_types <- NULL
+    nodal_types <-
+      get_nodal_types(model, collapse = TRUE)
+    expect_identical(x, nodal_types)
+
   })
 
 
