@@ -185,13 +185,16 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "update_model using keep_fit",
+	desc = "update_model using keep_fit and keep_event_probabilitie",
 
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_fit = TRUE,
+		                                         keep_event_probabilities = TRUE,
 		                                         refresh = 0))
 		expect_true(class(updated) == "causal_model")
+
+
 	}
 )
 
@@ -237,7 +240,7 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "Test when all NA",
+	desc = "Test data input",
 
 	code = {
 		model <- make_model("X -> Y")
@@ -246,6 +249,8 @@ testthat::test_that(
 		data <- as.data.frame(cbind(X, Y))
 		expect_message(update_model(model, data))
 		expect_error(update_model(model, data, data_type = "compact"))
+
+		expect_error(update_model(make_model("X->Y") , data = data.frame(Z = 0)))
 	}
 )
 
@@ -260,4 +265,7 @@ testthat::test_that(
     expect_true(class(updated) == "causal_model")
   }
 )
+
+
+
 

@@ -16,6 +16,11 @@ testthat::test_that(
 		expect_error(realise_outcomes(model,
 		                              dos = list(X = 1),
 		                              node = "Y"))
+
+	  expect_warning(realise_outcomes( make_model("X-> M -> Y; Z->Y"),
+	                    dos = list(X = 1, M = 1),
+	                    node = "Y"))
+
 	}
 )
 
@@ -41,3 +46,15 @@ test_that(
                                                    node = "M"))
   }
 )
+
+test_that(
+  desc = "realise_outcomes with single node",
+
+  code = {
+    out <-  realise_outcomes(model =  make_model("X"), add_rownames = TRUE)
+    expect_equal(out, data.frame(X = c("0","1"), row.names = c(0,1)))
+  }
+)
+
+
+
