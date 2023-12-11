@@ -33,3 +33,16 @@ testthat::test_that(
 )
 
 
+
+testthat::test_that(
+
+  desc = "Read P.",
+
+  code = {
+    model <- make_model("X -> Y")
+    model <- set_parameter_matrix(model, P = get_parameter_matrix(model))
+    expect_true(!is.null(model$P))
+  }
+)
+
+
