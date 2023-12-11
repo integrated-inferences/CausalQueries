@@ -48,6 +48,9 @@ for(i in length(dags)){
 		code = {
 			model <- make_model(dags[i])
 			expect_error(set_restrictions(model,cases[i]))
+			expect_error(make_model("X -> Y -> Z; X <-> Z") |>
+			                set_restrictions(list(decreasing('X','Y'), decreasing('Y','Z')), given = c('X.0')))
+
 		}
 	)
 
