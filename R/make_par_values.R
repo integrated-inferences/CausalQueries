@@ -216,7 +216,7 @@ make_par_values <- function(model,
 
     # check if specified number of parameters values matches
     # number of parameters to alter
-    if (length(names) != n_vals) {
+    if ((length(names) > 0) && (length(names) != n_vals)) {
       stop(
         paste(
           "Trying to replace ",
