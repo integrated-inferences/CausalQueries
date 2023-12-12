@@ -186,7 +186,7 @@ make_par_values <- function(model,
 
 
     # forgive user when specifying across
-    if (all(grepl("_", names))) {
+    if ((length(names) > 0) && all(grepl("_", names))) {
       if ((!is.na(statement) &&
            (!grepl("param_set", statement) || !grepl("given", statement))) |
            (all(is.na(param_set)) && all(is.na(given)))

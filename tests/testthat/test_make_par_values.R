@@ -66,18 +66,118 @@ testthat::test_that(
     ))
   })
 
+testthat::skip_on_cran()
+testthat::test_that(
+  des = "Check distribution specification",
+  code = {
+    model <- CausalQueries::make_model("X -> Y")
+    expect_error(CausalQueries:::make_par_values(
+      model = model,
+      distribution = "abc"
+    ))
+  }
+)
+
+testthat::skip_on_cran()
+testthat::test_that(
+  des = "check number of parameters and normalization errors",
+  code = {
+    model <- CausalQueries::make_model("X -> Y")
+
+    # too many values specified
+    testthat::expect_error(CausalQueries:::make_par_values(
+      model = model,
+      node = "Y",
+      nodal_type = "00",
+      x = c(1, 2)
+    ))
+
+    # no parameter matched
+    testthat::expect_message(CausalQueries:::make_par_values(
+      model = model,
+      node = "Y",
+      nodal_type = "0000",
+      x = 2
+    ))
+
+    testthat::expect_equal(CausalQueries:::make_par_values(
+      model = model,
+      node = "Y",
+      nodal_type = "0000",
+      x = 2
+    ), rep(1,6))
+  }
+)
+
+
+testthat::skip_on_cran()
+testthat::test_that(
+  desc = "Check ambigious parameter order warnings",
+  code = {
+    model <- CausalQueries::make_model("X -> M -> Y")
+    expect_warning(CausalQueries:::make_par_values(
+      model = model,
+      nodal_type = "00",
+      x = c(1, 2)
+    ))
+
+    model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
+    warnings <-
+      testthat::capture_warnings(CausalQueries:::make_par_values(
+        model = model,
+        node = "Y",
+        nodal_type = "00",
+        x = c(1, 2)
+      ))
+
+    testthat::expect_equal(
+      warnings[1],
+      paste(
+        "A specified condition matches multiple parameters. In these",
+        "cases it is unclear which parameter value should be assigned to",
+        "which parameter. Assignment thus defaults to the order in which",
+        "parameters appear in 'parameters_df'. We advise checking that",
+        "parameter assignment was carried out as you intended. "
+      )
+    )
+
+    testthat::expect_equal(
+      warnings[2],
+      paste(
+        "You are altering parameters on confounded nodes.",
+        "Alterations will be applied across all 'param_sets'.",
+        "If this is not the alteration behavior you intended,",
+        "try specifying the 'param_set' or 'given' option to more",
+        "clearly indicate parameters whose values you wish to alter."
+      )
+    )
+
+  }
+)
 
 testthat::skip_on_cran()
 testthat::test_that(
   desc = "Check output",
   code = {
     model <- CausalQueries::make_model("X -> Y")
+    # unambiguous single value case
+    out <-
+      CausalQueries:::make_par_values(
+        model = model,
+        x = 2,
+        node = "Y"
+      )
+    expect_equal(out, c(1,1,2,2,2,2))
+
+    # alter_at
     out <-
       CausalQueries:::make_par_values(
         model = model,
         x = c(0.5, 0.25),
         alter_at = "node == 'X' & nodal_type %in% c('0','1')")
     expect_equal(out, c(0.5, 0.25, 1, 1, 1, 1))
+
+    # alter_at with normalization
     out <-
       CausalQueries:::make_par_values(
         model = model,
@@ -87,6 +187,8 @@ testthat::test_that(
       )
     expect_equal(round(out, 2),
                  c(0.67, 0.33, 1.00, 1.00, 1.00, 1.00))
+
+    # node + nodal_type
     out <-
       CausalQueries:::make_par_values(
         model = model,
@@ -95,6 +197,8 @@ testthat::test_that(
         nodal_type = c("0", "1")
       )
     expect_equal(out, c(0.5, 0.25, 1, 1, 1, 1))
+
+    # param_names
     out <-
       CausalQueries:::make_par_values(
         model = model,
@@ -103,6 +207,7 @@ testthat::test_that(
       )
     expect_equal(out, c(0.5, 0.25, 1, 1, 1, 1))
 
+    # with confounding + specifying param_set
     model <-
       CausalQueries::make_model("X -> Y; X <-> Y")
     out <-
@@ -117,6 +222,8 @@ testthat::test_that(
         )
       )
     expect_equal(out, c(1, 1, 0.5, 1, 0.25, 1, 1, 1, 1, 1))
+
+    # with confounding using statment + param_set
     out <-
       suppressWarnings(
         CausalQueries:::make_par_values(
