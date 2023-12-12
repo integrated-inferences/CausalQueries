@@ -105,7 +105,7 @@ make_model <- function(statement,
 
   # names and allowable names
   node_names <- strsplit(statement,
-                         paste0(c("->", "<->", ";"), collapse = "|"),
+                         paste0(c("->", "<->", "<-", ";"), collapse = "|"),
                          perl = TRUE) |>
     unlist() |>
     trimws() |>

@@ -48,7 +48,6 @@ testthat::test_that(
     )
   })
 
-
 testthat::skip_on_cran()
 testthat::test_that(
   desc = "Check non existent column and parameter name errors",
@@ -93,22 +92,26 @@ testthat::test_that(
     ))
 
     # no parameter matched
-    testthat::expect_message(CausalQueries:::make_par_values(
-      model = model,
-      node = "Y",
-      nodal_type = "0000",
-      x = 2
-    ))
+    testthat::expect_message(
+      params <- CausalQueries:::make_par_values(
+        model = model,
+        node = "Y",
+        nodal_type = "0000",
+        x = 2
+      )
+    )
 
-    testthat::expect_equal(CausalQueries:::make_par_values(
+    testthat::expect_equal(params, rep(1,6))
+
+    # normalization warning
+    testthat::expect_warning(CausalQueries:::make_par_values(
       model = model,
       node = "Y",
-      nodal_type = "0000",
-      x = 2
-    ), rep(1,6))
+      x = 2,
+      normalize = TRUE
+    ))
   }
 )
-
 
 testthat::skip_on_cran()
 testthat::test_that(
