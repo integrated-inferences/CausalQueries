@@ -20,10 +20,7 @@
 #'   A given is a quoted expression that evaluates to logical statement.
 #'   \code{given} allows the query to be conditioned on *observational*
 #'   distribution. A value of TRUE is interpreted as no conditioning.
-#' @param n_draws An integer. Number of draws.
-#' @param type_distribution A numeric vector or list of numeric vectors.
-#'   If provided saves calculation, otherwise calculated from model;
-#'   may be based on prior or posterior
+#' @param n_draws An integer. Number of draws.rm
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
 #' @param query alias for queries
@@ -125,7 +122,6 @@ query_distribution <- function(model,
                                using  = "parameters",
                                parameters = NULL,
                                n_draws = 4000,
-                               type_distribution = NULL,
                                join_by = "|",
                                case_level = FALSE,
                                query = NULL) {
@@ -155,16 +151,6 @@ query_distribution <- function(model,
     stop("Please only specify one set of parameters for your model.")
   }
 
-  if ((!is.null(type_distribution)) &&
-      (!is.list(type_distribution))) {
-    type_distributions <- type_distribution <- list(type_distribution)
-  }
-
-  if ((!is.null(type_distribution)) &&
-      (length(type_distribution) > 1)) {
-    stop("Please only specify one type_distribution for your model.")
-  }
-
   args_checked <- check_args(
     model = model,
     using = unlist(using),
@@ -184,10 +170,6 @@ query_distribution <- function(model,
 
   if (!is.null(parameters)) {
     names(parameters) <- model_names
-  }
-
-  if (!is.null(type_distribution)) {
-    names(type_distributions) <- model_names
   }
 
   # generate outcome realisations
@@ -234,8 +216,7 @@ query_distribution <- function(model,
     n_draws = n_draws,
     parameters = parameters
   )
-
-  ## get estimands
+  # get estimands
   estimands <- get_estimands(
     jobs = jobs,
     given_types = given_types,
@@ -244,7 +225,7 @@ query_distribution <- function(model,
   ) |>
     as.data.frame()
 
-  ## prepare output
+  # prepare output
   if (!is.null(names(queries))) {
     colnames(estimands) <- make.unique(names(queries), sep = "_")
   } else {
@@ -481,7 +462,7 @@ query_model <- function(model,
     parameters = parameters
   )
 
-  ## get estimands
+  # get estimands
   estimands <- get_estimands(
     jobs = jobs,
     given_types = given_types,
@@ -520,7 +501,7 @@ query_model <- function(model,
 
   estimands <- as.data.frame(do.call(rbind, estimands))
 
-  ## prepare output
+  # prepare output
   query_id <- jobs |>
     dplyr::select(model_names, query_name, given, using, case_level) |>
     dplyr::mutate(given = ifelse(given == "ALL", "-", given))

@@ -11,7 +11,6 @@ query_distribution(
   using = "parameters",
   parameters = NULL,
   n_draws = 4000,
-  type_distribution = NULL,
   join_by = "|",
   case_level = FALSE,
   query = NULL
@@ -35,11 +34,7 @@ distribution. A value of TRUE is interpreted as no conditioning.}
 A true parameter vector to be used instead of parameters attached to
 the model in case  \code{using} specifies \code{parameters}}
 
-\item{n_draws}{An integer. Number of draws.}
-
-\item{type_distribution}{A numeric vector or list of numeric vectors.
-If provided saves calculation, otherwise calculated from model;
-may be based on prior or posterior}
+\item{n_draws}{An integer. Number of draws.rm}
 
 \item{join_by}{A character. The logical operator joining expanded types
 when \code{query} contains wildcard (\code{.}). Can take values
