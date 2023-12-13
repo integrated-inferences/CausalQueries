@@ -171,7 +171,6 @@ make_model <- function(statement,
   nodes <- c(exog_node, endog_node)
 
   # parent count df
-
   parents_df <-
     data.frame(node = nodes, root = nodes %in% exog_node) |>
     dplyr::mutate(parents = vapply(node, function(n) {
@@ -190,17 +189,15 @@ make_model <- function(statement,
     )
 
   # Nodal types
-  # Check
-  if (!is.null(nodal_types)) {
-    if (!all(names(nodal_types) %in% nodes)) {
-      stop("Check provided nodal_types are nodes in the model")
-    }
+  # Check nodal types map to nodes in model
+  if ((!is.null(nodal_types)) && (!all(names(nodal_types) %in% nodes))) {
+    stop("Check provided nodal_types are nodes in the model")
   }
 
   # Check ordering and completeness
-  if (!is.null(nodal_types) & !is.logical(nodal_types)) {
+  if (!is.null(nodal_types) && !is.logical(nodal_types)) {
     if (!all(sort(names(nodal_types)) == sort(nodes))) {
-      message(
+      stop(
         paste(
           "Model not properly defined: If you provide nodal types you should",
           "do so for all nodes in model: ",

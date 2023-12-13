@@ -43,11 +43,18 @@ testthat::test_that(
 
   code = {
     expect_error(make_model("X -> Y" , nodal_types = list(Z = c("0", "1"))))
-    expect_message(make_model("X -> Y" , nodal_types = list(Y = c("0", "1"))))
+    expect_error(make_model("X -> Y" , nodal_types = list(Y = c("0", "1"))))
+    expect_message(make_model("X -> Y" ,
+                              nodal_types = list(
+                                Y = c("00", "01", "10", "11"),
+                                X = c("0", "1"))
+                              ))
     expect_message(make_model("X -> Y" , nodal_types = FALSE))
-    expect_message(
-      make_model("Z -> Y", nodal_types = list(Y = c("01", "10"),
-                                              Z = c("0", "1"))))
+    expect_message(make_model("Z -> Y",
+                              nodal_types = list(
+                                Y = c("01", "10"),
+                                Z = c("0", "1"))
+                              ))
   }
 )
 
