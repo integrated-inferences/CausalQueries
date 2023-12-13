@@ -94,7 +94,7 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
     types <- with(Xs, eval(parse(text = Q)))
 
     # Add name for singletons
-    if(length(types)==1 && is.null(names(types))) {
+    if(length(types) == 1 && is.null(names(types))) {
       names(types) <- model$nodal_types[node]
     }
 
