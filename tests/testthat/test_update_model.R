@@ -185,7 +185,7 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "update_model using keep_fit and keep_event_probabilitie",
+	desc = "update_model using keep_fit and keep_event_probabilities",
 
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),

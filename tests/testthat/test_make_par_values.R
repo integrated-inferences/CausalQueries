@@ -45,7 +45,17 @@ testthat::test_that(
         node = "Y",
         distribution = "uniform"
       )
+
+
     )
+
+    expect_warning(
+      CausalQueries:::make_par_values(
+        model = make_model("A -> B ->C"),
+        nodal_type = "01",
+        x = c(.1, .2)
+      ))
+
   })
 
 testthat::skip_on_cran()
@@ -89,6 +99,14 @@ testthat::test_that(
       node = "Y",
       nodal_type = "00",
       x = c(1, 2)
+    ))
+
+    # non numeric values specified
+    testthat::expect_error(CausalQueries:::make_par_values(
+      model = model,
+      node = "Y",
+      nodal_type = "00",
+      x = "a"
     ))
 
     # no parameter matched
@@ -226,7 +244,7 @@ testthat::test_that(
       )
     expect_equal(out, c(1, 1, 0.5, 1, 0.25, 1, 1, 1, 1, 1))
 
-    # with confounding using statment + param_set
+    # with confounding using statement + param_set
     out <-
       suppressWarnings(
         CausalQueries:::make_par_values(
