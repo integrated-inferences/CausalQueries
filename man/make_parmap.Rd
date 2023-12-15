@@ -25,14 +25,14 @@ Generates a matrix with a row per parameter and a column per data type.
 \examples{
 make_parmap(model = make_model('X->Y'))
 make_parmap(model = make_model('X->Y; X<->Y'))
-make_parmap(model = make_model('X->Y; X<->Y')) \%>\% attr("map")
+make_parmap(model = make_model('X->Y; X<->Y')) |> attr("map")
 make_parmap(model = make_model('X -> M -> Y; X <-> Y'))
 make_parmap(model = make_model('X -> M -> Y; M <-> Y'))
 model <- make_model('X -> M -> Y; M <-> Y; X <-> M')
 make_parmap(model)
-make_parmap(model) \%>\% attr("map")
+make_parmap(model) |> attr("map")
 # Any ways (without paths splits)
-make_parmap(model) \%*\% (make_parmap(model) \%>\% attr("map"))
+make_parmap(model) \%*\% (make_parmap(model) |> attr("map"))
 
 \dontrun{
 # X1 and X2 are confounded and jointly determine Y1, Y2.

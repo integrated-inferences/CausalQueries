@@ -43,7 +43,7 @@ means that Pr(t^X | t^Y) = Pr(t^X), or  Pr(t^X, t^Y) = Pr(t^X)Pr(t^Y).
 In this case there would be 3 degrees of freedom for Y and 1 for X,
 totaling 4 rather than 7.
 
-\code{set_confounds} lets you relax this assumption by increasing the
+\code{set_confound} lets you relax this assumption by increasing the
 number of parameters characterizing the joint distribution. Using the fact
 that P(A,B) = P(A)P(B|A) new parameters are introduced to capture P(B|A=a)
 rather than simply P(B). For instance here two parameters
@@ -53,29 +53,29 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.
 }
 \examples{
 
-make_model('X -> Y; X <-> Y') \%>\%
+make_model('X -> Y; X <-> Y') |>
 get_parameters()
 
-make_model('X -> M -> Y; X <-> Y') \%>\%
+make_model('X -> M -> Y; X <-> Y') |>
 get_parameters()
 
 model <- make_model('X -> M -> Y; X <-> Y; M <-> Y')
 model$parameters_df
 
 # Example where set_confound is implemented after restrictions
-make_model("A -> B -> C") \%>\%
-set_restrictions(increasing("A", "B")) \%>\%
-set_confound("B <-> C") \%>\%
+make_model("A -> B -> C") |>
+set_restrictions(increasing("A", "B")) |>
+set_confound("B <-> C") |>
 get_parameters()
 
 # Example where two parents are confounded
-make_model('A -> B <- C; A <-> C') \%>\%
-  set_parameters(node = "C", c(0.05, .95, .95, 0.05)) \%>\%
-  make_data(n = 50) \%>\%
+make_model('A -> B <- C; A <-> C') |>
+  set_parameters(node = "C", c(0.05, .95, .95, 0.05)) |>
+  make_data(n = 50) |>
   cor()
 
  # Example with two confounds, added sequentially
-model <- make_model('A -> B -> C') \%>\%
+model <- make_model('A -> B -> C') |>
   set_confound(list("A <-> B", "B <-> C"))
 model$statement
 # plot(model)
