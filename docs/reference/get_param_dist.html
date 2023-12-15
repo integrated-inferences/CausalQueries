@@ -89,11 +89,11 @@ generate prior distribution with <code>n_draws</code> number of draws.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_param_dist</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span>, using <span class="op">=</span> <span class="st">'priors'</span>, n_draws <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Prior distribution added to model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          X.0        X.1      Y.00       Y.10       Y.01      Y.11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.56840095 0.43159905 0.4110166 0.12760140 0.13995067 0.3214313</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.97798974 0.02201026 0.5221361 0.08349028 0.30201814 0.0923555</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.08629358 0.91370642 0.4524207 0.10258816 0.22855398 0.2164372</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.95293567 0.04706433 0.5318473 0.27075809 0.05496384 0.1424308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X.0       X.1       Y.00       Y.10      Y.01       Y.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.52821652 0.4717835 0.17051212 0.41268715 0.3750572 0.04174348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.31314093 0.6868591 0.02438197 0.06830469 0.1555548 0.75175854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.06773954 0.9322605 0.26069655 0.20736308 0.3084312 0.22350920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.89497687 0.1050231 0.02679827 0.61396431 0.2737331 0.08550429</span>
 <span class="r-in"><span><span class="fu">get_param_dist</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span>, using <span class="op">=</span> <span class="st">'parameters'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  X.0  X.1 Y.00 Y.10 Y.01 Y.11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.50 0.50 0.25 0.25 0.25 0.25 </span>

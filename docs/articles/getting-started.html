@@ -198,13 +198,23 @@ default distribution over these.</p>
 </table>
 <p><strong>Tailoring</strong>: These features can be edited using
 <code>set_restrictions</code>, <code>set_priors</code> and
-<code>set_parameters</code>.</p>
+<code>set_parameters</code>. Here is an example of setting a
+monotonicity restriction (see <code><a href="../reference/set_restrictions.html">?set_restrictions</a></code> for
+more):</p>
+<p>Here is an example of setting a monotonicity restriction (see
+<code><a href="../reference/set_restrictions.html">?set_restrictions</a></code> for more):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">iv_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/set_restrictions.html">set_restrictions</a></span><span class="op">(</span><span class="fu"><a href="../reference/decreasing.html">decreasing</a></span><span class="op">(</span><span class="st">'Z'</span>, <span class="st">'X'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Here is an example of setting priors (see <code><a href="../reference/prior_setting.html">?set_priors</a></code>
+for more):</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">iv_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prior_setting.html">set_priors</a></span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; No specific parameters to alter values for specified. Altering all parameters.</span></span></code></pre></div>
 <p><strong>Simulation</strong>: Data can be drawn from a model like
 this:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_data.html">make_data</a></span><span class="op">(</span><span class="va">iv_model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -217,12 +227,12 @@ this:</p>
 <tbody>
 <tr class="odd">
 <td align="right">0</td>
-<td align="right">1</td>
+<td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">0</td>
 <td align="right">1</td>
 </tr>
 <tr class="odd">
@@ -233,7 +243,7 @@ this:</p>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">0</td>
+<td align="right">1</td>
 </tr>
 </tbody>
 </table>
@@ -244,7 +254,7 @@ this:</p>
 <p><strong>Updating</strong>: Update using <code>update_model</code>.
 You can pass all <code>rstan</code> arguments to
 <code>update_model</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/fabricatr/reference/fabricate.html" class="external-link">fabricate</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xy_model</span> <span class="op">&lt;-</span> </span>
@@ -252,7 +262,7 @@ You can pass all <code>rstan</code> arguments to
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">df</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Inspecting</strong>: You can access the posterior
 distribution on model parameters directly thus:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">xy_model</span><span class="op">$</span><span class="va">posterior_distribution</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -267,52 +277,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4591975</td>
-<td align="right">0.5408025</td>
-<td align="right">0.0571309</td>
-<td align="right">0.1898689</td>
-<td align="right">0.7325511</td>
-<td align="right">0.0204491</td>
+<td align="right">0.4722456</td>
+<td align="right">0.5277544</td>
+<td align="right">0.0872207</td>
+<td align="right">0.1126119</td>
+<td align="right">0.5432123</td>
+<td align="right">0.2569552</td>
 </tr>
 <tr class="even">
-<td align="right">0.4703768</td>
-<td align="right">0.5296232</td>
-<td align="right">0.2758181</td>
-<td align="right">0.0021633</td>
-<td align="right">0.4724749</td>
-<td align="right">0.2495436</td>
+<td align="right">0.4615753</td>
+<td align="right">0.5384247</td>
+<td align="right">0.1473207</td>
+<td align="right">0.0852098</td>
+<td align="right">0.5110998</td>
+<td align="right">0.2563696</td>
 </tr>
 <tr class="odd">
-<td align="right">0.4847184</td>
-<td align="right">0.5152816</td>
-<td align="right">0.2194788</td>
-<td align="right">0.0252055</td>
-<td align="right">0.3834176</td>
-<td align="right">0.3718981</td>
+<td align="right">0.5152769</td>
+<td align="right">0.4847231</td>
+<td align="right">0.0826147</td>
+<td align="right">0.0553203</td>
+<td align="right">0.5156714</td>
+<td align="right">0.3463936</td>
 </tr>
 <tr class="even">
-<td align="right">0.4703091</td>
-<td align="right">0.5296909</td>
-<td align="right">0.2069741</td>
-<td align="right">0.0834583</td>
-<td align="right">0.3889108</td>
-<td align="right">0.3206569</td>
+<td align="right">0.5177188</td>
+<td align="right">0.4822812</td>
+<td align="right">0.1005839</td>
+<td align="right">0.1637440</td>
+<td align="right">0.6251948</td>
+<td align="right">0.1104773</td>
 </tr>
 <tr class="odd">
-<td align="right">0.4643947</td>
-<td align="right">0.5356053</td>
-<td align="right">0.1746301</td>
-<td align="right">0.1224106</td>
-<td align="right">0.6066117</td>
-<td align="right">0.0963477</td>
+<td align="right">0.5189253</td>
+<td align="right">0.4810747</td>
+<td align="right">0.2382951</td>
+<td align="right">0.0038233</td>
+<td align="right">0.4672194</td>
+<td align="right">0.2906623</td>
 </tr>
 <tr class="even">
-<td align="right">0.4881516</td>
-<td align="right">0.5118484</td>
-<td align="right">0.3546395</td>
-<td align="right">0.0748905</td>
-<td align="right">0.3134992</td>
-<td align="right">0.2569708</td>
+<td align="right">0.4835138</td>
+<td align="right">0.5164862</td>
+<td align="right">0.0915889</td>
+<td align="right">0.1225638</td>
+<td align="right">0.6062473</td>
+<td align="right">0.1796001</td>
 </tr>
 </tbody>
 </table>
@@ -324,7 +334,7 @@ distribution on model parameters directly thus:</p>
 <p><strong>Querying</strong>: You ask arbitrary causal queries of the
 model.</p>
 <p>Examples of <em>unconditional</em> queries:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -355,25 +365,25 @@ model.</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.2536302</td>
-<td align="right">0.1950463</td>
-<td align="right">0.0085380</td>
-<td align="right">0.7050372</td>
+<td align="right">0.2493501</td>
+<td align="right">0.1966005</td>
+<td align="right">0.0078813</td>
+<td align="right">0.7201351</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.5371329</td>
-<td align="right">0.1031173</td>
-<td align="right">0.3185168</td>
-<td align="right">0.7174812</td>
+<td align="right">0.5297296</td>
+<td align="right">0.1042831</td>
+<td align="right">0.3143719</td>
+<td align="right">0.7075877</td>
 </tr>
 </tbody>
 </table>
 <p>Examples of <em>conditional</em> queries:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
 <span>              given <span class="op">=</span> <span class="st">"X==1 &amp; Y == 1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -405,26 +415,26 @@ model.</p>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.5002882</td>
-<td align="right">0.2875278</td>
-<td align="right">0.0268855</td>
-<td align="right">0.9782275</td>
+<td align="right">0.5003926</td>
+<td align="right">0.2904739</td>
+<td align="right">0.0243184</td>
+<td align="right">0.9770318</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.7816154</td>
-<td align="right">0.1300827</td>
-<td align="right">0.5133196</td>
-<td align="right">0.9886034</td>
+<td align="right">0.7193968</td>
+<td align="right">0.1325079</td>
+<td align="right">0.4536406</td>
+<td align="right">0.9565782</td>
 </tr>
 </tbody>
 </table>
 <p>Queries can even be conditional on counterfactual quantities. Here
 the probability of a positive effect given <em>some</em> effect:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
 <span>              given <span class="op">=</span> <span class="st">"Y[X=1] != Y[X=0]"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -456,20 +466,20 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.4956400</td>
-<td align="right">0.2889945</td>
-<td align="right">0.0219245</td>
-<td align="right">0.9772276</td>
+<td align="right">0.4996223</td>
+<td align="right">0.2875792</td>
+<td align="right">0.0250321</td>
+<td align="right">0.9744429</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.8234622</td>
-<td align="right">0.0886675</td>
-<td align="right">0.6626479</td>
-<td align="right">0.9874036</td>
+<td align="right">0.8240793</td>
+<td align="right">0.0871882</td>
+<td align="right">0.6672142</td>
+<td align="right">0.9880813</td>
 </tr>
 </tbody>
 </table>
