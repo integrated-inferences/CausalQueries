@@ -52,6 +52,7 @@ xy_model$parameters_df |> kable()
 ```
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
+Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more):
 
 Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more): 
 
