@@ -1,0 +1,121 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+```{r setup, message = FALSE, warning = FALSE}
+library(CausalQueries)
+library(fabricatr)
+library(knitr)
+```
+
+# Make a model
+
+
+**Generating**: To make a model you need to provide a DAG statement to `make_model`.  
+For instance 
+
+* `"X->Y"`
+*  `"X -> M -> Y <- X"` or  
+* `"Z -> X -> Y <-> X"`. 
+
+```{r}
+# examples of models
+xy_model <- make_model("X -> Y")
+iv_model <- make_model("Z -> X -> Y <-> X")
+
+```
+
+**Graphing**: Once you have made a model you can inspect the DAG:
+
+```{r}
+plot(iv_model)
+```
+
+**Inspecting**: The model has a set of parameters and a default distribution over these.
+
+
+```{r}
+xy_model$parameters_df |> kable()
+```
+
+**Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
+
+```{r}
+iv_model <- 
+  iv_model |> set_restrictions(decreasing('Z', 'X'))
+```
+
+**Simulation**: Data can be drawn from a model like this:
+
+```{r}
+data <- make_data(iv_model, n = 4) 
+
+data |> kable()
+
+```
+
+# Model updating
+
+**Updating**: Update using `update_model`. You can pass all `rstan` arguments to `update_model`.
+
+```{r}
+df <- fabricate(N = 100, X = rbinom(N, 1, .5), Y = rbinom(N, 1, .25 + X*.5))
+
+xy_model <- 
+  xy_model |> 
+  update_model(df, refresh = 0)
+```
+
+**Inspecting**: You can access the posterior distribution on model parameters directly thus:
+
+```{r}
+
+xy_model$posterior_distribution |> 
+  head() |> kable()
+
+```
+
+where each row is a draw of parameters.
+
+# Query model
+
+**Querying**: You ask arbitrary causal queries of the model. 
+
+Examples of *unconditional* queries:
+
+```{r}
+xy_model |> 
+  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors")) |>
+  kable()
+```
+
+Examples of *conditional* queries:
+
+```{r}
+xy_model |> 
+  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
+              given = "X==1 & Y == 1") |>
+  kable()
+```
+
+Queries can even be conditional on counterfactual quantities. Here the probability of a positive effect given *some* effect:
+
+```{r}
+xy_model |> 
+  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
+              given = "Y[X=1] != Y[X=0]") |>
+  kable()
+```
