@@ -350,7 +350,7 @@ make_par_values_stops <- function(model,
     stop("type must be one of priors or param_value. No change to values.")
   }
 
-  if (all(is.na(distribution)) & all(is.na(x))) {
+  if (all(is.na(distribution)) && all(is.na(x))) {
     stop("neither distribution nor values provided. No change to values")
   }
 
@@ -371,7 +371,7 @@ make_par_values_stops <- function(model,
     stop("join_by must be of type character")
   }
 
-  if (!(join_by %in% c("|", "&"))) {
+  if (!all(join_by %in% c("|", "&"))) {
     stop("join_by must be one of '|' or '&'")
   }
 
@@ -380,7 +380,7 @@ make_par_values_stops <- function(model,
   }
 
   # disallow redundant argument specification
-  if (!is.na(alter_at) &
+  if (!is.na(alter_at) &&
       any(!is.na(
         list(node, nodal_type, param_set, given, statement, param_names)
       ))) {
@@ -420,7 +420,7 @@ make_par_values_stops <- function(model,
     ))
   }
 
-  if (!all(is.na(distribution)) & !all(is.na(x))) {
+  if (!all(is.na(distribution)) && !all(is.na(x))) {
     stop(
       paste(
         "values and distribution cannot be declared at the same time.",
@@ -430,7 +430,7 @@ make_par_values_stops <- function(model,
   }
 
   #disallow multiple statements
-  if (!is.na(statement) & length(statement) > 1) {
+  if (all(!is.na(statement)) && (length(statement) > 1)) {
     stop("please specify only one statement")
   }
 }
@@ -460,7 +460,11 @@ construct_commands_alter_at <- function(alter_at) {
     stringr::str_pad(width = 4, side = "both")
 
   # extract filter statements
-  operation <- unlist(strsplit(alter_at, trimws(join, which = "both")))
+  if(length(join) > 0) {
+    operation <- unlist(strsplit(alter_at, trimws(join, which = "both")))
+  } else {
+    operation <- alter_at
+  }
 
   # extract operands from filter statements
   operand <- stringr::str_extract_all(operation, "\\%in% | \\== | \\!=") |>
@@ -507,7 +511,12 @@ construct_commands_alter_at <- function(alter_at) {
                           paste("'", commands[[i]], "'", sep = ""), sep = " ")
   }
 
-  commands <- apply(commands, 1, function(row) paste(row, collapse = join))
+  if(length(join) > 0) {
+    commands <- apply(commands, 1, function(row) paste(row, collapse = join))
+  } else {
+    commands <- commands[[1]]
+  }
+
   return(commands)
 }
 
@@ -601,7 +610,7 @@ construct_commands_other_args <- function(node,
 
   if (any(not_char)) {
     stop(paste(
-      paste(defined[not_char], sep = ","),
+      paste(defined[not_char], collapse = ", "),
       "must be of type character. No change to values.",
       sep = " "
     ))
