@@ -268,4 +268,35 @@ testthat::test_that(
 
 
 
+testthat::test_that(
+
+  desc = "priors returned",
+
+  code = {
+    set.seed(1)
+    model <- make_model("X->Y") |> set_priors(alpha = c(1, 2, 1, 2, 3, 4))
+    updated <- suppressWarnings(update_model(model, iter = 2000))
+    x <- updated$posterior_distribution |> apply(2, mean)
+    expect_true(max(abs(x - c(.33, .66, .1, .2, .3, .4))) < .015)
+  }
+)
+
+
+testthat::test_that(
+
+  desc = "posterior returned",
+
+  code = {
+    set.seed(1)
+    model <- make_model("X->Y")
+    updated <- suppressWarnings(
+      update_model(model,
+                   data = data.frame(X = rep(0:1, 50), Y =rep(0:1, 50)),
+                   iter = 2000))
+    x <- updated$posterior_distribution |> apply(2, mean)
+    expect_true(max(abs(x - c(.5, .5, .02, .01, .95, .02))) < .01)
+  }
+)
+
+
 

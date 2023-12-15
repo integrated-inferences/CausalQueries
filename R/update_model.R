@@ -8,16 +8,17 @@
 #' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or
 #'   'compact' (as made by \code{\link{collapse_data}}). Compact data must
 #'   have entries for each member of each strategy family to produce a
-#'   valid simplex.
+#'   valid simplex. When long form data is provided with missingness, missing data is assumed to be missing at random.
 #' @param keep_fit Logical. Whether to append the
-#'   \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`
+#'   \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`. See `? rstan::stanfit` for details of output.
 #' @param keep_event_probabilities Logical. Whether to keep the distribution
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters,
 #'   prob_of_types, P_lambdas, w, w_full
 #' @param censored_types vector of data types that are selected out of
 #'   the data, e.g. c("X0Y0")
-#' @param ... Options passed onto \code{\link[rstan]{stan}} call.
+#' @param ... Options passed onto \code{\link[rstan]{rstan::sampling}} call.
+#'   For details see `? rstan::sampling`
 #' @return An object of class \code{causal_model}. The returned model is
 #'   a list containing the elements comprising a model
 #'   (e.g. 'statement', 'nodal_types' and 'DAG') with the
