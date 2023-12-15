@@ -53,9 +53,18 @@ xy_model$parameters_df |> kable()
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
 
+Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more): 
+
 ```{r}
 iv_model <- 
   iv_model |> set_restrictions(decreasing('Z', 'X'))
+```
+
+Here is an example of setting priors (see `?set_priors` for more): 
+
+```{r}
+iv_model <- 
+  iv_model |> set_priors(distribution = "jeffreys")
 ```
 
 **Simulation**: Data can be drawn from a model like this:
