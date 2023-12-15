@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/articles/1-getting-started.html</loc>
   </url>
   <url>
@@ -25,10 +28,13 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>/reference/CausalQueries-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/CausalQueries_internal_inherit_params.html</loc>
   </url>
   <url>
     <loc>/reference/add_dots.html</loc>
@@ -40,13 +46,13 @@
     <loc>/reference/all_data_types.html</loc>
   </url>
   <url>
-    <loc>/reference/CausalQueries-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CausalQueries_internal_inherit_params.html</loc>
-  </url>
-  <url>
     <loc>/reference/causal_type_names.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_args.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_query.html</loc>
   </url>
   <url>
     <loc>/reference/check_string_input.html</loc>
@@ -55,10 +61,10 @@
     <loc>/reference/clean_condition.html</loc>
   </url>
   <url>
-    <loc>/reference/clean_params.html</loc>
+    <loc>/reference/clean_param_vector.html</loc>
   </url>
   <url>
-    <loc>/reference/clean_param_vector.html</loc>
+    <loc>/reference/clean_params.html</loc>
   </url>
   <url>
     <loc>/reference/collapse_data.html</loc>
@@ -68,6 +74,15 @@
   </url>
   <url>
     <loc>/reference/complements.html</loc>
+  </url>
+  <url>
+    <loc>/reference/construct_commands_alter_at.html</loc>
+  </url>
+  <url>
+    <loc>/reference/construct_commands_other_args.html</loc>
+  </url>
+  <url>
+    <loc>/reference/construct_commands_param_names.html</loc>
   </url>
   <url>
     <loc>/reference/data_to_data.html</loc>
@@ -109,19 +124,22 @@
     <loc>/reference/get_data_families.html</loc>
   </url>
   <url>
+    <loc>/reference/get_estimands.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_event_prob.html</loc>
   </url>
   <url>
     <loc>/reference/get_nodal_types.html</loc>
   </url>
   <url>
+    <loc>/reference/get_param_dist.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_parameter_matrix.html</loc>
   </url>
   <url>
     <loc>/reference/get_parameter_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_param_dist.html</loc>
   </url>
   <url>
     <loc>/reference/get_parents.html</loc>
@@ -134,6 +152,9 @@
   </url>
   <url>
     <loc>/reference/get_query_types.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_type_distributions.html</loc>
   </url>
   <url>
     <loc>/reference/get_type_names.html</loc>
@@ -163,6 +184,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/institutions_data.html</loc>
+  </url>
+  <url>
     <loc>/reference/interacts.html</loc>
   </url>
   <url>
@@ -173,6 +197,9 @@
   </url>
   <url>
     <loc>/reference/is_improper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lipids_data.html</loc>
   </url>
   <url>
     <loc>/reference/list_non_parents.html</loc>
@@ -196,16 +223,19 @@
     <loc>/reference/make_nodal_types.html</loc>
   </url>
   <url>
-    <loc>/reference/make_parameters_df.html</loc>
+    <loc>/reference/make_par_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/make_par_values_stops.html</loc>
   </url>
   <url>
     <loc>/reference/make_parameter_matrix.html</loc>
   </url>
   <url>
-    <loc>/reference/make_parmap.html</loc>
+    <loc>/reference/make_parameters_df.html</loc>
   </url>
   <url>
-    <loc>/reference/make_par_values.html</loc>
+    <loc>/reference/make_parmap.html</loc>
   </url>
   <url>
     <loc>/reference/make_prior_distribution.html</loc>
@@ -217,6 +247,9 @@
     <loc>/reference/minimal_event_data.html</loc>
   </url>
   <url>
+    <loc>/reference/n_check.html</loc>
+  </url>
+  <url>
     <loc>/reference/nodes_in_statement.html</loc>
   </url>
   <url>
@@ -226,13 +259,13 @@
     <loc>/reference/non_increasing.html</loc>
   </url>
   <url>
-    <loc>/reference/n_check.html</loc>
-  </url>
-  <url>
     <loc>/reference/observe_data.html</loc>
   </url>
   <url>
     <loc>/reference/parameter_setting.html</loc>
+  </url>
+  <url>
+    <loc>/reference/parents_to_int.html</loc>
   </url>
   <url>
     <loc>/reference/perm.html</loc>
@@ -247,6 +280,9 @@
     <loc>/reference/prior_setting.html</loc>
   </url>
   <url>
+    <loc>/reference/queries_to_types.html</loc>
+  </url>
+  <url>
     <loc>/reference/query_distribution.html</loc>
   </url>
   <url>
@@ -256,10 +292,10 @@
     <loc>/reference/query_to_expression.html</loc>
   </url>
   <url>
-    <loc>/reference/realise_outcomes.html</loc>
+    <loc>/reference/realise_outcome_c.html</loc>
   </url>
   <url>
-    <loc>/reference/realise_outcome_c.html</loc>
+    <loc>/reference/realise_outcomes.html</loc>
   </url>
   <url>
     <loc>/reference/restrict_by_labels.html</loc>
@@ -295,10 +331,10 @@
     <loc>/reference/simulate_data.html</loc>
   </url>
   <url>
-    <loc>/reference/strategy_statements.html</loc>
+    <loc>/reference/st_within.html</loc>
   </url>
   <url>
-    <loc>/reference/st_within.html</loc>
+    <loc>/reference/strategy_statements.html</loc>
   </url>
   <url>
     <loc>/reference/substitutes.html</loc>
@@ -308,6 +344,9 @@
   </url>
   <url>
     <loc>/reference/type_matrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/uncollapse_nodal_types.html</loc>
   </url>
   <url>
     <loc>/reference/unpack_wildcard.html</loc>
