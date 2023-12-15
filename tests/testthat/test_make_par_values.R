@@ -1,7 +1,6 @@
 
 context("Test make_par_values")
 
-
 testthat::test_that(
   desc = "Check non existent column and parameter name errors",
   code = {
@@ -45,6 +44,14 @@ testthat::test_that(
       node = "Y",
       nodal_type = "00",
       x = c(1, 2)
+    ))
+
+    # non numeric values specified
+    testthat::expect_error(CausalQueries:::make_par_values(
+      model = model,
+      node = "Y",
+      nodal_type = "00",
+      x = "a"
     ))
 
     # no parameter matched
@@ -182,7 +189,7 @@ testthat::test_that(
       )
     expect_equal(out, c(1, 1, 0.5, 1, 0.25, 1, 1, 1, 1, 1))
 
-    # with confounding using statment + param_set
+    # with confounding using statement + param_set
     out <-
       suppressWarnings(
         CausalQueries:::make_par_values(
