@@ -385,7 +385,7 @@ testthat::test_that(
     )
 
     # specify only cols in parameters_df in alter_at
-    exepct_error(
+    expect_error(
       CausalQueries:::construct_commands_alter_at("abc == 1")
     )
   }
@@ -401,7 +401,7 @@ testthat::test_that(
 
     # specify only param_names in parameters_df
     model <- CausalQueries::make_model("X -> Y")
-    exepct_error(
+    expect_error(
       CausalQueries:::construct_commands_param_names(
         param_names = "X.2",
         model_param_names = model$parameters_df$param_names
