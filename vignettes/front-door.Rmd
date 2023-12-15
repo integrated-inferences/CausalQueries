@@ -1,0 +1,88 @@
+---
+title: "Through the front door"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Through the front door}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, warning = FALSE, message = FALSE}
+library(CausalQueries)
+library(fabricatr)
+library(knitr)
+```
+
+Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There is, in addition, unobservable confounding between `X` and `Y`. This is an example of a model in which you might use information on `M` to figure out whether `X` caused `Y` making use of the "front door criterion."
+
+The DAG is defined using `dagitty` syntax like this:
+
+```{r}
+model <- make_model("X -> M -> Y <-> X")
+```
+
+We might set priors thus:
+
+```{r}
+model <- set_priors(model, distribution = "jeffreys")
+```
+
+You can plot the dag thus. 
+
+```{r}
+plot(model)
+```
+
+
+Updating is done like this:
+
+
+```{r, message = FALSE, warning = FALSE}
+# Lets imagine highly correlated data; here an effect of .9 at each step
+data <- fabricate(N = 5000, 
+                  X = rep(0:1, N/2), 
+                  M = rbinom(N, 1, .05 + .9*X), 
+                  Y = rbinom(N, 1, .05 + .9*M))
+
+# Updating
+model <- model |> update_model(data, refresh = 0)
+```
+
+Finally you can calculate an estimand of interest like this:
+
+```{r} 
+query_model(
+    model = model, 
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]",
+    ) |>
+  kable(digits = 2)
+```
+
+This uses the posterior distribution and the model to assess the average treatment effect estimand. 
+
+Let's compare now with the case where you do not have data on `M`:
+
+
+```{r, message = FALSE, warning = FALSE}
+
+model |>
+  update_model(data |> dplyr::select(X, Y), refresh = 0) |>
+  query_model(
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]") |>
+  kable(digits = 2)
+```
+
+Here we update much less and are (relatively) much less certain in our beliefs precisely because we are aware of the confounded related between `X` and `Y`, without having the data on `M` we could use to address it.
+
+# Try it
+
+Say `X`, `M`, and `Y` were perfectly correlated. Would the average treatment effect be identified?

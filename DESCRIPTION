@@ -49,4 +49,4 @@ Suggests:
     covr
 SystemRequirements: GNU make
 Biarch: true
-
+VignetteBuilder: knitr
