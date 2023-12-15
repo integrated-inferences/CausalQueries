@@ -1,9 +1,40 @@
 
+context(desc = "Testing make_data 1")
 
+testthat::skip_on_cran()
+# Simulate using parameters
+model <- make_model("X -> Y")
 
+testthat::test_that(
 
+  desc = "Simulate data works using parameter.",
 
-context("Tests make_data")
+  code = {
+    dat <- make_data(model, n = 5)
+    expect_equal(nrow(dat), 5)
+
+  })
+
+testthat::test_that(
+
+  desc = "Simulate data works using priors.",
+
+  code = {
+    dat <- make_data(model, n = 5, param_type = "prior_draw")
+    expect_equal(nrow(dat), 5)
+  })
+
+testthat::test_that(
+
+  desc = "Positive integer number of observations.",
+
+  code = {
+    expect_error(make_data(model, n = -1),
+                 "Number of observation has to be an integer greater than 0.")
+  }
+)
+
+context("Tessting make_data 2")
 
 testthat::skip_on_cran()
 testthat::test_that(
@@ -38,8 +69,6 @@ testthat::test_that(
 		expect_true(all(c(out$X, out$Y)))
 	}
 )
-
-
 
 
 
