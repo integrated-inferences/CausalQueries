@@ -59,12 +59,12 @@ NULL
 #' \code{make_priors} Generates priors for a model.
 #'
 #' @rdname prior_setting
-#' @param alphas Real positive numbers giving hyperparameters of the
-#'   Dirichlet distribution
+#' @param alphas Real positive numbers giving parameters of a
+#'   Dirichlet prior distribution ("hyperparameters")
 #' @inheritParams make_par_values
 #'
-#' @return A vector indicating the hyperparameters of the prior distribution
-#'   of the nodal types.
+#' @return A vector indicating the parameters of the prior distribution
+#'   of the nodal types ("hyperparameters").
 #'
 #' @family priors
 #' @export

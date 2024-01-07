@@ -57,6 +57,8 @@ get_event_prob <- function(model,
         select(event_probs) %>% as.matrix()
     }
 
+    colnames(event_probs) <- event_probs
+
     return(event_probs)
 }
 
