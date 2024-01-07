@@ -25,10 +25,10 @@ update_model(
 \item{data_type}{Either 'long' (as made by  \code{\link{make_data}}) or
 'compact' (as made by \code{\link{collapse_data}}). Compact data must
 have entries for each member of each strategy family to produce a
-valid simplex.}
+valid simplex. When long form data is provided with missingness, missing data is assumed to be missing at random.}
 
 \item{keep_fit}{Logical. Whether to append the
-\code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`}
+\code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`. See `? rstan::stanfit` for details of output.}
 
 \item{keep_transformed}{Logical. Whether to keep transformed parameters,
 prob_of_types, P_lambdas, w, w_full}
@@ -39,7 +39,8 @@ of event probabilities. Defaults to `FALSE`}
 \item{censored_types}{vector of data types that are selected out of
 the data, e.g. c("X0Y0")}
 
-\item{...}{Options passed onto \code{\link[rstan]{stan}} call.}
+\item{...}{Options passed onto \code{\link[rstan]{rstan::sampling}} call.
+For details see `? rstan::sampling`}
 }
 \value{
 An object of class \code{causal_model}. The returned model is

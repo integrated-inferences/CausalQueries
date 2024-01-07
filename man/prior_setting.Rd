@@ -77,8 +77,8 @@ Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
 the form of, for example, 'X.1', 'Y.01'}
 }
 \value{
-A vector indicating the hyperparameters of the prior distribution
-  of the nodal types.
+A vector indicating the parameters of the prior distribution
+  of the nodal types ("hyperparameters").
 
 An object of class \code{causal_model}. It essentially returns a
   list containing the elements comprising a model
