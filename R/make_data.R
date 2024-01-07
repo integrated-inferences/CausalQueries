@@ -347,7 +347,9 @@ make_data_single <- function(
 	parameters = NULL,
 	param_type = NULL,
 	given = NULL,
-	w = NULL, P = NULL, A = NULL) {
+	w = NULL,
+	P = NULL,
+	A = NULL) {
 
 	# Check that parameters sum to 1 in each param_set
 	# if(!is.null(parameters)) parameters <- clean_param_vector(model, parameters)
@@ -372,7 +374,7 @@ make_data_single <- function(
 		}
 
 	# Data drawn here
-	make_events(model, n = n,  parameters = parameters, w = w) %>%
+	make_events(model, n = n,  parameters = parameters, w = w) |>
 		expand_data(model)
 
  }

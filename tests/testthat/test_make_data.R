@@ -34,7 +34,7 @@ testthat::test_that(
   }
 )
 
-context("Tessting make_data 2")
+context("Testing make_data 2")
 
 testthat::skip_on_cran()
 testthat::test_that(
