@@ -5,24 +5,26 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
-#' @param data_type Either 'long' (as made by  \code{\link{make_data}}) or
+#' @param data_type Either 'long' (as made by \code{\link{make_data}}) or
 #'   'compact' (as made by \code{\link{collapse_data}}). Compact data must
 #'   have entries for each member of each strategy family to produce a
-#'   valid simplex. When long form data is provided with missingness, missing data is assumed to be missing at random.
+#'   valid simplex. When long form data is provided with missingness, missing
+#'   data is assumed to be missing at random.
 #' @param keep_fit Logical. Whether to append the
-#'   \code{\link[rstan]{stanfit}} object to the model. Defaults to `FALSE`. See `? rstan::stanfit` for details of output.
+#'   \link[rstan]{stanfit} object to the model. Defaults to `FALSE`. See
+#'   \code{`?rstan::stanfit`} for details of output.
 #' @param keep_event_probabilities Logical. Whether to keep the distribution
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed parameters,
 #'   prob_of_types, P_lambdas, w, w_full
 #' @param censored_types vector of data types that are selected out of
-#'   the data, e.g. c("X0Y0")
-#' @param ... Options passed onto \code{\link[rstan]{rstan::sampling}} call.
-#'   For details see `? rstan::sampling`
-#' @return An object of class \code{causal_model}. The returned model is
-#'   a list containing the elements comprising a model
+#'   the data, e.g. \code{c("X0Y0")}
+#' @param ... Options passed onto \link[rstan]{sampling} call. For
+#'   details see \code{?rstan::sampling}
+#' @return An object of class \code{causal_model}. The returned model is a
+#'   list containing the elements comprising a model
 #'   (e.g. 'statement', 'nodal_types' and 'DAG') with the
-#'   `posterior_distribution` returned by \code{\link[rstan]{stan}}
+#'   \code{posterior_distribution} returned by \link[rstan]{stan}
 #'   attached to it.
 #' @import methods
 #' @import Rcpp
@@ -31,8 +33,8 @@
 #' @importFrom rstan extract
 #' @importFrom rstan sampling
 #' @export
-#' @examples
 #'
+#' @examples
 #' model <- make_model('X->Y')
 #' data_long   <- simulate_data(model, n = 4)
 #' data_short  <- collapse_data(data_long, model)
