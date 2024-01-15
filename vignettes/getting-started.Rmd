@@ -16,6 +16,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message = FALSE, warning = FALSE}
+if(!requireNamespace("fabricatr", quietly = TRUE)) {
+  install.packages("fabricatr")
+}
+
 library(CausalQueries)
 library(fabricatr)
 library(knitr)
@@ -82,7 +86,7 @@ data |> kable()
 **Updating**: Update using `update_model`. You can pass all `rstan` arguments to `update_model`.
 
 ```{r}
-df <- fabricate(N = 100, X = rbinom(N, 1, .5), Y = rbinom(N, 1, .25 + X*.5))
+df <- fabricatr::fabricate(N = 100, X = rbinom(N, 1, .5), Y = rbinom(N, 1, .25 + X*.5))
 
 xy_model <- 
   xy_model |> 

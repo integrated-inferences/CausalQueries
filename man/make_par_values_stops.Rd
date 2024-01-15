@@ -17,7 +17,8 @@ make_par_values_stops(
   statement = NA,
   join_by = "|",
   param_names = NA,
-  distribution = NA
+  distribution = NA,
+  normalize = FALSE
 )
 }
 \arguments{

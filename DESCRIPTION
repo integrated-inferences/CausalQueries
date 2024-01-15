@@ -50,6 +50,7 @@ Suggests:
     rmarkdown,
     knitr,
     DeclareDesign,
+    fabricatr,
     covr
 SystemRequirements: GNU make
 Biarch: true

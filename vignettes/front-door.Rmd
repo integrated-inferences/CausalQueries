@@ -15,6 +15,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, warning = FALSE, message = FALSE}
+if(!requireNamespace("fabricatr", quietly = TRUE)) {
+  install.packages("fabricatr")
+}
+
 library(CausalQueries)
 library(fabricatr)
 library(knitr)

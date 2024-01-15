@@ -95,7 +95,8 @@ make_par_values <- function(model,
     statement = statement,
     join_by = join_by,
     param_names = param_names,
-    distribution = distribution
+    distribution = distribution,
+    normalize = normalize
   )
 
   # What to alter
@@ -319,7 +320,8 @@ make_par_values_stops <- function(model,
                                   statement = NA,
                                   join_by = "|",
                                   param_names = NA,
-                                  distribution = NA) {
+                                  distribution = NA,
+                                  normalize = FALSE) {
   is_a_model(model)
 
   # check inputs for model, alter, x, distribution
@@ -429,9 +431,14 @@ make_par_values_stops <- function(model,
     )
   }
 
-  #disallow multiple statements
+  # disallow multiple statements
   if (all(!is.na(statement)) && (length(statement) > 1)) {
     stop("please specify only one statement")
+  }
+
+  # normalize must be logical
+  if (!is.logical(normalize)) {
+    stop("normalize must be of type logical. No change to values.")
   }
 }
 
