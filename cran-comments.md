@@ -1,13 +1,18 @@
-This is a patch release fixing a minor querying bug related to helper functions 
-drawing new prior distributions when a prior distribution is already set for a given 
-model. 
+This is a patch release implementing the following bug fixes:
+
+* passing nodal_types to `make_model()` now implements correct error handling 
+* `query_distribution()` no longer overwrites type distributions internally 
+* node naming checks are operational in `make_model()`
+
+This patch release further improves type safety and implements range based
+looping throughout the package. 
 
 ## Test environments
 
 * local Ubuntu 22.04.3 LTS install, R 4.3.1
 * win-builder, R version (r-devel)
 * win-builder, R version 4.2.3
-* win-builder, R version 4.3.1
+* win-builder, R version 4.3.2
 * macOS, R version 4.3.0
 * R-hub Windows Server 2022 (r-devel)
 * R-hub Fedora Linux, clang, gfortran (r-devel)

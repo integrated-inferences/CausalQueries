@@ -1,3 +1,66 @@
+# CausalQueries 1.0.2
+
+### Bug Fixes 
+
+#### 1. passing `nodal_types` to `make_model()` now implements correct error handling 
+
+Previously this `make_model("X -> Y" , nodal_types = list(Y = c("0", "1")))` was
+permissible leading to setting `nodal_types`:
+
+```
+$X
+NULL
+
+$Y
+[1] "0" "1"
+```
+
+This led to undefined behavior and unhelpful downstream error messages. 
+When passing `nodal_types` to `make_model()` users are now forced to specify 
+a set of `nodal_types` on each node.  
+
+
+#### 2. `query_distribution()` are no longer overwrittes type distribution internally  
+
+
+#### 3. node naming checks are operational in `make_model()`  
+
+Previously hyphenated names would not throw an error and be corrupted 
+silently through the conversion of model definition strings into 
+`dagitty` objects.
+
+```
+make_model("institutions -> political-inequality")
+
+Statement: 
+[1] "institutions -> political-inequality"
+
+DAG: 
+        parent  children
+1 institutions political
+```
+
+Checks for correct variable naming are now reinstated. 
+
+### Improvements
+
+#### 1. type safety 
+
+Calls to `sapply()` have ben replaced with `vapply()` wherever possible to 
+enforce type safety.   
+
+
+#### 2. range based looping 
+
+Looping via index has been replaced by range based looping wherever possible 
+to guard against 0 length exceptions.  
+
+
+#### 3. `goodpractice::gp()`
+
+`goodpractice` code improvements have been implemented.
+
+
 # CausalQueries 1.0.0
 
 ### Non Backwards Compatible Changes 
