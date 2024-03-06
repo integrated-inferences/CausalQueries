@@ -32,8 +32,7 @@ data is assumed to be missing at random.}
 \link[rstan]{stanfit} object to the model. Defaults to `FALSE`. See
 \code{`?rstan::stanfit`} for details of output.}
 
-\item{keep_transformed}{Logical. Whether to keep transformed parameters,
-prob_of_types, P_lambdas, w, w_full}
+\item{keep_transformed}{Logical. Whether to keep transformed `prob_of_types`}
 
 \item{keep_event_probabilities}{Logical. Whether to keep the distribution
 of event probabilities. Defaults to `FALSE`}
@@ -60,20 +59,18 @@ model <- make_model('X->Y')
 data_long   <- simulate_data(model, n = 4)
 data_short  <- collapse_data(data_long, model)
 \donttest{
-model_1 <- update_model(model, data_long)
+update_model(model, data_long)
+update_model(model, data_short)
 }
 \donttest{
-model_2 <- update_model(model, data_long, keep_transformed = FALSE)
+# stan model summary
+model <- update_model(model, data_short,  keep_fit = TRUE)
+model$stan_objects$stan_fit
 }
 \dontrun{
-# Throws error unless compact data indicated:
-
-model_3 <- update_model(model, data_short)
-model_4 <- update_model(model, data_short, data_type = 'compact')
-
 # It is possible to implement updating without data, in which
 # case the posterior is a stan object that reflects the prior
-model_5 <- update_model(model)
+update_model(model)
 
 
 # Censored data types

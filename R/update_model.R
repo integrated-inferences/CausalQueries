@@ -15,8 +15,7 @@
 #'   \code{`?rstan::stanfit`} for details of output.
 #' @param keep_event_probabilities Logical. Whether to keep the distribution
 #'   of event probabilities. Defaults to `FALSE`
-#' @param keep_transformed Logical. Whether to keep transformed parameters,
-#'   prob_of_types, P_lambdas, w, w_full
+#' @param keep_transformed Logical. Whether to keep transformed `prob_of_types`
 #' @param censored_types vector of data types that are selected out of
 #'   the data, e.g. \code{c("X0Y0")}
 #' @param ... Options passed onto \link[rstan]{sampling} call. For
@@ -39,20 +38,18 @@
 #' data_long   <- simulate_data(model, n = 4)
 #' data_short  <- collapse_data(data_long, model)
 #'\donttest{
-#' model_1 <- update_model(model, data_long)
-#'}
+#' update_model(model, data_long)
+#' update_model(model, data_short)
+#' }
 #'\donttest{
-#' model_2 <- update_model(model, data_long, keep_transformed = FALSE)
+#' # stan model summary
+#' model <- update_model(model, data_short,  keep_fit = TRUE)
+#' model$stan_objects$stan_fit
 #'}
 #'\dontrun{
-#' # Throws error unless compact data indicated:
-#'
-#' model_3 <- update_model(model, data_short)
-#' model_4 <- update_model(model, data_short, data_type = 'compact')
-#'
 #' # It is possible to implement updating without data, in which
 #' # case the posterior is a stan object that reflects the prior
-#' model_5 <- update_model(model)
+#' update_model(model)
 #'
 #'
 #' # Censored data types
@@ -73,7 +70,6 @@
 #'   censored_types = c("X1Y0", "X0Y0", "X0Y1")) %>%
 #'   query_model(te("X", "Y"), using = "posteriors")
 #'}
-
 
 update_model <- function(model,
                          data = NULL,
@@ -126,9 +122,17 @@ update_model <- function(model,
     # assign fit
     stanfit <- stanmodels$simplexes
 
+    # parameters to drop
+    drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
+    if(!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
+    if(!keep_transformed) drop_pars <- c(drop_pars, "prob_of_types")
+
+
     sampling_args <- set_sampling_args(object = stanfit,
                                        user_dots = list(...),
-                                       data = stan_data)
+                                       data = stan_data,
+                                       pars = drop_pars,
+                                       include = FALSE)
 
     newfit <- do.call(rstan::sampling, sampling_args)
 
@@ -136,6 +140,8 @@ update_model <- function(model,
 
     if(keep_fit) {
       model$stan_objects$stan_fit <- newfit
+    } else {
+      model$stan_objects$stan_print <- capture.output(print(newfit))
     }
 
     # Retain posterior distribution
