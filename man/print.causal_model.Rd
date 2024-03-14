@@ -2,24 +2,21 @@
 % Please edit documentation in R/make_models.R
 \name{print.causal_model}
 \alias{print.causal_model}
-\title{Print a summary for a model}
+\title{Print a short summary for a causal model}
 \usage{
-\method{print}{causal_model}(x, stanfit = FALSE, ...)
+\method{print}{causal_model}(x, ...)
 }
 \arguments{
-\item{x}{An object of \code{causal_model} class produced using
-\code{make_model} or \code{update_model}.}
+\item{x}{An object of \code{causal_model} class, usually a result of
+a call to \code{make_model} or \code{update_model}.}
 
-\item{stanfit}{Logical. Whether to append summary of S4 class \code{stanfit}
-produced by \code{update_model}. Defaults to `FALSE`.}
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Print basic information regarding the causal model and a summary
-of the DAG, nodal types and unit types.
+print method for class \code{causal_model}.
 }
 \details{
 The information regarding the causal model includes the statement describing
-causal relations using \link{dagitty} syntax, data frame describing the DAG,
-summary of nodal types, number of nodal types per parent in a DAG,
-and number of causal types.
+causal relations using \link{dagitty} syntax,
+number of nodal types per parent in a DAG, and number of causal types.
 }
