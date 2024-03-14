@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_prior_distribution.R
 \name{get_prior_distribution}
 \alias{get_prior_distribution}
-\title{Get a prior distribution from priors}
+\title{Get a prior distribution from model}
 \usage{
 get_prior_distribution(model, n_draws = 4000)
 }
@@ -17,7 +17,8 @@ A `data.frame` with dimension `n_param`x `n_draws` of possible
   lambda draws
 }
 \description{
-Add to the model a `n_draws x n_param` matrix of possible parameters.
+Access the prior distribution from the model if one has been added via `set_prior_distribution`.
+Otherwise call  `make_prior_distribution` to generate and return an `n_draws x n_param`  prior distribution.
 }
 \examples{
 make_model('X -> Y') \%>\%

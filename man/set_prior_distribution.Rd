@@ -13,13 +13,11 @@ set_prior_distribution(model, n_draws = 4000)
 \item{n_draws}{A scalar. Number of draws.}
 }
 \value{
-An object of class \code{causal_model}. It essentially returns a
-  list containing the elements comprising a model
-  (e.g. 'statement', 'nodal_types' and 'DAG') with the `prior_distribution`
+An object of class \code{causal_model} with the `prior_distribution`
   attached to it.
 }
 \description{
-Add `n_param x n_draws` database of possible lambda draws to the model.
+Add `n_param x n_draws` database of possible parameter draws to the model.
 }
 \examples{
 make_model('X -> Y') \%>\%

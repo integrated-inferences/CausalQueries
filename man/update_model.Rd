@@ -8,7 +8,6 @@ update_model(
   model,
   data = NULL,
   data_type = NULL,
-  keep_fit = FALSE,
   keep_transformed = TRUE,
   keep_event_probabilities = FALSE,
   censored_types = NULL,
@@ -28,12 +27,7 @@ have entries for each member of each strategy family to produce a
 valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.}
 
-\item{keep_fit}{Logical. Whether to append the
-\link[rstan]{stanfit} object to the model. Defaults to `FALSE`. See
-\code{`?rstan::stanfit`} for details of output.}
-
-\item{keep_transformed}{Logical. Whether to keep transformed parameters,
-prob_of_types, P_lambdas, w, w_full}
+\item{keep_transformed}{Logical. Whether to keep transformed `prob_of_types`}
 
 \item{keep_event_probabilities}{Logical. Whether to keep the distribution
 of event probabilities. Defaults to `FALSE`}
@@ -60,20 +54,13 @@ model <- make_model('X->Y')
 data_long   <- simulate_data(model, n = 4)
 data_short  <- collapse_data(data_long, model)
 \donttest{
-model_1 <- update_model(model, data_long)
-}
-\donttest{
-model_2 <- update_model(model, data_long, keep_transformed = FALSE)
+update_model(model, data_long)
+update_model(model, data_short)
 }
 \dontrun{
-# Throws error unless compact data indicated:
-
-model_3 <- update_model(model, data_short)
-model_4 <- update_model(model, data_short, data_type = 'compact')
-
 # It is possible to implement updating without data, in which
 # case the posterior is a stan object that reflects the prior
-model_5 <- update_model(model)
+update_model(model)
 
 
 # Censored data types

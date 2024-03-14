@@ -161,7 +161,7 @@ testthat::test_that(
 
     expect_equal(dim(model$posterior_distribution), c(5, 10))
 
-    expect_length(model$stan_objects, 2)
+    expect_length(model$stan_objects, 3)
 
     expect_null(
       set_confound(model, list('Y <-> X', 'X <-> W'))$prior_distribution

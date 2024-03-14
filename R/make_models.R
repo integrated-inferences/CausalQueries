@@ -291,6 +291,22 @@ make_model <- function(statement,
 
 }
 
+#' Print a summary for a model
+#'
+#' Print basic information regarding the causal model and a summary
+#' of the DAG, nodal types and unit types.
+#'
+#' @param x An object of \code{causal_model} class produced using
+#'   \code{make_model} or \code{update_model}.
+#' @param stanfit Logical. Whether to append summary of S4 class \code{stanfit}
+#'   produced by \code{update_model}. Defaults to `FALSE`.
+#'
+#' @details
+#' The information regarding the causal model includes the statement describing
+#' causal relations using \link{dagitty} syntax, data frame describing the DAG,
+#' summary of nodal types, number of nodal types per parent in a DAG,
+#' and number of causal types.
+#'
 #' @export
 print.causal_model <- function(x, ...) {
   cat("\nStatement: \n")
@@ -313,20 +329,25 @@ print.causal_model <- function(x, ...) {
 	invisible(x)
 }
 
-
 #' @export
 summary.causal_model <- function(object, ...) {
-	structure(object, class = c("summary.causal_model", "data.frame"))
-
+  structure(object, class = c("summary.causal_model", "data.frame"))
 }
 
 #' @export
-print.summary.causal_model <- function(x,  ...) {
+print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
+
+  if (stanfit & is.null(x$stan_objects))
+    warning(
+      paste0(
+        "You requested stanfit object summary for the causal_model ",
+        "object that was not updated. Summary of stanfit will not be printed."))
+
   cat("\nStatement: \n")
   print(x$statement)
   cat("\nDAG: \n")
   print(x$dag)
-  cat("\n ------------------------------------------------------------------\n")
+  cat("\n------------------------------------------------------------------\n")
   cat("\nNodal types: \n")
 
   nodal_types <- get_nodal_types(x)
@@ -350,17 +371,16 @@ print.summary.causal_model <- function(x,  ...) {
 
   cat("\nNumber of types by node\n")
 
-  print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
-
+  print(vapply(nodal_types , length, numeric(1), USE.NAMES = TRUE))
 
   if (!is.null(x$causal_types)) {
     cat("\nNumber of unit types:")
-    cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+    cat(paste0("  ", nrow(x$causal_types), "\n"))
   }
 
   if (!is.null(attr(x, "restrictions"))) {
     restrictions <- attr(x, "restrictions")
-    cat("\n ----------------------------------------------------------------\n")
+    cat("\n----------------------------------------------------------------\n")
     cat("\nRestrictions: \n")
     for (node in x$nodes) {
       cat(paste0(node,
@@ -369,6 +389,56 @@ print.summary.causal_model <- function(x,  ...) {
                  " restricted types \n"))
     }
   }
+
+  if (stanfit & !is.null(x$stan_objects)) {
+    cat("\n----------------------------------------------------------------\n\n")
+
+    params <- c(x$parameters_df$param_names, rownames(x$causal_types), "lp__")
+
+    params_labels <-
+      x$stan_objects$stan_fit@sim$fnames_oi
+
+    params <-
+      vapply(
+        X = params,
+        FUN = function(x) {
+          paste0(x, paste0(
+            rep(" ",
+                times =
+                  max(vapply(c(params, params_labels), nchar, numeric(1))) -
+                  nchar(x)),
+            collapse = ""))
+        },
+        FUN.VALUE = character(1),
+        USE.NAMES = FALSE)
+
+    names(params) <-
+      vapply(params_labels,
+             function(x) {
+               paste0(x, paste0(
+                 rep(" ",
+                     times =
+                       max(vapply(params_labels, nchar, numeric(1))) -
+                       nchar(x)),
+                 collapse = ""))
+             },
+             FUN.VALUE = character(1),
+             USE.NAMES = FALSE)
+
+    stanfit_print <- capture.output(print(x$stan_objects$stan_fit))
+
+    for (i in seq_along(params)) {
+      stanfit_print <-
+        gsub(pattern = names(params)[i],
+             replacement = unname(params)[i],
+             x = stanfit_print,
+             fixed = TRUE)
+    }
+
+    cat(stanfit_print, sep = "\n")
+  }
+
+  return(invisible(NULL))
 }
 
 
