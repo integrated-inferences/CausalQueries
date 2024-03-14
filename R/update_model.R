@@ -10,9 +10,6 @@
 #'   have entries for each member of each strategy family to produce a
 #'   valid simplex. When long form data is provided with missingness, missing
 #'   data is assumed to be missing at random.
-#' @param keep_fit Logical. Whether to append the
-#'   \link[rstan]{stanfit} object to the model. Defaults to `FALSE`. See
-#'   \code{`?rstan::stanfit`} for details of output.
 #' @param keep_event_probabilities Logical. Whether to keep the distribution
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_transformed Logical. Whether to keep transformed `prob_of_types`
@@ -41,11 +38,6 @@
 #' update_model(model, data_long)
 #' update_model(model, data_short)
 #' }
-#'\donttest{
-#' # stan model summary
-#' model <- update_model(model, data_short,  keep_fit = TRUE)
-#' model$stan_objects$stan_fit
-#'}
 #'\dontrun{
 #' # It is possible to implement updating without data, in which
 #' # case the posterior is a stan object that reflects the prior
@@ -74,7 +66,6 @@
 update_model <- function(model,
                          data = NULL,
                          data_type = NULL,
-                         keep_fit = FALSE,
                          keep_transformed = TRUE,
                          keep_event_probabilities = FALSE,
                          censored_types = NULL, ...) {
@@ -138,11 +129,8 @@ update_model <- function(model,
 
     model$stan_objects  <- list(data = data)
 
-    if(keep_fit) {
-      model$stan_objects$stan_fit <- newfit
-    } else {
-      model$stan_objects$stan_print <- capture.output(print(newfit))
-    }
+    model$stan_objects$stan_fit <- newfit
+    # model$stan_objects$stan_print <- capture.output(print(newfit))
 
     # Retain posterior distribution
     model$posterior_distribution <-
