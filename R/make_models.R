@@ -306,7 +306,7 @@ print.causal_model <- function(x, ...) {
 
 
 	if (!is.null(x$causal_types)) {
-	  cat("\nNumber of unit types:")
+	  cat("\nNumber of causal types:")
 	  cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
 	}
 
@@ -354,7 +354,7 @@ print.summary.causal_model <- function(x,  ...) {
 
 
   if (!is.null(x$causal_types)) {
-    cat("\nNumber of unit types:")
+    cat("\nNumber of causal types:")
     cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
   }
 
