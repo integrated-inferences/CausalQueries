@@ -293,7 +293,23 @@ make_model <- function(statement,
 
 #' @export
 print.causal_model <- function(x, ...) {
-	print(summary(x))
+  cat("\nStatement: \n")
+  print(x$statement)
+
+  cat("\nDAG: \n")
+  print(x$dag)
+	invisible(x)
+
+	cat("\nNumber of types by node:\n")
+	nodal_types <- get_nodal_types(x)
+	print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
+
+
+	if (!is.null(x$causal_types)) {
+	  cat("\nNumber of unit types:")
+	  cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+	}
+
 	invisible(x)
 }
 
