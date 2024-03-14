@@ -9,6 +9,7 @@ update_model(
   data = NULL,
   data_type = NULL,
   keep_transformed = TRUE,
+  keep_fit = FALSE,
   keep_event_probabilities = FALSE,
   censored_types = NULL,
   ...
@@ -28,6 +29,10 @@ valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.}
 
 \item{keep_transformed}{Logical. Whether to keep transformed `prob_of_types`}
+
+\item{keep_fit}{Logical. Whether to keep the \code{stanfit} object produced
+by the \code{\link{rstan::sampling}} for further inspection.
+See \code{?stanfit} for more details. Defaults to `FALSE`}
 
 \item{keep_event_probabilities}{Logical. Whether to keep the distribution
 of event probabilities. Defaults to `FALSE`}
@@ -50,35 +55,43 @@ Takes a model and data and returns a model object with data
 attached and a posterior model
 }
 \examples{
-model <- make_model('X->Y')
-data_long   <- simulate_data(model, n = 4)
-data_short  <- collapse_data(data_long, model)
-\donttest{
-update_model(model, data_long)
-update_model(model, data_short)
+ model <- make_model('X->Y')
+ data_long   <- simulate_data(model, n = 4)
+ data_short  <- collapse_data(data_long, model)
+ \donttest{
+   update_model(model, data_long)
+   update_model(model, data_short)
+ }
+ \dontrun{
+   # It is possible to implement updating without data, in which
+   # case the posterior is a stan object that reflects the prior
+   update_model(model)
+
+
+   # Censored data types
+   # We update less than we might because we are aware of filtered data
+   uncensored <-
+     make_model("X->Y") |>
+     update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
+     query_model(te("X", "Y"), using = "posteriors")
+
+   censored <- make_model("X->Y") |>
+     update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
+     censored_types = c("X1Y0")) |>
+     query_model(te("X", "Y"), using = "posteriors")
+
+
+   # Censored data: We learning nothing because the data
+   # we see is the only data we could ever see
+   make_model("X->Y") |>
+     update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
+     censored_types = c("X1Y0", "X0Y0", "X0Y1")) |>
+     query_model(te("X", "Y"), using = "posteriors")
+ }
+
 }
-\dontrun{
-# It is possible to implement updating without data, in which
-# case the posterior is a stan object that reflects the prior
-update_model(model)
-
-
-# Censored data types
-# We update less than we might because we are aware of filtered data
-uncensored <-  make_model("X->Y") \%>\%
-  update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
-  query_model(te("X", "Y"), using = "posteriors")
-
-censored <- make_model("X->Y") \%>\%
-  update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
-  censored_types = c("X1Y0")) \%>\%
-  query_model(te("X", "Y"), using = "posteriors")
-
-# Censored data: We learning nothing because the data
-# we see is the only data we could ever see
-make_model("X->Y") \%>\%
-  update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
-  censored_types = c("X1Y0", "X0Y0", "X0Y1")) \%>\%
-  query_model(te("X", "Y"), using = "posteriors")
-}
+\seealso{
+\code{\link{make_model}} allows to create new model,
+  \code{\link{summary.causal_model}} provides summary method for
+  output objects of class \code{causal_model}
 }

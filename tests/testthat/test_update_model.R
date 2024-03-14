@@ -216,7 +216,7 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "Test stan arguments and fit",
+	desc = "Test stan arguments and saved stan_objects",
 
 	code = {
 	  updated <- suppressWarnings(update_model(
@@ -224,14 +224,19 @@ testthat::test_that(
 	    refresh = 0,
 	    control = list(adapt_delta = 0.5)
 	  ))
+	  expect_true(is.null(updated$stan_objects$stan_fit))
 		expect_true(class(updated) == "causal_model")
+		expect_length(updated$stan_objects, 3)
+
 		updated <- suppressWarnings(update_model(
 		  make_model("X->Y"),
+		  keep_fit = TRUE,
 		  refresh = 0,
 		  control = list(max_treedepth = 20)
 		))
-		expect_true(class(updated$stan_objects$stan_fit) == "stanfit")
+		expect_true(class(updated$stan_objects$stanfit) == "stanfit")
 		expect_true(class(updated) == "causal_model")
+		expect_length(updated$stan_objects, 4)
 	}
 )
 

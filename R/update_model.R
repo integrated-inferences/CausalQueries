@@ -10,63 +10,75 @@
 #'   have entries for each member of each strategy family to produce a
 #'   valid simplex. When long form data is provided with missingness, missing
 #'   data is assumed to be missing at random.
+#' @param keep_transformed Logical. Whether to keep transformed `prob_of_types`
 #' @param keep_event_probabilities Logical. Whether to keep the distribution
 #'   of event probabilities. Defaults to `FALSE`
-#' @param keep_transformed Logical. Whether to keep transformed `prob_of_types`
+#' @param keep_fit Logical. Whether to keep the \code{stanfit} object produced
+#'   by the \code{\link{rstan::sampling}} for further inspection.
+#'   See \code{?stanfit} for more details. Defaults to `FALSE`
 #' @param censored_types vector of data types that are selected out of
 #'   the data, e.g. \code{c("X0Y0")}
 #' @param ... Options passed onto \link[rstan]{sampling} call. For
 #'   details see \code{?rstan::sampling}
+#'
 #' @return An object of class \code{causal_model}. The returned model is a
 #'   list containing the elements comprising a model
 #'   (e.g. 'statement', 'nodal_types' and 'DAG') with the
 #'   \code{posterior_distribution} returned by \link[rstan]{stan}
 #'   attached to it.
+#'
+#' @seealso \code{\link{make_model}} allows to create new model,
+#'   \code{\link{summary.causal_model}} provides summary method for
+#'   output objects of class \code{causal_model}
+#'
+#' @examples
+#'  model <- make_model('X->Y')
+#'  data_long   <- simulate_data(model, n = 4)
+#'  data_short  <- collapse_data(data_long, model)
+#'  \donttest{
+#'    update_model(model, data_long)
+#'    update_model(model, data_short)
+#'  }
+#'  \dontrun{
+#'    # It is possible to implement updating without data, in which
+#'    # case the posterior is a stan object that reflects the prior
+#'    update_model(model)
+#'
+#'
+#'    # Censored data types
+#'    # We update less than we might because we are aware of filtered data
+#'    uncensored <-
+#'      make_model("X->Y") |>
+#'      update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
+#'      query_model(te("X", "Y"), using = "posteriors")
+#'
+#'    censored <- make_model("X->Y") |>
+#'      update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
+#'      censored_types = c("X1Y0")) |>
+#'      query_model(te("X", "Y"), using = "posteriors")
+#'
+#'
+#'    # Censored data: We learning nothing because the data
+#'    # we see is the only data we could ever see
+#'    make_model("X->Y") |>
+#'      update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
+#'      censored_types = c("X1Y0", "X0Y0", "X0Y1")) |>
+#'      query_model(te("X", "Y"), using = "posteriors")
+#'  }
+#'
 #' @import methods
 #' @import Rcpp
 #' @import rstantools
 #' @importFrom rstan stan
 #' @importFrom rstan extract
 #' @importFrom rstan sampling
+#'
 #' @export
-#'
-#' @examples
-#' model <- make_model('X->Y')
-#' data_long   <- simulate_data(model, n = 4)
-#' data_short  <- collapse_data(data_long, model)
-#'\donttest{
-#' update_model(model, data_long)
-#' update_model(model, data_short)
-#' }
-#'\dontrun{
-#' # It is possible to implement updating without data, in which
-#' # case the posterior is a stan object that reflects the prior
-#' update_model(model)
-#'
-#'
-#' # Censored data types
-#' # We update less than we might because we are aware of filtered data
-#' uncensored <-  make_model("X->Y") %>%
-#'   update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
-#'   query_model(te("X", "Y"), using = "posteriors")
-#'
-#' censored <- make_model("X->Y") %>%
-#'   update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
-#'   censored_types = c("X1Y0")) %>%
-#'   query_model(te("X", "Y"), using = "posteriors")
-#'
-#' # Censored data: We learning nothing because the data
-#' # we see is the only data we could ever see
-#' make_model("X->Y") %>%
-#'   update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
-#'   censored_types = c("X1Y0", "X0Y0", "X0Y1")) %>%
-#'   query_model(te("X", "Y"), using = "posteriors")
-#'}
-
 update_model <- function(model,
                          data = NULL,
                          data_type = NULL,
                          keep_transformed = TRUE,
+                         keep_fit = FALSE,
                          keep_event_probabilities = FALSE,
                          censored_types = NULL, ...) {
 
@@ -106,52 +118,88 @@ update_model <- function(model,
     data_events <- data
   }
 
-    stan_data <- prep_stan_data(model = model,
-                                data = data_events,
-                                keep_transformed = keep_transformed,
-                                censored_types = censored_types)
-    # assign fit
-    stanfit <- stanmodels$simplexes
+  stan_data <- prep_stan_data(model = model,
+                              data = data_events,
+                              keep_transformed = keep_transformed,
+                              censored_types = censored_types)
+  # assign fit
+  stanfit <- stanmodels$simplexes
 
-    # parameters to drop
-    drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
-    if(!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
-    if(!keep_transformed) drop_pars <- c(drop_pars, "prob_of_types")
+  # parameters to drop
+  drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
+  if (!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
+  if (!keep_transformed) drop_pars <- c(drop_pars, "prob_of_types")
 
 
-    sampling_args <- set_sampling_args(object = stanfit,
-                                       user_dots = list(...),
-                                       data = stan_data,
-                                       pars = drop_pars,
-                                       include = FALSE)
+  sampling_args <- set_sampling_args(object = stanfit,
+                                     user_dots = list(...),
+                                     data = stan_data,
+                                     pars = drop_pars,
+                                     include = FALSE)
 
-    newfit <- do.call(rstan::sampling, sampling_args)
+  newfit <- do.call(rstan::sampling, sampling_args)
 
-    model$stan_objects  <- list(data = data)
+  model$stan_objects  <- list(data = data)
 
-    model$stan_objects$stan_fit <- newfit
-    # model$stan_objects$stan_print <- capture.output(print(newfit))
+  if (keep_fit) {
+    model$stan_objects$stanfit <- newfit
+  }
 
-    # Retain posterior distribution
-    model$posterior_distribution <-
-      extract(newfit, pars = "lambdas")$lambdas |>
-      as.data.frame()
-    colnames(model$posterior_distribution) <- get_parameter_names(model)
+  # Retain posterior distribution
+  model$posterior_distribution <-
+    extract(newfit, pars = "lambdas")$lambdas |>
+    as.data.frame()
+  colnames(model$posterior_distribution) <- get_parameter_names(model)
 
-    # Retain type distribution
-    model$stan_objects$type_distribution <-
-      extract(newfit, pars = "prob_of_types")$prob_of_types
+  # Retain type distribution
+  model$stan_objects$type_distribution <-
+    extract(newfit, pars = "prob_of_types")$prob_of_types
 
-    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+  colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
 
-    # Retain event (pre-censoring) probabilities
-    if (keep_event_probabilities) {
-      model$stan_objects$w <- extract(newfit, pars = "w")$w
-      colnames(model$stan_objects$w) <- colnames(stan_data$E)
-    }
+  # Retain event (pre-censoring) probabilities
+  if (keep_event_probabilities) {
+    model$stan_objects$w <- extract(newfit, pars = "w")$w
+    colnames(model$stan_objects$w) <- colnames(stan_data$E)
+  }
 
-    return(model)
+  # Retain stanfit summary with readable names
+  params <- c(colnames(model$posterior_distribution),
+              colnames(model$stan_objects$type_distribution),
+              "lp__")
 
+  params_labels <- newfit@sim$fnames_oi
+
+  raname_list <-
+    lapply(
+      X = list(params, params_labels),
+      FUN = function(x) vapply(
+        X = x,
+        FUN = function(y) {
+          paste0(y, paste0(
+            rep(" ",
+                times =
+                  max(vapply(c(params, params_labels), nchar, numeric(1))) -
+                  nchar(y)),
+            collapse = ""))
+        },
+        FUN.VALUE = character(1),
+        USE.NAMES = FALSE)
+    )
+
+
+  model$stan_objects$stanfit_print <-
+    capture.output(print(newfit))
+
+  for (i in seq_along(params)) {
+    model$stan_objects$stanfit_print <-
+      gsub(pattern = raname_list[[2]][i],
+           replacement = raname_list[[1]][i],
+           x = model$stan_objects$stanfit_print,
+           fixed = TRUE)
+  }
+
+  return(model)
 }
 
 
