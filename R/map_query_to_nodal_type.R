@@ -105,26 +105,14 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
                         evaluated_nodes = t(eval(parse(text = node))),
                         node = node)
 
-    class(return_list) <- "nodal_types"
+    class(return_list) <- "nodal_types_query"
     return(return_list)
 
 }
 
 
 #' @export
-print.nodal_types <- function(x, ...) {
-    print(summary(x))
-    invisible(x)
-}
-
-#' @export
-summary.nodal_types <- function(object, ...) {
-    structure(object, class = c("summary.nodal_types", "data.frame"))
-}
-
-#' @export
-print.summary.nodal_types <- function(x, ...) {
-
+print.nodal_types_query <- function(x, ...) {
   if (length(unique(x$types)) > 2) {
     cat(
       paste(
@@ -158,7 +146,7 @@ print.summary.nodal_types <- function(x, ...) {
 
   cat(paste(
     "\n\n Number of nodal types that add weight to query =",
-     nt))
+    nt))
 
   cat(paste(
     "\n Total number of nodal types related to",
@@ -166,7 +154,9 @@ print.summary.nodal_types <- function(x, ...) {
     "=",
     length(x$types)
   ))
+  invisible(x)
 }
+
 
 
 #' Helper to fill in missing do operators in causal expression
