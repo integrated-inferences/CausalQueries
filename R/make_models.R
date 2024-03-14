@@ -314,7 +314,6 @@ print.causal_model <- function(x, ...) {
 
   cat("\nDAG: \n")
   print(x$dag)
-	invisible(x)
 
 	cat("\nNumber of types by node:\n")
 	nodal_types <- get_nodal_types(x)
