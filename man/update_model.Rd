@@ -8,7 +8,6 @@ update_model(
   model,
   data = NULL,
   data_type = NULL,
-  keep_fit = FALSE,
   keep_transformed = TRUE,
   keep_event_probabilities = FALSE,
   censored_types = NULL,
@@ -27,10 +26,6 @@ update_model(
 have entries for each member of each strategy family to produce a
 valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.}
-
-\item{keep_fit}{Logical. Whether to append the
-\link[rstan]{stanfit} object to the model. Defaults to `FALSE`. See
-\code{`?rstan::stanfit`} for details of output.}
 
 \item{keep_transformed}{Logical. Whether to keep transformed `prob_of_types`}
 
@@ -61,11 +56,6 @@ data_short  <- collapse_data(data_long, model)
 \donttest{
 update_model(model, data_long)
 update_model(model, data_short)
-}
-\donttest{
-# stan model summary
-model <- update_model(model, data_short,  keep_fit = TRUE)
-model$stan_objects$stan_fit
 }
 \dontrun{
 # It is possible to implement updating without data, in which
