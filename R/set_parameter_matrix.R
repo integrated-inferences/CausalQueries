@@ -85,31 +85,18 @@ set_parameter_matrix <- function(model, P = NULL) {
 
 #' @export
 print.parameter_matrix <- function(x, ...) {
-    print(summary(x))
-    invisible(x)
+  cat(paste0("\nRows are parameters, grouped in parameter sets"))
+  cat(paste0("\n\nColumns are causal types"))
+  cat(paste0("\n\nCell entries indicate whether a parameter probability is",
+             "used\nin the calculation of causal type probability\n\n"))
+
+  param_set <- attr(x, "param_set")
+  class(x) <- "data.frame"
+  print(x)
+  cat("\n \n param_set  (P)\n ")
+  cat(paste0(param_set, collapse = "  "))
+  invisible(x)
 }
-
-
-#' @export
-summary.parameter_matrix <- function(object, ...) {
-    structure(object, class = c("summary.parameter_matrix", "data.frame"))
-
-}
-
-#' @export
-print.summary.parameter_matrix <- function(x, ...) {
-    cat(paste0("\nRows are parameters, grouped in parameter sets"))
-    cat(paste0("\n\nColumns are causal types"))
-    cat(paste0("\n\nCell entries indicate whether a parameter probability is",
-               "used\nin the calculation of causal type probability\n\n"))
-
-    param_set <- attr(x, "param_set")
-    class(x) <- "data.frame"
-    print(x)
-    cat("\n \n param_set  (P)\n ")
-    cat(paste0(param_set, collapse = "  "))
-}
-
 
 
 #' Names for causal types
