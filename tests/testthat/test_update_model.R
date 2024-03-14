@@ -185,11 +185,10 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "update_model using keep_fit and keep_event_probabilities",
+	desc = "update_model using keep_event_probabilities",
 
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
-		                                         keep_fit = TRUE,
 		                                         keep_event_probabilities = TRUE,
 		                                         refresh = 0))
 		expect_true(class(updated) == "causal_model")
@@ -197,7 +196,6 @@ testthat::test_that(
 
 	}
 )
-
 
 testthat::test_that(
 
@@ -218,22 +216,21 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "Test stan arguments",
+	desc = "Test stan arguments and fit",
 
 	code = {
 	  updated <- suppressWarnings(update_model(
 	    make_model("X->Y"),
-	    keep_fit = TRUE,
 	    refresh = 0,
 	    control = list(adapt_delta = 0.5)
 	  ))
 		expect_true(class(updated) == "causal_model")
 		updated <- suppressWarnings(update_model(
 		  make_model("X->Y"),
-		  keep_fit = TRUE,
 		  refresh = 0,
 		  control = list(max_treedepth = 20)
 		))
+		expect_true(class(updated$stan_objects$stan_fit) == "stanfit")
 		expect_true(class(updated) == "causal_model")
 	}
 )
