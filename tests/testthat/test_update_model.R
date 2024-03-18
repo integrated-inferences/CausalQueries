@@ -190,15 +190,27 @@ testthat::test_that(
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
+		                                         keep_type_distribution = TRUE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
 		expect_true(grepl("X1Y1", updated$stan_objects$stanfit_print[15]))
 		expect_true(grepl("X0.Y00", updated$stan_objects$stanfit_print[16]))
 
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_event_probabilities = FALSE,
 		                                         keep_type_distribution = FALSE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
+		expect_true(grepl("Y.11", updated$stan_objects$stanfit_print[11]))
+		expect_true(grepl("lp__", updated$stan_objects$stanfit_print[12]))
+
+		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_event_probabilities = TRUE,
+		                                         keep_type_distribution = FALSE,
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
+		expect_true(grepl("Y.11", updated$stan_objects$stanfit_print[11]))
+		expect_true(grepl("X0Y0", updated$stan_objects$stanfit_print[12]))
 
 	}
 )

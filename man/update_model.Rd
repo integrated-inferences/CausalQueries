@@ -36,7 +36,9 @@ of event probabilities. Defaults to `FALSE`}
 
 \item{keep_fit}{Logical. Whether to keep the \code{stanfit} object produced
 by the \code{\link{rstan::sampling}} for further inspection.
-See \code{?stanfit} for more details. Defaults to `FALSE`}
+See \code{?stanfit} for more details. Defaults to `FALSE`. Note the  \code{stanfit}
+object has internal names for parameters (lambda), event probabilities (w), and the
+type distribution (types)}
 
 \item{censored_types}{vector of data types that are selected out of
 the data, e.g. \code{c("X0Y0")}}
@@ -67,7 +69,6 @@ attached and a posterior model
    # It is possible to implement updating without data, in which
    # case the posterior is a stan object that reflects the prior
    update_model(model)
-
 
    # Censored data types
    # We update less than we might because we are aware of filtered data

@@ -16,7 +16,9 @@
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_fit Logical. Whether to keep the \code{stanfit} object produced
 #'   by the \code{\link{rstan::sampling}} for further inspection.
-#'   See \code{?stanfit} for more details. Defaults to `FALSE`
+#'   See \code{?stanfit} for more details. Defaults to `FALSE`. Note the  \code{stanfit}
+#'   object has internal names for parameters (lambda), event probabilities (w), and the
+#'   type distribution (types)
 #' @param censored_types vector of data types that are selected out of
 #'   the data, e.g. \code{c("X0Y0")}
 #' @param ... Options passed onto \link[rstan]{sampling} call. For
@@ -44,7 +46,6 @@
 #'    # It is possible to implement updating without data, in which
 #'    # case the posterior is a stan object that reflects the prior
 #'    update_model(model)
-#'
 #'
 #'    # Censored data types
 #'    # We update less than we might because we are aware of filtered data
@@ -129,7 +130,7 @@ update_model <- function(model,
   # parameters to drop
   drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
   if (!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
-  if (!keep_type_distribution) drop_pars <- c(drop_pars, "prob_of_types")
+  if (!keep_type_distribution) drop_pars <- c(drop_pars, "types")
 
 
   sampling_args <- set_sampling_args(object = stanfit,
@@ -157,7 +158,7 @@ update_model <- function(model,
   # Retain type distribution
   if(keep_type_distribution) {
   model$stan_objects$type_distribution <-
-    extract(newfit, pars = "prob_of_types")$prob_of_types
+    extract(newfit, pars = "types")$types
 
   colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
   }

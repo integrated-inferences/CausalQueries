@@ -37,7 +37,7 @@ static constexpr std::array<const char*, 99> locations_array__ =
   " (in 'string', line 40, column 0 to column 38)",
   " (in 'string', line 41, column 0 to column 35)",
   " (in 'string', line 42, column 0 to column 42)",
-  " (in 'string', line 93, column 0 to column 30)",
+  " (in 'string', line 93, column 0 to column 22)",
   " (in 'string', line 52, column 4 to line 53, column 58)",
   " (in 'string', line 54, column 4 to line 56, column 20)",
   " (in 'string', line 51, column 36 to line 57, column 5)",
@@ -57,12 +57,12 @@ static constexpr std::array<const char*, 99> locations_array__ =
   " (in 'string', line 67, column 0 to line 69, column 2)",
   " (in 'string', line 71, column 1 to column 14)",
   " (in 'string', line 73, column 1 to column 16)",
-  " (in 'string', line 96, column 3 to column 56)",
+  " (in 'string', line 96, column 3 to column 48)",
   " (in 'string', line 95, column 21 to line 97, column 1)",
   " (in 'string', line 95, column 0 to line 97, column 1)",
   " (in 'string', line 94, column 32 to line 97, column 2)",
   " (in 'string', line 94, column 0 to line 97, column 2)",
-  " (in 'string', line 99, column 4 to column 43)",
+  " (in 'string', line 99, column 4 to column 35)",
   " (in 'string', line 98, column 33 to line 100, column 2)",
   " (in 'string', line 98, column 1 to line 100, column 2)",
   " (in 'string', line 78, column 2 to line 79, column 43)",
@@ -578,8 +578,7 @@ public:
       current_statement__ = 92;
       stan::math::validate_non_negative_index("w_full", "n_events", n_events);
       current_statement__ = 93;
-      stan::math::validate_non_negative_index("prob_of_types", "n_types",
-        n_types);
+      stan::math::validate_non_negative_index("types", "n_types", n_types);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -991,7 +990,7 @@ public:
       if (stan::math::logical_negation(emit_generated_quantities__)) {
         return ;
       }
-      Eigen::Matrix<double,-1,1> prob_of_types =
+      Eigen::Matrix<double,-1,1> types =
         Eigen::Matrix<double,-1,1>::Constant(n_types,
           std::numeric_limits<double>::quiet_NaN());
       current_statement__ = 33;
@@ -999,7 +998,7 @@ public:
         current_statement__ = 31;
         for (int i = 1; i <= n_types; ++i) {
           current_statement__ = 29;
-          stan::model::assign(prob_of_types,
+          stan::model::assign(types,
             stan::math::prod(
               stan::math::subtract(
                 stan::math::add(
@@ -1007,18 +1006,17 @@ public:
                     stan::model::rvalue(P, "P", stan::model::index_omni(),
                       stan::model::index_uni(i)), lambdas), 1),
                 stan::model::rvalue(P, "P", stan::model::index_omni(),
-                  stan::model::index_uni(i)))),
-            "assigning variable prob_of_types", stan::model::index_uni(i));
+                  stan::model::index_uni(i)))), "assigning variable types",
+            stan::model::index_uni(i));
         }
       }
       current_statement__ = 36;
       if (stan::math::logical_eq(keep_type_distribution, 0)) {
         current_statement__ = 34;
-        stan::model::assign(prob_of_types,
-          stan::math::rep_vector(1, n_types),
-          "assigning variable prob_of_types");
+        stan::model::assign(types, stan::math::rep_vector(1, n_types),
+          "assigning variable types");
       }
-      out__.write(prob_of_types);
+      out__.write(types);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -1103,7 +1101,7 @@ public:
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
     if (emit_generated_quantities__) {
-      std::vector<std::string> temp{"prob_of_types"};
+      std::vector<std::string> temp{"types"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
@@ -1180,7 +1178,7 @@ public:
     }
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
-        param_names__.emplace_back(std::string() + "prob_of_types" + '.' +
+        param_names__.emplace_back(std::string() + "types" + '.' +
           std::to_string(sym1__));
       }
     }
@@ -1229,16 +1227,16 @@ public:
     }
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
-        param_names__.emplace_back(std::string() + "prob_of_types" + '.' +
+        param_names__.emplace_back(std::string() + "types" + '.' +
           std::to_string(sym1__));
       }
     }
   }
   inline std::string get_constrained_sizedtypes() const {
-    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"prob_of_types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
   }
   inline std::string get_unconstrained_sizedtypes() const {
-    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"prob_of_types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
   }
   // Begin method overload boilerplate
   template <typename RNG> inline void

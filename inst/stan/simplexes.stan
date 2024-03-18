@@ -119,13 +119,13 @@ for (i in 1:n_strategies) {
 // Option to export distribution of causal types
 generated quantities{
 
-vector[n_types] prob_of_types;
+vector[n_types] types;
 
 if (keep_type_distribution == 1){
 for (i in 1:n_types) {
-   prob_of_types[i] = prod(P[, i].*lambdas + 1 - P[,i]);
+   types[i] = prod(P[, i].*lambdas + 1 - P[,i]);
 }}
  if (keep_type_distribution == 0){
-    prob_of_types = rep_vector(1, n_types);
+    types = rep_vector(1, n_types);
  }
 }
