@@ -97,3 +97,7 @@ nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
 make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
 make_model("Z -> Y", nodal_types = FALSE)$parents_df
 }
+\seealso{
+\code{\link{summary.causal_model}} provides summary method for
+  output objects of class \code{causal_model}
+}

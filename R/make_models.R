@@ -36,6 +36,12 @@
 #'   of the parameters in the model}
 #' \item{causal_types}{A \code{data.frame} listing causal types and the
 #'   nodal types that produce them}
+#'
+#'
+#' @seealso \code{\link{summary.causal_model}} provides summary method for
+#'   output objects of class \code{causal_model}
+#'
+#'
 #' @examples
 #' make_model(statement = "X -> Y")
 #' modelXKY <- make_model("X -> K -> Y; X -> Y")
@@ -291,63 +297,78 @@ make_model <- function(statement,
 
 }
 
-#' Print a summary for a model
+#' Print a short summary for a causal model
 #'
-#' Print basic information regarding the causal model and a summary
-#' of the DAG, nodal types and unit types.
+#' print method for class \code{causal_model}.
 #'
-#' @param x An object of \code{causal_model} class produced using
-#'   \code{make_model} or \code{update_model}.
-#' @param stanfit Logical. Whether to append summary of S4 class \code{stanfit}
-#'   produced by \code{update_model}. Defaults to `FALSE`.
+#' @param x An object of \code{causal_model} class, usually a result of
+#'   a call to \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @details
 #' The information regarding the causal model includes the statement describing
-#' causal relations using \link{dagitty} syntax, data frame describing the DAG,
-#' summary of nodal types, number of nodal types per parent in a DAG,
-#' and number of causal types.
+#' causal relations using \link{dagitty} syntax,
+#' number of nodal types per parent in a DAG, and number of causal types.
 #'
 #' @export
 print.causal_model <- function(x, ...) {
   cat("\nStatement: \n")
   print(x$statement)
 
-  cat("\nDAG: \n")
-  print(x$dag)
-
-	cat("\nNumber of types by node:\n")
+  cat("\nNumber of types by node:\n")
 	nodal_types <- get_nodal_types(x)
 	print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
 
 
 	if (!is.null(x$causal_types)) {
 	  cat("\nNumber of unit types:")
-	  cat(paste0("  ", nrow(get_causal_types(x)), "\n"))
+	  cat(paste0(" ", nrow(get_causal_types(x)), "\n\n"))
 	}
 
-	invisible(x)
+	return(invisible(x))
 }
 
+#' Summarizing causal models
+#'
+#' summary method for class \code{causal_model}.
+#'
+#' @param object An object of \code{causal_model} class produced using
+#'   \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @details
+#' \code{print.summary.causal_model} reports DAG data frame, full specification of
+#' nodal types and summary of model restrictions in addition to standard
+#' \code{print.causal_model} output.
+#'
 #' @export
 summary.causal_model <- function(object, ...) {
   structure(object, class = c("summary.causal_model", "data.frame"))
 }
 
+#' @rdname summary.causal_model
+#'
+#' @param x An object of \code{summary.causal_model} class, usually a result of
+#'   a call to \code{summary.causal_model}.
+#' @param stanfit Logical. Whether to include readable summary of
+#'   \code{stanfit} produced when updating a model via \code{update_model}.
+#'   Defaults to `FALSE`.
+#' @param ... Further arguments passed to or from other methods.
+#'
 #' @export
 print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
   if (stanfit & is.null(x$stan_objects))
-    warning(
-      paste0(
-        "You requested stanfit object summary for the causal_model ",
-        "object that was not updated. Summary of stanfit will not be printed."))
+    warning(paste0("You requested summary of stan fit on the causal_model",
+                   "that was not updated. The summary of stan fit will",
+                   "not be printed"))
 
   cat("\nStatement: \n")
   print(x$statement)
   cat("\nDAG: \n")
   print(x$dag)
-  cat("\n------------------------------------------------------------------\n")
-  cat("\nNodal types: \n")
+  cat("\n------------------------------------------------------------------\n\n")
+  cat("Nodal types: \n")
 
   nodal_types <- get_nodal_types(x)
   nodes <- x$nodes
@@ -374,70 +395,28 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
   if (!is.null(x$causal_types)) {
     cat("\nNumber of unit types:")
-    cat(paste0("  ", nrow(x$causal_types), "\n"))
+    cat(paste0("  ", nrow(x$causal_types), "\n\n"))
   }
 
   if (!is.null(attr(x, "restrictions"))) {
     restrictions <- attr(x, "restrictions")
-    cat("\n----------------------------------------------------------------\n")
+    cat("----------------------------------------------------------------\n")
     cat("\nRestrictions: \n")
     for (node in x$nodes) {
       cat(paste0(node,
                  ": ",
                  length(restrictions[[node]]),
-                 " restricted types \n"))
+                 " restricted types \n\n"))
     }
   }
 
   if (stanfit & !is.null(x$stan_objects)) {
-    cat("\n----------------------------------------------------------------\n\n")
-
-    params <- c(x$parameters_df$param_names, rownames(x$causal_types), "lp__")
-
-    params_labels <-
-      x$stan_objects$stan_fit@sim$fnames_oi
-
-    params <-
-      vapply(
-        X = params,
-        FUN = function(x) {
-          paste0(x, paste0(
-            rep(" ",
-                times =
-                  max(vapply(c(params, params_labels), nchar, numeric(1))) -
-                  nchar(x)),
-            collapse = ""))
-        },
-        FUN.VALUE = character(1),
-        USE.NAMES = FALSE)
-
-    names(params) <-
-      vapply(params_labels,
-             function(x) {
-               paste0(x, paste0(
-                 rep(" ",
-                     times =
-                       max(vapply(params_labels, nchar, numeric(1))) -
-                       nchar(x)),
-                 collapse = ""))
-             },
-             FUN.VALUE = character(1),
-             USE.NAMES = FALSE)
-
-    stanfit_print <- capture.output(print(x$stan_objects$stan_fit))
-
-    for (i in seq_along(params)) {
-      stanfit_print <-
-        gsub(pattern = names(params)[i],
-             replacement = unname(params)[i],
-             x = stanfit_print,
-             fixed = TRUE)
-    }
-
-    cat(stanfit_print, sep = "\n")
+    cat("----------------------------------------------------------------\n\n")
+    cat(x$stan_objects$stanfit_print, sep = "\n")
+    cat("\n")
   }
 
-  return(invisible(NULL))
+  return(invisible(x))
 }
 
 

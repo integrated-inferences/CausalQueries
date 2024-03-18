@@ -70,7 +70,7 @@ testthat::test_that(
 
 
 		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0,
-		                                           keep_transformed = TRUE))
+		                                           keep_type_distribution = TRUE))
 		expect_true(!is.null(posterior))
 
 		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0))
@@ -185,14 +185,32 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "update_model using keep_event_probabilities",
+	desc = "update_model: keep_event_probabilities and keep_type_distribution",
 
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
-		                                         refresh = 0))
-		expect_true(class(updated) == "causal_model")
+		                                         keep_type_distribution = TRUE,
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
+		expect_true(grepl("X1Y1", updated$stan_objects$stanfit_print[15]))
+		expect_true(grepl("X0.Y00", updated$stan_objects$stanfit_print[16]))
 
+		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_event_probabilities = FALSE,
+		                                         keep_type_distribution = FALSE,
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
+		expect_true(grepl("Y.11", updated$stan_objects$stanfit_print[11]))
+		expect_true(grepl("lp__", updated$stan_objects$stanfit_print[12]))
+
+		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_event_probabilities = TRUE,
+		                                         keep_type_distribution = FALSE,
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
+		expect_true(grepl("Y.11", updated$stan_objects$stanfit_print[11]))
+		expect_true(grepl("X0Y0", updated$stan_objects$stanfit_print[12]))
 
 	}
 )
@@ -216,7 +234,7 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "Test stan arguments and fit",
+	desc = "Test stan arguments and saved stan_objects",
 
 	code = {
 	  updated <- suppressWarnings(update_model(
@@ -224,14 +242,19 @@ testthat::test_that(
 	    refresh = 0,
 	    control = list(adapt_delta = 0.5)
 	  ))
+	  expect_true(is.null(updated$stan_objects$stan_fit))
 		expect_true(class(updated) == "causal_model")
+		expect_length(updated$stan_objects, 3)
+
 		updated <- suppressWarnings(update_model(
 		  make_model("X->Y"),
+		  keep_fit = TRUE,
 		  refresh = 0,
 		  control = list(max_treedepth = 20)
 		))
-		expect_true(class(updated$stan_objects$stan_fit) == "stanfit")
+		expect_true(class(updated$stan_objects$stanfit) == "stanfit")
 		expect_true(class(updated) == "causal_model")
+		expect_length(updated$stan_objects, 4)
 	}
 )
 
