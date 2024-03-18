@@ -8,9 +8,9 @@ update_model(
   model,
   data = NULL,
   data_type = NULL,
-  keep_transformed = TRUE,
-  keep_fit = FALSE,
+  keep_type_distribution = TRUE,
   keep_event_probabilities = FALSE,
+  keep_fit = FALSE,
   censored_types = NULL,
   ...
 )
@@ -28,14 +28,15 @@ have entries for each member of each strategy family to produce a
 valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.}
 
-\item{keep_transformed}{Logical. Whether to keep transformed `prob_of_types`}
+\item{keep_type_distribution}{Logical. Whether to keep the (transformed) distribution
+of the causal types.  Defaults to `TRUE`}
+
+\item{keep_event_probabilities}{Logical. Whether to keep the (transformed) distribution
+of event probabilities. Defaults to `FALSE`}
 
 \item{keep_fit}{Logical. Whether to keep the \code{stanfit} object produced
 by the \code{\link{rstan::sampling}} for further inspection.
 See \code{?stanfit} for more details. Defaults to `FALSE`}
-
-\item{keep_event_probabilities}{Logical. Whether to keep the distribution
-of event probabilities. Defaults to `FALSE`}
 
 \item{censored_types}{vector of data types that are selected out of
 the data, e.g. \code{c("X0Y0")}}

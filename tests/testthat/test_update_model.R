@@ -70,7 +70,7 @@ testthat::test_that(
 
 
 		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0,
-		                                           keep_transformed = TRUE))
+		                                           keep_type_distribution = TRUE))
 		expect_true(!is.null(posterior))
 
 		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0))
@@ -185,14 +185,20 @@ testthat::test_that(
 
 testthat::test_that(
 
-	desc = "update_model using keep_event_probabilities",
+	desc = "update_model: keep_event_probabilities and keep_type_distribution",
 
 	code = {
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
-		                                         refresh = 0))
-		expect_true(class(updated) == "causal_model")
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
+		expect_true(grepl("X1Y1", updated$stan_objects$stanfit_print[15]))
+		expect_true(grepl("X0.Y00", updated$stan_objects$stanfit_print[16]))
 
+		updated <- suppressWarnings(update_model(make_model("X->Y"),
+		                                         keep_type_distribution = FALSE,
+		                                         refresh = 0,
+		                                         keep_fit = TRUE  ))
 
 	}
 )

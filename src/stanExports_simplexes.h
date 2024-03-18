@@ -60,10 +60,10 @@ static constexpr std::array<const char*, 99> locations_array__ =
   " (in 'string', line 96, column 3 to column 56)",
   " (in 'string', line 95, column 21 to line 97, column 1)",
   " (in 'string', line 95, column 0 to line 97, column 1)",
-  " (in 'string', line 94, column 26 to line 97, column 2)",
+  " (in 'string', line 94, column 32 to line 97, column 2)",
   " (in 'string', line 94, column 0 to line 97, column 2)",
   " (in 'string', line 99, column 4 to column 43)",
-  " (in 'string', line 98, column 27 to line 100, column 2)",
+  " (in 'string', line 98, column 33 to line 100, column 2)",
   " (in 'string', line 98, column 1 to line 100, column 2)",
   " (in 'string', line 78, column 2 to line 79, column 43)",
   " (in 'string', line 80, column 2 to column 50)",
@@ -82,7 +82,7 @@ static constexpr std::array<const char*, 99> locations_array__ =
   " (in 'string', line 15, column 0 to column 20)",
   " (in 'string', line 16, column 0 to column 22)",
   " (in 'string', line 17, column 0 to column 26)",
-  " (in 'string', line 18, column 0 to column 39)",
+  " (in 'string', line 18, column 0 to column 45)",
   " (in 'string', line 19, column 16 to column 24)",
   " (in 'string', line 19, column 0 to column 40)",
   " (in 'string', line 20, column 6 to column 18)",
@@ -176,7 +176,7 @@ private:
   int n_data;
   int n_events;
   int n_strategies;
-  int keep_transformed;
+  int keep_type_distribution;
   Eigen::Matrix<double,-1,1> lambdas_prior_data__;
   std::vector<int> l_starts;
   std::vector<int> l_ends;
@@ -296,17 +296,18 @@ public:
       stan::math::check_greater_or_equal(function__, "n_strategies",
         n_strategies, 1);
       current_statement__ = 54;
-      context__.validate_dims("data initialization", "keep_transformed",
-        "int", std::vector<size_t>{});
-      keep_transformed = std::numeric_limits<int>::min();
+      context__.validate_dims("data initialization",
+        "keep_type_distribution", "int", std::vector<size_t>{});
+      keep_type_distribution = std::numeric_limits<int>::min();
       current_statement__ = 54;
-      keep_transformed = context__.vals_i("keep_transformed")[(1 - 1)];
+      keep_type_distribution = context__.vals_i("keep_type_distribution")[(1
+        - 1)];
       current_statement__ = 54;
-      stan::math::check_greater_or_equal(function__, "keep_transformed",
-        keep_transformed, 0);
+      stan::math::check_greater_or_equal(function__,
+        "keep_type_distribution", keep_type_distribution, 0);
       current_statement__ = 54;
-      stan::math::check_less_or_equal(function__, "keep_transformed",
-        keep_transformed, 1);
+      stan::math::check_less_or_equal(function__, "keep_type_distribution",
+        keep_type_distribution, 1);
       current_statement__ = 55;
       stan::math::validate_non_negative_index("lambdas_prior", "n_params",
         n_params);
@@ -994,7 +995,7 @@ public:
         Eigen::Matrix<double,-1,1>::Constant(n_types,
           std::numeric_limits<double>::quiet_NaN());
       current_statement__ = 33;
-      if (stan::math::logical_eq(keep_transformed, 1)) {
+      if (stan::math::logical_eq(keep_type_distribution, 1)) {
         current_statement__ = 31;
         for (int i = 1; i <= n_types; ++i) {
           current_statement__ = 29;
@@ -1011,7 +1012,7 @@ public:
         }
       }
       current_statement__ = 36;
-      if (stan::math::logical_eq(keep_transformed, 0)) {
+      if (stan::math::logical_eq(keep_type_distribution, 0)) {
         current_statement__ = 34;
         stan::model::assign(prob_of_types,
           stan::math::rep_vector(1, n_types),

@@ -10,8 +10,9 @@
 #'   have entries for each member of each strategy family to produce a
 #'   valid simplex. When long form data is provided with missingness, missing
 #'   data is assumed to be missing at random.
-#' @param keep_transformed Logical. Whether to keep transformed `prob_of_types`
-#' @param keep_event_probabilities Logical. Whether to keep the distribution
+#' @param keep_type_distribution Logical. Whether to keep the (transformed) distribution
+#'   of the causal types.  Defaults to `TRUE`
+#' @param keep_event_probabilities Logical. Whether to keep the (transformed) distribution
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_fit Logical. Whether to keep the \code{stanfit} object produced
 #'   by the \code{\link{rstan::sampling}} for further inspection.
@@ -77,9 +78,9 @@
 update_model <- function(model,
                          data = NULL,
                          data_type = NULL,
-                         keep_transformed = TRUE,
-                         keep_fit = FALSE,
+                         keep_type_distribution = TRUE,
                          keep_event_probabilities = FALSE,
+                         keep_fit = FALSE,
                          censored_types = NULL, ...) {
 
   # Guess data_type
@@ -120,7 +121,7 @@ update_model <- function(model,
 
   stan_data <- prep_stan_data(model = model,
                               data = data_events,
-                              keep_transformed = keep_transformed,
+                              keep_type_distribution = keep_type_distribution,
                               censored_types = censored_types)
   # assign fit
   stanfit <- stanmodels$simplexes
@@ -128,7 +129,7 @@ update_model <- function(model,
   # parameters to drop
   drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
   if (!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
-  if (!keep_transformed) drop_pars <- c(drop_pars, "prob_of_types")
+  if (!keep_type_distribution) drop_pars <- c(drop_pars, "prob_of_types")
 
 
   sampling_args <- set_sampling_args(object = stanfit,
@@ -141,6 +142,8 @@ update_model <- function(model,
 
   model$stan_objects  <- list(data = data)
 
+
+  # Keep full fit object
   if (keep_fit) {
     model$stan_objects$stanfit <- newfit
   }
@@ -152,10 +155,12 @@ update_model <- function(model,
   colnames(model$posterior_distribution) <- get_parameter_names(model)
 
   # Retain type distribution
+  if(keep_type_distribution) {
   model$stan_objects$type_distribution <-
     extract(newfit, pars = "prob_of_types")$prob_of_types
 
   colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+  }
 
   # Retain event (pre-censoring) probabilities
   if (keep_event_probabilities) {
@@ -164,9 +169,13 @@ update_model <- function(model,
   }
 
   # Retain stanfit summary with readable names
-  params <- c(colnames(model$posterior_distribution),
-              colnames(model$stan_objects$type_distribution),
-              "lp__")
+  # Identify saved parameters
+  params <- colnames(model$posterior_distribution)
+  if(keep_event_probabilities)
+    params <- c(params, colnames(model$stan_objects$w))
+  if(keep_type_distribution)
+    params <- c(params, colnames(model$stan_objects$type_distribution))
+  params <- c(params,  "lp__")
 
   params_labels <- newfit@sim$fnames_oi
 

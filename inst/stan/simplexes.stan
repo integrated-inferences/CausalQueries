@@ -18,7 +18,7 @@ array[n_param_sets] int<lower=1> n_param_each;
 int<lower=1> n_data;
 int<lower=1> n_events;
 int<lower=1> n_strategies;
-int<lower=0, upper=1> keep_transformed;
+int<lower=0, upper=1> keep_type_distribution;
 
 vector<lower=0>[n_params] lambdas_prior;
 array[n_param_sets] int<lower=1> l_starts;
@@ -121,11 +121,11 @@ generated quantities{
 
 vector[n_types] prob_of_types;
 
-if (keep_transformed == 1){
+if (keep_type_distribution == 1){
 for (i in 1:n_types) {
    prob_of_types[i] = prod(P[, i].*lambdas + 1 - P[,i]);
 }}
- if (keep_transformed == 0){
+ if (keep_type_distribution == 0){
     prob_of_types = rep_vector(1, n_types);
  }
 }
