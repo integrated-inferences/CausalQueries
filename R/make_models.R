@@ -293,6 +293,9 @@ make_model <- function(statement,
   attr(model, "nonroot_nodes") <- endog_node
   attr(model, "root_nodes")  <- exog_node
 
+
+  # assign classes
+
   return(model)
 
 }
@@ -418,6 +421,38 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
   return(invisible(x))
 }
+
+
+#TODO --> implement class assignments
+#TODO --> document + add additional print calls
+
+print.dag <- function(x) {
+  cat("\nDag: \n")
+  base::print.data.frame(x)
+  return(invisible(x))
+}
+
+print.statement <- function(x) {
+  cat("\nStatement: \n")
+  cat(x)
+  cat("\n")
+  return(invisible(x))
+}
+
+print.nodes <- function(x) {
+  cat("\nNodes: \n")
+  cat(paste(x, collapse = ", "))
+  return(invisible(x))
+}
+
+print.parents <- function(x) {
+  cat("\nRoot vs Non-Root status & number of parents per node: \n")
+  base::print.data.frame(x)
+  return(invisible(x))
+}
+
+
+
 
 
 #' function to make a parameters_df from nodal types
