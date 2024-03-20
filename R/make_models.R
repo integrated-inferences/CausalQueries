@@ -425,6 +425,7 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
 #TODO --> implement class assignments
 #TODO --> document + add additional print calls
+#TODO --> note that when setting restrictions classes need to be reassigned to nodal_types and causal_types
 
 print.dag <- function(x) {
   cat("\nDag: \n")
@@ -445,12 +446,69 @@ print.nodes <- function(x) {
   return(invisible(x))
 }
 
-print.parents <- function(x) {
+print.parents_df <- function(x) {
   cat("\nRoot vs Non-Root status & number of parents per node: \n")
   base::print.data.frame(x)
   return(invisible(x))
 }
 
+print.parameters_df <- function(x) {
+  cat("\n Mapping of model parameters to nodal types: \n\n")
+  cat("----------------------------------------------------------------\n")
+  cat("\n gen: partial causal ordering of the parameter's node")
+  cat("\n param_set: parameter groupings forming a simplex")
+  cat("\n param_value: parameter probabilities")
+  cat("\n priors: alphas of the prior Dirichlet distribution \n\n")
+  cat("----------------------------------------------------------------\n\n")
+  if(nrow(x) > 10) {
+    cat("\n first 10 rows: \n")
+    print.data.frame(x[1:10,])
+  } else {
+    print.data.frame(x)
+  }
+  return(invisible(x))
+}
+
+print.causal_types <- function(x) {
+  cat("\nCausal Types: ")
+  cat("\ncartesian product of nodal types\n\n")
+  if(nrow(x) > 10) {
+    cat("\n first 10 causal types: \n")
+    print.data.frame(x[1:10,])
+  } else {
+    print.data.frame(x)
+  }
+  return(invisible(x))
+}
+
+print.nodal_types <- function(x) {
+  cat("Nodal types: \n")
+
+  nodal_types <- x
+  nodes <- names(x)
+
+  for (n in nodes) {
+    nt <- nodal_types[[n]]
+    interpret <- attr(nodal_types, "interpret")[[n]]
+    stop_at <- min(length(nt), 16)
+    cat(paste0("$", n, "\n"))
+
+    cat(paste0(nt[1:stop_at], collapse = "  "))
+
+    if (stop_at != length(nt)) {
+      cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
+    }
+    cat("\n\n")
+    print(interpret)
+    cat("\n")
+  }
+
+  cat("\nNumber of types by node\n")
+
+  print(vapply(nodal_types , length, numeric(1), USE.NAMES = TRUE))
+
+  return(invisible(x))
+}
 
 
 
