@@ -617,7 +617,8 @@ print.parameters_prior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are parameters\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  print.data.frame(distribution_summary)
+  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
 
@@ -637,11 +638,83 @@ print.parameters_posterior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are parameters\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  print.data.frame(distribution_summary)
+  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for causal-type posterior distributions
+#'
+#' print method for class \code{type_posterior}.
+#'
+#' @param x An object of \code{type_posterior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.type_posterior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of causal type posterior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are causal types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for causal-type prior distributions
+#'
+#' print method for class \code{type_prior}.
+#'
+#' @param x An object of \code{type_prior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.type_prior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of causal type prior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are causal types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
 
 
+#' Print a short summary for event probability distributions
+#'
+#' print method for class \code{event_probabilities}.
+#'
+#' @param x An object of \code{event_probabilities} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.event_probabilites <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of event probability distributions:")
+  cat("\nThese distributions capture the probability of observing a given")
+  cat("\ncombination of data realizations.")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are data types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#stan_fit
+
+
+## S3 helpers ------------------------------------------------------------------
+
+##TODO improve optimal rounding threshold function
 
 #' helper to compute mean and sd of a distribution data.frame
 summarise_distribution <- function(x) {
@@ -649,3 +722,17 @@ summarise_distribution <- function(x) {
   names(summary) <- c("mean", "sd")
   return(summary)
 }
+
+#' helper to find rounding thresholds for print methods
+find_rounding_threshold <- function(x) {
+  pow <- 1
+  x_pow <- x * 10^pow
+
+  while(x_pow < 1) {
+    pow <- pow + 1
+    x_pow <- x * 10^pow
+  }
+
+  return(pow + 1)
+}
+
