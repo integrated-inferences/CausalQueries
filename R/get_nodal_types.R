@@ -53,9 +53,9 @@ get_nodal_types <- function(model, collapse = TRUE) {
   }
 
   attr(nodal_types, "interpret") <- interpret_type(model)
+  class(nodal_types) <- c("nodal_types", "list")
 
   return(nodal_types)
-
 }
 
 #' uncollapse nodal types
@@ -94,6 +94,8 @@ uncollapse_nodal_types <- function(nodal_types) {
     colnames(x[[j]]) <- perm(rep(1, log(ncol(x[[j]]), 2))) %>%
       apply(1, paste, collapse = "")
   }
+
+  class(x) <- c("nodal_types", "list")
 
   return(x)
 }
@@ -137,6 +139,7 @@ make_nodal_types <- function(model,
   })
 
   names(nodal_types) <- nodes
+  class(nodal_types) <- c("nodal_types", "list")
 
  return(nodal_types)
 }
@@ -170,6 +173,8 @@ collapse_nodal_types <- function(nodal_types,
       paste0(labels)
     })
     names(types) <- names(nodal_types)
+    class(types) <- c("nodal_types", "list")
+
     return(types)
   }
 
