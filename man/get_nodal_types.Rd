@@ -34,3 +34,4 @@ get_nodal_types(model)
 }
 
 }
+\keyword{internal}
