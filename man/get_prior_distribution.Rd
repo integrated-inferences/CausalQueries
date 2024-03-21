@@ -34,3 +34,4 @@ Other prior_distribution:
 \code{\link{set_prior_distribution}()}
 }
 \concept{prior_distribution}
+\keyword{internal}

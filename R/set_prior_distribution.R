@@ -41,9 +41,9 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
+#' @keywords internal
 #' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
 #'   lambda draws
-#' @export
 #' @family prior_distribution
 #' @examples
 #' make_model('X -> Y') %>%
@@ -54,6 +54,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #'
 
 get_prior_distribution <- function(model, n_draws = 4000) {
+  .Deprecated("grab")
   if (!is.null(model$prior_distribution)) {
     return(model$prior_distribution)
   }
