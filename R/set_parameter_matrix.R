@@ -77,6 +77,7 @@ set_parameter_matrix <- function(model, P = NULL) {
 
   if(!is.null(P)) {
     model$P <- P
+    class(model$P) <- c("parameter_matrix", "data.frame")
   }
 
   return(model)

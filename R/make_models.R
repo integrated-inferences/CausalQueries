@@ -336,6 +336,8 @@ print.causal_model <- function(x, ...) {
 	return(invisible(x))
 }
 
+## S3 methods for causal_model and sub-objects --------------------------------
+
 #' Summarizing causal models
 #'
 #' summary method for class \code{causal_model}.
@@ -430,14 +432,34 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
 #TODO --> implement class assignments
 #TODO --> document + add additional print calls
-#TODO --> note that when setting restrictions classes need to be reassigned to nodal_types and causal_types
 
-print.dag <- function(x) {
+
+#' Print a short summary for a causal_model DAG
+#'
+#' print method for class \code{dag}.
+#'
+#' @param x An object of \code{dag} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.dag <- function(x, ...) {
   cat("\nDag: \n")
   base::print.data.frame(x)
   return(invisible(x))
 }
 
+#' Print a short summary for a causal_model statement
+#'
+#' print method for class \code{statement}.
+#'
+#' @param x An object of \code{statement} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.statement <- function(x) {
   cat("\nStatement: \n")
   cat(x)
@@ -445,18 +467,48 @@ print.statement <- function(x) {
   return(invisible(x))
 }
 
+#' Print a short summary for a causal_model nodes
+#'
+#' print method for class \code{nodes}.
+#'
+#' @param x An object of \code{nodes} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.nodes <- function(x) {
   cat("\nNodes: \n")
   cat(paste(x, collapse = ", "))
   return(invisible(x))
 }
 
+#' Print a short summary for a causal_model parents data-frame
+#'
+#' print method for class \code{parents_df}.
+#'
+#' @param x An object of \code{parents_df} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.parents_df <- function(x) {
   cat("\nRoot vs Non-Root status & number of parents per node: \n")
   base::print.data.frame(x)
   return(invisible(x))
 }
 
+#' Print a short summary for a causal_model parameters data-frame
+#'
+#' print method for class \code{parameters_df}.
+#'
+#' @param x An object of \code{parameters_df} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.parameters_df <- function(x) {
   cat("\n Mapping of model parameters to nodal types: \n\n")
   cat("----------------------------------------------------------------\n")
@@ -474,6 +526,16 @@ print.parameters_df <- function(x) {
   return(invisible(x))
 }
 
+#' Print a short summary for causal_model causal-types
+#'
+#' print method for class \code{causal_types}.
+#'
+#' @param x An object of \code{causal_types} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.causal_types <- function(x) {
   cat("\nCausal Types: ")
   cat("\ncartesian product of nodal types\n\n")
@@ -486,6 +548,16 @@ print.causal_types <- function(x) {
   return(invisible(x))
 }
 
+#' Print a short summary for causal_model nodal-types
+#'
+#' print method for class \code{nodal_types}.
+#'
+#' @param x An object of \code{nodal_types} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
 print.nodal_types <- function(x) {
   cat("Nodal types: \n")
 
@@ -518,31 +590,7 @@ print.nodal_types <- function(x) {
 
 
 
-#' function to make a parameters_df from nodal types
-#' @param nodal_types a list of nodal types
-#' @export
-#' @keywords internal
-#' @examples
-#'
-#' make_parameters_df(list(X = "1", Y = c("01", "10")))
 
-make_parameters_df <- function(nodal_types){
-  pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
-                    nodal_type = nodal_types %>% unlist) |>
-    dplyr::mutate(param_set = node,
-           given = "",
-           priors = 1,
-           param_names = paste0(node, ".", nodal_type)) |>
-    dplyr::group_by(param_set) |>
-    dplyr::mutate(param_value = 1/n(), gen =  cur_group_id()) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(gen = match(node, names(nodal_types))) |>
-    dplyr::select(param_names, node, gen, param_set, nodal_type,
-                  given, param_value, priors)
-
-  class(pdf) <- c("parameters_df", "data.frame")
-  return(pdf)
-}
 
 
 

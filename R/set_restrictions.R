@@ -319,7 +319,7 @@ set_restrictions <- function(model,
 
   names(model$nodal_types) <- model$nodes
   attr(model$nodal_types, "interpret") <- interpret_type(model)
-
+  class(model$nodal_types) <- c("nodal_types", "list")
 
   # Keep restricted types as attributes
   restrictions <- lapply(model$nodes, function(node) {
