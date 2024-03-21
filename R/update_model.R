@@ -154,6 +154,7 @@ update_model <- function(model,
     extract(newfit, pars = "lambdas")$lambdas |>
     as.data.frame()
   colnames(model$posterior_distribution) <- get_parameter_names(model)
+  class(model$posterior_distribution) <- c("parameters_posterior", "data.frame")
 
   # Retain type distribution
   if(keep_type_distribution) {
