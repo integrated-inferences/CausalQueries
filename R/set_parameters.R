@@ -4,7 +4,7 @@
 #'
 #' @param param_type A character. String specifying type of parameters to make
 #'   "flat", "prior_mean", "posterior_mean", "prior_draw",
-#'   "posterior_draw", "define. With param_type set to \code{define} use
+#'   "posterior_draw", "define". With param_type set to \code{define} use
 #'   arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
 #'   equal probabilities on each nodal type in each parameter set;
 #'   \code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
@@ -85,7 +85,7 @@ make_parameters <- function(model,
   if (!is.null(parameters) &&
       (length(parameters) == length(get_parameters(model)))) {
     out <- clean_param_vector(model, parameters)
-
+    class(out) <- c("parameters", "numeric")
   } else {
     if (!is.null(param_type)) {
       if (!(
@@ -287,6 +287,7 @@ get_parameters <- function(model, param_type = NULL) {
   if (is.null(param_type)) {
     x <- model$parameters_df$param_value
     names(x) <- model$parameters_df$param_names
+    class(x) <- c("parameters", "numeric")
   }
 
   if (!is.null(param_type)){

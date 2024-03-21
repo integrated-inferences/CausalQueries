@@ -429,8 +429,6 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
   return(invisible(x))
 }
 
-
-#TODO --> implement class assignments
 #TODO --> document + add additional print calls
 
 
@@ -510,7 +508,7 @@ print.parents_df <- function(x) {
 #'
 #' @export
 print.parameters_df <- function(x) {
-  cat("\n Mapping of model parameters to nodal types: \n\n")
+  cat("Mapping of model parameters to nodal types: \n\n")
   cat("----------------------------------------------------------------\n")
   cat("\n gen: partial causal ordering of the parameter's node")
   cat("\n param_set: parameter groupings forming a simplex")
@@ -587,10 +585,38 @@ print.nodal_types <- function(x) {
   return(invisible(x))
 }
 
+#' Print a short summary for causal_model parameters
+#'
+#' print method for class \code{parameters}.
+#'
+#' @param x An object of \code{parameters} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameters <- function(x) {
+  cat("Model parameters with associated probabilities: \n\n")
+  cat(names(x))
+  cat("\n")
+  cat(x)
+  return(invisible(x))
+}
 
 
+print.parameters_prior <- function(x) {
+  draws <- nrow(x)
+  cat("Summary statistics of model parameter prior distributions:")
+  cat(paste("Draws:", draws, sep = " "))
+  cat("\n rows are parameters")
+  cat("\n----------------------------------------------------------------\n\n")
+  distribution_summary <- t(apply(x, 2, summarise_distribution))
 
+}
 
-
-
-
+#' computes mean and sd of a distribution data.frame
+summarise_distribution <- function(x) {
+  summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  names(summary) <- c("mean", "sd")
+  return(summary)
+}

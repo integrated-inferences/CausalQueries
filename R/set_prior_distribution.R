@@ -28,6 +28,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
       as.data.frame()
 
     colnames(prior_distribution) <- model$parameters_df$param_names
+    class(prior_distribution) <- c("parameters_prior", "data.frame")
 
     return(prior_distribution)
 
