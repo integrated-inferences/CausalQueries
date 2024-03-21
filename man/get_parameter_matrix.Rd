@@ -22,3 +22,4 @@ In models without confounding parameters correspond to nodal types.
 model <- make_model('X -> Y')
 get_parameter_matrix(model)
 }
+\keyword{internal}

@@ -157,3 +157,4 @@ node = "Y", nodal_type = c("00","01"))
 make_model('X -> Y') |> get_parameters()
 }
 \concept{parameters}
+\keyword{internal}

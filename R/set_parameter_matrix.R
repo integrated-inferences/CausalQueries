@@ -36,9 +36,9 @@ make_parameter_matrix <- function(model) {
 #' In models without confounding parameters correspond to nodal types.
 #'
 #' @param model A model created by \code{make_model()}
+#' @keywords internal
 #' @return A \code{data.frame}, the parameter matrix, mapping from
 #'   parameters to causal types
-#' @export
 #' @examples
 #' model <- make_model('X -> Y')
 #' get_parameter_matrix(model)

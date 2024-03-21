@@ -21,3 +21,4 @@ data produced by a DAG.
 get_causal_types(make_model('X -> Y'))
 
 }
+\keyword{internal}
