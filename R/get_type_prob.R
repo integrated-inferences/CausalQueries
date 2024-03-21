@@ -36,7 +36,6 @@ get_type_prob <- function(model,
 #' Draw matrix of type probabilities, before or after estimation
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @keywords internal
 #'
 #' @param using A character. It indicates whether to use
 #'   `priors`, `posteriors` or `parameters`.
@@ -45,6 +44,7 @@ get_type_prob <- function(model,
 #' @param param_dist A \code{matrix}.  Distribution of parameters.
 #'   Optional for speed.
 #' @return A \code{matrix} of type probabilities.
+#' @export
 #' @examples
 #' model <- make_model('X -> Y')
 #' get_type_prob_multiple(model, using = 'priors', n_draws = 3)
@@ -90,7 +90,7 @@ get_type_prob_multiple <- function(model,
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{matrix} with the distribution of the parameters in the model
-#' @keywords internal
+#' @export
 #' @examples
 #' get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)
 #' get_param_dist(model = make_model('X->Y'), using = 'parameters')

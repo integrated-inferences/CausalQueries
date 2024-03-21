@@ -26,4 +26,3 @@ Using parameters, priors, or posteriors
 get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)
 get_param_dist(model = make_model('X->Y'), using = 'parameters')
 }
-\keyword{internal}

@@ -271,10 +271,11 @@ set_parameters <- function(model,
 #' Extracts parameters as a named vector
 #'
 #' @rdname parameter_setting
-#' @keywords internal
+#'
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom dirmult rdirichlet
 #' @family parameters
+#' @export
 #' @examples
 #'
 #' # get_parameters examples:
@@ -282,6 +283,7 @@ set_parameters <- function(model,
 #' make_model('X -> Y') |> get_parameters()
 
 get_parameters <- function(model, param_type = NULL) {
+
   if (is.null(param_type)) {
     x <- model$parameters_df$param_value
     names(x) <- model$parameters_df$param_names
