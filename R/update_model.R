@@ -203,7 +203,7 @@ update_model <- function(model,
 
   model$stan_objects$stanfit_print <-
     capture.output(print(newfit))
-  class(model$stan_obects$stanfit_print) <- "stan_fit"
+  class(model$stan_objects$stanfit_print) <- "stan_fit"
 
   for (i in seq_along(params)) {
     model$stan_objects$stanfit_print <-
