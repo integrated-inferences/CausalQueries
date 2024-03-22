@@ -159,9 +159,9 @@ update_model <- function(model,
   # Retain type distribution
   if(keep_type_distribution) {
     model$stan_objects$type_distribution <-
-      t(extract(newfit, pars = "types")$types)
+      extract(newfit, pars = "types")$types
 
-    rownames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
     class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
   }
 
