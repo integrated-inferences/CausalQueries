@@ -55,8 +55,8 @@ grab <- function(model, object = NULL) {
            stop("Model does not contain stan_objects")
          } else {
            model$stan_objects},
-         type_posterior =  get_type_prob_multiple(model, using = "posteriors") |> t() |> data.frame(),
-         type_prior =  get_type_prob_multiple(model, using = "priors") |> t() |> data.frame(),
+         type_posterior =  get_type_prob_multiple(model, using = "posteriors") ,
+         type_prior =  get_type_prob_multiple(model, using = "priors"),
          event_probabilities =
            if (is.null(model$stan_objects)) {
              stop("Model does not contain stan_objects")
