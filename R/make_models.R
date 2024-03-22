@@ -727,8 +727,6 @@ print.stan_fit_summary <- function(x, ...) {
 
 ## S3 helpers ------------------------------------------------------------------
 
-##TODO improve optimal rounding threshold function
-
 #' helper to compute mean and sd of a distribution data.frame
 summarise_distribution <- function(x) {
   summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))

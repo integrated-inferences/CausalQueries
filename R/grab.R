@@ -39,45 +39,57 @@
 #' }
 #'
 grab <- function(model, object = NULL) {
-  switch(object,
-         dag = model$dag,
-         statement = model$statement,
-         nodes = model$nodes,
-         parents_df = model$parents_df,
-         parameters_df = model$parameters_df,
-         causal_types = get_causal_types(model),
-         nodal_types = get_nodal_types(model),
-         parameter_matrix = get_parameter_matrix(model),
-         parameter_prior = get_param_dist(model, using = "priors"),
-         parameter_posterior = get_param_dist(model, using = "posteriors"),
-         parameters = get_param_dist(model, using = "parameters"),
-         stan_object =   if (is.null(model$stan_objects)) {
-           stop("Model does not contain stan_objects")
-         } else {
-           model$stan_objects},
-         type_posterior =  get_type_prob_multiple(model, using = "posteriors") ,
-         type_prior =  get_type_prob_multiple(model, using = "priors"),
-         event_probabilities =
-           if (is.null(model$stan_objects)) {
-             stop("Model does not contain stan_objects")
-             if (is.null(model$stan_objects$w)) {
-               stop("Model does not contain event_probabilities because  keep_event_probabilities is set to FALSE")
-             }} else {
-               model$stan_objects$w
-             },
-         stan_fit =
-           if (is.null(model$stan_objects)) {
-             stop("Model does not contain stan_objects")
-             if (is.null(model$stan_objects$stan_fit)) {
-               stop("Model does not contain stan_fit becausekeep_fit is set to FALSE")
-             }} else {
-               model$stan_objects$w
-             },
-         stop("Invalid object specified. See help for predetermined options.")
+  switch(
+    object,
+    dag = model$dag,
+    statement = model$statement,
+    nodes = model$nodes,
+    parents_df = model$parents_df,
+    parameters_df = model$parameters_df,
+    causal_types = get_causal_types(model),
+    nodal_types = get_nodal_types(model),
+    parameter_matrix = get_parameter_matrix(model),
+    parameter_prior = get_param_dist(model, using = "priors"),
+    parameter_posterior = get_param_dist(model, using = "posteriors"),
+    parameters = get_param_dist(model, using = "parameters"),
+    stan_object =   if (is.null(model$stan_objects)) {
+      stop("Model does not contain stan_objects")
+    } else {
+      model$stan_objects
+    },
+    type_posterior =  get_type_prob_multiple(model, using = "posteriors") ,
+    type_prior =  get_type_prob_multiple(model, using = "priors"),
+    event_probabilities =
+      if (is.null(model$stan_objects)) {
+        stop("Model does not contain stan_objects")
+        if (is.null(model$stan_objects$w)) {
+          stop(
+            "Model does not contain event_probabilities because  keep_event_probabilities is set to FALSE"
+          )
+        }
+      } else {
+        model$stan_objects$w
+      },
+    stan_fit =
+      if (is.null(model$stan_objects)) {
+        stop("Model does not contain stan_objects")
+        if (is.null(model$stan_objects$stan_fit)) {
+          stop("Model does not contain stan_fit becausekeep_fit is set to FALSE")
+        }
+      } else {
+        model$stan_objects$stanfit
+      },
+    stan_fit_summary =
+      if (is.null(model$stan_objects)) {
+        stop("Model does not contain stan_objects")
+        if (is.null(model$stan_objects$stan_fit_summary)) {
+          stop("Model does not contain stan_fit becausekeep_fit is set to FALSE")
+        }
+      } else {
+        model$stan_objects$stanfit_summary
+      },
+    stop("Invalid object specified. See help for predetermined options.")
   )
-
-
-
 }
 
 
