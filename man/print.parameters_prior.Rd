@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An object of \code{parameters_prior} class, which is a sub-object of
 an object of the \code{causal_model} class produced using
-\code{make_model} or \code{update_model}.}
+\code{set_prior_distribution}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

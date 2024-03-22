@@ -607,7 +607,7 @@ print.parameters <- function(x, ...) {
 #'
 #' @param x An object of \code{parameters_prior} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
+#'    \code{set_prior_distribution}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
@@ -617,7 +617,7 @@ print.parameters_prior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are parameters\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
@@ -628,7 +628,7 @@ print.parameters_prior <- function(x, ...) {
 #'
 #' @param x An object of \code{parameters_posterior} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
+#'    \code{update_model}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
@@ -638,7 +638,7 @@ print.parameters_posterior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are parameters\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
@@ -649,7 +649,7 @@ print.parameters_posterior <- function(x, ...) {
 #'
 #' @param x An object of \code{type_posterior} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
+#'    \code{get_type_prob_multiple}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
@@ -659,7 +659,7 @@ print.type_posterior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are causal types\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
@@ -680,7 +680,7 @@ print.type_prior <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are causal types\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
@@ -692,7 +692,7 @@ print.type_prior <- function(x, ...) {
 #'
 #' @param x An object of \code{event_probabilities} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
+#'    \code{update_model}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
@@ -704,13 +704,25 @@ print.event_probabilites <- function(x, ...) {
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are data types\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(max(distribution_summary))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
   return(invisible(x))
 }
 
-#stan_fit
-
+#' Print a short summary for stan fit
+#'
+#' print method for class \code{stan_fit}.
+#'
+#' @param x An object of \code{stan_fit} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.stan_fit <- function(x, ...) {
+  cat(x, sep = "\n")
+  return(invisible(x))
+}
 
 ## S3 helpers ------------------------------------------------------------------
 
@@ -725,6 +737,7 @@ summarise_distribution <- function(x) {
 
 #' helper to find rounding thresholds for print methods
 find_rounding_threshold <- function(x) {
+  x <- max(abs(x)) - min(abs(x))
   pow <- 1
   x_pow <- x * 10^pow
 

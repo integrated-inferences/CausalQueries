@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An object of \code{event_probabilities} class, which is a sub-object of
 an object of the \code{causal_model} class produced using
-\code{make_model} or \code{update_model}.}
+\code{update_model}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

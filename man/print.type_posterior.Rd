@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An object of \code{type_posterior} class, which is a sub-object of
 an object of the \code{causal_model} class produced using
-\code{make_model} or \code{update_model}.}
+\code{get_type_prob_multiple}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
