@@ -201,15 +201,15 @@ update_model <- function(model,
     )
 
 
-  model$stan_objects$stanfit_print <-
+  model$stan_objects$stanfit_summary <-
     capture.output(print(newfit))
-  class(model$stan_objects$stanfit_print) <- "stan_fit"
+  class(model$stan_objects$stanfit_summary) <- "stan_fit_summary"
 
   for (i in seq_along(params)) {
-    model$stan_objects$stanfit_print <-
+    model$stan_objects$stanfit_summary <-
       gsub(pattern = raname_list[[2]][i],
            replacement = raname_list[[1]][i],
-           x = model$stan_objects$stanfit_print,
+           x = model$stan_objects$stanfit_summary,
            fixed = TRUE)
   }
 

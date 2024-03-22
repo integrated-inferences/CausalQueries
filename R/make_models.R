@@ -424,7 +424,7 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
 
   if (stanfit & !is.null(x$stan_objects)) {
     cat("----------------------------------------------------------------\n\n")
-    cat(x$stan_objects$stanfit_print, sep = "\n")
+    print.stan_fit_summary(x$stan_objects$stanfit_summary)
     cat("\n")
   }
 
@@ -712,15 +712,15 @@ print.event_probabilites <- function(x, ...) {
 
 #' Print a short summary for stan fit
 #'
-#' print method for class \code{stan_fit}.
+#' print method for class \code{stan_fit_summary}.
 #'
-#' @param x An object of \code{stan_fit} class, which is a sub-object of
+#' @param x An object of \code{stan_fit_summary} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
 #'    \code{update_model}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
-print.stan_fit <- function(x, ...) {
+print.stan_fit_summary <- function(x, ...) {
   cat(x, sep = "\n")
   return(invisible(x))
 }
