@@ -13,8 +13,6 @@
 #' model <- make_model('X -> Y')
 #' get_ambiguities_matrix(model = model)
 #'
-#' @export
-#'
 get_ambiguities_matrix <- function(model) {
     is_a_model(model)
     if (!is.null(model$A)) {
@@ -84,7 +82,6 @@ make_ambiguities_matrix <- function(model) {
 #' model <- make_model('X -> Y') %>%
 #'          set_ambiguities_matrix()
 #' model$A
-#' @export
 #'
 set_ambiguities_matrix <- function(model, A = NULL) {
     if(is.null(A)) {

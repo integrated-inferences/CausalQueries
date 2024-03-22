@@ -24,4 +24,5 @@ Add an ambiguities matrix to a model
 model <- make_model('X -> Y') \%>\%
          set_ambiguities_matrix()
 model$A
+
 }

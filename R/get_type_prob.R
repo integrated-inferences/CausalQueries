@@ -8,7 +8,6 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types
-#' @export
 #' @examples
 #' get_type_prob(model = make_model('X->Y'))
 #' get_type_prob(model = make_model('X->Y'), parameters = 1:6)

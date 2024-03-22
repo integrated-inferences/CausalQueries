@@ -352,7 +352,6 @@ expand_wildcard <- function(to_expand,
 #' @param include_paramset Logical. Whether to include the param set
 #'   prefix as part of the name.
 #' @return A character vector with the names of the parameters in the model
-#' @export
 #' @examples
 #'
 #' get_parameter_names(make_model('X->Y'))
