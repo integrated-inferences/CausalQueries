@@ -8,14 +8,16 @@ testthat::test_that(
 
 	code = {
 		model <- make_model("X -> Y")
-		out <- capture.output(CausalQueries:::print.causal_model(model))
-		expect_true(any(grepl("\\$X", out)) & any(grepl("\\$Y", out)))
-		out <- class(CausalQueries:::summary.causal_model(model))
+		out <- capture.output(print(model))
+		expect_true(any(grepl("X -> Y", out)) &
+		              any(grepl("^Number of types by node:", out)) &
+		              any(grepl("^Number of unit types:", out)))
+		out <- class(summary(model))
 		expect_equal(out[1], "summary.causal_model")
 		expect_equal(out[2], "data.frame")
 		model <- make_model("X -> Y") |> set_confound(list("X <-> Y"))
 		model <- make_model("X->Y") |> set_restrictions(statement = c("X[] == 0"))
-		out <- capture.output(CausalQueries:::print.summary.causal_model(model))
+		out <- capture.output(print(summary(model)))
 		expect_true(any(grepl("Restrictions.+", out)))
  	}
 )
