@@ -293,9 +293,46 @@ make_model <- function(statement,
   attr(model, "nonroot_nodes") <- endog_node
   attr(model, "root_nodes")  <- exog_node
 
+
+  # assign classes
+  class(model$dag) <- c("dag", "data.frame")
+  class(model$statement) <- c("statement", "character")
+  class(model$nodes) <- c("nodes", "character")
+  class(model$parents_df) <- c("parents", "data.frame")
+  class(model$nodal_types) <- c("nodal_types", "list")
+
   return(model)
 
 }
+
+
+#' function to make a parameters_df from nodal types
+#' @param nodal_types a list of nodal types
+#' @export
+#' @keywords internal
+#' @examples
+#'
+#' make_parameters_df(list(X = "1", Y = c("01", "10")))
+
+make_parameters_df <- function(nodal_types){
+  pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
+                    nodal_type = nodal_types %>% unlist) |>
+    dplyr::mutate(param_set = node,
+                  given = "",
+                  priors = 1,
+                  param_names = paste0(node, ".", nodal_type)) |>
+    dplyr::group_by(param_set) |>
+    dplyr::mutate(param_value = 1/n(), gen =  cur_group_id()) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(gen = match(node, names(nodal_types))) |>
+    dplyr::select(param_names, node, gen, param_set, nodal_type,
+                  given, param_value, priors)
+
+  return(pdf)
+}
+
+
+## S3 methods for causal_model and sub-objects --------------------------------
 
 #' Print a short summary for a causal model
 #'
@@ -312,20 +349,19 @@ make_model <- function(statement,
 #'
 #' @export
 print.causal_model <- function(x, ...) {
-  cat("\nStatement: \n")
-  print(x$statement)
+  print.statement(x$statement)
 
   cat("\nNumber of types by node:\n")
-	nodal_types <- get_nodal_types(x)
-	print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
+  nodal_types <- get_nodal_types(x)
+  print(vapply(nodal_types , length, numeric(1) ,USE.NAMES = TRUE))
 
 
-	if (!is.null(x$causal_types)) {
-	  cat("\nNumber of unit types:")
-	  cat(paste0(" ", nrow(get_causal_types(x)), "\n\n"))
-	}
+  if (!is.null(x$causal_types)) {
+    cat("\nNumber of unit types:")
+    cat(paste0(" ", nrow(get_causal_types(x)), "\n\n"))
+  }
 
-	return(invisible(x))
+  return(invisible(x))
 }
 
 #' Summarizing causal models
@@ -363,35 +399,10 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
                    "that was not updated. The summary of stan fit will",
                    "not be printed"))
 
-  cat("\nStatement: \n")
-  print(x$statement)
-  cat("\nDAG: \n")
-  print(x$dag)
+  print.statement(x$statement)
+  print.dag(x$dag)
   cat("\n------------------------------------------------------------------\n\n")
-  cat("Nodal types: \n")
-
-  nodal_types <- get_nodal_types(x)
-  nodes <- x$nodes
-
-  for (n in nodes) {
-    nt <- nodal_types[[n]]
-    interpret <- attr(nodal_types, "interpret")[[n]]
-    stop_at <- min(length(nt), 16)
-    cat(paste0("$", n, "\n"))
-
-    cat(paste0(nt[1:stop_at], collapse = "  "))
-
-    if (stop_at != length(nt)) {
-      cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
-    }
-    cat("\n\n")
-    print(interpret)
-    cat("\n")
-  }
-
-  cat("\nNumber of types by node\n")
-
-  print(vapply(nodal_types , length, numeric(1), USE.NAMES = TRUE))
+  print.nodal_types(x$nodal_types)
 
   if (!is.null(x$causal_types)) {
     cat("\nNumber of unit types:")
@@ -419,31 +430,322 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
   return(invisible(x))
 }
 
-
-#' function to make a parameters_df from nodal types
-#' @param nodal_types a list of nodal types
-#' @export
-#' @keywords internal
-#' @examples
+#' Print a short summary for a causal_model DAG
 #'
-#' make_parameters_df(list(X = "1", Y = c("01", "10")))
+#' print method for class \code{dag}.
+#'
+#' @param x An object of \code{dag} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.dag <- function(x, ...) {
+  cat("\nDag: \n")
+  base::print.data.frame(x)
+  return(invisible(x))
+}
 
-make_parameters_df <- function(nodal_types){
-  pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
-                    nodal_type = nodal_types %>% unlist) |>
-    dplyr::mutate(param_set = node,
-           given = "",
-           priors = 1,
-           param_names = paste0(node, ".", nodal_type)) |>
-    dplyr::group_by(param_set) |>
-    dplyr::mutate(param_value = 1/n(), gen =  cur_group_id()) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(gen = match(node, names(nodal_types))) |>
-    dplyr::select(param_names, node, gen, param_set, nodal_type,
-                  given, param_value, priors)
+#' Print a short summary for a causal_model statement
+#'
+#' print method for class \code{statement}.
+#'
+#' @param x An object of \code{statement} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.statement <- function(x, ...) {
+  cat("\nStatement: \n")
+  cat(x)
+  cat("\n")
+  return(invisible(x))
+}
 
-  return(pdf)
+#' Print a short summary for a causal_model nodes
+#'
+#' print method for class \code{nodes}.
+#'
+#' @param x An object of \code{nodes} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.nodes <- function(x, ...) {
+  cat("\nNodes: \n")
+  cat(paste(x, collapse = ", "))
+  return(invisible(x))
+}
+
+#' Print a short summary for a causal_model parents data-frame
+#'
+#' print method for class \code{parents_df}.
+#'
+#' @param x An object of \code{parents_df} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parents_df <- function(x, ...) {
+  cat("\nRoot vs Non-Root status & number of parents per node: \n")
+  base::print.data.frame(x)
+  return(invisible(x))
+}
+
+#' Print a short summary for a causal_model parameters data-frame
+#'
+#' print method for class \code{parameters_df}.
+#'
+#' @param x An object of \code{parameters_df} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameters_df <- function(x, ...) {
+  cat("Mapping of model parameters to nodal types: \n\n")
+  cat("----------------------------------------------------------------\n")
+  cat("\n gen: partial causal ordering of the parameter's node")
+  cat("\n param_set: parameter groupings forming a simplex")
+  cat("\n param_value: parameter probabilities")
+  cat("\n priors: alphas of the prior Dirichlet distribution \n\n")
+  cat("----------------------------------------------------------------\n\n")
+  if(nrow(x) > 10) {
+    cat("\n first 10 rows: \n")
+    print.data.frame(x[1:10,])
+  } else {
+    print.data.frame(x)
+  }
+  return(invisible(x))
+}
+
+#' Print a short summary for causal_model causal-types
+#'
+#' print method for class \code{causal_types}.
+#'
+#' @param x An object of \code{causal_types} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.causal_types <- function(x, ...) {
+  cat("\nCausal Types: ")
+  cat("\ncartesian product of nodal types\n\n")
+  if(nrow(x) > 10) {
+    cat("\n first 10 causal types: \n")
+    print.data.frame(x[1:10,])
+  } else {
+    print.data.frame(x)
+  }
+  return(invisible(x))
+}
+
+#' Print a short summary for causal_model nodal-types
+#'
+#' print method for class \code{nodal_types}.
+#'
+#' @param x An object of \code{nodal_types} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.nodal_types <- function(x, ...) {
+  cat("Nodal types: \n")
+
+  nodal_types <- x
+  nodes <- names(x)
+
+  for (n in nodes) {
+    nt <- nodal_types[[n]]
+    interpret <- attr(nodal_types, "interpret")[[n]]
+    stop_at <- min(length(nt), 16)
+    cat(paste0("$", n, "\n"))
+
+    cat(paste0(nt[1:stop_at], collapse = "  "))
+
+    if (stop_at != length(nt)) {
+      cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
+    }
+    cat("\n\n")
+    print(interpret)
+    cat("\n")
+  }
+
+  cat("\nNumber of types by node\n")
+
+  print(vapply(nodal_types , length, numeric(1), USE.NAMES = TRUE))
+
+  return(invisible(x))
+}
+
+#' Print a short summary for causal_model parameters
+#'
+#' print method for class \code{parameters}.
+#'
+#' @param x An object of \code{parameters} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameters <- function(x, ...) {
+  cat("Model parameters with associated probabilities: \n\n")
+  cat(names(x))
+  cat("\n")
+  cat(x)
+  return(invisible(x))
+}
+
+#' Print a short summary for causal_model parameter prior distributions
+#'
+#' print method for class \code{parameters_prior}.
+#'
+#' @param x An object of \code{parameters_prior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{set_prior_distribution}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameters_prior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of model parameter prior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are parameters\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for causal_model parameter posterior distributions
+#'
+#' print method for class \code{parameters_posterior}.
+#'
+#' @param x An object of \code{parameters_posterior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameters_posterior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of model parameter posterior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are parameters\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for causal-type posterior distributions
+#'
+#' print method for class \code{type_posterior}.
+#'
+#' @param x An object of \code{type_posterior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{get_type_prob_multiple}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.type_posterior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of causal type posterior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are causal types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for causal-type prior distributions
+#'
+#' print method for class \code{type_prior}.
+#'
+#' @param x An object of \code{type_prior} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{make_model} or \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.type_prior <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of causal type prior distributions:")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are causal types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
 }
 
 
+#' Print a short summary for event probability distributions
+#'
+#' print method for class \code{event_probabilities}.
+#'
+#' @param x An object of \code{event_probabilities} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.event_probabilites <- function(x, ...) {
+  draws <- nrow(x)
+  cat("Summary statistics of event probability distributions:")
+  cat("\nThese distributions capture the probability of observing a given")
+  cat("\ncombination of data realizations.")
+  cat(paste("\nDraws:", draws, sep = " "))
+  cat("\nrows are data types\n")
+  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
+  rounding_threshold <- find_rounding_threshold(distribution_summary)
+  print.data.frame(round(distribution_summary, rounding_threshold))
+  return(invisible(x))
+}
+
+#' Print a short summary for stan fit
+#'
+#' print method for class \code{stan_fit}.
+#'
+#' @param x An object of \code{stan_fit} class, which is a sub-object of
+#'    an object of the \code{causal_model} class produced using
+#'    \code{update_model}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.stan_fit <- function(x, ...) {
+  cat(x, sep = "\n")
+  return(invisible(x))
+}
+
+## S3 helpers ------------------------------------------------------------------
+
+##TODO improve optimal rounding threshold function
+
+#' helper to compute mean and sd of a distribution data.frame
+summarise_distribution <- function(x) {
+  summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  names(summary) <- c("mean", "sd")
+  return(summary)
+}
+
+#' helper to find rounding thresholds for print methods
+find_rounding_threshold <- function(x) {
+  x <- max(abs(x)) - min(abs(x))
+  pow <- 1
+  x_pow <- x * 10^pow
+
+  while(x_pow < 1) {
+    pow <- pow + 1
+    x_pow <- x * 10^pow
+  }
+
+  return(pow + 1)
+}
 

@@ -154,19 +154,22 @@ update_model <- function(model,
     extract(newfit, pars = "lambdas")$lambdas |>
     as.data.frame()
   colnames(model$posterior_distribution) <- get_parameter_names(model)
+  class(model$posterior_distribution) <- c("parameters_posterior", "data.frame")
 
   # Retain type distribution
   if(keep_type_distribution) {
-  model$stan_objects$type_distribution <-
-    extract(newfit, pars = "types")$types
+    model$stan_objects$type_distribution <-
+      extract(newfit, pars = "types")$types
 
-  colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
   }
 
   # Retain event (pre-censoring) probabilities
   if (keep_event_probabilities) {
     model$stan_objects$w <- extract(newfit, pars = "w")$w
     colnames(model$stan_objects$w) <- colnames(stan_data$E)
+    class(model$stan_objects$w) <- c("event_probabilities", "matrix", "array")
   }
 
   # Retain stanfit summary with readable names
@@ -200,6 +203,7 @@ update_model <- function(model,
 
   model$stan_objects$stanfit_print <-
     capture.output(print(newfit))
+  class(model$stan_obects$stanfit_print) <- "stan_fit"
 
   for (i in seq_along(params)) {
     model$stan_objects$stanfit_print <-
@@ -209,6 +213,7 @@ update_model <- function(model,
            fixed = TRUE)
   }
 
+  class(model$stan_objects) <- c("stan_objects", "list")
   return(model)
 }
 

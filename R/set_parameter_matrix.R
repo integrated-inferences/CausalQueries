@@ -77,6 +77,7 @@ set_parameter_matrix <- function(model, P = NULL) {
 
   if(!is.null(P)) {
     model$P <- P
+    class(model$P) <- c("parameter_matrix", "data.frame")
   }
 
   return(model)
@@ -95,7 +96,7 @@ print.parameter_matrix <- function(x, ...) {
   print(x)
   cat("\n \n param_set  (P)\n ")
   cat(paste0(param_set, collapse = "  "))
-  invisible(x)
+  return(invisible(x))
 }
 
 
