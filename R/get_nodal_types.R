@@ -8,8 +8,8 @@
 #' @param collapse Logical. If `TRUE`, shows unique nodal types for each node.
 #'   If `FALSE`, shows for each node a matrix with nodal types as rows and
 #'   parent types as columns, if applicable. Defaults to `TRUE`.
+#' @keywords internal
 #' @importFrom rlang is_empty
-#' @export
 #' @return A named \code{list} of nodal types for each parent in a DAG
 #'
 #' @examples

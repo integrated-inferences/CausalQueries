@@ -43,8 +43,8 @@ get_type_prob <- function(model,
 #'   prior distribution with \code{n_draws} number of draws.
 #' @param param_dist A \code{matrix}.  Distribution of parameters.
 #'   Optional for speed.
+#' @keywords internal
 #' @return A \code{matrix} of type probabilities.
-#' @export
 #' @examples
 #' model <- make_model('X -> Y')
 #' get_type_prob_multiple(model, using = 'priors', n_draws = 3)
@@ -90,8 +90,8 @@ get_type_prob_multiple <- function(model,
 #' Using parameters, priors, or posteriors
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @keywords internal
 #' @return A \code{matrix} with the distribution of the parameters in the model
-#' @export
 #' @examples
 #' get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)
 #' get_param_dist(model = make_model('X->Y'), using = 'parameters')

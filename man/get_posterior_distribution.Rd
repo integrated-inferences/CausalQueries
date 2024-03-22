@@ -23,3 +23,4 @@ make_model('X -> Y') |>
 
 }
 \concept{posterior_distribution}
+\keyword{internal}
