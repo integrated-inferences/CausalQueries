@@ -328,6 +328,7 @@ make_parameters_df <- function(nodal_types){
     dplyr::select(param_names, node, gen, param_set, nodal_type,
                   given, param_value, priors)
 
+  class(pdf) <- c("parameters_df", "data.frame")
   return(pdf)
 }
 
