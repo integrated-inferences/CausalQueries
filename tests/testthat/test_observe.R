@@ -20,7 +20,7 @@ testthat::test_that(
 
 		obs <- observe_data(complete_data = df)
     expect_equal(nrow(obs), 4)
-    expect_equal(colnames(obs), model$nodes)
+    expect_true(all((colnames(obs) ==  model$nodes)))
 }
 )
 

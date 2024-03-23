@@ -58,7 +58,7 @@ testthat::test_that(
 	    "parameters_posterior",
 	    "event_probabilities",
 	    "stan_objects",
-	    "stan_fit_summary",
+	    "stanfit",
 	    "stan_fit_summary",
 	    "type_prior",
 	    "type_posterior"
@@ -68,7 +68,7 @@ testthat::test_that(
 	  model <- make_model("X->Y") |> update_model(keep_event_probabilities = TRUE, keep_fit = TRUE)
 
 	  for(j in 1:length(args)){
-	    print(args[j])
+	    print(c(j, args[j]))
 	    expect_true((grab(model, args[j]) |> class())[1] == classes[j])
 	  }
 

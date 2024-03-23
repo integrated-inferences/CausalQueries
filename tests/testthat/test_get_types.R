@@ -60,8 +60,8 @@ testthat::test_that(
 		out <- map_query_to_causal_type(model, query)
 		expect_output(print(out))
 		summary_out <- class(summary(out))
-		expect_equal(summary_out[1], "summary.causal_types")
-		expect_equal(summary_out[2], "data.frame")
+		expect_equal(summary_out[1], "summaryDefault")
+		expect_equal(summary_out[2], "table")
 		out$types <- as.numeric(out$types)
 		expect_output(print(out))
 	}
