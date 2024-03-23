@@ -16,8 +16,8 @@ testthat::test_that(
 		query <- '(Y[X=0]>Y[X=1])'
 		x <- map_query_to_nodal_type(model, query)
 		w <- summary(x)
-		expect_true(class(x) == "nodal_types")
-		expect_true("summary.nodal_types" %in% class(w))
+		expect_true(class(x) == "nodal_types_query")
+		expect_true("summaryDefault" %in% class(w))
     expect_output(print(x), "Nodal types adding weight to query")
     b <- capture.output(print(x))
     test_output <- " query :  (Y[X=0]>Y[X=1]) "

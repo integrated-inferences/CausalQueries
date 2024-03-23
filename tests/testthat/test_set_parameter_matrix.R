@@ -26,9 +26,8 @@ testthat::test_that(
 		model <- make_model("X -> Y")
 		confound <- list(X = "(Y[X=1] > Y[X=0])", X = "(Y[X=1] == 1)")
 		model <- set_confound(model = model, confound = confound)
-		out <- capture.output(CausalQueries:::summary.parameter_matrix(model$P))
-		# bad test; but function currently not producing proper output
-		expect_true(any(grepl(" parameter set", out)))
+		out <- capture.output(print(model$P))
+		expect_true(out[[2]] == "Rows are parameters, grouped in parameter sets")
 	}
 )
 
