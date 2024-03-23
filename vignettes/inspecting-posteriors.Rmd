@@ -33,7 +33,7 @@ When you update a model using `CausalQueries`, `CausalQueries` generates and upd
 The basic usage is:
 
 ```{r}
-data <- data.frame(X = c(0:1), Y = c(0:1))
+data <- data.frame(X = rep(c(0:1), 10), Y = rep(c(0:1), 10))
 model <- make_model("X -> Y") |> 
   update_model(data, refresh = 0)
 ```
