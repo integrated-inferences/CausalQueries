@@ -7,7 +7,7 @@ providing restrictions on causal types, and/or by providing informative
 priors on parameters. The default setting for a causal model have flat
 (uniform) priors and parameters putting equal weight on each parameter
 within each parameter set. These can be adjust with set_priors
-and set_parameters"><title>Make a model — make_model • CausalQueries</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Make a model — make_model"><meta property="og:description" content="make_model uses dagitty syntax and functionality to
+and set_parameters"><title>Make a model — make_model • CausalQueries</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Make a model — make_model"><meta property="og:description" content="make_model uses dagitty syntax and functionality to
 specify nodes and edges of a graph. Implied causal types are calculated
 and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, P, by
@@ -26,7 +26,7 @@ and set_parameters"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@ and set_parameters"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
     <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -140,41 +141,25 @@ following components:</p>
   nodal types that produce them</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="summary.causal_model.html">summary.causal_model</a></code> provides summary method for
+  output objects of class <code>causal_model</code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">make_model</span><span class="op">(</span>statement <span class="op">=</span> <span class="st">"X -&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "X -&gt; Y"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DAG: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   parent children</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      X        Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nodal types: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    X       NA      X0          X = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    X       NA      X1          X = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 00  10  01  11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Y        1   Y[*]*      Y | X = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Y        2   Y*[*]      Y | X = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types:  8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">modelXKY</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; K -&gt; Y; X -&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example where cyclicaly dag attempted</span></span></span>
@@ -361,20 +346,44 @@ following components:</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">P</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 68 64</span>
 <span class="r-in"><span><span class="va">model</span><span class="op">$</span><span class="va">parameters_df</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 68 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    param_names      node    gen param_set   nodal_type given  param_value priors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X1.0             X1        1 X1          0          <span style="color: #949494;">""</span>          0.5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X1.1             X1        1 X1          1          <span style="color: #949494;">""</span>          0.5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> X2.0             X2        2 X2          0          <span style="color: #949494;">""</span>          0.5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> X2.1             X2        2 X2          1          <span style="color: #949494;">""</span>          0.5         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Y.0000_X1.0_X2.0 Y         3 Y.X1.0.X2.0 0000       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Y.1000_X1.0_X2.0 Y         3 Y.X1.0.X2.0 1000       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.0100_X1.0_X2.0 Y         3 Y.X1.0.X2.0 0100       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.1100_X1.0_X2.0 Y         3 Y.X1.0.X2.0 1100       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.0010_X1.0_X2.0 Y         3 Y.X1.0.X2.0 0010       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.1010_X1.0_X2.0 Y         3 Y.X1.0.X2.0 1010       <span style="color: #949494;">"</span>X1.0…      0.062<span style="text-decoration: underline;">5</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 58 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_names: name of parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  node: name of endogeneous node associated with the parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  gen: partial causal ordering of the parameter's node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set: parameter groupings forming a simplex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  given: if model has confounding gives conditioning nodal type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_value: parameter values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  priors: hyperparameters of the prior Dirichlet distribution </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  first 10 rows: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         param_names node gen   param_set nodal_type      given param_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1              X1.0   X1   1          X1          0                 0.5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2              X1.1   X1   1          X1          1                 0.5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3              X2.0   X2   2          X2          0                 0.5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4              X2.1   X2   2          X2          1                 0.5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Y.0000_X1.0_X2.0    Y   3 Y.X1.0.X2.0       0000 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Y.1000_X1.0_X2.0    Y   3 Y.X1.0.X2.0       1000 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Y.0100_X1.0_X2.0    Y   3 Y.X1.0.X2.0       0100 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Y.1100_X1.0_X2.0    Y   3 Y.X1.0.X2.0       1100 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Y.0010_X1.0_X2.0    Y   3 Y.X1.0.X2.0       0010 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Y.1010_X1.0_X2.0    Y   3 Y.X1.0.X2.0       1010 X1.0, X2.0      0.0625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A single node graph is also possible</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span></span></span>
@@ -402,42 +411,61 @@ following components:</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">make_model</span><span class="op">(</span><span class="st">"A -&gt; Y; B -&gt;Y; C-&gt;Y; D-&gt;Y; E-&gt;Y"</span>,</span></span>
 <span class="r-in"><span>          nodal_types <span class="op">=</span> <span class="va">nodal_types</span><span class="op">)</span><span class="op">$</span><span class="va">parameters_df</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 17 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    param_names         node    gen param_set nodal_type given param_value priors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A.0                 A         1 A         0          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> A.1                 A         1 A         1          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> B.0                 B         2 B         0          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> B.1                 B         2 B         1          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> C.0                 C         3 C         0          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> C.1                 C         3 C         1          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> D.0                 D         4 D         0          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> D.1                 D         4 D         1          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> E.0                 E         5 E         0          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> E.1                 E         5 E         1          <span style="color: #949494;">""</span>          0.5        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> Y.0000000000000000… Y         6 Y         000000000… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> Y.0101010101010101… Y         6 Y         010101010… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> Y.0011001100110011… Y         6 Y         001100110… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> Y.0000111100001111… Y         6 Y         000011110… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> Y.0000000011111111… Y         6 Y         000000001… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> Y.0000000000000000… Y         6 Y         000000000… <span style="color: #949494;">""</span>          0.143      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> Y.1111111111111111… Y         6 Y         111111111… <span style="color: #949494;">""</span>          0.143      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_names: name of parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  node: name of endogeneous node associated with the parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  gen: partial causal ordering of the parameter's node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set: parameter groupings forming a simplex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  given: if model has confounding gives conditioning nodal type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_value: parameter values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  priors: hyperparameters of the prior Dirichlet distribution </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  first 10 rows: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node gen param_set nodal_type given param_value priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          A.0    A   1         A          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          A.1    A   1         A          1               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          B.0    B   2         B          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          B.1    B   2         B          1               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          C.0    C   3         C          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          C.1    C   3         C          1               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          D.0    D   4         D          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          D.1    D   4         D          1               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9          E.0    E   5         E          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10         E.1    E   5         E          1               0.5      1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nodal_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"01"</span>, <span class="st">"10"</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">make_model</span><span class="op">(</span><span class="st">"Z -&gt; Y"</span>, nodal_types <span class="op">=</span> <span class="va">nodal_types</span><span class="op">)</span><span class="op">$</span><span class="va">parameters_df</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Ordering of provided nodal types is being altered to match generation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   param_names node    gen param_set nodal_type given param_value priors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Z.0         Z         1 Z         0          <span style="color: #949494;">""</span>            0.5      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Z.1         Z         1 Z         1          <span style="color: #949494;">""</span>            0.5      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Y.01        Y         2 Y         01         <span style="color: #949494;">""</span>            0.5      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Y.10        Y         2 Y         10         <span style="color: #949494;">""</span>            0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_names: name of parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  node: name of endogeneous node associated with the parameter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  gen: partial causal ordering of the parameter's node</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set: parameter groupings forming a simplex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  given: if model has confounding gives conditioning nodal type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_value: parameter values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  priors: hyperparameters of the prior Dirichlet distribution </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   param_names node gen param_set nodal_type given param_value priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         Z.0    Z   1         Z          0               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         Z.1    Z   1         Z          1               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Y.01    Y   2         Y         01               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        Y.10    Y   2         Y         10               0.5      1</span>
 <span class="r-in"><span><span class="fu">make_model</span><span class="op">(</span><span class="st">"Z -&gt; Y"</span>, nodal_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">parents_df</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Model not properly defined: nodal_types should be NULL or specified for all nodes in model:  Z, Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node  root parents</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Z  TRUE       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Y FALSE       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   node  root parents parent_nodes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Z  TRUE       0             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Y FALSE       1            Z</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

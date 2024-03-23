@@ -20,7 +20,7 @@ Names for causal types
 \examples{
 \donttest{
 model <- make_model('X -> Y')
-possible_types <- get_nodal_types(model)
+possible_types <- grab(model, "nodal_types")
 df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 CausalQueries:::causal_type_names(df)
 }

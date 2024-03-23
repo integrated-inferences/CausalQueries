@@ -1,0 +1,91 @@
+---
+title: "Posteriors"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Posteriors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+```{r setup, message = FALSE, warning = FALSE}
+if(!requireNamespace("fabricatr", quietly = TRUE)) {
+  install.packages("fabricatr")
+}
+
+library(CausalQueries)
+library(fabricatr)
+library(knitr)
+library(ggplot2)
+```
+
+# Accessing the posterior
+
+When you update a model using `CausalQueries`, `CausalQueries` generates and updates a `stan` model and saves the posterior distribution over parameters in teh model. 
+
+The basic usage is:
+
+```{r}
+data <- data.frame(X = c(0:1), Y = c(0:1))
+model <- make_model("X -> Y") |> 
+  update_model(data, refresh = 0)
+```
+
+The posterior over parameters can be accessed thus:
+
+```{r}
+grab(model, "posterior_distribution")
+```
+
+
+# Summary of stan performance
+
+You can access a summary of the parameter values and convergence information as produced by `stan` thus:
+
+```{r}
+grab(model, "stan_fit_summary")
+```
+
+This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column.
+
+See [stan documentation](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html) for details.
+
+
+# Advanced diagnostics 
+
+If you are interested in advanced diagnostics of performance you can save and access the `raw` stan output. 
+
+```{r}
+model <- make_model("X -> Y") |> 
+  update_model(data, refresh = 0, keep_fit = TRUE)
+```
+
+Note that the summary for this raw output shows the labels used in the generic `stan` model: `lambda` for the vector of parameters, corresponding to the parameters in the parameters dataframe  (`grab(model, "parameters_df")`), and , if saved,  a vector `types` for the causal types (see `grab(model, "causal_types")`) and `w` for the event probabilities (`grab(model, "event_probabilities")`). 
+
+```{r}
+model |> grab("stan_fit")
+```
+
+
+You can then  use diagnostic packages such as `bayesplot`.
+
+```{r}
+model |> grab("stan_fit") |>
+  bayesplot::mcmc_pairs(pars = c("lambdas[3]", "lambdas[4]", "lambdas[5]", "lambdas[6]"))
+
+```
+      
+```{r}
+np <- model |> grab("stan_fit") |> bayesplot::nuts_params()
+head(np) |> kable()
+
+model |> grab("stan_fit") |>
+  bayesplot::mcmc_trace(pars = "lambdas[5]", np = np) 
+```

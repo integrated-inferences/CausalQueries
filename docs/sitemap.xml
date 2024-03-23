@@ -19,6 +19,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/inspecting-posteriors.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -115,6 +118,12 @@
     <loc>/reference/expand_wildcard.html</loc>
   </url>
   <url>
+    <loc>/reference/find_rounding_threshold.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_all_data_types.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_ambiguities_matrix.html</loc>
   </url>
   <url>
@@ -125,6 +134,9 @@
   </url>
   <url>
     <loc>/reference/get_estimands.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_event_prob.html</loc>
   </url>
   <url>
     <loc>/reference/get_event_probabilities.html</loc>
@@ -146,6 +158,9 @@
   </url>
   <url>
     <loc>/reference/get_parmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_posterior_distribution.html</loc>
   </url>
   <url>
     <loc>/reference/get_prior_distribution.html</loc>
@@ -170,6 +185,9 @@
   </url>
   <url>
     <loc>/reference/get_type_prob_multiple_c.html</loc>
+  </url>
+  <url>
+    <loc>/reference/grab.html</loc>
   </url>
   <url>
     <loc>/reference/gsub_many.html</loc>
@@ -277,6 +295,51 @@
     <loc>/reference/prep_stan_data.html</loc>
   </url>
   <url>
+    <loc>/reference/print.causal_model.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.causal_types.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.dag.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.event_probabilites.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.nodal_types.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.nodes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.parameters.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.parameters_df.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.parameters_posterior.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.parameters_prior.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.parents_df.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.stan_fit_summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.statement.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.type_posterior.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.type_prior.html</loc>
+  </url>
+  <url>
     <loc>/reference/prior_setting.html</loc>
   </url>
   <url>
@@ -338,6 +401,12 @@
   </url>
   <url>
     <loc>/reference/substitutes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/summarise_distribution.html</loc>
+  </url>
+  <url>
+    <loc>/reference/summary.causal_model.html</loc>
   </url>
   <url>
     <loc>/reference/te.html</loc>

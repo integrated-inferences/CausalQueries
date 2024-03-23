@@ -39,32 +39,37 @@
 #'  data_long   <- simulate_data(model, n = 4)
 #'  data_short  <- collapse_data(data_long, model)
 #'  \donttest{
-#'    update_model(model, data_long)
-#'    update_model(model, data_short)
+#'  model <-  update_model(model, data_long)
+#'  model <-  update_model(model, data_short)
 #'  }
 #'  \dontrun{
 #'    # It is possible to implement updating without data, in which
 #'    # case the posterior is a stan object that reflects the prior
 #'    update_model(model)
 #'
+#'    data <- data.frame(X=rep(0:1, 10), Y=rep(0:1,10))
+#'
 #'    # Censored data types
 #'    # We update less than we might because we are aware of filtered data
 #'    uncensored <-
 #'      make_model("X->Y") |>
-#'      update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10))) |>
+#'      update_model(data) |>
 #'      query_model(te("X", "Y"), using = "posteriors")
 #'
-#'    censored <- make_model("X->Y") |>
-#'      update_model(data.frame(X=rep(0:1, 10), Y=rep(0:1,10)),
-#'      censored_types = c("X1Y0")) |>
+#'    censored <-
+#'      make_model("X->Y") |>
+#'      update_model(
+#'        data,
+#'        censored_types = c("X1Y0")) |>
 #'      query_model(te("X", "Y"), using = "posteriors")
 #'
 #'
-#'    # Censored data: We learning nothing because the data
+#'    # Censored data: We learn nothing because the data
 #'    # we see is the only data we could ever see
 #'    make_model("X->Y") |>
-#'      update_model(data.frame(X=rep(1,5), Y=rep(1,5)),
-#'      censored_types = c("X1Y0", "X0Y0", "X0Y1")) |>
+#'      update_model(
+#'        data,
+#'        censored_types = c("X1Y0", "X0Y0", "X0Y1")) |>
 #'      query_model(te("X", "Y"), using = "posteriors")
 #'  }
 #'

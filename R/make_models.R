@@ -368,6 +368,12 @@ print.causal_model <- function(x, ...) {
     cat(paste0(" ", nrow(get_causal_types(x)), "\n\n"))
   }
 
+  if (!is.null(x$posterior_distribution)) {
+    cat("\nModel has been updated and contains a posterior distribution with\n")
+    cat(paste(grab(x, object = "stan_fit_summary")[[2]],"\n"))
+    cat("Use grab(model, object = 'stan_fit_summary') to inspect stan summary \n\n")
+  }
+
   return(invisible(x))
 }
 

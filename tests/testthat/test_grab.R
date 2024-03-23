@@ -68,7 +68,7 @@ testthat::test_that(
 	  model <- make_model("X->Y") |> update_model(keep_event_probabilities = TRUE, keep_fit = TRUE)
 
 	  for(j in 1:length(args)){
-	    print(c(j, args[j]))
+	    print(paste(j, args[j]))
 	    expect_true((grab(model, args[j]) |> class())[1] == classes[j])
 	  }
 

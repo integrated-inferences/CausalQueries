@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   front-door: front-door.html
   getting-started: getting-started.html
-last_built: 2023-12-17T21:23Z
+  inspecting-posteriors: inspecting-posteriors.html
+last_built: 2024-03-23T18:54Z
 

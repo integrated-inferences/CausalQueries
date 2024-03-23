@@ -8,8 +8,8 @@
 <meta name="description" content="CausalQueries">
 <title>Getting Started • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started">
 <meta property="og:description" content="CausalQueries">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
     <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -82,7 +83,11 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">CausalQueries</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"fabricatr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fabricatr"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">CausalQueries</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/fabricatr/" class="external-link">fabricatr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -111,7 +116,7 @@ the DAG:</p>
 <p><strong>Inspecting</strong>: The model has a set of parameters and a
 default distribution over these.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span><span class="op">$</span><span class="va">parameters_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="17%">
@@ -228,21 +233,21 @@ this:</p>
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">0</td>
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">0</td>
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">1</td>
 </tr>
 </tbody>
@@ -255,7 +260,7 @@ this:</p>
 You can pass all <code>rstan</code> arguments to
 <code>update_model</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/fabricatr/reference/fabricate.html" class="external-link">fabricate</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">fabricatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/fabricatr/reference/fabricate.html" class="external-link">fabricate</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xy_model</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
@@ -264,7 +269,7 @@ You can pass all <code>rstan</code> arguments to
 distribution on model parameters directly thus:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">xy_model</span><span class="op">$</span><span class="va">posterior_distribution</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -277,52 +282,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4704982</td>
-<td align="right">0.5295018</td>
-<td align="right">0.2553664</td>
-<td align="right">0.0034453</td>
-<td align="right">0.4621841</td>
-<td align="right">0.2790042</td>
+<td align="right">0.4651402</td>
+<td align="right">0.5348598</td>
+<td align="right">0.1654188</td>
+<td align="right">0.1065217</td>
+<td align="right">0.4833560</td>
+<td align="right">0.2447034</td>
 </tr>
 <tr class="even">
-<td align="right">0.4418824</td>
-<td align="right">0.5581176</td>
-<td align="right">0.3126867</td>
-<td align="right">0.0990205</td>
-<td align="right">0.3634273</td>
-<td align="right">0.2248654</td>
+<td align="right">0.4550921</td>
+<td align="right">0.5449079</td>
+<td align="right">0.2419366</td>
+<td align="right">0.0083126</td>
+<td align="right">0.6250292</td>
+<td align="right">0.1247215</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5668107</td>
-<td align="right">0.4331893</td>
-<td align="right">0.0884600</td>
-<td align="right">0.1402731</td>
-<td align="right">0.6003857</td>
-<td align="right">0.1708812</td>
+<td align="right">0.4055365</td>
+<td align="right">0.5944635</td>
+<td align="right">0.0349621</td>
+<td align="right">0.2890985</td>
+<td align="right">0.6530911</td>
+<td align="right">0.0228483</td>
 </tr>
 <tr class="even">
-<td align="right">0.4040440</td>
-<td align="right">0.5959560</td>
-<td align="right">0.0863030</td>
-<td align="right">0.1261465</td>
-<td align="right">0.7077580</td>
-<td align="right">0.0797925</td>
+<td align="right">0.3672597</td>
+<td align="right">0.6327403</td>
+<td align="right">0.0896326</td>
+<td align="right">0.0566769</td>
+<td align="right">0.6537538</td>
+<td align="right">0.1999367</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5552071</td>
-<td align="right">0.4447929</td>
-<td align="right">0.2294634</td>
-<td align="right">0.0932120</td>
-<td align="right">0.4026197</td>
-<td align="right">0.2747050</td>
+<td align="right">0.3208845</td>
+<td align="right">0.6791155</td>
+<td align="right">0.2316983</td>
+<td align="right">0.1064769</td>
+<td align="right">0.3907985</td>
+<td align="right">0.2710262</td>
 </tr>
 <tr class="even">
-<td align="right">0.5113775</td>
-<td align="right">0.4886225</td>
-<td align="right">0.0156177</td>
-<td align="right">0.3205868</td>
-<td align="right">0.6264961</td>
-<td align="right">0.0372994</td>
+<td align="right">0.2991702</td>
+<td align="right">0.7008298</td>
+<td align="right">0.2526643</td>
+<td align="right">0.0379466</td>
+<td align="right">0.5672640</td>
+<td align="right">0.1421250</td>
 </tr>
 </tbody>
 </table>
@@ -365,20 +370,20 @@ model.</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.2497770</td>
-<td align="right">0.1935435</td>
-<td align="right">0.0087332</td>
-<td align="right">0.7011360</td>
+<td align="right">0.2484618</td>
+<td align="right">0.1962965</td>
+<td align="right">0.0078099</td>
+<td align="right">0.7220452</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.4928264</td>
-<td align="right">0.1100107</td>
-<td align="right">0.2675410</td>
-<td align="right">0.6827268</td>
+<td align="right">0.5769501</td>
+<td align="right">0.0966309</td>
+<td align="right">0.3796023</td>
+<td align="right">0.7485067</td>
 </tr>
 </tbody>
 </table>
@@ -415,20 +420,20 @@ model.</p>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.5036725</td>
-<td align="right">0.2905957</td>
-<td align="right">0.0270194</td>
-<td align="right">0.9777646</td>
+<td align="right">0.4974215</td>
+<td align="right">0.2935626</td>
+<td align="right">0.0229068</td>
+<td align="right">0.9745975</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.7322801</td>
-<td align="right">0.1475333</td>
-<td align="right">0.4390194</td>
-<td align="right">0.9730007</td>
+<td align="right">0.7724858</td>
+<td align="right">0.1189977</td>
+<td align="right">0.5288185</td>
+<td align="right">0.9736982</td>
 </tr>
 </tbody>
 </table>
@@ -466,20 +471,20 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.4983066</td>
-<td align="right">0.2914294</td>
-<td align="right">0.0244175</td>
-<td align="right">0.9743559</td>
+<td align="right">0.5050436</td>
+<td align="right">0.2901985</td>
+<td align="right">0.0270071</td>
+<td align="right">0.9746993</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.7937183</td>
-<td align="right">0.0952532</td>
-<td align="right">0.6263459</td>
-<td align="right">0.9805799</td>
+<td align="right">0.8451668</td>
+<td align="right">0.0789916</td>
+<td align="right">0.6996552</td>
+<td align="right">0.9880564</td>
 </tr>
 </tbody>
 </table>
