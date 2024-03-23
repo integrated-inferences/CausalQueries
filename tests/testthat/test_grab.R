@@ -11,9 +11,8 @@ testthat::test_that(
 	desc = "Proper error messages.",
 
 	code = {
-	  model <- make_model("X->Y") |> update_model()
 
-	  args <- c(
+	   args <- c(
 	    "causal_statement",
 	    "dag",
 	    "nodes",
@@ -65,6 +64,8 @@ testthat::test_that(
 	    "type_posterior"
 	  )
 
+
+	  model <- make_model("X->Y") |> update_model(keep_event_probabilities = TRUE, keep_fit = TRUE)
 
 	  for(j in 1:length(args)){
 	    print(args[j])

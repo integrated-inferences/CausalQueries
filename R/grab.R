@@ -80,13 +80,10 @@ grab <- function(model, object = NULL, ...) {
     prior_distribution = get_param_dist(model, using = "priors", ...),
     posterior_distribution = get_param_dist(model, using = "posteriors"),
     posterior_event_probabilities =
-      if (is.null(model$stan_objects$posterior_event_probabilities)) {
-        stop("Model does not contain stan_objects")
-        if (is.null(model$stan_objects$event_probabilities)) {
+      if (is.null(model$stan_objects$event_probabilities)) {
           stop(
             "Model does not contain event_probabilities. To generate posterior event probabilities update model and set keep_event_probabilities to TRUE"
           )
-        }
       } else {
         model$stan_objects$event_probabilities
       },
