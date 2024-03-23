@@ -147,7 +147,7 @@ to generate w if w is not provided</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Simulate multiple datasets. This is fastest if</span></span></span>
 <span class="r-in"><span><span class="co"># event probabilities (w) are  provided</span></span></span>
-<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_event_prob.html">get_event_prob</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_event_probabilities.html">get_event_probabilities</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">make_data_single</span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">5</span>, w <span class="op">=</span> <span class="va">w</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [,1]      [,2]      [,3]      [,4]      [,5]     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X numeric,5 numeric,5 numeric,5 numeric,5 numeric,5</span>

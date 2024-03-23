@@ -99,14 +99,14 @@ testthat::test_that(desc = "expand_data errors",
                       expect_error(expand_data(events, model))
                     })
 
-testthat::test_that(desc = "all_data_types errors",
+testthat::test_that(desc = "get_all_data_types errors",
 
                     code = {
                       model <- make_model("X -> Y")
-                      expect_error(all_data_types(model, given = "Z == 0"))
+                      expect_error(get_all_data_types(model, given = "Z == 0"))
                       model <- make_model('X -> Y') %>%
                         set_restrictions(labels = list(Y = '00'), keep = TRUE)
-                      out <- all_data_types(model, given = "Y == 0")
+                      out <- get_all_data_types(model, given = "Y == 0")
                       expect_true(is.na(out$X[3]))
                     })
 

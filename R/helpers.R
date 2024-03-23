@@ -260,7 +260,6 @@ interpret_type <- function(model,
 #' @return A character string with the expanded expression.
 #'   Wildcard '.' is replaced by 0 and 1.
 #' @importFrom rlang expr
-#' @export
 #' @examples
 #'
 #' # Position of parentheses matters for type of expansion

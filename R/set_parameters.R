@@ -275,7 +275,6 @@ set_parameters <- function(model,
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom dirmult rdirichlet
 #' @family parameters
-#' @export
 #' @examples
 #'
 #' # get_parameters examples:

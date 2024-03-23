@@ -167,16 +167,16 @@ update_model <- function(model,
 
   # Retain event (pre-censoring) probabilities
   if (keep_event_probabilities) {
-    model$stan_objects$w <- extract(newfit, pars = "w")$w
-    colnames(model$stan_objects$w) <- colnames(stan_data$E)
-    class(model$stan_objects$w) <- c("event_probabilities", "matrix", "array")
+    model$stan_objects$event_probabilities <- extract(newfit, pars = "w")$w
+    colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
+    class(model$stan_objects$event_probabilities) <- c("event_probabilities", "matrix", "array")
   }
 
   # Retain stanfit summary with readable names
   # Identify saved parameters
   params <- colnames(model$posterior_distribution)
   if(keep_event_probabilities)
-    params <- c(params, colnames(model$stan_objects$w))
+    params <- c(params, colnames(model$stan_objects$event_probabilities))
   if(keep_type_distribution)
     params <- c(params, colnames(model$stan_objects$type_distribution))
   params <- c(params,  "lp__")

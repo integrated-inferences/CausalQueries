@@ -1,0 +1,86 @@
+
+
+
+
+
+context("Grab function check classes")
+
+testthat::skip_on_cran()
+testthat::test_that(
+
+	desc = "Proper error messages.",
+
+	code = {
+	  model <- make_model("X->Y") |> update_model()
+
+	  args <- c(
+	    "causal_statement",
+	    "dag",
+	    "nodes",
+	    "parents",
+	    "parameters_df",
+	    "causal_types",
+	    "nodal_types",
+	    "data_types",
+	    "event_probabilities",
+	    "ambiguities_matrix",
+	    "parameters",
+	    "parameter_names",
+	    "parameter_mapping",
+	    "parameter_matrix",
+	    "prior_hyperparameters",
+	    "prior_distribution",
+	    "posterior_distribution",
+	    "posterior_event_probabilities",
+	    "stan_objects",
+	    "stan_fit",
+	    "stan_fit_summary",
+	    "type_prior",
+	    "type_posterior"
+	  )
+
+	  classes <- c(
+	    "statement",
+	    "dag",
+	    "nodes",
+	    "parents",
+	    "parameters_df",
+	    "causal_types",
+	    "nodal_types",
+	    "data.frame",
+	    "matrix",
+	    "matrix",
+	    "parameters",
+	    "character",
+	    "matrix",
+	    "parameter_matrix",
+	    "numeric",
+	    "parameters_prior",
+	    "parameters_posterior",
+	    "event_probabilities",
+	    "stan_objects",
+	    "stan_fit_summary",
+	    "stan_fit_summary",
+	    "type_prior",
+	    "type_posterior"
+	  )
+
+
+	  for(j in 1:length(args)){
+	    print(args[j])
+	    expect_true((grab(model, args[j]) |> class())[1] == classes[j])
+	  }
+
+	  expect_error(grab(model, "not here"))
+
+	  model <- make_model("X->Y")
+	  expect_error(model |> grab("posterior_distribution"))
+	  expect_error(model |> grab("posterior_event_probabilities"))
+	  expect_error(model |> grab("stan_objects"))
+	  expect_error(model |> grab("stan_fit"))
+	  expect_error(model |> grab("stan_fit_summary"))
+
+
+	}
+)
+

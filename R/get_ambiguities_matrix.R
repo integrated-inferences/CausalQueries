@@ -52,7 +52,7 @@ make_ambiguities_matrix <- function(model) {
 
     # 3.  Create and return matrix A
     # max_possible_data <- get_max_possible_data(model)
-    full_possible_data <- all_data_types(model, possible_data = TRUE)
+    full_possible_data <- get_all_data_types(model, possible_data = TRUE)
     data_names <- full_possible_data$event
     fundamental_data <-
       apply(dplyr::select(full_possible_data, -event),

@@ -4,7 +4,6 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A matrix
-#' @export
 #' @examples
 #' make_parmap(model = make_model('X->Y'))
 #' make_parmap(model = make_model('X->Y; X<->Y'))
@@ -100,7 +99,6 @@ data_to_data <- function(M, A){
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A matrix
-#' @export
 #' @examples
 #' get_parmap(model = make_model('X->Y'))
 #'
@@ -118,7 +116,6 @@ get_parmap <- function(model, A = NULL, P = NULL){
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A matrix
-#' @export
 #' @examples
 #' set_parmap(model = make_model('X->Y'))
 #'

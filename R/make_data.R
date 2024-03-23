@@ -337,7 +337,7 @@ observe_data <- function(complete_data,
 #'
 #' # Simulate multiple datasets. This is fastest if
 #' # event probabilities (w) are  provided
-#' w <- get_event_prob(model)
+#' w <- get_event_probabilities(model)
 #' replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 #'
 
@@ -365,7 +365,7 @@ make_data_single <- function(
 
 	# Generate event probabilities w if missing
 	if(is.null(w)) {
-	  	w <- get_event_prob(
+	  	w <- get_event_probabilities(
 	  	  model,
 	  	  parameters = parameters,
 	  	  A = A,

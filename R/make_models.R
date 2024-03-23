@@ -183,7 +183,13 @@ make_model <- function(statement,
       dag |>
         dplyr::filter(children == n) |>
         nrow()
-    }, numeric(1)))
+    }, numeric(1))) |>
+    dplyr::mutate(parent_nodes = sapply(node, function(n) {
+      dag |>
+        dplyr::filter(children == n) |>
+        pull(parent) |>
+        paste(collapse = ", ")
+    }))
 
   # Model is a list
   model <-
@@ -491,7 +497,7 @@ print.nodes <- function(x, ...) {
 #'
 #' @export
 print.parents_df <- function(x, ...) {
-  cat("\nRoot vs Non-Root status & number of parents per node: \n")
+  cat("\nRoot vs Non-Root status with number and names of parents for each node: \n")
   base::print.data.frame(x)
   return(invisible(x))
 }
@@ -509,10 +515,13 @@ print.parents_df <- function(x, ...) {
 print.parameters_df <- function(x, ...) {
   cat("Mapping of model parameters to nodal types: \n\n")
   cat("----------------------------------------------------------------\n")
+  cat("\n param_names: name of parameter")
+  cat("\n node: name of endogeneous node associated with the parameter")
   cat("\n gen: partial causal ordering of the parameter's node")
   cat("\n param_set: parameter groupings forming a simplex")
-  cat("\n param_value: parameter probabilities")
-  cat("\n priors: alphas of the prior Dirichlet distribution \n\n")
+  cat("\n given: if model has confounding gives conditioning nodal type")
+  cat("\n param_value: parameter values")
+  cat("\n priors: hyperparameters of the prior Dirichlet distribution \n\n")
   cat("----------------------------------------------------------------\n\n")
   if(nrow(x) > 10) {
     cat("\n first 10 rows: \n")

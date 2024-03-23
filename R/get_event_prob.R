@@ -1,6 +1,6 @@
 #' Draw event probabilities
 #'
-#' `get_event_prob` draws event probability vector `w` given a single
+#' `get_event_probabilities` draws event probability vector `w` given a single
 #' realization of parameters
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
@@ -10,14 +10,14 @@
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> Y')
-#' get_event_prob(model = model)
-#' get_event_prob(model = model, given = "X==1")
-#' get_event_prob(model = model, parameters = rep(1, 6))
-#' get_event_prob(model = model, parameters = 1:6)
+#' get_event_probabilities(model = model)
+#' get_event_probabilities(model = model, given = "X==1")
+#' get_event_probabilities(model = model, parameters = rep(1, 6))
+#' get_event_probabilities(model = model, parameters = 1:6)
 #' }
 #'
 
-get_event_prob <- function(model,
+get_event_probabilities <- function(model,
                            parameters = NULL,
                            A = NULL,
                            P = NULL,
@@ -49,7 +49,7 @@ get_event_prob <- function(model,
     # Produce conditional probabilities in the event that data is given
     if(!is.null(given)) {
       event_probs <- model %>%
-        all_data_types(complete_data = TRUE) %>%
+        get_all_data_types(complete_data = TRUE) %>%
         mutate(
           event_probs = event_probs,
           event_probs = ifelse(eval(parse(text = given)), event_probs, 0),

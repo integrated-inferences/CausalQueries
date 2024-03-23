@@ -71,7 +71,7 @@ make_events <- function(model,
         if (is.null(A)) {
           A <- get_ambiguities_matrix(model)
         }
-        w <- get_event_prob(model = model,
+        w <- get_event_probabilities(model = model,
                             P = P,
                             A = A,
                             parameters = parameters)

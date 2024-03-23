@@ -34,7 +34,7 @@ get_data_families <- function(model,
 
   # Get all possible data realizations, given strategies in
   # which some data is not sought (NA).
-  all_data <- all_data_types(model)
+  all_data <- get_all_data_types(model)
 
   # Get the realizations of the fundamental *possible* data events
   possible_data_types <-
@@ -296,7 +296,7 @@ expand_data <- function(data_events = NULL, model) {
 
 
   vars <- model$nodes
-  df <- merge(all_data_types(model), data_events, by.x = "event")
+  df <- merge(get_all_data_types(model), data_events, by.x = "event")
   xx <- unlist(lapply(seq_len(nrow(df)), function(i) {
     replicate(df[i, ncol(df)], df[i, vars])
   }))
@@ -328,7 +328,7 @@ data_type_names <- function(model, data) {
   return(out)
 }
 
-#' All data types
+#' Get all data types
 #'
 #' Creates dataframe with all data types (including NA types)
 #' that are possible from a model.
@@ -347,16 +347,16 @@ data_type_names <- function(model, data) {
 #' @export
 #' @examples
 #' \donttest{
-#' all_data_types(make_model('X -> Y'))
+#' make_model('X -> Y') |> get_all_data_types()
 #' model <- make_model('X -> Y') %>%
 #'   set_restrictions(labels = list(Y = '00'), keep = TRUE)
-#'   all_data_types(model)
-#'   all_data_types(model, complete_data = TRUE)
-#'   all_data_types(model, possible_data = TRUE)
-#'   all_data_types(model, given  = 'X==1')
-#'   all_data_types(model, given  = 'X==1 & Y==1')
+#'   get_all_data_types(model)
+#'   get_all_data_types(model, complete_data = TRUE)
+#'   get_all_data_types(model, possible_data = TRUE)
+#'   get_all_data_types(model, given  = 'X==1')
+#'   get_all_data_types(model, given  = 'X==1 & Y==1')
 #'}
-all_data_types <- function(model,
+get_all_data_types <- function(model,
                            complete_data = FALSE,
                            possible_data = FALSE,
                            given = NULL) {
