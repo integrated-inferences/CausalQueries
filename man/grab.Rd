@@ -52,22 +52,38 @@ See argument \code{object} for other
 }
 \examples{
 \donttest{
-model <- make_model('X -> K -> Y')
+model <-
+  make_model('X -> Y') |>
+   update_model(
+   keep_event_probabilities = TRUE,
+   keep_fit = TRUE,
+   refresh = 0 )
+
+grab(model, object = "causal_statement")
 grab(model, object = "dag")
+grab(model, object = "nodes")
+grab(model, object = "parents")
 grab(model, object = "parameters_df")
-grab(model, object = "nodal_types")
 grab(model, object = "causal_types")
+grab(model, object = "nodal_types")
+grab(model, object = "data_types")
 grab(model, object = "event_probabilities")
-
+grab(model, object = "ambiguities_matrix")
+grab(model, object = "parameters")
+grab(model, object = "parameter_names")
+grab(model, object = "parameter_mapping")
+grab(model, object = "parameter_matrix")
+grab(model, object = "prior_hyperparameters")
+grab(model, object = "prior_distribution")
+grab(model, object = "posterior_distribution")
+grab(model, object = "posterior_event_probabilities")
+grab(model, object = "stan_objects")
+grab(model, object = "stan_fit")
+grab(model, object = "stan_fit_summary")
+grab(model, object = "type_prior")
+grab(model, object = "type_posterior")
 # Example of arguments passed on to helpers
-grab(model, object = "event_probabilities", parameters = 1:10)
-
-model <- make_model('X -> Y') |> update_model()
-grab(model, object = "stan_fit_summary")
-grab(model, object = "posterior_event_probabilities")
-model <- make_model('X -> Y') |> update_model(keep_event_probabilities = TRUE)
-grab(model, object = "stan_fit_summary")
-grab(model, object = "posterior_event_probabilities")
+grab(model, object = "event_probabilities", parameters = c(.6, .4, .1, .1, .7, .1))
 
 }
 

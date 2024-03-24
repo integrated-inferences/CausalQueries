@@ -90,19 +90,22 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">CausalQueries</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/fabricatr/" class="external-link">fabricatr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan/" class="external-link">rstan</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://mc-stan.org/rstan/reference/rstan_options.html" class="external-link">rstan_options</a></span><span class="op">(</span>refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="accessing-the-posterior">Accessing the posterior<a class="anchor" aria-label="anchor" href="#accessing-the-posterior"></a>
 </h2>
 <p>When you update a model using <code>CausalQueries</code>,
 <code>CausalQueries</code> generates and updates a <code>stan</code>
-model and saves the posterior distribution over parameters in teh
+model and saves the posterior distribution over parameters in the
 model.</p>
 <p>The basic usage is:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <p>The posterior over parameters can be accessed thus:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"posterior_distribution"</span><span class="op">)</span></span>
@@ -116,53 +119,111 @@ model.</p>
 <span><span class="co">#&gt; Y.10 0.04 0.04</span></span>
 <span><span class="co">#&gt; Y.01 0.80 0.11</span></span>
 <span><span class="co">#&gt; Y.11 0.08 0.07</span></span></code></pre></div>
+<p>When querying a model you can request use of the posterior
+distribution with the <code>using</code> argument:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
+<span>    query <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,</span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="21%">
+<col width="8%">
+<col width="15%">
+<col width="15%">
+<col width="6%">
+<col width="6%">
+<col width="12%">
+<col width="13%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">query</th>
+<th align="left">given</th>
+<th align="left">using</th>
+<th align="left">case_level</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">cred.low</th>
+<th align="right">cred.high</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">priors</td>
+<td align="left">FALSE</td>
+<td align="right">0.25</td>
+<td align="right">0.19</td>
+<td align="right">0.01</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">posteriors</td>
+<td align="left">FALSE</td>
+<td align="right">0.80</td>
+<td align="right">0.11</td>
+<td align="right">0.55</td>
+<td align="right">0.96</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="summary-of-stan-performance">Summary of stan performance<a class="anchor" aria-label="anchor" href="#summary-of-stan-performance"></a>
 </h2>
 <p>You can access a summary of the parameter values and convergence
 information as produced by <code>stan</code> thus:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"stan_fit_summary"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Inference for Stan model: simplexes.</span></span>
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; X.0          0.50    0.00 0.10   0.30   0.42   0.49   0.57   0.69  2342    1</span></span>
-<span><span class="co">#&gt; X.1          0.50    0.00 0.10   0.31   0.43   0.51   0.58   0.70  2342    1</span></span>
-<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.26  1942    1</span></span>
-<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3868    1</span></span>
-<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.54   0.74   0.82   0.88   0.96  3813    1</span></span>
-<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.12   0.28  4189    1</span></span>
-<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  2033    1</span></span>
-<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  1922    1</span></span>
-<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3722    1</span></span>
-<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3816    1</span></span>
-<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.21   0.33   0.39   0.46   0.60  2648    1</span></span>
-<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2755    1</span></span>
-<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3893    1</span></span>
-<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4019    1</span></span>
-<span><span class="co">#&gt; lp__       -14.64    0.04 1.52 -18.41 -15.47 -14.31 -13.50 -12.64  1601    1</span></span>
+<span><span class="co">#&gt; X.0          0.50    0.00 0.10   0.30   0.43   0.50   0.57   0.70  2229    1</span></span>
+<span><span class="co">#&gt; X.1          0.50    0.00 0.10   0.30   0.43   0.50   0.57   0.70  2229    1</span></span>
+<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  2222    1</span></span>
+<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3748    1</span></span>
+<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.55   0.74   0.82   0.88   0.96  4249    1</span></span>
+<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.27  3799    1</span></span>
+<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  2250    1</span></span>
+<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  2201    1</span></span>
+<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3336    1</span></span>
+<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3926    1</span></span>
+<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.22   0.33   0.40   0.47   0.60  2680    1</span></span>
+<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.22   0.33   0.39   0.47   0.60  2580    1</span></span>
+<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3417    1</span></span>
+<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4020    1</span></span>
+<span><span class="co">#&gt; lp__       -14.67    0.04 1.57 -18.50 -15.51 -14.32 -13.51 -12.67  1285    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 10:07:00 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 12:27:03 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
 <p>This summary provides information on the distribution of parameters
 as well as convergence diagnostics, summarized in the <code>Rhat</code>
-column.</p>
+column. In the printout above the first 6 rows show the distribution of
+the model parameters; the next 8 rows show the distribution over
+transformed parameters, here the causal types. The last row shows the
+unnormalized log density on Stan’s unconstrained space which, as
+described in <a href="https://mc-stan.org/cmdstanr/reference/fit-method-lp.html" class="external-link">Stan
+documentation</a> is intended to diagnose sampling efficiency and
+evaluate approximations.</p>
 <p>See <a href="https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html" class="external-link">stan
-documentation</a> for details.</p>
+documentation</a> for further details.</p>
 </div>
 <div class="section level2">
 <h2 id="advanced-diagnostics">Advanced diagnostics<a class="anchor" aria-label="anchor" href="#advanced-diagnostics"></a>
 </h2>
 <p>If you are interested in advanced diagnostics of performance you can
 save and access the <code>raw</code> stan output.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, keep_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, keep_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the summary for this raw output shows the labels used in
 the generic <code>stan</code> model: <code>lambda</code> for the vector
 of parameters, corresponding to the parameters in the parameters
@@ -171,40 +232,40 @@ vector <code>types</code> for the causal types (see
 <code>grab(model, "causal_types")</code>) and <code>w</code> for the
 event probabilities
 (<code>grab(model, "event_probabilities")</code>).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Inference for Stan model: simplexes.</span></span>
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.28   0.42   0.50   0.57   0.70  2208    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.58   0.72  2208    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2308    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4216    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.56   0.74   0.82   0.88   0.95  4177    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.26  4308    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  2325    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2287    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  3922    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  4113    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.32   0.39   0.46   0.60  2508    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.33   0.40   0.47   0.61  2645    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  4204    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3971    1</span></span>
-<span><span class="co">#&gt; lp__       -14.62    0.04 1.52 -18.35 -15.43 -14.29 -13.49 -12.64  1429    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.11   0.30   0.43   0.50   0.57   0.70  2238    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.11   0.30   0.43   0.50   0.57   0.70  2238    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.08   0.00   0.02   0.06   0.11   0.28  1811    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3586    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.54   0.73   0.82   0.88   0.96  3656    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.27  4157    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1827    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1834    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3401    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3403    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2695    1</span></span>
+<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2412    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4133    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.15  3798    1</span></span>
+<span><span class="co">#&gt; lp__       -14.67    0.05 1.57 -18.60 -15.51 -14.33 -13.50 -12.66  1173    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 10:07:03 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 12:27:05 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
 <p>You can then use diagnostic packages such as
 <code>bayesplot</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-scatterplots.html" class="external-link">mcmc_pairs</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lambdas[3]"</span>, <span class="st">"lambdas[4]"</span>, <span class="st">"lambdas[5]"</span>, <span class="st">"lambdas[6]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">np</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">nuts_params</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">np</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -219,46 +280,46 @@ event probabilities
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9989952</td>
+<td align="right">0.9971372</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9736192</td>
+<td align="right">0.9756201</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">3</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9765536</td>
+<td align="right">0.9852257</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">4</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.8101124</td>
+<td align="right">0.9983138</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">5</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9960061</td>
+<td align="right">0.9704729</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">6</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9801802</td>
+<td align="right">0.9852432</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-traces.html" class="external-link">mcmc_trace</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="st">"lambdas[5]"</span>, np <span class="op">=</span> <span class="va">np</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; No divergences to plot.</span></span></code></pre></div>
-<p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

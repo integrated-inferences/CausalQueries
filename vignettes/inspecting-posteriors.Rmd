@@ -24,16 +24,27 @@ library(CausalQueries)
 library(fabricatr)
 library(knitr)
 library(ggplot2)
+library(rstan)
+rstan_options(refresh = 0)
+
 ```
 
 # Accessing the posterior
 
-When you update a model using `CausalQueries`, `CausalQueries` generates and updates a `stan` model and saves the posterior distribution over parameters in teh model. 
+When you update a model using `CausalQueries`, `CausalQueries` generates and updates a `stan` model and saves the posterior distribution over parameters in the model. 
 
 The basic usage is:
 
-```{r}
+```{r, eval = FALSE}
 data <- data.frame(X = rep(c(0:1), 10), Y = rep(c(0:1), 10))
+
+model <- make_model("X -> Y") |> 
+  update_model(data)
+```
+
+```{r, include = FALSE}
+data <- data.frame(X = rep(c(0:1), 10), Y = rep(c(0:1), 10))
+
 model <- make_model("X -> Y") |> 
   update_model(data, refresh = 0)
 ```
@@ -44,6 +55,15 @@ The posterior over parameters can be accessed thus:
 grab(model, "posterior_distribution")
 ```
 
+When querying a model you can request use of the posterior distribution with the `using` argument:
+
+```{r}
+model |> 
+  query_model(
+    query = "Y[X=1] > Y[X=0]",
+    using = c("priors", "posteriors")) |>
+  kable(digits = 2)
+```
 
 # Summary of stan performance
 
@@ -53,16 +73,21 @@ You can access a summary of the parameter values and convergence information as 
 grab(model, "stan_fit_summary")
 ```
 
-This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column.
+This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column. In the printout above the first 6 rows show the distribution of the model parameters; the next 8 rows show the distribution over transformed parameters, here the causal types. The last row shows the unnormalized log density on Stan's unconstrained space which, as described in [Stan documentation](https://mc-stan.org/cmdstanr/reference/fit-method-lp.html) is intended to diagnose sampling efficiency and evaluate approximations. 
 
-See [stan documentation](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html) for details.
+See [stan documentation](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html) for further details.
 
 
 # Advanced diagnostics 
 
 If you are interested in advanced diagnostics of performance you can save and access the `raw` stan output. 
 
-```{r}
+```{r, eval = FALSE}
+model <- make_model("X -> Y") |> 
+  update_model(data, keep_fit = TRUE)
+```
+
+```{r, include = FALSE}
 model <- make_model("X -> Y") |> 
   update_model(data, refresh = 0, keep_fit = TRUE)
 ```
