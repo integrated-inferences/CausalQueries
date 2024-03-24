@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/1 getting-started.html</loc>
+  </url>
+  <url>
     <loc>/articles/front-door.html</loc>
   </url>
   <url>
@@ -269,6 +272,9 @@
   </url>
   <url>
     <loc>/reference/perm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_dag.html</loc>
   </url>
   <url>
     <loc>/reference/plot_model.html</loc>

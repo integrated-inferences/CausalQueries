@@ -1,5 +1,5 @@
 ---
-title: "Posteriors"
+title: "Inspecting posteriors"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Posteriors}
