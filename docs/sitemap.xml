@@ -4,12 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/1-getting-started.html</loc>
-  </url>
-  <url>
-    <loc>/articles/2-front-door.html</loc>
-  </url>
-  <url>
     <loc>/articles/front-door.html</loc>
   </url>
   <url>
@@ -38,9 +32,6 @@
   </url>
   <url>
     <loc>/reference/add_wildcard.html</loc>
-  </url>
-  <url>
-    <loc>/reference/all_data_types.html</loc>
   </url>
   <url>
     <loc>/reference/CausalQueries-package.html</loc>
@@ -136,9 +127,6 @@
     <loc>/reference/get_estimands.html</loc>
   </url>
   <url>
-    <loc>/reference/get_event_prob.html</loc>
-  </url>
-  <url>
     <loc>/reference/get_event_probabilities.html</loc>
   </url>
   <url>
@@ -193,9 +181,6 @@
     <loc>/reference/gsub_many.html</loc>
   </url>
   <url>
-    <loc>/reference/includes_var.html</loc>
-  </url>
-  <url>
     <loc>/reference/increasing.html</loc>
   </url>
   <url>
@@ -212,9 +197,6 @@
   </url>
   <url>
     <loc>/reference/is_a_model.html</loc>
-  </url>
-  <url>
-    <loc>/reference/is_improper.html</loc>
   </url>
   <url>
     <loc>/reference/lipids_data.html</loc>
@@ -358,9 +340,6 @@
     <loc>/reference/realise_outcomes.html</loc>
   </url>
   <url>
-    <loc>/reference/realise_outcome_c.html</loc>
-  </url>
-  <url>
     <loc>/reference/restrict_by_labels.html</loc>
   </url>
   <url>
@@ -394,9 +373,6 @@
     <loc>/reference/simulate_data.html</loc>
   </url>
   <url>
-    <loc>/reference/strategy_statements.html</loc>
-  </url>
-  <url>
     <loc>/reference/st_within.html</loc>
   </url>
   <url>
@@ -425,8 +401,5 @@
   </url>
   <url>
     <loc>/reference/update_model.html</loc>
-  </url>
-  <url>
-    <loc>/reference/var_in_query.html</loc>
   </url>
 </urlset>
