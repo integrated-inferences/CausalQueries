@@ -27,22 +27,23 @@
 #' @importFrom stringr str_split
 #' @importFrom latex2exp TeX
 #'
+#' @export
 #' @examples
 #'
 #' \dontrun{
 #' model <- make_model('X -> K -> Y; X <-> Y')
 #'
 #' model |>
-#'   CausalQueries:::plot_dag()
+#'   CausalQueries:::plot_model()
 #' model |>
-#'   CausalQueries:::plot_dag(
+#'   CausalQueries:::plot_model(
 #'     x_coord = 1:3,
 #'     y_coord = 1:3,
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
 
-plot_dag <- function(model = NULL,
+plot_model <- function(model = NULL,
                      x_coord = NULL,
                      y_coord = NULL,
                      title = "",
@@ -132,6 +133,8 @@ plot_dag <- function(model = NULL,
 
 #' @export
 plot.causal_model <- function(x, ...) {
-    plot_dag(x,...)
+    plot_model(x,...)
 }
 
+# ' Alias
+plot_dag <- plot_model

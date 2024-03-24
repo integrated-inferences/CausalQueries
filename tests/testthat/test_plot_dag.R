@@ -1,4 +1,4 @@
-context(desc = "Testing plot_dag")
+context(desc = "Testing plot_model")
 
 testthat::skip_on_cran()
 
@@ -33,7 +33,7 @@ testthat::test_that(
     model <- make_model("X -> K -> Y")
     x <- c(1, 2, 3)
     y <- c(1, 1, 1)
-    P <- CausalQueries:::plot_dag(model,
+    P <- CausalQueries:::plot_model(model,
                                   x_coord = x,
                                   y_coord = y)
 
@@ -46,11 +46,11 @@ testthat::test_that(
     )
 
     expect_message(
-      CausalQueries:::plot_dag(model, x_coord = x)
+      CausalQueries:::plot_model(model, x_coord = x)
     )
 
     expect_message(
-      CausalQueries:::plot_dag(model, y_coord = y)
+      CausalQueries:::plot_model(model, y_coord = y)
     )
 
   })
@@ -60,15 +60,15 @@ testthat::test_that(
   code = {
     model <- make_model("X -> K -> Y")
 
-    expect_error(CausalQueries:::plot_dag(model = NULL),
+    expect_error(CausalQueries:::plot_model(model = NULL),
                  "Model object must be provided")
-    expect_error(CausalQueries:::plot_dag(model = c(1, 2, 3)),
+    expect_error(CausalQueries:::plot_model(model = c(1, 2, 3)),
                  "Model object must be of type causal_model")
-    expect_error(CausalQueries:::plot_dag(model,
+    expect_error(CausalQueries:::plot_model(model,
                       x_coord = c(1, 2, 3),
                       y_coord = c(2, 1)),
                  "x and y coordinates must be of equal length")
-    expect_error(CausalQueries:::plot_dag(model,
+    expect_error(CausalQueries:::plot_model(model,
                                           x_coord = c(1, 2),
                                           y_coord = c(2, 1)),
                  "length of coordinates supplied must equal number of nodes")
