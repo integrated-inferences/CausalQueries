@@ -113,9 +113,9 @@ model.</p>
 <span><span class="co">#&gt; Draws: 4000</span></span>
 <span><span class="co">#&gt; rows are parameters</span></span>
 <span><span class="co">#&gt;      mean   sd</span></span>
-<span><span class="co">#&gt; X.0  0.50 0.11</span></span>
-<span><span class="co">#&gt; X.1  0.50 0.11</span></span>
-<span><span class="co">#&gt; Y.00 0.08 0.08</span></span>
+<span><span class="co">#&gt; X.0  0.50 0.10</span></span>
+<span><span class="co">#&gt; X.1  0.50 0.10</span></span>
+<span><span class="co">#&gt; Y.00 0.08 0.07</span></span>
 <span><span class="co">#&gt; Y.10 0.04 0.04</span></span>
 <span><span class="co">#&gt; Y.01 0.80 0.11</span></span>
 <span><span class="co">#&gt; Y.11 0.08 0.07</span></span></code></pre></div>
@@ -157,7 +157,7 @@ distribution with the <code>using</code> argument:</p>
 <td align="right">0.25</td>
 <td align="right">0.19</td>
 <td align="right">0.01</td>
-<td align="right">0.70</td>
+<td align="right">0.69</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
@@ -166,8 +166,8 @@ distribution with the <code>using</code> argument:</p>
 <td align="left">FALSE</td>
 <td align="right">0.80</td>
 <td align="right">0.11</td>
-<td align="right">0.55</td>
-<td align="right">0.96</td>
+<td align="right">0.52</td>
+<td align="right">0.95</td>
 </tr>
 </tbody>
 </table>
@@ -178,29 +178,29 @@ distribution with the <code>using</code> argument:</p>
 <p>You can access a summary of the parameter values and convergence
 information as produced by <code>stan</code> thus:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"stan_fit_summary"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"stan_summary"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Inference for Stan model: simplexes.</span></span>
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; X.0          0.50    0.00 0.11   0.30   0.43   0.50   0.58   0.70  2088    1</span></span>
-<span><span class="co">#&gt; X.1          0.50    0.00 0.11   0.30   0.42   0.50   0.57   0.70  2088    1</span></span>
-<span><span class="co">#&gt; Y.00         0.08    0.00 0.08   0.00   0.02   0.06   0.11   0.28  1836    1</span></span>
-<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3541    1</span></span>
-<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.55   0.74   0.82   0.88   0.96  4172    1</span></span>
-<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.27  4456    1</span></span>
-<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2001    1</span></span>
-<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.15  1720    1</span></span>
-<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3404    1</span></span>
-<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3479    1</span></span>
-<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2443    1</span></span>
-<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2433    1</span></span>
-<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4198    1</span></span>
-<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4085    1</span></span>
-<span><span class="co">#&gt; lp__       -14.67    0.05 1.64 -19.00 -15.39 -14.27 -13.52 -12.66  1077    1</span></span>
+<span><span class="co">#&gt; X.0          0.50    0.00 0.10   0.30   0.43   0.50   0.57   0.70  1954    1</span></span>
+<span><span class="co">#&gt; X.1          0.50    0.00 0.10   0.30   0.43   0.50   0.57   0.70  1954    1</span></span>
+<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  1917    1</span></span>
+<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4003    1</span></span>
+<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.52   0.73   0.81   0.88   0.95  3952    1</span></span>
+<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  4293    1</span></span>
+<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  1930    1</span></span>
+<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1911    1</span></span>
+<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3998    1</span></span>
+<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3710    1</span></span>
+<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.21   0.32   0.40   0.46   0.59  2639    1</span></span>
+<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2382    1</span></span>
+<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3842    1</span></span>
+<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4209    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.04 1.55 -18.53 -15.38 -14.23 -13.48 -12.66  1196    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 17:00:08 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Mar 25 14:53:46 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -239,23 +239,23 @@ event probabilities
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.29   0.43   0.50   0.57   0.70  2318    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.57   0.71  2318    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.26  1864    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4053    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.10   0.56   0.74   0.82   0.88   0.96  3739    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.27  3924    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.13  1863    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.13  1873    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3842    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3850    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.22   0.33   0.40   0.47   0.60  2640    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.33   0.40   0.47   0.60  2696    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  3884    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3571    1</span></span>
-<span><span class="co">#&gt; lp__       -14.52    0.04 1.45 -18.05 -15.34 -14.19 -13.41 -12.64  1053    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.11   0.30   0.42   0.50   0.58   0.71  1923    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.11   0.29   0.42   0.50   0.58   0.70  1923    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  1634    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4226    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.54   0.73   0.82   0.88   0.95  4238    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.08   0.00   0.02   0.06   0.12   0.29  4573    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1668    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  1823    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3539    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  4250    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2312    1</span></span>
+<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.21   0.33   0.39   0.47   0.60  2378    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4166    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4452    1</span></span>
+<span><span class="co">#&gt; lp__       -14.71    0.06 1.69 -18.84 -15.48 -14.34 -13.51 -12.69   813    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Sun Mar 24 17:02:39 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Mar 25 14:53:48 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -263,10 +263,10 @@ event probabilities
 <code>bayesplot</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bayesplot/man/MCMC-scatterplots.html" class="external-link">mcmc_pairs</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lambdas[3]"</span>, <span class="st">"lambdas[4]"</span>, <span class="st">"lambdas[5]"</span>, <span class="st">"lambdas[6]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-scatterplots.html" class="external-link">mcmc_pairs</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lambdas[3]"</span>, <span class="st">"lambdas[4]"</span>, <span class="st">"lambdas[5]"</span>, <span class="st">"lambdas[6]"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">np</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bayesplot/man/bayesplot-extractors.html" class="external-link">nuts_params</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">np</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">nuts_params</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">np</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -280,44 +280,44 @@ event probabilities
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9997749</td>
+<td align="right">0.9088830</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9977005</td>
+<td align="right">0.9877950</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">3</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9615142</td>
+<td align="right">0.9690089</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">4</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9626710</td>
+<td align="right">0.9784282</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">5</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9898603</td>
+<td align="right">0.9448257</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">6</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9846625</td>
+<td align="right">0.9860345</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/grab.html">grab</a></span><span class="op">(</span><span class="st">"stan_fit"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bayesplot/man/MCMC-traces.html" class="external-link">mcmc_trace</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="st">"lambdas[5]"</span>, np <span class="op">=</span> <span class="va">np</span><span class="op">)</span> </span>
+<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-traces.html" class="external-link">mcmc_trace</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="st">"lambdas[5]"</span>, np <span class="op">=</span> <span class="va">np</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; No divergences to plot.</span></span></code></pre></div>
 <p><img src="inspecting-posteriors_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>

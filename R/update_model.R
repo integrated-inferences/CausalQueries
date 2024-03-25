@@ -206,63 +206,22 @@ update_model <- function(model,
     )
 
 
-  model$stan_objects$stanfit_summary <-
+  model$stan_objects$stan_summary <-
     capture.output(print(newfit))
-  class(model$stan_objects$stanfit_summary) <- "stan_fit_summary"
+  class(model$stan_objects$stan_summary) <- "stan_summary"
 
   for (i in seq_along(params)) {
-    model$stan_objects$stanfit_summary <-
+    model$stan_objects$stan_summary <-
       gsub(pattern = raname_list[[2]][i],
            replacement = raname_list[[1]][i],
-           x = model$stan_objects$stanfit_summary,
+           x = model$stan_objects$stan_summary,
            fixed = TRUE)
   }
 
   class(model$stan_objects) <- c("stan_objects", "list")
+
   return(model)
 }
 
 
-
-#' Print a short summary of posterior_event_probabilities
-#'
-#' print method for class \code{posterior_event_probabilities}.
-#'
-#' @param x An object of \code{posterior_event_probabilities} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-#'
-print.posterior_event_probabilities <-
-  function(x, ...) {
-    cat("\nPosterior draws of event probabilities (transformed parameters)\n")
-    x <- data.frame(
-      mean = apply(my_data, 2, mean) |> round(4),
-      sd = apply(my_data, 2, sd) |> round(4)
-    )
-    print.data.frame(x)
-    return(invisible(x))
-  }
-
-
-
-#' Print a short summary of posterior_event_probabilities
-#'
-#' print method for class \code{posterior_event_probabilities}.
-#'
-#' @param x An object of \code{posterior_event_probabilities} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-#'
-print.type_posterior <-
-  function(x, ...) {
-    cat("\nPosterior draws of causal types (transformed parameters)\n")
-    x <- data.frame(
-      mean = apply(my_data, 2, mean) |> round(4),
-      sd = apply(my_data, 2, sd) |> round(4)
-    )
-    print.data.frame(x)
-    return(invisible(x))
-  }
 

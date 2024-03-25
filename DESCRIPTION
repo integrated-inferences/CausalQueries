@@ -36,6 +36,7 @@ Imports:
     stringr (>= 1.4.0),
     ggdag (>= 0.2.4),
     latex2exp (>= 0.9.4),
+    knitr (>= 1.45),
     ggplot2 (>= 3.3.5),
     lifecycle (>= 1.0.1)
 LinkingTo: 

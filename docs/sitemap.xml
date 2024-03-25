@@ -7,6 +7,15 @@
     <loc>/articles/1 getting-started.html</loc>
   </url>
   <url>
+    <loc>/articles/1-getting-started.html</loc>
+  </url>
+  <url>
+    <loc>/articles/2-front-door.html</loc>
+  </url>
+  <url>
+    <loc>/articles/3-inspecting-posteriors.html</loc>
+  </url>
+  <url>
     <loc>/articles/front-door.html</loc>
   </url>
   <url>
@@ -295,6 +304,9 @@
     <loc>/reference/print.event_probabilites.html</loc>
   </url>
   <url>
+    <loc>/reference/print.model_query.html</loc>
+  </url>
+  <url>
     <loc>/reference/print.nodal_types.html</loc>
   </url>
   <url>
@@ -316,7 +328,13 @@
     <loc>/reference/print.parents_df.html</loc>
   </url>
   <url>
+    <loc>/reference/print.posterior_event_probabilities.html</loc>
+  </url>
+  <url>
     <loc>/reference/print.stan_fit_summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.stan_summary.html</loc>
   </url>
   <url>
     <loc>/reference/print.statement.html</loc>

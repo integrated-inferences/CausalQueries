@@ -193,24 +193,24 @@ testthat::test_that(
 		                                         keep_type_distribution = TRUE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("X1Y1", updated$stan_objects$stanfit_summary[15]))
-		expect_true(grepl("X0.Y00", updated$stan_objects$stanfit_summary[16]))
+		expect_true(grepl("X1Y1", updated$stan_objects$stan_summary[15]))
+		expect_true(grepl("X0.Y00", updated$stan_objects$stan_summary[16]))
 
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = FALSE,
 		                                         keep_type_distribution = FALSE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("Y.11", updated$stan_objects$stanfit_summary[11]))
-		expect_true(grepl("lp__", updated$stan_objects$stanfit_summary[12]))
+		expect_true(grepl("Y.11", updated$stan_objects$stan_summary[11]))
+		expect_true(grepl("lp__", updated$stan_objects$stan_summary[12]))
 
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
 		                                         keep_type_distribution = FALSE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("Y.11", updated$stan_objects$stanfit_summary[11]))
-		expect_true(grepl("X0Y0", updated$stan_objects$stanfit_summary[12]))
+		expect_true(grepl("Y.11", updated$stan_objects$stan_summary[11]))
+		expect_true(grepl("X0Y0", updated$stan_objects$stan_summary[12]))
 
 	}
 )
