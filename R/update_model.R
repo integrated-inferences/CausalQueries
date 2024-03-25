@@ -244,3 +244,25 @@ print.posterior_event_probabilities <-
     return(invisible(x))
   }
 
+
+
+#' Print a short summary of posterior_event_probabilities
+#'
+#' print method for class \code{posterior_event_probabilities}.
+#'
+#' @param x An object of \code{posterior_event_probabilities} class.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+#'
+print.type_posterior <-
+  function(x, ...) {
+    cat("\nPosterior draws of causal types (transformed parameters)\n")
+    x <- data.frame(
+      mean = apply(my_data, 2, mean) |> round(4),
+      sd = apply(my_data, 2, sd) |> round(4)
+    )
+    print.data.frame(x)
+    return(invisible(x))
+  }
+

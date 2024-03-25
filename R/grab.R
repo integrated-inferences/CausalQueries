@@ -98,37 +98,38 @@ grab <- function(model, object = NULL, ...) {
     posterior_distribution = get_param_dist(model, using = "posteriors"),
     posterior_event_probabilities =
       if (is.null(model$stan_objects$event_probabilities)) {
-          stop(
-            "Model does not contain event_probabilities. To generate posterior event probabilities update model and set keep_event_probabilities to TRUE"
-          )
+        stop(
+          "Model does not contain event_probabilities; update model and set keep_event_probabilities = TRUE"
+        )
       } else {
         model$stan_objects$event_probabilities
       },
     stan_objects =   if (is.null(model$stan_objects)) {
-      stop("Model does not contain stan_objects")
+      stop("Model does not contain stan_objects; update model")
     } else {
       model$stan_objects
     },
     stan_fit =
-      if (is.null(model$stan_objects)) {
-        stop("Model does not contain stan_objects")
-        if (is.null(model$stan_objects$stan_fit)) {
-          stop("Model does not contain stan_fit becausekeep_fit is set to FALSE")
-        }
+      if (is.null(model$stan_objects$stan_fit)) {
+        stop("Model does not contain stan_fit; update model and set  keep_fit = TRUE")
       } else {
         model$stan_objects$stanfit
-      },
+      }
     stan_fit_summary =
-      if (is.null(model$stan_objects)) {
-        stop("Model does not contain stan_objects")
-        if (is.null(model$stan_objects$stan_fit_summary)) {
-          stop("Model does not contain stan_fit becausekeep_fit is set to FALSE")
-        }
+      if (is.null(model$stan_objects$stan_fit_summary)) {
+        stop("Model does not contain stan_fit; update model")
       } else {
         model$stan_objects$stanfit_summary
       },
     type_prior =  get_type_prob_multiple(model, using = "priors"),
-    type_posterior =  get_type_prob_multiple(model, using = "posteriors") ,
+    type_posterior =
+      if (is.null(model$stan_objects$type_distribution)) {
+        stop(
+          "Model does not contain type_distribution; update model and ensure that type_distribution = TRUE"
+        )
+      } else {
+        model$stan_objects$type_distribution
+      },
     stop("Invalid object specified. See help for list of all available objects.")
   )
 }
