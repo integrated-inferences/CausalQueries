@@ -180,7 +180,7 @@ update_model <- function(model,
   if (keep_event_probabilities) {
     model$stan_objects$event_probabilities <- extract(newfit, pars = "w")$w
     colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
-    class(model$stan_objects$event_probabilities) <- c("event_probabilities", "matrix", "array")
+    class(model$stan_objects$event_probabilities) <- c("posterior_event_probabilities", "matrix", "array")
   }
 
   # Retain stanfit summary with readable names

@@ -701,20 +701,36 @@ print.type_prior <- function(x, ...) {
   return(invisible(x))
 }
 
-
-#' Print a short summary for event probability distributions
+#' Print a short summary for event probabilities
 #'
 #' print method for class \code{event_probabilities}.
 #'
-#' @param x An object of \code{event_probabilities} class, which is a sub-object of
+#' @param x An object of \code{event_probabilities}
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.event_probabilites <- function(x, ...) {
+  cat("Event probabilities:")
+  cat("\nThese are the probabilities of observing a given")
+  cat("\ncombination of data realizations.")
+  cat("\nrows are data types\n")
+  print.data.frame(as.data.frame(x))
+  return(invisible(x))
+}
+
+#' Print a short summary for event probability distributions
+#'
+#' print method for class \code{posterior_event_probabilities}.
+#'
+#' @param x An object of \code{posterior_event_probabilities} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
 #'    \code{update_model}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
-print.event_probabilites <- function(x, ...) {
+print.posterior_event_probabilites <- function(x, ...) {
   draws <- nrow(x)
-  cat("Summary statistics of event probability distributions:")
+  cat("Summary statistics of event probability posterior distributions:")
   cat("\nThese distributions capture the probability of observing a given")
   cat("\ncombination of data realizations.")
   cat(paste("\nDraws:", draws, sep = " "))
