@@ -169,10 +169,9 @@ update_model <- function(model,
 
   # Retain type distribution
   if(keep_type_distribution) {
-    model$stan_objects$type_distribution <-
-      t(extract(newfit, pars = "types")$types)
+    model$stan_objects$type_distribution <- extract(newfit, pars = "types")$types
 
-    rownames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
     class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
   }
 
@@ -190,7 +189,7 @@ update_model <- function(model,
   if(keep_event_probabilities)
     params <- c(params, colnames(model$stan_objects$event_probabilities))
   if(keep_type_distribution)
-    params <- c(params, rownames(model$stan_objects$type_distribution))
+    params <- c(params, colnames(model$stan_objects$type_distribution))
   params <- c(params,  "lp__")
 
   params_labels <- newfit@sim$fnames_oi

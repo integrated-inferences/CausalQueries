@@ -57,7 +57,7 @@ get_type_prob_multiple <- function(model,
                                    P = NULL) {
     # Posteriors are pulled  from stan object
     if(!is.null(model$stan_objects$type_distribution) & using == "posteriors") {
-      return(model$stan_objects$type_distribution)
+      return(t(model$stan_objects$type_distribution))
     }
 
     if(is.null(P)) {

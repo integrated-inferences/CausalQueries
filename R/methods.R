@@ -1,4 +1,3 @@
-## S3 methods for causal_model and sub-objects --------------------------------
 
 #' Print a short summary for a causal model
 #'
@@ -353,7 +352,6 @@ print.stan_summary <- function(x, ...) {
   return(invisible(x))
 }
 
-## S3 helpers ------------------------------------------------------------------
 
 #' helper to compute mean and sd of a distribution data.frame
 #' @param x An object for summarizing

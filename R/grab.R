@@ -138,7 +138,7 @@ grab <- function(model, object = NULL, ...) {
           "Model does not contain type_distribution; update model with type_distribution = TRUE"
         )
       } else {
-        t(model$stan_objects$type_distribution)
+        model$stan_objects$type_distribution
       },
     stop(
       "Invalid object specified. See help for list of all available objects."
