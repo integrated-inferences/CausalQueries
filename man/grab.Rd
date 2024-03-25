@@ -82,8 +82,11 @@ grab(model, object = "stan_fit")
 grab(model, object = "stan_summary")
 grab(model, object = "type_prior")
 grab(model, object = "type_posterior")
+
 # Example of arguments passed on to helpers
-grab(model, object = "event_probabilities", parameters = c(.6, .4, .1, .1, .7, .1))
+grab(model,
+  object = "event_probabilities",
+  parameters = c(.6, .4, .1, .1, .7, .1))
 
 }
 

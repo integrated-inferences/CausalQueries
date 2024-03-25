@@ -6,6 +6,9 @@
 \usage{
 find_rounding_threshold(x)
 }
+\arguments{
+\item{x}{An object for rounding}
+}
 \description{
 helper to find rounding thresholds for print methods
 }

@@ -6,6 +6,9 @@
 \usage{
 summarise_distribution(x)
 }
+\arguments{
+\item{x}{An object for summarizing}
+}
 \description{
 helper to compute mean and sd of a distribution data.frame
 }

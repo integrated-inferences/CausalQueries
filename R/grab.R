@@ -70,9 +70,11 @@
 #' grab(model, object = "stan_summary")
 #' grab(model, object = "type_prior")
 #' grab(model, object = "type_posterior")
-
+#'
 #' # Example of arguments passed on to helpers
-#' grab(model, object = "event_probabilities", parameters = c(.6, .4, .1, .1, .7, .1))
+#' grab(model,
+#'   object = "event_probabilities",
+#'   parameters = c(.6, .4, .1, .1, .7, .1))
 #'
 #' }
 #'
@@ -95,7 +97,14 @@ grab <- function(model, object = NULL, ...) {
     parameter_matrix = get_parameter_matrix(model),
     prior_hyperparameters = get_priors(model),
     prior_distribution = get_param_dist(model, using = "priors", ...),
-    posterior_distribution = get_param_dist(model, using = "posteriors"),
+    posterior_distribution =
+    if (is.null(model$posterior_distribution)) {
+      stop(
+        "Model does not contain a posterior distribution; update using update_model()"
+      )
+    } else {
+      model$stan_objects$posterior_distribution
+    },
     posterior_event_probabilities =
       if (is.null(model$stan_objects$event_probabilities)) {
         stop(
@@ -129,7 +138,7 @@ grab <- function(model, object = NULL, ...) {
           "Model does not contain type_distribution; update model with type_distribution = TRUE"
         )
       } else {
-        model$stan_objects$type_distribution
+        t(model$stan_objects$type_distribution)
       },
     stop(
       "Invalid object specified. See help for list of all available objects."

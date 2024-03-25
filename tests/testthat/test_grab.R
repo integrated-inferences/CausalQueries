@@ -1,8 +1,4 @@
 
-
-
-
-
 context("Grab function check classes")
 
 testthat::skip_on_cran()
@@ -47,7 +43,7 @@ testthat::test_that(
 	    "causal_types",
 	    "nodal_types",
 	    "data.frame",
-	    "matrix",
+	    "event_probabilities",
 	    "matrix",
 	    "parameters",
 	    "character",

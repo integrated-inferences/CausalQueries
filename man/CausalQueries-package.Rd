@@ -2,6 +2,7 @@
 % Please edit documentation in R/CausalQueries-package.R
 \docType{package}
 \name{CausalQueries-package}
+\alias{-package}
 \alias{CausalQueries-package}
 \title{'CausalQueries'}
 \description{
