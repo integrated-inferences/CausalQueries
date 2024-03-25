@@ -134,8 +134,14 @@ update_model <- function(model,
 
   # parameters to drop
   drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
-  if (!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
-  if (!keep_type_distribution) drop_pars <- c(drop_pars, "types")
+
+  if (!keep_event_probabilities) {
+    drop_pars <- c(drop_pars, "w")
+  }
+
+  if (!keep_type_distribution) {
+    drop_pars <- c(drop_pars, "types")
+  }
 
 
   sampling_args <- set_sampling_args(object = stanfit,
@@ -164,9 +170,9 @@ update_model <- function(model,
   # Retain type distribution
   if(keep_type_distribution) {
     model$stan_objects$type_distribution <-
-      extract(newfit, pars = "types")$types
+      t(extract(newfit, pars = "types")$types)
 
-    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    rownames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
     class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
   }
 
@@ -222,6 +228,5 @@ update_model <- function(model,
 
   return(model)
 }
-
 
 

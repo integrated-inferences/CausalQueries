@@ -2,14 +2,12 @@
 % Please edit documentation in R/methods.R
 \name{print.event_probabilites}
 \alias{print.event_probabilites}
-\title{Print a short summary for event probability distributions}
+\title{Print a short summary for event probabilities}
 \usage{
 \method{print}{event_probabilites}(x, ...)
 }
 \arguments{
-\item{x}{An object of \code{event_probabilities} class, which is a sub-object of
-an object of the \code{causal_model} class produced using
-\code{update_model}.}
+\item{x}{An object of \code{event_probabilities}}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
