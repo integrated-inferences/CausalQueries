@@ -164,9 +164,9 @@ update_model <- function(model,
   # Retain type distribution
   if(keep_type_distribution) {
     model$stan_objects$type_distribution <-
-      extract(newfit, pars = "types")$types
+      t(extract(newfit, pars = "types")$types)
 
-    colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
+    rownames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
     class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
   }
 
@@ -246,23 +246,4 @@ print.posterior_event_probabilities <-
 
 
 
-#' Print a short summary of posterior_event_probabilities
-#'
-#' print method for class \code{posterior_event_probabilities}.
-#'
-#' @param x An object of \code{posterior_event_probabilities} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-#'
-print.type_posterior <-
-  function(x, ...) {
-    cat("\nPosterior draws of causal types (transformed parameters)\n")
-    x <- data.frame(
-      mean = apply(my_data, 2, mean) |> round(4),
-      sd = apply(my_data, 2, sd) |> round(4)
-    )
-    print.data.frame(x)
-    return(invisible(x))
-  }
 
