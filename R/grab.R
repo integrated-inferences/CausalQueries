@@ -104,17 +104,18 @@ grab <- function(model, object = NULL, ...) {
       } else {
         model$stan_objects$event_probabilities
       },
-    stan_objects =   if (is.null(model$stan_objects)) {
-      stop("Model does not contain stan_objects; update model")
-    } else {
-      model$stan_objects
-    },
+    stan_objects =
+      if (is.null(model$stan_objects)) {
+        stop("Model does not contain stan_objects; update model")
+      } else {
+        model$stan_objects
+      },
     stan_fit =
       if (is.null(model$stan_objects$stan_fit)) {
         stop("Model does not contain stan_fit; update model and set  keep_fit = TRUE")
       } else {
         model$stan_objects$stanfit
-      }
+      },
     stan_fit_summary =
       if (is.null(model$stan_objects$stan_fit_summary)) {
         stop("Model does not contain stan_fit; update model")
@@ -130,7 +131,9 @@ grab <- function(model, object = NULL, ...) {
       } else {
         model$stan_objects$type_distribution
       },
-    stop("Invalid object specified. See help for list of all available objects.")
+    stop(
+      "Invalid object specified. See help for list of all available objects."
+    )
   )
 }
 

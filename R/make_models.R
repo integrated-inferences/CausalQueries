@@ -670,7 +670,7 @@ print.parameters_posterior <- function(x, ...) {
 #'
 #' @export
 print.type_posterior <- function(x, ...) {
-  draws <- nrow(x)
+  draws <- ncol(x)
   cat("Summary statistics of causal type posterior distributions:")
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are causal types\n")
@@ -691,7 +691,7 @@ print.type_posterior <- function(x, ...) {
 #'
 #' @export
 print.type_prior <- function(x, ...) {
-  draws <- nrow(x)
+  draws <- ncol(x)
   cat("Summary statistics of causal type prior distributions:")
   cat(paste("\nDraws:", draws, sep = " "))
   cat("\nrows are causal types\n")
