@@ -289,7 +289,7 @@ print.parameters <- function(x, ...) {
 print.parameters_prior <- function(x, ...) {
   cat("Summary statistics of model parameter prior distributions:")
   cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (parameters) \n\n", sep = " "))
-  cat("Summary: /n/n")
+  cat("Summary: \n\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
   rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
@@ -329,7 +329,7 @@ print.parameters_posterior <- function(x, ...) {
 print.type_prior <- function(x, ...) {
   cat("Summary statistics of causal type prior distributions:")
   cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (types) \n\n", sep = " "))
-  cat("Summary: /n/n")
+  cat("Summary: \n\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
   rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))
@@ -393,7 +393,7 @@ print.posterior_event_probabilities <-
   function(x, ...) {
     cat("\nPosterior draws of event probabilities (transformed parameters)\n")
     cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (data types)\n\n", sep = " "))
-    cat("Summary: /n/n")
+    cat("Summary: \n\n")
     distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
     rounding_threshold <- find_rounding_threshold(distribution_summary)
     print.data.frame(round(distribution_summary, rounding_threshold))
@@ -431,7 +431,7 @@ print.event_probabilities <- function(x, ...) {
 print.type_posterior <- function(x, ...) {
   cat("Posterior draws of causal types (transformed parameters)")
   cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (types) \n\n", sep = " "))
-  cat("Summary: /n/n")
+  cat("Summary: \n\n")
   distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
   rounding_threshold <- find_rounding_threshold(distribution_summary)
   print.data.frame(round(distribution_summary, rounding_threshold))

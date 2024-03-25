@@ -85,7 +85,6 @@ testthat::test_that(
 	  expect_error(model |> grab("stan_fit"))
 	  expect_error(model |> grab("stan_summary"))
 
-
 	}
 )
 

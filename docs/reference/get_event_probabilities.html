@@ -110,24 +110,40 @@ provided to avoid repeated computation for simulations.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">get_event_probabilities</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The probability of observing a given combination of data </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> realizations for a given set of parameter values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      event_probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1        0.25</span>
 <span class="r-in"><span><span class="fu">get_event_probabilities</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, given <span class="op">=</span> <span class="st">"X==1"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The probability of observing a given combination of data </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> realizations for a given set of parameter values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      event_probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0         0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0         0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1         0.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1         0.5</span>
 <span class="r-in"><span><span class="fu">get_event_probabilities</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The probability of observing a given combination of data </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> realizations for a given set of parameter values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      event_probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1        0.25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1        0.25</span>
 <span class="r-in"><span><span class="fu">get_event_probabilities</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, parameters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The probability of observing a given combination of data </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> realizations for a given set of parameter values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      event_probs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0   0.1481481</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0   0.2592593</span>

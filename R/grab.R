@@ -103,7 +103,7 @@ grab <- function(model, object = NULL, ...) {
         "Model does not contain a posterior distribution; update using update_model()"
       )
     } else {
-      model$stan_objects$posterior_distribution
+      model$posterior_distribution
     },
     posterior_event_probabilities =
       if (is.null(model$stan_objects$event_probabilities)) {
