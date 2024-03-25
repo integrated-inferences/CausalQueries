@@ -69,15 +69,18 @@ Nested or "complex" counterfactual queries of the form
 \code{Y[X=1, M[X=0]]} are allowed.
 }
 \examples{
-model <- make_model("X -> Y") \%>\% set_prior_distribution(n_draws = 10000)
-
+model <- make_model("X -> Y")
+query_model(model, "Y[X=1] - Y[X = 0]", using = "priors")
+query_model(model, "Y[X=1] > Y[X = 0]", using = "parameters")
+query_model(model, "Y[X=1] > Y[X = 0]", using = c("priors", "parameters"))
 \donttest{
 
 # `expand_grid= TRUE` requests the Cartesian product of arguments
 
 models <- list(
  M1 = make_model("X -> Y"),
- M2 = make_model("X -> Y") |> set_restrictions("Y[X=1] < Y[X=0]")
+ M2 = make_model("X -> Y") |>
+   set_restrictions("Y[X=1] < Y[X=0]")
  )
 
 
