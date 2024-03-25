@@ -134,8 +134,14 @@ update_model <- function(model,
 
   # parameters to drop
   drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
-  if (!keep_event_probabilities) drop_pars <- c(drop_pars, "w")
-  if (!keep_type_distribution) drop_pars <- c(drop_pars, "types")
+
+  if (!keep_event_probabilities) {
+    drop_pars <- c(drop_pars, "w")
+  }
+
+  if (!keep_type_distribution) {
+    drop_pars <- c(drop_pars, "types")
+  }
 
 
   sampling_args <- set_sampling_args(object = stanfit,
@@ -174,7 +180,7 @@ update_model <- function(model,
   if (keep_event_probabilities) {
     model$stan_objects$event_probabilities <- extract(newfit, pars = "w")$w
     colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
-    class(model$stan_objects$event_probabilities) <- c("posterior_event_probabilities", "matrix", "array")
+    class(model$stan_objects$event_probabilities) <- c("event_probabilities", "matrix", "array")
   }
 
   # Retain stanfit summary with readable names
@@ -223,26 +229,6 @@ update_model <- function(model,
 }
 
 
-
-#' Print a short summary of posterior_event_probabilities
-#'
-#' print method for class \code{posterior_event_probabilities}.
-#'
-#' @param x An object of \code{posterior_event_probabilities} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-#'
-print.posterior_event_probabilities <-
-  function(x, ...) {
-    cat("\nPosterior draws of event probabilities (transformed parameters)\n")
-    x <- data.frame(
-      mean = apply(my_data, 2, mean) |> round(4),
-      sd = apply(my_data, 2, sd) |> round(4)
-    )
-    print.data.frame(x)
-    return(invisible(x))
-  }
 
 
 
