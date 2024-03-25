@@ -56,7 +56,7 @@ testthat::test_that(
 	    "numeric",
 	    "parameters_prior",
 	    "parameters_posterior",
-	    "event_probabilities",
+	    "posterior_event_probabilities",
 	    "stan_objects",
 	    "stanfit",
 	    "stan_fit_summary",

@@ -765,7 +765,7 @@ get_type_distributions <- function(jobs,
 
 
 
-#' Print a short summary of model queries
+#' Print a tightened summary of model queries
 #'
 #' print method for class \code{model_query}.
 #'

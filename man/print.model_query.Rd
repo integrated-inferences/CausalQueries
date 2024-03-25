@@ -2,7 +2,7 @@
 % Please edit documentation in R/query_model.R
 \name{print.model_query}
 \alias{print.model_query}
-\title{Print a short summary of model queries}
+\title{Print a tightened summary of model queries}
 \usage{
 \method{print}{model_query}(x, digits = 3)
 }
