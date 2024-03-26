@@ -1,6 +1,10 @@
 ---
 title: "Inspecting posteriors"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    md_extensions: [ 
+      "-autolink_bare_uris" 
+    ]
 vignette: >
   %\VignetteIndexEntry{Inspecting posteriors}
   %\VignetteEngine{knitr::rmarkdown}
@@ -76,7 +80,7 @@ grab(model, "stan_summary")
 
 This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column. In the printout above the first 6 rows show the distribution of the model parameters; the next 8 rows show the distribution over transformed parameters, here the causal types. The last row shows the unnormalized log density on Stan's unconstrained space which, as described in [Stan documentation](https://mc-stan.org/cmdstanr/reference/fit-method-lp.html) is intended to diagnose sampling efficiency and evaluate approximations. 
 
-See [stan documentation](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html) for further details.
+See [stan documentation](http://mc-stan.org/rstan/articles/stanfit_objects.html) for further details.
 
 
 # Advanced diagnostics 
