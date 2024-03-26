@@ -4,16 +4,10 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/articles/1 getting-started.html</loc>
-  </url>
-  <url>
-    <loc>/articles/1-getting-started.html</loc>
-  </url>
-  <url>
-    <loc>/articles/2-front-door.html</loc>
-  </url>
-  <url>
-    <loc>/articles/3-inspecting-posteriors.html</loc>
   </url>
   <url>
     <loc>/articles/front-door.html</loc>
@@ -34,22 +28,19 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
     <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_dots.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_wildcard.html</loc>
   </url>
   <url>
     <loc>/reference/CausalQueries-package.html</loc>
   </url>
   <url>
     <loc>/reference/CausalQueries_internal_inherit_params.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_dots.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_wildcard.html</loc>
   </url>
   <url>
     <loc>/reference/causal_type_names.html</loc>
@@ -67,10 +58,10 @@
     <loc>/reference/clean_condition.html</loc>
   </url>
   <url>
-    <loc>/reference/clean_params.html</loc>
+    <loc>/reference/clean_param_vector.html</loc>
   </url>
   <url>
-    <loc>/reference/clean_param_vector.html</loc>
+    <loc>/reference/clean_params.html</loc>
   </url>
   <url>
     <loc>/reference/collapse_data.html</loc>
@@ -145,13 +136,13 @@
     <loc>/reference/get_nodal_types.html</loc>
   </url>
   <url>
+    <loc>/reference/get_param_dist.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_parameter_matrix.html</loc>
   </url>
   <url>
     <loc>/reference/get_parameter_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_param_dist.html</loc>
   </url>
   <url>
     <loc>/reference/get_parents.html</loc>
@@ -235,19 +226,19 @@
     <loc>/reference/make_nodal_types.html</loc>
   </url>
   <url>
-    <loc>/reference/make_parameters_df.html</loc>
+    <loc>/reference/make_par_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/make_par_values_stops.html</loc>
   </url>
   <url>
     <loc>/reference/make_parameter_matrix.html</loc>
   </url>
   <url>
+    <loc>/reference/make_parameters_df.html</loc>
+  </url>
+  <url>
     <loc>/reference/make_parmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/make_par_values.html</loc>
-  </url>
-  <url>
-    <loc>/reference/make_par_values_stops.html</loc>
   </url>
   <url>
     <loc>/reference/make_prior_distribution.html</loc>
@@ -259,6 +250,9 @@
     <loc>/reference/minimal_event_data.html</loc>
   </url>
   <url>
+    <loc>/reference/n_check.html</loc>
+  </url>
+  <url>
     <loc>/reference/nodes_in_statement.html</loc>
   </url>
   <url>
@@ -266,9 +260,6 @@
   </url>
   <url>
     <loc>/reference/non_increasing.html</loc>
-  </url>
-  <url>
-    <loc>/reference/n_check.html</loc>
   </url>
   <url>
     <loc>/reference/observe_data.html</loc>

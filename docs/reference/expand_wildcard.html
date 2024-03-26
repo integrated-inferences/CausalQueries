@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-getting-started.html">Getting Started</a>
-    <a class="dropdown-item" href="../articles/2-front-door.html">Through the front door</a>
-    <a class="dropdown-item" href="../articles/3-inspecting-posteriors.html">Inspecting posteriors</a>
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Inspecting posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -91,18 +91,27 @@
 <span class="r-in"><span><span class="co"># Position of parentheses matters for type of expansion</span></span></span>
 <span class="r-in"><span><span class="co"># In the "global expansion" versions of the entire statement are joined</span></span></span>
 <span class="r-in"><span><span class="fu">expand_wildcard</span><span class="op">(</span><span class="st">'(Y[X=1, M=.] &gt; Y[X=1, M=.])'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in expand_wildcard("(Y[X=1, M=.] &gt; Y[X=1, M=.])"):</span> could not find function "expand_wildcard"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generated expanded expression:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Y[X=1, M=0] &gt; Y[X=1, M=0] | Y[X=1, M=1] &gt; Y[X=1, M=1])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "(Y[X=1, M=0] &gt; Y[X=1, M=0] | Y[X=1, M=1] &gt; Y[X=1, M=1])"</span>
 <span class="r-in"><span><span class="co"># In the "local expansion" versions of indicated parts are joined</span></span></span>
 <span class="r-in"><span><span class="fu">expand_wildcard</span><span class="op">(</span><span class="st">'(Y[X=1, M=.]) &gt; (Y[X=1, M=.])'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in expand_wildcard("(Y[X=1, M=.]) &gt; (Y[X=1, M=.])"):</span> could not find function "expand_wildcard"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generated expanded expression:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Y[X=1, M=0] | Y[X=1, M=1]) &gt; (Y[X=1, M=0] | Y[X=1, M=1])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "(Y[X=1, M=0] | Y[X=1, M=1]) &gt; (Y[X=1, M=0] | Y[X=1, M=1])"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If parentheses are missing global expansion used.</span></span></span>
 <span class="r-in"><span><span class="fu">expand_wildcard</span><span class="op">(</span><span class="st">'Y[X=1, M=.] &gt; Y[X=1, M=.]'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in expand_wildcard("Y[X=1, M=.] &gt; Y[X=1, M=.]"):</span> could not find function "expand_wildcard"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No parentheses indicated. Global expansion assumed. See expand_wildcard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generated expanded expression:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y[X=1, M=0] &gt; Y[X=1, M=0] | Y[X=1, M=1] &gt; Y[X=1, M=1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Y[X=1, M=0] &gt; Y[X=1, M=0] | Y[X=1, M=1] &gt; Y[X=1, M=1]"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Expressions not requiring expansion are allowed</span></span></span>
 <span class="r-in"><span><span class="fu">expand_wildcard</span><span class="op">(</span><span class="st">'(Y[X=1])'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in expand_wildcard("(Y[X=1])"):</span> could not find function "expand_wildcard"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generated expanded expression:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Y[X=1])</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "(Y[X=1])"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-getting-started.html">Getting Started</a>
-    <a class="dropdown-item" href="../articles/2-front-door.html">Through the front door</a>
-    <a class="dropdown-item" href="../articles/3-inspecting-posteriors.html">Inspecting posteriors</a>
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Inspecting posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -116,12 +116,18 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y; X &lt;-&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="parameter_setting.html">get_parameters</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameters(make_model("X -&gt; Y; X &lt;-&gt; Y")):</span> could not find function "get_parameters"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0 X.1 Y.00_X.0 Y.10_X.0 Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5 0.5 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; X &lt;-&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="parameter_setting.html">get_parameters</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameters(make_model("X -&gt; M -&gt; Y; X &lt;-&gt; Y")):</span> could not find function "get_parameters"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0 X.1 M.00 M.10 M.01 M.11 Y.00_X.0 Y.10_X.0 Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5 0.5 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; X &lt;-&gt; Y; M &lt;-&gt; Y'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span><span class="op">$</span><span class="va">parameters_df</span></span></span>
@@ -157,8 +163,11 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"A -&gt; B -&gt; C"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="set_restrictions.html">set_restrictions</a></span><span class="op">(</span><span class="fu"><a href="increasing.html">increasing</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_confound</span><span class="op">(</span><span class="st">"B &lt;-&gt; C"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="parameter_setting.html">get_parameters</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameters(set_confound(set_restrictions(make_model("A -&gt; B -&gt; C"),     increasing("A", "B")), "B &lt;-&gt; C")):</span> could not find function "get_parameters"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A.0 A.1 B.00 B.10 B.11 C.00_B.00 C.10_B.00 C.01_B.00 C.11_B.00 C.00_B.10 C.10_B.10 C.01_B.10 C.11_B.10 C.00_B.11 C.10_B.11 C.01_B.11 C.11_B.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5 0.5 0.3333333 0.3333333 0.3333333 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example where two parents are confounded</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A -&gt; B &lt;- C; A &lt;-&gt; C'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>

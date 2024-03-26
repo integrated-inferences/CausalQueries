@@ -14,7 +14,7 @@ make_data."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,9 +28,9 @@ make_data."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-getting-started.html">Getting Started</a>
-    <a class="dropdown-item" href="../articles/2-front-door.html">Through the front door</a>
-    <a class="dropdown-item" href="../articles/3-inspecting-posteriors.html">Inspecting posteriors</a>
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Inspecting posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -145,20 +145,20 @@ param_type == <code>define</code></p></dd>
 <span class="r-in"><span><span class="fu">make_events</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   event count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1     1</span>
 <span class="r-in"><span><span class="fu">make_events</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, param_type <span class="op">=</span> <span class="st">'prior_draw'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   event count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1     0</span>
 <span class="r-in"><span><span class="fu">make_events</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, include_strategy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   event strategy count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0       XY     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0       XY     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0       XY     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1       XY     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1       XY     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1       XY     0</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

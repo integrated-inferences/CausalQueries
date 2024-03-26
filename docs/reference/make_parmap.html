@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-getting-started.html">Getting Started</a>
-    <a class="dropdown-item" href="../articles/2-front-door.html">Through the front door</a>
-    <a class="dropdown-item" href="../articles/3-inspecting-posteriors.html">Inspecting posteriors</a>
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Inspecting posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -86,40 +86,6 @@ provided to avoid repeated computation for simulations.</p></dd>
 <p>A matrix</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model = make_model("X-&gt;Y")):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y; X&lt;-&gt;Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model = make_model("X-&gt;Y; X&lt;-&gt;Y")):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y; X&lt;-&gt;Y'</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="st">"map"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model = make_model("X-&gt;Y; X&lt;-&gt;Y")):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; X &lt;-&gt; Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model = make_model("X -&gt; M -&gt; Y; X &lt;-&gt; Y")):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; M &lt;-&gt; Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model = make_model("X -&gt; M -&gt; Y; M &lt;-&gt; Y")):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; M &lt;-&gt; Y; X &lt;-&gt; M'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="st">"map"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span><span class="co"># Any ways (without paths splits)</span></span></span>
-<span class="r-in"><span><span class="fu">make_parmap</span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="op">(</span><span class="fu">make_parmap</span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="st">"map"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parmap(model):</span> could not find function "make_parmap"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># X1 and X2 are confounded and jointly determine Y1, Y2.</span></span></span>
-<span class="r-in"><span><span class="co"># For instance for models in which X and Y take on four values rather than 2.</span></span></span>
-<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Y2 &lt;- X1 -&gt; Y1; Y2 &lt;- X2 -&gt;Y1; X1 &lt;-&gt; X2; Y1 &lt;-&gt; Y2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">parmap</span> <span class="op">&lt;-</span> <span class="fu">make_parmap</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">parmap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu"><a href="prep_stan_data.html">prep_stan_data</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">model</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu"><a href="minimal_event_data.html">minimal_event_data</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">n_params</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

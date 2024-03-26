@@ -12,7 +12,7 @@ and in consequence the number of unit causal types."><!-- mathjax --><script src
     
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,9 +26,9 @@ and in consequence the number of unit causal types."><!-- mathjax --><script src
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-getting-started.html">Getting Started</a>
-    <a class="dropdown-item" href="../articles/2-front-door.html">Through the front door</a>
-    <a class="dropdown-item" href="../articles/3-inspecting-posteriors.html">Inspecting posteriors</a>
+    <a class="dropdown-item" href="../articles/front-door.html">Through the front door</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a>
+    <a class="dropdown-item" href="../articles/inspecting-posteriors.html">Inspecting posteriors</a>
   </div>
 </li>
 <li class="nav-item">
@@ -279,42 +279,185 @@ parentheses, as in these examples.</p>
 <span class="r-in"><span><span class="co"># Restrict to define a model with monotonicity</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Y[X=1] &lt; Y[X=0]'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      X0.Y00 X1.Y00 X0.Y01 X1.Y01 X0.Y11 X1.Y11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0       1      0      1      0      1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1       0      1      0      1      0      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00      1      1      0      0      0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      0      0      1      1      0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      0      0      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict to a single type in endogenous node</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[X = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      X0.Y01 X1.Y01 X0.Y11 X1.Y11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0       1      0      1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1       0      1      0      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      1      1      0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#  Use of | and &amp;</span></span></span>
 <span class="r-in"><span><span class="co"># Keep node if *for some value of B* Y[A = 1] == 1</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A-&gt;Y&lt;-B'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[A = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'|'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span> ,<span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16 48</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Keep node if *for all values of B* Y[A = 1] == 1</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A-&gt;Y&lt;-B'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[A = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  8 16</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict multiple nodes</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y&lt;-M; X -&gt; M'</span> <span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'(Y[X = 1] == 1)'</span>, <span class="st">'(M[X = 1] == 1)'</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X0.M01.Y0101 X1.M01.Y0101 X0.M11.Y0101 X1.M11.Y0101 X0.M01.Y1101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               1            0            1            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               0            1            0            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.01              1            1            0            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.11              0            0            1            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0101            1            1            1            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1101            0            0            0            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X1.M01.Y1101 X0.M11.Y1101 X1.M11.Y1101 X0.M01.Y0111 X1.M01.Y0111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               0            1            0            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1            0            1            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.01              1            0            0            1            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.11              0            1            1            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0101            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1101            1            1            1            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111            0            0            0            1            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X0.M11.Y0111 X1.M11.Y0111 X0.M01.Y1111 X1.M01.Y1111 X0.M11.Y1111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               1            0            1            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               0            1            0            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.01              0            0            1            1            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.11              1            1            0            0            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0101            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1101            0            0            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111            1            1            0            0            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111            0            0            1            1            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X1.M11.Y1111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.01              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M.11              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0101            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1101            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict using statements and given:</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y -&gt; Z; X &lt;-&gt; Z"</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span> <span class="fu">set_restrictions</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="decreasing.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>,<span class="st">'Y'</span><span class="op">)</span>, <span class="fu"><a href="decreasing.html">decreasing</a></span><span class="op">(</span><span class="st">'Y'</span>,<span class="st">'Z'</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="st">'X.0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X0.Y00.Z00 X1.Y00.Z00 X0.Y01.Z00 X1.Y01.Z00 X0.Y11.Z00 X1.Y11.Z00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               1          0          1          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               0          1          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              1          1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              0          0          1          1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          0          0          0          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.0          1          0          1          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.0          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.0          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          1          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y00.Z10 X1.Y01.Z10 X1.Y11.Z10 X0.Y00.Z01 X1.Y00.Z01 X0.Y01.Z01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               0          0          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          1          1          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              1          0          0          1          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              0          1          0          0          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          0          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.0          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.0          0          0          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.0          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          1          1          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y01.Z01 X0.Y11.Z01 X1.Y11.Z01 X0.Y00.Z11 X1.Y00.Z11 X0.Y01.Z11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               0          1          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          0          1          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              0          0          0          1          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              1          0          0          0          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          1          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.0          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.0          0          1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.0          0          0          0          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          1          0          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          0          0          0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y01.Z11 X0.Y11.Z11 X1.Y11.Z11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0               0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          1          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrictions on levels for endogenous nodes aren't allowed</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -329,21 +472,105 @@ parentheses, as in these examples.</p>
 <span class="r-in"><span><span class="co"># Restrictions can be  with wildcards</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="st">'?0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      X0.Y01 X1.Y01 X0.Y11 X1.Y11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0       1      0      1      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1       0      1      0      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      1      1      0      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      1      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Deterministic model</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'S -&gt; C -&gt; Y &lt;- R &lt;- X; X -&gt; C -&gt; R'</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>C <span class="op">=</span> <span class="st">'1000'</span>, R <span class="op">=</span> <span class="st">'0001'</span>, Y <span class="op">=</span> <span class="st">'0001'</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        S0.X0.C1000.R0001.Y0001 S1.X0.C1000.R0001.Y0001 S0.X1.C1000.R0001.Y0001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S.0                          1                       0                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S.1                          0                       1                       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0                          1                       1                       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1                          0                       0                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C.1000                       1                       1                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R.0001                       1                       1                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0001                       1                       1                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        S1.X1.C1000.R0001.Y0001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S.0                          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S.1                          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0                          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1                          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C.1000                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R.0001                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.0001                       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict using labels and given:</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y -&gt; Z; X &lt;-&gt; Z"</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
 <span class="r-in"><span> <span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">'0'</span>, Z <span class="op">=</span> <span class="st">'00'</span><span class="op">)</span>, given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="st">'X.0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="get_parameter_matrix.html">get_parameter_matrix</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_parameter_matrix(model):</span> could not find function "get_parameter_matrix"</span>
+<span class="r-in"><span><span class="fu"><a href="grab.html">grab</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows are parameters, grouped in parameter sets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns are causal types</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cell entries indicate whether a parameter probability isused</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> in the calculation of causal type probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y00.Z00 X1.Y10.Z00 X1.Y01.Z00 X1.Y11.Z00 X1.Y00.Z10 X1.Y10.Z10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          1          1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              1          0          0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10              0          1          0          0          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              0          0          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          0          0          1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          1          1          1          1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0          0          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y01.Z10 X1.Y11.Z10 X1.Y00.Z01 X1.Y10.Z01 X1.Y01.Z01 X1.Y11.Z01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          1          1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              0          0          1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10              0          0          0          1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              1          0          0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          1          0          0          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          1          1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          0          0          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          X1.Y00.Z11 X1.Y10.Z11 X1.Y01.Z11 X1.Y11.Z11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1               1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00              1          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10              0          1          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01              0          0          1          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11              0          0          0          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.00_X.1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  param_set  (P)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
