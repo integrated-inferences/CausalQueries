@@ -9,10 +9,7 @@
 #'
 #' @return A \code{data.frame}. Causal types (rows) corresponding to
 #' possible data realizations (columns).
-#' @examples
-#' model <- make_model('X -> Y')
-#' get_ambiguities_matrix(model = model)
-#'
+
 get_ambiguities_matrix <- function(model) {
     is_a_model(model)
     if (!is.null(model$A)) {
@@ -30,10 +27,7 @@ get_ambiguities_matrix <- function(model) {
 #' @return A \code{data.frame}. Types (rows) corresponding to possible
 #'   data realizations (columns).
 #' @keywords internal
-#' @examples
-#' model <- make_model('X -> Y')
-#' CausalQueries:::make_ambiguities_matrix(model = model)
-#'
+
 make_ambiguities_matrix <- function(model) {
 
     # 1. Get types as the combination of possible data. e.g.
@@ -78,11 +72,7 @@ make_ambiguities_matrix <- function(model) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return An object of type \code{causal_model} with the
 #'   ambiguities matrix attached
-#' @examples
-#' model <- make_model('X -> Y') %>%
-#'          set_ambiguities_matrix()
-#' model$A
-#'
+
 set_ambiguities_matrix <- function(model, A = NULL) {
     if(is.null(A)) {
       A <- make_ambiguities_matrix(model)

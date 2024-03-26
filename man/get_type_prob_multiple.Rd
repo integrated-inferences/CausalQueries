@@ -39,9 +39,4 @@ A \code{matrix} of type probabilities.
 \description{
 Draw matrix of type probabilities, before or after estimation
 }
-\examples{
-model <- make_model('X -> Y')
-get_type_prob_multiple(model, using = 'priors', n_draws = 3)
-get_type_prob_multiple(model, using = 'parameters', n_draws = 3)
-}
 \keyword{internal}

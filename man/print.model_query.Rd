@@ -4,7 +4,7 @@
 \alias{print.model_query}
 \title{Print a tightened summary of model queries}
 \usage{
-\method{print}{model_query}(x)
+\method{print}{model_query}(x, ...)
 }
 \arguments{
 \item{x}{An object of \code{model_query} class.}

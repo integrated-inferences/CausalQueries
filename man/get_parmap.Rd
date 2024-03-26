@@ -22,7 +22,3 @@ A matrix
 \description{
 Gets parmap from a model, or generates if not available.
 }
-\examples{
-get_parmap(model = make_model('X->Y'))
-
-}

@@ -8,10 +8,7 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types
-#' @examples
-#' get_type_prob(model = make_model('X->Y'))
-#' get_type_prob(model = make_model('X->Y'), parameters = 1:6)
-#'
+
 get_type_prob <- function(model,
                           P = NULL,
                           parameters = NULL) {
@@ -44,10 +41,6 @@ get_type_prob <- function(model,
 #'   Optional for speed.
 #' @keywords internal
 #' @return A \code{matrix} of type probabilities.
-#' @examples
-#' model <- make_model('X -> Y')
-#' get_type_prob_multiple(model, using = 'priors', n_draws = 3)
-#' get_type_prob_multiple(model, using = 'parameters', n_draws = 3)
 
 get_type_prob_multiple <- function(model,
                                    using = "priors",
@@ -91,9 +84,6 @@ get_type_prob_multiple <- function(model,
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @keywords internal
 #' @return A \code{matrix} with the distribution of the parameters in the model
-#' @examples
-#' get_param_dist(model = make_model('X->Y'), using = 'priors', n_draws = 4)
-#' get_param_dist(model = make_model('X->Y'), using = 'parameters')
 
 get_param_dist <- function(model,
                            using,

@@ -6,11 +6,6 @@
 #' @keywords internal
 #' @return A `data.frame` with parameters draws
 #' @family posterior_distribution
-#' @examples
-#' make_model('X -> Y') |>
-#'   update_model()  |>
-#'   get_posterior_distribution()
-#'
 
 get_posterior_distribution <- function(model) {
 

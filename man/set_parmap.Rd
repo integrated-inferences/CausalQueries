@@ -16,7 +16,3 @@ A matrix
 \description{
 Generates and adds parmap to a model
 }
-\examples{
-set_parmap(model = make_model('X->Y'))
-
-}

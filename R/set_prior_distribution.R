@@ -46,13 +46,6 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
 #'   lambda draws
 #' @family prior_distribution
-#' @examples
-#' make_model('X -> Y') %>%
-#'   set_prior_distribution(n_draws = 5) %>%
-#'   get_prior_distribution()
-#' make_model('X -> Y') %>%
-#'   get_prior_distribution(3)
-#'
 
 get_prior_distribution <- function(model, n_draws = 4000) {
   .Deprecated("grab")
@@ -81,7 +74,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #' @examples
 #' make_model('X -> Y') %>%
 #'   set_prior_distribution(n_draws = 5) %>%
-#'   get_prior_distribution()
+#'   grab("prior_distribution)
 #'
 
 set_prior_distribution <- function(model, n_draws = 4000) {

@@ -85,36 +85,36 @@
 #' # Restrict to define a model with monotonicity
 #' model <- make_model('X->Y') %>%
 #' set_restrictions(statement = c('Y[X=1] < Y[X=0]'))
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #' # Restrict to a single type in endogenous node
 #' model <- make_model('X->Y') %>%
 #' set_restrictions(statement =  '(Y[X = 1] == 1)', join_by = '&', keep = TRUE)
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #'#  Use of | and &
 #'# Keep node if *for some value of B* Y[A = 1] == 1
 #'model <- make_model('A->Y<-B') %>%
 #' set_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '|', keep = TRUE)
-#'dim(get_parameter_matrix(model))
+#'dim(grab(model ,"parameter_matrix"))
 #'
 #'
 #'# Keep node if *for all values of B* Y[A = 1] == 1
 #'model <- make_model('A->Y<-B') %>%
 #' set_restrictions(statement =  '(Y[A = 1] == 1)', join_by = '&', keep = TRUE)
-#' dim(get_parameter_matrix(model))
+#' dim(grab(model, "parameter_matrix"))
 #'
 #' # Restrict multiple nodes
 #' model <- make_model('X->Y<-M; X -> M' ) %>%
 #' set_restrictions(statement =  c('(Y[X = 1] == 1)', '(M[X = 1] == 1)'),
 #'                  join_by = '&', keep = TRUE)
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #' # Restrict using statements and given:
 #' model <- make_model("X -> Y -> Z; X <-> Z") %>%
 #'  set_restrictions(list(decreasing('X','Y'), decreasing('Y','Z')),
 #'                   given = c(NA,'X.0'))
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #' # Restrictions on levels for endogenous nodes aren't allowed
 #' \dontrun{
@@ -129,18 +129,18 @@
 #' # Restrictions can be  with wildcards
 #' model <- make_model('X->Y') %>%
 #' set_restrictions(labels = list(Y = '?0'))
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #' # Deterministic model
 #' model <- make_model('S -> C -> Y <- R <- X; X -> C -> R') %>%
 #' set_restrictions(labels = list(C = '1000', R = '0001', Y = '0001'),
 #'                  keep = TRUE)
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'
 #' # Restrict using labels and given:
 #' model <- make_model("X -> Y -> Z; X <-> Z") %>%
 #'  set_restrictions(labels = list(X = '0', Z = '00'), given = c(NA,'X.0'))
-#' get_parameter_matrix(model)
+#' grab(model, "parameter_matrix")
 #'}
 
 set_restrictions <- function(model,
@@ -578,9 +578,7 @@ restrict_by_labels <- function(model,
 #' @param nodal_types Nodal types of a model. See \code{\link{get_nodal_types}}.
 #' @return A vector containing causal type names
 #' @keywords internal
-#' @examples
-#' model <- make_model('A->Y<-B')
-#'CausalQueries:::get_type_names(model$nodal_types)
+
 
 get_type_names <- function(nodal_types) {
     unlist(lapply(seq_along(nodal_types), function(i) {

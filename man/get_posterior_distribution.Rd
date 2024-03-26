@@ -16,11 +16,5 @@ A `data.frame` with parameters draws
 \description{
 Access the posterior distribution from the model if one has been added via `update_model`.
 }
-\examples{
-make_model('X -> Y') |>
-  update_model()  |>
-  get_posterior_distribution()
-
-}
 \concept{posterior_distribution}
 \keyword{internal}

@@ -19,8 +19,3 @@ Return ambiguities matrix if it exists; otherwise calculate
 it assuming no confounding.The ambiguities matrix maps from causal types
 into data types.
 }
-\examples{
-model <- make_model('X -> Y')
-get_ambiguities_matrix(model = model)
-
-}

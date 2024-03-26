@@ -11,18 +11,7 @@
 #' @keywords internal
 #' @importFrom rlang is_empty
 #' @return A named \code{list} of nodal types for each parent in a DAG
-#'
-#' @examples
-#' \donttest{
-#' model <- make_model('X -> K -> Y')
-#' get_nodal_types(model)
-#'
-#' model <- make_model('X -> K -> Y') %>%
-#'    set_restrictions(statement = 'K[X=1]>K[X=0]') %>%
-#'    set_confound(list(K = 'Y[K=1]>Y[K=0]'))
-#' get_nodal_types(model)
-#' }
-#'
+
 get_nodal_types <- function(model, collapse = TRUE) {
   # 1 Extract nodal types if these exist (and collapsed format sought)
   if (collapse & !is.null(model$nodal_types)) {
@@ -63,12 +52,6 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' @param nodal_types A list of nodal types in collapsed form ('01', '11') etc..
 #' @return A \code{list} containing nodes with nodal types in data.frame form
 #' @keywords internal
-#' @examples
-#'
-#' model <- make_model('X -> K -> Y')
-#' (nodal_types <- get_nodal_types(model , collapse = TRUE))
-#' CausalQueries:::uncollapse_nodal_types(nodal_types)
-
 
 uncollapse_nodal_types <- function(nodal_types) {
   x <- nodal_types |>

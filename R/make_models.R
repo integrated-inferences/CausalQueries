@@ -96,6 +96,8 @@ make_model <- function(statement,
                        add_causal_types = TRUE,
                        nodal_types = NULL) {
 
+  parent <- NULL
+
   if (length(statement) != 1) {
     stop(
       paste(
@@ -187,7 +189,7 @@ make_model <- function(statement,
     dplyr::mutate(parent_nodes = sapply(node, function(n) {
       dag |>
         dplyr::filter(children == n) |>
-        pull(parent) |>
+        dplyr::pull(parent) |>
         paste(collapse = ", ")
     }))
 

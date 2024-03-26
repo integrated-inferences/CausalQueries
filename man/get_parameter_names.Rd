@@ -20,7 +20,3 @@ A character vector with the names of the parameters in the model
 Parameter names taken from \code{P} matrix or model if no
 \code{P}  matrix provided
 }
-\examples{
-
-get_parameter_names(make_model('X->Y'))
-}

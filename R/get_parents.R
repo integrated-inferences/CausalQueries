@@ -4,9 +4,6 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{list} of parents in a DAG
-#' @examples
-#' model <- make_model('X -> K -> Y')
-#' get_parents(model)
 
 get_parents <- function(model) {
   parents <- lapply(model$nodes, function(j) {

@@ -49,9 +49,9 @@ LinkingTo:
 Suggests: 
     testthat,
     rmarkdown,
-    knitr,
     DeclareDesign,
     fabricatr,
+    bayesplot,
     covr
 SystemRequirements: GNU make
 Biarch: true

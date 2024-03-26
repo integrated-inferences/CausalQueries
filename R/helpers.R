@@ -273,6 +273,7 @@ interpret_type <- function(model,
 #'
 #' # Expressions not requiring expansion are allowed
 #' expand_wildcard('(Y[X=1])')
+#' @export
 
 expand_wildcard <- function(to_expand,
                             join_by = "|",
@@ -351,9 +352,6 @@ expand_wildcard <- function(to_expand,
 #' @param include_paramset Logical. Whether to include the param set
 #'   prefix as part of the name.
 #' @return A character vector with the names of the parameters in the model
-#' @examples
-#'
-#' get_parameter_names(make_model('X->Y'))
 
 get_parameter_names <- function(model, include_paramset = TRUE) {
 

@@ -117,7 +117,7 @@ make_parameters(make_model('X -> Y'),
 
 # set_parameters examples:
 
-make_model('X->Y') \%>\% set_parameters(1:6) \%>\% get_parameters()
+make_model('X->Y') \%>\% set_parameters(1:6) \%>\% grab("parameters")
 
 # Simple examples
 model <- make_model('X -> Y')
@@ -151,9 +151,5 @@ node = "Y", nodal_type = c("00","01"))
 
 
   }
-
-# get_parameters examples:
-
-make_model('X -> Y') |> get_parameters()
 }
 \concept{parameters}

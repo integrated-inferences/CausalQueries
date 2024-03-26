@@ -15,8 +15,4 @@ A vector containing causal type names
 \description{
 Get type names
 }
-\examples{
-model <- make_model('A->Y<-B')
-CausalQueries:::get_type_names(model$nodal_types)
-}
 \keyword{internal}

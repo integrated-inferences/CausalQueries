@@ -20,9 +20,3 @@ An object of type \code{causal_model} with the
 \description{
 Add an ambiguities matrix to a model
 }
-\examples{
-model <- make_model('X -> Y') \%>\%
-         set_ambiguities_matrix()
-model$A
-
-}

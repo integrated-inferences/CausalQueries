@@ -54,10 +54,10 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.
 \examples{
 
 make_model('X -> Y; X <-> Y') |>
-get_parameters()
+grab("parameters")
 
 make_model('X -> M -> Y; X <-> Y') |>
-get_parameters()
+grab("parameters")
 
 model <- make_model('X -> M -> Y; X <-> Y; M <-> Y')
 model$parameters_df
@@ -66,7 +66,7 @@ model$parameters_df
 make_model("A -> B -> C") |>
 set_restrictions(increasing("A", "B")) |>
 set_confound("B <-> C") |>
-get_parameters()
+grab("parameters")
 
 # Example where two parents are confounded
 make_model('A -> B <- C; A <-> C') |>

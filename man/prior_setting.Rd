@@ -195,9 +195,5 @@ statement = "Y[M=1] > Y[M=0]")
 #altering values using a combination of other arguments
 set_priors(model = model, alphas = c(0.5,0.25), node = "Y",
 nodal_type = c("00","01"), given = "X.0")
-
-# get_priors examples:
-
-get_priors(make_model('X -> Y'))
 }
 \concept{priors}

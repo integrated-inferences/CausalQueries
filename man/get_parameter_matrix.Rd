@@ -18,8 +18,4 @@ Return parameter matrix if it exists; otherwise calculate it assuming no
 confounding. The parameter matrix  maps from parameters into causal types.
 In models without confounding parameters correspond to nodal types.
 }
-\examples{
-model <- make_model('X -> Y')
-get_parameter_matrix(model)
-}
 \keyword{internal}

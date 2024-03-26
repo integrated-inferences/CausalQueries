@@ -25,6 +25,7 @@ library(fabricatr)
 library(knitr)
 library(ggplot2)
 library(rstan)
+library(bayesplot)
 rstan_options(refresh = 0)
 
 ```

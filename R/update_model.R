@@ -15,7 +15,7 @@
 #' @param keep_event_probabilities Logical. Whether to keep the (transformed) distribution
 #'   of event probabilities. Defaults to `FALSE`
 #' @param keep_fit Logical. Whether to keep the \code{stanfit} object produced
-#'   by the \code{\link{rstan::sampling}} for further inspection.
+#'   by \link[rstan]{sampling} for further inspection.
 #'   See \code{?stanfit} for more details. Defaults to `FALSE`. Note the  \code{stanfit}
 #'   object has internal names for parameters (lambda), event probabilities (w), and the
 #'   type distribution (types)
@@ -212,8 +212,7 @@ update_model <- function(model,
     )
 
 
-  model$stan_objects$stan_summary <-
-    capture.output(print(newfit))
+  model$stan_objects$stan_summary <- utils::capture.output(print(newfit))
   class(model$stan_objects$stan_summary) <- "stan_summary"
 
   for (i in seq_along(params)) {

@@ -16,7 +16,3 @@ A \code{list} of parents in a DAG
 \description{
 Get list of parents of all nodes in a model
 }
-\examples{
-model <- make_model('X -> K -> Y')
-get_parents(model)
-}

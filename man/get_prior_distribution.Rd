@@ -20,14 +20,6 @@ A `data.frame` with dimension `n_param`x `n_draws` of possible
 Access the prior distribution from the model if one has been added via `set_prior_distribution`.
 Otherwise call  `make_prior_distribution` to generate and return an `n_draws x n_param`  prior distribution.
 }
-\examples{
-make_model('X -> Y') \%>\%
-  set_prior_distribution(n_draws = 5) \%>\%
-  get_prior_distribution()
-make_model('X -> Y') \%>\%
-  get_prior_distribution(3)
-
-}
 \seealso{
 Other prior_distribution: 
 \code{\link{make_prior_distribution}()},

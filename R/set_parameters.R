@@ -205,7 +205,7 @@ make_parameters <- function(model,
 #'
 #' # set_parameters examples:
 #'
-#' make_model('X->Y') %>% set_parameters(1:6) %>% get_parameters()
+#' make_model('X->Y') %>% set_parameters(1:6) %>% grab("parameters")
 #'
 #' # Simple examples
 #' model <- make_model('X -> Y')
@@ -275,11 +275,6 @@ set_parameters <- function(model,
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom dirmult rdirichlet
 #' @family parameters
-#' @examples
-#'
-#' # get_parameters examples:
-#'
-#' make_model('X -> Y') |> get_parameters()
 
 get_parameters <- function(model, param_type = NULL) {
 

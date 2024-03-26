@@ -7,9 +7,6 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame}, the parameter matrix, mapping from parameters
 #'   to causal types
-#' @examples
-#' model <- make_model('X -> Y')
-#' make_parameter_matrix(model)
 
 make_parameter_matrix <- function(model) {
 
@@ -38,9 +35,6 @@ make_parameter_matrix <- function(model) {
 #' @keywords internal
 #' @return A \code{data.frame}, the parameter matrix, mapping from
 #'   parameters to causal types
-#' @examples
-#' model <- make_model('X -> Y')
-#' get_parameter_matrix(model)
 
 get_parameter_matrix <- function(model) {
   if (!is.null(model$P)) {

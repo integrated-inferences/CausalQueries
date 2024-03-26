@@ -226,11 +226,6 @@ set_priors <- function(model,
 #' @return A vector indicating the hyperparameters of the prior distribution
 #'   of the nodal types.
 #' @family priors
-#' @examples
-#'
-#' # get_priors examples:
-#'
-#' get_priors(make_model('X -> Y'))
 
 get_priors <- function(model) {
 

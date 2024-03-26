@@ -28,8 +28,3 @@ realization of parameters, possibly drawn from model priors.
 By default, parameters is drawn from `using` argument
 (either from priors, posteriors, or from model$parameters)
 }
-\examples{
-get_type_prob(model = make_model('X->Y'))
-get_type_prob(model = make_model('X->Y'), parameters = 1:6)
-
-}

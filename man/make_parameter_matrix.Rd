@@ -19,7 +19,3 @@ Calculate parameter matrix assuming no confounding. The parameter matrix
 maps from parameters into causal types. In models without confounding
 parameters correspond to nodal types.
 }
-\examples{
-model <- make_model('X -> Y')
-make_parameter_matrix(model)
-}
