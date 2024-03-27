@@ -74,7 +74,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #' @examples
 #' make_model('X -> Y') %>%
 #'   set_prior_distribution(n_draws = 5) %>%
-#'   grab("prior_distribution)
+#'   grab("prior_distribution")
 #'
 
 set_prior_distribution <- function(model, n_draws = 4000) {

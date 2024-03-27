@@ -19,6 +19,12 @@ An object of class \code{causal_model} with the `prior_distribution`
 \description{
 Add `n_param x n_draws` database of possible parameter draws to the model.
 }
+\examples{
+make_model('X -> Y') \%>\%
+  set_prior_distribution(n_draws = 5) \%>\%
+  grab("prior_distribution")
+
+}
 \seealso{
 Other prior_distribution: 
 \code{\link{get_prior_distribution}()},

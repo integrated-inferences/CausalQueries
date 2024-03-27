@@ -4,7 +4,7 @@
 #' Users can use \code{grab} to extract model's components or objects implied by
 #' the model structure including nodal types, causal types, parameter priors,
 #' parameter posteriors, type priors, type posteriors, and other relevant elements.
-#' See argument \code{object} for other
+#' See argument \code{object} for other options.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param object A character string specifying the component to retrieve.
