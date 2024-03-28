@@ -36,7 +36,7 @@ testthat::test_that(
 )
 
 
-test_that(
+testthat::test_that(
   desc = "reveal_outcomes is deprecated",
 
   code = {
@@ -47,12 +47,12 @@ test_that(
   }
 )
 
-test_that(
+testthat::test_that(
   desc = "realise_outcomes with single node",
 
   code = {
     out <-  realise_outcomes(model =  make_model("X"), add_rownames = TRUE)
-    expect_true(all_equal(out, data.frame(X = c("0","1"), row.names = c(0,1))))
+    expect_equal(as.data.frame(out), data.frame(X = c("0","1"), row.names = c(0,1)))
   }
 )
 
