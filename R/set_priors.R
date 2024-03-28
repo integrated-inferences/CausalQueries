@@ -227,10 +227,13 @@ set_priors <- function(model,
 #'   of the nodal types.
 #' @family priors
 
-get_priors <- function(model) {
+get_priors <- function(model, nodes = NULL) {
 
-    x <- model$parameters_df$priors
+  if(!all(nodes %in% model$nodes)) stop("Indicated node is not in model")
+
+    x <- model$parameters_df |>  pull(priors)
     names(x) <- model$parameters_df$param_names
+    if(!is.null(nodes)) x <- x[model$parameters_df$node %in% nodes]
     return(x)
 
 }

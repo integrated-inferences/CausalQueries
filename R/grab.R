@@ -16,6 +16,7 @@
 #'   \item \code{"parents"} a table listing nodes, whether they are root nodes or not, and the number and names of parents they have,
 #'   \item \code{"parameters_df"} a data frame containing parameter information,
 #'   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
+#'   \item \code{"causal_types_interpretation"} a key to interpreting types; see \code{"?interpret_type"} for options,
 #'   \item \code{"nodal_types"} a list with the nodal types of the model,
 #'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
 #'   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
@@ -24,7 +25,7 @@
 #'   \item \code{"parameter_names"} a  vector of names of parameters,
 #'   \item \code{"parameter_mapping"} a  matrix mapping from parameters into data types,
 #'   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
-#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions,
+#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
 #'   \item \code{"prior_distribution"}  a data frame of the parameter prior distribution,
 #'   \item \code{"posterior_distribution"}  a data frame of the parameter posterior distribution,
 #'   \item \code{"posterior_event_probabilities"} a sample of data (event) probabilities from the posterior,
@@ -53,6 +54,7 @@
 #' grab(model, object = "parents")
 #' grab(model, object = "parameters_df")
 #' grab(model, object = "causal_types")
+#' grab(model, object = "causal_types_interpretation")
 #' grab(model, object = "nodal_types")
 #' grab(model, object = "data_types")
 #' grab(model, object = "event_probabilities")
@@ -87,6 +89,7 @@ grab <- function(model, object = NULL, ...) {
     parents = model$parents_df,
     parameters_df = model$parameters_df,
     causal_types = get_causal_types(model),
+    causal_types_interpretation = interpret_type(model, ...),
     nodal_types = get_nodal_types(model, ...),
     data_types = get_all_data_types(model, ...),
     event_probabilities = get_event_probabilities(model, ...),

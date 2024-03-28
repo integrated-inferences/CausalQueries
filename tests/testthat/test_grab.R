@@ -15,6 +15,7 @@ testthat::test_that(
 	    "parents",
 	    "parameters_df",
 	    "causal_types",
+	    "causal_types_interpretation",
 	    "nodal_types",
 	    "data_types",
 	    "event_probabilities",
@@ -41,6 +42,7 @@ testthat::test_that(
 	    "parents",
 	    "parameters_df",
 	    "causal_types",
+	    "list",
 	    "nodal_types",
 	    "data.frame",
 	    "event_probabilities",
@@ -69,6 +71,9 @@ testthat::test_that(
 	    print(paste(j, args[j]))
 	    expect_true((grab(model, args[j]) |> class())[1] == classes[j])
 	  }
+
+	  # Check options
+	  expect_equal(grab(model, "prior_hyperparameters", "Y") |> length(), 4)
 
 	  # Proper dimensions
 	  expect_equal(grab(model, "type_prior") |> dim(), c(4000, 8))
