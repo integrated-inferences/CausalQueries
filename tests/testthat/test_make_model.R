@@ -15,6 +15,13 @@ testthat::test_that(
 		out <- class(summary(model))
 		expect_equal(out[1], "summary.causal_model")
 		expect_equal(out[2], "data.frame")
+		expect_warning(print(summary(model), stanfit = TRUE))
+
+		model <- update_model(model)
+		out <- capture.output(print(model))
+		expect_no_warning(print(summary(model), stanfit = TRUE))
+		expect_true(any(grepl("Model has been updated.+", out)))
+
 		model <- make_model("X -> Y") |> set_confound(list("X <-> Y"))
 		model <- make_model("X->Y") |> set_restrictions(statement = c("X[] == 0"))
 		out <- capture.output(print(summary(model)))

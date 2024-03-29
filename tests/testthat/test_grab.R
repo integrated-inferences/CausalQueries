@@ -90,7 +90,21 @@ testthat::test_that(
 	  expect_error(model |> grab("stan_fit"))
 	  expect_error(model |> grab("stan_summary"))
 
+	  # Print methods
+	  out <- capture.output(print(grab(model, object = "nodes")))
+	  expect_true(any(grepl("Nodes:", out)))
+	  out <- capture.output(print(grab(model, object = "parents")))
+	  expect_true(any(grepl("parents", out)))
+	  out <- capture.output(print(grab(model, object = "parameters_df")))
+	  expect_false(any(grepl("first 10 rows:", out)))
+	  model <- make_model("X -> Y <- M; X -> M")
+	  out <- capture.output(print(grab(model, object = "parameters_df")))
+	  expect_true(any(grepl("first 10 rows:", out)))
 	}
+
+
+
 )
+
 
 

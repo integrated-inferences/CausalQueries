@@ -16,3 +16,13 @@ testthat::test_that(desc = "Without",
                       )
                     })
 
+testthat::test_that(desc = "With",
+
+                    code = {
+                      model <- make_model("X -> Y") |> update_model()
+                      expect_warning(
+                        get_posterior_distribution(model = model),
+                        "'get_posterior_distribution' is deprecated."
+                      )
+                    })
+
