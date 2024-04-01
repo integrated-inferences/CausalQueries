@@ -35,3 +35,17 @@ testthat::test_that(
   }
 )
 
+testthat::skip_on_cran()
+testthat::test_that(
+
+  desc = "Deprecated.",
+
+  code = {
+    expect_equal(make_model("X") |>
+                   CausalQueries:::get_prior_distribution(n_draws = 10) |>
+                   ncol(), 2)
+  }
+)
+
+
+
