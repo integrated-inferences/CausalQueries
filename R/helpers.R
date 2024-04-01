@@ -177,6 +177,10 @@ interpret_type <- function(model,
       stop("Must specify either `condition` or `nodal_position`, but not both.")
     }
 
+  if(is.null(nodes)){
+    nodes <- grab(model, object = "nodes")
+  }
+
     parents <- get_parents(model)
     types <- lapply(lapply(parents, length), function(l) perm(rep(1, l)))
 
