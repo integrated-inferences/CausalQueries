@@ -16,6 +16,8 @@ followed by '|' (given) and the values of its parent nodes in \code{model}.}
 \item{position}{A named list of integers. The name is the name of the child
 node in \code{model}, and its value a vector of digit positions in that
 node's nodal type to be interpreted. See `Details`.}
+
+\item{A}{vector of names of nodes. Can be used to limit interpretation to selected nodes.}
 }
 \value{
 A named \code{list} with interpretation of positions of
@@ -39,11 +41,13 @@ A node for a child node X with \code{k} parents has a nodal type
 }
 \examples{
 model <- make_model('R -> X; Z -> X; X -> Y')
-#Example using digit position
-interpret_type(model, position = list(X = c(3,4), Y = 1))
-#Example using condition
-interpret_type(model, condition = c('X | Z=0 & R=1', 'X | Z=0 & R=0'))
 #Return interpretation of all digit positions of all nodes
 interpret_type(model)
-interpret_type(model, nodes = "Y")
+#Example using digit position
+interpret_type(model, position = list(X = c(3,4), Y = 1))
+interpret_type(model, position = list(R = 1))
+#Example using condition
+interpret_type(model, condition = c('X | Z=0 & R=1', 'X | Z=0 & R=0'))
+# Example using node names
+interpret_type(model, nodes = c("Y", "R"))
 }
