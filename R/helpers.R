@@ -141,7 +141,7 @@ clean_condition <- function(condition) {
 #' @param position A named list of integers. The name is the name of the child
 #'   node in \code{model}, and its value a vector of digit positions in that
 #'   node's nodal type to be interpreted. See `Details`.
-#' @param A vector of names of nodes. Can be used to limit interpretation to selected nodes.
+#' @param nodes A vector of names of nodes. Can be used to limit interpretation to selected nodes.
 #' @return A named \code{list} with interpretation of positions of
 #'   the digits in a nodal type
 #' @details A node for a child node X with \code{k} parents has a nodal type

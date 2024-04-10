@@ -75,6 +75,8 @@ Can take values \code{'&'} (logical AND) or \code{'|'} (logical OR).}
 
 \item{param_names}{vector of strings. The name of specific parameter in
 the form of, for example, 'X.1', 'Y.01'}
+
+\item{nodes}{a vector of nodes}
 }
 \value{
 A vector indicating the parameters of the prior distribution

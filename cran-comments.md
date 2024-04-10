@@ -1,20 +1,17 @@
-This is a patch release implementing the following bug fixes:
+This is a minor release implementing the following new functionality: 
 
-* passing nodal_types to `make_model()` now implements correct error handling 
-* `query_distribution()` no longer overwrites type distributions internally 
-* node naming checks are operational in `make_model()`
-
-This patch release further improves type safety and implements range based
-looping throughout the package. 
+* `causal-model` object access is now facilitated through a unified syntax via the `grab()` function
+* `causal-model` objects now have dedicated `print` methods 
+* `stan_fit` objects can now be retained when updating models via the `keep_fit` option in `update_model()`
 
 ## Test environments
 
-* local Ubuntu 22.04.3 LTS install, R 4.3.1
-* win-builder, R version (r-devel)
+* local Ubuntu 22.04.3 LTS install, R 4.3.2
+* win-builder, R version 4.4.0 beta
 * win-builder, R version 4.2.3
-* win-builder, R version 4.3.2
-* macOS, R version 4.3.0
-* R-hub Windows Server 2022 (r-devel)
+* win-builder, R version 4.3.3
+* macOS, R version 4.3.3
+* R-hub Windows Server (r-devel)
 * R-hub Fedora Linux, clang, gfortran (r-devel)
 
 ## R CMD check results

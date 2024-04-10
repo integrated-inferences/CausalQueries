@@ -17,7 +17,7 @@ followed by '|' (given) and the values of its parent nodes in \code{model}.}
 node in \code{model}, and its value a vector of digit positions in that
 node's nodal type to be interpreted. See `Details`.}
 
-\item{A}{vector of names of nodes. Can be used to limit interpretation to selected nodes.}
+\item{nodes}{A vector of names of nodes. Can be used to limit interpretation to selected nodes.}
 }
 \value{
 A named \code{list} with interpretation of positions of

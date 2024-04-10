@@ -1,3 +1,53 @@
+# CausalQueries 1.1.0
+
+### Non Backwards Compatible Changes 
+
+Accessing `causal-model` objects via `get_` methods e.g. `get_nodal_types()`, `get_parameters` is no longer supported. Objects may now be accessed via a unified syntax through the `grab()` function (see New Functionality). 
+The following functions are no longer exported: 
+
+- `get_causal_types()`
+- `get_nodal_types()`
+- `get_all_data_types()`
+- `get_event_probabilities()`
+- `get_ambiguities_matrix()`
+- `get_parameters()`
+- `get_parameter_names()`
+- `get_parmap()`
+- `get_parameter_matrix()`
+- `get_priors()`
+- `get_param_dist()`
+- `get_type_prob_multiple()`
+
+### New Functionality
+
+#### 1. unified object access syntax via `grab()`
+
+`causal-model` objects can now be accessed via `grab()` like so: 
+
+```
+grab(model, "parameters_df")
+```
+
+See documentation for an exhaustive list of accessible objects. `causal-model` objects now additionally come with dedicated `print` methods returning short informative summaries of the given object.
+
+#### 2. model diagnostics
+
+A summary of parameter values and convergence information produced by the `update_model()` `Stan` model can now be accessed via:
+
+```
+grab(model, "stan_summary")
+```
+
+Advanced model diagnostics on raw `Stan` output via external packages is possible by saving the `stan_fit` object when updating. This is facilitated via the `keep_fit` option in `update_model()`: 
+
+```
+model <- make_model("X -> Y") |> 
+  update_model(data, keep_fit = TRUE)
+  
+model |> grab("stan_fit")
+```
+
+
 # CausalQueries 1.0.2
 
 ### Bug Fixes 
@@ -20,7 +70,7 @@ When passing `nodal_types` to `make_model()` users are now forced to specify
 a set of `nodal_types` on each node.  
 
 
-#### 2. `query_distribution()` are no longer overwrittes type distribution internally  
+#### 2. `query_distribution()` are no longer overwrites type distribution internally  
 
 
 #### 3. node naming checks are operational in `make_model()`  
