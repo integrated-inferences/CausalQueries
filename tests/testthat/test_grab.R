@@ -73,7 +73,7 @@ testthat::test_that(
 	  }
 
 	  # Check options
-	  expect_equal(grab(model, "prior_hyperparameters", "Y") |> length(), 6)
+	  expect_equal(grab(model, "prior_hyperparameters", "Y") |> length(), 4)
 
 	  # Proper dimensions
 	  expect_equal(grab(model, "type_prior") |> dim(), c(4000, 8))

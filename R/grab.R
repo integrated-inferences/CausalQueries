@@ -98,7 +98,7 @@ grab <- function(model, object = NULL, ...) {
     parameter_names = get_parameter_names(model, ...),
     parameter_mapping = get_parmap(model, ...),
     parameter_matrix = get_parameter_matrix(model),
-    prior_hyperparameters = get_priors(model),
+    prior_hyperparameters = get_priors(model, ...),
     prior_distribution = get_param_dist(model, using = "priors", ...),
     posterior_distribution =
     if (is.null(model$posterior_distribution)) {
