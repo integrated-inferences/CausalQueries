@@ -29,6 +29,7 @@ testthat::test_that(
 	    "posterior_distribution",
 	    "posterior_event_probabilities",
 	    "stan_objects",
+	    "data",
 	    "stan_fit",
 	    "stan_summary",
 	    "type_prior",
@@ -56,6 +57,7 @@ testthat::test_that(
 	    "parameters_posterior",
 	    "posterior_event_probabilities",
 	    "stan_objects",
+	    "data.frame",
 	    "stanfit",
 	    "stan_summary",
 	    "type_prior",
@@ -65,7 +67,7 @@ testthat::test_that(
 
 	  model <- make_model("X->Y") |>
 	    set_prior_distribution() |>
-	    update_model(keep_event_probabilities = TRUE, keep_fit = TRUE)
+	    update_model(data.frame(X=1), keep_event_probabilities = TRUE, keep_fit = TRUE)
 
 	  for(j in 1:length(args)){
 	    print(paste(j, args[j]))
@@ -90,6 +92,9 @@ testthat::test_that(
 	  expect_error(model |> grab("stan_fit"))
 	  expect_error(model |> grab("stan_summary"))
 
+	  expect_true(make_model("X->Y") |>
+	    update_model() |> grab("data") |> is.null())
+
 	  # Print methods
 	  out <- capture.output(print(grab(model, object = "nodes")))
 	  expect_true(any(grepl("Nodes:", out)))
@@ -101,8 +106,6 @@ testthat::test_that(
 	  out <- capture.output(print(grab(model, object = "parameters_df")))
 	  expect_true(any(grepl("first 10 rows:", out)))
 	}
-
-
 
 )
 
