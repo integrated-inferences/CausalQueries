@@ -12,7 +12,7 @@ testthat::test_that(
 	    "causal_statement",
 	    "dag",
 	    "nodes",
-	    "parents",
+	    "parents_df",
 	    "parameters_df",
 	    "causal_types",
 	    "causal_types_interpretation",
@@ -33,7 +33,7 @@ testthat::test_that(
 	    "stan_fit",
 	    "stan_summary",
 	    "type_prior",
-	    "type_posterior"
+	    "type_distribution"
 	  )
 
 	  classes <- c(
@@ -50,7 +50,7 @@ testthat::test_that(
 	    "matrix",
 	    "parameters",
 	    "character",
-	    "matrix",
+	    "parameter_mapping",
 	    "parameter_matrix",
 	    "numeric",
 	    "parameters_prior",
@@ -61,7 +61,7 @@ testthat::test_that(
 	    "stanfit",
 	    "stan_summary",
 	    "type_prior",
-	    "type_posterior"
+	    "type_distribution"
 	  )
 
 
@@ -79,7 +79,7 @@ testthat::test_that(
 
 	  # Proper dimensions
 	  expect_equal(grab(model, "type_prior") |> dim(), c(4000, 8))
-	  expect_equal(grab(model, "type_posterior") |> dim(), c(4000, 8))
+	  expect_equal(grab(model, "type_distribution") |> dim(), c(4000, 8))
 	  expect_equal(grab(model, "posterior_distribution") |> dim(), c(4000, 6))
 	  expect_equal(grab(model, "prior_distribution") |> dim(), c(4000, 6))
 
@@ -98,7 +98,7 @@ testthat::test_that(
 	  # Print methods
 	  out <- capture.output(print(grab(model, object = "nodes")))
 	  expect_true(any(grepl("Nodes:", out)))
-	  out <- capture.output(print(grab(model, object = "parents")))
+	  out <- capture.output(print(grab(model, object = "parents_df")))
 	  expect_true(any(grepl("parents", out)))
 	  out <- capture.output(print(grab(model, object = "parameters_df")))
 	  expect_false(any(grepl("first 10 rows:", out)))

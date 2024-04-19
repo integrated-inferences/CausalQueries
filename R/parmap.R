@@ -22,6 +22,7 @@ make_parmap <- function(model, A = NULL, P = NULL) {
     map <- diag(ncol(type_matrix))
     rownames(map) <- colnames(map) <- colnames(A)
     attr(type_matrix, "map") <- map
+    class(type_matrix) <- c("parameter_mapping", class(type_matrix))
     return(type_matrix)
   }
 
@@ -49,8 +50,8 @@ make_parmap <- function(model, A = NULL, P = NULL) {
 
   colnames(type_matrix) <- .type_matrix$d
 
-  # type_matrix <- type_matrix[,match(colnames(type_matrix), colnames(A))]
   attr(type_matrix, "map") <- data_to_data(type_matrix, A)
+  class(type_matrix) <- c("parameter_mapping", class(type_matrix))
   type_matrix
 }
 

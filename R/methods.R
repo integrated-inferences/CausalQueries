@@ -134,7 +134,7 @@ print.statement <- function(x, ...) {
   return(invisible(x))
 }
 
-#' Print a short summary for a causal_model nodes
+#' Print a short summary for causal_model nodes
 #'
 #' print method for class \code{nodes}.
 #'
@@ -335,6 +335,23 @@ print.type_prior <- function(x, ...) {
   return(invisible(x))
 }
 
+#' Print a short summary for paramater mapping matrix
+#'
+#' print method for class \code{parameter_mapping}.
+#'
+#' @param x An object of \code{parameter_mapping} class.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parameter_mapping <- function(x,  ...) {
+  cat("\nParameter mapping matrix: \n\n")
+  cat("Maps from parameters to data types, with \n")
+  cat("possibly multiple columns for each data type \n")
+  cat("in cases with confounding. \n\n")
+  print(data.frame(x))
+  cat("\n")
+  return(invisible(x))
+}
 
 
 #' Print a short summary for stan fit
@@ -418,15 +435,15 @@ print.event_probabilities <- function(x, ...) {
 
 #' Print a short summary for causal-type posterior distributions
 #'
-#' print method for class \code{type_posterior}.
+#' print method for class \code{type_distribution}.
 #'
-#' @param x An object of \code{type_posterior} class, which is a sub-object of
+#' @param x An object of \code{type_distribution} class, which is a sub-object of
 #'    an object of the \code{causal_model} class produced using
 #'    \code{get_type_prob_multiple}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
-print.type_posterior <- function(x, ...) {
+print.type_distribution <- function(x, ...) {
   cat("Posterior draws of causal types (transformed parameters)")
   cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (types) \n\n", sep = " "))
   cat("Summary: \n\n")

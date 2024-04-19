@@ -13,7 +13,7 @@ testthat::test_that(
     out <- capture.output(print(grab(model, object = "nodes")))
     expect_true(any(grepl("Nodes:", out)))
 
-    out <- capture.output(print(grab(model, object = "parents")))
+    out <- capture.output(print(grab(model, object = "parents_df")))
     expect_true(any(grepl("parents", out)))
 
     out <- capture.output(print(grab(model, object = "parameters_df")))
@@ -65,7 +65,7 @@ testthat::test_that(
     out <- capture.output(print(grab(model, object = "event_probabilities")))
     expect_true(any(grepl("event_probs", out)))
 
-    out <- capture.output(print(grab(model, object = "type_posterior")))
+    out <- capture.output(print(grab(model, object = "type_distribution")))
     expect_true(any(grepl("Posterior draws", out)))
 
     out <- capture.output(print(   query_model(model, "Y[X=1] - Y[X = 0]", using = "parameters")) )

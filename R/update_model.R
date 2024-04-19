@@ -172,7 +172,7 @@ update_model <- function(model,
     model$stan_objects$type_distribution <- extract(newfit, pars = "types")$types
 
     colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
-    class(model$stan_objects$type_distribution) <- c("type_posterior", "matrix", "array")
+    class(model$stan_objects$type_distribution) <- c("type_distribution", "matrix", "array")
   }
 
   # Retain event (pre-censoring) probabilities

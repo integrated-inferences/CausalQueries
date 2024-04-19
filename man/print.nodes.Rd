@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{print.nodes}
 \alias{print.nodes}
-\title{Print a short summary for a causal_model nodes}
+\title{Print a short summary for causal_model nodes}
 \usage{
 \method{print}{nodes}(x, ...)
 }
