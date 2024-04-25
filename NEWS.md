@@ -1,3 +1,8 @@
+# CausalQueries 1.1.1
+
+This is a patch release fixing a bug in the `print.model_query()` S3 method that 
+occurred when querying models using `paramters`.
+
 # CausalQueries 1.1.0
 
 ### Non Backwards Compatible Changes 

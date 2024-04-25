@@ -1,8 +1,5 @@
-This is a minor release implementing the following new functionality: 
-
-* `causal-model` object access is now facilitated through a unified syntax via the `grab()` function
-* `causal-model` objects now have dedicated `print` methods 
-* `stan_fit` objects can now be retained when updating models via the `keep_fit` option in `update_model()`
+This is a patch release fixing a bug in the `print.model_query()` S3 method that 
+occurred when querying models using `paramters`.
 
 ## Test environments
 
