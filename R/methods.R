@@ -498,3 +498,46 @@ print.model_query <- function(x, ...) {
 }
 
 
+#' Print a short summary for list of parents
+#'
+#' print method for class \code{parents}.
+#'
+#' @param x An object of the \code{parents} class, which is a list
+#' containing the names of each parent node in the \code{causal_model} produced using
+#' \code{get_parents}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.parents <- function(x, ...) {
+  cat("Parents: \n\n")
+  nodes <- names(x)
+
+  for (n in nodes) {
+    n_parents <- x[[n]]
+    cat(paste0("$", n, "\n"))
+    if(length(n_parents)==0)
+      cat("Node has no parents \n")
+    else
+      cat(paste(n_parents, sep = " "))
+    cat("\n" )
+  }
+  return(invisible(x))
+}
+
+
+
+#' Print a short summary for stan_objects
+#'
+#' print method for class \code{stan_objects}.
+#'
+#' @param x An object of the \code{stan_objects} class, which is a list
+#' containing the data, \code{type_distribution} and  \code{stan_summary}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @export
+print.stan_objects <- function(x, ...) {
+  cat("stan_objects: \n")
+  base::print.listof(x)
+  return(invisible(x))
+}
+
