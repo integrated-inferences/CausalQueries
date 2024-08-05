@@ -8,6 +8,7 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types
+#' @export
 
 get_type_prob <- function(model,
                           P = NULL,
