@@ -193,11 +193,14 @@ make_model <- function(statement,
         paste(collapse = ", ")
     }))
 
+
+  parents_list <- generate_node_parents_list(dag)
+
   # Model is a list
   model <-
     list(
       statement = statement,
-      dag = dag,
+      parents_list = parents_list,
       nodes = nodes,
       parents_df = parents_df
     )
@@ -303,7 +306,6 @@ make_model <- function(statement,
 
 
   # assign classes
-  class(model$dag) <- c("dag", "data.frame")
   class(model$statement) <- c("statement", "character")
   class(model$nodes) <- c("nodes", "character")
   class(model$parents_df) <- c("parents", "data.frame")
@@ -340,4 +342,31 @@ make_parameters_df <- function(nodal_types){
   return(pdf)
 }
 
+
+#' function to make a parent_list from a data.frame defining parent child
+#' relations in a causally ordered DAG
+#' @param dag a data.frame defining parent child relations in a DAG
+#' @return a list of nodes and their respective parents
+#' @keywords internal
+
+generate_node_parents_list <- function(dag) {
+  # handle cases with single nodes
+  if((nrow(dag)) == 0 && all(is.na(dag$children))) {
+    message("DAG has only one node. Setting parents_list to NULL")
+    return(NULL)
+  }
+
+  # Initialize an empty list
+  node_parents_list <- list()
+
+  # Iterate over each row of the data frame
+  for (i in 1:nrow(dag)) {
+    node <- dag$children[i]
+    parent_node <- dag$parent[i]
+    # Assign the parent nodes to the corresponding node in the list
+    node_parents_list[[node]] <- c(node_parents_list[[node]], parent_node)
+  }
+
+  return(node_parents_list)
+}
 
