@@ -60,41 +60,41 @@ plot_model <- function(model = NULL,
                        nodecol = 'black',
                        nodesize = 16) {
   # Checks
-
-  if (!any(c("character", "causal_model") %in% class(model)))
+  if (!any(c("character", "causal_model") %in% class(model))) {
     stop("First argument should be a causal model or a causal statement")
-
+  }
 
   if (is.null(x_coord) == !is.null(y_coord)) {
     message("Coordinates should be provided for both x and y (or neither).")
   }
 
-
   if (!is.null(x_coord) & !is.null(y_coord)) {
-    if (length(x_coord) != length(y_coord))
+    if (length(x_coord) != length(y_coord)) {
       stop("x and y coordinates must be of equal length")
+    }
 
-    if (is.null(nodes) & is(model, "causal_model"))
+    if (is.null(nodes) & is(model, "causal_model")) {
       nodes <- grab(model, "nodes")
+    }
 
-    if (is.null(nodes) & !is.null(names("x_coord")))
+    if (is.null(nodes) & !is.null(names("x_coord"))) {
       nodes <- names("x_coord")
+    }
 
-    if (is.null(nodes))
+    if (is.null(nodes)) {
       stop("nodes should be provided when x_coord and y_coord are supplied")
+    }
 
-    if (length(nodes) != length(x_coord))
+    if (length(nodes) != length(x_coord)) {
       stop("length of coordinates supplied must equal number of nodes")
+    }
   }
 
   # Get statement
-
   statement <- ifelse(is(model, "model"), grab(model, "causal_statement"), model)
 
-  # pars
-
+  # initialize parameters to NULL to avoid warnings
   name <- to <- x <- y <- xend <- yend <- NULL
-
 
   dagitty_statement <-  paste("dag{", statement, "}") |>
     dagitty::dagitty()
