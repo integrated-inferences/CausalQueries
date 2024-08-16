@@ -111,22 +111,6 @@ make_model <- function(statement,
     stop("The model statement should be of type character.")
   }
 
-  # names and allowable names
-  node_names <- strsplit(statement,
-                         paste0(c("->", "<->", "<-", ";"), collapse = "|"),
-                         perl = TRUE) |>
-    unlist() |>
-    trimws() |>
-    unique()
-
-  if (any(grepl("-", 	node_names))) {
-    stop("Unsupported characters in varnames. No hyphens '-' in varnames please; try dots?")
-  }
-
-  if (any(grepl("_", node_names))) {
-    stop("Unsupported characters in varnames. No underscores '_' in varnames please; try dots?")
-  }
-
   # generate DAG
   x <- make_dag(statement)
 
@@ -292,7 +276,7 @@ make_model <- function(statement,
         "nodes contained in the dag"
       ))
     }
-    model <- set_confound(model, confounds)
+    model <- set_confound(model, confounds, add_confound_to_statement = FALSE)
   }
 
   # Prep for export

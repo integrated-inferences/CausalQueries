@@ -44,14 +44,14 @@
 #'
 
 plot_model <- function(model = NULL,
-                     x_coord = NULL,
-                     y_coord = NULL,
-                     title = "",
-                     textcol = 'white',
-                     textsize = 3.88,
-                     shape = 16,
-                     nodecol = 'black',
-                     nodesize = 16
+                       x_coord = NULL,
+                       y_coord = NULL,
+                       title = "",
+                       textcol = 'white',
+                       textsize = 3.88,
+                       shape = 16,
+                       nodecol = 'black',
+                       nodesize = 16
 ) {
 
   name <- to <- x <- y <- xend <- yend <- NULL
@@ -133,8 +133,9 @@ plot_model <- function(model = NULL,
 
 #' @export
 plot.causal_model <- function(x, ...) {
-    plot_model(x,...)
+  plot_model(x,...)
 }
+
 
 # ' Alias
 plot_dag <- plot_model
