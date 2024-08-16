@@ -10,7 +10,7 @@
 #' within each parameter set. These can be adjust with \code{set_priors}
 #' and \code{set_parameters}
 #'
-#' @param statement A character. Statement describing causal
+#' @param statement character string. Statement describing causal
 #'   relations using \link{dagitty} syntax. Only directed relations are
 #'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
 #' @param add_causal_types Logical. Whether to create and attach causal
@@ -120,17 +120,15 @@ make_model <- function(statement,
     unique()
 
   if (any(grepl("-", 	node_names))) {
-    stop("No hyphens in varnames please; try dots?")
+    stop("Unsupported characters in varnames. No hyphens '-' in varnames please; try dots?")
   }
 
   if (any(grepl("_", node_names))) {
-    stop("No underscores in varnames please; try dots?")
+    stop("Unsupported characters in varnames. No underscores '_' in varnames please; try dots?")
   }
 
   # generate DAG
-  x <-
-    dagitty::edges(dagitty::dagitty(paste0("dag{", statement, "}"))) %>%
-    data.frame(stringsAsFactors = FALSE)
+  x <- make_dag(statement)
 
   if (nrow(x) == 0) {
     dag <- data.frame(v = statement, w = NA)
@@ -140,8 +138,8 @@ make_model <- function(statement,
       dplyr::select(v, w)
   }
 
-  if (length(x) > 0 &&
-      any(!(unlist(x[, 1:2]) %in% unlist(dag)))) {
+  # disallow dangling confound e.g. X -> M <-> Y
+  if (nrow(x) > 0 && any(!(unlist(x[, 1:2]) %in% unlist(dag)))) {
     stop("Graph should not contain isolates.")
   }
 
@@ -339,5 +337,174 @@ make_parameters_df <- function(nodal_types){
   class(pdf) <- c("parameters_df", "data.frame")
   return(pdf)
 }
+
+
+#' Helper to clean and check the validity of causal statements specifying a DAG.
+#' This function isolates nodes and edges specified in a causal statements and
+#' makes them processable by \code{make_dag}
+#'
+#' @param statement character string. Statement describing causal
+#'    relations using \link{dagitty} syntax.
+#' @return a list of nodes and edges specified in the input statement
+#' @keywords internal
+
+clean_statement <- function(statement) {
+  ## consolidate edges
+  statement <- gsub("\\s+", "", statement)
+  statement <- strsplit(statement, "")[[1]]
+
+  i <- 1
+  st_edge <- c()
+
+  while (i <= length(statement)) {
+    # Check for pattern "<", "-", ">"
+    if (i <= length(statement) - 2 &&
+        statement[i] == "<" &&
+        statement[i + 1] == "-" && statement[i + 2] == ">") {
+      st_edge <- c(st_edge, "<->")
+      i <- i + 3 # Skip the next two elements
+    }
+    # Check for pattern "<", "-"
+    else if (i <= length(statement) - 1 &&
+             statement[i] == "<" && statement[i + 1] == "-") {
+      st_edge <- c(st_edge, "<-")
+      i <- i + 2 # Skip the next element
+    }
+    # Check for pattern "-", ">"
+    else if (i <= length(statement) - 1 &&
+             statement[i] == "-" && statement[i + 1] == ">") {
+      st_edge <- c(st_edge, "->")
+      i <- i + 2 # Skip the next element
+    }
+    # Otherwise, just append the current element
+    else {
+      st_edge <- c(st_edge, statement[i])
+      i <- i + 1
+    }
+  }
+
+  # detect edges
+  is_edge <- st_edge %in% c("->", "<-", "<->")
+
+  # check for bare edges (i.e. edges without origin or destination nodes)
+  # either dangling edge at beginning / end of statement
+  has_dangling_edge <- any(c(is_edge[1], is_edge[length(is_edge)]))
+  # or consecutive edges within statement
+  consecutive_edge <- rle(is_edge)
+  has_consecutive_edge <-any(consecutive_edge$values & consecutive_edge$lengths >= 2)
+
+  if(has_dangling_edge || has_consecutive_edge) {
+    stop("Statement contains bare edges without a source or destination node or both. Edges should connect nodes.")
+  }
+
+  ## consolidate nodes
+  # check for unsupported characters in varnames
+  if(any(c("<",">") %in% st_edge[!is_edge])) {
+    stop(
+      paste0(
+        "Unsupported characters in varnames. No '<' or '>' in varnames please.",
+        "\n",
+        "\n You may have tried to define an edge but misspecified it.",
+        "\n Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc."
+      )
+    )
+  }
+
+  if("-" %in% st_edge[!is_edge]) {
+    stop(
+      paste0(
+        "Unsupported characters in varnames. No hyphens '-' in varnames please; try dots?",
+        "\n",
+        "\n You may have tried to define an edge but misspecified it.",
+        "\n Edges should be specified via ->, <-, <-> not -."
+      )
+    )
+  }
+
+  if("_" %in% st_edge[!is_edge]) {
+    stop(
+      paste0(
+        "Unsupported characters in varnames. No underscores '_' in varnames please; try dots?",
+        "\n",
+        "\n You may have tried to define an edge but misspecified it.",
+        "\n Edges should be specified via ->, <-, <-> not _>, <_, <_> etc."
+      )
+    )
+  }
+
+  # counter that increments every time we hit an edge --> each character
+  # belonging to a node thus has the same number (node_id)
+  node_id <- cumsum(is_edge)
+  # split by node_id and paste all characters with same node_id together
+  nodes <- split(st_edge[!is_edge], node_id[!is_edge]) |>
+    vapply(paste, collapse = "", "") |>
+    unname()
+
+  return(list(nodes = nodes, edges = st_edge[is_edge]))
+}
+
+
+#' Helper to run a causal statement specifying a DAG into a \code{data.frame} of
+#' pairwise parent child relations between nodes specified by a respective edge.
+#' This function reproduces the result of the following \link{dagitty} operations:
+#' \code{dagitty::dagitty() |> dagitty::edges()}
+#'
+#' @param statement character string. Statement describing causal
+#'   relations using \link{dagitty} syntax. Only directed relations are
+#'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2"
+#' @return a \code{data.frame} with columns v,w,e specifying parent, child and
+#'   edge respectively
+#' @keywords internal
+
+make_dag <- function(statement) {
+  # split by ; first to separate discrete parts of the DAG statement
+  sub_statements <- strsplit(statement, ";")[[1]]
+
+  dags <- lapply(sub_statements, function(sub_statement) {
+
+    if(sub_statement == "") {
+      return(NULL)
+    }
+
+    sub_statement <- clean_statement(sub_statement)
+
+    nodes <- sub_statement$nodes
+    edges <- sub_statement$edges
+
+    if(length(nodes) == 1) {
+      return(NULL)
+    }
+
+    dag <- as.data.frame(matrix(NA, length(nodes) - 1, 3))
+    colnames(dag) <- c("v","w","e")
+
+    for(i in 1:(length(nodes) - 1)) {
+      if((!is.na(edges[i])) && (edges[i] == "<-")) {
+        dag[i,"v"] <- nodes[i+1]
+        dag[i,"w"] <- nodes[i]
+        dag[i,"e"] <- "->"
+      } else {
+        dag[i,"v"] <- nodes[i]
+        dag[i,"w"] <- nodes[i+1]
+        dag[i,"e"] <- edges[i]
+      }
+    }
+
+    return(dag)
+  })
+
+  dag <- dags[!vapply(dags, is.null, logical(1))]
+
+  if(length(dag) == 0) {
+    dag <- data.frame()
+  } else {
+    dag <- dag |>
+      dplyr::bind_rows() |>
+      dplyr::arrange(v)
+  }
+
+  return(dag)
+}
+
 
 
