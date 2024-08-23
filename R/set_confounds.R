@@ -37,8 +37,6 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param confound A \code{list} of statements indicating pairs of nodes whose
 #'   types are jointly distributed (e.g. list("A <-> B", "C <-> D")).
-#' @param add_confound_to_statement logical specifying whether confounds should
-#'   be added to the model statement.
 #' @return An object of class \code{causal_model} with updated parameters_df
 #'   and parameter matrix.
 #' @export
@@ -73,8 +71,7 @@
 
 
 set_confound <- function(model,
-                         confound = NULL,
-                         add_confound_to_statement = TRUE) {
+                         confound = NULL) {
   # handle global variables
   x <- NULL
 
@@ -129,12 +126,12 @@ set_confound <- function(model,
 
 
   # Add confounds to model statement
-  if(add_confound_to_statement) {
-    model$statement <-
-      paste0(model$statement,
-             "; ",
-             paste(names(confound), "<->", confound, collapse = "; "))
-  }
+  model$statement <- paste0(
+    model$statement,
+    "; ",
+    paste(names(confound), "<->", confound, collapse = "; ")
+  )
+
 
   # Expand parameters_df ------------------------------------------------------
   names_P <- names(model$P)

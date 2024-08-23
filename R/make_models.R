@@ -276,8 +276,11 @@ make_model <- function(statement,
         "nodes contained in the dag"
       ))
     }
-    model <- set_confound(model, confounds, add_confound_to_statement = FALSE)
+    model <- set_confound(model, confounds)
+    # overwrite duplication of confound in model statement produced by set_confound
+    model$statement <- statement
   }
+
 
   # Prep for export
   attr(model, "nonroot_nodes") <- endog_node
