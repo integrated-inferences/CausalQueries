@@ -86,7 +86,11 @@ grab <- function(model, object = NULL, ...) {
   switch(
     object,
     causal_statement = model$statement,
-    dag = model$dag,
+    dag = {
+      cat("\nDag: \n")
+      base::print.data.frame(model$dag)
+      invisible(model$dag)
+    },
     nodes = model$nodes,
     parents_df = model$parents_df,
     parameters_df = model$parameters_df,

@@ -101,22 +101,6 @@ print.summary.causal_model <- function(x, stanfit = FALSE, ... ) {
   return(invisible(x))
 }
 
-#' Print a short summary for a causal_model DAG
-#'
-#' print method for class \code{dag}.
-#'
-#' @param x An object of \code{dag} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.dag <- function(x, ...) {
-  cat("\nDag: \n")
-  base::print.data.frame(x)
-  return(invisible(x))
-}
-
 #' Print a short summary for a causal_model statement
 #'
 #' print method for class \code{statement}.

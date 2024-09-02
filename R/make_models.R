@@ -303,7 +303,6 @@ make_model <- function(statement,
 
 
   # assign classes
-  class(model$dag) <- c("dag", "data.frame")
   class(model$statement) <- c("statement", "character")
   class(model$nodes) <- c("nodes", "character")
   class(model$parents_df) <- c("parents", "data.frame")
