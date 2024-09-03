@@ -22,6 +22,7 @@ Available options are:
 \item \code{"causal_types_interpretation"} a key to interpreting types; see \code{"?interpret_type"} for options,
 \item \code{"nodal_types"} a list with the nodal types of the model,
 \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+\item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
 \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
 \item \code{"parameters"} a vector of 'true' parameters,
 \item \code{"parameter_names"} a  vector of names of parameters,
