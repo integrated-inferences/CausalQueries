@@ -46,4 +46,3 @@ model <- make_model('X -> Y') \%>\%
   get_all_data_types(model, given  = 'X==1 & Y==1')
 }
 }
-\keyword{internal}

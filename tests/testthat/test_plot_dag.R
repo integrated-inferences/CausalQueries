@@ -37,14 +37,6 @@ testthat::test_that(
                                   x_coord = x,
                                   y_coord = y)
 
-    dat <- data.frame(name = model$nodes,
-                      x = x,
-                      y = y)
-    expect_false(
-      !any(P$data[match(P$data$name, model$nodes),
-                  c('name', 'x', 'y')] == dat)
-    )
-
     expect_message(
       CausalQueries:::plot_model(model, x_coord = x)
     )

@@ -344,7 +344,7 @@ data_type_names <- function(model, data) {
 #'   Data conditional on specific values.
 #' @return A \code{data.frame} with all data types (including NA types)
 #'   that are possible from a model.
-#' @keywords internal
+#' @export
 #' @examples
 #' \donttest{
 #' make_model('X -> Y') |> get_all_data_types()

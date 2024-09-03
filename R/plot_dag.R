@@ -63,6 +63,9 @@ plot_model <- function(model = NULL,
 
   if (is.null(x_coord) == !is.null(y_coord)) {
     message("Coordinates should be provided for both x and y (or neither).")
+    x_coord <- NULL
+    y_coord <- NULL
+
   }
 
   if (!is.null(x_coord) &
@@ -138,7 +141,7 @@ plot_model <- function(model = NULL,
     geom_curve(
       data = edges[edges$direction == "<->", ],
       aes(x = x, y = y, xend = xend, yend = yend),
-      curvature = 0.1,
+      curvature = 0.3,
       arrow = arrow(type = "closed", ends = "both", length = unit(5, "pt"))
     ) +
     labs(title = latex2exp::TeX(title)) +
@@ -170,7 +173,7 @@ adjust_edge <- function(dag, nodesize) {
   y_range <- range(c(dag$y, dag$yend), na.rm = TRUE)
 
   # Calculate the adjustment factor proportional to the plot size
-  scale_factor <- min(diff(x_range), diff(y_range)) / 100
+  scale_factor <- mean(diff(x_range), diff(y_range)) / 100
   adjustment <- nodesize * scale_factor
 
   for(i in 1:nrow(dag)) {

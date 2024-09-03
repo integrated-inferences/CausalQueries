@@ -22,7 +22,7 @@
 #'   param_type == \code{define}
 #' @return A \code{data.frame} of events
 #' @importFrom stats rmultinom
-#' @keywords internal
+#' @export
 #'
 #' @examples
 #' \donttest{

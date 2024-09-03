@@ -25,7 +25,7 @@
 #'   \item \code{"parameter_names"} a  vector of names of parameters,
 #'   \item \code{"parameter_mapping"} a  matrix mapping from parameters into data types,
 #'   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
-#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
+#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"inspect(prior_hyperparameters, c('M', 'Y'))"}
 #'   \item \code{"prior_distribution"}  a data frame of the parameter prior distribution,
 #'   \item \code{"posterior_distribution"}  a data frame of the parameter posterior distribution,
 #'   \item \code{"posterior_event_probabilities"} a sample of data (event) probabilities from the posterior,
