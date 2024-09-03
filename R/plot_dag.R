@@ -173,7 +173,7 @@ adjust_edge <- function(dag, nodesize) {
   scale_factor <- min(diff(x_range), diff(y_range)) / 100
   adjustment <- nodesize * scale_factor
 
-  for(i in 1:nrow(data)) {
+  for(i in 1:nrow(dag)) {
     dx <- dag[i, "xend"] - dag[i, "x"]
     dy <- dag[i, "yend"] - dag[i, "y"]
     distance <- abs(dx) + abs(dy)
