@@ -1,7 +1,7 @@
-#' Grab
+#' inspect
 #'
 #' Returns specified elements from a \code{causal_model}.
-#' Users can use \code{grab} to extract model's components or objects implied by
+#' Users can use \code{inspect} to extract model's components or objects implied by
 #' the model structure including nodal types, causal types, parameter priors,
 #' parameter posteriors, type priors, type posteriors, and other relevant elements.
 #' See argument \code{object} for other options.
@@ -49,40 +49,40 @@
 #'    keep_fit = TRUE,
 #'    refresh = 0 )
 #'
-#' grab(model, object = "causal_statement")
-#' grab(model, object = "dag")
-#' grab(model, object = "nodes")
-#' grab(model, object = "parents_df")
-#' grab(model, object = "parameters_df")
-#' grab(model, object = "causal_types")
-#' grab(model, object = "causal_types_interpretation")
-#' grab(model, object = "nodal_types")
-#' grab(model, object = "data_types")
-#' grab(model, object = "event_probabilities")
-#' grab(model, object = "ambiguities_matrix")
-#' grab(model, object = "parameters")
-#' grab(model, object = "parameter_names")
-#' grab(model, object = "parameter_mapping")
-#' grab(model, object = "parameter_matrix")
-#' grab(model, object = "prior_hyperparameters")
-#' grab(model, object = "prior_distribution")
-#' grab(model, object = "posterior_distribution")
-#' grab(model, object = "posterior_event_probabilities")
-#' grab(model, object = "stan_objects")
-#' grab(model, object = "data")
-#' grab(model, object = "stan_fit")
-#' grab(model, object = "stan_summary")
-#' grab(model, object = "type_prior")
-#' grab(model, object = "type_distribution")
+#' inspect(model, object = "causal_statement")
+#' inspect(model, object = "dag")
+#' inspect(model, object = "nodes")
+#' inspect(model, object = "parents_df")
+#' inspect(model, object = "parameters_df")
+#' inspect(model, object = "causal_types")
+#' inspect(model, object = "causal_types_interpretation")
+#' inspect(model, object = "nodal_types")
+#' inspect(model, object = "data_types")
+#' inspect(model, object = "event_probabilities")
+#' inspect(model, object = "ambiguities_matrix")
+#' inspect(model, object = "parameters")
+#' inspect(model, object = "parameter_names")
+#' inspect(model, object = "parameter_mapping")
+#' inspect(model, object = "parameter_matrix")
+#' inspect(model, object = "prior_hyperparameters")
+#' inspect(model, object = "prior_distribution")
+#' inspect(model, object = "posterior_distribution")
+#' inspect(model, object = "posterior_event_probabilities")
+#' inspect(model, object = "stan_objects")
+#' inspect(model, object = "data")
+#' inspect(model, object = "stan_fit")
+#' inspect(model, object = "stan_summary")
+#' inspect(model, object = "type_prior")
+#' inspect(model, object = "type_distribution")
 #'
 #' # Example of arguments passed on to helpers
-#' grab(model,
+#' inspect(model,
 #'   object = "event_probabilities",
 #'   parameters = c(.6, .4, .1, .1, .7, .1))
 #'
 #' }
-#'
-grab <- function(model, object = NULL, ...) {
+
+inspect <- function(model, object = NULL, ...) {
   switch(
     object,
     causal_statement = model$statement,
@@ -157,5 +157,11 @@ grab <- function(model, object = NULL, ...) {
     )
   )
 }
+
+
+#' Alias
+#' @keywords internal
+grab <- inspect
+
 
 
