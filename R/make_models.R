@@ -316,7 +316,6 @@ make_model <- function(statement,
 
 #' function to make a parameters_df from nodal types
 #' @param nodal_types a list of nodal types
-#' @export
 #' @keywords internal
 #' @examples
 #'

@@ -199,3 +199,4 @@ set_priors(model = model, alphas = c(0.5,0.25), node = "Y",
 nodal_type = c("00","01"), given = "X.0")
 }
 \concept{priors}
+\keyword{internal}

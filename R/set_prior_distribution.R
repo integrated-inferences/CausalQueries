@@ -7,7 +7,7 @@
 #' @param n_draws A scalar. Number of draws.
 #' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
 #'   lambda draws
-#' @export
+#' @keywords internal
 #' @importFrom dirmult rdirichlet
 #' @family prior_distribution
 #' @examples

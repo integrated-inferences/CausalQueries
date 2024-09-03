@@ -60,3 +60,4 @@ make_model("X->M->Y") |>
 realise_outcomes(dos = list(M = 1), node = "Y")
 }
 }
+\keyword{internal}
