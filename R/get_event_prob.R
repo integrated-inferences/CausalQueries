@@ -6,7 +6,7 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
 #' @return An array of event probabilities
-#' @export
+#' @keywords internal
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> Y')

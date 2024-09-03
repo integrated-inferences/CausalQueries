@@ -67,7 +67,7 @@ NULL
 #'   of the nodal types ("hyperparameters").
 #'
 #' @family priors
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #'

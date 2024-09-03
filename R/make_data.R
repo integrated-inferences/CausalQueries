@@ -241,7 +241,7 @@ make_data <- function(
 #'   to observe in each row of `complete_data`.
 #' @importFrom stats runif
 #' @importFrom dplyr tibble
-#' @export
+#' @keywords internal
 #' @examples
 #' model <- make_model("X -> Y")
 #' df <- make_data(model, n = 8)
@@ -382,7 +382,7 @@ make_data_single <- function(
 #' simulate_data is an alias for make_data
 #' @param ... arguments for \code{\link{make_model}}
 #' @return A \code{data.frame} with simulated data.
-#' @export
+#' @keywords internal
 #' @examples
 #' simulate_data(make_model("X->Y"))
 simulate_data <- function(...) make_data(...)

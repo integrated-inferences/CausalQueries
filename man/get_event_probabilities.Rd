@@ -45,3 +45,4 @@ get_event_probabilities(model = model, parameters = 1:6)
 }
 
 }
+\keyword{internal}

@@ -29,7 +29,7 @@ NULL
 #'
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom rstan extract
-#' @export
+#' @keywords internal
 #' @family parameters
 #' @examples
 #'

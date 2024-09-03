@@ -67,3 +67,4 @@ make_events(model = model, include_strategy = TRUE)
 }
 
 }
+\keyword{internal}

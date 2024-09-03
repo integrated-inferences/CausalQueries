@@ -18,3 +18,4 @@ simulate_data is an alias for make_data
 \examples{
 simulate_data(make_model("X->Y"))
 }
+\keyword{internal}

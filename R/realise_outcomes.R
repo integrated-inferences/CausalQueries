@@ -23,7 +23,7 @@
 #'   as rownames to the output
 #' @return A \code{data.frame} object of revealed data for each node (columns)
 #'   given causal / nodal type (rows) .
-#' @export
+#' @keywords internal
 #' @examples
 #' \donttest{
 #' make_model("X -> Y") |>

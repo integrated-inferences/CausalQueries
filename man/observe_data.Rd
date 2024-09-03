@@ -48,3 +48,4 @@ observe_data(complete_data = df,
      nodes_to_observe = "Y", prob = .5,
      subset = "X==1")
 }
+\keyword{internal}
