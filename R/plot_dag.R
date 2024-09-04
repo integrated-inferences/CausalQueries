@@ -266,23 +266,7 @@ position_nodes <- function(dag,
         }
       }
     }
-
     positions <- positions + displacements * repulsion
-
-    # Post-process to ensure no horizontal or vertical edges
-    for (i in 1:num_nodes) {
-      for (j in 1:num_nodes) {
-        if (adj_matrix[i, j] == 1) {
-          delta <- positions[i, ] - positions[j, ]
-          if (abs(delta[1]) < 0.5) {
-            positions[i, 1] <- positions[i, 1] + runif(1, -0.1, 0.1)
-          }
-          if (abs(delta[2]) < 0.5) {
-            positions[i, 2] <- positions[i, 2] + runif(1, -0.1, 0.1)
-          }
-        }
-      }
-    }
   }
 
   positions <- data.frame(
