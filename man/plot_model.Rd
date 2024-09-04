@@ -43,8 +43,7 @@ A DAG plot in ggplot style.
 }
 \description{
 If confounds are indicated (provided in \code{attr(model$P, 'confounds')}),
-then these are represented as bidirectional arcs. Builds on functionality
-from ggdag and dagitty.
+then these are represented as bidirectional arcs.
 }
 \examples{
 

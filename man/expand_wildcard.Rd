@@ -35,3 +35,4 @@ expand_wildcard('Y[X=1, M=.] > Y[X=1, M=.]')
 # Expressions not requiring expansion are allowed
 expand_wildcard('(Y[X=1])')
 }
+\keyword{internal}

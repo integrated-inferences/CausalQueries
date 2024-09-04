@@ -70,7 +70,8 @@
 #' # plot(model)
 
 
-set_confound <- function(model, confound = NULL) {
+set_confound <- function(model,
+                         confound = NULL) {
   # handle global variables
   x <- NULL
 
@@ -125,10 +126,11 @@ set_confound <- function(model, confound = NULL) {
 
 
   # Add confounds to model statement
-  model$statement <-
-    paste0(model$statement,
-           "; ",
-           paste(names(confound), "<->", confound, collapse = "; "))
+  model$statement <- paste0(
+    model$statement,
+    "; ",
+    paste(names(confound), "<->", confound, collapse = "; ")
+  )
 
 
   # Expand parameters_df ------------------------------------------------------

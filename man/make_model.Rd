@@ -7,7 +7,7 @@
 make_model(statement, add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
-\item{statement}{A character. Statement describing causal
+\item{statement}{character string. Statement describing causal
 relations using \link{dagitty} syntax. Only directed relations are
 permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
