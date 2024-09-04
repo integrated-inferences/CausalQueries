@@ -119,7 +119,7 @@ plot_model <- function(model = NULL,
   )
 
   # avoid edge / node overlap
-  edges <- adjust_edge(dag_plot, nodesize)
+  edges <- adjust_edge(dag_plot, nodesize, extent)
 
   # plot
   ggplot() +
@@ -165,15 +165,10 @@ plot_dag <- plot_model
 #' with nodes
 #' @keywords internal
 
-adjust_edge <- function(dag, nodesize) {
+adjust_edge <- function(dag, nodesize, extent) {
   dag <- tidyr::drop_na(dag)
 
-  # Calculate the scale of the plot based on x and y range
-  x_range <- range(c(dag$x, dag$xend), na.rm = TRUE)
-  y_range <- range(c(dag$y, dag$yend), na.rm = TRUE)
-
-  # Calculate the adjustment factor proportional to the plot size
-  scale_factor <- min(diff(x_range), diff(y_range)) / 100
+  scale_factor <- mean(sapply(extent, diff)) / 150
   adjustment <- nodesize * scale_factor
 
   for(i in 1:nrow(dag)) {
