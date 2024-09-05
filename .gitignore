@@ -1,4 +1,3 @@
-.Rproj.user
 .Rhistory
 .RData
 .Ruserdata
@@ -7,6 +6,7 @@ vignettes/*.html
 src/*.o
 src/*.so
 src/*.dll
+src/*.h
 # History files
 .Rhistory
 .Rapp.history
