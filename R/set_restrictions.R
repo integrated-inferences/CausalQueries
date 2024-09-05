@@ -644,7 +644,7 @@ update_causal_types <- function(model, restrict_given = NULL) {
   # Add names
   cnames <- causal_type_names(df)
   rownames(df) <- do.call(paste, c(cnames, sep = "."))
-  class(df) <- c("causal_types", "data.frame")
+  class(df) <- c("data.frame")
   return(df)
 }
 
