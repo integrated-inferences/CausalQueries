@@ -213,7 +213,6 @@ update_model <- function(model,
 
 
   model$stan_objects$stan_summary <- utils::capture.output(print(newfit))
-  class(model$stan_objects$stan_summary) <- "stan_summary"
 
   for (i in seq_along(params)) {
     model$stan_objects$stan_summary <-

@@ -85,7 +85,7 @@ make_parameters <- function(model,
   if (!is.null(parameters) &&
       (length(parameters) == length(get_parameters(model)))) {
     out <- clean_param_vector(model, parameters)
-    class(out) <- c("parameters", "numeric")
+    class(out) <- "numeric"
   } else {
     if (!is.null(param_type)) {
       if (!(
@@ -281,7 +281,7 @@ get_parameters <- function(model, param_type = NULL) {
   if (is.null(param_type)) {
     x <- model$parameters_df$param_value
     names(x) <- model$parameters_df$param_names
-    class(x) <- c("parameters", "numeric")
+    class(x) <- "numeric"
   }
 
   if (!is.null(param_type)){
