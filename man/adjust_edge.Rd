@@ -6,7 +6,7 @@
 adjust_edge moves the base and tip of edge arrows so as to avoid overlap
 with nodes}
 \usage{
-adjust_edge(dag, nodesize)
+adjust_edge(dag, nodesize, extent)
 }
 \description{
 internal helper

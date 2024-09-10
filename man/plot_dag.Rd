@@ -8,6 +8,8 @@ plot_dag(
   model = NULL,
   x_coord = NULL,
   y_coord = NULL,
+  labels = NULL,
+  label_color = "darkgrey",
   title = "",
   textcol = "white",
   textsize = 3.88,
