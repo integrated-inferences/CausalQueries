@@ -8,6 +8,8 @@
 #'   If left empty, coordinates are randomly generated
 #' @param y_coord A vector of y coordinates for DAG nodes.
 #'   If left empty, coordinates are randomly generated
+#' @param labels Optional labels for nodes
+#' @param label_color Color for labels, if provided. Defaults to darkgrey
 #' @param title String specifying title of graph
 #' @param textcol String specifying color of text labels
 #' @param textsize Numeric, size of text labels
@@ -27,12 +29,18 @@
 #' @examples
 #'
 #' \dontrun{
+#' make_model('X -> K -> Y') |> plot_model()
+#'
 #' model <- make_model('X -> K -> Y; X <-> Y')
 #'
-#' model |>
-#'   CausalQueries:::plot_model()
-#' model |>
-#'   CausalQueries:::plot_model(
+#' model |> plot_model()
+#'
+#' model |> plot_model(labels = c("A long label for X", "This", "That"))
+#'
+#' model |> plot_model(labels = c("A long label for X", "This", "That"),
+#'  nodecol = "white")
+#'
+#' model |> plot_model(
 #'     x_coord = 1:3,
 #'     y_coord = 1:3,
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
@@ -42,6 +50,8 @@
 plot_model <- function(model = NULL,
                        x_coord = NULL,
                        y_coord = NULL,
+                       labels = NULL,
+                       label_color = "darkgrey",
                        title = "",
                        textcol = 'white',
                        textsize = 3.88,
@@ -78,6 +88,11 @@ plot_model <- function(model = NULL,
       !is.null(y_coord) &
       length(model$nodes) != length(x_coord)) {
     stop("length of coordinates supplied must equal number of nodes")
+  }
+
+  if (!is.null(labels) &
+      (length(model$nodes) != length(labels))) {
+    stop("length of labels supplied must equal number of nodes")
   }
 
   # generate coordinates
@@ -122,32 +137,54 @@ plot_model <- function(model = NULL,
   edges <- adjust_edge(dag_plot, nodesize, extent)
 
   # plot
-  ggplot() +
+  p <-
+    ggplot() +
+    geom_curve(
+      data = dag_plot[dag_plot$direction == "<->" & !is.na(dag_plot$direction == "<->"), ],
+      aes(x = x, y = y, xend = xend, yend = yend),
+      curvature = 0.4,
+      linetype = "dotted"
+    ) +
+    geom_point(
+      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
+      aes(x = x, y = y),
+      size = 1.3 * nodesize, color = "white", shape = shape
+    ) +
     geom_point(
       data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
       aes(x = x, y = y),
       size = nodesize, color = nodecol, shape = shape
-    ) +
-    geom_text(
-      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
-      aes(x = x, y = y, label = name),
-      size = textsize, color = textcol
     ) +
     geom_segment(
       data = edges[edges$direction == "->", ],
       aes(x = x, y = y, xend = xend, yend = yend),
       arrow = arrow(type = "closed", length = unit(5, "pt"))
     ) +
-    geom_curve(
-      data = edges[edges$direction == "<->", ],
-      aes(x = x, y = y, xend = xend, yend = yend),
-      curvature = 0.3,
-      arrow = arrow(type = "closed", ends = "both", length = unit(5, "pt"))
-    ) +
     labs(title = latex2exp::TeX(title)) +
     scale_x_continuous(limits = extent[[1]]) +
     scale_y_continuous(limits = extent[[2]]) +
     theme_void()
+
+  if(is.null(labels)) {
+    p <-
+      p +
+      geom_text(
+      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
+      aes(x = x, y = y, label = name),
+      size = textsize, color = textcol
+    )
+  } else {
+    p <-
+      p +
+      geom_text(
+        data = dplyr::distinct(dag_plot, name, .keep_all = TRUE) |>
+          mutate(label = labels),
+        aes(x = x, y = y, label = label),
+        size = textsize, color = label_color
+      )
+  p
+  }
+  p
 }
 
 #' @export
