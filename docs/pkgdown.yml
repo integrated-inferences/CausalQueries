@@ -1,9 +1,0 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
-pkgdown_sha: ~
-articles:
-  front-door: front-door.html
-  getting-started: getting-started.html
-  inspecting-posteriors: inspecting-posteriors.html
-last_built: 2024-03-26T21:39Z
-
