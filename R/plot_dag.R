@@ -1,7 +1,7 @@
 #' Plots a DAG in ggplot style using a causal model input
 #'
-#' If confounds are indicated (provided in \code{attr(model$P, 'confounds')}),
-#' then these are represented as bidirectional arcs.
+#' Creates a plot of a DAG using ggplot functionality.  Unmeasured confounds  (<->) are indicated
+#' then these are represented as curved dotted lines.  Users can control node sizes and colors as well as coordinates and label behavior. Other modifications can be made by adding additional ggplot layers.
 #'
 #' @param model A \code{causal_model} object generated from \code{make_model}
 #' @param x_coord A vector of x coordinates for DAG nodes.
@@ -29,23 +29,29 @@
 #' @examples
 #'
 #' \dontrun{
-#' make_model('X -> K -> Y') |> plot_model()
+
+#' model <- make_model('X -> K -> Y')
 #'
-#' model <- make_model('X -> K -> Y; X <-> Y')
-#'
+#' # Simple plot
 #' model |> plot_model()
 #'
-#' model |> plot_model(labels = c("A long label for X", "This", "That"))
+#' # Adding addition layers
+#' model |> plot_model() + theme(panel.border = element_rect(fill=NA))
 #'
+#' # Adding labels
 #' model |> plot_model(labels = c("A long label for X", "This", "That"),
 #'  nodecol = "white")
 #'
+#' # Controlling  positions and using math labels
 #' model |> plot_model(
-#'     x_coord = 1:3,
-#'     y_coord = 1:3,
+#'     x_coord = 1:2,
+#'     y_coord = 1:2,
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
+#' # DAG with unobserved confounding
+#' make_model('X -> K -> Y; X <-> Y') |> plot()
+
 
 plot_model <- function(model = NULL,
                        x_coord = NULL,

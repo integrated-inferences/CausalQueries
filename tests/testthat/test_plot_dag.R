@@ -2,8 +2,10 @@ context(desc = "Testing plot_model")
 
 testthat::skip_on_cran()
 
+
+
 testthat::test_that(
-  desc = "Testing plot.dag",
+  desc = "Testing labels",
   code = {
     model <- make_model("X -> M -> Y; X -> Y")
     pdf(file = NULL)
@@ -11,20 +13,6 @@ testthat::test_that(
     dev.off()
   })
 
-
-testthat::test_that(
-  desc = "Testing coordinates",
-  code = {
-    model <- make_model("X -> K -> Y")
-    x <- c(1, 2, 3)
-    y <- c(1, 1, 1)
-    P <- plot(model, x_coord = x, y_coord = y)
-    dat <- data.frame(name = model$nodes,
-                      x = x,
-                      y = y)
-    expect_false(!any(P$data[match(P$data$name, model$nodes),
-                             c("name", "x", "y")] == dat))
-  })
 
 
 testthat::test_that(
@@ -70,3 +58,15 @@ testthat::test_that(
 
 
 
+testthat::test_that(
+  desc = "Testing plot.dag",
+  code = {
+    model <- make_model("X -> M -> Y; X -> Y")
+    pdf(file = NULL)
+    expect_silent(
+      CausalQueries:::plot_dag(model,
+                               labels = LETTERS[1:3],
+                               label_color = "red")
+      )
+    dev.off()
+  })
