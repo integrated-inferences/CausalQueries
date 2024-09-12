@@ -17,43 +17,43 @@
 
 \item{x}{An object of \code{summary.causal_model} class, produced using \code{summary.causal_model}.}
 
-\item{include}{A character string specifying the objects to summarize in addition to summary of causal statement, DAG data frame. Defaults to \code{NULL} printing specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
+\item{include}{A character string specifying the objects summaries to print in addition to causal statement. Defaults to \code{NULL} printing DAG data frame, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
 }
 \value{
 Returns the object of class \code{summary.causal_model} that preserves the list structure of \code{causal_model} class and adds the following additional elements:
 \itemize{
-  \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
-  \item \code{"causal_types_interpretation"} a key to interpreting types; see \code{"?interpret_type"} for options,
-  \item \code{"nodal_types"} a list with the nodal types of the model,
-  \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
-  \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
-  \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
+  \item \code{"parents"} a list of parents of all nodes in a model,
   \item \code{"parameters"} a vector of 'true' parameters,
   \item \code{"parameter_names"} a vector of names of parameters,
   \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
+  \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
+  \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+  \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
+  \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
 }
 }
 \description{
-summary method for class \code{causal_model}.
+summary method for class "\code{causal_model}".
 }
 \details{
 \code{print.summary.causal_model} reports causal statement, DAG data frame, full specification of nodal types and summary of model restrictions. By specifying \code{include} argument users can instead print a custom summary of any set of the following objects contained in the \code{summary.causal_model}:
 \itemize{
+  \item \code{"dag"} A data frame with columns ‘parent’ and ‘children’ indicating how nodes relate to each other,
   \item \code{"nodes"} A list containing the nodes in the model,
+  \item \code{"parents"} a list of parents of all nodes in a model,
   \item \code{"parents_df"} a data frame listing nodes, whether they are root nodes or not, and the number and names of parents they have,
+  \item \code{"parameters"} a vector of 'true' parameters,
   \item \code{"parameters_df"} a data frame containing parameter information,
+  \item \code{"parameter_names"} a vector of names of parameters,
+  \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
+  \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
-  \item \code{"causal_types_interpretation"} a key to interpreting types; see \code{"?interpret_type"} for options,
   \item \code{"nodal_types"} a list with the nodal types of the model,
   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
-  \item \code{"parameters"} a vector of 'true' parameters,
-  \item \code{"parameter_names"} a vector of names of parameters,
-  \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
-  \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
   \item \code{"prior_distribution"} a data frame of the parameter prior distribution,
   \item \code{"posterior_distribution"} a data frame of the parameter posterior distribution,

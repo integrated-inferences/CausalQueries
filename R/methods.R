@@ -1,7 +1,7 @@
 
 #' Print a short summary for a causal model
 #'
-#' print method for class \code{causal_model}.
+#' print method for class "\code{causal_model}".
 #'
 #' @param x An object of \code{causal_model} class, usually a result of
 #'   a call to \code{make_model} or \code{update_model}.
@@ -39,7 +39,7 @@ print.causal_model <- function(x, ...) {
 
 #' Summarizing causal models
 #'
-#' summary method for class \code{causal_model}.
+#' summary method for class "\code{causal_model}".
 #'
 #' @param object An object of \code{causal_model} class produced using
 #'   \code{make_model} or \code{update_model}.
@@ -47,14 +47,15 @@ print.causal_model <- function(x, ...) {
 #'
 #' @return Returns the object of class \code{summary.causal_model} that preserves the list structure of \code{causal_model} class and adds the following additional elements:
 #' \itemize{
-#'   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
-#'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
-#'   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
-#'   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
+#'   \item \code{"parents"} a list of parents of all nodes in a model,
 #'   \item \code{"parameters"} a vector of 'true' parameters,
 #'   \item \code{"parameter_names"} a vector of names of parameters,
 #'   \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
 #'   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
+#'   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
+#'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+#'   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
+#'   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
 #'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
 #' }
 #'
@@ -67,6 +68,8 @@ summary.causal_model <- function(object, ...) {
   object$causal_types <- get_causal_types(object)
 
   # object$nodal_types <- get_nodal_types(object)
+
+  object$parents <- get_parents(object)
 
   object$data_types <- get_all_data_types(object)
 
@@ -107,14 +110,14 @@ summary.causal_model <- function(object, ...) {
 #' \itemize{
 #'   \item \code{"dag"} A data frame with columns ‘parent’ and ‘children’ indicating how nodes relate to each other,
 #'   \item \code{"nodes"} A list containing the nodes in the model,
+#'   \item \code{"parents"} a list of parents of all nodes in a model,
 #'   \item \code{"parents_df"} a data frame listing nodes, whether they are root nodes or not, and the number and names of parents they have,
 #'   \item \code{"parameters"} a vector of 'true' parameters,
+#'   \item \code{"parameters_df"} a data frame containing parameter information,
 #'   \item \code{"parameter_names"} a vector of names of parameters,
 #'   \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
 #'   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
-#'   \item \code{"parameters_df"} a data frame containing parameter information,
 #'   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
-#'   \item \code{"causal_types_interpretation"} a key to interpreting types; see \code{"?interpret_type"} for options,
 #'   \item \code{"nodal_types"} a list with the nodal types of the model,
 #'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
 #'   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
@@ -183,14 +186,14 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
 
   cat("\nStatement: \n")
   cat(x$statement)
-  cat("\n\n------------------------------------------------------------------\n")
+  # cat("\n------------------------------------------------------------------\n")
+  cat("\n")
 
 
   if (is.null(include)) {
 
     cat("\nDag:\n\n")
     print(x$dag)
-    cat("\n")
 
     cat("\nNodal types: \n")
 
@@ -213,20 +216,18 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       cat("\n")
     }
 
-    cat("\nNumber of types by node:\n")
+    cat("Number of types by node:\n")
 
     print(vapply(nodal_types , length, numeric(1), USE.NAMES = TRUE))
 
-    cat("\n------------------------------------------------------------------\n")
-
     if (!is.null(x$causal_types)) {
       cat("\nNumber of unit types:")
-      cat(paste0("  ", nrow(x$causal_types), "\n\n"))
+      cat(paste0("  ", nrow(x$causal_types), "\n"))
     }
 
     if (!is.null(attr(x, "restrictions"))) {
       restrictions <- attr(x, "restrictions")
-      cat("\nRestrictions:\n")
+      cat("\n\nRestrictions:\n")
       for (node in x$nodes) {
         cat(paste0(node,
                    ": ",
@@ -240,7 +241,6 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
     if ("dag" %in% include) {
       cat("\nDag: \n\n")
       print(x$dag)
-      cat("\n")
     }
 
     # nodes
@@ -250,11 +250,25 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       cat("\n")
     }
 
+    if ("parents" %in% include) {
+      cat("\nParents: \n\n")
+      nodes <- names(x$parents)
+
+      for (n in nodes) {
+        n_parents <- x$parents[[n]]
+        cat(paste0("$", n, "\n"))
+        if(length(n_parents)==0)
+          cat("Node has no parents \n")
+        else
+          cat(paste(n_parents, sep = " "))
+        cat("\n" )
+      }
+    }
+
     # parents_df
     if ("parents_df" %in% include) {
       cat("\nRoot vs Non-Root status with number and names of parents for each node: \n\n")
       print(x$parents_df)
-      cat("\n")
     }
 
     # parameters
@@ -263,6 +277,7 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       cat(names(x$parameters))
       cat("\n")
       cat(x$parameters)
+      cat("\n")
     }
 
     # parameters_df
@@ -270,12 +285,16 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       cat("\nMapping of model parameters to nodal types: \n")
       # cat("----------------------------------------------------------------\n")
       cat("\n  param_names: name of parameter")
-      cat("\n  node: name of endogeneous node associated with the parameter")
-      cat("\n  gen: partial causal ordering of the parameter's node")
-      cat("\n  param_set: parameter groupings forming a simplex")
-      cat("\n  given: if model has confounding gives conditioning nodal type")
+      cat("\n  node:        name of endogeneous node associated")
+      cat("\n               with the parameter")
+      cat("\n  gen:         partial causal ordering of the")
+      cat("\n               parameter's node")
+      cat("\n  param_set:   parameter groupings forming a simplex")
+      cat("\n  given:       if model has confounding gives")
+      cat("\n               conditioning nodal type")
       cat("\n  param_value: parameter values")
-      cat("\n  priors: hyperparameters of the prior Dirichlet distribution \n\n\n")
+      cat("\n  priors:      hyperparameters of the prior")
+      cat("\n               Dirichlet distribution \n\n")
       # cat("----------------------------------------------------------------\n\n")
       if (nrow(x$parameters_df) > 10) {
         cat("\n first 10 rows: \n")
@@ -285,10 +304,43 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       }
     }
 
+    # parameter_names
+    if ("parameter_names" %in% include) {
+      cat("\nParameter names: \n")
+      cat(x$parameter_names, sep = ", ")
+      cat("\n")
+    }
+
+    # parameter_matrix
+    if ("parameter_matrix" %in% include) {
+      cat(paste0("\nParameter matrix:\n"))
+      cat(paste0("\n  Rows:    parameters"))
+      cat(paste0("\n  Columns: causal types"))
+      cat(paste0("\n  Cells:   whether a parameter probability is used"))
+      cat(paste0("\n           in the calculation of causal type probability\n\n"))
+
+      print(x$parameter_matrix)
+      if (!is.null(attr(x, "param_set"))) {
+        cat("\n")
+        param_set <- attr(x, "param_set")
+        cat("\n param_set  (P)\n ")
+        cat(paste0(param_set, collapse = "  "))
+      }
+    }
+
+    # parameter_mapping
+    if ("parameter_mapping" %in% include) {
+      cat("\nParameter mapping matrix: \n")
+      cat("\n  Maps from parameters to data types, with")
+      cat("\n  possibly multiple columns for each data type")
+      cat("\n  in cases with confounding. \n\n")
+      print(data.frame(x$parameter_mapping))
+    }
+
     # causal_types
     if ("causal_types" %in% include) {
-      cat("\nCausal Types: ")
-      cat("\n  cartesian product of nodal types\n\n")
+      cat("\nCausal Types:\n")
+      cat("\n  Cartesian product of nodal types\n\n")
       if(nrow(x$causal_types) > 10) {
         cat("\n first 10 causal types: \n")
         print.data.frame(x$causal_types[1:10,])
@@ -302,7 +354,7 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       cat("\nNodal types: \n")
 
       .nodal_types <- x$nodal_types
-      nodes <- names(x$nodal_types)
+      nodes <- names(.nodal_types)
 
       for (n in nodes) {
         nt <- .nodal_types[[n]]
@@ -324,16 +376,25 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
 
       print(vapply(.nodal_types , length, numeric(1), USE.NAMES = TRUE))
 
-      cat("\n")
     }
 
+    if ("event_probabilities" %in% include) {
+      cat("\nThe probability of observing a given combination of data ")
+      cat("\nrealizations for a given set of parameter values.\n\n")
+      print(data.frame(event_probs = x$event_probabilities))
+    }
 
     # stan_objects
     if ("stan_objects" %in% include) {
-      if (!is.null(x$stan_objects)) print(x$stan_objects)
+      if (!is.null(x$stan_objects)) {
+        cat("\nStan model summary:\n")
+        print(x$stan_objects)
+        }
     }
 
   }
+
+  cat("\n")
 
   return(invisible(x))
 }
@@ -398,48 +459,6 @@ print.type_prior <- function(x, ...) {
   return(invisible(x))
 }
 
-#' Print a short summary for paramater mapping matrix
-#'
-#' print method for class \code{parameter_mapping}.
-#'
-#' @param x An object of \code{parameter_mapping} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.parameter_mapping <- function(x,  ...) {
-  cat("\nParameter mapping matrix: \n\n")
-  cat("Maps from parameters to data types, with \n")
-  cat("possibly multiple columns for each data type \n")
-  cat("in cases with confounding. \n\n")
-  print(data.frame(x))
-  cat("\n")
-  return(invisible(x))
-}
-
-#' helper to compute mean and sd of a distribution data.frame
-#' @param x An object for summarizing
-summarise_distribution <- function(x) {
-  summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
-  names(summary) <- c("mean", "sd")
-  return(summary)
-}
-
-#' helper to find rounding thresholds for print methods
-#' @param x An object for rounding
-find_rounding_threshold <- function(x) {
-  x <- max(abs(x)) - min(abs(x))
-  pow <- 1
-  x_pow <- x * 10^pow
-
-  while(x_pow < 1) {
-    pow <- pow + 1
-    x_pow <- x * 10^pow
-  }
-
-  return(pow + 1)
-}
-
-
 
 #' Print a short summary of posterior_event_probabilities
 #'
@@ -460,23 +479,6 @@ print.posterior_event_probabilities <-
     print.data.frame(round(distribution_summary, rounding_threshold))
     return(invisible(x))
   }
-
-#' Print a short summary for event probabilities
-#'
-#' print method for class \code{event_probabilities}.
-#'
-#' @param x An object of \code{event_probabilities} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{update_model}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.event_probabilities <- function(x, ...) {
-  cat("\nThe probability of observing a given combination of data ")
-  cat("\nrealizations for a given set of parameter values.\n\n")
-  print.data.frame(data.frame(event_probs = x))
-  return(invisible(x))
-}
 
 
 #' Print a short summary for causal-type posterior distributions
@@ -544,33 +546,6 @@ print.model_query <- function(x, ...) {
 }
 
 
-#' Print a short summary for list of parents
-#'
-#' print method for class \code{parents}.
-#'
-#' @param x An object of the \code{parents} class, which is a list
-#' containing the names of each parent node in the \code{causal_model} produced using
-#' \code{get_parents}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.parents <- function(x, ...) {
-  cat("Parents: \n\n")
-  nodes <- names(x)
-
-  for (n in nodes) {
-    n_parents <- x[[n]]
-    cat(paste0("$", n, "\n"))
-    if(length(n_parents)==0)
-      cat("Node has no parents \n")
-    else
-      cat(paste(n_parents, sep = " "))
-    cat("\n" )
-  }
-  return(invisible(x))
-}
-
-
 
 #' Print a short summary for stan_objects
 #'
@@ -584,7 +559,6 @@ print.parents <- function(x, ...) {
 print.stan_objects <- function(x, ...) {
   cat("\n")
   cat(x$stan_summary, sep = "\n")
-  cat("\n")
   return(invisible(x))
 }
 
