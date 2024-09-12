@@ -119,7 +119,7 @@ summary.causal_model <- function(object, ...) {
 #'   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
 #'   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
 #'   \item \code{"nodal_types"} a list with the nodal types of the model,
-#'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+#'   \item \code{"data_types"} a list with the all data types consistent with the model; for options see \code{"?get_all_data_types"},
 #'   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
 #'   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
 #'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
@@ -137,7 +137,7 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
 
   # create message for updating
   printout <- "Model does not contain"
-  printout2 <- "To include it update model"
+  printout2 <- "to include it update model"
 
   if (is.null(x$posterior_distribution) | is.null(x$stan_objects)) {
 
@@ -173,13 +173,13 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
   if (length(printout) > 1) {
     if (length(printout2) > 1) {
       message(
-        paste0(printout[1], " ", paste0(printout[-1], collapse = ", "), ". ",
-               printout2[1], " with ", paste0(printout2[-1], collapse = ", "), ".")
+        paste0(printout[1], " ", paste0(printout[-1], collapse = ", "), "; ",
+               printout2[1], " with ", paste0(printout2[-1], collapse = ", "))
       )
     } else {
       message(
-        paste0(printout[1], " ", paste0(printout[-1], collapse = ", "), ". ",
-               printout2[1], ".")
+        paste0(printout[1], " ", paste0(printout[-1], collapse = ", "), "; ",
+               printout2[1])
       )
     }
   }
@@ -271,6 +271,12 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
       print(x$parents_df)
     }
 
+    # ambiguities_matrix
+    if ("ambiguities_matrix" %in% include) {
+      cat("\nMapping from causal types into data types:\n\n")
+      print(x$ambiguities_matrix)
+    }
+
     # parameters
     if ("parameters" %in% include) {
       cat("\nModel parameters with associated probabilities: \n\n")
@@ -314,10 +320,10 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
     # parameter_matrix
     if ("parameter_matrix" %in% include) {
       cat(paste0("\nParameter matrix:\n"))
-      cat(paste0("\n  Rows:    parameters"))
-      cat(paste0("\n  Columns: causal types"))
-      cat(paste0("\n  Cells:   whether a parameter probability is used"))
-      cat(paste0("\n           in the calculation of causal type probability\n\n"))
+      cat(paste0("\n  rows:   parameters"))
+      cat(paste0("\n  cols:   causal types"))
+      cat(paste0("\n  cells:  whether a parameter probability is used"))
+      cat(paste0("\n          in the calculation of causal type probability\n\n"))
 
       print(x$parameter_matrix)
       if (!is.null(attr(x, "param_set"))) {
@@ -378,10 +384,83 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
 
     }
 
-    if ("event_probabilities" %in% include) {
-      cat("\nThe probability of observing a given combination of data ")
-      cat("\nrealizations for a given set of parameter values.\n\n")
+    # data_types
+    if ("data_types" %in% include) {
+      cat("\nData frame of all possible data events given data:\n\n")
+      print(x$data_types)
+    }
+
+    # event_probabilties
+    if (("event_probabilities" %in% include) &
+        !is.null(x$event_probabilities)) {
+      cat("\nThe probability of observing a given combination of data")
+      cat("\nrealizations for a given set of parameter values\n\n")
       print(data.frame(event_probs = x$event_probabilities))
+    }
+
+    # prior_hyperparameters
+    if ("prior_hyperparameters" %in% include) {
+      cat("\nAlpha parameter values used for Dirichlet prior distributions:\n\n")
+      print(x$prior_hyperparameters)
+    }
+
+    # type_prior
+    if (("type_prior" %in% include) &
+        !is.null(x$type_prior)) {
+      cat("\nSummary statistics of causal type prior distributions:\n")
+      cat(paste(
+        "\n  Distributions matrix dimensions are",
+        "\n ", dim(x$type_prior)[1], "rows (causal types) by",
+        dim(x$type_prior)[2], "cols (draws)\n\n", sep = " "))
+      distribution_summary <-
+        # why is this the case
+        as.data.frame(t(apply(x$type_prior, 1, summarise_distribution)))
+      rounding_threshold <- find_rounding_threshold(distribution_summary)
+      print.data.frame(round(distribution_summary, rounding_threshold))
+    }
+
+    # type_distribution
+    if (("type_distribution" %in% include) &
+        !is.null(x$stan_objects$type_distribution)) {
+      cat("\nPosterior draws of causal types (transformed parameters):\n")
+      cat(paste(
+        "\n  Distributions matrix dimensions are",
+        "\n ", dim(x$stan_objects$type_distribution)[1], "rows (draws) by",
+        dim(x$stan_objects$type_distribution)[2], "cols (causal types)\n\n", sep = " "))
+      distribution_summary <-
+        as.data.frame(t(apply(x$stan_objects$type_distribution, 2,
+                              summarise_distribution)))
+      rounding_threshold <- find_rounding_threshold(distribution_summary)
+      print.data.frame(round(distribution_summary, rounding_threshold))
+    }
+
+    # posterior_distribution
+    if (("posterior_distribution" %in% include) &
+        !is.null(x$posterior_distribution)) {
+      cat("\nSummary statistics of model parameter posterior distributions:\n")
+      cat(paste(
+        "\n  Distributions matrix dimensions are",
+        "\n ", dim(x$posterior_distribution)[1], "rows (draws) by",
+        dim(x$posterior_distribution)[2], "cols (parameters)\n\n", sep = " "))
+      distribution_summary <-
+        as.data.frame(t(apply(x$posterior_distribution, 2,
+                              summarise_distribution)))
+      rounding_threshold <- find_rounding_threshold(distribution_summary)
+      print.data.frame(round(distribution_summary, rounding_threshold))
+    }
+
+    # posterior_event_probabilities
+    if ("posterior_event_probabilities" %in% include) {
+      cat("\nPosterior draws of event probabilities (transformed parameters):\n")
+      cat(paste(
+        "\n  Distributions matrix dimensions are",
+        "\n ", dim(x$stan_objects$event_probabilities)[1], "rows (draws) by",
+        dim(x$stan_objects$event_probabilities)[2], "cols (data events)\n\n", sep = " "))
+      distribution_summary <-
+        as.data.frame(t(apply(x$stan_objects$event_probabilities, 2,
+                              summarise_distribution)))
+      rounding_threshold <- find_rounding_threshold(distribution_summary)
+      print.data.frame(round(distribution_summary, rounding_threshold))
     }
 
     # stan_objects
@@ -398,110 +477,6 @@ print.summary.causal_model <- function(x, include = NULL, ... ) {
 
   return(invisible(x))
 }
-
-#' Print a short summary for causal_model parameter prior distributions
-#'
-#' print method for class \code{parameters_prior}.
-#'
-#' @param x An object of \code{parameters_prior} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{set_prior_distribution}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.parameters_prior <- function(x, ...) {
-  cat("Summary statistics of model parameter prior distributions:")
-  cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (parameters) \n\n", sep = " "))
-  cat("Summary: \n\n")
-  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(distribution_summary)
-  print.data.frame(round(distribution_summary, rounding_threshold))
-  return(invisible(x))
-}
-
-#' Print a short summary for causal_model parameter posterior distributions
-#'
-#' print method for class \code{parameters_posterior}.
-#'
-#' @param x An object of \code{parameters_posterior} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{update_model}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.parameters_posterior <- function(x, ...) {
-  cat("Summary statistics of model parameter posterior distributions:")
-  cat(paste("\n:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (parameters)\n\n", sep = " "))
-  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(distribution_summary)
-  print.data.frame(round(distribution_summary, rounding_threshold))
-  return(invisible(x))
-}
-
-
-#' Print a short summary for causal-type prior distributions
-#'
-#' print method for class \code{type_prior}.
-#'
-#' @param x An object of \code{type_prior} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{make_model} or \code{update_model}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.type_prior <- function(x, ...) {
-  cat("Summary statistics of causal type prior distributions:")
-  cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (types) \n\n", sep = " "))
-  cat("Summary: \n\n")
-  distribution_summary <- as.data.frame(t(apply(x, 1, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(distribution_summary)
-  print.data.frame(round(distribution_summary, rounding_threshold))
-  return(invisible(x))
-}
-
-
-#' Print a short summary of posterior_event_probabilities
-#'
-#' print method for class \code{posterior_event_probabilities}.
-#'
-#' @param x An object of \code{posterior_event_probabilities} class.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-#'
-print.posterior_event_probabilities <-
-  function(x, ...) {
-    cat("\nPosterior draws of event probabilities (transformed parameters)\n")
-    cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (data types)\n\n", sep = " "))
-    cat("Summary: \n\n")
-    distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-    rounding_threshold <- find_rounding_threshold(distribution_summary)
-    print.data.frame(round(distribution_summary, rounding_threshold))
-    return(invisible(x))
-  }
-
-
-#' Print a short summary for causal-type posterior distributions
-#'
-#' print method for class \code{type_distribution}.
-#'
-#' @param x An object of \code{type_distribution} class, which is a sub-object of
-#'    an object of the \code{causal_model} class produced using
-#'    \code{get_type_prob_multiple}.
-#' @param ... Further arguments passed to or from other methods.
-#'
-#' @export
-print.type_distribution <- function(x, ...) {
-  cat("Posterior draws of causal types (transformed parameters)")
-  cat(paste("\nDimensions:", dim(x)[1], "rows (draws) by", dim(x)[2], "cols (types) \n\n", sep = " "))
-  cat("Summary: \n\n")
-  distribution_summary <- as.data.frame(t(apply(x, 2, summarise_distribution)))
-  rounding_threshold <- find_rounding_threshold(distribution_summary)
-  print.data.frame(round(distribution_summary, rounding_threshold))
-  return(invisible(x))
-}
-
-
 
 #' Print a tightened summary of model queries
 #'

@@ -165,22 +165,21 @@ update_model <- function(model,
     extract(newfit, pars = "lambdas")$lambdas |>
     as.data.frame()
   colnames(model$posterior_distribution) <- get_parameter_names(model)
-  class(model$posterior_distribution) <- c("parameters_posterior", "data.frame")
+  class(model$posterior_distribution) <- "data.frame"
 
   # Retain type distribution
   if(keep_type_distribution) {
     model$stan_objects$type_distribution <- extract(newfit, pars = "types")$types
 
     colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
-    class(model$stan_objects$type_distribution) <- c("type_distribution", "matrix", "array")
+    class(model$stan_objects$type_distribution) <- c("matrix", "array")
   }
 
   # Retain event (pre-censoring) probabilities
   if (keep_event_probabilities) {
     model$stan_objects$event_probabilities <- extract(newfit, pars = "w")$w
     colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
-    class(model$stan_objects$event_probabilities) <- c("posterior_event_probabilities",
-                                                       "matrix", "array")
+    class(model$stan_objects$event_probabilities) <- c("matrix", "array")
   }
 
   # Retain stanfit summary with readable names
