@@ -9,7 +9,7 @@
 #'   \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.
 #' @param parameters A vector of real numbers in [0,1]. Values of parameters to
 #'   specify (optional). By default, parameters is drawn from
-#'   \code{model$parameters_df}.
+#'   \code{inspect(model, "parameters_df")}.
 #' @param P A \code{data.frame}. Parameter matrix. Not required but may be
 #'   provided to avoid repeated computation for simulations.
 #' @param A A \code{data.frame}. Ambiguity matrix. Not required but may be

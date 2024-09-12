@@ -58,13 +58,13 @@ modelXKY <- make_model("X -> K -> Y; X -> Y")
 
 # Examples with confounding
 model <- make_model("X->Y; X <-> Y")
-model$P
+inspect(model, "parameter_matrix")
 model <- make_model("Y2 <- X -> Y1; X <-> Y1; X <-> Y2")
-dim(model$P)
-model$P
+dim(inspect(model, "parameter_matrix"))
+inspect(model, "parameter_matrix")
 model <- make_model("X1 -> Y <- X2; X1 <-> Y; X2 <-> Y")
-dim(model$P)
-model$parameters_df
+dim(inspect(model, "parameter_matrix"))
+inspect(model, "parameters_df")
 
 # A single node graph is also possible
 model <- make_model("X")
@@ -91,11 +91,14 @@ nodal_types <-
       "11111111111111111111111111111111" ))
 
 make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
-          nodal_types = nodal_types)$parameters_df
+          nodal_types = nodal_types) \%>\%
+ inspect(model, "parameters_df")
 
 nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
-make_model("Z -> Y", nodal_types = nodal_types)$parameters_df
-make_model("Z -> Y", nodal_types = FALSE)$parents_df
+make_model("Z -> Y", nodal_types = nodal_types) \%>\%
+ inspect(model, "parameters_df")
+make_model("Z -> Y", nodal_types = FALSE) \%>\%
+ inspect(model, "parents_df")
 }
 \seealso{
 \code{\link{summary.causal_model}} provides summary method for

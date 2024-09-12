@@ -34,7 +34,7 @@ posteriors or parameters.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
 specify (optional). By default, parameters is drawn from
-\code{model$parameters_df}.}
+\code{inspect(model, "parameters_df")}.}
 
 \item{stats}{Functions to be applied to estimand distribution.
 If NULL, defaults to mean, standard deviation,
