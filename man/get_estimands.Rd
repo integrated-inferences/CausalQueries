@@ -7,7 +7,7 @@
 get_estimands(jobs, given_types, query_types, type_distributions)
 }
 \arguments{
-\item{jobs}{\code{DataFrame} of argument combinations}
+\item{jobs}{a data frame of argument combinations}
 
 \item{given_types}{output from \code{queries_to_types}}
 

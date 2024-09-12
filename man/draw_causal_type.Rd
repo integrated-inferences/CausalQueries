@@ -13,7 +13,7 @@ draw_causal_type(model, ...)
 \item{...}{Arguments passed to  `set_parameters`}
 }
 \description{
-Output is a parameter dataframe recording both parameters
+Output is a parameter data frame recording both parameters
 (case level priors) and
 the case level causal type.
 }

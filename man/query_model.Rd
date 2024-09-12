@@ -2,7 +2,7 @@
 % Please edit documentation in R/query_model.R
 \name{query_model}
 \alias{query_model}
-\title{Generate estimands dataframe}
+\title{Generate estimands data frame}
 \usage{
 query_model(
   model,
@@ -55,7 +55,7 @@ query for a case.}
 \item{cred}{size of the credible interval ranging between 0 and 100}
 }
 \value{
-A \code{DataFrame} with columns Model, Query, Given and Using
+A data frame with columns Model, Query, Given and Using
   defined by corresponding input values. Further columns are generated
   as specified in \code{stats}.
 }

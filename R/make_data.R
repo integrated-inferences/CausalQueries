@@ -275,7 +275,7 @@ observe_data <- function(complete_data,
 	  m <- NA
 	}
 
-	# Prep observed data dataframe
+	# Prep observed data data frame
 	observed_data <- complete_data
 	observed_data[!observed] <- NA
 

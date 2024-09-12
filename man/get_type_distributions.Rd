@@ -7,7 +7,7 @@
 get_type_distributions(jobs, model, n_draws, parameters = NULL)
 }
 \arguments{
-\item{jobs}{\code{DataFrame} of argument combinations}
+\item{jobs}{data frame of argument combinations}
 
 \item{model}{a list of models}
 
@@ -16,7 +16,7 @@ get_type_distributions(jobs, model, n_draws, parameters = NULL)
 \item{parameters}{optional list of parameter vectors}
 }
 \value{
-jobs \code{DataFrame} with a nested column of type distributions
+jobs data frame with a nested column of type distributions
 }
 \description{
 helper to get type distributions

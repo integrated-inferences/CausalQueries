@@ -254,7 +254,7 @@ make_model <- function(statement,
     attr(model$nodal_types, "interpret") <- interpret_type(model)
   }
 
-  # Parameters dataframe
+  # Parameters data frame
   if (!is.logical(nodal_types)) {
     model$parameters_df <- make_parameters_df(nodal_types)
   }

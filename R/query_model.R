@@ -24,7 +24,7 @@
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
 #' @param query alias for queries
-#' @return A \code{DataFrame} where columns contain draws from the distribution
+#' @return A data frame where columns contain draws from the distribution
 #'   of the potential outcomes specified in \code{query}
 #' @importFrom stats sd weighted.mean
 #' @export
@@ -247,7 +247,7 @@ query_distribution <- function(model,
 }
 
 
-#' Generate estimands dataframe
+#' Generate estimands data frame
 #'
 #' Calculated from a parameter vector, from a prior or
 #' from a posterior distribution.
@@ -276,7 +276,7 @@ query_distribution <- function(model,
 #'   query for a case.
 #' @param query alias for queries
 #' @param cred size of the credible interval ranging between 0 and 100
-#' @return A \code{DataFrame} with columns Model, Query, Given and Using
+#' @return A data frame with columns Model, Query, Given and Using
 #'   defined by corresponding input values. Further columns are generated
 #'   as specified in \code{stats}.
 #' @export
@@ -610,13 +610,13 @@ check_args <-
 
 #' helper to get types from queries
 #'
-#' @param jobs \code{DataFrame} of argument combinations
+#' @param jobs a data frame of argument combinations
 #' @param model a list of models
 #' @param query_col string specifying the name of the column in jobs
 #'   holding queries to be evaluated
-#' @param realisations list of \code{DataFrame} outputs from calls
+#' @param realisations list of data frame outputs from calls
 #'   to \code{realise_outcomes}
-#' @return jobs \code{DataFrame} with a nested column of
+#' @return jobs data frame with a nested column of
 #'   \code{map_query_to_nodal_type} outputs
 #' @keywords internal
 
@@ -647,11 +647,11 @@ queries_to_types <- function(jobs,
 
 #' helper to get type distributions
 #'
-#' @param jobs \code{DataFrame} of argument combinations
+#' @param jobs data frame of argument combinations
 #' @param model a list of models
 #' @param n_draws integer specifying number of draws from prior distribution
 #' @param parameters optional list of parameter vectors
-#' @return jobs \code{DataFrame} with a nested column of type distributions
+#' @return jobs data frame with a nested column of type distributions
 #' @keywords internal
 
 get_type_distributions <- function(jobs,
@@ -698,7 +698,7 @@ get_type_distributions <- function(jobs,
 
 #' helper to get estimands
 #'
-#' @param jobs \code{DataFrame} of argument combinations
+#' @param jobs a data frame of argument combinations
 #' @param given_types output from \code{queries_to_types}
 #' @param query_types output from \code{queries_to_types}
 #' @param type_distributions output from \code{get_type_distributions}

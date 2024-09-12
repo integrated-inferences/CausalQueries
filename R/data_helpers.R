@@ -330,7 +330,7 @@ data_type_names <- function(model, data) {
 
 #' Get all data types
 #'
-#' Creates dataframe with all data types (including NA types)
+#' Creates data frame with all data types (including NA types)
 #' that are possible from a model.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params

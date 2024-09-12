@@ -7,18 +7,18 @@
 queries_to_types(jobs, model, query_col, realisations)
 }
 \arguments{
-\item{jobs}{\code{DataFrame} of argument combinations}
+\item{jobs}{a data frame of argument combinations}
 
 \item{model}{a list of models}
 
 \item{query_col}{string specifying the name of the column in jobs
 holding queries to be evaluated}
 
-\item{realisations}{list of \code{DataFrame} outputs from calls
+\item{realisations}{list of data frame outputs from calls
 to \code{realise_outcomes}}
 }
 \value{
-jobs \code{DataFrame} with a nested column of
+jobs data frame with a nested column of
   \code{map_query_to_nodal_type} outputs
 }
 \description{

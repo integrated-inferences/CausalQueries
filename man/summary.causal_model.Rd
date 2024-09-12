@@ -51,7 +51,7 @@ summary method for class "\code{causal_model}".
   \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
   \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
   \item \code{"nodal_types"} a list with the nodal types of the model,
-  \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+  \item \code{"data_types"} a list with the all data types consistent with the model; for options see \code{"?get_all_data_types"},
   \item \code{"event_probabilities"}  a vector of data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
