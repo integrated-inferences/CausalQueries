@@ -21,7 +21,7 @@ make_parameter_matrix <- function(model) {
     colnames(P) <- rownames(types)
     rownames(P) <- model$parameters_df$param_names
     P <- as.data.frame(P)
-    class(P) <- c("parameter_matrix", "data.frame")
+    class(P) <- "data.frame"
     P
 }
 
@@ -75,29 +75,6 @@ set_parameter_matrix <- function(model, P = NULL) {
   }
 
   return(model)
-}
-
-
-#' @export
-print.parameter_matrix <- function(x, ...) {
-  cat(paste0("\nRows are parameters, grouped in parameter sets"))
-  cat(paste0("\n\nColumns are causal types"))
-  cat(
-    paste0(
-      "\n\nCell entries indicate whether a parameter probability is",
-      "used\nin the calculation of causal type probability\n\n"
-    )
-  )
-
-  class(x) <- "data.frame"
-  print(x)
-  cat("\n")
-  if (!is.null(attr(x, "param_set"))) {
-    param_set <- attr(x, "param_set")
-    cat("\n param_set  (P)\n ")
-    cat(paste0(param_set, collapse = "  "))
-  }
-  return(invisible(x))
 }
 
 
