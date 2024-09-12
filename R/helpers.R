@@ -477,5 +477,25 @@ check_query <- function(query) {
   return(query)
 }
 
+#' helper to compute mean and sd of a distribution data.frame
+#' @param x An object for summarizing
+summarise_distribution <- function(x) {
+  summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  names(summary) <- c("mean", "sd")
+  return(summary)
+}
 
+#' helper to find rounding thresholds for print methods
+#' @param x An object for rounding
+find_rounding_threshold <- function(x) {
+  x <- max(abs(x)) - min(abs(x))
+  pow <- 1
+  x_pow <- x * 10^pow
 
+  while(x_pow < 1) {
+    pow <- pow + 1
+    x_pow <- x * 10^pow
+  }
+
+  return(pow + 1)
+}
