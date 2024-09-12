@@ -169,7 +169,9 @@ plot_model <- function(model = NULL,
     labs(title = latex2exp::TeX(title)) +
     scale_x_continuous(limits = extent[[1]]) +
     scale_y_continuous(limits = extent[[2]]) +
-    theme_void()
+    theme_void()  +
+
+    coord_fixed()
 
   if(is.null(labels)) {
     p <-
@@ -207,35 +209,32 @@ plot_dag <- plot_model
 #' adjust_edge moves the base and tip of edge arrows so as to avoid overlap
 #' with nodes
 #' @keywords internal
-
 adjust_edge <- function(dag, nodesize, extent) {
+
   dag <- tidyr::drop_na(dag)
 
-  scale_factor <- mean(sapply(extent, diff)) / 150
-  adjustment <- nodesize * scale_factor
+  adjustment <- mean(nodesize * sapply(extent, diff) / 300)
+
 
   for(i in 1:nrow(dag)) {
-    dx <- dag[i, "xend"] - dag[i, "x"]
-    dy <- dag[i, "yend"] - dag[i, "y"]
-    distance <- abs(dx) + abs(dy)
+    Dx <- dag[i, "xend"] - dag[i, "x"] + rnorm(1, 0, .0001) # avoid perfect flatness
+    Dy <- dag[i, "yend"] - dag[i, "y"] + rnorm(1, 0, .0001) # avoid perfect flatness
+    b =  Dy/Dx
+    dx = sqrt(adjustment^2/(1+b^2)) * sign(Dx)
+    dy = b*dx  # * sign(Dy)
 
-    if (distance == 0) {
-      next
-    }
-
-    # Normalize the direction vector
-    dir_x <- dx / distance
-    dir_y <- dy / distance
 
     # Adjust positions
-    dag[i, "x"] <- dag[i, "x"] + adjustment * dir_x
-    dag[i, "y"] <- dag[i, "y"] + adjustment * dir_y
-    dag[i, "xend"] <- dag[i, "xend"] - adjustment * dir_x
-    dag[i, "yend"] <- dag[i, "yend"] - adjustment * dir_y
+    dag[i, "x"] <- dag[i, "x"] + dx
+    dag[i, "y"] <- dag[i, "y"] + dy
+    dag[i, "xend"] <- dag[i, "xend"] - dx
+    dag[i, "yend"] <- dag[i, "yend"] - dy
   }
 
   return(dag)
 }
+
+
 
 
 #' internal helper
