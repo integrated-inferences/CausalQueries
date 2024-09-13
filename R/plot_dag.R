@@ -204,11 +204,13 @@ plot.causal_model <- function(x, ...) {
 #' Alias
 plot_dag <- plot_model
 
+## edge adjustment -------------------------------------------------------------
 
 #' internal helper
 #' adjust_edge moves the base and tip of edge arrows so as to avoid overlap
 #' with nodes
 #' @keywords internal
+
 adjust_edge <- function(dag, nodesize, extent) {
 
   dag <- tidyr::drop_na(dag)
@@ -237,13 +239,15 @@ adjust_edge <- function(dag, nodesize, extent) {
 
 
 
+## force directed graph layout -------------------------------------------------
+
 #' internal helper
 #' calculates the attractive force component used in generating
 #' force-directed graph layouts
 #' @keywords internal
 
 attractive_force <- function(distance, desired_distance, k) {
-  return(k * (distance - desired_distance))
+  return(k * (distance - desired_distance))^2
 }
 
 #' internal helper
@@ -252,25 +256,62 @@ attractive_force <- function(distance, desired_distance, k) {
 #' @keywords internal
 
 repulsive_force <- function(distance, k) {
-  return((k^2) / distance)
+  if (distance < 0.001) {
+    distance <- 0.001
+  }
+  return(min(k / distance^2, k))
+}
+
+#' internal helper
+#' calculates the orientation of the point triplet (p, q, r)
+#' this is used to check intersection between line segments
+#' @keywords internal
+
+orientation <- function(p, q, r) {
+  val <- (q[2] - p[2]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[2] - q[2])
+  if (val == 0) return(0)  # co-linear
+  if (val > 0) return(1)   # clockwise
+  return(2)                # counterclockwise
+}
+
+#' internal helper
+#' checks whether two edges intersect given the edge start and endpoints
+#' this is used to apply penalties for edge crossing in the force directed
+#' graph layout
+#' @keywords internal
+
+edges_intersect <- function(p1, p2, p3, p4) {
+
+  o1 <- orientation(p1, p2, p3)
+  o2 <- orientation(p1, p2, p4)
+  o3 <- orientation(p3, p4, p1)
+  o4 <- orientation(p3, p4, p2)
+
+  # intersection case
+  if (o1 != o2 && o3 != o4) {
+    return(TRUE)
+  }
+
+  return(FALSE)
 }
 
 
 #' internal helper
 #' position_nodes generates a force directed graph layout to optimally
 #' position nodes. Connected nodes attract while unconnected nodes repel.
-#' position_nodes additionally ensures that connected nodes are not placed
-#' vertically or horizontally of each other i.e. that the slope of the edge
-#' connecting them is not 0 or inf.
+#' positions_nodes additionally attempts to minimize edge intersections
+#' and maximize layout compactness.
 #' @keywords internal
 
 position_nodes <- function(dag,
                            nodes,
                            iterations = 1000L,
-                           k = 0.5,
+                           k = 1,
                            repulsion = 0.1,
-                           desired_distance = 1) {
-  # Generate adjacency matrix
+                           desired_distance = 0.5,
+                           crossing_penalty = 0.1,
+                           gravity = 0.1) {
+  # generate adjacency matrix
   num_nodes <- length(nodes)
   parents <- match(dag$v, nodes)
   children <- match(dag$w, nodes)
@@ -282,25 +323,26 @@ position_nodes <- function(dag,
     adj_matrix[children[i], parents[i]] <- 1
   }
 
-  # Initialize node positions
+  # initialize node positions
   positions <- matrix(runif(num_nodes * 2), ncol = 2)
 
-  # Force-directed algorithm
+  # force-directed algorithm
   for (iter in 1:iterations) {
-    # Initialize the displacement matrix
+    # initialize the displacement matrix
     displacements <- matrix(0, nrow = num_nodes, ncol = 2)
-    # Calculate forces between all pairs of nodes
+
+    # calculate forces between all pairs of nodes
     for (i in 1:num_nodes) {
       for (j in 1:num_nodes) {
         if (i != j) {
           delta <- positions[i, ] - positions[j, ]
           distance <- sqrt(sum(delta^2))
 
-          # Calculate repulsive force
+          # calculate repulsive force
           force <- repulsive_force(distance, k)
           displacements[i, ] <- displacements[i, ] + (delta / distance) * force
 
-          # Calculate attractive force if nodes are connected
+          # calculate attractive force if nodes are connected
           if (adj_matrix[i, j] == 1) {
             force <- attractive_force(distance, desired_distance, k)
             displacements[i, ] <- displacements[i, ] - (delta / distance) * force
@@ -308,6 +350,40 @@ position_nodes <- function(dag,
         }
       }
     }
+
+    # apply edge crossing penalty
+    for (i in 1:(num_nodes - 1)) {
+      for (j in (i + 1):num_nodes) {
+        if (adj_matrix[i, j] == 1) {
+          for (p in 1:(num_nodes - 1)) {
+            for (q in (p + 1):num_nodes) {
+              if (adj_matrix[p, q] == 1 && (i != p && j != q)) {
+                # Check if edges (i, j) and (p, q) cross
+                if (edges_intersect(positions[i, ], positions[j, ], positions[p, ], positions[q, ])) {
+                  # Apply repulsive force between crossed edges
+                  d_ij <- positions[i, ] - positions[j, ]
+                  d_pq <- positions[p, ] - positions[q, ]
+
+                  displacements[i,] <- displacements[i,] + (d_ij / sqrt(sum(d_ij^2))) * crossing_penalty
+                  displacements[j,] <- displacements[j,] + (-d_ij / sqrt(sum(d_ij^2))) * crossing_penalty
+                  displacements[p,] <- displacements[p,] + (d_pq / sqrt(sum(d_pq^2))) * crossing_penalty
+                  displacements[q,] <- displacements[q,] + (-d_pq / sqrt(sum(d_pq^2))) * crossing_penalty
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    # apply gravity for compactness
+    center <- colMeans(positions)
+    for (i in 1:num_nodes) {
+      delta <- positions[i, ] - center
+      displacements[i, ] <- displacements[i, ] - delta * gravity
+    }
+
+    # update node positions
     positions <- positions + displacements * repulsion
   }
 

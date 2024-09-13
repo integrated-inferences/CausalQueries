@@ -5,25 +5,25 @@
 \title{internal helper
 position_nodes generates a force directed graph layout to optimally
 position nodes. Connected nodes attract while unconnected nodes repel.
-position_nodes additionally ensures that connected nodes are not placed
-vertically or horizontally of each other i.e. that the slope of the edge
-connecting them is not 0 or inf.}
+positions_nodes additionally attempts to minimize edge intersections
+and maximize layout compactness.}
 \usage{
 position_nodes(
   dag,
   nodes,
   iterations = 1000L,
-  k = 0.5,
+  k = 1,
   repulsion = 0.1,
-  desired_distance = 1
+  desired_distance = 0.5,
+  crossing_penalty = 0.1,
+  gravity = 0.1
 )
 }
 \description{
 internal helper
 position_nodes generates a force directed graph layout to optimally
 position nodes. Connected nodes attract while unconnected nodes repel.
-position_nodes additionally ensures that connected nodes are not placed
-vertically or horizontally of each other i.e. that the slope of the edge
-connecting them is not 0 or inf.
+positions_nodes additionally attempts to minimize edge intersections
+and maximize layout compactness.
 }
 \keyword{internal}
