@@ -58,8 +58,7 @@ for (i in 1:n_param_sets) {
 
   if (l_starts[i] >= l_ends[i]) {
     sum_gammas[i] = 1;
-    // syntax here to return unity as a vector
-    lambdas[l_starts[i]] = lambdas_prior[1]/lambdas_prior[1];
+    lambdas[l_starts[i]] = 1;
     }
 
   else if (l_starts[i] < l_ends[i]) {
