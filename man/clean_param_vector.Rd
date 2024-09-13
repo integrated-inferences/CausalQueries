@@ -12,7 +12,7 @@ clean_param_vector(model, parameters)
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
 specify (optional). By default, parameters is drawn from
-\code{model$parameters_df}.}
+\code{inspect(model, "parameters_df")}.}
 }
 \value{
 A vector of named parameters summing to 1.

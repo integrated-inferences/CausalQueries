@@ -49,7 +49,7 @@
 #' grab("parameters")
 #'
 #' model <- make_model('X -> M -> Y; X <-> Y; M <-> Y')
-#' model$parameters_df
+#' inspect(model, "parameters_df")
 #'
 #' # Example where set_confound is implemented after restrictions
 #'make_model("A -> B -> C") |>
@@ -66,7 +66,7 @@
 #'  # Example with two confounds, added sequentially
 #' model <- make_model('A -> B -> C') |>
 #'   set_confound(list("A <-> B", "B <-> C"))
-#' model$statement
+#' inspect(model, "causal_statement")
 #' # plot(model)
 
 

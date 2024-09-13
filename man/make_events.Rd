@@ -33,7 +33,7 @@ provided to avoid repeated computation for simulations.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
 specify (optional). By default, parameters is drawn from
-\code{model$parameters_df}.}
+\code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to make
 'flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw',

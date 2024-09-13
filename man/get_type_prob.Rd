@@ -15,7 +15,7 @@ provided to avoid repeated computation for simulations.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
 specify (optional). By default, parameters is drawn from
-\code{model$parameters_df}.}
+\code{inspect(model, "parameters_df")}.}
 }
 \value{
 A vector with probabilities of vector of causal types
@@ -26,5 +26,5 @@ realization of parameters, possibly drawn from model priors.
 }
 \details{
 By default, parameters is drawn from `using` argument
-(either from priors, posteriors, or from model$parameters)
+(either from priors, posteriors, or from inspect(model, "parameters"))
 }
