@@ -13,7 +13,7 @@ testthat::test_that(
 	code = {
 		out <- increasing("A", "B")
 		expect_equal(out[1], "(B[A=1] > B[A=0])")
-		expect_equal(attributes(out)$class, "statement")
+		expect_equal(class(out), "character")
 		out <- non_decreasing("A", "B")
 		expect_equal(out[1], "(B[A=1] >= B[A=0])")
 		out <- decreasing("A", "B")
