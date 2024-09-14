@@ -1,10 +1,10 @@
-#' Grab
+#' inspect
 #'
-#' Returns specified elements from a `causal_model`.
-#' Users can use `grab` to extract model's components or objects implied by
+#' Returns specified elements from a \code{causal_model}.
+#' Users can use \code{inspect} to extract model's components or objects implied by
 #' the model structure including nodal types, causal types, parameter priors,
 #' parameter posteriors, type priors, type posteriors, and other relevant elements.
-#' See argument `object` for other options.
+#' See argument \code{what} for other options.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param what A character string specifying the component to retrieve.
@@ -24,7 +24,7 @@
 #'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
 #'   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
 #'   \item \code{"type_prior"} a matrix of type probabilities using priors,
-#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
+#'   \item \code{"prior_hyperparameters"}  a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"inspect(prior_hyperparameters, c('M', 'Y'))"}
 #'   \item \code{"prior_event_probabilities"} a vector of data (event) probabilities given a single realization of parameters; for options see \code{"?get_event_probabilities"},
 #'   \item \code{"prior_distribution"}  a data frame of the parameter prior distribution,
 #'   \item \code{"posterior_distribution"}  a data frame of the parameter posterior distribution,
@@ -38,58 +38,59 @@
 #' @return Objects from a \code{causal_model} as specified.
 #'
 #' @export
+#'
 #' @examples
 #' \donttest{
 #'
 #' model <- make_model("X -> Y")
 #'
-#' grab(model, what = "statement")
-#' grab(model, what = "dag")
-#' grab(model, what = "nodes")
-#' grab(model, what = "parents_df")
-#' grab(model, what = "parameters_df")
-#' grab(model, what = "causal_types")
-#' grab(model, what = "prior_distribution")
-#' grab(model, what = "posterior_distribution")
-#' grab(model, what = "posterior_event_probabilities")
-#' grab(model, what = "type_distribution")
-#' grab(model, what = "data")
-#' grab(model, what = "stanfit")
-#' grab(model, what = "stan_objects")
+#' inspect(model, what = "statement")
+#' inspect(model, what = "dag")
+#' inspect(model, what = "nodes")
+#' inspect(model, what = "parents_df")
+#' inspect(model, what = "parameters_df")
+#' inspect(model, what = "causal_types")
+#' inspect(model, what = "prior_distribution")
+#' inspect(model, what = "posterior_distribution")
+#' inspect(model, what = "posterior_event_probabilities")
+#' inspect(model, what = "type_distribution")
+#' inspect(model, what = "data")
+#' inspect(model, what = "stanfit")
+#' inspect(model, what = "stan_objects")
 #'
 #' data_long   <- simulate_data(model, n = 4)
 #' data_short  <- collapse_data(data_long, model)
 #'
 #' model <- update_model(model, keep_type_distribution = FALSE)
 #'
-#' grab(model, what = "posterior_distribution")
-#' grab(model, what = "posterior_event_probabilities")
-#' grab(model, what = "type_distribution")
-#' grab(model, what = "data")
-#' grab(model, what = "stanfit")
-#' grab(model, what = "stan_objects")
+#' inspect(model, what = "posterior_distribution")
+#' inspect(model, what = "posterior_event_probabilities")
+#' inspect(model, what = "type_distribution")
+#' inspect(model, what = "data")
+#' inspect(model, what = "stanfit")
+#' inspect(model, what = "stan_objects")
 #'
 #' model <-  update_model(model, data_long)
 #'
-#' grab(model, what = "data")
+#' inspect(model, what = "data")
 #'
 #' model <-  update_model(model, data_short)
 #'
-#' grab(model, what = "data")
+#' inspect(model, what = "data")
 #'
 #' model <- update_model(model,
 #'                       keep_type_distribution = TRUE,
 #'                       keep_event_probabilities = TRUE)
 #'
-#' grab(model, what = "posterior_event_probabilities")
-#' grab(model, what = "type_distribution")
+#' inspect(model, what = "posterior_event_probabilities")
+#' inspect(model, what = "type_distribution")
 #'
 #' make_model("X -> Y") |>
-#'  grab("prior_distribution", n_draws = 30)
+#'  inspect("prior_distribution", n_draws = 30)
 #'
 #' }
 #'
-grab <- function(model, what = NULL, ...) {
+inspect <- function(model, what = NULL, ...) {
 
   model_sum <- print(summary(model, ...), include = what)
 
@@ -108,3 +109,6 @@ grab <- function(model, what = NULL, ...) {
 
 }
 
+#' Alias
+#' @keywords internal
+grab <- inspect
