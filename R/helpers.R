@@ -178,7 +178,7 @@ interpret_type <- function(model,
     }
 
   if(is.null(nodes)){
-    nodes <- grab(model, object = "nodes")
+    nodes <- model$nodes
   }
 
     parents <- get_parents(model)
@@ -498,4 +498,13 @@ find_rounding_threshold <- function(x) {
   }
 
   return(pow + 1)
+}
+
+#' helper to extract arguments for a specific function
+#' @param fun a function to be checked
+#' @param dots a named list with possible arguments
+get_args_for <- function(fun, dots) {
+  formal_args <- names(formals(fun))
+  # Exclude arguments with no name
+  return(dots[names(dots) %in% formal_args])
 }
