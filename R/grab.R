@@ -11,7 +11,6 @@
 #'   Available options are:
 #'   \itemize{
 #'   \item \code{"statement"} a character string describing causal relations using dagitty syntax,
-#'   \item \code{"dag"} A data frame with columns ‘parent’ and ‘children’ indicating how nodes relate to each other,
 #'   \item \code{"nodes"} A list containing the nodes in the model,
 #'   \item \code{"parents_df"} a table listing nodes, whether they are root nodes or not, and the number and names of parents they have,
 #'   \item \code{"parameters"} a vector of 'true' parameters,
@@ -45,7 +44,6 @@
 #' model <- make_model("X -> Y")
 #'
 #' inspect(model, what = "statement")
-#' inspect(model, what = "dag")
 #' inspect(model, what = "nodes")
 #' inspect(model, what = "parents_df")
 #' inspect(model, what = "parameters_df")

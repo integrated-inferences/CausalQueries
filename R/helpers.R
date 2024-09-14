@@ -384,8 +384,7 @@ get_parameter_names <- function(model, include_paramset = TRUE) {
 #' @keywords internal
 
 is_a_model <- function(model){
-  minimum_components <- c("dag",
-                          "nodes",
+  minimum_components <- c("nodes",
                           "statement",
                           "nodal_types",
                           "parameters_df" )

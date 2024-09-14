@@ -182,7 +182,6 @@ make_model <- function(statement,
   model <-
     list(
       statement = statement,
-      dag = dag,
       nodes = nodes,
       parents_df = parents_df
     )

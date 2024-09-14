@@ -139,12 +139,10 @@ testthat::test_that(
 
   code = {
     model_1 <- model_2 <-  make_model("X->Y")
-    model_2$dag <- NULL
-    model_3 <- "THIS"
+    model_2 <- "THIS"
 
     expect_no_error(CausalQueries:::is_a_model(model_1))
     expect_error(CausalQueries:::is_a_model(model_2))
-    expect_error(CausalQueries:::is_a_model(model_3))
 
   }
 )
