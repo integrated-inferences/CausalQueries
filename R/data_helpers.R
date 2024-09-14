@@ -315,7 +315,7 @@ expand_data <- function(data_events = NULL, model) {
 #' model <- make_model('X -> Y')
 #' data <- make_data(model, n = 2)
 #' data_type_names(model, data)
-#' @export
+#' @keywords internal
 data_type_names <- function(model, data) {
   vars <- model$nodes
   data <- data[vars]

@@ -182,3 +182,4 @@ type_matrix <- function(parent_n) {
   colnames(type_mat) <- labels
   return(type_mat)
 }
+

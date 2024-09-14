@@ -646,11 +646,7 @@ public:
           stan::model::assign(sum_gammas, 1, "assigning variable sum_gammas",
             stan::model::index_uni(i));
           current_statement__ = 15;
-          stan::model::assign(lambdas,
-            (stan::model::rvalue(lambdas_prior, "lambdas_prior",
-               stan::model::index_uni(1)) /
-            stan::model::rvalue(lambdas_prior, "lambdas_prior",
-              stan::model::index_uni(1))), "assigning variable lambdas",
+          stan::model::assign(lambdas, 1, "assigning variable lambdas",
             stan::model::index_uni(
               stan::model::rvalue(l_starts, "l_starts",
                 stan::model::index_uni(i))));
@@ -880,11 +876,7 @@ public:
           stan::model::assign(sum_gammas, 1, "assigning variable sum_gammas",
             stan::model::index_uni(i));
           current_statement__ = 15;
-          stan::model::assign(lambdas,
-            (stan::model::rvalue(lambdas_prior, "lambdas_prior",
-               stan::model::index_uni(1)) /
-            stan::model::rvalue(lambdas_prior, "lambdas_prior",
-              stan::model::index_uni(1))), "assigning variable lambdas",
+          stan::model::assign(lambdas, 1, "assigning variable lambdas",
             stan::model::index_uni(
               stan::model::rvalue(l_starts, "l_starts",
                 stan::model::index_uni(i))));

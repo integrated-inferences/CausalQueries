@@ -8,6 +8,8 @@ plot_model(
   model = NULL,
   x_coord = NULL,
   y_coord = NULL,
+  labels = NULL,
+  label_color = "darkgrey",
   title = "",
   textcol = "white",
   textsize = 3.88,
@@ -24,6 +26,10 @@ If left empty, coordinates are randomly generated}
 
 \item{y_coord}{A vector of y coordinates for DAG nodes.
 If left empty, coordinates are randomly generated}
+
+\item{labels}{Optional labels for nodes}
+
+\item{label_color}{Color for labels, if provided. Defaults to darkgrey}
 
 \item{title}{String specifying title of graph}
 
@@ -42,23 +48,32 @@ ggplot's default palette}
 A DAG plot in ggplot style.
 }
 \description{
-If confounds are indicated (provided in \code{attr(model$P, 'confounds')}),
-then these are represented as bidirectional arcs. Builds on functionality
-from ggdag and dagitty.
+Creates a plot of a DAG using ggplot functionality.  Unmeasured confounds  (<->) are indicated
+then these are represented as curved dotted lines.  Users can control node sizes and colors as well as coordinates and label behavior. Other modifications can be made by adding additional ggplot layers.
 }
 \examples{
 
 \dontrun{
-model <- make_model('X -> K -> Y; X <-> Y')
+model <- make_model('X -> K -> Y')
 
-model |>
-  CausalQueries:::plot_model()
-model |>
-  CausalQueries:::plot_model(
-    x_coord = 1:3,
-    y_coord = 1:3,
+# Simple plot
+model |> plot_model()
+
+# Adding addition layers
+model |> plot_model() + theme(panel.border = element_rect(fill=NA))
+
+# Adding labels
+model |> plot_model(labels = c("A long label for X", "This", "That"),
+ nodecol = "white")
+
+# Controlling  positions and using math labels
+model |> plot_model(
+    x_coord = 1:2,
+    y_coord = 1:2,
     title = "Mixed text and math: $\\\\alpha^2 + \\\\Gamma$")
 }
 
+# DAG with unobserved confounding
+make_model('X -> K -> Y; X <-> Y') |> plot()
 }
 \keyword{internal}

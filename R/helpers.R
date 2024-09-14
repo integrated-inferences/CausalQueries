@@ -285,7 +285,7 @@ interpret_type <- function(model,
 #'
 #' # Expressions not requiring expansion are allowed
 #' expand_wildcard('(Y[X=1])')
-#' @export
+#' @keywords internal
 
 expand_wildcard <- function(to_expand,
                             join_by = "|",

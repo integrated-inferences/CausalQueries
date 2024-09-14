@@ -32,7 +32,7 @@ interrogate \code{\link{realise_outcomes}}. An expression of the form
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
 specify (optional). By default, parameters is drawn from
-\code{model$parameters_df}.}
+\code{inspect(model, "parameters_df")}.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
 provided to avoid repeated computation for simulations.}
