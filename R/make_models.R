@@ -239,7 +239,7 @@ make_model <- function(statement,
     attr(model$nodal_types, "interpret") <- interpret_type(model)
   }
 
-  # Parameters dataframe
+  # Parameters data frame
   if (!is.logical(nodal_types)) {
     model$parameters_df <- make_parameters_df(nodal_types)
   }
@@ -291,11 +291,10 @@ make_model <- function(statement,
 
 
   # assign classes
-  class(model$dag) <- c("dag", "data.frame")
-  class(model$statement) <- c("statement", "character")
-  class(model$nodes) <- c("nodes", "character")
-  class(model$parents_df) <- c("parents", "data.frame")
-  class(model$nodal_types) <- c("nodal_types", "list")
+  class(model$statement) <- "character"
+  class(model$nodes) <- "character"
+  class(model$parents_df) <- "data.frame"
+  class(model$nodal_types) <- "list"
 
   return(model)
 
@@ -323,7 +322,7 @@ make_parameters_df <- function(nodal_types){
     dplyr::select(param_names, node, gen, param_set, nodal_type,
                   given, param_value, priors)
 
-  class(pdf) <- c("parameters_df", "data.frame")
+  class(pdf) <- "data.frame"
   return(pdf)
 }
 

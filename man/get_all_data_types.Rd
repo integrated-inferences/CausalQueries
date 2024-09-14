@@ -31,7 +31,7 @@ A \code{data.frame} with all data types (including NA types)
   that are possible from a model.
 }
 \description{
-Creates dataframe with all data types (including NA types)
+Creates data frame with all data types (including NA types)
 that are possible from a model.
 }
 \examples{

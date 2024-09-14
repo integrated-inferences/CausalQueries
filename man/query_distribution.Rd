@@ -48,7 +48,7 @@ the query for a case.}
 \item{query}{alias for queries}
 }
 \value{
-A \code{DataFrame} where columns contain draws from the distribution
+A data frame where columns contain draws from the distribution
   of the potential outcomes specified in \code{query}
 }
 \description{

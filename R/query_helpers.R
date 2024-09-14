@@ -19,9 +19,7 @@ increasing <- function(X, Y) {
 
   statement <- paste0("(", Y, "[", X, "=1] > ", Y, "[", X, "=0])")
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -45,9 +43,7 @@ non_decreasing <- function(X, Y) {
 
   statement <- paste0("(", Y, "[", X, "=1] >= ", Y, "[", X, "=0])")
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -70,9 +66,7 @@ decreasing <- function(X, Y) {
 
   statement <- paste0("(", Y, "[", X, "=1] < ", Y, "[", X, "=0])")
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -95,9 +89,7 @@ non_increasing <- function(X, Y) {
 
   statement <- paste0("(", Y, "[", X, "=1] <= ", Y, "[", X, "=0])")
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -153,9 +145,7 @@ interacts <- function(X1, X2, Y) {
       " = 0]))"
     )
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -208,9 +198,7 @@ complements <- function(X1, X2, Y) {
       " = 0]))"
     )
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 
@@ -269,9 +257,7 @@ substitutes <- function(X1, X2, Y) {
       " = 0]))"
     )
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 #' Make treatment effect statement (positive)
@@ -307,9 +293,7 @@ te <- function(X, Y) {
 
   statement <- paste0("(", Y, "[", X, "=1] - ", Y, "[", X, "=0])")
 
-  class(statement) <- "statement"
-
-  statement
+  return(statement)
 }
 
 

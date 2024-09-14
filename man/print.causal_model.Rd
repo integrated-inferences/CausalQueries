@@ -13,7 +13,7 @@ a call to \code{make_model} or \code{update_model}.}
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-print method for class \code{causal_model}.
+print method for class "\code{causal_model}".
 }
 \details{
 The information regarding the causal model includes the statement describing

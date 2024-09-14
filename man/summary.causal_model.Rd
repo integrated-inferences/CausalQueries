@@ -7,7 +7,7 @@
 \usage{
 \method{summary}{causal_model}(object, ...)
 
-\method{print}{summary.causal_model}(x, stanfit = FALSE, ...)
+\method{print}{summary.causal_model}(x, include = NULL, ...)
 }
 \arguments{
 \item{object}{An object of \code{causal_model} class produced using
@@ -15,18 +15,96 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 
-\item{x}{An object of \code{summary.causal_model} class, usually a result of
-a call to \code{summary.causal_model}.}
+\item{x}{An object of \code{summary.causal_model} class, produced using \code{summary.causal_model}.}
 
-\item{stanfit}{Logical. Whether to include readable summary of
-\code{stanfit} produced when updating a model via \code{update_model}.
-Defaults to `FALSE`.}
+\item{include}{A character string specifying the objects summaries to print in addition to causal statement. Defaults to \code{NULL} printing DAG data frame, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
+}
+\value{
+Returns the object of class \code{summary.causal_model} that preserves the list structure of \code{causal_model} class and adds the following additional elements:
+\itemize{
+  \item \code{"parents"} a list of parents of all nodes in a model,
+  \item \code{"parameters"} a vector of 'true' parameters,
+  \item \code{"parameter_names"} a vector of names of parameters,
+  \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
+  \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
+  \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
+  \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
+  \item \code{"prior_event_probabilities"} a vector of prior data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
+  \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
+  \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
+}
 }
 \description{
-summary method for class \code{causal_model}.
+summary method for class "\code{causal_model}".
 }
 \details{
-\code{print.summary.causal_model} reports DAG data frame, full specification of
-nodal types and summary of model restrictions in addition to standard
-\code{print.causal_model} output.
+\code{print.summary.causal_model} reports causal statement, DAG data frame, full specification of nodal types and summary of model restrictions. By specifying `include` argument users can instead print a custom summary of any set of the following objects contained in the `summary.causal_model`:
+\itemize{
+  \item \code{"dag"} A data frame with columns ‘parent’ and ‘children’ indicating how nodes relate to each other,
+  \item \code{"nodes"} A list containing the nodes in the model,
+  \item \code{"parents"} a list of parents of all nodes in a model,
+  \item \code{"parents_df"} a data frame listing nodes, whether they are root nodes or not, and the number and names of parents they have,
+  \item \code{"parameters"} a vector of 'true' parameters,
+  \item \code{"parameters_df"} a data frame containing parameter information,
+  \item \code{"parameter_names"} a vector of names of parameters,
+  \item \code{"parameter_mapping"} a matrix mapping from parameters into data types,
+  \item \code{"parameter_matrix"} a matrix mapping from parameters into causal types,
+  \item \code{"causal_types"} a data frame listing causal types and the nodal types that produce them,
+  \item \code{"nodal_types"} a list with the nodal types of the model,
+  \item \code{"data_types"} a list with the all data types consistent with the model; for options see \code{"?get_all_data_types"},
+  \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `grab(prior_hyperparameters, c('M', 'Y'))`
+  \item \code{"prior_distribution"} a data frame of the parameter prior distribution,
+  \item \code{"prior_event_probabilities"} a vector of data (event) probabilities given a single realization of parameters; for options see `?get_event_probabilities`,
+  \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
+  \item \code{"type_prior"} a matrix of type probabilities using priors,
+  \item \code{"type_distribution"} a matrix of type probabilities using posteriors,
+  \item \code{"posterior_distribution"} a data frame of the parameter posterior distribution,
+  \item \code{"posterior_event_probabilities"} a sample of data (event) probabilities from the posterior,
+  \item \code{"data"} the data that was used to update model.
+  \item \code{"stanfit"} a `stanfit` object generated by Stan,
+}
+}
+\examples{
+\donttest{
+
+model <-
+  make_model('X -> Y') |>
+  update_model(
+    keep_event_probabilities = TRUE,
+    keep_fit = TRUE,
+    data = simulate_data(model, n = 100))
+
+summary(model)
+
+}
+
+\donttest{
+model <-
+  make_model('X -> Y')
+
+print(summary(model), include = "type_distribution")
+print(summary(model), include = "posterior_distribution")
+print(summary(model), include = "posterior_event_probabilities")
+print(summary(model), include = "data_types")
+print(summary(model), include = "ambiguities_matrix")
+print(summary(model), include = "prior_hyperparameters")
+
+model <-
+  model |>
+  update_model(
+    keep_event_probabilities = TRUE,
+    keep_fit = TRUE,
+    data = simulate_data(model, n = 100))
+
+print(summary(model), include = "dag")
+print(summary(model), include = c("dag", "nodes"))
+print(summary(model), include = "parameters_df")
+print(summary(model), include = "posterior_event_probabilities")
+print(summary(model), include = "posterior_distribution")
+print(summary(model), include = "data")
+print(summary(model), include = "stanfit")
+print(summary(model), include = "type_distribution")
+print(summary(model), include = "stan_objects")
+}
+
 }

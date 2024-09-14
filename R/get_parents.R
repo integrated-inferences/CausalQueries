@@ -1,5 +1,3 @@
-
-
 #' Get list of parents of all nodes in a model
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
@@ -10,7 +8,7 @@ get_parents <- function(model) {
     paste(model$dag$parent)[paste(model$dag$children) == j]
   })
   names(parents) <- model$nodes
-  class(parents) <- c("parents", "list")
+  class(parents) <- "list"
   return(parents)
 }
 

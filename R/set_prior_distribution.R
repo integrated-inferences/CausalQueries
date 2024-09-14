@@ -28,7 +28,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
       as.data.frame()
 
     colnames(prior_distribution) <- model$parameters_df$param_names
-    class(prior_distribution) <- c("parameters_prior", "data.frame")
+    class(prior_distribution) <- "data.frame"
 
     return(prior_distribution)
 
@@ -55,7 +55,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 
   message(paste(
     "The model does not have an attached prior distribution;",
-    "generated on the fly"
+    "generated on the fly with ", n_draws, "draws per parameter"
   ))
 
   return(make_prior_distribution(model, n_draws))

@@ -73,7 +73,7 @@ get_type_prob_multiple <- function(model,
 
     res <- get_type_prob_multiple_c(params = param_dist, P = as.matrix(P))
     rownames(res) <- colnames(P)
-    class(res) <- c("type_prior", "matrix", "array")
+    class(res) <- c("matrix", "array")
     return(res)
 }
 

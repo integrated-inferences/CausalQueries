@@ -77,7 +77,7 @@ make_events <- function(model,
                             parameters = parameters)
     }
 
-    # Draw events (Compact dataframe)
+    # Draw events (Compact data frame)
     df <- data.frame(event = rownames(w), count = rmultinom(1, n, w))
 
     if (include_strategy) {

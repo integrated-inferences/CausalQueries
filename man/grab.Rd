@@ -4,7 +4,7 @@
 \alias{grab}
 \title{Alias}
 \usage{
-grab(model, object = NULL, ...)
+grab(model, what = NULL, ...)
 }
 \description{
 Alias

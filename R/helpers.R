@@ -178,7 +178,7 @@ interpret_type <- function(model,
     }
 
   if(is.null(nodes)){
-    nodes <- grab(model, object = "nodes")
+    nodes <- model$nodes
   }
 
     parents <- get_parents(model)
@@ -477,5 +477,34 @@ check_query <- function(query) {
   return(query)
 }
 
+#' helper to compute mean and sd of a distribution data.frame
+#' @param x An object for summarizing
+summarise_distribution <- function(x) {
+  summary <- c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
+  names(summary) <- c("mean", "sd")
+  return(summary)
+}
 
+#' helper to find rounding thresholds for print methods
+#' @param x An object for rounding
+find_rounding_threshold <- function(x) {
+  x <- max(abs(x)) - min(abs(x))
+  pow <- 1
+  x_pow <- x * 10^pow
 
+  while(x_pow < 1) {
+    pow <- pow + 1
+    x_pow <- x * 10^pow
+  }
+
+  return(pow + 1)
+}
+
+#' helper to extract arguments for a specific function
+#' @param fun a function to be checked
+#' @param dots a named list with possible arguments
+get_args_for <- function(fun, dots) {
+  formal_args <- names(formals(fun))
+  # Exclude arguments with no name
+  return(dots[names(dots) %in% formal_args])
+}

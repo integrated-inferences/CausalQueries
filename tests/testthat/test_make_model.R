@@ -13,9 +13,8 @@ testthat::test_that(
 		              any(grepl("^Number of types by node:", out)) &
 		              any(grepl("^Number of unit types:", out)))
 		out <- class(summary(model))
-		expect_equal(out[1], "summary.causal_model")
-		expect_equal(out[2], "data.frame")
-		expect_warning(print(summary(model), stanfit = TRUE))
+		expect_equal(out, "summary.causal_model")
+		expect_message(print(summary(model)))
 
 		model <- update_model(model)
 		out <- capture.output(print(model))

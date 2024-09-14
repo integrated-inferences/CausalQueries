@@ -58,7 +58,7 @@ get_event_probabilities <- function(model,
     }
 
     colnames(event_probs) <- "event_probs"
-    class(event_probs) <- c("event_probabilities", "matrix", "array")
+    class(event_probs) <- c("matrix", "array")
     return(event_probs)
 }
 

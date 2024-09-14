@@ -1,9 +1,3 @@
-
-
-
-
-
-
 context("Set_prior_distribution")
 
 testthat::skip_on_cran()
@@ -13,7 +7,7 @@ testthat::test_that(
 
 	code = {
 		expect_message(make_model("X -> Y") |>
-		                 grab("prior_distribution", 3))
+		                 grab("prior_distribution", n_draws = 30))
 		expect_equal(make_model("X -> Y") |>
 		               set_prior_distribution(n_draws = 10) |>
 		               grab("prior_distribution") |> nrow(), 10)
