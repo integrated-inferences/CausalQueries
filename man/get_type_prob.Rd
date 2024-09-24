@@ -26,5 +26,5 @@ realization of parameters, possibly drawn from model priors.
 }
 \details{
 By default, parameters is drawn from `using` argument
-(either from priors, posteriors, or from inspect(model, "parameters"))
+(either from priors, posteriors, or from `inspect(model, "parameters")`)
 }

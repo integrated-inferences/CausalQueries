@@ -231,7 +231,7 @@ print.summary.causal_model <-
     if (length(wrong) > 0 & length(wrong) < length(include)) {
       warning("The following requested objects are not supported: ",
               paste0(wrong, collapse = ", "),
-              ";\nprinting summary for the available objects only")
+              ";\n  printing summary for the available objects only")
     } else if (length(wrong) > 0 & length(wrong) == length(include)) {
       stop("The following requested objects are not supported: ",
            paste0(wrong, collapse = ", "))
@@ -305,7 +305,7 @@ print.summary.causal_model <-
         if (is.null(x$stan_objects$data)) {
 
           printout <- c(printout, "specified 'data'")
-          printout_upd <- c(printout_upd, "data")
+          printout_upd <- c(printout_upd, "'data'")
         }
 
         if (is.null(x$stan_objects$event_probabilities)) {
@@ -341,14 +341,14 @@ print.summary.causal_model <-
           message(
             paste0("Model does not contain the following objects: ",
                    paste0(unique(printout), collapse = ", "),
-                   ";\n. to include these objects update model with ",
+                   ";\n  to include these objects update model with ",
                    paste0(unique(printout_upd), collapse = ", "))
           )
         } else {
           message(
             paste0("Model does not contain: ",
-                   paste0(printout, collapse = ", "),
-                   ";\n. to include these objects update model")
+                   paste0(unique(printout), collapse = ", "),
+                   ";\n  to include these objects update model")
           )
         }
       }
@@ -590,8 +590,7 @@ print.summary.causal_model <-
         } else {
           printout <- c(printout,
                         "posterior_distribution")
-          printout_upd <- c(printout_upd,
-                            "")
+          # printout_upd <- c(printout_upd, "")
         }
       }
 
@@ -633,7 +632,7 @@ print.summary.causal_model <-
           }
         } else {
           printout <- c(printout, "specified 'data'")
-          printout_upd <- c(printout_upd, "data")
+          printout_upd <- c(printout_upd, "'data'")
         }
       }
 
@@ -655,7 +654,7 @@ print.summary.causal_model <-
           print(x$stan_objects)
         } else {
           printout <- c(printout, "stan_objects")
-          printout_upd <- c(printout_upd, "")
+          # printout_upd <- c(printout_upd, "")
         }
       }
 
@@ -663,15 +662,15 @@ print.summary.causal_model <-
         if (length(printout_upd) > 0) {
           stop(
             paste0("Model does not contain the following requested objects: ",
-                   paste0(printout, collapse = ", "),
+                   paste0(unique(printout), collapse = ", "),
                    ";\n  to include these objects update model with ",
-                   paste0(printout_upd, collapse = ", "))
+                   paste0(unique(printout_upd), collapse = ", "))
           )
         } else {
           stop(
             paste0("Model does not contain: ",
-                   paste0(printout, collapse = ", "),
-                   ";\n. to include these objects update model")
+                   paste0(unique(printout), collapse = ", "),
+                   ";\n  to include these objects update model")
           )
         }
       }
