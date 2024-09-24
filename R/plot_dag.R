@@ -16,7 +16,7 @@
 #' @param nodecol String indicating color of node that is accepted by
 #'   ggplot's default palette
 #' @param nodesize Size of node.
-#' @return A DAG plot in ggplot style.
+#' @return A ggplot object.
 #'
 #' @keywords internal
 #' @import dplyr

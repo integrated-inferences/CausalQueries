@@ -42,7 +42,7 @@ ggplot's default palette}
 \item{nodesize}{Size of node.}
 }
 \value{
-A DAG plot in ggplot style.
+A ggplot object.
 }
 \description{
 Creates a plot of a DAG using ggplot functionality.  Unmeasured confounds  (<->) are indicated
@@ -57,7 +57,8 @@ model <- make_model('X -> K -> Y')
 model |> plot_model()
 
 # Adding additional layers
-model |> plot_model() + theme(panel.border = element_rect(fill=NA))
+model |> plot_model() +
+  ggplot2:: theme(panel.border = ggplot2::element_rect(fill=NA))
 
 # Adding labels
 model |>
