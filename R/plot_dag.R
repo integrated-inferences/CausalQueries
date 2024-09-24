@@ -9,7 +9,6 @@
 #' @param y_coord A vector of y coordinates for DAG nodes.
 #'   If left empty, coordinates are randomly generated
 #' @param labels Optional labels for nodes
-#' @param label_color Color for labels, if provided. Defaults to darkgrey
 #' @param title String specifying title of graph
 #' @param textcol String specifying color of text labels
 #' @param textsize Numeric, size of text labels
@@ -22,6 +21,9 @@
 #' @keywords internal
 #' @import dplyr
 #' @import ggplot2
+#' @import ggraph
+#' @importFrom grid arrow
+#' @importFrom grid unit
 #' @importFrom graphics plot
 #' @importFrom latex2exp TeX
 #'
@@ -29,28 +31,31 @@
 #' @examples
 #'
 #' \dontrun{
-
 #' model <- make_model('X -> K -> Y')
 #'
 #' # Simple plot
 #' model |> plot_model()
 #'
-#' # Adding addition layers
-#' model |> plot_model() + theme(panel.border = element_rect(fill=NA))
+#' # Adding additional layers
+#' model |> plot_model() +
+#'   ggplot2:: theme(panel.border = ggplot2::element_rect(fill=NA))
 #'
 #' # Adding labels
-#' model |> plot_model(labels = c("A long label for X", "This", "That"),
-#'  nodecol = "white")
+#' model |>
+#'   plot_model(
+#'     labels = c("So \n here", "This", "That"),
+#'     nodecol = "white", textcol = "black")
 #'
 #' # Controlling  positions and using math labels
 #' model |> plot_model(
-#'     x_coord = 1:2,
-#'     y_coord = 1:2,
+#'     x_coord = 0:2,
+#'     y_coord = 0:2,
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
 #' # DAG with unobserved confounding
 #' make_model('X -> K -> Y; X <-> Y') |> plot()
+#'
 
 
 plot_model <- function(model = NULL,
@@ -64,8 +69,6 @@ plot_model <- function(model = NULL,
                        nodecol = 'black',
                        nodesize = 16
 ) {
-
-  x <- y <- xend <- yend <- name <- NULL
 
   # Checks
   if(is.null(model)) {
@@ -105,7 +108,8 @@ plot_model <- function(model = NULL,
   nodes <- as.character(model$nodes)
 
   dag <- make_dag(statement) |>
-    rename(x = v, y = w) |> mutate(weight = 1)
+    dplyr::rename(x = v, y = w) |>
+    dplyr::mutate(weight = 1)
 
   if (is.null(x_coord) && is.null(y_coord)) {
     coords <- position_nodes(dag, nodes)
@@ -120,29 +124,41 @@ plot_model <- function(model = NULL,
   coords <- coords |>
     dplyr::mutate(
       x = x - mean(coords$x),
-      y = y - mean(coords$y)) |>
-    rename(name = node)
+      y = y - mean(coords$y))
+
+  if (is.null(labels)) {
+    coords$name <- nodes
+  } else {
+    coords$name <- labels
+  }
+
 
   # Ordering labels
-  .p <- dag  |> ggraph(layout = "sugiyama")
-  coords <- coords[match(coords$name, .p$data$name),]
+  .p <- dag  |> ggraph::ggraph(layout = "sugiyama")
+  coords <- coords[match(coords$node, .p$data$name),]
 
   # plot
 
     dag  |>
-    ggraph(layout = "manual", x = coords$x, y = coords$y) +
-    geom_node_point(size = 16, color = nodecol) +
-    geom_edge_arc(data = arc_selector("<->"),
-                  start_cap = circle(8, 'mm'),
-                  end_cap = circle(8, 'mm'),
+      ggraph::ggraph(layout = "manual", x = coords$x, y = coords$y) +
+      ggraph::geom_node_point(size = nodesize,
+                              color = nodecol,
+                              shape = shape) +
+      ggraph::geom_edge_arc(data = arc_selector("<->"),
+                  start_cap = ggraph::circle(8, 'mm'),
+                  end_cap = ggraph::circle(8, 'mm'),
                   linetype = "dashed") +
-    geom_edge_link(data = arc_selector("->"),
-                   arrow = arrow(length = unit(4, 'mm')),
-                   start_cap = circle(8, 'mm'),
-                   end_cap = circle(8, 'mm'))  +
-    labs(title = latex2exp::TeX(title)) +
-    theme_void()  +
-    geom_node_text(aes(label = name), color = textcol, size = textsize)
+      ggraph::geom_edge_link(data = arc_selector("->"),
+                   arrow = grid::arrow(length = grid::unit(4, 'mm')),
+                   start_cap = ggraph::circle(8, 'mm'),
+                   end_cap = ggraph::circle(8, 'mm'))  +
+      ggplot2::labs(title = latex2exp::TeX(title)) +
+      theme_void()  +
+      ggraph::geom_node_text(
+        data = coords,
+        aes(x, y, label = name),
+        color = textcol,
+        size = textsize)
 
 }
 
