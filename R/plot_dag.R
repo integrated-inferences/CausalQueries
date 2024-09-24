@@ -124,7 +124,7 @@ plot_model <- function(model = NULL,
     rename(name = node)
 
   # Ordering labels
-  .p <- dag  |> ggraph()
+  .p <- dag  |> ggraph(layout = "sugiyama")
   coords <- coords[match(coords$name, .p$data$name),]
 
   # plot
