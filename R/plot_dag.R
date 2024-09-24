@@ -43,7 +43,7 @@
 #' # Adding labels
 #' model |>
 #'   plot_model(
-#'     labels = c("So \n here", "This", "That"),
+#'     labels = c("A long \n one", "This", "That"),
 #'     nodecol = "white", textcol = "black")
 #'
 #' # Controlling  positions and using math labels
@@ -141,9 +141,6 @@ plot_model <- function(model = NULL,
 
     dag  |>
       ggraph::ggraph(layout = "manual", x = coords$x, y = coords$y) +
-      ggraph::geom_node_point(size = nodesize,
-                              color = nodecol,
-                              shape = shape) +
       ggraph::geom_edge_arc(data = arc_selector("<->"),
                   start_cap = ggraph::circle(8, 'mm'),
                   end_cap = ggraph::circle(8, 'mm'),
@@ -152,13 +149,18 @@ plot_model <- function(model = NULL,
                    arrow = grid::arrow(length = grid::unit(4, 'mm')),
                    start_cap = ggraph::circle(8, 'mm'),
                    end_cap = ggraph::circle(8, 'mm'))  +
-      ggplot2::labs(title = latex2exp::TeX(title)) +
+      geom_point(data = coords,
+                 aes(x, y),
+                 size = nodesize,
+                 color = nodecol,
+                 shape = shape) +
       theme_void()  +
-      ggraph::geom_node_text(
+      ggplot2::geom_text(
         data = coords,
         aes(x, y, label = name),
         color = textcol,
-        size = textsize)
+        size = textsize) +
+      ggplot2::labs(title = latex2exp::TeX(title))
 
 }
 
