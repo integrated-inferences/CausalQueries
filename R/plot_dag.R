@@ -134,7 +134,8 @@ plot_model <- function(model = NULL,
     geom_node_point(size = 16, color = nodecol) +
     geom_edge_arc(data = arc_selector("<->"),
                   start_cap = circle(8, 'mm'),
-                  end_cap = circle(8, 'mm')) +
+                  end_cap = circle(8, 'mm'),
+                  linetype = "dashed") +
     geom_edge_link(data = arc_selector("->"),
                    arrow = arrow(length = unit(4, 'mm')),
                    start_cap = circle(8, 'mm'),
