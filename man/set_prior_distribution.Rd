@@ -22,7 +22,7 @@ Add `n_param x n_draws` database of possible parameter draws to the model.
 \examples{
 make_model('X -> Y') \%>\%
   set_prior_distribution(n_draws = 5) \%>\%
-  grab("prior_distribution")
+  inspect("prior_distribution")
 
 }
 \seealso{

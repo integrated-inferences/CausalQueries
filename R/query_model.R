@@ -29,7 +29,7 @@
 #' @importFrom stats sd weighted.mean
 #' @export
 #' @examples
-#' model <- make_model("X -> Y") %>%
+#' model <- make_model("X -> Y") |>
 #'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
 #'  # simple  queries

@@ -4,7 +4,7 @@
 #' realization of parameters, possibly drawn from model priors.
 #'
 #' By default, parameters is drawn from `using` argument
-#' (either from priors, posteriors, or from inspect(model, "parameters"))
+#' (either from priors, posteriors, or from `inspect(model, "parameters")`)
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types

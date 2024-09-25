@@ -57,7 +57,7 @@ model <- make_model("X -> Y") |>
 The posterior over parameters can be accessed thus:
 
 ```{r}
-grab(model, "posterior_distribution")
+inspect(model, "posterior_distribution")
 ```
 
 When querying a model you can request use of the posterior distribution with the `using` argument:
@@ -75,10 +75,10 @@ model |>
 You can access a summary of the parameter values and convergence information as produced by `stan` thus:
 
 ```{r}
-grab(model, "stan_summary")
+inspect(model, "stan_summary")
 ```
 
-This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column. In the printout above the first 6 rows show the distribution of the model parameters; the next 8 rows show the distribution over transformed parameters, here the causal types. The last row shows the unnormalized log density on Stan's unconstrained space which, as described in [Stan documentation](https://mc-stan.org/cmdstanr/reference/fit-method-lp.html) is intended to diagnose sampling efficiency and evaluate approximations. 
+This summary provides information on the distribution of parameters as well as convergence diagnostics, summarized in the `Rhat` column. In the printout above the first six rows show the distribution of the model parameters; the next eight rows show the distribution over transformed parameters, here the causal types. The last row shows the unnormalized log density on Stan's unconstrained space which, as described in [Stan documentation](https://mc-stan.org/cmdstanr/reference/fit-method-lp.html) is intended to diagnose sampling efficiency and evaluate approximations. 
 
 See [stan documentation](http://mc-stan.org/rstan/articles/stanfit_objects.html) for further details.
 
@@ -97,26 +97,26 @@ model <- make_model("X -> Y") |>
   update_model(data, refresh = 0, keep_fit = TRUE)
 ```
 
-Note that the summary for this raw output shows the labels used in the generic `stan` model: `lambda` for the vector of parameters, corresponding to the parameters in the parameters dataframe  (`grab(model, "parameters_df")`), and , if saved,  a vector `types` for the causal types (see `grab(model, "causal_types")`) and `w` for the event probabilities (`grab(model, "prior_event_probabilities")`). 
+Note that the summary for this raw output shows the labels used in the generic `stan` model: `lambda` for the vector of parameters, corresponding to the parameters in the parameters dataframe  (`inspect(model, "parameters_df")`), and , if saved,  a vector `types` for the causal types (see `inspect(model, "causal_types")`) and `w` for the event probabilities (`inspect(model, "prior_event_probabilities")`). 
 
 ```{r}
-model |> grab("stanfit")
+model |> inspect("stanfit")
 ```
 
 
 You can then  use diagnostic packages such as `bayesplot`.
 
 ```{r}
-model |> grab("stanfit") |>
+model |> inspect("stanfit") |>
   bayesplot::mcmc_pairs(pars = c("lambdas[3]", "lambdas[4]", "lambdas[5]", "lambdas[6]"))
 
 ```
       
 ```{r}
-np <- model |> grab("stanfit") |> bayesplot::nuts_params()
+np <- model |> inspect("stanfit") |> bayesplot::nuts_params()
 head(np) |> kable()
 
 model |> 
-  grab("stanfit") |>
+  inspect("stanfit") |>
   bayesplot::mcmc_trace(pars = "lambdas[5]", np = np) 
 ```

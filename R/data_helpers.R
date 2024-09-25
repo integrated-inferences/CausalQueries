@@ -42,7 +42,7 @@ get_data_families <- function(model,
   full_data <-
     filter(all_data, apply(all_data[, -1, drop = FALSE], 1,
                            function(j)
-                             ! any(is.na(j)))) %>%
+                             ! any(is.na(j)))) |>
     filter(event %in% possible_data_types)
 
   # Make E: Sign matrix used to see if data is
@@ -144,7 +144,7 @@ get_data_families <- function(model,
 #'
 #' df <- data.frame(X = c(0,1,NA), Y = c(0,0,1))
 #'
-#' df %>% collapse_data(model)
+#' df |> collapse_data(model)
 #'
 #'
 #' collapse_data(df, model, drop_NA = FALSE)
@@ -156,7 +156,7 @@ get_data_families <- function(model,
 #' data <- make_data(model, n = 0)
 #' collapse_data(data, model)
 #'
-#' model <- make_model('X -> Y') %>% set_restrictions('X[]==1')
+#' model <- make_model('X -> Y') |> set_restrictions('X[]==1')
 #' df <- make_data(model, n = 10)
 #' df[1,1] <- ''
 #' collapse_data(df, model)
@@ -203,7 +203,7 @@ collapse_data <- function(data,
         data_events$event <- as.character(data_events$event)
 
         # Merge in families
-        data_events <- left_join(data_families, data_events, by = "event") %>%
+        data_events <- left_join(data_families, data_events, by = "event") |>
           mutate(count = ifelse(is.na(count), 0, count))
 
     }
@@ -263,9 +263,9 @@ drop_empty_families <- function(data_events) {
 #' @examples
 #' \donttest{
 #' model <- make_model('X->M->Y')
-#' make_events(model, n = 5) %>%
+#' make_events(model, n = 5) |>
 #'   expand_data(model)
-#' make_events(model, n = 0) %>%
+#' make_events(model, n = 0) |>
 #'   expand_data(model)
 #'  }
 #'
@@ -348,7 +348,7 @@ data_type_names <- function(model, data) {
 #' @examples
 #' \donttest{
 #' make_model('X -> Y') |> get_all_data_types()
-#' model <- make_model('X -> Y') %>%
+#' model <- make_model('X -> Y') |>
 #'   set_restrictions(labels = list(Y = '00'), keep = TRUE)
 #'   get_all_data_types(model)
 #'   get_all_data_types(model, complete_data = TRUE)
@@ -411,8 +411,8 @@ get_all_data_types <- function(model,
 #' }
 
 minimal_event_data <- function(model){
-  make_data(model, n = 1) %>%
-    collapse_data(model) %>%
+  make_data(model, n = 1) |>
+    collapse_data(model) |>
     mutate(count = 0)
 }
 

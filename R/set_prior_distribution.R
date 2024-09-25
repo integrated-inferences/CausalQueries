@@ -11,7 +11,7 @@
 #' @importFrom dirmult rdirichlet
 #' @family prior_distribution
 #' @examples
-#' make_model('X -> Y') %>% make_prior_distribution(n_draws = 5)
+#' make_model('X -> Y') |> make_prior_distribution(n_draws = 5)
 #'
 make_prior_distribution <- function(model, n_draws = 4000) {
 
@@ -72,9 +72,9 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #' @export
 #' @family prior_distribution
 #' @examples
-#' make_model('X -> Y') %>%
-#'   set_prior_distribution(n_draws = 5) %>%
-#'   grab("prior_distribution")
+#' make_model('X -> Y') |>
+#'   set_prior_distribution(n_draws = 5) |>
+#'   inspect("prior_distribution")
 #'
 
 set_prior_distribution <- function(model, n_draws = 4000) {

@@ -66,7 +66,7 @@ testthat::test_that(
     expect_silent(
       CausalQueries:::plot_dag(model,
                                labels = LETTERS[1:3],
-                               label_color = "red")
+                               textcol = "red")
       )
     dev.off()
   })

@@ -60,7 +60,7 @@ get_parameter_matrix <- function(model) {
 #' @examples
 #' model <- make_model('X -> Y')
 #' P <- diag(8)
-#' colnames(P) <- inspect(model, "causal_types") %>% rownames()
+#' colnames(P) <- inspect(model, "causal_types") |> rownames()
 #' model <- set_parameter_matrix(model, P = P)
 
 set_parameter_matrix <- function(model, P = NULL) {
@@ -87,7 +87,7 @@ set_parameter_matrix <- function(model, P = NULL) {
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> Y')
-#' possible_types <- grab(model, "nodal_types")
+#' possible_types <- inspect(model, "nodal_types")
 #' df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 #' CausalQueries:::causal_type_names(df)
 #' }

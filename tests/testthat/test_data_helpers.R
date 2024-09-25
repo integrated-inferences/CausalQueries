@@ -63,10 +63,10 @@ testthat::test_that(desc = "collapse_data conditions work",
 
                     code = {
                       model <- make_model('X -> Y')
-                      data <- make_data(model, n = 4) %>%
+                      data <- make_data(model, n = 4) |>
                         collapse_data(model, drop_family = TRUE)
                       expect_true(!"strategy" %in% colnames(data))
-                      data <- make_data(model, n = 4) %>%
+                      data <- make_data(model, n = 4) |>
                         collapse_data(model, summary = TRUE)
                       expect_true(class(data) == "list")
                       expect_equal(names(data),
@@ -104,7 +104,7 @@ testthat::test_that(desc = "get_all_data_types errors",
                     code = {
                       model <- make_model("X -> Y")
                       expect_error(get_all_data_types(model, given = "Z == 0"))
-                      model <- make_model('X -> Y') %>%
+                      model <- make_model('X -> Y') |>
                         set_restrictions(labels = list(Y = '00'), keep = TRUE)
                       out <- get_all_data_types(model, given = "Y == 0")
                       expect_true(is.na(out$X[3]))

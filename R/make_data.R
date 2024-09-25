@@ -108,13 +108,13 @@ make_data <- function(
   }
 
   if(!is.null(n_steps) & !is.null(n)) {
-    if(max(n_steps %>% unlist) > n) {
+    if(max(n_steps |> unlist()) > n) {
       stop("n_step larger than n")
     }
   }
 
   if(!is.null(n_steps) & is.null(n)) {
-    n <- max(n_steps %>% unlist)
+    n <- max(n_steps |> unlist())
   }
 
   if(is.null(n_steps) & is.null(n)) {
@@ -185,11 +185,11 @@ make_data <- function(
   # Check length consistency
   roster <-
     tibble(
-      node_names = lapply(nodes, paste, collapse = ", ") %>% unlist,
+      node_names = lapply(nodes, paste, collapse = ", ") |> unlist(),
       nodes = nodes,
-      n_steps = n_steps %>% unlist,
-      probs = probs %>% unlist,
-      subsets = subsets %>% unlist
+      n_steps = n_steps |> unlist(),
+      probs = probs |> unlist(),
+      subsets = subsets |> unlist()
     )
 
   if (verbose) {
@@ -209,7 +209,7 @@ make_data <- function(
 		observed <- observe_data(
 			complete_data,
 			observed = observed,
-			nodes_to_observe = pars$nodes %>% unlist,
+			nodes_to_observe = pars$nodes |> unlist(),
 			prob = pars$probs,
 			m    = pars$n_steps,
 			subset = pars$subsets)
