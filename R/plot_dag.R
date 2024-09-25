@@ -135,7 +135,7 @@ plot_model <- function(model = NULL,
 
   # Ordering labels
   .p <- dag  |> ggraph::ggraph(layout = "sugiyama")
-  coords <- coords[match(coords$node, .p$data$name),]
+  coords <- coords[match(.p$data$name, coords$node),]
 
   # buffer
   buffer_x <- 0.05 * (max(coords$x) - min(coords$x))
@@ -159,7 +159,7 @@ plot_model <- function(model = NULL,
                  color = nodecol,
                  shape = shape) +
       theme_void()  +
-      ggplot2::geom_text(
+      geom_node_text(
         data = coords,
         aes(x, y, label = name),
         color = textcol,
