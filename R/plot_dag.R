@@ -146,7 +146,7 @@ plot_model <- function(model = NULL,
                   end_cap = ggraph::circle(8, 'mm'),
                   linetype = "dashed") +
       ggraph::geom_edge_link(data = arc_selector("->"),
-                   arrow = grid::arrow(length = grid::unit(4, 'mm')),
+                   arrow = grid::arrow(length = grid::unit(4, 'mm'), type = "closed"),
                    start_cap = ggraph::circle(8, 'mm'),
                    end_cap = ggraph::circle(8, 'mm'))  +
       geom_point(data = coords,

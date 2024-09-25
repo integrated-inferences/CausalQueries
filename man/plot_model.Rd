@@ -63,7 +63,7 @@ model |> plot_model() +
 # Adding labels
 model |>
   plot_model(
-    labels = c("So \n here", "This", "That"),
+    labels = c("A long \n one", "This", "That"),
     nodecol = "white", textcol = "black")
 
 # Controlling  positions and using math labels

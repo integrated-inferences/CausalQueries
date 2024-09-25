@@ -42,6 +42,7 @@
 #' \donttest{
 #'
 #' model <- make_model("X -> Y")
+#' data <- make_data(model, n = 4)
 #'
 #' inspect(model, what = "statement")
 #' inspect(model, what = "nodes")
@@ -50,16 +51,11 @@
 #' inspect(model, what = "causal_types")
 #' inspect(model, what = "prior_distribution")
 #' inspect(model, what = "posterior_distribution")
-#' inspect(model, what = "posterior_event_probabilities")
-#' inspect(model, what = "type_distribution")
-#' inspect(model, what = "data")
-#' inspect(model, what = "stanfit")
-#' inspect(model, what = "stan_objects")
 #'
-#' data_long   <- simulate_data(model, n = 4)
-#' data_short  <- collapse_data(data_long, model)
-#'
-#' model <- update_model(model, keep_type_distribution = FALSE)
+#' model <- update_model(model,
+#'   data = data,
+#'   keep_fit = TRUE,
+#'   keep_event_probabilities = TRUE)
 #'
 #' inspect(model, what = "posterior_distribution")
 #' inspect(model, what = "posterior_event_probabilities")
@@ -67,25 +63,6 @@
 #' inspect(model, what = "data")
 #' inspect(model, what = "stanfit")
 #' inspect(model, what = "stan_objects")
-#'
-#' model <-  update_model(model, data_long)
-#'
-#' inspect(model, what = "data")
-#'
-#' model <-  update_model(model, data_short)
-#'
-#' inspect(model, what = "data")
-#'
-#' model <- update_model(model,
-#'                       keep_type_distribution = TRUE,
-#'                       keep_event_probabilities = TRUE)
-#'
-#' inspect(model, what = "posterior_event_probabilities")
-#' inspect(model, what = "type_distribution")
-#'
-#' make_model("X -> Y") |>
-#'  inspect("prior_distribution", n_draws = 30)
-#'
 #' }
 #'
 inspect <- function(model, what = NULL, ...) {

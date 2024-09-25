@@ -21,7 +21,7 @@ collapse nodal types
 \examples{
 
 model <- make_model('X -> K -> Y')
-(nodal_types <- grab(model, "nodal_types", collapse = FALSE))
+(nodal_types <- inspect(model, "nodal_types"))
 CausalQueries:::collapse_nodal_types(nodal_types )
 }
 \keyword{internal}

@@ -31,7 +31,7 @@ print.causal_model <- function(x, ...) {
   if (!is.null(x$posterior_distribution) & !is.null(x$stan_objects)) {
     cat("\nModel has been updated and contains a posterior distribution with\n")
     cat(paste(x$stan_objects$stan_summary[[2]],"\n"))
-    cat("Use grab(model, 'stan_objects') to inspect stan summary\n\n")
+    cat("Use inspect(model, 'stan_objects') to inspect stan summary\n\n")
   }
 
   return(invisible(x))
@@ -56,7 +56,7 @@ print.causal_model <- function(x, ...) {
 #'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
 #'   \item \code{"prior_event_probabilities"} a vector of prior data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
 #'   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
-#'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
+#'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"inspect(prior_hyperparameters, c('M', 'Y'))"}
 #' }
 #'
 #' @examples
@@ -638,7 +638,7 @@ print.summary.causal_model <-
 
       # stan_objects
       if ("stanfit" %in% include) {
-        if (!is.null(x$stan_objects$stanfit)) {
+        if (!is.null(x$stan_objects$stanfit$stanfit)) {
           cat("\nStan model summary:\n")
           print(x$stan_objects)
         } else {

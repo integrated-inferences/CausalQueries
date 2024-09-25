@@ -31,7 +31,7 @@ Returns the object of class \code{summary.causal_model} that preserves the list 
   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
   \item \code{"prior_event_probabilities"} a vector of prior data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
   \item \code{"ambiguities_matrix"} a matrix mapping from causal types into data types,
-  \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"grab(prior_hyperparameters, c('M', 'Y'))"}
+  \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"inspect(prior_hyperparameters, c('M', 'Y'))"}
 }
 }
 \description{

@@ -136,7 +136,7 @@ make_nodal_types <- function(model,
 #' @examples
 #'
 #' model <- make_model('X -> K -> Y')
-#' (nodal_types <- grab(model, "nodal_types", collapse = FALSE))
+#' (nodal_types <- inspect(model, "nodal_types"))
 #' CausalQueries:::collapse_nodal_types(nodal_types )
 collapse_nodal_types <- function(nodal_types,
                                  include_node_names = FALSE) {
