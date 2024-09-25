@@ -37,7 +37,7 @@ that are possible from a model.
 \examples{
 \donttest{
 make_model('X -> Y') |> get_all_data_types()
-model <- make_model('X -> Y') \%>\%
+model <- make_model('X -> Y') |>
   set_restrictions(labels = list(Y = '00'), keep = TRUE)
   get_all_data_types(model)
   get_all_data_types(model, complete_data = TRUE)

@@ -24,14 +24,14 @@ uses that require a list of types, such as \code{set_restrictions}.
 \donttest{
 te('A', 'B')
 
-model <- make_model('X->Y') \%>\% set_restrictions(increasing('X', 'Y'))
+model <- make_model('X->Y') |> set_restrictions(increasing('X', 'Y'))
 query_model(model, list(ate = te('X', 'Y')),  using = 'parameters')
 
 # set_restrictions  breaks with te because it requires a listing
 # of causal types, not numeric output.
 }
 \dontrun{
-model <- make_model('X->Y') \%>\% set_restrictions(te('X', 'Y'))
+model <- make_model('X->Y') |> set_restrictions(te('X', 'Y'))
 }
 
 }

@@ -56,7 +56,7 @@ Calculated distribution of a query from a prior or
 posterior distribution of parameters
 }
 \examples{
-model <- make_model("X -> Y") \%>\%
+model <- make_model("X -> Y") |>
          set_parameters(c(.5, .5, .1, .2, .3, .4))
  \donttest{
  # simple  queries

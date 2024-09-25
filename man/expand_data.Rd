@@ -23,9 +23,9 @@ Expand compact data object to data frame
 \examples{
 \donttest{
 model <- make_model('X->M->Y')
-make_events(model, n = 5) \%>\%
+make_events(model, n = 5) |>
   expand_data(model)
-make_events(model, n = 0) \%>\%
+make_events(model, n = 0) |>
   expand_data(model)
  }
 

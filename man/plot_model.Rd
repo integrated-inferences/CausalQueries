@@ -40,12 +40,14 @@ If left empty, coordinates are randomly generated}
 ggplot's default palette}
 
 \item{nodesize}{Size of node.}
+
+\item{layout}{see}
 }
 \value{
 A ggplot object.
 }
 \description{
-Creates a plot of a DAG using ggplot functionality.  Unmeasured confounds  (<->) are indicated
+Creates a plot of a DAG using ggplot functionality and a Sugiyama layout from igraph.  Unmeasured confounds  (<->) are indicated
 then these are represented as curved dotted lines.  Users can control node sizes and colors as well as coordinates and label behavior. Other modifications can be made by adding additional ggplot layers.
 }
 \examples{
@@ -63,7 +65,7 @@ model |> plot_model() +
 # Adding labels
 model |>
   plot_model(
-    labels = c("A long \n one", "This", "That"),
+    labels = c("A long name for a \n node", "This", "That"),
     nodecol = "white", textcol = "black")
 
 # Controlling  positions and using math labels
@@ -74,7 +76,8 @@ model |> plot_model(
 }
 
 # DAG with unobserved confounding
-make_model('X -> K -> Y; X <-> Y') |> plot()
+make_model('X -> K -> Y; X <-> Y') |>
+  plot(x_coord = 1:3, y_coord = 1:3)
 
 }
 \keyword{internal}
