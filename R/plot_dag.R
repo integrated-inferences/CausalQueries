@@ -137,6 +137,10 @@ plot_model <- function(model = NULL,
   .p <- dag  |> ggraph::ggraph(layout = "sugiyama")
   coords <- coords[match(coords$node, .p$data$name),]
 
+  # buffer
+  buffer_x <- 0.05 * (max(coords$x) - min(coords$x))
+  buffer_y <- 0.05 * (max(coords$y) - min(coords$y))
+
   # plot
 
     dag  |>
@@ -160,7 +164,10 @@ plot_model <- function(model = NULL,
         aes(x, y, label = name),
         color = textcol,
         size = textsize) +
-      ggplot2::labs(title = latex2exp::TeX(title))
+      ggplot2::labs(title = latex2exp::TeX(title)) +
+      xlim(min(coords$x) - buffer_x, max(coords$x) + buffer_x) +
+      ylim(min(coords$y) - buffer_y, max(coords$y) + buffer_y)
+
 
 }
 

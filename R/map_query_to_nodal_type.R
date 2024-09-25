@@ -86,7 +86,7 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
     # Y: potential outcomes: possible nodal types (restrictions respected)
     # dataset assigned to "node"
-    assign(node, get_nodal_types(model, collapse = FALSE)[[node]] %>% t)
+    assign(node, get_nodal_types(model, collapse = FALSE)[[node]] |> t())
 
     # Magic: evaluate the query expression on potential outcomes
     # This is a hard line; we use different values of Xs to pick out
@@ -229,12 +229,12 @@ expand_nodal_expression <- function(model,
   query <- gsub(" ", "", query)
 
   # Add dots to query parts
-  w_query <- gsub("\\(|\\)", "", query) %>%
-    stringr::str_split(operators) %>%
-    unlist() %>%
+  w_query <- gsub("\\(|\\)", "", query) |>
+    stringr::str_split(operators) |>
+    unlist() |>
     vapply(function(x) {
       trimws(x)
-    }, character(1)) %>%
+    }, character(1)) |>
     vapply(add_dots, model = model, character(1))
   w_query <- gsub(" ", "", w_query)
 

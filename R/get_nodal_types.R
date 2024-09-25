@@ -74,7 +74,7 @@ uncollapse_nodal_types <- function(nodal_types) {
     # Add row names
     rownames(x[[j]]) <- apply(x[[j]], 1, paste, collapse = "")
     # Add col names
-    colnames(x[[j]]) <- perm(rep(1, log(ncol(x[[j]]), 2))) %>%
+    colnames(x[[j]]) <- perm(rep(1, log(ncol(x[[j]]), 2))) |>
       apply(1, paste, collapse = "")
   }
 

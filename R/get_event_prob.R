@@ -35,12 +35,12 @@ get_event_probabilities <- function(model,
     map <- t(attr(parmap, "map"))
 
     x <-
-        (parmap * parameters) %>%
-            data.frame() %>%
-            group_by(model$parameters_df$node) %>%
-            summarize_all(sum) %>%        # Probability of each node
-     select(-1) %>%
-     summarize_all(prod) %>%              # Probability of data type
+        (parmap * parameters) |>
+            data.frame() |>
+            group_by(model$parameters_df$node) |>
+            summarize_all(sum) |>        # Probability of each node
+     select(-1) |>
+     summarize_all(prod) |>              # Probability of data type
      t()
 
     # Reorder s.t. rownames(x) == colnames(A)
@@ -48,13 +48,13 @@ get_event_probabilities <- function(model,
 
     # Produce conditional probabilities in the event that data is given
     if(!is.null(given)) {
-      event_probs <- model %>%
-        get_all_data_types(complete_data = TRUE) %>%
+      event_probs <- model |>
+        get_all_data_types(complete_data = TRUE) |>
         mutate(
           event_probs = event_probs,
           event_probs = ifelse(eval(parse(text = given)), event_probs, 0),
-          event_probs = event_probs/sum(event_probs)) %>%
-        select(event_probs) %>% as.matrix()
+          event_probs = event_probs/sum(event_probs)) |>
+        select(event_probs) |> as.matrix()
     }
 
     colnames(event_probs) <- "event_probs"

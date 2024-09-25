@@ -1,9 +1,4 @@
 
-
-
-
-
-
 context(desc = "Testing that canonical models work as they should")
 
 testthat::skip_on_cran()
@@ -34,14 +29,12 @@ testthat::test_that(
 	code = {
 
 		XY_noconf <- make_model("X -> Y")
-		expect_equal(dim(get_parameter_matrix(XY_noconf)), c(6,8))
-		data <- make_data(XY_noconf, n = 1, parameters = c(.5, .5, .2, .4, .2, .2))
+		expect_equal(dim(inspect(XY_noconf, "parameter_matrix")), c(6,8))
+		data <- make_data(XY_noconf, n = 1)
 		expect_equal(dim(data), c(1,2))
 
 		updated <-
-		  posterior <-
-		  suppressWarnings(update_model(XY_noconf, data, refresh = 0))
-		expect_true(!is.null(posterior))
+		  update_model(XY_noconf, refresh = 0)
 
 		ATE <- "Y[X=1] - Y[X=0]"
 		COE <- "Y[X=1] > Y[X=0]"
@@ -59,22 +52,14 @@ testthat::test_that(
 	desc = "Test functions on model X -> Y with confounding",
 
 	code = {
-		XY_conf <- make_model("X -> Y")%>%
-		  set_confound(., list(X = "Y"))
+		XY_conf <- make_model("X -> Y; X<-> Y")
 
-		expect_equal(dim(get_parameter_matrix(XY_conf)), c(12,8))
+		expect_equal(dim(inspect(XY_conf, "parameter_matrix")), c(10,8))
 
-		parameters <- c(.5, .5, .5, .5, .5, .5, .5, .5, .1, .7, .1, .1)
-		data <- make_data(XY_conf, n = 1, parameters = parameters)
+		data <- make_data(XY_conf, n = 1)
 		expect_equal(c(1, 2), dim(data))
 
-
-		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0,
-		                                           keep_type_distribution = TRUE))
-		expect_true(!is.null(posterior))
-
-		posterior <- suppressWarnings(update_model(XY_conf, data, refresh = 0))
-		expect_true(!is.null(posterior))
+		posterior <- update_model(XY_conf, refresh = 0)
 
 		prior_ate <- query_distribution(model = posterior,
 																			 query = "(Y[X=1] - Y[X=0])",

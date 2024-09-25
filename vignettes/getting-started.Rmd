@@ -56,7 +56,7 @@ plot(iv_model)
 
 
 ```{r}
-xy_model |> grab("parameters_df") |> kable()
+xy_model |> inspect("parameters_df") |> kable()
 ```
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
@@ -101,7 +101,7 @@ xy_model <-
 
 ```{r}
 
-xy_model |> grab("posterior_distribution") |> 
+xy_model |> inspect("posterior_distribution") |> 
   head() |> kable()
 
 ```

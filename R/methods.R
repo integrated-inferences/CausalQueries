@@ -154,7 +154,7 @@ summary.causal_model <- function(object, ...) {
 #'   \item \code{"causal_types"} A data frame listing causal types and the nodal types that produce them,
 #'   \item \code{"nodal_types"} A list with the nodal types of the model,
 #'   \item \code{"data_types"} A list with the all data types consistent with the model; for options see `"?get_all_data_types"`,
-#'   \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `grab(prior_hyperparameters, c('M', 'Y'))`
+#'   \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `inspect(prior_hyperparameters, c('M', 'Y'))`
 #'   \item \code{"prior_distribution"} A data frame of the parameter prior distribution,
 #'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single realization of parameters; for options see `"?get_event_probabilities"`,
 #'   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
@@ -638,7 +638,7 @@ print.summary.causal_model <-
 
       # stan_objects
       if ("stanfit" %in% include) {
-        if (!is.null(x$stan_objects$stanfit$stanfit)) {
+        if (!is.null(x$stan_objects$stanfit)) {
           cat("\nStan model summary:\n")
           print(x$stan_objects)
         } else {

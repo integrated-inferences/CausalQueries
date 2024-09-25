@@ -42,12 +42,12 @@ prep_stan_data <- function(model,
 
     # 2 Node set handlers
   i <- NULL
-    nodes_sets <- model$parameters_df %>%
-      dplyr::mutate(i = 1:n()) %>%
-      dplyr::group_by(node) %>%
+    nodes_sets <- model$parameters_df |>
+      dplyr::mutate(i = 1:n()) |>
+      dplyr::group_by(node) |>
       dplyr::summarize(n_starts = i[1],
                        n_ends = i[n()],
-                       n_node_each = n()) %>%
+                       n_node_each = n()) |>
       dplyr::arrange(n_starts)
 
     n_starts <- nodes_sets$n_starts

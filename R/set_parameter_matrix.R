@@ -60,7 +60,7 @@ get_parameter_matrix <- function(model) {
 #' @examples
 #' model <- make_model('X -> Y')
 #' P <- diag(8)
-#' colnames(P) <- inspect(model, "causal_types") %>% rownames()
+#' colnames(P) <- inspect(model, "causal_types") |> rownames()
 #' model <- set_parameter_matrix(model, P = P)
 
 set_parameter_matrix <- function(model, P = NULL) {

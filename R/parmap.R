@@ -34,18 +34,18 @@ make_parmap <- function(model, A = NULL, P = NULL) {
     paste(model$parameters_df$given[j == 1], collapse = " ")
   })
 
-  .type_matrix <- t(P) %>%
-    data.frame() %>%
-    mutate(type = type, d = data_names) %>%
-    group_by(d, type) %>% summarize_all(max) %>%
-    ungroup
+  .type_matrix <- t(P) |>
+    data.frame() |>
+    mutate(type = type, d = data_names) |>
+    group_by(d, type) |> summarize_all(max) |>
+    ungroup()
 
   # reorder -- so that order is consistent with
   .type_matrix <- .type_matrix[order(match(.type_matrix$d, colnames(A))), ]
 
 
-  type_matrix <- .type_matrix %>%
-    select(-d, -type) %>%
+  type_matrix <- .type_matrix |>
+    select(-d, -type) |>
     t()
 
   colnames(type_matrix) <- .type_matrix$d

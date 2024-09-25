@@ -108,7 +108,7 @@ test_that("inspect outputs correct data", {
 })
 
 test_that("inspect outputs correct stanfit", {
-  expect_output(inspect(model, what = "stanfit"), "Stan model summary:")
+  expect_output(inspect(model, what = "stanfit"), "Inference for Stan model: simplexes.")
 })
 
 test_that("inspect outputs correct stan_objects", {
