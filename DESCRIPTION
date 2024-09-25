@@ -15,7 +15,7 @@ Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role
              person("Julio", "Solis", email = "juliosolisar@gmail.com", role = c("ctb")),
              person("Georgiy", "Syunyaev", email = "georgiy.syunyaev@vanderbilt.edu", role = c("aut"),
                     comment = c(ORCID = "0000-0002-4391-6313")))
-Description: Users can declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands.  Model definition makes use of 'dagitty' functionality. Updating is implemented in 'stan'. The approach used in 'CausalQueries' is a generalization of the 'biqq' models described in "Mixing Methods: A Bayesian Approach" (Humphreys and Jacobs, 2015, <DOI:10.1017/S0003055415000453>). The conceptual extension makes use of work on probabilistic causal models described in Pearl's Causality (Pearl, 2009, <DOI:10.1017/CBO9780511803161>).
+Description: Users can declare causal models over binary nodes, update beliefs about causal types given data and calculate arbitrary queries.  Updating is implemented in 'stan'.  See Humphreys and Jacobs, 2023 (<DOI: 10.1017/9781316718636>) and Pearl, 2009 (<DOI:10.1017/CBO9780511803161>).
 BugReports: https://github.com/integrated-inferences/CausalQueries/issues
 License: MIT + file LICENSE
 Encoding: UTF-8

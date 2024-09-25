@@ -9,7 +9,6 @@
 #' @param y_coord A vector of y coordinates for DAG nodes.
 #'   If left empty, coordinates are randomly generated
 #' @param labels Optional labels for nodes
-#' @param label_color Color for labels, if provided. Defaults to darkgrey
 #' @param title String specifying title of graph
 #' @param textcol String specifying color of text labels
 #' @param textsize Numeric, size of text labels
@@ -17,11 +16,14 @@
 #' @param nodecol String indicating color of node that is accepted by
 #'   ggplot's default palette
 #' @param nodesize Size of node.
-#' @return A DAG plot in ggplot style.
+#' @return A ggplot object.
 #'
 #' @keywords internal
 #' @import dplyr
 #' @import ggplot2
+#' @import ggraph
+#' @importFrom grid arrow
+#' @importFrom grid unit
 #' @importFrom graphics plot
 #' @importFrom latex2exp TeX
 #'
@@ -29,35 +31,37 @@
 #' @examples
 #'
 #' \dontrun{
-
 #' model <- make_model('X -> K -> Y')
 #'
 #' # Simple plot
 #' model |> plot_model()
 #'
-#' # Adding addition layers
-#' model |> plot_model() + theme(panel.border = element_rect(fill=NA))
+#' # Adding additional layers
+#' model |> plot_model() +
+#'   ggplot2:: theme(panel.border = ggplot2::element_rect(fill=NA))
 #'
 #' # Adding labels
-#' model |> plot_model(labels = c("A long label for X", "This", "That"),
-#'  nodecol = "white")
+#' model |>
+#'   plot_model(
+#'     labels = c("A long \n one", "This", "That"),
+#'     nodecol = "white", textcol = "black")
 #'
 #' # Controlling  positions and using math labels
 #' model |> plot_model(
-#'     x_coord = 1:2,
-#'     y_coord = 1:2,
+#'     x_coord = 0:2,
+#'     y_coord = 0:2,
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
 #' # DAG with unobserved confounding
 #' make_model('X -> K -> Y; X <-> Y') |> plot()
+#'
 
 
 plot_model <- function(model = NULL,
                        x_coord = NULL,
                        y_coord = NULL,
                        labels = NULL,
-                       label_color = "darkgrey",
                        title = "",
                        textcol = 'white',
                        textsize = 3.88,
@@ -65,8 +69,6 @@ plot_model <- function(model = NULL,
                        nodecol = 'black',
                        nodesize = 16
 ) {
-
-  x <- y <- xend <- yend <- name <- NULL
 
   # Checks
   if(is.null(model)) {
@@ -105,7 +107,9 @@ plot_model <- function(model = NULL,
   statement <- model$statement
   nodes <- as.character(model$nodes)
 
-  dag <- make_dag(statement)
+  dag <- make_dag(statement) |>
+    dplyr::rename(x = v, y = w) |>
+    dplyr::mutate(weight = 1)
 
   if (is.null(x_coord) && is.null(y_coord)) {
     coords <- position_nodes(dag, nodes)
@@ -118,81 +122,46 @@ plot_model <- function(model = NULL,
   }
 
   coords <- coords |>
-    dplyr::mutate(x = x - mean(coords$x),
-                  y = y - mean(coords$y))
+    dplyr::mutate(
+      x = x - mean(coords$x),
+      y = y - mean(coords$y))
 
-  dag <- dag |>
-    dplyr::left_join(coords, by = list(x = "w", y = "node")) |>
-    magrittr::set_colnames(c("name","to","direction","xend","yend"))
+  if (is.null(labels)) {
+    coords$name <- nodes
+  } else {
+    coords$name <- labels
+  }
 
-  dag_plot <- data.frame(
-    name = nodes
-  ) |>
-    dplyr::left_join(coords, by = list(x = "name", y = "node")) |>
-    dplyr::left_join(dag, "name")
 
-  # set plot extent
-  extent_adjust <- nodesize / 100
-
-  extent <- list(
-    range(dag_plot$x, na.rm = TRUE) + c(-extent_adjust, extent_adjust),
-    range(dag_plot$y, na.rm = TRUE) + c(-extent_adjust, extent_adjust)
-  )
-
-  # avoid edge / node overlap
-  edges <- adjust_edge(dag_plot, nodesize, extent)
+  # Ordering labels
+  .p <- dag  |> ggraph::ggraph(layout = "sugiyama")
+  coords <- coords[match(coords$node, .p$data$name),]
 
   # plot
-  p <-
-    ggplot() +
-    geom_curve(
-      data = dag_plot[dag_plot$direction == "<->" & !is.na(dag_plot$direction == "<->"), ],
-      aes(x = x, y = y, xend = xend, yend = yend),
-      curvature = 0.4,
-      linetype = "dotted"
-    ) +
-    geom_point(
-      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
-      aes(x = x, y = y),
-      size = 1.3 * nodesize, color = "white", shape = shape
-    ) +
-    geom_point(
-      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
-      aes(x = x, y = y),
-      size = nodesize, color = nodecol, shape = shape
-    ) +
-    geom_segment(
-      data = edges[edges$direction == "->", ],
-      aes(x = x, y = y, xend = xend, yend = yend),
-      arrow = arrow(type = "closed", length = unit(5, "pt"))
-    ) +
-    labs(title = latex2exp::TeX(title)) +
-    scale_x_continuous(limits = extent[[1]]) +
-    scale_y_continuous(limits = extent[[2]]) +
-    theme_void()  +
 
-    coord_fixed()
+    dag  |>
+      ggraph::ggraph(layout = "manual", x = coords$x, y = coords$y) +
+      ggraph::geom_edge_arc(data = arc_selector("<->"),
+                  start_cap = ggraph::circle(8, 'mm'),
+                  end_cap = ggraph::circle(8, 'mm'),
+                  linetype = "dashed") +
+      ggraph::geom_edge_link(data = arc_selector("->"),
+                   arrow = grid::arrow(length = grid::unit(4, 'mm')),
+                   start_cap = ggraph::circle(8, 'mm'),
+                   end_cap = ggraph::circle(8, 'mm'))  +
+      geom_point(data = coords,
+                 aes(x, y),
+                 size = nodesize,
+                 color = nodecol,
+                 shape = shape) +
+      theme_void()  +
+      ggplot2::geom_text(
+        data = coords,
+        aes(x, y, label = name),
+        color = textcol,
+        size = textsize) +
+      ggplot2::labs(title = latex2exp::TeX(title))
 
-  if(is.null(labels)) {
-    p <-
-      p +
-      geom_text(
-      data = dplyr::distinct(dag_plot, name, .keep_all = TRUE),
-      aes(x = x, y = y, label = name),
-      size = textsize, color = textcol
-    )
-  } else {
-    p <-
-      p +
-      geom_text(
-        data = dplyr::distinct(dag_plot, name, .keep_all = TRUE) |>
-          mutate(label = labels),
-        aes(x = x, y = y, label = label),
-        size = textsize, color = label_color
-      )
-  p
-  }
-  p
 }
 
 #' @export
@@ -204,37 +173,17 @@ plot.causal_model <- function(x, ...) {
 #' Alias
 plot_dag <- plot_model
 
-## edge adjustment -------------------------------------------------------------
 
-#' internal helper
-#' adjust_edge moves the base and tip of edge arrows so as to avoid overlap
-#' with nodes
-#' @keywords internal
+## helper
 
-adjust_edge <- function(dag, nodesize, extent) {
-
-  dag <- tidyr::drop_na(dag)
-
-  adjustment <- mean(nodesize * sapply(extent, diff) / 300)
-
-
-  for(i in 1:nrow(dag)) {
-    Dx <- dag[i, "xend"] - dag[i, "x"] + rnorm(1, 0, .0001) # avoid perfect flatness
-    Dy <- dag[i, "yend"] - dag[i, "y"] + rnorm(1, 0, .0001) # avoid perfect flatness
-    b =  Dy/Dx
-    dx = sqrt(adjustment^2/(1+b^2)) * sign(Dx)
-    dy = b*dx  # * sign(Dy)
-
-
-    # Adjust positions
-    dag[i, "x"] <- dag[i, "x"] + dx
-    dag[i, "y"] <- dag[i, "y"] + dy
-    dag[i, "xend"] <- dag[i, "xend"] - dx
-    dag[i, "yend"] <- dag[i, "yend"] - dy
+arc_selector <- function(x) {
+  function(layout) {
+    edges <- get_edges()(layout)
+    res <- edges[edges$e == x, ]
+    res
   }
-
-  return(dag)
 }
+
 
 
 

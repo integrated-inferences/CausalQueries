@@ -17,7 +17,7 @@
 
 \item{x}{An object of \code{summary.causal_model} class, produced using \code{summary.causal_model}.}
 
-\item{include}{A character string specifying the objects summaries to print in addition to causal statement. Defaults to \code{NULL} printing DAG data frame, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
+\item{include}{A character string specifying the objects summaries to print in addition to causal statement. Defaults to \code{NULL} printing causal statement, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
 }
 \value{
 Returns the object of class \code{summary.causal_model} that preserves the list structure of \code{causal_model} class and adds the following additional elements:
@@ -38,9 +38,8 @@ Returns the object of class \code{summary.causal_model} that preserves the list 
 summary method for class "\code{causal_model}".
 }
 \details{
-\code{print.summary.causal_model} reports causal statement, DAG data frame, full specification of nodal types and summary of model restrictions. By specifying `include` argument users can instead print a custom summary of any set of the following objects contained in the `summary.causal_model`:
+\code{print.summary.causal_model} reports causal statement, full specification of nodal types and summary of model restrictions. By specifying `include` argument users can instead print a custom summary of any set of the following objects contained in the `summary.causal_model`:
 \itemize{
-  \item \code{"dag"} A data frame with columns ‘parent’ and ‘children’ indicating how nodes relate to each other,
   \item \code{"nodes"} A list containing the nodes in the model,
   \item \code{"parents"} a list of parents of all nodes in a model,
   \item \code{"parents_df"} a data frame listing nodes, whether they are root nodes or not, and the number and names of parents they have,
@@ -72,7 +71,7 @@ model <-
   update_model(
     keep_event_probabilities = TRUE,
     keep_fit = TRUE,
-    data = simulate_data(model, n = 100))
+    data = make_data(model, n = 100))
 
 summary(model)
 
@@ -96,8 +95,7 @@ model <-
     keep_fit = TRUE,
     data = simulate_data(model, n = 100))
 
-print(summary(model), include = "dag")
-print(summary(model), include = c("dag", "nodes"))
+print(summary(model), include = c("statement", "nodes"))
 print(summary(model), include = "parameters_df")
 print(summary(model), include = "posterior_event_probabilities")
 print(summary(model), include = "posterior_distribution")
