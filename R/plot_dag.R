@@ -44,7 +44,7 @@
 #' # Adding labels
 #' model |>
 #'   plot_model(
-#'     labels = c("A long \n one", "This", "That"),
+#'     labels = c("A long name for a \n node", "This", "That"),
 #'     nodecol = "white", textcol = "black")
 #'
 #' # Controlling  positions and using math labels
@@ -55,7 +55,8 @@
 #' }
 #'
 #' # DAG with unobserved confounding
-#' make_model('X -> K -> Y; X <-> Y') |> plot()
+#' make_model('X -> K -> Y; X <-> Y') |>
+#'   plot(x_coord = 1:3, y_coord = 1:3)
 #'
 
 
@@ -104,6 +105,7 @@ plot_model <- function(model = NULL,
     stop("length of labels supplied must equal number of nodes")
   }
 
+
   # generate dag frame
   dag <-
     model$statement |>
@@ -114,6 +116,9 @@ plot_model <- function(model = NULL,
   # Figure our ggraph data structure
   coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
     dplyr::select(x, y, name)
+
+  buffer_x <- 0.05 * (max(coords$x) - min(coords$x))
+  buffer_y <- 0.05 * (max(coords$y) - min(coords$y))
 
   # Manual coordinate  override
   nodes <- as.character(model$nodes)
@@ -132,7 +137,8 @@ plot_model <- function(model = NULL,
       ggraph::geom_edge_arc(data = arc_selector("<->"),
                   start_cap = ggraph::circle(8, 'mm'),
                   end_cap = ggraph::circle(8, 'mm'),
-                  linetype = "dashed") +
+                  linetype = "dashed",
+                  strength = .3) +
       ggraph::geom_edge_link(data = arc_selector("->"),
                    arrow = grid::arrow(length = grid::unit(4, 'mm'), type = "closed"),
                    start_cap = ggraph::circle(8, 'mm'),
@@ -148,7 +154,9 @@ plot_model <- function(model = NULL,
         aes(x, y, label = name),
         color = textcol,
         size = textsize) +
-      ggplot2::labs(title = latex2exp::TeX(title))
+      ggplot2::labs(title = latex2exp::TeX(title)) +
+     xlim(min(coords$x) - buffer_x, max(coords$x) + buffer_x)+
+     ylim(min(coords$y) - buffer_y, max(coords$y) + buffer_y)
 
 }
 
