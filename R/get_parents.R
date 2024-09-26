@@ -2,6 +2,8 @@
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{list} of parents in a DAG
+#' @noRd
+#' @keywords internal
 
 get_parents <- function(model) {
   parents <- list()

@@ -3,6 +3,7 @@
 #' Access the posterior distribution from the model if one has been added via `update_model`.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @noRd
 #' @keywords internal
 #' @return A `data.frame` with parameters draws
 #' @family posterior_distribution

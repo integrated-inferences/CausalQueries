@@ -7,6 +7,8 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame}, the parameter matrix, mapping from parameters
 #'   to causal types
+#' @keywords internal
+#' @noRd
 
 make_parameter_matrix <- function(model) {
 
@@ -62,6 +64,7 @@ get_parameter_matrix <- function(model) {
 #' P <- diag(8)
 #' colnames(P) <- inspect(model, "causal_types") |> rownames()
 #' model <- set_parameter_matrix(model, P = P)
+#' @keywords internal
 
 set_parameter_matrix <- function(model, P = NULL) {
 
@@ -81,7 +84,6 @@ set_parameter_matrix <- function(model, P = NULL) {
 #' Names for causal types
 #' @param causal_types A \code{data.frame} whose rows containing the 0-1 digits
 #'   that conform the causal types.
-#' @keywords internal
 #' @return A \code{data.frame} whose rows contain the character values that
 #'   conform each causal type in a model.
 #' @examples
@@ -91,6 +93,8 @@ set_parameter_matrix <- function(model, P = NULL) {
 #' df <- data.frame(expand.grid(possible_types, stringsAsFactors = FALSE))
 #' CausalQueries:::causal_type_names(df)
 #' }
+#' @noRd
+#' @keywords internal
 
 causal_type_names <- function(causal_types) {
   for (j in seq_len(ncol(causal_types))) {

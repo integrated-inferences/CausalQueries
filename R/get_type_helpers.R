@@ -5,6 +5,7 @@
 #'@param statement A character. A quoted causal statement.
 #'@return Returns name of nodes present in a statement
 #'@keywords internal
+#'@noRd
 #'@importFrom stringr boundary str_split
 
 nodes_in_statement <- function(nodes, statement) {
@@ -31,7 +32,8 @@ list_non_parents <- function(model, node) {
 #'@return A causal query expression with all parents nodes set to
 #'  either 0, 1 or wildcard '.'
 #'@keywords internal
-
+#'@noRd
+#'
 add_wildcard <- function(node,
                          statement,
                          parents,

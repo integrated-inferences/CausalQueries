@@ -1,8 +1,16 @@
+#' Query helpers
+#'
+#' Various helpers to describe queries or parts of queries in natural language.
+#'
+#' @name query_helpers
+NULL
+#> NULL
+
 
 #' Make monotonicity statement (positive)
 #'
 #' Generate a statement for Y monotonic (increasing) in X
-#'
+#' @rdname query_helpers
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
@@ -27,6 +35,7 @@ increasing <- function(X, Y) {
 #'
 #' Generate a statement for Y weakly monotonic (increasing) in X
 #'
+#' @rdname query_helpers
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
@@ -51,6 +60,7 @@ non_decreasing <- function(X, Y) {
 #'
 #' Generate a statement for Y monotonic (decreasing) in X
 #'
+#' @rdname query_helpers
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
@@ -74,6 +84,7 @@ decreasing <- function(X, Y) {
 #'
 #' Generate a statement for Y weakly monotonic (not increasing) in X
 #'
+#' @rdname query_helpers
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
@@ -98,6 +109,7 @@ non_increasing <- function(X, Y) {
 #'
 #' Generate a statement for X1, X1 interact in the production of Y
 #'
+#' @rdname query_helpers
 #' @param X1 A character. The quoted name of the input node 1.
 #' @param X2 A character. The quoted name of the input node 2.
 #' @param Y A character. The quoted name of the outcome node.
@@ -154,6 +166,7 @@ interacts <- function(X1, X2, Y) {
 #'
 #' Generate a statement for X1, X1 complement each other in the production of Y
 #'
+#' @rdname query_helpers
 #' @param X1 A character. The quoted name of the input node 1.
 #' @param X2 A character. The quoted name of the input node 2.
 #' @param Y A character. The quoted name of the outcome node.
@@ -208,6 +221,7 @@ complements <- function(X1, X2, Y) {
 #' Generate a statement for X1, X1 substitute for each other
 #' in the production of Y
 #'
+#' @rdname query_helpers
 #' @param X1 A character. The quoted name of the input node 1.
 #' @param X2 A character. The quoted name of the input node 2.
 #' @param Y A character. The quoted name of the outcome node.
@@ -267,6 +281,7 @@ substitutes <- function(X1, X2, Y) {
 #' This is useful for some purposes such as querying a model, but not for
 #' uses that require a list of types, such as \code{set_restrictions}.
 #'
+#' @rdname query_helpers
 #' @param X A character. The quoted name of the input node
 #' @param Y A character. The quoted name of the outcome node
 #' @family statements
@@ -302,6 +317,7 @@ te <- function(X, Y) {
 #' @param param_list List of parameters
 #' @param call_name Name of the call.
 #' @keywords internal
+#' @noRd
 #' @return If appropriate, it returns error message.
 check_string_input <- function(param_list = list(), call_name = NULL) {
     for (i in seq_along(param_list)) {

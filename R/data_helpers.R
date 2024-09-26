@@ -11,6 +11,7 @@
 #'   Defaults to `FALSE`.
 #' @return Returns indices and ambiguity matrix
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom dplyr filter
 #' @examples

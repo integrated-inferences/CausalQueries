@@ -160,10 +160,6 @@ plot.causal_model <- function(x, ...) {
 }
 
 
-#' Alias
-plot_dag <- plot_model
-
-
 ## helper
 
 arc_selector <- function(x) {

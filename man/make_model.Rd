@@ -8,7 +8,7 @@ make_model(statement, add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal
-relations using \link{dagitty} syntax. Only directed relations are
+relations using \code{dagitty} syntax. Only directed relations are
 permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
 
 \item{add_causal_types}{Logical. Whether to create and attach causal
@@ -37,7 +37,7 @@ following components:
   nodal types that produce them}
 }
 \description{
-\code{make_model} uses \link{dagitty} syntax and functionality to
+\code{make_model} uses \code{dagitty} syntax and functionality to
 specify nodes and edges of a graph. Implied causal types are calculated
 and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, \code{P}, by

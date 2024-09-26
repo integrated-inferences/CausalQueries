@@ -36,7 +36,7 @@ of Y are returned conditional on different values of parents, whether or
 not these values of the parents obtain given restrictions under the model.
 
 \code{realise_outcomes} starts off by creating types
-  (via \code{\link{get_nodal_types}}). It then takes types of endogenous
+  (via \code{get_nodal_types}). It then takes types of endogenous
   and reveals their outcome based on the value that their parents took.
   Exogenous nodes outcomes correspond to their type.
 }

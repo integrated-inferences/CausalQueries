@@ -10,7 +10,7 @@ clean_statement(statement)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal
-relations using \link{dagitty} syntax.}
+relations using \code{dagitty} syntax.}
 }
 \value{
 a list of nodes and edges specified in the input statement

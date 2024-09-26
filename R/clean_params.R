@@ -7,6 +7,7 @@
 #'   Defaults to TRUE
 #' @return A parameters \code{data.frame}  with names and where parameters
 #'   sum to 1.
+#' @noRd
 #' @keywords internal
 #' @examples
 #' \donttest{
@@ -58,6 +59,7 @@ clean_params <- function(parameters_df, warning = TRUE) {
 #' Clean parameter vector
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
+#' @noRd
 #' @keywords internal
 #' @return A vector of named parameters summing to 1.
 clean_param_vector <- function(model, parameters) {

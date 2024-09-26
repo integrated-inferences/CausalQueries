@@ -575,9 +575,10 @@ restrict_by_labels <- function(model,
 
 
 #' Get type names
-#' @param nodal_types Nodal types of a model. See \code{\link{get_nodal_types}}.
+#' @param nodal_types Nodal types of a model. See \code{get_nodal_types}.
 #' @return A vector containing causal type names
 #' @keywords internal
+#' @noRd
 
 
 get_type_names <- function(nodal_types) {
@@ -594,6 +595,7 @@ get_type_names <- function(nodal_types) {
 #'   characters '?' to be unpacked.
 #' @return A type label with wildcard characters '?' substituted by 0 and 1.
 #' @keywords internal
+#' @noRd
 
 
 unpack_wildcard <- function(x) {
@@ -618,6 +620,7 @@ unpack_wildcard <- function(x) {
 #'   rows to be dropped from causal types data.frame.
 #' @return A \code{data.frame} containing updated causal types in a model
 #' @keywords internal
+#' @noRd
 #' @examples
 #' CausalQueries:::update_causal_types(make_model('X->Y'))
 

@@ -28,3 +28,4 @@ P <- diag(8)
 colnames(P) <- inspect(model, "causal_types") |> rownames()
 model <- set_parameter_matrix(model, P = P)
 }
+\keyword{internal}

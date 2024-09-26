@@ -8,7 +8,8 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A vector with probabilities of vector of causal types
-#' @export
+#' @keywords internal
+#' @noRd
 
 get_type_prob <- function(model,
                           P = NULL,
@@ -41,6 +42,7 @@ get_type_prob <- function(model,
 #' @param param_dist A \code{matrix}.  Distribution of parameters.
 #'   Optional for speed.
 #' @keywords internal
+#' @noRd
 #' @return A \code{matrix} of type probabilities.
 
 get_type_prob_multiple <- function(model,
@@ -84,6 +86,7 @@ get_type_prob_multiple <- function(model,
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @keywords internal
+#' @noRd
 #' @return A \code{matrix} with the distribution of the parameters in the model
 
 get_param_dist <- function(model,

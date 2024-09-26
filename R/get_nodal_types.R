@@ -9,6 +9,7 @@
 #'   If `FALSE`, shows for each node a matrix with nodal types as rows and
 #'   parent types as columns, if applicable. Defaults to `TRUE`.
 #' @keywords internal
+#' @noRd
 #' @importFrom rlang is_empty
 #' @return A named \code{list} of nodal types for each parent in a DAG
 
@@ -52,6 +53,7 @@ get_nodal_types <- function(model, collapse = TRUE) {
 #' @param nodal_types A list of nodal types in collapsed form ('01', '11') etc..
 #' @return A \code{list} containing nodes with nodal types in data.frame form
 #' @keywords internal
+#' @noRd
 
 uncollapse_nodal_types <- function(nodal_types) {
   x <- nodal_types |>
@@ -91,6 +93,7 @@ uncollapse_nodal_types <- function(nodal_types) {
 #'   otherwise returns 0, 1. Defaults to `FALSE`
 #' @return A named list containing nodal types for each node
 #' @keywords internal
+#' @noRd
 #' @examples
 #' \donttest{
 #' model <- make_model('X -> K -> Y')
@@ -133,6 +136,7 @@ make_nodal_types <- function(model,
 #'   otherwise returns 0, 1
 #' @return A \code{list} containing nodes with nodal types in a vector form.
 #' @keywords internal
+#' @noRd
 #' @examples
 #'
 #' model <- make_model('X -> K -> Y')
@@ -167,6 +171,7 @@ collapse_nodal_types <- function(nodal_types,
 #' @return A \code{data.frame} whose rows contain digits of
 #'   each causal types in a model
 #' @keywords internal
+#' @noRd
 #' @examples
 #' \donttest{
 #' CausalQueries:::type_matrix(2)

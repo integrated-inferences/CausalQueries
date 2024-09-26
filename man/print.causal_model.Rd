@@ -17,6 +17,6 @@ print method for class "\code{causal_model}".
 }
 \details{
 The information regarding the causal model includes the statement describing
-causal relations using \link{dagitty} syntax,
+causal relations using \code{dagitty} syntax,
 number of nodal types per parent in a DAG, and number of causal types.
 }

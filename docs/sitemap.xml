@@ -23,13 +23,11 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/clean_statement.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/collapse_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/collapse_nodal_types.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/complements.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/construct_commands_alter_at.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/construct_commands_other_args.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/construct_commands_param_names.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/data_to_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/data_type_names.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/decreasing.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/default_stan_control.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/democracy_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/draw_causal_type.html</loc></url>
@@ -62,11 +60,9 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/get_type_prob_multiple_c.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/grab.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/gsub_many.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/increasing.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/index.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/inspect.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/institutions_data.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/interacts.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/interpret_type.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/is_a_model.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/lipids_data.html</loc></url>
@@ -87,8 +83,6 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/minimal_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/minimal_event_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/nodes_in_statement.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/non_decreasing.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/non_increasing.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/n_check.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/observe_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/parameter_setting.html</loc></url>
@@ -103,6 +97,7 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/prior_setting.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/queries_to_types.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/query_distribution.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/query_helpers.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/query_model.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/query_to_expression.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/realise_outcomes.html</loc></url>
@@ -118,10 +113,8 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/set_sampling_args.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/simulate_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/st_within.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/substitutes.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/summarise_distribution.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/summary.causal_model.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/te.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/type_matrix.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/uncollapse_nodal_types.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/unpack_wildcard.html</loc></url>

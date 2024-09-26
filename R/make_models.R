@@ -1,6 +1,6 @@
 #' Make a model
 #'
-#' \code{make_model} uses \link{dagitty} syntax and functionality to
+#' \code{make_model} uses \code{dagitty} syntax and functionality to
 #' specify nodes and edges of a graph. Implied causal types are calculated
 #' and default priors are provided under the assumption of no confounding.
 #' Models can be updated with specification of a parameter matrix, \code{P}, by
@@ -11,7 +11,7 @@
 #' and \code{set_parameters}
 #'
 #' @param statement character string. Statement describing causal
-#'   relations using \link{dagitty} syntax. Only directed relations are
+#'   relations using \code{dagitty} syntax. Only directed relations are
 #'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
 #' @param add_causal_types Logical. Whether to create and attach causal
 #'   types to \code{model}. Defaults to `TRUE`.
@@ -331,7 +331,7 @@ make_parameters_df <- function(nodal_types){
 #' makes them processable by \code{make_dag}
 #'
 #' @param statement character string. Statement describing causal
-#'    relations using \link{dagitty} syntax.
+#'    relations using \code{dagitty} syntax.
 #' @return a list of nodes and edges specified in the input statement
 #' @keywords internal
 
@@ -433,11 +433,11 @@ clean_statement <- function(statement) {
 
 #' Helper to run a causal statement specifying a DAG into a \code{data.frame} of
 #' pairwise parent child relations between nodes specified by a respective edge.
-#' This function reproduces the result of the following \link{dagitty} operations:
+#' This function reproduces the result of the following \code{dagitty} operations:
 #' \code{dagitty::dagitty() |> dagitty::edges()}
 #'
 #' @param statement character string. Statement describing causal
-#'   relations using \link{dagitty} syntax. Only directed relations are
+#'   relations using \code{dagitty} syntax. Only directed relations are
 #'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2"
 #' @return a \code{data.frame} with columns v,w,e specifying parent, child and
 #'   edge respectively

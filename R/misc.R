@@ -4,6 +4,7 @@
 #' @param n An integer. Sample size argument.
 #' @return An error message if \code{n} is not an integer or is less than 0.
 #' @details Checks whether the input is an integer greater than 0.
+#' @noRd
 #' @keywords internal
 
 n_check <- function(n) {
@@ -23,6 +24,7 @@ n_check <- function(n) {
 #'   \code{maximum_tree_depth}
 #' @details Sets controls to default unless otherwise specified.
 #' @return A \code{list} containing arguments to be passed to \code{stan}
+#' @noRd
 #' @keywords internal
 
 default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
@@ -43,6 +45,7 @@ default_stan_control <- function(adapt_delta = NULL, max_treedepth = 15L) {
 #' @param ... further arguments to be passed to 'stan'
 #' @details Set the sampling arguments
 #' @return A \code{list} with arguments to be passed to \code{stan}
+#' @noRd
 #' @keywords internal
 
 set_sampling_args <- function(object,
