@@ -15,7 +15,7 @@ Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role
              person("Julio", "Solis", email = "juliosolisar@gmail.com", role = c("ctb")),
              person("Georgiy", "Syunyaev", email = "georgiy.syunyaev@vanderbilt.edu", role = c("aut"),
                     comment = c(ORCID = "0000-0002-4391-6313")))
-Description: Users can declare causal models over binary nodes, update beliefs about causal types given data and calculate arbitrary queries.  Updating is implemented in 'stan'.  See Humphreys and Jacobs, 2023 (<DOI: 10.1017/9781316718636>) and Pearl, 2009 (<DOI:10.1017/CBO9780511803161>).
+Description: Users can declare causal models over binary nodes, update beliefs about causal types given data, and calculate arbitrary queries.  Updating is implemented in 'stan'. See Humphreys and Jacobs, 2023, Integrated Inferences (<DOI: 10.1017/9781316718636>) and Pearl, 2009 Causality (<DOI:10.1017/CBO9780511803161>).
 BugReports: https://github.com/integrated-inferences/CausalQueries/issues
 License: MIT + file LICENSE
 Encoding: UTF-8

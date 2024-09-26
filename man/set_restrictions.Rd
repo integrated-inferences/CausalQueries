@@ -166,8 +166,8 @@ inspect(model, "parameter_matrix")
 }
 }
 \seealso{
-Other restrictions: 
-\code{\link{restrict_by_labels}()},
-\code{\link{restrict_by_query}()}
+Other set: 
+\code{\link{set_confound}()},
+\code{\link{set_prior_distribution}()}
 }
-\concept{restrictions}
+\concept{set}

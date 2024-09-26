@@ -1,4 +1,4 @@
-#' inspect
+#' inspect a causal model
 #'
 #' Returns specified elements from a \code{causal_model}.
 #' Users can use \code{inspect} to extract model's components or objects implied by

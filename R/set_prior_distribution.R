@@ -43,6 +43,7 @@ make_prior_distribution <- function(model, n_draws = 4000) {
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param n_draws A scalar. Number of draws.
 #' @keywords internal
+#' @noRd
 #' @return A `data.frame` with dimension `n_param`x `n_draws` of possible
 #'   lambda draws
 #' @family prior_distribution
@@ -70,7 +71,7 @@ get_prior_distribution <- function(model, n_draws = 4000) {
 #' @return An object of class \code{causal_model} with the `prior_distribution`
 #'   attached to it.
 #' @export
-#' @family prior_distribution
+#' @family set
 #' @examples
 #' make_model('X -> Y') |>
 #'   set_prior_distribution(n_draws = 5) |>

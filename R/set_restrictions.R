@@ -50,12 +50,10 @@
 #' @param keep Logical. If `FALSE`, removes and if `TRUE` keeps only causal
 #'   types specified by \code{statement} or \code{labels}.
 #'
-#' @family restrictions
-#'
 #' @export
 #' @return An object of class \code{model}. The causal types and nodal types
 #'   in the model are reduced according to the stated restriction.
-#'
+#' @family set
 #' @examples
 #'
 #' # 1. Restrict parameter space using statements
@@ -383,7 +381,7 @@ set_restrictions <- function(model,
 #'   parameters implicated by the restrictions, 2. a vector of subsetting
 #'   instructions used to identify implicated causal types
 #' @keywords internal
-#' @family restrictions
+#' @noRd
 
 restrict_by_query <- function(model,
                               statement,
@@ -469,7 +467,7 @@ restrict_by_query <- function(model,
 #'   parameters implicated by the restrictions, 2. a vector of subsetting
 #'   instructions used to identify implicated causal types
 #' @keywords internal
-#' @family restrictions
+#' @noRd
 
 restrict_by_labels <- function(model,
                                labels,

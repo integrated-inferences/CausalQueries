@@ -2,7 +2,7 @@
 % Please edit documentation in R/inspect.R
 \name{inspect}
 \alias{inspect}
-\title{inspect}
+\title{inspect a causal model}
 \usage{
 inspect(model, what = NULL, ...)
 }

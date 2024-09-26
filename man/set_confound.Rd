@@ -80,3 +80,9 @@ model <- make_model('A -> B -> C') |>
 inspect(model, "statement")
 # plot(model)
 }
+\seealso{
+Other set: 
+\code{\link{set_prior_distribution}()},
+\code{\link{set_restrictions}()}
+}
+\concept{set}

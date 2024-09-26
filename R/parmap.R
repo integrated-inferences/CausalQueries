@@ -4,6 +4,8 @@
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A matrix
+#' @keywords internal
+#' @noRd
 
 make_parmap <- function(model, A = NULL, P = NULL) {
   d <- NULL
@@ -60,6 +62,7 @@ make_parmap <- function(model, A = NULL, P = NULL) {
 #' @param A a matrix
 #' @return a matrix
 #' @keywords internal
+#' @noRd
 
 data_to_data <- function(M, A){
   dnames <- colnames(A)
@@ -77,6 +80,8 @@ data_to_data <- function(M, A){
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
 #' @return A matrix
+#' @keywords internal
+#' @noRd
 
 get_parmap <- function(model, A = NULL, P = NULL){
     if(!is.null(model$parmap)) {
@@ -91,7 +96,9 @@ get_parmap <- function(model, A = NULL, P = NULL){
 #' Generates and adds parmap to a model
 #'
 #'@inheritParams CausalQueries_internal_inherit_params
-#' @return A matrix
+#'@return A matrix
+#' @keywords internal
+#' @noRd
 
 set_parmap <- function(model) {
     model$parmap <- make_parmap(model)

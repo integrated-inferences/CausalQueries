@@ -40,6 +40,7 @@
 #' @return An object of class \code{causal_model} with updated parameters_df
 #'   and parameter matrix.
 #' @export
+#' @family set
 #' @examples
 #'
 #' make_model('X -> Y; X <-> Y') |>

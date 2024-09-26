@@ -26,8 +26,8 @@ make_model('X -> Y') |>
 
 }
 \seealso{
-Other prior_distribution: 
-\code{\link{get_prior_distribution}()},
-\code{\link{make_prior_distribution}()}
+Other set: 
+\code{\link{set_confound}()},
+\code{\link{set_restrictions}()}
 }
-\concept{prior_distribution}
+\concept{set}
