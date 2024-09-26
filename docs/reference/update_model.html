@@ -132,12 +132,12 @@ details see <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-
 <span class="r-in"><span> <span class="va">data_long</span>   <span class="op">&lt;-</span> <span class="fu"><a href="simulate_data.html">simulate_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in simulate_data(model, n = 4):</span> could not find function "simulate_data"</span>
 <span class="r-in"><span> <span class="va">data_short</span>  <span class="op">&lt;-</span> <span class="fu"><a href="collapse_data.html">collapse_data</a></span><span class="op">(</span><span class="va">data_long</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'data_long' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_long' not found</span>
 <span class="r-in"><span> <span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span> <span class="va">model</span> <span class="op">&lt;-</span>  <span class="fu">update_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">data_long</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'data_long' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_long' not found</span>
 <span class="r-in"><span> <span class="va">model</span> <span class="op">&lt;-</span>  <span class="fu">update_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">data_short</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'data_short' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_short' not found</span>
 <span class="r-in"><span> <span class="co"># }</span></span></span>
 <span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span>   <span class="co"># It is possible to implement updating without data, in which</span></span></span>

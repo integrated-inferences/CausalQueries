@@ -55,3 +55,4 @@ Suggests:
 SystemRequirements: GNU make
 Biarch: true
 VignetteBuilder: knitr
+URL: https://integrated-inferences.github.io/CausalQueries/
