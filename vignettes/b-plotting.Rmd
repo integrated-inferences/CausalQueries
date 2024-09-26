@@ -124,5 +124,14 @@ make_model("D <- A -> B -> C -> D -> E; B -> E",
   plot() 
 ```
 
+Better:
+
+```{r}
+make_model("D <- A -> B -> C -> D -> E; B -> E",
+           add_causal_types = FALSE) |>  
+  plot(x_coord = c(0, -.1, 0, .1, 0), y_coord = 5:1) 
+
+```
+
 
 

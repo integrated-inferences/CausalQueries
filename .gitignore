@@ -2,6 +2,7 @@
 .RData
 .Ruserdata
 vignettes/*.html
+
 # compiled files
 src/*.o
 src/*.so
@@ -10,7 +11,6 @@ src/*.h
 # History files
 .Rhistory
 .Rapp.history
-# Example code in package build process
 
 # RStudio files
 .Rproj.user/
@@ -22,4 +22,3 @@ vignettes/*.R
 inst/doc
 /doc/
 /Meta/
-docs
