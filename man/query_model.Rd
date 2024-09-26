@@ -33,8 +33,8 @@ to be conditioned on *observational* (or counterfactual) distribution.}
 posteriors or parameters.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 
 \item{stats}{Functions to be applied to estimand distribution.
 If NULL, defaults to mean, standard deviation,

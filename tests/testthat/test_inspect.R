@@ -111,8 +111,3 @@ test_that("inspect outputs correct stanfit", {
   expect_output(inspect(model, what = "stanfit"), "Inference for Stan model: simplexes.")
 })
 
-test_that("inspect outputs correct stan_objects", {
-  expect_output(inspect(model, what = "stan_objects"), "Stan model summary:")
-})
-
-

@@ -11,8 +11,8 @@ clean_param_vector(model, parameters)
 \code{\link{make_model}}.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 }
 \value{
 A vector of named parameters summing to 1.

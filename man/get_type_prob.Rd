@@ -11,11 +11,11 @@ get_type_prob(model, P = NULL, parameters = NULL)
 \code{\link{make_model}}.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
-provided to avoid repeated computation for simulations.}
+provided to avoid repeated computation for simulations. See \code{inspect(model, "parameter_matrix")}.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 }
 \value{
 A vector with probabilities of vector of causal types

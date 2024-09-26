@@ -56,11 +56,19 @@ model <- make_model("X -> Y")
 data <- make_data(model, n = 4)
 
 inspect(model, what = "statement")
+inspect(model, what = "parameters")
 inspect(model, what = "nodes")
 inspect(model, what = "parents_df")
 inspect(model, what = "parameters_df")
 inspect(model, what = "causal_types")
 inspect(model, what = "prior_distribution")
+inspect(model, what = "prior_hyperparameters", "Y")
+inspect(model, what = "prior_event_probabilities", parameters = c(.1, .9, .25, .25, 0, .5))
+inspect(model, what = "prior_event_probabilities", given = "Y==1")
+inspect(model, what = "data_types", complete_data = TRUE)
+inspect(model, what = "data_types", complete_data = FALSE)
+
+# Will error:
 inspect(model, what = "posterior_distribution")
 
 model <- update_model(model,

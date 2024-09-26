@@ -21,8 +21,8 @@ get_type_prob_multiple(
 `priors`, `posteriors` or `parameters`.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 
 \item{n_draws}{An integer. If no prior distribution is provided, generate
 prior distribution with \code{n_draws} number of draws.}
@@ -31,7 +31,7 @@ prior distribution with \code{n_draws} number of draws.}
 Optional for speed.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
-provided to avoid repeated computation for simulations.}
+provided to avoid repeated computation for simulations. See \code{inspect(model, "parameter_matrix")}.}
 }
 \value{
 A \code{matrix} of type probabilities.

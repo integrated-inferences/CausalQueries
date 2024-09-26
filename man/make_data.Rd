@@ -27,8 +27,8 @@ make_data(
 If not provided it is inferred from the  largest n_step.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to
 make ("flat", "prior_mean", "posterior_mean", "prior_draw",

@@ -45,11 +45,19 @@
 #' data <- make_data(model, n = 4)
 #'
 #' inspect(model, what = "statement")
+#' inspect(model, what = "parameters")
 #' inspect(model, what = "nodes")
 #' inspect(model, what = "parents_df")
 #' inspect(model, what = "parameters_df")
 #' inspect(model, what = "causal_types")
 #' inspect(model, what = "prior_distribution")
+#' inspect(model, what = "prior_hyperparameters", "Y")
+#' inspect(model, what = "prior_event_probabilities", parameters = c(.1, .9, .25, .25, 0, .5))
+#' inspect(model, what = "prior_event_probabilities", given = "Y==1")
+#' inspect(model, what = "data_types", complete_data = TRUE)
+#' inspect(model, what = "data_types", complete_data = FALSE)
+#'
+#' # Will error:
 #' inspect(model, what = "posterior_distribution")
 #'
 #' model <- update_model(model,
@@ -66,6 +74,60 @@
 #' }
 #'
 inspect <- function(model, what = NULL, ...) {
+
+
+  if (!(
+    what %in% c(
+      "statement",
+      "nodes",
+      "parents_df",
+      "parameters",
+      "parameter_names",
+      "parameter_mapping",
+      "parameter_matrix",
+      "parameters_df",
+      "causal_types",
+      "nodal_types",
+      "data_types",
+      "ambiguities_matrix",
+      "type_prior",
+      "prior_hyperparameters",
+      "prior_event_probabilities",
+      "prior_distribution",
+      "posterior_distribution",
+      "posterior_event_probabilities",
+      "type_distribution",
+      "data",
+      "stanfit",
+      "stan_summary"
+    )
+  ))
+  stop(
+    "'what' should be one of: statement, nodes, parents_df, parameters, parameter_names,
+     parameter_mapping, parameter_matrix, parameters_df, causal_types, nodal_types,
+     data_types, ambiguities_matrix, type_prior, prior_hyperparameters,
+     prior_event_probabilities, prior_distribution, posterior_distribution,
+     posterior_event_probabilities, type_distribution, data, stanfit, or stan_summary"
+  )
+
+  if(what == "prior_hyperparameters"){
+    cat("Hyperparameters for Dirichlet distribution\n\n")
+    cat("\n")
+    return(get_priors(model, ...))
+    }
+
+  if(what == "prior_event_probabilities"){
+    cat("Prior event probabilities for possible data types given a specified parameter vector \n\n")
+    cat("\n")
+    return(get_event_probabilities(model, ...))
+  }
+
+
+  if(what == "data_types"){
+    cat("Data types consistent with the model \n\n")
+    cat("\n")
+    return(get_all_data_types(model, ...))
+  }
 
   model_sum <- print(summary(model, ...), include = what)
 

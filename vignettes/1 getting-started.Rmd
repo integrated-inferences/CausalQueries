@@ -49,7 +49,7 @@ iv_model <- make_model("Z -> X -> Y <-> X")
 **Graphing**: Once you have made a model you can inspect the DAG:
 
 ```{r}
-plot(iv_model)
+plot(xy_model)
 ```
 
 **Inspecting**: The model has a set of parameters and a default distribution over these.

@@ -69,7 +69,7 @@ plot_model <- function(model = NULL,
                        textsize = 3.88,
                        shape = 16,
                        nodecol = 'black',
-                       nodesize = 16
+                       nodesize = 12
 ) {
 
   # Checks
@@ -117,9 +117,6 @@ plot_model <- function(model = NULL,
   coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
     dplyr::select(x, y, name)
 
-  buffer_x <- 0.05 * (max(coords$x) - min(coords$x))
-  buffer_y <- 0.05 * (max(coords$y) - min(coords$y))
-
   # Manual coordinate  override
   nodes <- as.character(model$nodes)
   if (!is.null(x_coord)){
@@ -154,10 +151,7 @@ plot_model <- function(model = NULL,
         aes(x, y, label = name),
         color = textcol,
         size = textsize) +
-      ggplot2::labs(title = latex2exp::TeX(title)) +
-     xlim(min(coords$x) - buffer_x, max(coords$x) + buffer_x)+
-     ylim(min(coords$y) - buffer_y, max(coords$y) + buffer_y)
-
+      ggplot2::labs(title = latex2exp::TeX(title))
 }
 
 #' @export

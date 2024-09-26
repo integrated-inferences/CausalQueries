@@ -395,11 +395,10 @@ print.summary.causal_model <-
       # parameters
       if ("parameters" %in% include) {
         cat("\nModel parameters with associated probabilities: \n\n")
-        cat(names(x$parameters))
-        cat("\n")
-        cat(x$parameters)
+        print(x$parameters)
         cat("\n")
       }
+
 
       # parameters_df
       if ("parameters_df" %in% include) {
@@ -419,7 +418,7 @@ print.summary.causal_model <-
         # cat("----------------------------------------------------------------\n\n")
         if (nrow(x$parameters_df) > 10) {
           cat("\n first 10 rows: \n")
-          print.data.frame(x[1:10,])
+          print.data.frame(x$parameters_df[1:10,])
         } else {
           print.data.frame(x$parameters_df)
         }

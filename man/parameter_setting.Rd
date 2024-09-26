@@ -31,8 +31,8 @@ get_parameters(model, param_type = NULL)
 \code{\link{make_model}}.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to make
 "flat", "prior_mean", "posterior_mean", "prior_draw",

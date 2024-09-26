@@ -14,7 +14,7 @@ plot_model(
   textsize = 3.88,
   shape = 16,
   nodecol = "black",
-  nodesize = 16
+  nodesize = 12
 )
 }
 \arguments{

@@ -66,7 +66,7 @@
 #'  # Example with two confounds, added sequentially
 #' model <- make_model('A -> B -> C') |>
 #'   set_confound(list("A <-> B", "B <-> C"))
-#' inspect(model, "causal_statement")
+#' inspect(model, "statement")
 #' # plot(model)
 
 

@@ -26,14 +26,14 @@ make_events(
 probabilities with named rows.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
-provided to avoid repeated computation for simulations.}
+provided to avoid repeated computation for simulations. See \code{inspect(model, "parameter_matrix")}.}
 
-\item{A}{A \code{data.frame}. Ambiguity matrix. Not required but may be
-provided to avoid repeated computation for simulations.}
+\item{A}{A \code{data.frame}. Ambiguities matrix. Not required but may be
+provided to avoid repeated computation for simulations. \code{inspect(model, "ambiguities_matrix")}}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from
-\code{inspect(model, "parameters_df")}.}
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to make
 'flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw',
