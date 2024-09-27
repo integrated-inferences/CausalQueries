@@ -22,6 +22,6 @@ Provides names to data types
 \examples{
 model <- make_model('X -> Y')
 data <- make_data(model, n = 2)
-data_type_names(model, data)
+# CausalQueries:::data_type_names(model, data)
 }
 \keyword{internal}

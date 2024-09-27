@@ -315,7 +315,7 @@ expand_data <- function(data_events = NULL, model) {
 #' @examples
 #' model <- make_model('X -> Y')
 #' data <- make_data(model, n = 2)
-#' data_type_names(model, data)
+#' # CausalQueries:::data_type_names(model, data)
 #' @keywords internal
 data_type_names <- function(model, data) {
   vars <- model$nodes

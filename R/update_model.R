@@ -36,7 +36,7 @@
 #'
 #' @examples
 #'  model <- make_model('X->Y')
-#'  data_long   <- simulate_data(model, n = 4)
+#'  data_long   <- make_data(model, n = 4)
 #'  data_short  <- collapse_data(data_long, model)
 #'  \donttest{
 #'  model <-  update_model(model, data_long)

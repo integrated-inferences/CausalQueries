@@ -41,10 +41,10 @@ Observe data, given a strategy
 model <- make_model("X -> Y")
 df <- make_data(model, n = 8)
 # Observe X values only
-observe_data(complete_data = df, nodes_to_observe = "X")
+CausalQueries:::observe_data(complete_data = df, nodes_to_observe = "X")
 # Observe half the Y values for cases with observed X = 1
-observe_data(complete_data = df,
-     observed = observe_data(complete_data = df, nodes_to_observe = "X"),
+CausalQueries:::observe_data(complete_data = df,
+     observed = CausalQueries:::observe_data(complete_data = df, nodes_to_observe = "X"),
      nodes_to_observe = "Y", prob = .5,
      subset = "X==1")
 }

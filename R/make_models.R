@@ -87,13 +87,12 @@
 #'
 #' make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
 #'           nodal_types = nodal_types) |>
-#'  inspect(model, "parameters_df")
+#'  inspect("parameters_df")
 #'
 #' nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
 #' make_model("Z -> Y", nodal_types = nodal_types) |>
-#'  inspect(model, "parameters_df")
-#' make_model("Z -> Y", nodal_types = FALSE) |>
-#'  inspect(model, "parents_df")
+#'  inspect("parameters_df")
+
 
 make_model <- function(statement,
                        add_causal_types = TRUE,
@@ -305,7 +304,7 @@ make_model <- function(statement,
 #' @keywords internal
 #' @examples
 #'
-#' make_parameters_df(list(X = "1", Y = c("01", "10")))
+#' CausalQueries:::make_parameters_df(list(X = "1", Y = c("01", "10")))
 
 make_parameters_df <- function(nodal_types){
   pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),

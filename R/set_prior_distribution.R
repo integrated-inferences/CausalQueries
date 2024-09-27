@@ -11,7 +11,8 @@
 #' @importFrom dirmult rdirichlet
 #' @family prior_distribution
 #' @examples
-#' make_model('X -> Y') |> make_prior_distribution(n_draws = 5)
+#' make_model('X -> Y') |>
+#'   CausalQueries:::make_prior_distribution(n_draws = 5)
 #'
 make_prior_distribution <- function(model, n_draws = 4000) {
 

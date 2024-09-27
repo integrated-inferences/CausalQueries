@@ -68,8 +68,6 @@ inspect(model, what = "prior_event_probabilities", given = "Y==1")
 inspect(model, what = "data_types", complete_data = TRUE)
 inspect(model, what = "data_types", complete_data = FALSE)
 
-# Will error:
-inspect(model, what = "posterior_distribution")
 
 model <- update_model(model,
   data = data,

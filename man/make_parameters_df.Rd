@@ -14,6 +14,6 @@ function to make a parameters_df from nodal types
 }
 \examples{
 
-make_parameters_df(list(X = "1", Y = c("01", "10")))
+CausalQueries:::make_parameters_df(list(X = "1", Y = c("01", "10")))
 }
 \keyword{internal}

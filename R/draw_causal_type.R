@@ -11,15 +11,15 @@
 #'
 #' # Simple draw using model's parameter vector
 #' make_model("X -> M -> Y") |>
-#' draw_causal_type(.)
+#' draw_causal_type()
 #'
 #' # Draw parameters from priors and draw type from parameters
 #' make_model("X -> M -> Y") |>
-#' draw_causal_type(., param_type = "prior_draw")
+#' draw_causal_type(, param_type = "prior_draw")
 #'
 #' # Draw type given specified parameters
 #' make_model("X -> M -> Y") |>
-#' draw_causal_type(., parameters = 1:10)
+#' draw_causal_type(parameters = 1:10)
 #'
 #' # Define a causal type and reveal data
 #' model <- make_model("X -> Y; X <-> Y")

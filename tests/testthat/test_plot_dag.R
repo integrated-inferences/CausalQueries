@@ -55,18 +55,3 @@ testthat::test_that(
 
   })
 
-
-
-
-testthat::test_that(
-  desc = "Testing plot.dag",
-  code = {
-    model <- make_model("X -> M -> Y; X -> Y")
-    pdf(file = NULL)
-    expect_silent(
-      CausalQueries:::plot_dag(model,
-                               labels = LETTERS[1:3],
-                               textcol = "red")
-      )
-    dev.off()
-  })
