@@ -16,7 +16,7 @@
 #' @param nodecol String indicating color of node that is accepted by
 #'   ggplot's default palette
 #' @param nodesize Size of node.
-#' @param layout see
+#' @param strength Degree of curvature of curved arcs
 #' @return A ggplot object.
 #'
 #' @keywords internal
@@ -39,13 +39,14 @@
 #'
 #' # Adding additional layers
 #' model |> plot_model() +
-#'   ggplot2:: theme(panel.border = ggplot2::element_rect(fill=NA))
+#'   ggplot2::coord_flip()
 #'
 #' # Adding labels
 #' model |>
 #'   plot_model(
 #'     labels = c("A long name for a \n node", "This", "That"),
-#'     nodecol = "white", textcol = "black")
+#'     nodecol = "white",
+#'     textcol = "black")
 #'
 #' # Controlling  positions and using math labels
 #' model |> plot_model(
@@ -54,9 +55,9 @@
 #'     title = "Mixed text and math: $\\alpha^2 + \\Gamma$")
 #' }
 #'
-#' # DAG with unobserved confounding
-#' make_model('X -> K -> Y; X <-> Y') |>
-#'   plot(x_coord = 1:3, y_coord = 1:3)
+#' # DAG with unobserved confounding and shapes
+#' make_model('Z -> X -> Y; X <-> Y') |>
+#'   plot(x_coord = 1:3, y_coord = 1:3, shape = c(15, 16, 16))
 #'
 
 
@@ -69,7 +70,8 @@ plot_model <- function(model = NULL,
                        textsize = 3.88,
                        shape = 16,
                        nodecol = 'black',
-                       nodesize = 12
+                       nodesize = 12,
+                       strength = .3
 ) {
 
   # Checks
@@ -117,16 +119,18 @@ plot_model <- function(model = NULL,
   coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
     dplyr::select(x, y, name)
 
-  # Manual coordinate  override
-  nodes <- as.character(model$nodes)
-  if (!is.null(x_coord)){
-    coords$x <- x_coord[match(coords$name, nodes)]
-    coords$y <- y_coord[match(coords$name, nodes)]
-  }
+  # reorder nodes to match model ordering
+  .r <- match(coords$name, model$nodes)
+  r <- function(z) z[.r]
 
-  # Manual labels override
-  if (!is.null(labels))
-    coords$name <- labels[match(coords$name, nodes)]
+  if (!is.null(x_coord)) coords$x <- r(x_coord)
+  if (!is.null(y_coord)) coords$y <- r(y_coord)
+  if (!is.null(labels)) coords$name <- r(labels)
+  if (length(shape) > 1) shape <- r(shape)
+  if (length(nodecol) > 1) nodecol <- r(nodecol)
+  if (length(nodesize) > 1) nodesize <- r(nodesize)
+  if (length(textcol) > 1) textcol <- r(textcol)
+  if (length(textsize) > 1) textsize <- r(textsize)
 
   # plot
    dag  |>
@@ -135,7 +139,7 @@ plot_model <- function(model = NULL,
                   start_cap = ggraph::circle(8, 'mm'),
                   end_cap = ggraph::circle(8, 'mm'),
                   linetype = "dashed",
-                  strength = .3) +
+                  strength = strength) +
       ggraph::geom_edge_link(data = arc_selector("->"),
                    arrow = grid::arrow(length = grid::unit(4, 'mm'), type = "closed"),
                    start_cap = ggraph::circle(8, 'mm'),

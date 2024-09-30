@@ -16,13 +16,12 @@
 #'
 #' @name parameter_setting
 NULL
-#> NULL
+
 #' Make a 'true' parameter vector
 #'
 #' A vector of 'true' parameters; possibly drawn from prior or posterior.
 #'
 #' @rdname parameter_setting
-#'
 #' @param normalize Logical. If parameter given for a subset of a family the
 #'   residual elements are normalized so that parameters in param_set sum
 #'   to 1 and provided params are unaltered.
@@ -194,7 +193,6 @@ make_parameters <- function(model,
 #' \code{\link{make_priors}}.
 #'
 #' @rdname parameter_setting
-#'
 #' @return An object of class \code{causal_model}. It essentially returns a
 #'   list containing the elements comprising a model
 #'   (e.g. 'statement', 'nodal_types' and 'DAG') with true vector of
@@ -271,7 +269,6 @@ set_parameters <- function(model,
 #' Extracts parameters as a named vector
 #'
 #' @rdname parameter_setting
-#'
 #' @return A vector of draws from the prior or distribution of parameters
 #' @importFrom dirmult rdirichlet
 #' @family parameters

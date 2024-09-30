@@ -21,13 +21,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
-if(!requireNamespace("fabricatr", quietly = TRUE)) {
-  install.packages("fabricatr")
-}
-library(tidyverse)
+library(dplyr)
 library(CausalQueries)
-library(fabricatr)
 library(knitr)
+library(ggplot2)
+
 ```
 
 
@@ -117,6 +115,8 @@ make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
 
 
 ## Requires manual coordinates
+
+This graph has bad node placement.
 
 ```{r}
 make_model("D <- A -> B -> C -> D -> E; B -> E",

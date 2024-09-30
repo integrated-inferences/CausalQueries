@@ -19,12 +19,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, warning = FALSE, message = FALSE}
-if(!requireNamespace("fabricatr", quietly = TRUE)) {
-  install.packages("fabricatr")
-}
 
 library(CausalQueries)
-library(fabricatr)
+library(dplyr)
 library(knitr)
 ```
 
@@ -54,10 +51,10 @@ Updating is done like this:
 
 ```{r, message = FALSE, warning = FALSE}
 # Lets imagine highly correlated data; here an effect of .9 at each step
-data <- fabricate(N = 5000, 
-                  X = rep(0:1, N/2), 
-                  M = rbinom(N, 1, .05 + .9*X), 
-                  Y = rbinom(N, 1, .05 + .9*M))
+data <- data.frame(X = rep(0:1, 2000)) |>
+  mutate(
+    M = rbinom(n(), 1, .05 + .9*X),
+    Y = rbinom(n(), 1, .05 + .9*M))
 
 # Updating
 model <- model |> update_model(data, refresh = 0)

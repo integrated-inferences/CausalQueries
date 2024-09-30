@@ -128,3 +128,11 @@ make_data(
 # Example with given data
 make_data(model, given = "X==1 & Y==1", n = 5)
 }
+\seealso{
+Other data_generation: 
+\code{\link{get_all_data_types}()},
+\code{\link{make_data_single}()},
+\code{\link{make_events}()},
+\code{\link{observe_data}()}
+}
+\concept{data_generation}

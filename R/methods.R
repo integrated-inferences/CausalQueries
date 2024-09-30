@@ -61,23 +61,22 @@ print.causal_model <- function(x, ...) {
 #'
 #' @examples
 #' \donttest{
-#'
 #' model <-
-#'   make_model('X -> Y') |>
+#'   make_model('X -> Y')
+#'
+#' model  |>
 #'   update_model(
 #'     keep_event_probabilities = TRUE,
 #'     keep_fit = TRUE,
-#'     data = make_data(model, n = 100))
-#'
-#' summary(model)
+#'     data = make_data(model, n = 100)) |>
+#'   summary()
 #'
 #' }
 #'
 #' @export
 summary.causal_model <- function(object, ...) {
 
-  if (class(object) != "causal_model")
-    stop("This summary function works with causal_model objects only")
+  is_a_model(object)
 
   object$causal_types <- get_causal_types(object)
   object$parents <- get_parents(object)
@@ -134,12 +133,11 @@ summary.causal_model <- function(object, ...) {
 #' @rdname summary.causal_model
 #'
 #' @param x An object of \code{summary.causal_model} class, produced using \code{summary.causal_model}.
-#' @param include A character string specifying the objects summaries to print. Defaults to \code{NULL} printing causal statement, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.
+#' @param include A character string specifying the objects summaries to print. Defaults to \code{NULL} printing causal statement, specification of nodal types and summary of model restrictions. See details for full list of available values.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #'
 #' @details
-#'
 #' \code{print.summary.causal_model} reports causal statement, full specification of nodal types and summary of model restrictions. By specifying `include` argument users can instead print a custom summary of any set of the following objects contained in the `summary.causal_model`:
 #' \itemize{
 #'   \item \code{"statement"} A character string giving the causal statement,
@@ -171,7 +169,11 @@ summary.causal_model <- function(object, ...) {
 #' @examples
 #' \donttest{
 #' model <-
-#'   make_model('X -> Y')
+#'   make_model('X -> Y') |>
+#'   update_model(
+#'     keep_event_probabilities = TRUE,
+#'     keep_fit = TRUE,
+#'     data = make_data(model, n = 100))
 #'
 #' print(summary(model), include = "type_distribution")
 #' print(summary(model), include = "posterior_distribution")
@@ -179,14 +181,6 @@ summary.causal_model <- function(object, ...) {
 #' print(summary(model), include = "data_types")
 #' print(summary(model), include = "ambiguities_matrix")
 #' print(summary(model), include = "prior_hyperparameters")
-#'
-#' model <-
-#'   model |>
-#'   update_model(
-#'     keep_event_probabilities = TRUE,
-#'     keep_fit = TRUE,
-#'     data = simulate_data(model, n = 100))
-#'
 #' print(summary(model), include = c("statement", "nodes"))
 #' print(summary(model), include = "parameters_df")
 #' print(summary(model), include = "posterior_event_probabilities")
@@ -194,7 +188,6 @@ summary.causal_model <- function(object, ...) {
 #' print(summary(model), include = "data")
 #' print(summary(model), include = "stanfit")
 #' print(summary(model), include = "type_distribution")
-#' print(summary(model), include = "stan_objects")
 #' }
 #'
 #' @export

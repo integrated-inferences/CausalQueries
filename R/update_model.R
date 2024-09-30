@@ -38,19 +38,20 @@
 #'  model <- make_model('X->Y')
 #'  data_long   <- make_data(model, n = 4)
 #'  data_short  <- collapse_data(data_long, model)
-#'  \donttest{
 #'  model <-  update_model(model, data_long)
 #'  model <-  update_model(model, data_short)
-#'  }
-#'  \dontrun{
+#'
 #'    # It is possible to implement updating without data, in which
 #'    # case the posterior is a stan object that reflects the prior
+#'
 #'    update_model(model)
 #'
-#'    data <- data.frame(X=rep(0:1, 10), Y=rep(0:1,10))
+#'  \dontrun{
 #'
-#'    # Censored data types
-#'    # We update less than we might because we are aware of filtered data
+#'    # Censored data types illustrations
+#'    # Here we update less than we might because we are aware of filtered data
+#'
+#'    data <- data.frame(X=rep(0:1, 10), Y=rep(0:1,10))
 #'    uncensored <-
 #'      make_model("X->Y") |>
 #'      update_model(data) |>

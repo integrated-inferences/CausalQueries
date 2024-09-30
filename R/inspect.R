@@ -68,7 +68,6 @@
 #' inspect(model, what = "type_distribution")
 #' inspect(model, what = "data")
 #' inspect(model, what = "stanfit")
-#' inspect(model, what = "stan_objects")
 #' }
 #'
 inspect <- function(model, what = NULL, ...) {

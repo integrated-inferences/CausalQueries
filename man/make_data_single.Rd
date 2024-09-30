@@ -65,4 +65,12 @@ w <- get_event_probabilities(model)
 replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 
 }
+\seealso{
+Other data_generation: 
+\code{\link{get_all_data_types}()},
+\code{\link{make_data}()},
+\code{\link{make_events}()},
+\code{\link{observe_data}()}
+}
+\concept{data_generation}
 \keyword{internal}

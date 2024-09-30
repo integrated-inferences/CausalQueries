@@ -31,8 +31,4 @@ draw_causal_type(, param_type = "prior_draw")
 make_model("X -> M -> Y") |>
 draw_causal_type(parameters = 1:10)
 
-# Define a causal type and reveal data
-model <- make_model("X -> Y; X <-> Y")
-type <- model |> draw_causal_type()
-make_data(model, parameters = type$causal_type)
 }

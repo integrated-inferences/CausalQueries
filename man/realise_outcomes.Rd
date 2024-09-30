@@ -22,7 +22,7 @@ as rownames to the output}
 }
 \value{
 A \code{data.frame} object of revealed data for each node (columns)
-  given causal / nodal type (rows) .
+  given causal / nodal type (rows).
 }
 \description{
 Realise outcomes for all causal types. Calculated by sequentially
@@ -41,12 +41,14 @@ not these values of the parents obtain given restrictions under the model.
   Exogenous nodes outcomes correspond to their type.
 }
 \examples{
+
 \donttest{
 make_model("X -> Y") |>
   realise_outcomes()
 
 make_model("X -> Y <- W") |>
-set_restrictions(labels = list(X = "1", Y="0010"), keep = TRUE) |>
+set_restrictions(labels = list(X = "1", Y="0010"),
+                 keep = TRUE) |>
  realise_outcomes()
 
 make_model("X1->Y; X2->M; M->Y") |>
@@ -60,4 +62,3 @@ make_model("X->M->Y") |>
 realise_outcomes(dos = list(M = 1), node = "Y")
 }
 }
-\keyword{internal}

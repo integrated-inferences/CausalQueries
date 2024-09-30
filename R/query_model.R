@@ -109,11 +109,13 @@
 #'  query_distribution(model, Q, given = G,
 #'     using = "posteriors", case_level = TRUE)
 #'
-#'  # 2. Case level query by hand using Bayes
-#'  distribution <- query_distribution(
-#'     model, list(QG = QG, G = G), using = "posteriors")
+#'  # 2. Case level query by hand using Bayes' rule
+#'  query_distribution(
+#'      model,
+#'      list(QG = QG, G = G),
+#'      using = "posteriors") |>
+#'     dplyr::summarize(mean(QG)/mean(G))
 #'
-#'  mean(distribution$QG)/mean(distribution$G)
 #' }
 #'
 query_distribution <- function(model,

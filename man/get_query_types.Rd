@@ -11,7 +11,7 @@ get_query_types(model, query, map = "causal_type", join_by = "|")
 \code{\link{make_model}}.}
 
 \item{query}{A character string. An expression defining nodal types to
-interrogate \code{\link{realise_outcomes}}. An expression of the form
+interrogate. An expression of the form
 "Y[X=1]" asks for the value of Y when X is set to 1}
 
 \item{map}{Types in query. Either \code{nodal_type} or \code{causal_type}.

@@ -14,7 +14,8 @@ plot_model(
   textsize = 3.88,
   shape = 16,
   nodecol = "black",
-  nodesize = 12
+  nodesize = 12,
+  strength = 0.3
 )
 }
 \arguments{
@@ -41,7 +42,7 @@ ggplot's default palette}
 
 \item{nodesize}{Size of node.}
 
-\item{layout}{see}
+\item{strength}{Degree of curvature of curved arcs}
 }
 \value{
 A ggplot object.
@@ -60,13 +61,14 @@ model |> plot_model()
 
 # Adding additional layers
 model |> plot_model() +
-  ggplot2:: theme(panel.border = ggplot2::element_rect(fill=NA))
+  ggplot2::coord_flip()
 
 # Adding labels
 model |>
   plot_model(
     labels = c("A long name for a \n node", "This", "That"),
-    nodecol = "white", textcol = "black")
+    nodecol = "white",
+    textcol = "black")
 
 # Controlling  positions and using math labels
 model |> plot_model(
@@ -75,9 +77,9 @@ model |> plot_model(
     title = "Mixed text and math: $\\\\alpha^2 + \\\\Gamma$")
 }
 
-# DAG with unobserved confounding
-make_model('X -> K -> Y; X <-> Y') |>
-  plot(x_coord = 1:3, y_coord = 1:3)
+# DAG with unobserved confounding and shapes
+make_model('Z -> X -> Y; X <-> Y') |>
+  plot(x_coord = 1:3, y_coord = 1:3, shape = c(15, 16, 16))
 
 }
 \keyword{internal}

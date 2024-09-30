@@ -22,15 +22,19 @@
 #' @param add_rownames logical indicating whether to add causal types
 #'   as rownames to the output
 #' @return A \code{data.frame} object of revealed data for each node (columns)
-#'   given causal / nodal type (rows) .
-#' @keywords internal
+#'   given causal / nodal type (rows).
+#'
+#' @export
+#'
 #' @examples
+#'
 #' \donttest{
 #' make_model("X -> Y") |>
 #'   realise_outcomes()
 #'
 #' make_model("X -> Y <- W") |>
-#' set_restrictions(labels = list(X = "1", Y="0010"), keep = TRUE) |>
+#' set_restrictions(labels = list(X = "1", Y="0010"),
+#'                  keep = TRUE) |>
 #'  realise_outcomes()
 #'
 #' make_model("X1->Y; X2->M; M->Y") |>

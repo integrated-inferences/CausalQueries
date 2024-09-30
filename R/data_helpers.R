@@ -1,120 +1,19 @@
-#' get_data_families
+#' Data helpers
 #'
-#' Get possible data types
+#' Various helpers to simulate data and to manipulate data types between compact and long forms.
 #'
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @param drop_impossible Logical. Whether to drop data that is impossible given
-#'   model restrictions. Defaults to `TRUE`.
-#' @param drop_all_NA Logical. Whether to drop row of all `NA`s.
-#'   Defaults to `TRUE`
-#' @param mapping_only Logical. Whether to return data mapping matrix only.
-#'   Defaults to `FALSE`.
-#' @return Returns indices and ambiguity matrix
-#' @keywords internal
-#' @noRd
-#'
-#' @importFrom dplyr filter
-#' @examples
-#' \donttest{
-#' CausalQueries:::get_data_families(model = make_model('X->Y'))
-#' CausalQueries:::get_data_families(model = make_model('X->Y'),
-#'                                   mapping_only = TRUE)
-#' CausalQueries:::get_data_families(model = make_model('X-> M -> Y'))
-#'
-#' }
-
-get_data_families <- function(model,
-                              drop_impossible = TRUE,
-                              drop_all_NA = TRUE,
-                              mapping_only = FALSE) {
-
-  event <- NULL
-
-  # Get nodes
-  nodes <- model$nodes
-
-  # Get all possible data realizations, given strategies in
-  # which some data is not sought (NA).
-  all_data <- get_all_data_types(model)
-
-  # Get the realizations of the fundamental *possible* data events
-  possible_data_types <-
-    unique(data_type_names(model, realise_outcomes(model)))
-  full_data <-
-    filter(all_data, apply(all_data[, -1, drop = FALSE], 1,
-                           function(j)
-                             ! any(is.na(j)))) |>
-    filter(event %in% possible_data_types)
-
-  # Make E: Sign matrix used to see if data is
-  # *inconsistent* with reduced type
-  sign_matrix <- (2 * as.matrix(all_data[nodes]) - 1)
-  sign_matrix[is.na(sign_matrix)] <- 0
-
-  type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
+#' @name data_helpers
+NULL
+#> NULL
 
 
-    E <- 1 * matrix(
-      apply(sign_matrix, 1,
-            function(j)
-              apply(type_matrix, 1,
-                    function(k)
-                      ! (any(
-                        k * j == -1
-                      )))),
-      nrow = length(all_data$event),
-      byrow = TRUE
-    )
-
-    rownames(E) <- all_data$event
-    colnames(E) <- full_data$event
-
-    # Filtering
-    keep <- rep(TRUE, nrow(E))
-    if (drop_impossible)
-        keep[!(apply(E, 1, function(j) any(j == 1)))] <- FALSE
-    if (drop_all_NA)
-        keep[rownames(E) == "None"] <- FALSE
-
-   E <- E[keep,, drop = FALSE]
-
-
-    all_data <- all_data[keep,]
-
-    possible_events <- rownames(E)
-
-    ## STRATEGIES ##############################
-
-    # Figure out what strategy is being used in each of
-    # the possible data realizations
-    which_strategy <-
-      apply(all_data[nodes], 1, function(row)
-        nodes[!is.na(row)])
-    which_strategy <-
-      which_strategy[lapply(which_strategy, length) != 0]
-
-    if (!mapping_only) {
-      E <-
-        data.frame(
-          event = possible_events,
-          strategy = unlist(lapply(which_strategy, paste, collapse = "")),
-          E,
-          stringsAsFactors = FALSE
-        )
-
-      rownames(E) <- E$event
-    }
-
-    return(E)
-
-
-}
 
 #' Make compact data with data strategies
 #'
 #' Take a `data.frame` and return compact `data.frame`
 #' of event types and strategies.
 #'
+#' @rdname data_helpers
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @param drop_NA Logical. Whether to exclude strategy families that contain
@@ -147,22 +46,24 @@ get_data_families <- function(model,
 #'
 #' df |> collapse_data(model)
 #'
+#' # Illustrating options
 #'
-#' collapse_data(df, model, drop_NA = FALSE)
+#' df |> collapse_data(model, drop_NA = FALSE)
 #'
-#' collapse_data(df, model, drop_family = TRUE)
+#' df |> collapse_data(model, drop_family = TRUE)
 #'
-#' collapse_data(df, model, summary = TRUE)
+#' df |> collapse_data(model, summary = TRUE)
 #'
-#' data <- make_data(model, n = 0)
-#' collapse_data(data, model)
+#' # Appropriate behavior given restricted models
 #'
-#' model <- make_model('X -> Y') |> set_restrictions('X[]==1')
+#' model <- make_model('X -> Y') |>
+#'   set_restrictions('X[]==1')
 #' df <- make_data(model, n = 10)
 #' df[1,1] <- ''
-#' collapse_data(df, model)
-#' data <- data.frame(X= 0:1)
-#' collapse_data(data, model)
+#' df |> collapse_data(model)
+#'
+#' df <- data.frame(X = 0:1)
+#' df |> collapse_data(model)
 #'
 #' }
 #'
@@ -229,35 +130,10 @@ collapse_data <- function(data,
 }
 
 
-#' Drop empty families
-#'
-#' @inheritParams CausalQueries_internal_inherit_params
-#'
-#' @return Returns data events with strategies (excluding  strategy families
-#'   that contain no observed data)
-#' @keywords internal
-#' @examples
-#'\donttest{
-#' data_events <- data.frame(event = c('X0Y0', 'Y0'),
-#'                           strategy = c('XY', 'Y'),
-#'                           count = 1:0)
-#' CausalQueries:::drop_empty_families(data_events)
-#' }
-#'
-drop_empty_families <- function(data_events) {
-
-    for (j in unique(data_events$strategy)) {
-        if (sum(data_events$count[data_events$strategy == j]) == 0) {
-            data_events <- dplyr::filter(data_events, strategy != j)
-        }
-    }
-    return(data_events)
-
-}
-
 
 #' Expand compact data object to data frame
 #'
+#' @rdname data_helpers
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @return A \code{data.frame} with rows as data observation
 #' @export
@@ -317,6 +193,8 @@ expand_data <- function(data_events = NULL, model) {
 #' data <- make_data(model, n = 2)
 #' # CausalQueries:::data_type_names(model, data)
 #' @keywords internal
+#' @noRd
+
 data_type_names <- function(model, data) {
   vars <- model$nodes
   data <- data[vars]
@@ -327,112 +205,5 @@ data_type_names <- function(model, data) {
     })
   out[out == ""] <- "None"
   return(out)
-}
-
-#' Get all data types
-#'
-#' Creates data frame with all data types (including NA types)
-#' that are possible from a model.
-#'
-#' @inheritParams CausalQueries_internal_inherit_params
-#' @param complete_data Logical. If `TRUE` returns only complete data types
-#'   (no NAs). Defaults to `FALSE`.
-#' @param possible_data Logical. If `TRUE` returns only complete data types
-#'   (no NAs) that are *possible* given model restrictions. Note that in
-#'   principle an intervention could make observationally impossible data types
-#'   arise. Defaults to `FALSE`.
-#' @param given A character.  A quoted statement that evaluates to logical.
-#'   Data conditional on specific values.
-#' @return A \code{data.frame} with all data types (including NA types)
-#'   that are possible from a model.
-#' @export
-#' @examples
-#' \donttest{
-#' make_model('X -> Y') |> get_all_data_types()
-#' model <- make_model('X -> Y') |>
-#'   set_restrictions(labels = list(Y = '00'), keep = TRUE)
-#'   get_all_data_types(model)
-#'   get_all_data_types(model, complete_data = TRUE)
-#'   get_all_data_types(model, possible_data = TRUE)
-#'   get_all_data_types(model, given  = 'X==1')
-#'   get_all_data_types(model, given  = 'X==1 & Y==1')
-#'}
-get_all_data_types <- function(model,
-                           complete_data = FALSE,
-                           possible_data = FALSE,
-                           given = NULL) {
-    nodes <- model$nodes
-    # If complete_data allow only 2 possible
-    # realizations (0,1), otherwise 3 (0,1,NA)
-    r <- ifelse(complete_data, 1, 2)
-    m <- length(model$nodes)
-    df <- data.frame(perm(rep(r, m))) - 1 + complete_data
-    df[df == -1] <- NA
-    names(df) <- nodes
-    df <- data.frame(cbind(event = data_type_names(model, df), df))
-
-    order_list <-
-      c(list(rowSums(is.na(df))),
-        lapply(rev(nodes), function(node)
-          is.na(df[, node])),
-        lapply(rev(nodes), function(node)
-          df[, node]))
-
-    df <- df[do.call(what = order, args = order_list), ]
-
-    if (possible_data) {
-      possible_data_types <-
-        unique(data_type_names(model, realise_outcomes(model)))
-      df <- dplyr::filter(df, event %in% possible_data_types)
-    }
-
-    # exclude data not consistent with 'given'
-    # (NAs are *not* consistent with given)
-    if (!is.null(given)) {
-        take <- with(df, eval(parse(text = given)))
-        take[is.na(take)] <- FALSE
-        df <- df[take, ]
-    }
-    rownames(df) <- df$event
-
-    return(df)
-}
-
-#' Creates a compact data frame for case with no data
-#' @param model A \code{causal_model}. A model object generated by
-#'   \code{\link{make_model}}.
-#' @return A compact data frame where each row represents an element from the
-#'   exhaustive set of events of a model. The count for each event is
-#'   set to zero.
-#' @keywords internal
-#' @examples
-#' \donttest{
-#' model <- make_model('X -> K -> Y')
-#' CausalQueries:::minimal_event_data(model)
-#' }
-
-minimal_event_data <- function(model){
-  make_data(model, n = 1) |>
-    collapse_data(model) |>
-    mutate(count = 0)
-}
-
-
-#' Creates a data frame for case with no data
-#' @param model A \code{causal_model}. A model object generated by
-#'   \code{\link{make_model}}.
-#' @return A \code{data.frame} with one row of NAs and columns named according
-#'   to nodes in a model.
-#' @keywords internal
-#' @examples
-#' \donttest{
-#' model <- make_model('X -> K -> Y')
-#' CausalQueries:::minimal_data(model)
-#' }
-minimal_data <- function(model) {
-    vars <- model$nodes
-    df <- data.frame(t(rep(NA, length(vars))))
-    names(df) <- vars
-    return(df)
 }
 

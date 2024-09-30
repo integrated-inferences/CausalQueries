@@ -79,7 +79,6 @@ inspect(model, what = "posterior_event_probabilities")
 inspect(model, what = "type_distribution")
 inspect(model, what = "data")
 inspect(model, what = "stanfit")
-inspect(model, what = "stan_objects")
 }
 
 }

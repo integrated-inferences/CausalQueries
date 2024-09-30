@@ -17,7 +17,7 @@
 
 \item{x}{An object of \code{summary.causal_model} class, produced using \code{summary.causal_model}.}
 
-\item{include}{A character string specifying the objects summaries to print. Defaults to \code{NULL} printing causal statement, specification of nodal types and summary of model restrictions. See \link[=details]{Details} for full list of available values.}
+\item{include}{A character string specifying the objects summaries to print. Defaults to \code{NULL} printing causal statement, specification of nodal types and summary of model restrictions. See details for full list of available values.}
 }
 \value{
 Returns the object of class \code{summary.causal_model} that preserves the list structure of \code{causal_model} class and adds the following additional elements:
@@ -68,7 +68,19 @@ summary method for class "\code{causal_model}".
 }
 \examples{
 \donttest{
+model <-
+  make_model('X -> Y')
 
+model  |>
+  update_model(
+    keep_event_probabilities = TRUE,
+    keep_fit = TRUE,
+    data = make_data(model, n = 100)) |>
+  summary()
+
+}
+
+\donttest{
 model <-
   make_model('X -> Y') |>
   update_model(
@@ -76,28 +88,12 @@ model <-
     keep_fit = TRUE,
     data = make_data(model, n = 100))
 
-summary(model)
-
-}
-
-\donttest{
-model <-
-  make_model('X -> Y')
-
 print(summary(model), include = "type_distribution")
 print(summary(model), include = "posterior_distribution")
 print(summary(model), include = "posterior_event_probabilities")
 print(summary(model), include = "data_types")
 print(summary(model), include = "ambiguities_matrix")
 print(summary(model), include = "prior_hyperparameters")
-
-model <-
-  model |>
-  update_model(
-    keep_event_probabilities = TRUE,
-    keep_fit = TRUE,
-    data = simulate_data(model, n = 100))
-
 print(summary(model), include = c("statement", "nodes"))
 print(summary(model), include = "parameters_df")
 print(summary(model), include = "posterior_event_probabilities")
@@ -105,7 +101,6 @@ print(summary(model), include = "posterior_distribution")
 print(summary(model), include = "data")
 print(summary(model), include = "stanfit")
 print(summary(model), include = "type_distribution")
-print(summary(model), include = "stan_objects")
 }
 
 }

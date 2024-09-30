@@ -25,7 +25,7 @@ if(!requireNamespace("fabricatr", quietly = TRUE)) {
 }
 
 library(CausalQueries)
-library(fabricatr)
+library(dplyr)
 library(knitr)
 ```
 
@@ -90,7 +90,9 @@ data |> kable()
 **Updating**: Update using `update_model`. You can pass all `rstan` arguments to `update_model`.
 
 ```{r}
-df <- fabricatr::fabricate(N = 100, X = rbinom(N, 1, .5), Y = rbinom(N, 1, .25 + X*.5))
+df <- 
+  data.frame(X = rbinom(100, 1, .5)) |>
+  mutate(Y = rbinom(100, 1, .25 + X*.5))
 
 xy_model <- 
   xy_model |> 
