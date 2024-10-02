@@ -275,6 +275,20 @@ testthat::test_that(
 
 testthat::test_that(
 
+  desc = "non integer count",
+
+  code = {
+    model <- make_model("X->Y")
+    data <- make_events(model, 20, include_strategy = TRUE)
+    data$count[1] <- 1.1
+    expect_warning(update_model(model, data, iter = 2000, refresh = 0),
+                   "count column should be integer valued; value has been forced to integer")
+  }
+)
+
+
+testthat::test_that(
+
   desc = "priors returned",
 
   code = {

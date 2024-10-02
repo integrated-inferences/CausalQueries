@@ -119,10 +119,16 @@ update_model <- function(model,
   if (data_type == "compact") {
     if (!all(c("event", "strategy", "count") %in% names(data))) {
       stop(paste(
-        "Compact data should contain columnes",
+        "Compact data should contain columns",
         "`event`, `strategy` and `count`"
       ))
     }
+
+    if(!is.integer(data$count)){
+      data$count <- as.integer(data$count)
+      warning("count column should be integer valued; value has been forced to integer")
+    }
+
     data_events <- data
   }
 
