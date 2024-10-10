@@ -7,11 +7,9 @@ testthat::test_that(
 
 	code = {
 		expect_equal(make_model("X -> Y") |>
-		                 inspect("prior_distribution", n_draws = 30) |>
+		               set_prior_distribution(30) |>
+		                 inspect("prior_distribution") |>
 		               dim(), c(30, 6))
-		expect_equal(make_model("X -> Y") |>
-		               set_prior_distribution(n_draws = 10) |>
-		               inspect("prior_distribution") |> nrow(), 10)
 	}
 )
 

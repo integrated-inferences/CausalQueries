@@ -87,7 +87,26 @@ testthat::test_that(
       x = c(1, 2)
     ))
 
-    model <- CausalQueries::make_model("X -> M -> Y; X <-> Y")
+
+    # Imprecision
+    model <- CausalQueries::make_model("X -> M -> Y")
+    warnings <-
+      testthat::capture_warnings(
+        CausalQueries:::make_par_values(
+        model = model,
+        node = "Y",
+        x = 1:4
+      )
+      )
+
+    testthat::expect_equal(
+      warnings,
+      "Possible ambiguity: use additional arguments or check behavior in parameters_df."
+    )
+
+
+    # Confounding Imprecision
+    model <- CausalQueries::make_model("X ->  Y <-> X")
     warnings <-
       testthat::capture_warnings(CausalQueries:::make_par_values(
         model = model,
@@ -97,26 +116,23 @@ testthat::test_that(
       ))
 
     testthat::expect_equal(
-      warnings[1],
-      paste(
-        "A specified condition matches multiple parameters. In these",
-        "cases it is unclear which parameter value should be assigned to",
-        "which parameter. Assignment thus defaults to the order in which",
-        "parameters appear in 'parameters_df'. We advise checking that",
-        "parameter assignment was carried out as you intended. "
-      )
+      warnings,
+      "Possible ambiguity: use additional arguments or check behavior in parameters_df."
     )
 
-    testthat::expect_equal(
-      warnings[2],
-      paste(
-        "You are altering parameters on confounded nodes.",
-        "Alterations will be applied across all 'param_sets'.",
-        "If this is not the alteration behavior you intended,",
-        "try specifying the 'param_set' or 'given' option to more",
-        "clearly indicate parameters whose values you wish to alter."
-      )
-    )
+
+    # No Confounding Imprecision
+    model <- CausalQueries::make_model("X ->  Y <-> X")
+
+    testthat::expect_no_warning(
+        CausalQueries:::make_par_values(
+        model = model,
+        node = "Y",
+        given = "X.1",
+        nodal_type = c("00", "11"),
+        x = c(1, 2)
+      ))
+
 
   }
 )
