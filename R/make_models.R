@@ -116,6 +116,9 @@ make_model <- function(statement,
   # generate DAG
   x <- make_dag(statement)
 
+  # clean dag statement
+  statement <- paste(paste(x$v, x$e, x$w), collapse = "; ")
+
   if (nrow(x) == 0) {
     dag <- data.frame(v = statement, w = NA)
   } else {
@@ -489,7 +492,22 @@ make_dag <- function(statement) {
       dplyr::arrange(v)
   }
 
-  return(dag)
+  # remove duplicates
+  remove_duplicates(distinct(dag))
+}
+
+
+
+remove_duplicates <- function(df) {
+  # Create a normalized version of v and w
+  df$normalized_v <- pmin(df$v, df$w)
+  df$normalized_w <- pmax(df$v, df$w)
+
+  # Remove duplicates
+  df <- df[!duplicated(df[, c("normalized_v", "normalized_w", "e")]), ]
+
+  df[, c("v", "w", "e")]
+
 }
 
 

@@ -29,6 +29,7 @@ testthat::test_that(
 )
 
 
+
 testthat::test_that(
 
   desc = "Check errors",
@@ -63,6 +64,18 @@ testthat::test_that(
                                 Y = c("01", "10"),
                                 Z = c("0", "1"))
                               ))
+  }
+)
+
+
+
+testthat::test_that(
+
+  desc = "Clean statement",
+
+  code = {
+    expect_equal(make_model("X -> Y<-  X") |> grab("statement"), "X -> Y")
+    expect_equal(make_model("X -> Y; X<->Y; Y<->X") |> grab("statement"), "X -> Y; X <-> Y")
   }
 )
 
