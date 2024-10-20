@@ -11,7 +11,7 @@ testthat::test_that(
 	     make_model('X -> Y')
 
 	   expect_output(
-	     print(summary(model), include = "statement"),
+	     print(summary(model), what = "statement"),
 	     "\\s*X\\s*-+>\\s*Y\\s*")
 
 
