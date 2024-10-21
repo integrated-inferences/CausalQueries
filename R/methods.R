@@ -707,7 +707,7 @@ print.summary.causal_model <-
       if ("stanfit" %in% what) {
         if (!is.null(x$stan_objects$stanfit)) {
           cat("\nStan model summary:\n")
-          print(x$stan_objects)
+          print(x$stan_objects$stanfit)
         } else {
           printout <- c(printout, "stanfit")
           printout_upd <- c(printout_upd, "'keep_fit = TRUE'")
