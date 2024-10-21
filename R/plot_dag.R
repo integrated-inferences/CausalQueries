@@ -115,9 +115,16 @@ plot_model <- function(model = NULL,
     dplyr::rename(x = v, y = w) |>
     dplyr::mutate(weight = 1)
 
-  # Figure our ggraph data structure
-  coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
+  # Figure out ggraph data structure
+  if(nrow(dag)==1 & all(is.na(dag$e))) {
+    # Special case with one node
+    coords <- data.frame(x=0, y=0, name = dag$x)
+    dag$e <- dag$y <- "NA"
+   } else {
+    # Usual case
+   coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
     dplyr::select(x, y, name)
+   }
 
   # reorder nodes to match model ordering
   .r <- match(coords$name, model$nodes)

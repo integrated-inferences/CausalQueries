@@ -5,7 +5,7 @@ testthat::skip_on_cran()
 
 
 testthat::test_that(
-  desc = "Testing labels",
+  desc = "Testing basic functioning",
   code = {
     model <- make_model("X -> M -> Y; X -> Y")
     pdf(file = NULL)
@@ -16,7 +16,17 @@ testthat::test_that(
 
 
 testthat::test_that(
-  desc = "Testing setting labels",
+  desc = "Testing plot isolate",
+  code = {
+    model <- make_model("X")
+    pdf(file = NULL)
+    expect_silent(plot(model))
+    dev.off()
+  })
+
+
+testthat::test_that(
+  desc = "Testing setting coordinates",
   code = {
     model <- make_model("X -> K -> Y")
     x <- c(1, 2, 3)

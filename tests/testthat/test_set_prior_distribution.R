@@ -34,7 +34,7 @@ testthat::test_that(
   desc = "Deprecated get_prior_distribution.",
 
   code = {
-    expect_warning(make_model("X") |>
+    expect_warning(make_model("X -> Y") |>
                    CausalQueries:::get_prior_distribution(n_draws = 10) |>
                    ncol())
   }

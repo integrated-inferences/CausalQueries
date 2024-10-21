@@ -36,7 +36,7 @@ for(i in length(dags)){
 			model <- make_model(dags[i])
 		  rest_model <-	set_restrictions(model, monotonicity[i])
 			expect_true(
-			  length(get_nodal_types(model)$Y) > length(get_nodal_types(rest_model)$Y)
+			  (length(get_nodal_types(model)$Y) - length(get_nodal_types(rest_model)$Y) == 4)
 			)
 		}
 	)

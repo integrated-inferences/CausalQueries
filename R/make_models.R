@@ -114,21 +114,21 @@ make_model <- function(statement,
   }
 
   # generate DAG
-  x <- make_dag(statement)
+  .dag <- make_dag(statement)
 
   # clean dag statement
-  statement <- paste(paste(x$v, x$e, x$w), collapse = "; ")
+  statement <- ifelse(nrow(.dag) ==1  & all(is.na(.dag$e)),
+                      statement,
+                      paste(paste(.dag$v, .dag$e, .dag$w), collapse = "; ")
+                      )
 
-  if (nrow(x) == 0) {
-    dag <- data.frame(v = statement, w = NA)
-  } else {
-    dag  <- x |>
-      dplyr::filter(e == "->") |>
+  # parent child data.frame
+   dag  <- .dag |>
+      dplyr::filter(e == "->" | is.na(e)) |>
       dplyr::select(v, w)
-  }
 
-  # disallow dangling confound e.g. X -> M <-> Y
-  if (nrow(x) > 0 && any(!(unlist(x[, 1:2]) %in% unlist(dag)))) {
+  # disallow dangling confound e.g. X -> M <-> Y (single nodes allowed)
+  if (any(!(unlist(.dag[, 1:2]) %in% unlist(dag)))) {
     stop("Graph should not contain isolates.")
   }
 
@@ -255,10 +255,10 @@ make_model <- function(statement,
 
   # Add confounds if any provided
 
-  if (any(x$e == "<->")) {
+  if (grepl("<->", statement)) {
     confounds <- NULL
 
-    z  <- x |>
+    z  <- .dag |>
       dplyr::filter(e == "<->") |>
       dplyr::select(v, w)
     z$v <- as.character(z$v)
@@ -435,13 +435,13 @@ clean_statement <- function(statement) {
 
 #' Helper to run a causal statement specifying a DAG into a \code{data.frame} of
 #' pairwise parent child relations between nodes specified by a respective edge.
-#' This function reproduces the result of the following \code{dagitty} operations:
+#' This function can substitute for the following \code{dagitty} operations:
 #' \code{dagitty::dagitty() |> dagitty::edges()}
 #'
 #' @param statement character string. Statement describing causal
 #'   relations using \code{dagitty} syntax. Only directed relations are
 #'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2"
-#' @return a \code{data.frame} with columns v,w,e specifying parent, child and
+#' @return a \code{data.frame} with columns v, w, e specifying parent, child and
 #'   edge respectively
 #' @keywords internal
 
@@ -485,25 +485,31 @@ make_dag <- function(statement) {
   dag <- dags[!vapply(dags, is.null, logical(1))]
 
   if(length(dag) == 0) {
-    dag <- data.frame()
+    # Single node case
+    data.frame(v = statement, w = NA, e = NA)
+
   } else {
-    dag <- dag |>
+
+    dag |>
       dplyr::bind_rows() |>
-      dplyr::arrange(v)
+      dplyr::arrange(v) |>
+      distinct() |>
+      remove_duplicates()
   }
 
-  # remove duplicates
-  remove_duplicates(distinct(dag))
 }
 
 
 
 remove_duplicates <- function(df) {
-  # Create a normalized version of v and w
-  df$normalized_v <- pmin(df$v, df$w)
-  df$normalized_w <- pmax(df$v, df$w)
+  if(nrow(df) == 1) return(df)
 
-  # Remove duplicates
+  df <- df |> mutate(
+    normalized_v = ifelse(e == "<->", pmin(v, w), v),
+    normalized_w = ifelse(e == "<->", pmax(v, w), w)
+  )
+  # Remove duplicates (eg X<-Y; Y<->X)
+
   df <- df[!duplicated(df[, c("normalized_v", "normalized_w", "e")]), ]
 
   df[, c("v", "w", "e")]

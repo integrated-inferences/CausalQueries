@@ -26,7 +26,7 @@ testthat::test_that(
       make_model('X -> Y -> W') |>
       set_confound(list('Y <-> X', 'X <-> W'))
 
-    expect_identical(model$statement, "X -> Y -> W; Y <-> X; W <-> X")
+    expect_identical(model$statement, "X -> Y; Y -> W; Y <-> X; W <-> X")
 
     expect_message(
       make_model('X -> Y -> W') |> set_confound(),
