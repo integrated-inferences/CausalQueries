@@ -114,9 +114,20 @@ test_that("inspect outputs correct stanfit", {
 
 
 test_that("inspect handles dots", {
-  expect_true(make_model("X->Y") |>
+  model <- make_model("X->Y")
+
+  expect_true(model |>
                 inspect("prior_hyperparameters", nodes = "Y") |>
                 length() == 4)
+
+  expect_true(
+    grab(model, what = "data_types", complete_data = TRUE) |>
+      nrow() == 4)
+
+  expect_true(
+    grab(model, what = "data_types", complete_data = FALSE) |>
+      nrow() == 9)
+
 })
 
 
