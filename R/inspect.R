@@ -172,9 +172,9 @@ grab <- function(model, what = NULL, ...)
   }
 
   if (what %in% .large) {
-    model_sum <- summary(model, include = what)
+    model_sum <- summary(model, include = what, ...)
   } else {
-    model_sum <- summary(model)
+    model_sum <- summary(model, ...)
   }
 
   if (print) print(model_sum, what = what)

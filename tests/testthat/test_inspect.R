@@ -111,3 +111,13 @@ test_that("inspect outputs correct stanfit", {
   expect_output(inspect(model, what = "stanfit"), "Inference for Stan model: simplexes.")
 })
 
+
+
+test_that("inspect handles dots", {
+  expect_true(make_model("X->Y") |>
+                inspect("prior_hyperparameters", nodes = "Y") |>
+                length() == 4)
+})
+
+
+
