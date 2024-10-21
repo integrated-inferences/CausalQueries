@@ -132,78 +132,52 @@ inspect <- function(model, what = NULL, ...)
 grab <- function(model, what = NULL, ...)
   .inspect.grab(model, what = what, print = FALSE, ...)
 
-
-
-
-
 #' Helper for inspecting causal models
 #' @keywords internal
 #' @noRd
 
 .inspect.grab <- function(model, what = NULL, print = TRUE, ...) {
 
-
-  if (!(
-    what %in% c(
-      "statement",
-      "nodes",
-      "parents_df",
-      "parameters",
-      "parameter_names",
-      "parameter_mapping",
-      "parameter_matrix",
-      "parameters_df",
-      "causal_types",
-      "nodal_types",
-      "data_types",
-      "ambiguities_matrix",
-      "type_prior",
-      "prior_hyperparameters",
-      "prior_event_probabilities",
-      "prior_distribution",
-      "posterior_distribution",
-      "posterior_event_probabilities",
-      "type_distribution",
-      "data",
-      "stanfit",
-      "stan_summary"
-    )
-  ))
-  stop(
-    "'what' should be one of: statement, nodes, parents_df, parameters, parameter_names,
-     parameter_mapping, parameter_matrix, parameters_df, causal_types, nodal_types,
-     data_types, ambiguities_matrix, type_prior, prior_hyperparameters,
-     prior_event_probabilities, prior_distribution, posterior_distribution,
-     posterior_event_probabilities, type_distribution, data, stanfit, or stan_summary"
+  .small <- c(
+    "statement",
+    "nodes",
+    "parents_df",
+    "parameters",
+    "parameter_names",
+    "parameters_df",
+    "causal_types",
+    "nodal_types",
+    "data_types",
+    "prior_hyperparameters",
+    "prior_event_probabilities",
+    "posterior_distribution",
+    "posterior_event_probabilities",
+    "type_distribution",
+    "data",
+    "stanfit",
+    "stan_summary"
   )
 
-  if(what == "prior_hyperparameters"){
-    if(print){
-      cat("Hyperparameters for Dirichlet distribution\n\n")
-      cat("\n")
-    }
-    return(get_priors(model, ...))
+  .large <- c(
+    "parameter_mapping",
+    "parameter_matrix",
+    "causal_types",
+    "prior_distribution",
+    "ambiguities_matrix",
+    "type_prior"
+  )
+
+  if (!(what %in% c(.small, .large))) {
+    stop("The object requested via what argument is not supported. See ?inspect for the list of supported objects")
   }
 
-  if(what == "prior_event_probabilities"){
-    if(print){
-      cat("Prior event probabilities for possible data types given a specified parameter vector \n\n")
-      cat("\n")
-    }
-    return(get_event_probabilities(model, ...))
+  if (what %in% .large) {
+    model_sum <- summary(model, include = what)
+  } else {
+    model_sum <- summary(model)
   }
 
-
-  if(what == "data_types"){
-    if(print){
-      cat("Data types consistent with the model \n\n")
-      cat("\n")
-    }
-    return(get_all_data_types(model, ...))
-  }
-
-  model_sum <- summary(model)
-  if(print) print(model_sum, include = what)
+  if (print) print(model_sum, what = what)
 
   if (is.null(what)) {
     return(invisible(model_sum))
@@ -218,6 +192,7 @@ grab <- function(model, what = NULL, ...)
     } else {
       stop("The following requested object is not supported: ", what)
     }
+
   }
 
 }
