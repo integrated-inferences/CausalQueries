@@ -766,10 +766,13 @@ get_type_distributions <- function(jobs,
   }
 
 
-plot_query <- function(model_query) {
-    dodge_width <- 0.2  # Adjust this value to control the amount of dodge
+  plot_query <- function(model_query) {
+    # create bindings
+    query <- case_level <- using <- cred.low <- cred.high <- NULL
+    # adjust this value to control the amount of dodge
+    dodge_width <- 0.2
 
-    if(!("model" %in% names(model_query)))
+    if (!("model" %in% names(model_query)))
       model_query$model <- "Causal Queries"
 
 
@@ -778,14 +781,18 @@ plot_query <- function(model_query) {
         given = gsub("==", "=", given),
         query = ifelse(given != "-", paste(query, "|", given), query),
         query = ifelse(case_level, paste(query, "(case)"), query)
-        )
+      )
 
     model_query |>
       ggplot(aes(mean, query, color = using)) +
       geom_point(position = position_dodge(width = dodge_width)) +
-      geom_errorbarh(aes(xmin = cred.low, xmax = cred.high, height = .2),
-                     position = position_dodge(width = dodge_width)) +
-      theme_bw() + facet_wrap(~model) + xlab("value")
+      geom_errorbarh(aes(
+        xmin = cred.low,
+        xmax = cred.high,
+        height = .2
+      ),
+      position = position_dodge(width = dodge_width)) +
+      theme_bw() + facet_wrap( ~ model) + xlab("value")
   }
 
 #' @export

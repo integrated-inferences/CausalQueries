@@ -119,7 +119,8 @@ summary.causal_model <- function(object, include = NULL, ...) {
         "causal_types",
         "prior_distribution",
         "ambiguities_matrix",
-        "type_prior"
+        "type_prior",
+        "prior_hyperparameters"
       ))
 
     if (length(wrong) > 0 & length(wrong) <= length(include)) {

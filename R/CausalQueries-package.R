@@ -6,9 +6,10 @@
 #' Updating is implemented in 'stan'.
 #' @docType package
 #'
-#' @name CausalQueries-package
+#' @name CausalQueries
 #' @importFrom utils globalVariables
 #' @useDynLib CausalQueries, .registration = TRUE
+NULL
 
 globalVariables(names = c("posterior", "prob", "restrict", "n", "model", "data",
                           "%>%", "node", "nodal_type","param_set", "event",

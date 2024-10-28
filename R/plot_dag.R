@@ -157,7 +157,7 @@ plot_model <- function(model = NULL,
                  color = nodecol,
                  shape = shape) +
       theme_void()  +
-      geom_node_text(
+      ggraph::geom_node_text(
         data = coords,
         aes(x, y, label = name),
         color = textcol,
