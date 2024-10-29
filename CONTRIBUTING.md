@@ -1,6 +1,6 @@
 ## Contributing to CausalQueries
 
-:tada: Welcome to our contribution guidelines and thank you for your interesting in contributing! 
+:tada: Welcome to our contribution guidelines and thank you for your interest in contributing! 
 
   
   ### Reporting a bug
@@ -8,7 +8,7 @@
   If no related issue has been opened, create an issue keeping in mind the following guidelines:
   
   - Use an informative title
-  - Write a minimal working example that allow us to reproduce the bug you found
+  - Write a minimal working example that allows us to reproduce the bug you found
   - If the bug you're reporting crashes your R session, please mention that in the title
   
   ### Contributing code
@@ -17,7 +17,7 @@
   
   - Fork the [CausalQueries repository](https://github.com/macartan/CausalQueries) 
   - Clone your fork locally 
-  - Be always up to date with the `master`
+  - Always be up to date with the `master` branch
   - Add your edits
   - Run and pass `devtools::check()`
   - Reach a 100% coverage `covr::package_coverage()`
@@ -25,6 +25,6 @@
   - Open a pull request
   
   
-  Note: members of the `CausalQueries` community can skip the first two bullet points above and branch out instead.
+  Note: members of the `CausalQueries` dev team can skip the first two bullet points above and branch out instead.
   
   
