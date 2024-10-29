@@ -5,13 +5,13 @@
 ![](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)
 <!-- badges: end -->
 
-https://integrated-inferences.github.io/CausalQueries/
-
 `CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition makes use of `dagitty` functionality. Updating is implemented in `stan`. 
 
 * See vignettes for a guide to getting started.
 
 * See [here](https://macartan.github.io/assets/pdf/papers/2024_CausalQueries.pdf) for a guide to using `CausalQueries` along with many examples of causal models  
+
+* See [website](https://integrated-inferences.github.io/CausalQueries/) for a comprehensive overview of `CausalQueries`
 
  
 
@@ -30,7 +30,12 @@ install.packages("devtools")
 devtools::install_github("integrated-inferences/CausalQueries")
 ```
 
-## Causal models
+## Helping Out \& Contributing
+
+`CausalQueries` is an open and active developer community. We welcome contributions and are excited you are keen to get involved.
+Please refer to the [contributing guidelines](CONTRIBUTING.md) to get started. 
+
+## Causal Models
 
 Causal models are defined by:
 
