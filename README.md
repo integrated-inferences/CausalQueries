@@ -33,7 +33,7 @@ devtools::install_github("integrated-inferences/CausalQueries")
 ## Helping Out \& Contributing
 
 `CausalQueries` is an open and active developer community. We welcome contributions and are excited you are keen to get involved.
-Please refer to the [contributing guidelines](CONTRIBUTING.md) to get started. 
+Please refer to `CONTRIBUTING.md` to get started. 
 
 ## Causal Models
 
