@@ -111,16 +111,33 @@ summary.causal_model <- function(object, include = NULL, ...) {
     do.call(get_priors, args = _)
 
   if (!is.null(include)) {
-
+    # Only below values admissible to add to summary or to pass to printing
     wrong <-
       base::setdiff(include, c(
+        "statement",
+        "nodes",
+        "parents",
+        "parents_df",
+        "parameters",
+        "parameters_df",
+        "parameter_names",
         "parameter_mapping",
         "parameter_matrix",
         "causal_types",
+        "nodal_types",
+        "data_types",
+        "prior_hyperparameters",
         "prior_distribution",
+        "prior_event_probabilities",
         "ambiguities_matrix",
         "type_prior",
-        "prior_hyperparameters"
+        "type_distribution",
+        "posterior_distribution",
+        "posterior_event_probabilities",
+        "data",
+        "stanfit",
+        "stan_summary",
+        "stan_objects"
       ))
 
     if (length(wrong) > 0 & length(wrong) <= length(include)) {
@@ -166,6 +183,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
   }
 
   object <- structure(object, class = c("summary.causal_model"))
+  attr(object, "include") <- include
 
   return(object)
 }
@@ -236,11 +254,14 @@ summary.causal_model <- function(object, include = NULL, ...) {
 print.summary.causal_model <-
   function(x, what = NULL, ...) {
 
-    # create dummy messages for updating
-    printout <- c()
-    printout_upd <- c()
 
+    # general printing requests: provided whenever 'what' is not specified
     if (is.null(what)) {
+
+      # create dummy messages for updating
+      printout <- c()
+      printout_upd <- c()
+
       ## IF WHAT IS EMPTY
 
       # main summary printout
@@ -330,25 +351,39 @@ print.summary.causal_model <-
 
       if (length(printout) > 0) {
         if (length(printout_upd) > 0) {
-          message(
+          cat(
             paste0(
-              "\nModel does not contain the following objects: ",
+              "\nNote: Model does not contain the following objects: ",
               paste0(unique(printout), collapse = ", "),
-              ";\n  to include these objects update model with ",
-              paste0(unique(printout_upd), collapse = ", ")
+              ";\nto include these objects update model with ",
+              paste0(unique(printout_upd), collapse = ", "),
+              "\n"
             )
           )
         } else {
-          message(
+          cat(
             paste0(
-              "\nModel does not contain: ",
+              "\nNote: Model does not contain: ",
               paste0(unique(printout), collapse = ", "),
-              ";\n  to include these objects update model"
+              ";\nto include these objects update model\n"
             )
           )
         }
       }
-    } else {
+    }
+
+    # specific printing requests:
+
+    # pass on any additional elements to what from include argument in summary
+    what <- c(what, attr(x, "include"))
+
+    if(!is.null(what)) {
+
+      # create dummy messages for updating
+      printout <- c()
+      printout_upd <- c()
+
+
       ## IF WHAT IS SPECIFIED
 
       wrong <-
@@ -534,13 +569,13 @@ print.summary.causal_model <-
 
       # data_types
       if ("data_types" %in% what) {
-        cat("\nData frame of all possible data (events) given the model:\n\n")
+        cat("\ndata_types:\nData frame of all possible data (events) given the model:\n\n")
         print(x$data_types)
       }
 
       # ambiguities_matrix
       if (("ambiguities_matrix" %in% what) & !is.null(x$ambiguities_matrix)) {
-        cat("\nMapping from causal types into data types:\n\n")
+        cat("\nambiguities_matrix:\nMapping from causal types into data types:\n\n")
         print(x$ambiguities_matrix)
       } else if (("ambiguities_matrix" %in% what) & is.null(x$ambiguities_matrix)) {
         warning("Model summary does not contain ambiguities_matrix; to include this object use summary with 'include = 'ambiguities_matrix''")
@@ -548,20 +583,20 @@ print.summary.causal_model <-
 
       # prior_event_probabilties
       if ("prior_event_probabilities" %in% what) {
-        cat("\nProbabilities of observing data (events)")
+        cat("\nprior_event_probabilities:\nProbabilities of observing data (events)")
         cat("\nfor a given set of parameter values:\n\n")
         print(data.frame(event_probs = x$prior_event_probabilities))
       }
 
       # prior_hyperparameters
       if ("prior_hyperparameters" %in% what) {
-        cat("\nAlpha parameter values used for Dirichlet prior distributions:\n\n")
+        cat("\nprior_hyperparameters\nAlpha parameter values used for Dirichlet prior distributions:\n\n")
         print(x$prior_hyperparameters)
       }
 
       # prior_distribution
       if (("prior_distribution" %in% what) & !is.null(x$prior_distribution)) {
-        cat("\nSummary statistics of model parameters prior distributions:\n")
+        cat("\nprior_distribution\nSummary statistics of model parameters prior distributions:\n")
         cat(paste(
           "\n  Distributions matrix dimensions are",
           "\n ", dim(x$prior_distribution)[1], "rows (draws) by",
@@ -581,7 +616,7 @@ print.summary.causal_model <-
 
       # type_prior
       if (("type_prior" %in% what) & !is.null(x$type_prior)) {
-        cat("\nSummary statistics of causal types prior distributions:\n")
+        cat("\ntype_prior\nSummary statistics of causal types prior distributions:\n")
         cat(paste(
           "\n  Distributions matrix dimensions are",
           "\n ", dim(x$type_prior)[1], "rows (causal types) by",
@@ -600,7 +635,7 @@ print.summary.causal_model <-
       # type_distribution
       if ("type_distribution" %in% what) {
         if (!is.null(x$stan_objects$type_distribution)) {
-          cat("\nPosterior draws of causal types (transformed parameters):\n")
+          cat("\ntype_distribution\nPosterior draws of causal types (transformed parameters):\n")
           cat(paste(
             "\n  Distributions matrix dimensions are",
             "\n ", dim(x$stan_objects$type_distribution)[1], "rows (draws) by",
@@ -629,7 +664,7 @@ print.summary.causal_model <-
       # posterior_distribution
       if ("posterior_distribution" %in% what) {
         if (!is.null(x$posterior_distribution)) {
-          cat("\nSummary statistics of model parameters posterior distributions:\n")
+          cat("\nposterior_distribution\nSummary statistics of model parameters posterior distributions:\n")
           cat(paste(
             "\n  Distributions matrix dimensions are",
             "\n ", dim(x$posterior_distribution)[1], "rows (draws) by",
@@ -655,7 +690,7 @@ print.summary.causal_model <-
       # posterior_event_probabilities
       if ("posterior_event_probabilities" %in% what) {
         if (!is.null(x$stan_objects$event_probabilities)) {
-          cat("\nPosterior draws of event probabilities (transformed parameters):\n")
+          cat("\nposterior_event_probabilities\nPosterior draws of event probabilities (transformed parameters):\n")
           cat(paste(
             "\n  Distributions matrix dimensions are",
             "\n ", dim(x$stan_objects$event_probabilities)[1], "rows (draws) by",
@@ -686,7 +721,7 @@ print.summary.causal_model <-
         if (!is.null(x$stan_objects$data)) {
           cat("\nData used to update the model:\n")
           cat(paste(
-            "\n  Data frame dimensions are",
+            "\ndata\n  Data frame dimensions are",
             "\n ", dim(x$stan_objects$data)[1], "rows by",
             dim(x$stan_objects$data)[2], "cols\n\n",
             sep = " "
@@ -707,7 +742,7 @@ print.summary.causal_model <-
       # stan_objects
       if ("stanfit" %in% what) {
         if (!is.null(x$stan_objects$stanfit)) {
-          cat("\nStan model summary:\n")
+          cat("\nstanfit\nStan model summary:\n")
           print(x$stan_objects$stanfit)
         } else {
           printout <- c(printout, "stanfit")
@@ -718,7 +753,7 @@ print.summary.causal_model <-
       # stan_objects
       if ("stan_summary" %in% what | "stan_objects" %in% what) {
         if (!is.null(x$stan_objects)) {
-          cat("\nStan model summary:\n")
+          cat("\nstan_summary\nStan model summary:\n")
           print(x$stan_objects)
         } else {
           printout <- c(printout, "stan_objects")
@@ -748,6 +783,8 @@ print.summary.causal_model <-
       }
     }
 
+    cat("\n")
+    cat("Note: To pose causal queries of this model use query_model()\n")
     cat("\n")
 
     return(invisible(x))

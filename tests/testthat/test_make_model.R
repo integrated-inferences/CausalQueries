@@ -14,7 +14,6 @@ testthat::test_that(
 		              any(grepl("^Number of unit types:", out)))
 		out <- class(summary(model))
 		expect_equal(out, "summary.causal_model")
-		expect_message(print(summary(model)))
 
 		model <- update_model(model)
 		out <- capture.output(print(model))
