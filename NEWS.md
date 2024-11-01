@@ -1,3 +1,15 @@
+# CausalQueries 1.2.0
+
+This is a minor release introducing more expressive and concise S3 summary and 
+print methods for the `causal_model` class and its internal objects as 
+well as a plot method for queries. This release further removes dependency 
+on `dagitty`, restoring compatibility of `CausalQueries` with systems on 
+which `V8` `JavaScript` `WASM` is not supported. 
+
+### New Functionality
+
+`inspect()` 
+
 # CausalQueries 1.1.1
 
 This is a patch release fixing a bug in the `print.model_query()` S3 method that 
