@@ -13,7 +13,7 @@ Extracts priors as a named vector"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@ Extracts priors as a named vector"></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -213,7 +213,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  X.0  X.1 Y.00 Y.10 Y.01 Y.11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.4  0.4  0.4  0.4  0.4  0.4 </span>
 <span class="r-in"><span><span class="fu">make_priors</span><span class="op">(</span><span class="va">model</span>, distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No specific parameters to alter values for specified. Altering all parameters.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Altering all parameters.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  X.0  X.1 Y.00 Y.10 Y.01 Y.11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.5  0.5  0.5  0.5  0.5  0.5 </span>
 <span class="r-in"><span></span></span>
@@ -222,7 +222,6 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{alter_at}</span></span></span>
 <span class="r-in"><span><span class="fu">make_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>alter_at <span class="op">=</span> <span class="st">"node == 'Y' &amp; nodal_type %in% c('00','01') &amp; given == 'X.0'"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X.0      X.1     M.00     M.10     M.01     M.11 Y.00_X.0 Y.10_X.0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     1.00     1.00     1.00     1.00     1.00     1.00     0.50     1.00 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1 </span>
@@ -231,7 +230,6 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{param_names}</span></span></span>
 <span class="r-in"><span><span class="fu">make_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>param_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y.10_X.0"</span>,<span class="st">"Y.10_X.1"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X.0      X.1     M.00     M.10     M.01     M.11 Y.00_X.0 Y.10_X.0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     1.00     1.00     1.00     1.00     1.00     1.00     1.00     0.50 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1 </span>
@@ -240,8 +238,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{statement}</span></span></span>
 <span class="r-in"><span><span class="fu">make_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>statement <span class="op">=</span> <span class="st">"Y[M=1] &gt; Y[M=0]"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A specified condition matches multiple parameters. In these cases it is unclear which parameter value should be assigned to which parameter. Assignment thus defaults to the order in which parameters appear in 'parameters_df'. We advise checking that parameter assignment was carried out as you intended. </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Possible ambiguity: use additional arguments or check behavior in parameters_df.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X.0      X.1     M.00     M.10     M.01     M.11 Y.00_X.0 Y.10_X.0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     1.00     1.00     1.00     1.00     1.00     1.00     1.00     1.00 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1 </span>
@@ -262,7 +259,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span><span class="va">model</span>, alphas <span class="op">=</span> <span class="fl">.4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y &lt;- X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
@@ -270,10 +267,10 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span><span class="va">model</span>, distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No specific parameters to alter values for specified. Altering all parameters.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Altering all parameters.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y &lt;- X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
@@ -286,10 +283,9 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{alter_at}</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>alter_at <span class="op">=</span> <span class="st">"node == 'Y' &amp; nodal_type %in% c('00','01') &amp; given == 'X.0'"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; M -&gt; Y; X &lt;-&gt; Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M -&gt; Y; X -&gt; M; X &lt;-&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
@@ -300,10 +296,9 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{param_names}</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>param_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y.10_X.0"</span>,<span class="st">"Y.10_X.1"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; M -&gt; Y; X &lt;-&gt; Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M -&gt; Y; X -&gt; M; X &lt;-&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
@@ -314,11 +309,10 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span><span class="co">#altering values using \code{statement}</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>statement <span class="op">=</span> <span class="st">"Y[M=1] &gt; Y[M=0]"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A specified condition matches multiple parameters. In these cases it is unclear which parameter value should be assigned to which parameter. Assignment thus defaults to the order in which parameters appear in 'parameters_df'. We advise checking that parameter assignment was carried out as you intended. </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>You are altering parameters on confounded nodes. Alterations will be applied across all 'param_sets'. If this is not the alteration behavior you intended, try specifying the 'param_set' or 'given' option to more clearly indicate parameters whose values you wish to alter.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Possible ambiguity: use additional arguments or check behavior in parameters_df.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; M -&gt; Y; X &lt;-&gt; Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M -&gt; Y; X -&gt; M; X &lt;-&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
@@ -331,7 +325,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-in"><span>nodal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"00"</span>,<span class="st">"01"</span><span class="op">)</span>, given <span class="op">=</span> <span class="st">"X.0"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; M -&gt; Y; X &lt;-&gt; Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> M -&gt; Y; X -&gt; M; X &lt;-&gt; Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>

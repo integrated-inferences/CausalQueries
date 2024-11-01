@@ -9,7 +9,7 @@ posterior distribution of parameters"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@ posterior distribution of parameters"></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -130,12 +130,12 @@ the query for a case.</p></dd>
 <span class="r-in"><span>                    using <span class="op">=</span> <span class="st">"priors"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] &gt; Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.22828034</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.51077271</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.43724831</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.34799173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.02492251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.24327727</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.12034359</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.51344979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.19109041</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.05575561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.18133088</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.14711437</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># multiple  queries</span></span></span>
 <span class="r-in"><span> <span class="fu">query_distribution</span><span class="op">(</span><span class="va">model</span>,</span></span>
@@ -144,12 +144,12 @@ the query for a case.</p></dd>
 <span class="r-in"><span>     using <span class="op">=</span> <span class="st">"priors"</span><span class="op">)</span><span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] &gt; Y[X=0]) (Y[X=1] &lt; Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.20505083         0.3314607</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.52955734         0.3679494</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.02263046         0.1463825</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.19385889         0.5864611</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.15345013         0.1028738</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.03739677         0.0921576</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.06089086         0.2042875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.02781970         0.4818306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.13660715         0.1088412</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.24334908         0.4991942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.10931334         0.6652600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.48212351         0.1146424</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># multiple queries and givens</span></span></span>
 <span class="r-in"><span> <span class="fu">query_distribution</span><span class="op">(</span><span class="va">model</span>,</span></span>
@@ -158,12 +158,12 @@ the query for a case.</p></dd>
 <span class="r-in"><span>   using <span class="op">=</span> <span class="st">"priors"</span><span class="op">)</span><span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] &gt; Y[X=0]) | Y==1 (Y[X=1] &lt; Y[X=0]) | (Y[X=1] &lt;= Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1              0.001162826                             0.09694419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2              0.127941645                             0.16917991</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3              0.010611402                             0.76445192</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4              0.385152889                             0.03684778</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5              0.152344112                             0.48823589</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6              0.261024062                             0.84836461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                0.5790261                            0.429955973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                0.4643568                            0.523263613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                0.6059210                            0.002062115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                0.2628373                            0.382381555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                0.8983250                            0.061764543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                0.1269406                            0.287323009</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># linear queries</span></span></span>
 <span class="r-in"><span> <span class="fu">query_distribution</span><span class="op">(</span><span class="va">model</span>, query <span class="op">=</span> <span class="st">"(Y[X=1] - Y[X=0])"</span><span class="op">)</span></span></span>
@@ -195,12 +195,12 @@ the query for a case.</p></dd>
 <span class="r-in"><span>    given <span class="op">=</span> <span class="st">"X==1 &amp; Y==1"</span>,</span></span>
 <span class="r-in"><span>    using <span class="op">=</span> <span class="st">"priors"</span><span class="op">)</span>  <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] &gt; Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.10257345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.57582676</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.46513062</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.40696678</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.06417058</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.48493226</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.01476028</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.70631923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.83031882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.20635647</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.90962767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.36578418</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># Case level probability of causation query</span></span></span>
 <span class="r-in"><span> <span class="fu">query_distribution</span><span class="op">(</span><span class="va">model</span>,</span></span>
@@ -209,7 +209,7 @@ the query for a case.</p></dd>
 <span class="r-in"><span>    case_level <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    using <span class="op">=</span> <span class="st">"priors"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] &gt; Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         0.5011433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         0.5025931</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># Query posterior</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="update_model.html">update_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu"><a href="make_data.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -218,8 +218,8 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.5e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.8e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.18 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -236,15 +236,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.096 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.077 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.173 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.098 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.083 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.181 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.3e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
@@ -262,14 +262,14 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.085 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.08 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.165 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.081 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.166 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.2e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
@@ -286,15 +286,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 0.084 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.078 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.162 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 0.079 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.071 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.15 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.1e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
@@ -311,17 +311,17 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.087 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.112 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.199 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.083 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.092 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.175 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Y[X=1] - Y[X=0])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       -0.07971578</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       -0.04530610</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       -0.42534802</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.04921927</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       -0.14070017</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.26872687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.15046507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       -0.51480646</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       -0.14897144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       -0.27075883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       -0.45590315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       -0.06536233</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># Case level queries provide the inference for a case, which is a scalar</span></span></span>
 <span class="r-in"><span> <span class="co"># The case level query *updates* on the given information</span></span></span>
@@ -337,8 +337,8 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.8e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.28 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.3e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -355,15 +355,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 9000 / 10000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 10000 / 10000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.943 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                1.084 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                2.027 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.905 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                1.033 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                1.938 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.7e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.17 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.6e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
@@ -380,15 +380,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 9000 / 10000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 10000 / 10000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.957 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.984 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                1.941 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.935 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.955 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                1.89 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.9e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.6e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
@@ -405,15 +405,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 9000 / 10000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 10000 / 10000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 1 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.97 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                1.97 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 1.015 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.938 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                1.953 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.8e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.18 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.6e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
@@ -430,9 +430,9 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 9000 / 10000 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 10000 / 10000 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 1.011 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                1.438 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                2.449 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.964 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                1.385 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                2.349 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">Q</span> <span class="op">&lt;-</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span></span></span>
@@ -454,12 +454,15 @@ the query for a case.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Y[X=1] &gt; Y[X=0]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       0.6715179</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="co"># 2. Case level query by hand using Bayes</span></span></span>
-<span class="r-in"><span> <span class="va">distribution</span> <span class="op">&lt;-</span> <span class="fu">query_distribution</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="va">model</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>QG <span class="op">=</span> <span class="va">QG</span>, G <span class="op">=</span> <span class="va">G</span><span class="op">)</span>, using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="co"># 2. Case level query by hand using Bayes' rule</span></span></span>
+<span class="r-in"><span> <span class="fu">query_distribution</span><span class="op">(</span></span></span>
+<span class="r-in"><span>     <span class="va">model</span>,</span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>QG <span class="op">=</span> <span class="va">QG</span>, G <span class="op">=</span> <span class="va">G</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">QG</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mean(QG)/mean(G)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.6715179</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">distribution</span><span class="op">$</span><span class="va">QG</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">distribution</span><span class="op">$</span><span class="va">G</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6715179</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

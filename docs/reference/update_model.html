@@ -9,7 +9,7 @@ attached and a posterior model"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@ attached and a posterior model"></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -77,7 +77,7 @@ attached and a posterior model</p>
 
 <dt id="arg-data-type">data_type<a class="anchor" aria-label="anchor" href="#arg-data-type"></a></dt>
 <dd><p>Either 'long' (as made by <code><a href="make_data.html">make_data</a></code>) or
-'compact' (as made by <code><a href="collapse_data.html">collapse_data</a></code>). Compact data must
+'compact' (as made by <code><a href="data_helpers.html">collapse_data</a></code>). Compact data must
 have entries for each member of each strategy family to produce a
 valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.</p></dd>
@@ -129,25 +129,338 @@ details see <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="va">data_long</span>   <span class="op">&lt;-</span> <span class="fu"><a href="simulate_data.html">simulate_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in simulate_data(model, n = 4):</span> could not find function "simulate_data"</span>
-<span class="r-in"><span> <span class="va">data_short</span>  <span class="op">&lt;-</span> <span class="fu"><a href="collapse_data.html">collapse_data</a></span><span class="op">(</span><span class="va">data_long</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_long' not found</span>
-<span class="r-in"><span> <span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span> <span class="va">data_long</span>   <span class="op">&lt;-</span> <span class="fu"><a href="make_data.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">data_short</span>  <span class="op">&lt;-</span> <span class="fu"><a href="data_helpers.html">collapse_data</a></span><span class="op">(</span><span class="va">data_long</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="va">model</span> <span class="op">&lt;-</span>  <span class="fu">update_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">data_long</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_long' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.22 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.095 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.108 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.203 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.084 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.082 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.166 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 0.084 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.092 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.176 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.092 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.088 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.18 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
 <span class="r-in"><span> <span class="va">model</span> <span class="op">&lt;-</span>  <span class="fu">update_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">data_short</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'data_short' not found</span>
-<span class="r-in"><span> <span class="co"># }</span></span></span>
-<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>count column should be integer valued; value has been forced to integer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.5e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.083 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.115 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.198 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.081 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.082 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.163 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 0.083 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.086 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.169 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.2e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.081 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.102 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.183 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>   <span class="co"># It is possible to implement updating without data, in which</span></span></span>
 <span class="r-in"><span>   <span class="co"># case the posterior is a stan object that reflects the prior</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>   <span class="fu">update_model</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No data provided</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.8e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.18 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.078 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.081 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.159 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 0.077 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.075 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                0.152 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 0.076 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.07 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                0.146 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 0.082 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.086 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                0.168 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X -&gt; Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of types by node:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model has been updated and contains a posterior distribution with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 chains, each with iter=2000; warmup=1000; thin=1;  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Use inspect(model, 'stan_objects') to inspect stan summary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>   <span class="co"># Censored data types illustrations</span></span></span>
+<span class="r-in"><span>   <span class="co"># Here we update less than we might because we are aware of filtered data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>   <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>, Y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>   <span class="co"># Censored data types</span></span></span>
-<span class="r-in"><span>   <span class="co"># We update less than we might because we are aware of filtered data</span></span></span>
 <span class="r-in"><span>   <span class="va">uncensored</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>     <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X-&gt;Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>     <span class="fu">update_model</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>

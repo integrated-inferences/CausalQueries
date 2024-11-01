@@ -11,7 +11,7 @@ the case level causal type."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,7 @@ the case level causal type."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -74,17 +74,43 @@ the case level causal type.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Simple draw using model's parameter vector</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object '.' not found</span>
+<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node    gen param_set nodal_type given param_value priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>           0.5       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>           0.5       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>           0.25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: causal_type &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Draw parameters from priors and draw type from parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span><span class="va">.</span>, param_type <span class="op">=</span> <span class="st">"prior_draw"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object '.' not found</span>
+<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span>, param_type <span class="op">=</span> <span class="st">"prior_draw"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node    gen param_set nodal_type given param_value priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>       0.089<span style="text-decoration: underline;">3</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>       0.911         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>       0.230         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>       0.667         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>       0.081<span style="text-decoration: underline;">0</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>       0.022<span style="text-decoration: underline;">0</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>       0.169         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>       0.000<span style="text-decoration: underline;">645</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>       0.761         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>       0.068<span style="text-decoration: underline;">8</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: causal_type &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Draw type given specified parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span><span class="va">.</span>, parameters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">draw_causal_type</span><span class="op">(</span>parameters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node    gen param_set nodal_type given param_value priors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -100,12 +126,6 @@ the case level causal type.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>          0.294      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: causal_type &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Define a causal type and reveal data</span></span></span>
-<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y; X &lt;-&gt; Y"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu">draw_causal_type</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="make_data.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, parameters <span class="op">=</span> <span class="va">type</span><span class="op">$</span><span class="va">causal_type</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   X Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -61,8 +61,11 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">make_parameters_df</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">"1"</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"01"</span>, <span class="st">"10"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_parameters_df(list(X = "1", Y = c("01", "10"))):</span> could not find function "make_parameters_df"</span>
+<span class="r-in"><span><span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">make_parameters_df</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">"1"</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"01"</span>, <span class="st">"10"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   param_names node gen param_set nodal_type given param_value priors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         X.1    X   1         X          1               1.0      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        Y.01    Y   2         Y         01               0.5      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        Y.10    Y   2         Y         10               0.5      1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

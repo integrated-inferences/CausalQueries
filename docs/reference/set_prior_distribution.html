@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -78,20 +78,23 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">set_prior_distribution</span><span class="op">(</span>n_draws <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="st">"prior_distribution"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"prior_distribution"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> prior_distribution</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary statistics of model parameters prior distributions:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Distributions matrix dimensions are </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   5 rows (draws) by 6 cols (parameters)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mean   sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X.0  0.55 0.31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X.1  0.45 0.31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00 0.20 0.04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10 0.15 0.18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01 0.36 0.25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11 0.29 0.21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.0  0.47 0.34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.1  0.53 0.34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00 0.20 0.17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10 0.37 0.18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01 0.30 0.19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11 0.14 0.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
