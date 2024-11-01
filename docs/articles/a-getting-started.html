@@ -301,15 +301,123 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <span><span class="co">#&gt; |:---------------|:----------------|:----------|-----:|-----:|--------:|---------:|</span></span>
 <span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |Y[X=1] != Y[X=0] |priors     | 0.503| 0.290|    0.024|     0.975|</span></span>
 <span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |Y[X=1] != Y[X=0] |posteriors | 0.748| 0.106|    0.574|     0.971|</span></span></code></pre></div>
-<p>Queries can also be plotted, which is especially useful with batch
-requests:</p>
+<p>Query output is ready for printing as tables, but can also be
+plotted, which is especially useful with batch requests:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">&lt;-</span> <span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y[X=1] - Y[X=0]"</span>, <span class="st">"Y[X=1] &gt; Y[X=0]"</span><span class="op">)</span>, </span>
 <span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>, </span>
 <span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Y[X=1] != Y[X=0]"</span><span class="op">)</span>,</span>
-<span>              expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>              expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>, caption <span class="op">=</span> <span class="st">"tabular output"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>tabular output</caption>
+<colgroup>
+<col width="18%">
+<col width="20%">
+<col width="12%">
+<col width="12%">
+<col width="7%">
+<col width="5%">
+<col width="10%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">query</th>
+<th align="left">given</th>
+<th align="left">using</th>
+<th align="left">case_level</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">cred.low</th>
+<th align="right">cred.high</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Y[X=1] - Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">priors</td>
+<td align="left">FALSE</td>
+<td align="right">0.00</td>
+<td align="right">0.32</td>
+<td align="right">-0.62</td>
+<td align="right">0.63</td>
+</tr>
+<tr class="even">
+<td align="left">Y[X=1] - Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">posteriors</td>
+<td align="left">FALSE</td>
+<td align="right">0.28</td>
+<td align="right">0.09</td>
+<td align="right">0.08</td>
+<td align="right">0.45</td>
+</tr>
+<tr class="odd">
+<td align="left">Y[X=1] - Y[X=0]</td>
+<td align="left">Y[X=1] != Y[X=0]</td>
+<td align="left">priors</td>
+<td align="left">FALSE</td>
+<td align="right">-0.01</td>
+<td align="right">0.58</td>
+<td align="right">-0.95</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="left">Y[X=1] - Y[X=0]</td>
+<td align="left">Y[X=1] != Y[X=0]</td>
+<td align="left">posteriors</td>
+<td align="left">FALSE</td>
+<td align="right">0.50</td>
+<td align="right">0.21</td>
+<td align="right">0.15</td>
+<td align="right">0.94</td>
+</tr>
+<tr class="odd">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">priors</td>
+<td align="left">FALSE</td>
+<td align="right">0.25</td>
+<td align="right">0.19</td>
+<td align="right">0.01</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">-</td>
+<td align="left">posteriors</td>
+<td align="left">FALSE</td>
+<td align="right">0.45</td>
+<td align="right">0.12</td>
+<td align="right">0.20</td>
+<td align="right">0.65</td>
+</tr>
+<tr class="odd">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">Y[X=1] != Y[X=0]</td>
+<td align="left">priors</td>
+<td align="left">FALSE</td>
+<td align="right">0.50</td>
+<td align="right">0.29</td>
+<td align="right">0.02</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="even">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">Y[X=1] != Y[X=0]</td>
+<td align="left">posteriors</td>
+<td align="left">FALSE</td>
+<td align="right">0.75</td>
+<td align="right">0.11</td>
+<td align="right">0.57</td>
+<td align="right">0.97</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="a-getting-started_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
