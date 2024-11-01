@@ -111,32 +111,29 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y; X &lt;-&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X.0      X.1 Y.00_X.0 Y.10_X.0 Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.50     0.50     0.25     0.25     0.25     0.25     0.25     0.25 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.1 Y.11_X.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.25     0.25 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; X &lt;-&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X.0      X.1     M.00     M.10     M.01     M.11 Y.00_X.0 Y.10_X.0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.50     0.50     0.25     0.25     0.25     0.25     0.25     0.25 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.0 Y.11_X.0 Y.00_X.1 Y.10_X.1 Y.01_X.1 Y.11_X.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.25     0.25     0.25     0.25     0.25     0.25 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; M -&gt; Y; X &lt;-&gt; Y; M &lt;-&gt; Y'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters_df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   param_names: name of parameter</span>
@@ -152,7 +149,8 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Dirichlet distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  first 10 rows: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> snippet (use grab() to access full 38 x 8 object): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      param_names node gen  param_set nodal_type     given param_value priors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1            X.0    X   1          X          0                  0.50      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2            X.1    X   1          X          1                  0.50      1</span>
@@ -164,9 +162,6 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  Y.10_M.00_X.0    Y   3 Y.M.00.X.0         10 M.00, X.0        0.25      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  Y.01_M.00_X.0    Y   3 Y.M.00.X.0         01 M.00, X.0        0.25      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 Y.11_M.00_X.0    Y   3 Y.M.00.X.0         11 M.00, X.0        0.25      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example where set_confound is implemented after restrictions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"A -&gt; B -&gt; C"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -174,6 +169,7 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-in"><span><span class="fu">set_confound</span><span class="op">(</span><span class="st">"B &lt;-&gt; C"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model parameters with associated probabilities: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A.0       A.1      B.00      B.10      B.11 C.00_B.00 C.10_B.00 C.01_B.00 </span>
@@ -182,9 +178,6 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.2500000 0.2500000 0.2500000 0.2500000 0.2500000 0.2500000 0.2500000 0.2500000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C.11_B.11 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.2500000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example where two parents are confounded</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A -&gt; B &lt;- C; A &lt;-&gt; C'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -204,9 +197,6 @@ type of X for a total of 1+3+3 = 7 degrees of freedom.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Causal statement: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A -&gt; B; B -&gt; C; B &lt;-&gt; A; C &lt;-&gt; B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># plot(model)</span></span></span>
 </code></pre></div>
     </div>

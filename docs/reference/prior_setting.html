@@ -265,7 +265,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 8</span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span><span class="va">model</span>, distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Altering all parameters.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -276,7 +276,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">CausalQueries</span><span class="fu">::</span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y; X &lt;-&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -291,7 +291,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 32</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#altering values using \code{param_names}</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
@@ -304,7 +304,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 32</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#altering values using \code{statement}</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>,</span></span>
@@ -318,7 +318,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 32</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#altering values using a combination of other arguments</span></span></span>
 <span class="r-in"><span><span class="fu">set_priors</span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, alphas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.25</span><span class="op">)</span>, node <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
@@ -331,7 +331,7 @@ the form of, for example, 'X.1', 'Y.01'</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X M Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 32</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

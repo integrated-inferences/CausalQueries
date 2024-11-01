@@ -77,10 +77,9 @@ provided to avoid repeated computation for simulations. See <code>inspect(model,
 <span class="r-in"><span><span class="va">P</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"causal_types"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Causal Types:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> causal_types (Causal Types)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Cartesian product of nodal types</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cartesian product of nodal types</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X  Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0.Y00 0 00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1.Y00 1 00</span>
@@ -90,9 +89,6 @@ provided to avoid repeated computation for simulations. See <code>inspect(model,
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1.Y01 1 01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X0.Y11 0 11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1.Y11 1 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">set_parameter_matrix</span><span class="op">(</span><span class="va">model</span>, P <span class="op">=</span> <span class="va">P</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

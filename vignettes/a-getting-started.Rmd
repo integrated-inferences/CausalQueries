@@ -103,7 +103,7 @@ xy_model <-
 
 ```{r}
 
-xy_model |> inspect("posterior_distribution") |> 
+xy_model |> grab("posterior_distribution") |> 
   head() |> kable()
 
 ```
@@ -118,8 +118,7 @@ Examples of *unconditional* queries:
 
 ```{r}
 xy_model |> 
-  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors")) |>
-  kable()
+  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors")) 
 ```
 
 Examples of *conditional* queries:
@@ -127,8 +126,7 @@ Examples of *conditional* queries:
 ```{r}
 xy_model |> 
   query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
-              given = "X==1 & Y == 1") |>
-  kable()
+              given = "X==1 & Y == 1") 
 ```
 
 Queries can even be conditional on counterfactual quantities. Here the probability of a positive effect given *some* effect:
@@ -136,6 +134,19 @@ Queries can even be conditional on counterfactual quantities. Here the probabili
 ```{r}
 xy_model |> 
   query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
-              given = "Y[X=1] != Y[X=0]") |>
-  kable()
+              given = "Y[X=1] != Y[X=0]") 
+```
+
+Query output is ready for printing as tables, but can also be plotted, which is especially useful with batch requests:
+
+
+```{r, fig.height = 4, fig.width = 8}
+batch_queries <- xy_model |> 
+  query_model(queries = c("Y[X=1] - Y[X=0]", "Y[X=1] > Y[X=0]"), 
+              using = c("priors", "posteriors"), 
+              given = c(TRUE, "Y[X=1] != Y[X=0]"),
+              expand_grid = TRUE) 
+
+batch_queries |> kable(digits = 2, caption = "tabular output")
+batch_queries |> plot() 
 ```

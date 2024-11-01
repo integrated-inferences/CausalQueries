@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -102,8 +102,9 @@ the DAG:</p>
 <p><strong>Inspecting</strong>: The model has a set of parameters and a
 default distribution over these.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; parameters_df</span></span>
 <span><span class="co">#&gt; Mapping of model parameters to nodal types: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   param_names: name of parameter</span></span>
@@ -124,93 +125,7 @@ default distribution over these.</p>
 <span><span class="co">#&gt; 3        Y.00    Y   2         Y         00              0.25      1</span></span>
 <span><span class="co">#&gt; 4        Y.10    Y   2         Y         10              0.25      1</span></span>
 <span><span class="co">#&gt; 5        Y.01    Y   2         Y         01              0.25      1</span></span>
-<span><span class="co">#&gt; 6        Y.11    Y   2         Y         11              0.25      1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Note: To pose causal queries of this model use query_model()</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="17%">
-<col width="7%">
-<col width="5%">
-<col width="14%">
-<col width="16%">
-<col width="8%">
-<col width="17%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">param_names</th>
-<th align="left">node</th>
-<th align="right">gen</th>
-<th align="left">param_set</th>
-<th align="left">nodal_type</th>
-<th align="left">given</th>
-<th align="right">param_value</th>
-<th align="right">priors</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">X.0</td>
-<td align="left">X</td>
-<td align="right">1</td>
-<td align="left">X</td>
-<td align="left">0</td>
-<td align="left"></td>
-<td align="right">0.50</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">X.1</td>
-<td align="left">X</td>
-<td align="right">1</td>
-<td align="left">X</td>
-<td align="left">1</td>
-<td align="left"></td>
-<td align="right">0.50</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Y.00</td>
-<td align="left">Y</td>
-<td align="right">2</td>
-<td align="left">Y</td>
-<td align="left">00</td>
-<td align="left"></td>
-<td align="right">0.25</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Y.10</td>
-<td align="left">Y</td>
-<td align="right">2</td>
-<td align="left">Y</td>
-<td align="left">10</td>
-<td align="left"></td>
-<td align="right">0.25</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Y.01</td>
-<td align="left">Y</td>
-<td align="right">2</td>
-<td align="left">Y</td>
-<td align="left">01</td>
-<td align="left"></td>
-<td align="right">0.25</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Y.11</td>
-<td align="left">Y</td>
-<td align="right">2</td>
-<td align="left">Y</td>
-<td align="left">11</td>
-<td align="left"></td>
-<td align="right">0.25</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
+<span><span class="co">#&gt; 6        Y.11    Y   2         Y         11              0.25      1</span></span></code></pre></div>
 <p><strong>Tailoring</strong>: These features can be edited using
 <code>set_restrictions</code>, <code>set_priors</code> and
 <code>set_parameters</code>. Here is an example of setting a
@@ -281,24 +196,8 @@ You can pass all <code>rstan</code> arguments to
 distribution on model parameters directly thus:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; posterior_distribution</span></span>
-<span><span class="co">#&gt; Summary statistics of model parameters posterior distributions:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Distributions matrix dimensions are </span></span>
-<span><span class="co">#&gt;   4000 rows (draws) by 6 cols (parameters)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;      mean   sd</span></span>
-<span><span class="co">#&gt; X.0  0.54 0.05</span></span>
-<span><span class="co">#&gt; X.1  0.46 0.05</span></span>
-<span><span class="co">#&gt; Y.00 0.17 0.10</span></span>
-<span><span class="co">#&gt; Y.10 0.17 0.10</span></span>
-<span><span class="co">#&gt; Y.01 0.45 0.12</span></span>
-<span><span class="co">#&gt; Y.11 0.21 0.11</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Note: To pose causal queries of this model use query_model()</span></span></code></pre></div>
+<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">grab</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">X.0</th>
@@ -369,153 +268,49 @@ model.</p>
 <p>Examples of <em>unconditional</em> queries:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="19%">
-<col width="7%">
-<col width="13%">
-<col width="13%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-<col width="11%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">query</th>
-<th align="left">given</th>
-<th align="left">using</th>
-<th align="left">case_level</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">cred.low</th>
-<th align="right">cred.high</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">-</td>
-<td align="left">priors</td>
-<td align="left">FALSE</td>
-<td align="right">0.2535849</td>
-<td align="right">0.1957342</td>
-<td align="right">0.0073875</td>
-<td align="right">0.7218675</td>
-</tr>
-<tr class="even">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">-</td>
-<td align="left">posteriors</td>
-<td align="left">FALSE</td>
-<td align="right">0.4458622</td>
-<td align="right">0.1193116</td>
-<td align="right">0.1963189</td>
-<td align="right">0.6488310</td>
-</tr>
-</tbody>
-</table>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; |query           |using      |  mean|    sd| cred.low| cred.high|</span></span>
+<span><span class="co">#&gt; |:---------------|:----------|-----:|-----:|--------:|---------:|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.254| 0.196|    0.007|     0.722|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.446| 0.119|    0.196|     0.649|</span></span></code></pre></div>
 <p>Examples of <em>conditional</em> queries:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
-<span>              given <span class="op">=</span> <span class="st">"X==1 &amp; Y == 1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="17%">
-<col width="15%">
-<col width="11%">
-<col width="11%">
-<col width="10%">
-<col width="10%">
-<col width="10%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">query</th>
-<th align="left">given</th>
-<th align="left">using</th>
-<th align="left">case_level</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">cred.low</th>
-<th align="right">cred.high</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">X==1 &amp; Y == 1</td>
-<td align="left">priors</td>
-<td align="left">FALSE</td>
-<td align="right">0.4989236</td>
-<td align="right">0.2871255</td>
-<td align="right">0.0234486</td>
-<td align="right">0.9782017</td>
-</tr>
-<tr class="even">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">X==1 &amp; Y == 1</td>
-<td align="left">posteriors</td>
-<td align="left">FALSE</td>
-<td align="right">0.6769175</td>
-<td align="right">0.1731725</td>
-<td align="right">0.3349669</td>
-<td align="right">0.9715045</td>
-</tr>
-</tbody>
-</table>
+<span>              given <span class="op">=</span> <span class="st">"X==1 &amp; Y == 1"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; |query           |given         |using      |  mean|    sd| cred.low| cred.high|</span></span>
+<span><span class="co">#&gt; |:---------------|:-------------|:----------|-----:|-----:|--------:|---------:|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |X==1 &amp; Y == 1 |priors     | 0.499| 0.287|    0.023|     0.978|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |X==1 &amp; Y == 1 |posteriors | 0.677| 0.173|    0.335|     0.972|</span></span></code></pre></div>
 <p>Queries can even be conditional on counterfactual quantities. Here
 the probability of a positive effect given <em>some</em> effect:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
-<span>              given <span class="op">=</span> <span class="st">"Y[X=1] != Y[X=0]"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="16%">
-<col width="17%">
-<col width="11%">
-<col width="11%">
-<col width="10%">
-<col width="10%">
-<col width="10%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">query</th>
-<th align="left">given</th>
-<th align="left">using</th>
-<th align="left">case_level</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">cred.low</th>
-<th align="right">cred.high</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">Y[X=1] != Y[X=0]</td>
-<td align="left">priors</td>
-<td align="left">FALSE</td>
-<td align="right">0.5028183</td>
-<td align="right">0.2896765</td>
-<td align="right">0.0236964</td>
-<td align="right">0.9745699</td>
-</tr>
-<tr class="even">
-<td align="left">Y[X=1] &gt; Y[X=0]</td>
-<td align="left">Y[X=1] != Y[X=0]</td>
-<td align="left">posteriors</td>
-<td align="left">FALSE</td>
-<td align="right">0.7476909</td>
-<td align="right">0.1060213</td>
-<td align="right">0.5741620</td>
-<td align="right">0.9706621</td>
-</tr>
-</tbody>
-</table>
+<span>              given <span class="op">=</span> <span class="st">"Y[X=1] != Y[X=0]"</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; |query           |given            |using      |  mean|    sd| cred.low| cred.high|</span></span>
+<span><span class="co">#&gt; |:---------------|:----------------|:----------|-----:|-----:|--------:|---------:|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |Y[X=1] != Y[X=0] |priors     | 0.503| 0.290|    0.024|     0.975|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |Y[X=1] != Y[X=0] |posteriors | 0.748| 0.106|    0.574|     0.971|</span></span></code></pre></div>
+<p>Queries can also be plotted, which is especially useful with batch
+requests:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y[X=1] - Y[X=0]"</span>, <span class="st">"Y[X=1] &gt; Y[X=0]"</span><span class="op">)</span>, </span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>, </span>
+<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Y[X=1] != Y[X=0]"</span><span class="op">)</span>,</span>
+<span>              expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a-getting-started_files/figure-html/unnamed-chunk-13-1.png" width="768"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

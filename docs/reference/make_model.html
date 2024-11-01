@@ -143,7 +143,7 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X Y </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unit types: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 8</span>
 <span class="r-in"><span><span class="va">modelXKY</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; K -&gt; Y; X -&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example where cyclicaly dag attempted</span></span></span>
@@ -155,7 +155,7 @@ following components:</p>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X-&gt;Y; X &lt;-&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameter_matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows:   parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cols:   causal types</span>
@@ -173,13 +173,10 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.10_X.1      0      0      0      1      0      0      0      0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01_X.1      0      0      0      0      0      1      0      0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.11_X.1      0      0      0      0      0      0      0      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"Y2 &lt;- X -&gt; Y1; X &lt;-&gt; Y1; X &lt;-&gt; Y2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameter_matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows:   parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cols:   causal types</span>
@@ -319,13 +316,10 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.10_X.1            0            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.01_X.1            0            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.11_X.1            0            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 18 32</span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameter_matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows:   parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cols:   causal types</span>
@@ -465,13 +459,10 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.10_X.1            0            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.01_X.1            0            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y2.11_X.1            0            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X1 -&gt; Y &lt;- X2; X1 &lt;-&gt; Y; X2 &lt;-&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameter_matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows:   parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cols:   causal types</span>
@@ -1582,12 +1573,10 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.1011_X1.1_X2.1             0             0             0             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111_X1.1_X2.1             0             0             0             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111_X1.1_X2.1             0             0             0             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 68 64</span>
 <span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters_df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   param_names: name of parameter</span>
@@ -1603,7 +1592,8 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Dirichlet distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  first 10 rows: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> snippet (use grab() to access full 68 x 8 object): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         param_names node gen   param_set nodal_type      given param_value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1              X1.0   X1   1          X1          0                 0.5000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2              X1.1   X1   1          X1          1                 0.5000</span>
@@ -1626,9 +1616,6 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A single node graph is also possible</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span></span></span>
@@ -1658,6 +1645,7 @@ following components:</p>
 <span class="r-in"><span>          nodal_types <span class="op">=</span> <span class="va">nodal_types</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters_df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   param_names: name of parameter</span>
@@ -1673,7 +1661,8 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Dirichlet distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  first 10 rows: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> snippet (use grab() to access full 17 x 8 object): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node gen param_set nodal_type given param_value priors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          A.0    A   1         A          0               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          A.1    A   1         A          1               0.5      1</span>
@@ -1685,15 +1674,13 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8          D.1    D   4         D          1               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9          E.0    E   5         E          0               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10         E.1    E   5         E          1               0.5      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">nodal_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"01"</span>, <span class="st">"10"</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">make_model</span><span class="op">(</span><span class="st">"Z -&gt; Y"</span>, nodal_types <span class="op">=</span> <span class="va">nodal_types</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Ordering of provided nodal types is being altered to match generation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parameters_df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   param_names: name of parameter</span>
@@ -1713,9 +1700,6 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         Z.1    Z   1         Z          1               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3        Y.01    Y   2         Y         01               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4        Y.10    Y   2         Y         10               0.5      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
