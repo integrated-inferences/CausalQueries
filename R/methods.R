@@ -22,7 +22,7 @@ print.causal_model <- function(x, ...) {
 
 
   if (!is.null(x$causal_types)) {
-    cat("\nNumber of unit types:")
+    cat("\nNumber of causal types:")
     cat(paste0(" ", nrow(get_causal_types(x)), "\n"))
   }
 
@@ -254,6 +254,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 print.summary.causal_model <-
   function(x, what = NULL, ...) {
 
+    note_1 <- NA
 
     # general printing requests: provided whenever 'what' is not specified
     if (is.null(what)) {
@@ -264,11 +265,12 @@ print.summary.causal_model <-
 
       ## IF WHAT IS EMPTY
 
-      # main summary printout
+      # main summary printout: statement
       cat("\nCausal statement: \n")
       cat(x$statement)
       cat("\n")
 
+      # main summary printout: nodal types
       cat("\nNodal types: \n")
 
       nodal_types <- x$nodal_types
@@ -295,7 +297,7 @@ print.summary.causal_model <-
       print(vapply(nodal_types, length, numeric(1), USE.NAMES = TRUE))
 
       if (!is.null(x$causal_types)) {
-        cat("\nNumber of unit types:")
+        cat("\nNumber of causal types:")
         cat(paste0("  ", nrow(x$causal_types), "\n"))
       }
 
@@ -349,33 +351,42 @@ print.summary.causal_model <-
         }
       }
 
-      if (length(printout) > 0) {
-        if (length(printout_upd) > 0) {
-          cat(
-            paste0(
-              "\nNote: Model does not contain the following objects: ",
-              paste0(unique(printout), collapse = ", "),
-              ";\nto include these objects update model with ",
-              paste0(unique(printout_upd), collapse = ", "),
-              "\n"
+      note_1 <-
+
+        if (length(printout) > 0) {
+          if (length(printout_upd) > 0) {
+            (
+              paste0(
+                "\nNote: Model does not contain the following objects: ",
+                paste0(unique(printout), collapse = ", "),
+                ";\nto include these objects update model with ",
+                paste0(unique(printout_upd), collapse = ", "),
+                "\n"
+              )
             )
-          )
-        } else {
-          cat(
-            paste0(
-              "\nNote: Model does not contain: ",
-              paste0(unique(printout), collapse = ", "),
-              ";\nto include these objects update model\n"
+          } else {
+            (
+              paste0(
+                "\nNote: Model does not contain: ",
+                paste0(unique(printout), collapse = ", "),
+                ";\nto include these objects use update_model()\n"
+              )
             )
-          )
+          }
         }
-      }
     }
 
     # specific printing requests:
 
     # pass on any additional elements to what from include argument in summary
     what <- c(what, attr(x, "include"))
+
+    what <-
+      base::setdiff(what, c(
+        "statement",
+        "nodal_types"
+      ))
+
 
     if(!is.null(what)) {
 
@@ -782,6 +793,8 @@ print.summary.causal_model <-
         }
       }
     }
+
+    if(!is.na(note_1)) cat(note_1)
 
     cat("\n")
     cat("Note: To pose causal queries of this model use query_model()\n")

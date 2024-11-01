@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -74,7 +74,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/fabricatr/" class="external-link">fabricatr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="make-a-model">Make a model<a class="anchor" aria-label="anchor" href="#make-a-model"></a>
@@ -102,7 +102,7 @@ the DAG:</p>
 <p><strong>Inspecting</strong>: The model has a set of parameters and a
 default distribution over these.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspect.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Mapping of model parameters to nodal types: </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -124,7 +124,9 @@ default distribution over these.</p>
 <span><span class="co">#&gt; 3        Y.00    Y   2         Y         00              0.25      1</span></span>
 <span><span class="co">#&gt; 4        Y.10    Y   2         Y         10              0.25      1</span></span>
 <span><span class="co">#&gt; 5        Y.01    Y   2         Y         01              0.25      1</span></span>
-<span><span class="co">#&gt; 6        Y.11    Y   2         Y         11              0.25      1</span></span></code></pre></div>
+<span><span class="co">#&gt; 6        Y.11    Y   2         Y         11              0.25      1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note: To pose causal queries of this model use query_model()</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="17%">
@@ -224,7 +226,7 @@ for more):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">iv_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prior_setting.html">set_priors</a></span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; No specific parameters to alter values for specified. Altering all parameters.</span></span></code></pre></div>
+<span><span class="co">#&gt; Altering all parameters.</span></span></code></pre></div>
 <p><strong>Simulation</strong>: Data can be drawn from a model like
 this:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -240,22 +242,22 @@ this:</p>
 <tbody>
 <tr class="odd">
 <td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
-<td align="right">0</td>
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">1</td>
 </tr>
 </tbody>
@@ -268,7 +270,9 @@ this:</p>
 You can pass all <code>rstan</code> arguments to
 <code>update_model</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">fabricatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/fabricatr/reference/fabricate.html" class="external-link">fabricate</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xy_model</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
@@ -277,21 +281,24 @@ You can pass all <code>rstan</code> arguments to
 distribution on model parameters directly thus:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspect.html">inspect</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; posterior_distribution</span></span>
 <span><span class="co">#&gt; Summary statistics of model parameters posterior distributions:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Distributions matrix dimensions are </span></span>
 <span><span class="co">#&gt;   4000 rows (draws) by 6 cols (parameters)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      mean   sd</span></span>
-<span><span class="co">#&gt; X.0  0.51 0.05</span></span>
-<span><span class="co">#&gt; X.1  0.49 0.05</span></span>
-<span><span class="co">#&gt; Y.00 0.13 0.08</span></span>
-<span><span class="co">#&gt; Y.10 0.11 0.07</span></span>
-<span><span class="co">#&gt; Y.01 0.61 0.09</span></span>
-<span><span class="co">#&gt; Y.11 0.14 0.08</span></span></code></pre></div>
+<span><span class="co">#&gt; X.0  0.54 0.05</span></span>
+<span><span class="co">#&gt; X.1  0.46 0.05</span></span>
+<span><span class="co">#&gt; Y.00 0.17 0.10</span></span>
+<span><span class="co">#&gt; Y.10 0.17 0.10</span></span>
+<span><span class="co">#&gt; Y.01 0.45 0.12</span></span>
+<span><span class="co">#&gt; Y.11 0.21 0.11</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note: To pose causal queries of this model use query_model()</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">X.0</th>
@@ -303,52 +310,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4866401</td>
-<td align="right">0.5133599</td>
-<td align="right">0.2592735</td>
-<td align="right">0.0106786</td>
-<td align="right">0.4874716</td>
-<td align="right">0.2425762</td>
+<td align="right">0.4866569</td>
+<td align="right">0.5133431</td>
+<td align="right">0.1779771</td>
+<td align="right">0.2021202</td>
+<td align="right">0.4300694</td>
+<td align="right">0.1898334</td>
 </tr>
 <tr class="even">
-<td align="right">0.5578697</td>
-<td align="right">0.4421303</td>
-<td align="right">0.1160837</td>
-<td align="right">0.1086111</td>
-<td align="right">0.5371409</td>
-<td align="right">0.2381643</td>
+<td align="right">0.5583331</td>
+<td align="right">0.4416669</td>
+<td align="right">0.0040999</td>
+<td align="right">0.3005823</td>
+<td align="right">0.5902477</td>
+<td align="right">0.1050701</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5411526</td>
-<td align="right">0.4588474</td>
-<td align="right">0.1026947</td>
-<td align="right">0.0893774</td>
-<td align="right">0.6053684</td>
-<td align="right">0.2025595</td>
+<td align="right">0.5271612</td>
+<td align="right">0.4728388</td>
+<td align="right">0.0531936</td>
+<td align="right">0.3516975</td>
+<td align="right">0.5905585</td>
+<td align="right">0.0045504</td>
 </tr>
 <tr class="even">
-<td align="right">0.5421370</td>
-<td align="right">0.4578630</td>
-<td align="right">0.2384087</td>
-<td align="right">0.1493637</td>
-<td align="right">0.5675789</td>
-<td align="right">0.0446487</td>
+<td align="right">0.5637254</td>
+<td align="right">0.4362746</td>
+<td align="right">0.0400795</td>
+<td align="right">0.2803068</td>
+<td align="right">0.5334359</td>
+<td align="right">0.1461778</td>
 </tr>
 <tr class="odd">
-<td align="right">0.4194640</td>
-<td align="right">0.5805360</td>
-<td align="right">0.0555476</td>
-<td align="right">0.1832987</td>
-<td align="right">0.6614595</td>
-<td align="right">0.0996942</td>
+<td align="right">0.6073027</td>
+<td align="right">0.3926973</td>
+<td align="right">0.2665650</td>
+<td align="right">0.0452801</td>
+<td align="right">0.3071206</td>
+<td align="right">0.3810344</td>
 </tr>
 <tr class="even">
-<td align="right">0.5345387</td>
-<td align="right">0.4654613</td>
-<td align="right">0.0947805</td>
-<td align="right">0.2100144</td>
-<td align="right">0.5998536</td>
-<td align="right">0.0953515</td>
+<td align="right">0.5437248</td>
+<td align="right">0.4562752</td>
+<td align="right">0.1933328</td>
+<td align="right">0.1887049</td>
+<td align="right">0.5473692</td>
+<td align="right">0.0705931</td>
 </tr>
 </tbody>
 </table>
@@ -391,20 +398,20 @@ model.</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.2477539</td>
-<td align="right">0.1931349</td>
-<td align="right">0.0086870</td>
-<td align="right">0.7028996</td>
+<td align="right">0.2535849</td>
+<td align="right">0.1957342</td>
+<td align="right">0.0073875</td>
+<td align="right">0.7218675</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.6123562</td>
-<td align="right">0.0908387</td>
-<td align="right">0.4126253</td>
-<td align="right">0.7651902</td>
+<td align="right">0.4458622</td>
+<td align="right">0.1193116</td>
+<td align="right">0.1963189</td>
+<td align="right">0.6488310</td>
 </tr>
 </tbody>
 </table>
@@ -441,20 +448,20 @@ model.</p>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.5014577</td>
-<td align="right">0.2904494</td>
-<td align="right">0.0215887</td>
-<td align="right">0.9756458</td>
+<td align="right">0.4989236</td>
+<td align="right">0.2871255</td>
+<td align="right">0.0234486</td>
+<td align="right">0.9782017</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">X==1 &amp; Y == 1</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.8094160</td>
-<td align="right">0.1052976</td>
-<td align="right">0.5865482</td>
-<td align="right">0.9867265</td>
+<td align="right">0.6769175</td>
+<td align="right">0.1731725</td>
+<td align="right">0.3349669</td>
+<td align="right">0.9715045</td>
 </tr>
 </tbody>
 </table>
@@ -492,20 +499,20 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.5068969</td>
-<td align="right">0.2852866</td>
-<td align="right">0.0302055</td>
-<td align="right">0.9800232</td>
+<td align="right">0.5028183</td>
+<td align="right">0.2896765</td>
+<td align="right">0.0236964</td>
+<td align="right">0.9745699</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.8594846</td>
-<td align="right">0.0752970</td>
-<td align="right">0.7189408</td>
-<td align="right">0.9923563</td>
+<td align="right">0.7476909</td>
+<td align="right">0.1060213</td>
+<td align="right">0.5741620</td>
+<td align="right">0.9706621</td>
 </tr>
 </tbody>
 </table>

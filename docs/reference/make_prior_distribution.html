@@ -9,7 +9,7 @@ attached to the model."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@ attached to the model."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -73,8 +73,14 @@ attached to the model.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">make_prior_distribution</span><span class="op">(</span>n_draws <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in make_prior_distribution(make_model("X -&gt; Y"), n_draws = 5):</span> could not find function "make_prior_distribution"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">make_prior_distribution</span><span class="op">(</span>n_draws <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         X.0        X.1       Y.00       Y.10       Y.01        Y.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.9682152 0.03178476 0.24118013 0.65839271 0.09716371 0.003263453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.3469070 0.65309296 0.42487806 0.08504311 0.38457726 0.105501567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.9649882 0.03501182 0.03420334 0.20654908 0.48797477 0.271272816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.5391441 0.46085592 0.51648076 0.12843462 0.13152788 0.223556742</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.3284073 0.67159272 0.18000512 0.14176766 0.21558515 0.462642065</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

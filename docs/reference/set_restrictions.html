@@ -9,7 +9,7 @@ and in consequence the number of unit causal types."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@ and in consequence the number of unit causal types."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -156,7 +156,7 @@ parentheses, as in these examples.</p>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; Y &lt;- W'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">set_restrictions</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'Y'</span><span class="op">)</span>, <span class="fu"><a href="query_helpers.html">substitutes</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'W'</span>, <span class="st">'Y'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -186,10 +186,12 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17      Y.0011    Y   3         Y       0011         0.1428571      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18      Y.1011    Y   3         Y       1011         0.1428571      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt; Y &lt;- W'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span> <span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -219,10 +221,12 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15      Y.0101    Y   3         Y       0101         0.1111111      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17      Y.0011    Y   3         Y       0011         0.1111111      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">set_restrictions</span><span class="op">(</span><span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'Y'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -245,10 +249,12 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5        Y.01    Y   2         Y         01         0.3333333      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6        Y.11    Y   2         Y         11         0.3333333      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">set_restrictions</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="query_helpers.html">increasing</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'Y'</span><span class="op">)</span>, <span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>, <span class="st">'Y'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameters_df"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mapping of model parameters to nodal types: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -270,11 +276,13 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3        Y.00    Y   2         Y         00               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6        Y.11    Y   2         Y         11               0.5      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Restrict to define a model with monotonicity</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Y[X=1] &lt; Y[X=0]'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -290,11 +298,13 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      0      0      1      1      0      0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      0      0      1      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict to a single type in endogenous node</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[X = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -309,12 +319,14 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      1      1      0      0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      1      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#  Use of | and &amp;</span></span></span>
 <span class="r-in"><span><span class="co"># Keep node if *for some value of B* Y[A = 1] == 1</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A-&gt;Y&lt;-B'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[A = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'|'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span> ,<span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span> ,<span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -460,13 +472,15 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111           1           1           0           0           0           0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111           0           0           1           1           1           1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16 48</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Keep node if *for all values of B* Y[A = 1] == 1</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'A-&gt;Y&lt;-B'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="st">'(Y[A = 1] == 1)'</span>, join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -503,13 +517,15 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111           0           0           0           0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111           1           1           1           1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  8 16</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict multiple nodes</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y&lt;-M; X -&gt; M'</span> <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>statement <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'(Y[X = 1] == 1)'</span>, <span class="st">'(M[X = 1] == 1)'</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 join_by <span class="op">=</span> <span class="st">'&amp;'</span>, keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -555,12 +571,14 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.0111            0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.1111            1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict using statements and given:</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y -&gt; Z; X &lt;-&gt; Z"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu">set_restrictions</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'X'</span>,<span class="st">'Y'</span><span class="op">)</span>, <span class="fu"><a href="query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'Y'</span>,<span class="st">'Z'</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="st">'X.0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -622,6 +640,8 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          1          0          1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrictions on levels for endogenous nodes aren't allowed</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -636,7 +656,7 @@ parentheses, as in these examples.</p>
 <span class="r-in"><span><span class="co"># Restrictions can be  with wildcards</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="st">'?0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -651,12 +671,14 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      1      1      0      0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      1      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Deterministic model</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'S -&gt; C -&gt; Y &lt;- R &lt;- X; X -&gt; C -&gt; R'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span><span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>C <span class="op">=</span> <span class="st">'1000'</span>, R <span class="op">=</span> <span class="st">'0001'</span>, Y <span class="op">=</span> <span class="st">'0001'</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 keep <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -682,11 +704,13 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> R.0001                       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y.0001                       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restrict using labels and given:</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y -&gt; Z; X &lt;-&gt; Z"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu">set_restrictions</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">'0'</span>, Z <span class="op">=</span> <span class="st">'00'</span><span class="op">)</span>, given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="st">'X.0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"parameter_matrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter matrix:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -725,6 +749,8 @@ parentheses, as in these examples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Z.10_X.1          0          0          0          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Z.01_X.1          0          0          0          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Z.11_X.1          1          1          1          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: To pose causal queries of this model use query_model()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
     <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-inspecting-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -103,10 +103,12 @@ additional layers can be added in the usual way.</p>
 <span></span>
 <span></span>
 <span><span class="co"># Check node ordering</span></span>
-<span><span class="fu"><a href="../reference/inspect.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"nodes"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"nodes"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Nodes: </span></span>
 <span><span class="co">#&gt; A, B, C</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note: To pose causal queries of this model use query_model()</span></span>
 <span></span>
 <span><span class="co"># Provide labels</span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
@@ -162,6 +164,7 @@ together or separately.</p>
 <div class="section level3">
 <h3 id="requires-manual-coordinates">Requires manual coordinates<a class="anchor" aria-label="anchor" href="#requires-manual-coordinates"></a>
 </h3>
+<p>This graph has bad node placement.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"D &lt;- A -&gt; B -&gt; C -&gt; D -&gt; E; B -&gt; E"</span>,</span>
 <span>           add_causal_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
