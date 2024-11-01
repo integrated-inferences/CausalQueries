@@ -11,7 +11,7 @@ testthat::test_that(
 		out <- capture.output(print(model))
 		expect_true(any(grepl("X -> Y", out)) &
 		              any(grepl("^Number of types by node:", out)) &
-		              any(grepl("^Number of unit types:", out)))
+		              any(grepl("^Number of causal types:", out)))
 		out <- class(summary(model))
 		expect_equal(out, "summary.causal_model")
 

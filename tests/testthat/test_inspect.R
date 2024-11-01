@@ -13,10 +13,6 @@ test_that("inspect statement", {
 })
 
 
-
-
-
-
 test_that("inspect outputs correct nodes", {
   expect_output(inspect(model, what = "nodes"), "Nodes:\\s*X, Y")
 })
@@ -51,7 +47,7 @@ test_that("inspect outputs correct parameters_df", {
 })
 
 test_that("inspect outputs correct causal_types", {
-  expect_output(inspect(model, what = "causal_types"), "Causal Types:")
+  expect_output(inspect(model, what = "causal_types"), "Causal Types")
   expect_output(inspect(model, what = "causal_types"), "X0\\.Y00\\s+0\\s+00")
   expect_output(inspect(model, what = "causal_types"), "X1\\.Y11\\s+1\\s+11")
 })

@@ -56,7 +56,7 @@ plot(xy_model)
 
 
 ```{r}
-xy_model |> inspect("parameters_df") |> kable()
+xy_model |> inspect("parameters_df") 
 ```
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.

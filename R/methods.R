@@ -213,7 +213,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #'   \item \code{"data_types"} A list with the all data types consistent with the model; for options see `"?get_all_data_types"`,
 #'   \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `inspect(prior_hyperparameters, c('M', 'Y'))`
 #'   \item \code{"prior_distribution"} A data frame of the parameter prior distribution,
-#'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single realization of parameters; for options see `"?get_event_probabilities"`,
+#'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see `"?get_event_probabilities"`,
 #'   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
 #'   \item \code{"type_prior"} A matrix of type probabilities using priors,
 #'   \item \code{"type_distribution"} A matrix of type probabilities using posteriors,
@@ -255,6 +255,7 @@ print.summary.causal_model <-
   function(x, what = NULL, ...) {
 
     note_1 <- NA
+    short <- !is.null(what)
 
     # general printing requests: provided whenever 'what' is not specified
     if (is.null(what)) {
@@ -351,9 +352,8 @@ print.summary.causal_model <-
         }
       }
 
-      note_1 <-
-
-        if (length(printout) > 0) {
+      if (length(printout) > 0) {
+        note_1 <- {
           if (length(printout_upd) > 0) {
             (
               paste0(
@@ -374,6 +374,7 @@ print.summary.causal_model <-
             )
           }
         }
+      }
     }
 
     # specific printing requests:
@@ -381,11 +382,10 @@ print.summary.causal_model <-
     # pass on any additional elements to what from include argument in summary
     what <- c(what, attr(x, "include"))
 
-    what <-
-      base::setdiff(what, c(
-        "statement",
-        "nodal_types"
-      ))
+    # avoid any repetition in long summaries
+    if(!short)
+    what <- base::setdiff(what, c("statement", "nodal_types"))
+
 
 
     if(!is.null(what)) {
@@ -470,14 +470,14 @@ print.summary.causal_model <-
 
       # parameters
       if ("parameters" %in% what) {
-        cat("\nModel parameters with associated probabilities: \n\n")
+        cat("\nparameters\nModel parameters with associated probabilities: \n\n")
         print(x$parameters)
       }
 
 
       # parameters_df
       if ("parameters_df" %in% what) {
-        cat("\nMapping of model parameters to nodal types: \n")
+        cat("\nparameters_df\nMapping of model parameters to nodal types: \n")
         # cat("----------------------------------------------------------------\n")
         cat("\n  param_names: name of parameter")
         cat("\n  node:        name of endogeneous node associated")
@@ -491,12 +491,9 @@ print.summary.causal_model <-
         cat("\n  priors:      hyperparameters of the prior")
         cat("\n               Dirichlet distribution \n\n")
         # cat("----------------------------------------------------------------\n\n")
-        if (nrow(x$parameters_df) > 10) {
-          cat("\n first 10 rows: \n")
-          print.data.frame(x$parameters_df[1:10, ])
-        } else {
-          print.data.frame(x$parameters_df)
-        }
+
+        snippet(x$parameters_df)
+
       }
 
       # parameter_names
@@ -508,7 +505,7 @@ print.summary.causal_model <-
 
       # parameter_matrix
       if (("parameter_matrix" %in% what) & !is.null(x$parameter_matrix)) {
-        cat(paste0("\nParameter matrix:\n"))
+        cat(paste0("\nparameter_matrix:\n"))
         cat(paste0("\n  rows:   parameters"))
         cat(paste0("\n  cols:   causal types"))
         cat(paste0("\n  cells:  whether a parameter probability is used"))
@@ -527,32 +524,28 @@ print.summary.causal_model <-
 
       # parameter_mapping
       if (("parameter_mapping" %in% what) & !is.null(x$parameter_mapping)) {
-        cat("\nParameter mapping matrix: \n")
+        cat("\nparameter_mapping (Parameter mapping matrix) \n")
         cat("\n  Maps from parameters to data types, with")
         cat("\n  possibly multiple columns for each data type")
         cat("\n  in cases with confounding. \n\n")
-        print(data.frame(x$parameter_mapping))
+        snippet(data.frame(x$parameter_mapping))
       } else if (("parameter_mapping" %in% what) & is.null(x$parameter_mapping)) {
         warning("Model summary does not contain parameter_mapping; to include this object use summary with 'include = 'parameter_mapping''")
       }
 
       # causal_types
       if ("causal_types" %in% what & !is.null(x$causal_types)) {
-        cat("\nCausal Types:\n")
-        cat("\n  Cartesian product of nodal types\n\n")
-        if (nrow(x$causal_types) > 10) {
-          cat("\n first 10 causal types: \n")
-          print.data.frame(x$causal_types[1:10, ])
-        } else {
-          print.data.frame(x$causal_types)
-        }
+        cat("\ncausal_types (Causal Types)\n")
+        cat("\nCartesian product of nodal types\n")
+        snippet(x$causal_types)
+
       } else if ("causal_types" %in% what & is.null(x$causal_types)) {
         warning("Model summary does not contain causal_types; to include this object use summary with 'include = 'causal_types''")
       }
 
       # nodal_types
       if ("nodal_types" %in% what) {
-        cat("\nNodal types: \n")
+        cat("\nnodal_types (Nodal types): \n")
 
         .nodal_types <- x$nodal_types
         nodes <- names(.nodal_types)
@@ -580,22 +573,24 @@ print.summary.causal_model <-
 
       # data_types
       if ("data_types" %in% what) {
-        cat("\ndata_types:\nData frame of all possible data (events) given the model:\n\n")
+        cat("\ndata_types (Data types):\nData frame of all possible data (events) given the model:\n\n")
         print(x$data_types)
       }
 
       # ambiguities_matrix
       if (("ambiguities_matrix" %in% what) & !is.null(x$ambiguities_matrix)) {
-        cat("\nambiguities_matrix:\nMapping from causal types into data types:\n\n")
-        print(x$ambiguities_matrix)
+        cat("\nambiguities_matrix (Ambiguities matrix)\nMapping from causal types into data types:\n")
+
+        snippet(data.frame(x$ambiguities_matrix))
+
       } else if (("ambiguities_matrix" %in% what) & is.null(x$ambiguities_matrix)) {
         warning("Model summary does not contain ambiguities_matrix; to include this object use summary with 'include = 'ambiguities_matrix''")
       }
 
       # prior_event_probabilties
       if ("prior_event_probabilities" %in% what) {
-        cat("\nprior_event_probabilities:\nProbabilities of observing data (events)")
-        cat("\nfor a given set of parameter values:\n\n")
+        cat("\nprior_event_probabilities\nProbabilities of observing data (events)")
+        cat("\nfor a specified set of parameter values:\n\n")
         print(data.frame(event_probs = x$prior_event_probabilities))
       }
 
@@ -738,12 +733,8 @@ print.summary.causal_model <-
             sep = " "
           ))
 
-          if (nrow(x$stan_objects$data) > 10) {
-            cat("first 10 rows: \n")
-            print.data.frame(x$stan_objects$data[1:10, ])
-          } else {
-            print.data.frame(x$stan_objects$data)
-          }
+          snippet(x$stan_objects$data)
+
         } else {
           printout <- c(printout, "specified 'data'")
           printout_upd <- c(printout_upd, "'data'")
@@ -794,14 +785,29 @@ print.summary.causal_model <-
       }
     }
 
-    if(!is.na(note_1)) cat(note_1)
+    # Add notes if not short summary
+    if(!short) {
 
-    cat("\n")
-    cat("Note: To pose causal queries of this model use query_model()\n")
-    cat("\n")
+      if(!is.na(note_1)) cat(note_1)
+      cat("\n")
+      cat("Note: To pose causal queries of this model use query_model()\n")
+      cat("\n")
+    }
+
 
     return(invisible(x))
   }
+
+#' helper to print snippets of large objects
+snippet <- function(df, nc = 10, nr = 10) {
+  if (nrow(df) > nr | ncol(df) > nc) {
+    cat(paste0("\nsnippet (use grab() to access full ", nrow(df), " x ", ncol(df), " object): \n\n"))
+    print.data.frame(df[1:(min(nrow(df), nr)), 1:(min(ncol(df), nc))])
+  } else {
+    print.data.frame(df)
+  }
+  }
+
 
 #' Print a tightened summary of model queries
 #'
