@@ -31,7 +31,6 @@ library(knitr)
 
 # Make a model
 
-
 **Generating**: To make a model you need to provide a DAG statement to `make_model`.  
 For instance 
 
@@ -52,6 +51,15 @@ iv_model <- make_model("Z -> X -> Y <-> X")
 plot(xy_model)
 ```
 
+**Simple summaries:** You can access a simple summary using `summary()`
+
+
+```{r}
+summary(xy_model)
+```
+
+or you can examine model details using `inspect()`.
+
 **Inspecting**: The model has a set of parameters and a default distribution over these.
 
 
@@ -60,7 +68,6 @@ xy_model |> inspect("parameters_df")
 ```
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
-Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more):
 
 Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more): 
 
@@ -85,7 +92,7 @@ data |> kable()
 
 ```
 
-# Model updating
+# Update the model
 
 **Updating**: Update using `update_model`. You can pass all `rstan` arguments to `update_model`.
 
@@ -110,7 +117,9 @@ xy_model |> grab("posterior_distribution") |>
 
 where each row is a draw of parameters.
 
-# Query model
+# Query the model
+
+## Arbitrary queries
 
 **Querying**: You ask arbitrary causal queries of the model. 
 
@@ -136,6 +145,8 @@ xy_model |>
   query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
               given = "Y[X=1] != Y[X=0]") 
 ```
+
+## Output
 
 Query output is ready for printing as tables, but can also be plotted, which is especially useful with batch requests:
 
