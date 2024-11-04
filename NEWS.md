@@ -1,3 +1,40 @@
+# CausalQueries 1.2.0
+
+This is a minor release introducing changes meant to focus S3 methods and 
+utility functions around two core classes: `causal_model` and `model_query`. 
+Our aim is to improve the user experience of `CausalQueries` by focusing 
+user facing functionality more clearly around the workflow of making, updating,
+querying and inspecting causal models. 
+With respect to `causal_model` objects this release introduces more expressive 
+and concise S3 summary and print methods for the `causal_model` class and its 
+internal objects. Updates to the `grab()` and `inspect()` functions streamline
+access to objects contained within a `causal_model`, facilitating more advanced
+use-cases or deeper review.
+This release introduces the `model_query` class along with S3 summary, print and 
+plot methods for a more seamless querying workflow. 
+Finally, this release removes dependency on `dagitty`, restoring compatibility of
+`CausalQueries` with systems on which `V8` `JavaScript` `WASM` is not supported. 
+
+### New Functionality
+
+#### 1. Improved causal_model summaries
+The `summary()` method for objects of class `causal_model` now supports an
+`include` argument allowing users to specify additional objects internal 
+to the `causal_model` object for which they would like to have summaries 
+appended to the main output of `summary()`. Summaries have additionally been 
+made more informative and readable. Please see `?summary.causal_model` for 
+extensive documentation on the new functionality.
+
+#### 2. Streamlined causal_model object access
+Internal objects of a `causal_model` instance can now be returned quietly 
+via `grab()` eliminating the need to interact with a `causal_model` instance
+directly. 
+
+#### 3. New querying utility functionality
+The newly introduced `model_query` class comes with a print, summary and plot
+method. `plot()` generates a coefficient plot with credible intervals for 
+evaluated queries. 
+
 # CausalQueries 1.1.1
 
 This is a patch release fixing a bug in the `print.model_query()` S3 method that 
