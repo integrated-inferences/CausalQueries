@@ -40,6 +40,25 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.0" id="causalqueries-120">CausalQueries 1.2.0<a class="anchor" aria-label="anchor" href="#causalqueries-120"></a></h2>
+<p>This is a minor release introducing changes meant to focus S3 methods and utility functions around two core classes: <code>causal_model</code> and <code>model_query</code>. Our aim is to improve the user experience of <code>CausalQueries</code> by focusing user facing functionality more clearly around the workflow of making, updating, querying and inspecting causal models. With respect to <code>causal_model</code> objects this release introduces more expressive and concise S3 summary and print methods for the <code>causal_model</code> class and its internal objects. Updates to the <code><a href="../reference/inspection.html">grab()</a></code> and <code><a href="../reference/inspection.html">inspect()</a></code> functions streamline access to objects contained within a <code>causal_model</code>, facilitating more advanced use-cases or deeper review. This release introduces the <code>model_query</code> class along with S3 summary, print and plot methods for a more seamless querying workflow. Finally, this release removes dependency on <code>dagitty</code>, restoring compatibility of <code>CausalQueries</code> with systems on which <code>V8</code> <code>JavaScript</code> <code>WASM</code> is not supported.</p>
+<div class="section level4">
+<h4 id="new-functionality-1-2-0">New Functionality<a class="anchor" aria-label="anchor" href="#new-functionality-1-2-0"></a></h4>
+<div class="section level5">
+<h5 id="id_1-improved-causal_model-summaries-1-2-0">1. Improved causal_model summaries<a class="anchor" aria-label="anchor" href="#id_1-improved-causal_model-summaries-1-2-0"></a></h5>
+<p>The <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method for objects of class <code>causal_model</code> now supports an <code>include</code> argument allowing users to specify additional objects internal to the <code>causal_model</code> object for which they would like to have summaries appended to the main output of <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>. Summaries have additionally been made more informative and readable. Please see <code><a href="../reference/summary.causal_model.html">?summary.causal_model</a></code> for extensive documentation on the new functionality.</p>
+</div>
+<div class="section level5">
+<h5 id="id_2-streamlined-causal_model-object-access-1-2-0">2. Streamlined causal_model object access<a class="anchor" aria-label="anchor" href="#id_2-streamlined-causal_model-object-access-1-2-0"></a></h5>
+<p>Internal objects of a <code>causal_model</code> instance can now be returned quietly via <code><a href="../reference/inspection.html">grab()</a></code> eliminating the need to interact with a <code>causal_model</code> instance directly.</p>
+</div>
+<div class="section level5">
+<h5 id="id_3-new-querying-utility-functionality-1-2-0">3. New querying utility functionality<a class="anchor" aria-label="anchor" href="#id_3-new-querying-utility-functionality-1-2-0"></a></h5>
+<p>The newly introduced <code>model_query</code> class comes with a print, summary and plot method. <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> generates a coefficient plot with credible intervals for evaluated queries.</p>
+</div>
+</div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="causalqueries-111">CausalQueries 1.1.1<a class="anchor" aria-label="anchor" href="#causalqueries-111"></a></h2><p class="text-muted">CRAN release: 2024-04-26</p>
 <p>This is a patch release fixing a bug in the <code><a href="../reference/print.model_query.html">print.model_query()</a></code> S3 method that occurred when querying models using <code>paramters</code>.</p>
 </div>
