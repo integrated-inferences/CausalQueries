@@ -62,7 +62,7 @@ In addition to the default objects included in `summary.causal_model` users can 
   \item \code{"data_types"} A list with the all data types consistent with the model; for options see `"?get_all_data_types"`,
   \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `inspect(prior_hyperparameters, c('M', 'Y'))`
   \item \code{"prior_distribution"} A data frame of the parameter prior distribution,
-  \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single realization of parameters; for options see `"?get_event_probabilities"`,
+  \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see `"?get_event_probabilities"`,
   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
   \item \code{"type_prior"} A matrix of type probabilities using priors,
   \item \code{"type_distribution"} A matrix of type probabilities using posteriors,

@@ -852,6 +852,47 @@ print.model_query <- function(x, ...) {
 
 
 
+
+#' Summarizing model queries
+#'
+#' summary method for class "\code{model_query}".
+#'
+#' @param object An object of \code{query_model} class produced using
+#'   \code{query_model}
+#'
+#' @return Returns the object of class \code{summary.model_query}
+#'
+#' @examples
+#' \donttest{
+#' model <-
+#'   make_model("X -> Y") |>
+#'   query_model("Y[X=1] > Y[X=1]")  |>
+#'   summary()
+#'
+#'
+#' @export
+summary.model_query <- function(object) {
+  print_call_and_date(object)
+  print.model_query(object)
+}
+
+#' @export
+print.summary.model_query <- function(object) {
+  print_call_and_date(object)
+  print.model_query(object)
+}
+
+# Helper function to print the call and date attributes
+print_call_and_date <- function(object) {
+  cat("Call: \n")
+  cat(paste(deparse(attr(object, "call")), collapse = " "), "\n")
+
+  cat("\nQueries evaluated on: \n")
+  cat(attr(object, "date"))
+  cat("\n")
+}
+
+
 #' Print a short summary for stan_objects
 #'
 #' print method for class \code{stan_objects}.

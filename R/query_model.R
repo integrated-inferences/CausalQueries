@@ -336,6 +336,10 @@ query_model <- function(model,
                         query = NULL,
                         cred = 95) {
   # handle global variables
+
+  func_call <- match.call()
+  date <- date()
+
   query_name <- NULL
 
   # if single model passed to function place it in a list
@@ -521,6 +525,10 @@ query_model <- function(model,
   }
 
   class(estimands) <- c("model_query", "data.frame")
+
+  attr(estimands, "call") <- func_call
+  attr(estimands, "date") <- date
+
 
   return(estimands)
 }
