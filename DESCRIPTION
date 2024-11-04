@@ -39,6 +39,7 @@ Imports:
     ggraph (>= 2.2.0),
     Rcpp (>= 0.12.0)
 LinkingTo: 
+    Rcpp (>= 0.12.0),
     BH (>= 1.66.0),
     RcppArmadillo,
     RcppEigen (>= 0.3.3.3.0),
