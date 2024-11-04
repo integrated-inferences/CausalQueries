@@ -2,9 +2,12 @@
 % Please edit documentation in R/methods.R
 \name{summary.model_query}
 \alias{summary.model_query}
+\alias{print.summary.model_query}
 \title{Summarizing model queries}
 \usage{
 \method{summary}{model_query}(object)
+
+\method{print}{summary.model_query}(object)
 }
 \arguments{
 \item{object}{An object of \code{query_model} class produced using
@@ -15,4 +18,14 @@ Returns the object of class \code{summary.model_query}
 }
 \description{
 summary method for class "\code{model_query}".
+}
+\examples{
+\donttest{
+model <-
+  make_model("X -> Y") |>
+  query_model("Y[X=1] > Y[X=1]")  |>
+  summary()
+}
+
+
 }

@@ -36,7 +36,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Generate full dataset</h1>
-      <small class="dont-index">Source: <a href="https://github.com/integrated-inferences/CausalQueries/blob/HEAD/R/make_data.R" class="external-link"><code>R/make_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/integrated-inferences/CausalQueries/blob/HEAD/R/data_helpers.R" class="external-link"><code>R/data_helpers.R</code></a></small>
       <div class="d-none name"><code>make_data_single.Rd</code></div>
     </div>
 
@@ -113,9 +113,8 @@ to generate w if w is not provided</p></dd>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other data_generation:
+<code><a href="data_helpers.html">data_helpers</a></code>,
 <code><a href="get_all_data_types.html">get_all_data_types</a>()</code>,
-<code><a href="make_data.html">make_data</a>()</code>,
-<code><a href="make_events.html">make_events</a>()</code>,
 <code><a href="observe_data.html">observe_data</a>()</code></p></div>
     </div>
 
@@ -127,17 +126,17 @@ to generate w if w is not provided</p></dd>
 <span class="r-in"><span><span class="co"># Simplest behavior uses by default the parameter vector contained in model</span></span></span>
 <span class="r-in"><span><span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">make_data_single</span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 1 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">make_data_single</span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">5</span>, param_type <span class="op">=</span> <span class="st">"prior_draw"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 1 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 1 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 1 1</span>
 <span class="r-in"><span></span></span>

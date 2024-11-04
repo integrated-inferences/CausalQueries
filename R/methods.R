@@ -799,6 +799,9 @@ print.summary.causal_model <-
   }
 
 #' helper to print snippets of large objects
+#' @noRd
+#' @keywords internal
+
 snippet <- function(df, nc = 10, nr = 10) {
   if (nrow(df) > nr | ncol(df) > nc) {
     cat(paste0("\nsnippet (use grab() to access full ", nrow(df), " x ", ncol(df), " object): \n\n"))
@@ -868,6 +871,7 @@ print.model_query <- function(x, ...) {
 #'   make_model("X -> Y") |>
 #'   query_model("Y[X=1] > Y[X=1]")  |>
 #'   summary()
+#'}
 #'
 #'
 #' @export
@@ -876,6 +880,8 @@ summary.model_query <- function(object) {
   print.model_query(object)
 }
 
+
+#' @rdname summary.model_query
 #' @export
 print.summary.model_query <- function(object) {
   print_call_and_date(object)
@@ -883,6 +889,9 @@ print.summary.model_query <- function(object) {
 }
 
 # Helper function to print the call and date attributes
+#'
+#' @noRd
+#' @keywords internal
 print_call_and_date <- function(object) {
   cat("Call: \n")
   cat(paste(deparse(attr(object, "call")), collapse = " "), "\n")
@@ -901,7 +910,8 @@ print_call_and_date <- function(object) {
 #' containing the data, \code{type_distribution} and  \code{stan_summary}.
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @export
+#' @noRd
+#' @keywords internal
 print.stan_objects <- function(x, ...) {
   cat("\n")
   cat(x$stan_summary, sep = "\n")

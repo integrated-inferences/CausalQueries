@@ -42,9 +42,7 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/lipids_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/list_non_parents.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_dag.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_data_single.html</loc></url>
-<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_events.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_model.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_parameters_df.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/make_par_values.html</loc></url>
@@ -77,6 +75,7 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/simulate_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/snippet.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/summary.causal_model.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/summary.model_query.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/update_model.html</loc></url>
 </urlset>
 

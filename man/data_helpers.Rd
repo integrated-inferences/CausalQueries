@@ -4,6 +4,8 @@
 \alias{data_helpers}
 \alias{collapse_data}
 \alias{expand_data}
+\alias{make_data}
+\alias{make_events}
 \title{Data helpers}
 \usage{
 collapse_data(
@@ -15,6 +17,33 @@ collapse_data(
 )
 
 expand_data(data_events = NULL, model)
+
+make_data(
+  model,
+  n = 1,
+  parameters = NULL,
+  param_type = NULL,
+  nodes = NULL,
+  n_steps = NULL,
+  probs = NULL,
+  subsets = TRUE,
+  complete_data = NULL,
+  given = NULL,
+  verbose = TRUE,
+  ...
+)
+
+make_events(
+  model,
+  n = 1,
+  w = NULL,
+  P = NULL,
+  A = NULL,
+  parameters = NULL,
+  param_type = NULL,
+  include_strategy = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{A \code{data.frame}.  Data of nodes that can take three values:
@@ -33,9 +62,58 @@ the output. Defaults to `FALSE`.}
 \item{summary}{Logical. Whether to return summary of the data. See details.
 Defaults to `FALSE`.}
 
-\item{data_events}{A \code{data.frame}. It must be compatible with nodes in
+\item{data_events}{A 'compact' \code{data.frame} with one row per data type. Must be compatible with nodes in
 \code{model}. The default columns are
 \code{event}, \code{strategy} and \code{count}.}
+
+\item{n}{An integer. Number of observations.}
+
+\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
+specify (optional). By default, parameters is drawn from the parameters dataframe.
+See \code{inspect(model, "parameters_df")}.}
+
+\item{param_type}{A character. String specifying type of parameters to make
+'flat', 'prior_mean', 'posterior_mean', 'prior_draw', 'posterior_draw',
+'define. With param_type set to \code{define} use arguments to be passed
+to \code{make_priors}; otherwise \code{flat} sets equal probabilities on
+each nodal type in each parameter set; \code{prior_mean},
+\code{prior_draw}, \code{posterior_mean}, \code{posterior_draw} take
+parameters as the means or as draws from the prior or posterior.}
+
+\item{nodes}{A \code{list}. Which nodes to be observed at each step.
+If NULL all nodes are observed.}
+
+\item{n_steps}{A \code{list}. Number of observations to be
+observed at each step}
+
+\item{probs}{A \code{list}. Observation probabilities at each step}
+
+\item{subsets}{A \code{list}. Strata within which observations are to be
+observed at each step. TRUE for all, otherwise an expression that
+evaluates to a logical condition.}
+
+\item{complete_data}{A \code{data.frame}. Dataset with complete
+observations. Optional.}
+
+\item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
+
+\item{verbose}{Logical. If TRUE prints step schedule.}
+
+\item{...}{Arguments to be passed to make_priors if
+param_type == \code{define}}
+
+\item{w}{A numeric matrix. A `n_parameters x 1` matrix of event
+probabilities with named rows.}
+
+\item{P}{A \code{data.frame}. Parameter matrix. Not required but may be
+provided to avoid repeated computation for simulations. See \code{inspect(model, "parameter_matrix")}.}
+
+\item{A}{A \code{data.frame}. Ambiguities matrix. Not required but may be
+provided to avoid repeated computation for simulations. \code{inspect(model, "ambiguities_matrix")}}
+
+\item{include_strategy}{Logical. Whether to include a 'strategy' vector.
+Defaults to FALSE. Strategy vector does not vary with full data but
+expected by some functions.}
 }
 \value{
 A vector of data events
@@ -49,12 +127,29 @@ If \code{summary = TRUE} `collapse_data` returns a list containing the
      events not observed in the data}
 
 A \code{data.frame} with rows as data observation
+
+A \code{data.frame} with simulated data.
+
+A \code{data.frame} of events
 }
 \description{
 Various helpers to simulate data and to manipulate data types between compact and long forms.
 
-Take a `data.frame` and return compact `data.frame`
-of event types and strategies.
+\code{collapse_data} can be used to convert long form data to compact form data,
+
+\code{expand_data} can be used to convert compact form data (one row per data type) to long form data (one row per observation).
+
+\code{make_data} generates a dataset with one row per observation.
+
+\code{make_events} generates a dataset with one row for each data type.
+Draws full data only. To generate various types of incomplete data see
+\code{\link{make_data}}.
+}
+\details{
+Note that default behavior is not to take account of whether a node has
+already been observed when determining whether to select or not. One can
+however specifically request observation of nodes that have not been
+previously observed.
 }
 \examples{
 \donttest{
@@ -94,4 +189,76 @@ make_events(model, n = 0) |>
   expand_data(model)
  }
 
+
+# Simple draws
+model <- make_model("X -> M -> Y")
+make_data(model)
+make_data(model, n = 3, nodes = c("X","Y"))
+make_data(model, n = 3, param_type = "prior_draw")
+make_data(model, n = 10, param_type = "define", parameters =  0:9)
+
+# Data Strategies
+# A strategy in which X, Y are observed for sure and M is observed
+# with 50\% probability for X=1, Y=0 cases
+
+model <- make_model("X -> M -> Y")
+make_data(
+  model,
+  n = 8,
+  nodes = list(c("X", "Y"), "M"),
+  probs = list(1, .5),
+  subsets = list(TRUE, "X==1 & Y==0"))
+
+# n not provided but inferred from largest n_step (not from sum of n_steps)
+make_data(
+  model,
+  nodes = list(c("X", "Y"), "M"),
+  n_steps = list(5, 2))
+
+# Wide then deep
+  make_data(
+  model,
+  n = 8,
+  nodes = list(c("X", "Y"), "M"),
+  subsets = list(TRUE, "!is.na(X) & !is.na(Y)"),
+  n_steps = list(6, 2))
+
+
+make_data(
+  model,
+  n = 8,
+  nodes = list(c("X", "Y"), c("X", "M")),
+  subsets = list(TRUE, "is.na(X)"),
+  n_steps = list(3, 2))
+
+# Example with probabilities at each step
+
+make_data(
+  model,
+  n = 8,
+  nodes = list(c("X", "Y"), c("X", "M")),
+  subsets = list(TRUE, "is.na(X)"),
+  probs = list(.5, .2))
+
+# Example with given data
+make_data(model, given = "X==1 & Y==1", n = 5)
+\donttest{
+model <- make_model('X -> Y')
+make_events(model = model)
+make_events(model = model, param_type = 'prior_draw')
+make_events(model = model, include_strategy = TRUE)
 }
+
+}
+\seealso{
+Other data_generation: 
+\code{\link{get_all_data_types}()},
+\code{\link{make_data_single}()},
+\code{\link{observe_data}()}
+
+Other data_generation: 
+\code{\link{get_all_data_types}()},
+\code{\link{make_data_single}()},
+\code{\link{observe_data}()}
+}
+\concept{data_generation}
