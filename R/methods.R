@@ -873,7 +873,6 @@ print.model_query <- function(x, ...) {
 #'   summary()
 #'}
 #'
-#'
 #' @export
 summary.model_query <- function(object) {
   print_call_and_date(object)
