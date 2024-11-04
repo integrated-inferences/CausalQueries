@@ -27,5 +27,8 @@ model <-
   summary()
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cf0dcec (changed Rcpp import behavior)
 }
