@@ -3,15 +3,13 @@
 \name{make_dag}
 \alias{make_dag}
 \title{Helper to run a causal statement specifying a DAG into a \code{data.frame} of
-pairwise parent child relations between nodes specified by a respective edge.
-This function can substitute for the following \code{dagitty} operations:
-\code{dagitty::dagitty() |> dagitty::edges()}}
+pairwise parent child relations between nodes specified by a respective edge.}
 \usage{
 make_dag(statement)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal
-relations using \code{dagitty} syntax. Only directed relations are
+relations between nodes. Only directed relations are
 permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2"}
 }
 \value{
@@ -21,7 +19,5 @@ a \code{data.frame} with columns v, w, e specifying parent, child and
 \description{
 Helper to run a causal statement specifying a DAG into a \code{data.frame} of
 pairwise parent child relations between nodes specified by a respective edge.
-This function can substitute for the following \code{dagitty} operations:
-\code{dagitty::dagitty() |> dagitty::edges()}
 }
 \keyword{internal}

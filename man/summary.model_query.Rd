@@ -5,12 +5,17 @@
 \alias{print.summary.model_query}
 \title{Summarizing model queries}
 \usage{
-\method{summary}{model_query}(object)
+\method{summary}{model_query}(object, ...)
 
-\method{print}{summary.model_query}(object)
+\method{print}{summary.model_query}(x, ...)
 }
 \arguments{
-\item{object}{An object of \code{query_model} class produced using
+\item{object}{An object of \code{model_query} class produced using
+\code{query_model}}
+
+\item{...}{Further arguments passed to or from other methods.}
+
+\item{x}{an object of \code{model_query} class produced using
 \code{query_model}}
 }
 \value{

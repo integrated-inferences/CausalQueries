@@ -20,7 +20,7 @@ expand_data(data_events = NULL, model)
 
 make_data(
   model,
-  n = 1,
+  n = NULL,
   parameters = NULL,
   param_type = NULL,
   nodes = NULL,

@@ -4,7 +4,7 @@
 #' update over models given data and calculate arbitrary causal queries.
 #' Model definition makes use of dagitty syntax.
 #' Updating is implemented in 'stan'.
-#' @docType _PACKAGE
+#' @docType package
 #'
 #' @name CausalQueries
 #' @importFrom utils globalVariables

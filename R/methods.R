@@ -137,7 +137,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
         "data",
         "stanfit",
         "stan_summary",
-        "stan_objects"
+        "stan_xs"
       ))
 
     if (length(wrong) > 0 & length(wrong) <= length(include)) {
@@ -809,7 +809,7 @@ snippet <- function(df, nc = 10, nr = 10) {
   } else {
     print.data.frame(df)
   }
-  }
+}
 
 
 #' Print a tightened summary of model queries
@@ -819,6 +819,7 @@ snippet <- function(df, nc = 10, nr = 10) {
 #' @param x An object of \code{model_query} class.
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @rdname print.model_query
 #' @export
 #'
 print.model_query <- function(x, ...) {
@@ -860,8 +861,9 @@ print.model_query <- function(x, ...) {
 #'
 #' summary method for class "\code{model_query}".
 #'
-#' @param object An object of \code{query_model} class produced using
+#' @param object An object of \code{model_query} class produced using
 #'   \code{query_model}
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @return Returns the object of class \code{summary.model_query}
 #'
@@ -874,17 +876,23 @@ print.model_query <- function(x, ...) {
 #'}
 #'
 #' @export
-summary.model_query <- function(object) {
+summary.model_query <- function(object, ...) {
   print_call_and_date(object)
   print.model_query(object)
 }
 
 
 #' @rdname summary.model_query
+#'
+#' @param x an object of \code{model_query} class produced using
+#'  \code{query_model}
+#' @param ... Further arguments passed to or from other methods.
+#'
 #' @export
-print.summary.model_query <- function(object) {
-  print_call_and_date(object)
-  print.model_query(object)
+
+print.summary.model_query <- function(x, ...) {
+  print_call_and_date(x)
+  print.model_query(x)
 }
 
 # Helper function to print the call and date attributes

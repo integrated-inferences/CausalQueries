@@ -1,5 +1,4 @@
-This is a minor release introducing changes focusing S3 methods and 
-utility functions around two core classes: `causal_model` and `model_query`.
+This is a patch release fixing issues flagged by CRAN incoming checks. 
 
 ## Test environments
 

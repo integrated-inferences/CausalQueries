@@ -1,4 +1,4 @@
-# CausalQueries 1.2.0
+# CausalQueries 1.2.1
 
 This is a minor release introducing changes meant to focus S3 methods and 
 utility functions around two core classes: `causal_model` and `model_query`. 

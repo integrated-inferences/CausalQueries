@@ -306,7 +306,7 @@ data_type_names <- function(model, data) {
 
 make_data <- function(
     model,
-    n = 1,
+    n = NULL,
     parameters = NULL,
     param_type = NULL,
     nodes    = NULL,
