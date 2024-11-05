@@ -315,7 +315,7 @@ make_data <- function(
     subsets = TRUE,
     complete_data = NULL,
     given = NULL,
-    verbose = TRUE,
+    verbose = FALSE,
     ...){
 
   # n_step, n consistency

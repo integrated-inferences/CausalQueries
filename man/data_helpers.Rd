@@ -29,7 +29,7 @@ make_data(
   subsets = TRUE,
   complete_data = NULL,
   given = NULL,
-  verbose = TRUE,
+  verbose = FALSE,
   ...
 )
 
