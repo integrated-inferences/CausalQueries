@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)
+[![DOI](https://zenodo.org/badge/186861431.svg)](https://doi.org/10.5281/zenodo.14191700)
 <!-- badges: end -->
 
 `CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition is implemented via a `dagitty` style syntax. Updating is implemented in `stan`. 
