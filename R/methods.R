@@ -13,17 +13,20 @@
 #'
 #' @export
 print.causal_model <- function(x, ...) {
+
+  nnt <- vapply(get_nodal_types(x), length, numeric(1), USE.NAMES = TRUE)
+
   cat("\nCausal statement: \n")
   cat(x$statement)
   cat("\n")
 
-  cat("\nNumber of types by node:\n")
-  print(vapply(get_nodal_types(x), length, numeric(1), USE.NAMES = TRUE))
+  cat("\nNumber of nodal types by node:\n")
+  print(nnt)
 
 
   if (!is.null(x$causal_types)) {
     cat("\nNumber of causal types:")
-    cat(paste0(" ", nrow(get_causal_types(x)), "\n"))
+    cat(paste0(" ", prod(nnt), "\n"))
   }
 
   if (!is.null(x$posterior_distribution) & !is.null(x$stan_objects)) {
@@ -95,11 +98,6 @@ summary.causal_model <- function(object, include = NULL, ...) {
     c(get_args_for(get_all_data_types, dots)) |>
     do.call(get_all_data_types, args = _)
 
-  object$prior_event_probabilities <-
-    list(object) |>
-    c(get_args_for(get_event_probabilities, dots)) |>
-    do.call(get_event_probabilities, args = _)
-
   object$parameter_names <-
     list(object) |>
     c(get_args_for(get_parameter_names, dots)) |>
@@ -145,6 +143,13 @@ summary.causal_model <- function(object, include = NULL, ...) {
         "The following requested objects are not supported: ",
         paste0(wrong, collapse = ", ")
       )
+    }
+
+    if ("prior_event_probabilities" %in% include) {
+      object$prior_event_probabilities <-
+      list(object) |>
+      c(get_args_for(get_event_probabilities, dots)) |>
+      do.call(get_event_probabilities, args = _)
     }
 
     if ("parameter_mapping" %in% include) {
