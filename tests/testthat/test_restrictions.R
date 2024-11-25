@@ -158,7 +158,7 @@ testthat::test_that(
       set_prior_distribution() |>
       set_restrictions(statement = "Y[X=1] > Y[X=0]")
 
-    expect_true(is.null(model$posterior_distribution))
+    expect_true(!has_posterior(model))
     expect_true(is.null(model$prior_distribution))
     expect_true(is.null(model$stan_objects))
 

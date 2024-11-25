@@ -10,7 +10,7 @@
 
 get_posterior_distribution <- function(model) {
   .Deprecated("grab")
-  if (is.null(model$posterior_distribution)) {
+  if (!has_posterior(model)) {
     message("The model does not contain a posterior distribution. A posterior distribution can be provided to the model using `update_model`")
     return(NULL)
   }

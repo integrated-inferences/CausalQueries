@@ -523,3 +523,7 @@ get_args_for <- function(fun, dots) {
   # Exclude arguments with no name
   return(dots[names(dots) %in% formal_args])
 }
+
+
+has_posterior <- function(model)
+  !is.null(model$posterior_distribution)

@@ -135,4 +135,30 @@ testthat::test_that(
 
     expect_true(q$cred.low > q2$cred.low)
     expect_true(q$cred.high < q2$cred.high)
+
+    expect_message(
+      query_model(
+      model,
+      query = "Y[X=1] > Y[X=0]",
+      given = "X==1",
+      case_level = c(TRUE, FALSE),
+      labels = "A"), "labels have been provided but are of incorrect length: 2 labels required")
+
+    expect_message(
+      query_model(
+        model,
+        query = "Y[X=1] > Y[X=0]",
+        given = "X==1",
+        case_level = c(TRUE, FALSE),
+        labels = c("A", "A")))
+
+    expect_equivalent(
+      query_model(
+        model,
+        query = "Y[X=1] > Y[X=0]",
+        given = "X==1",
+        case_level = c(TRUE, FALSE),
+        labels = c("A", "B")) |> pull(label),
+      c("A", "B"))
+
   })

@@ -106,7 +106,7 @@ get_param_dist <- function(model,
     }
 
     if(using == "posteriors") {
-        if(is.null(model$posterior_distribution)) {
+        if(!has_posterior(model)) {
             stop("Model does not contain a posterior distribution")
         }
         return(model$posterior_distribution)

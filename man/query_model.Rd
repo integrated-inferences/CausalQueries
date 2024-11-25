@@ -2,7 +2,7 @@
 % Please edit documentation in R/query_model.R
 \name{query_model}
 \alias{query_model}
-\title{Generate estimands data frame}
+\title{Generate data frame for batches of causal queries}
 \usage{
 query_model(
   model,
@@ -15,7 +15,8 @@ query_model(
   expand_grid = FALSE,
   case_level = FALSE,
   query = NULL,
-  cred = 95
+  cred = 95,
+  labels = NULL
 )
 }
 \arguments{
@@ -25,9 +26,10 @@ query_model(
 \item{queries}{A vector of strings or list of strings specifying queries
 on potential outcomes such as "Y[X=1] - Y[X=0]".}
 
-\item{given}{A vector or list of strings specifying givens. A given is
-a quoted expression that evaluates to a logical statement. Allows estimand
-to be conditioned on *observational* (or counterfactual) distribution.}
+\item{given}{A character vector specifying givens for each query.
+A given is a quoted expression that evaluates to logical statement.
+\code{given} allows the query to be conditioned on either observed
+or counterfactural distributions. A value of TRUE is interpreted as no conditioning.}
 
 \item{using}{A vector or list of strings. Whether to use priors,
 posteriors or parameters.}
@@ -36,7 +38,7 @@ posteriors or parameters.}
 specify (optional). By default, parameters is drawn from the parameters dataframe.
 See \code{inspect(model, "parameters_df")}.}
 
-\item{stats}{Functions to be applied to estimand distribution.
+\item{stats}{Functions to be applied to the query distribution.
 If NULL, defaults to mean, standard deviation,
 and 95\% confidence interval. Functions should return a single numeric
 value.}
@@ -53,6 +55,8 @@ query for a case.}
 \item{query}{alias for queries}
 
 \item{cred}{size of the credible interval ranging between 0 and 100}
+
+\item{labels}{labels for queries: if provided labels should have the length of the combinations of requests}
 }
 \value{
 A data frame with columns Model, Query, Given and Using

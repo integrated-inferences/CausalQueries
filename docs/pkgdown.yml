@@ -1,12 +1,13 @@
-pandoc: 3.1.11
+pandoc: '3.2'
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   a-getting-started: a-getting-started.html
   b-plotting: b-plotting.html
-  c-front-door: c-front-door.html
-  d-posteriors: d-posteriors.html
-last_built: 2024-11-04T16:59Z
+  c-canonical-models: c-canonical-models.html
+  d-front-door: d-front-door.html
+  e-posteriors: e-posteriors.html
+last_built: 2024-11-25T23:06Z
 urls:
   reference: https://integrated-inferences.github.io/CausalQueries/reference
   article: https://integrated-inferences.github.io/CausalQueries/articles

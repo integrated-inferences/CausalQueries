@@ -157,26 +157,26 @@ update_model <- function(model,
                                      pars = drop_pars,
                                      include = FALSE)
 
-  newfit <- do.call(rstan::sampling, sampling_args)
+  newfit <- do.call(rstan::sampling, sampling_args) |> capture_warnings()
 
-  model$stan_objects  <- list(data = data)
+  model$stan_objects  <- list(data = data, stan_warnings = newfit$warnings)
 
 
   # Keep full fit object
   if (keep_fit) {
-    model$stan_objects$stanfit <- newfit
+    model$stan_objects$stanfit <- newfit$fit
   }
 
   # Retain posterior distribution
   model$posterior_distribution <-
-    extract(newfit, pars = "lambdas")$lambdas |>
+    extract(newfit$fit, pars = "lambdas")$lambdas |>
     as.data.frame()
   colnames(model$posterior_distribution) <- get_parameter_names(model)
   class(model$posterior_distribution) <- "data.frame"
 
   # Retain type distribution
   if(keep_type_distribution) {
-    model$stan_objects$type_distribution <- extract(newfit, pars = "types")$types
+    model$stan_objects$type_distribution <- extract(newfit$fit, pars = "types")$types
 
     colnames(model$stan_objects$type_distribution) <- colnames(stan_data$P)
     class(model$stan_objects$type_distribution) <- c("matrix", "array")
@@ -184,7 +184,7 @@ update_model <- function(model,
 
   # Retain event (pre-censoring) probabilities
   if (keep_event_probabilities) {
-    model$stan_objects$event_probabilities <- extract(newfit, pars = "w")$w
+    model$stan_objects$event_probabilities <- extract(newfit$fit, pars = "w")$w
     colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
     class(model$stan_objects$event_probabilities) <- c("matrix", "array")
   }
@@ -198,7 +198,7 @@ update_model <- function(model,
     params <- c(params, colnames(model$stan_objects$type_distribution))
   params <- c(params,  "lp__")
 
-  params_labels <- newfit@sim$fnames_oi
+  params_labels <- newfit$fit@sim$fnames_oi
 
   raname_list <-
     lapply(
@@ -218,7 +218,7 @@ update_model <- function(model,
     )
 
 
-  model$stan_objects$stan_summary <- utils::capture.output(print(newfit))
+  model$stan_objects$stan_summary <- utils::capture.output(print(newfit$fit))
 
   for (i in seq_along(params)) {
     model$stan_objects$stan_summary <-
@@ -234,3 +234,36 @@ update_model <- function(model,
 }
 
 
+
+
+capture_warnings <- function(expr) {
+  # Initialize a variable to store captured warnings
+  warnings_captured <- character()
+
+  # Capture warnings and the result
+  fit <- withCallingHandlers(
+    expr,
+    warning = function(w) {
+      warnings_captured <<- c(warnings_captured, conditionMessage(w))
+    }
+  )
+
+  # List containing the result of the expression and the warnings
+  list(fit = fit, warnings = warnings_captured |> concise())
+}
+
+
+
+concise <- function(warnings) {
+  # Apply transformations based on the patterns
+  sapply(warnings, function(warning) {
+    if (grepl("not mixed", warning)) {
+      sub("not mixed.*", "not mixed", warning)  # Truncate after "not mixed"
+    } else if (grepl("too low", warning)) {
+      sub("too low.*", "too low", warning)  # Truncate after "too low"
+    } else {
+      warning  # Leave the warning unchanged if no match
+    }
+  }, USE.NAMES = FALSE) |>
+    paste(collapse ="\n")# Ensure it returns a vector
+}

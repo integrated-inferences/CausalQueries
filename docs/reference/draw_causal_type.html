@@ -11,7 +11,7 @@ the case level causal type."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,8 +24,9 @@ the case level causal type."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/b-plotting.html">Plotting models</a></li>
-    <li><a class="dropdown-item" href="../articles/c-front-door.html">Through the front door</a></li>
-    <li><a class="dropdown-item" href="../articles/d-posteriors.html">Inspecting posteriors</a></li>
+    <li><a class="dropdown-item" href="../articles/c-canonical-models.html">Canonical causal models</a></li>
+    <li><a class="dropdown-item" href="../articles/d-front-door.html">Through the front door</a></li>
+    <li><a class="dropdown-item" href="../articles/e-posteriors.html">Inspecting posteriors</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -96,16 +97,16 @@ the case level causal type.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    param_names node    gen param_set nodal_type given param_value priors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>         0.611       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>         0.389       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>         0.579       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>         0.112       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>         0.073<span style="text-decoration: underline;">6</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>         0.236       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>         0.082<span style="text-decoration: underline;">2</span>      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>         0.199       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>         0.361       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>         0.357       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> X.0         X         1 X         0          <span style="color: #949494;">""</span>       0.355         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> X.1         X         1 X         1          <span style="color: #949494;">""</span>       0.645         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> M.00        M         2 M         00         <span style="color: #949494;">""</span>       0.654         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> M.10        M         2 M         10         <span style="color: #949494;">""</span>       0.204         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> M.01        M         2 M         01         <span style="color: #949494;">""</span>       0.020<span style="text-decoration: underline;">4</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> M.11        M         2 M         11         <span style="color: #949494;">""</span>       0.121         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Y.00        Y         3 Y         00         <span style="color: #949494;">""</span>       0.000<span style="text-decoration: underline;">978</span>      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Y.10        Y         3 Y         10         <span style="color: #949494;">""</span>       0.065<span style="text-decoration: underline;">6</span>        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Y.01        Y         3 Y         01         <span style="color: #949494;">""</span>       0.484         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Y.11        Y         3 Y         11         <span style="color: #949494;">""</span>       0.450         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: causal_type &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Draw type given specified parameters</span></span></span>

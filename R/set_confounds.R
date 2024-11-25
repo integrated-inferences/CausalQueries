@@ -214,7 +214,7 @@ set_confound <- function(model,
     model$prior_distribution <- NULL
   }
 
-  if (!is.null(model$posterior_distribution)) {
+  if (has_posterior(model)) {
     model$posterior_distribution <- NULL
   }
 

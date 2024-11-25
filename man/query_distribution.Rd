@@ -25,8 +25,8 @@ queries on potential outcomes such as "Y[X=1] - Y[X=0]"}
 
 \item{given}{A character vector specifying givens for each query.
 A given is a quoted expression that evaluates to logical statement.
-\code{given} allows the query to be conditioned on *observational*
-distribution. A value of TRUE is interpreted as no conditioning.}
+\code{given} allows the query to be conditioned on either observed
+or counterfactural distributions. A value of TRUE is interpreted as no conditioning.}
 
 \item{using}{A character. Whether to use priors, posteriors or parameters}
 

@@ -18,8 +18,8 @@
 #'   defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
 #' @param given  A character vector specifying givens for each query.
 #'   A given is a quoted expression that evaluates to logical statement.
-#'   \code{given} allows the query to be conditioned on *observational*
-#'   distribution. A value of TRUE is interpreted as no conditioning.
+#'   \code{given} allows the query to be conditioned on either observed
+#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
 #' @param n_draws An integer. Number of draws.rm
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
@@ -249,7 +249,7 @@ query_distribution <- function(model,
 }
 
 
-#' Generate estimands data frame
+#' Generate data frame for batches of causal queries
 #'
 #' Calculated from a parameter vector, from a prior or
 #' from a posterior distribution.
@@ -261,12 +261,13 @@ query_distribution <- function(model,
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param queries A vector of strings or list of strings specifying queries
 #'   on potential outcomes such as "Y[X=1] - Y[X=0]".
-#' @param given A vector or list of strings specifying givens. A given is
-#'   a quoted expression that evaluates to a logical statement. Allows estimand
-#'   to be conditioned on *observational* (or counterfactual) distribution.
+#' @param given  A character vector specifying givens for each query.
+#'   A given is a quoted expression that evaluates to logical statement.
+#'   \code{given} allows the query to be conditioned on either observed
+#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
 #' @param using A vector or list of strings. Whether to use priors,
 #'   posteriors or parameters.
-#' @param stats Functions to be applied to estimand distribution.
+#' @param stats Functions to be applied to the query distribution.
 #'   If NULL, defaults to mean, standard deviation,
 #'   and 95\% confidence interval. Functions should return a single numeric
 #'   value.
@@ -278,6 +279,7 @@ query_distribution <- function(model,
 #'   query for a case.
 #' @param query alias for queries
 #' @param cred size of the credible interval ranging between 0 and 100
+#' @param labels labels for queries: if provided labels should have the length of the combinations of requests
 #' @return A data frame with columns Model, Query, Given and Using
 #'   defined by corresponding input values. Further columns are generated
 #'   as specified in \code{stats}.
@@ -334,7 +336,8 @@ query_model <- function(model,
                         expand_grid = FALSE,
                         case_level = FALSE,
                         query = NULL,
-                        cred = 95) {
+                        cred = 95,
+                        labels = NULL) {
   # handle global variables
 
   func_call <- match.call()
@@ -524,10 +527,38 @@ query_model <- function(model,
     estimands <- estimands[, colnames(estimands) != "model"]
   }
 
+
+  if (!is.null(labels)){
+    if(length(labels) != nrow(estimands)) {
+      message(paste("labels have been provided but are of incorrect length:", nrow(estimands), "labels required"))
+      labels <- NULL
+    }
+    if(length(labels) != length(unique(labels))) {
+      message(paste("labels are not unique (now ignored)"))
+      labels <- NULL
+    }
+
+    }
+
+  if (!is.null(labels))
+    estimands <- estimands |> mutate(label = labels) |> relocate(label)
+
   class(estimands) <- c("model_query", "data.frame")
 
   attr(estimands, "call") <- func_call
   attr(estimands, "date") <- date
+
+  # Add warnings from any models
+  warnings <- lapply(model, function(m) grab(m,  "stan_warnings"))
+
+  attr(estimands, "stan_warnings") <-
+
+    if(any(sapply(warnings, function(xx) !is.null(xx) && xx != ""))){
+      sapply(seq_along(warnings), function(i)
+        paste0("\nModel ", i, ' warnings:\n', warnings[[i]], '\n'))
+    } else {
+      ""
+    }
 
 
   return(estimands)
@@ -715,7 +746,7 @@ get_type_distributions <- function(jobs,
 #' @return a list of estimands
 #' @keywords internal
 
-  get_estimands <- function(jobs,
+get_estimands <- function(jobs,
                             given_types,
                             query_types,
                             type_distributions) {
@@ -774,7 +805,16 @@ get_type_distributions <- function(jobs,
   }
 
 
-  plot_query <- function(model_query) {
+plot_query <- function(model_query) {
+
+    if(any("posteriors" %in% model_query$using)){
+      if(any(attr(model_query, "stan_warnings") != "")) {
+        cat("Note: warnings passed from rstan during updating:\n")
+        cat(attr(model_query, "stan_warnings"))
+        cat("\n")
+      }}
+
+
     # create bindings
     query <- case_level <- using <- cred.low <- cred.high <- NULL
     # adjust this value to control the amount of dodge
@@ -783,16 +823,17 @@ get_type_distributions <- function(jobs,
     if (!("model" %in% names(model_query)))
       model_query$model <- "Causal Queries"
 
-
+    if(!("label" %in% names(model_query)))  {
     model_query <- model_query |>
       mutate(
         given = gsub("==", "=", given),
-        query = ifelse(given != "-", paste(query, "|", given), query),
-        query = ifelse(case_level, paste(query, "(case)"), query)
+        label = ifelse(given != "-", paste(query, "|", given), query),
+        label = ifelse(case_level, paste(label, "(case)"), label)
       )
+    }
 
     model_query |>
-      ggplot(aes(mean, query, color = using)) +
+      ggplot(aes(mean, label, color = using)) +
       geom_point(position = position_dodge(width = dodge_width)) +
       geom_errorbarh(aes(
         xmin = cred.low,
@@ -800,7 +841,7 @@ get_type_distributions <- function(jobs,
         height = .2
       ),
       position = position_dodge(width = dodge_width)) +
-      theme_bw() + facet_wrap( ~ model) + xlab("value")
+      theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")
   }
 
 #' @export

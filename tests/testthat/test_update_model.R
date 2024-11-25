@@ -229,7 +229,7 @@ testthat::test_that(
 	  ))
 	  expect_true(is.null(updated$stan_objects$stan_fit))
 		expect_true(class(updated) == "causal_model")
-		expect_length(updated$stan_objects, 3)
+		expect_length(updated$stan_objects, 4)
 
 		updated <- suppressWarnings(update_model(
 		  make_model("X->Y"),
@@ -239,7 +239,7 @@ testthat::test_that(
 		))
 		expect_true(class(updated$stan_objects$stanfit) == "stanfit")
 		expect_true(class(updated) == "causal_model")
-		expect_length(updated$stan_objects, 4)
+		expect_length(updated$stan_objects, 5)
 	}
 )
 
@@ -317,5 +317,38 @@ testthat::test_that(
   }
 )
 
+
+
+testthat::test_that(desc = "error messages", code = {
+  set.seed(1)
+
+  model_1 <-
+    make_model("X ->Y") |>
+    update_model()
+
+  expect_true(grab(model_1, "stan_warnings") == "")
+
+  # stan warnings should be produced
+  model_2 <-
+    suppressWarnings(
+    make_model("X -> M -> Y; M <-> Y") |>
+    update_model(data = data.frame(X = rep(0:1, 10000), Y = rep(0:1, 10000)),
+                 iter = 500,
+                 refresh = 0)
+    )
+
+  expect_true(grab(model_2, "stan_warnings") != "")
+
+  # list of models produces list of summaries
+  q <- query_model(list(model_2, model_1, model_2), "X==1", using = "posteriors")
+  output <- capture_output(print(q))
+  expect_match(output, "Model 3", fixed = TRUE)
+
+  # no messaging if no errors
+  q2 <- query_model(list(model_1, model_1, model_1), "X==1", using = "posteriors")
+  output2 <- capture_output(print(q2))
+  expect_no_match(output2, "Model 3", fixed = TRUE)
+
+})
 
 
