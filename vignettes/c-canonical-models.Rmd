@@ -1,0 +1,227 @@
+---
+title: "Canonical causal models"
+output: 
+  rmarkdown::html_vignette:
+    md_extensions: [ 
+      "-autolink_bare_uris" 
+    ]
+vignette: >
+  %\VignetteIndexEntry{Canonical causal models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, warning = FALSE, message = FALSE}
+library(CausalQueries)
+library(tidyverse)
+options(mc.cores = parallel::detectCores())
+set.seed(1)
+```
+
+Here we show properties of some canonical causal models, exploring in particular estimates of non-identified queries. The examples include cases where inferences are reliable but also where identification failures result in unreliable posteriors.
+
+
+## Simple experiment
+
+```{r}
+model <- make_model("X -> Y")
+model |> plot()
+```
+
+This model could be justified by a randomized control trial. With a lot of data you can get tight estimates for the effect of $X$ on $Y$ but not for whether a given outcome on $Y$ is due to $X$. That is the "effects of causes" estimand is identified, but the "causes of effects" estimand is not. 
+
+In the illustration below we generate data from a parameterized model and then try to recover the average treatment effect and the "probability of causation" for `X=1, Y=1` cases. The former has a tight credibility interval, the latter does not.
+
+```{r}
+data <- model |> 
+  set_parameters(nodal_type = c("10", "01"), parameters = c(.1, .6)) |> 
+  make_data(n = 5000)
+
+model |>
+  update_model(data, refresh = 0, iter = 10000) |>
+  
+  query_model(query = "Y[X=1] - Y[X=0]",
+              given = c(TRUE, "X==1 & Y==1"),
+              using = "posteriors",
+              labels = c("ATE", "POC")) |>
+  
+  plot() +
+  xlim(-1,1)
+```
+
+
+
+
+
+## Confounded
+
+```{r}
+model <- make_model("X -> Y; X <-> Y")
+
+model |> plot()
+```
+
+This is the appropriate model if $X$ is not randomized and it is possible that unknown factors affect both the assignment of $X$ and the outcome $Y$.
+
+In the illustration below we use the same data, drawn from a model in which *X* is *in fact* randomized (though we do do not know this) and there is a true treatment effect of 0.5. We see we have lost identification on the ATE but also our uncertainty about POC is much greater.
+
+
+```{r}
+model |>
+  update_model(data, refresh = 0, iter = 10000) |>
+  
+  query_model(query = "Y[X=1] - Y[X=0]",
+              given = c(TRUE, "X==1 & Y==1"),
+              using = "posteriors",
+              labels = c("ATE", "POC")) |>
+  
+  plot() +
+  xlim(-1,1)
+```
+
+
+
+## Chain model
+
+```{r}
+model <- make_model("Z -> X -> Y")
+model |> plot() 
+```
+
+This is a chain model. This model is hard to justify from experimentation since randomization of $Z$  does not guarantee that third features do not influence both $X$ and $Y$, or that $Z$ operates on  $Y$ only though $X$.
+
+Even still, it is a good model to illustrate limits of learning about effects by observation of the values of mediators. 
+
+Below we imagine that data is produced by a model in which $Z$ has a 0.8 average effect on $X$ and $X$ has a 0.8 average effect on $Y$. We see that positive evidence on the causal chain (on $X$) has a modest effect on our belief that $Z=1$ caused $Y=1$. Negative evidence has a much stronger effect, albeit with considerable posterior uncertainty. 
+
+```{r}
+data <- model |> 
+  set_parameters(param_names = c("X.10", "X.01", "Y.10", "Y.01"), 
+                 parameters = c(0.05, .85, .05, .85)) |> 
+  make_data(n = 5000)
+
+model |>
+  update_model(data, refresh = 0, iter = 10000) |>
+  
+  query_model(query = list("Y[Z=1] - Y[Z=0]"),
+              given = c(TRUE, "Z==1 & Y==1", "Z==1 & Y==1 & X==0", "Z==1 & Y==1 & X==1"),
+              using = "posteriors") |>
+  
+  plot() +
+  xlim(-1,1)
+```
+
+
+## IV model
+
+```{r}
+model <- make_model("Z -> X -> Y; X <-> Y")
+model |> plot()
+```
+
+This is the classic "instrumental variables" model. This model is sometimes justified by randomization of $Z$ under the assumption that $Z$ operates on  $Y$ only though $X$ (the exclusion restriction). Researchers also often assume that $Z$ has a monotonic effect on $X$, but we will not impose that here.
+
+Below we analyse using the same data as before but focusing our attention on the effects of $X$ on $Y$ both for the population and also specifically for units for whom $X$ responds positively to $Y$, compliers. 
+
+
+```{r, fig.cap = "IV inferences"}
+model |>
+  update_model(data, refresh = 0, iter = 10000) |>
+  
+  query_model(query = list("Y[X=1] - Y[X=0]"),
+              given = c(TRUE, "X[Z=1] > X[Z=0]", "X==1 & Y==1"),
+              using = "posteriors") |>
+  
+  plot() +
+  xlim(-1,1)
+```
+
+Note the relatively tight posterior for the complier average effect and the wide posterior for the average effect and for the probability of causation.
+
+## Mediation model with sequential ignorability
+
+```{r}
+model <- make_model("Z -> X -> Y <- Z")
+model |> plot()
+```
+
+This is a typical mediation type problem where you might want to understand the effects of $Z$ on $Y$ that operate directly or that operate via $X$. 
+
+We have assumed here that there are no third features that cause both $X$ and $Y$. This is a strong assumption that is a key part of "sequential ignorability" (see Forastiere et al (2018) for an extensive treatment of the relationship between sequential ignorability and "strong principal ignorability" which we impose here).
+
+Here one might ask queries about different types of direct or indirect effect of $Z$ on $Y$ as well as the average effects of $Z$ on $X$ and $Y$ and of $X$ on $Y$. 
+
+In this example the data is drawn from a world in which the most common type has $Y=1$ if and only if both $Z=1$ and $X=1$ but in which $Z$ exerts a negative effect on $X$; there are both positive direct effects and negative indirect effects. 
+
+```{r, fig.cap = "Mediation model"}
+
+model <-  
+  make_model("Z -> X -> Y <- Z") |> 
+  set_parameters(nodal_type = c("00", "10"), parameters = c(0, .5)) |> 
+  set_parameters(nodal_type = "0001", parameters = .5) 
+
+data <- model |> make_data(n = 2000)
+
+queries <- list(
+  `ATE Z -> X` = "X[Z=1] - X[Z=0]",
+  `ATE Z -> Y` = "Y[Z=1] - Y[Z=0]",
+  `ATE X -> Y` = "Y[X=1] - Y[X=0]",
+  `Direct (Z=1)` = "Y[Z = 1, X = X[Z=1]] - Y[Z = 0, X = X[Z=1]]",
+  `Direct (Z=0)` = "Y[Z = 1, X = X[Z=0]] - Y[Z = 0, X = X[Z=0]]",
+  `Indirect (Z=1)` = "Y[Z = 1, X = X[Z=1]] - Y[Z = 1, X = X[Z=0]]",
+  `Indirect (Z=0)` = "Y[Z = 0, X = X[Z=1]] - Y[Z = 0, X = X[Z=0]]"
+)
+
+model |>
+  update_model(data, refresh = 0, iter = 5000)  |>
+  
+  query_model(
+    query = queries,
+    cred = 99,
+    using = c("parameters", "posteriors"),
+    expand_grid = TRUE) |>
+  
+  plot() +
+  xlim(-1,1)
+```
+
+We estimate all quantities very well.
+
+
+## Mediation model without sequential ignorability
+
+We now allow that there may be third features that cause both $X$ and $Y$. Thus we do not assume "sequential ignorability." This model might be justified by a random assignment of $Z$.
+
+In this example the data is drawn the same way as before which means that in the data generating model the potential outcomes for $Y$ are independent of those for $X$, though the researcher does not know this.  The true (unknown) values of the queries are also the same as before.
+
+```{r, fig.cap = "Mediation model"}
+make_model("Z -> X -> Y <- Z; X <-> Y")  |>
+  set_parameters(nodal_type = c("00", "10"), parameters = c(0, .5)) |> 
+  set_parameters(nodal_type = "0001", parameters = .5)   |>
+  
+  update_model(data, iter = 10000) |>   
+  
+  query_model(
+    query = queries,
+    cred = 99,
+    using = c("parameters", "posteriors"),
+    expand_grid = TRUE) |>
+  
+  plot()  +
+  xlim(-1,1) 
+```
+
+
+We see we do not do nearly so well. To ensure stable estimates we ran a large number of iterations. For the non-identified quantities our credibility intervals are not tight (which is as it should be!) and in one case the  true value lies outside of them (which is not as it should be). This highlights the extreme difficulty of this problem.  Nevertheless the gains relative to the priors are considerable.
+
+
+## References
+
+Forastiere, Laura, Alessandra Mattei, and Peng Ding. "Principal ignorability in mediation analysis: through and beyond sequential ignorability." *Biometrika* 105.4 (2018): 979-986.
