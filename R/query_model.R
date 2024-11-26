@@ -145,6 +145,17 @@ query_distribution <- function(model,
     queries <- query
   }
 
+  # ensure that givens are only specified via given argument or : in query
+  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  if (!is.null(given) && any(given_in_statement)) {
+    stop(
+      paste(
+        "please specify givens either via the `given` argument or via `:`",
+        "within your query statements; not both."
+      )
+    )
+  }
+
   if ((!is.null(parameters)) && (!is.list(parameters))) {
     parameters <- list(parameters)
   }
@@ -195,6 +206,15 @@ query_distribution <- function(model,
     )
   }) |>
     dplyr::bind_rows()
+
+  # alter jobs if givens are specified in queries
+  if(any(given_in_statement)) {
+    for (q in queries) {
+      split_query_statement <- deparse_given(q)
+      jobs[jobs$queries == q, "given"] <- split_query_statement$given
+      jobs[jobs$queries == q, "queries"] <- split_query_statement$query
+    }
+  }
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
@@ -359,6 +379,17 @@ query_model <- function(model,
     queries <- query
   }
 
+  # ensure that givens are only specified via given argument or : in query
+  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  if (!is.null(given) && any(given_in_statement)) {
+    stop(
+      paste(
+        "please specify givens either via the `given` argument or via `:`",
+        "within your query statements; not both."
+      )
+    )
+  }
+
   if ((!is.null(parameters)) && (!is.list(parameters))) {
     stop("Please specify parameters as a list of parameter vectors.")
   }
@@ -447,9 +478,21 @@ query_model <- function(model,
 
   # merge queries onto jobs
   jobs$queries <- queries[jobs$query_name]
+
+  # alter jobs if givens are specified in queries
+  if(any(given_in_statement)) {
+    for (q in queries) {
+      split_query_statement <- deparse_given(q)
+      jobs[jobs$queries == q, "given"] <- split_query_statement$given
+      jobs[jobs$queries == q, "queries"] <- split_query_statement$query
+    }
+  }
+
+  # set query names
   if (no_query_names) {
     jobs$query_name <- jobs$queries
   }
+
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
@@ -804,6 +847,31 @@ get_estimands <- function(jobs,
     return(estimands)
   }
 
+#' helper to separate query and givens in query statement
+
+deparse_given <- function(query) {
+  # check for malformed query + given syntax
+  if (sum(grepl(":", strsplit(query, "")[[1]])) > 1) {
+    stop(
+      paste(
+        "Found multiple `:` in your query statement.",
+        "Please separate givens from queries via a single `:`."
+      )
+    )
+  }
+
+  split <- trimws(strsplit(query, ":")[[1]])
+  query <- split[1]
+  given <- split[2]
+
+  if(is.na(given)) {
+    given <- "ALL"
+  }
+
+  return(list(query = query, given = given))
+}
+
+
 
 plot_query <- function(model_query) {
 
@@ -848,4 +916,5 @@ plot_query <- function(model_query) {
 plot.model_query <- function(x, ...) {
     plot_query(x,...)
   }
+
 
