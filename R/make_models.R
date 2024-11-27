@@ -117,10 +117,9 @@ make_model <- function(statement,
   .dag <- make_dag(statement)
 
   # clean dag statement
-  statement <- ifelse(nrow(.dag) ==1  & all(is.na(.dag$e)),
+  statement <- ifelse(nrow(.dag) == 1 & all(is.na(.dag$e)),
                       statement,
-                      paste(paste(.dag$v, .dag$e, .dag$w), collapse = "; ")
-                      )
+                      paste(paste(.dag$v, .dag$e, .dag$w), collapse = "; "))
 
   # parent child data.frame
    dag  <- .dag |>
@@ -380,7 +379,7 @@ clean_statement <- function(statement) {
   has_dangling_edge <- any(c(is_edge[1], is_edge[length(is_edge)]))
   # or consecutive edges within statement
   consecutive_edge <- rle(is_edge)
-  has_consecutive_edge <-any(consecutive_edge$values & consecutive_edge$lengths >= 2)
+  has_consecutive_edge <- any(consecutive_edge$values & consecutive_edge$lengths >= 2)
 
   if(has_dangling_edge || has_consecutive_edge) {
     stop("Statement contains bare edges without a source or destination node or both. Edges should connect nodes.")
@@ -391,7 +390,7 @@ clean_statement <- function(statement) {
   if(any(c("<",">") %in% st_edge[!is_edge])) {
     stop(
       paste0(
-        "Unsupported characters in varnames. No '<' or '>' in varnames please.",
+        "Unsupported characters in variable names. No '<' or '>' in variable names please.",
         "\n",
         "\n You may have tried to define an edge but misspecified it.",
         "\n Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc."
@@ -402,7 +401,7 @@ clean_statement <- function(statement) {
   if("-" %in% st_edge[!is_edge]) {
     stop(
       paste0(
-        "Unsupported characters in varnames. No hyphens '-' in varnames please; try dots?",
+        "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots?",
         "\n",
         "\n You may have tried to define an edge but misspecified it.",
         "\n Edges should be specified via ->, <-, <-> not -."
@@ -413,11 +412,17 @@ clean_statement <- function(statement) {
   if("_" %in% st_edge[!is_edge]) {
     stop(
       paste0(
-        "Unsupported characters in varnames. No underscores '_' in varnames please; try dots?",
+        "Unsupported characters in variable names. No underscores '_' in variable names please; try dots?",
         "\n",
         "\n You may have tried to define an edge but misspecified it.",
         "\n Edges should be specified via ->, <-, <-> not _>, <_, <_> etc."
       )
+    )
+  }
+
+  if(("<->" %in% st_edge[is_edge]) && ("." %in% st_edge[!is_edge])) {
+    stop(
+      "Unsupported characters in variable names. No dots '.' in variable names for models with confounding."
     )
   }
 
