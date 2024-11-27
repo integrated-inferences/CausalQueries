@@ -9,17 +9,21 @@
 #'   A true parameter vector to be used instead of parameters attached to
 #'   the model in case  \code{using} specifies \code{parameters}
 #' @param using A character. Whether to use priors, posteriors or parameters
-#' @param queries A character vector or list of character vectors specifying
-#'   queries on potential outcomes such as "Y[X=1] - Y[X=0]"
+#' @param queries A vector of strings or list of strings specifying queries
+#'   on potential outcomes such as "Y[X=1] - Y[X=0]".
+#'   Queries can also indicate conditioning sets by placing second queries after a colon:
+#'   "Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+#'   conditioning marker '|' to avoid confusion with logical operators.
+#' @param given  A character vector specifying given conditions for each query.
+#'   A 'given' is a quoted expression that evaluates to logical statement.
+#'   \code{given} allows the query to be conditioned on either observed
+#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+#'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param join_by A character. The logical operator joining expanded types
 #'   when \code{query} contains wildcard (\code{.}). Can take values
 #'   \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction
 #'   contains wildcard (\code{.}) and \code{join_by} is not specified, it
 #'   defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param given  A character vector specifying givens for each query.
-#'   A given is a quoted expression that evaluates to logical statement.
-#'   \code{given} allows the query to be conditioned on either observed
-#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
 #' @param n_draws An integer. Number of draws.rm
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
@@ -33,18 +37,23 @@
 #'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
 #'  # simple  queries
-#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])",
-#'                     using = "priors") |>
+#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])", using = "priors") |>
 #'    head()
 #'
 #'  # multiple  queries
 #'  query_distribution(model,
-#'      query = list("(Y[X=1] > Y[X=0])",
-#'                   "(Y[X=1] < Y[X=0])"),
+#'      query = list(PE = "(Y[X=1] > Y[X=0])", NE = "(Y[X=1] < Y[X=0])"),
 #'      using = "priors")|>
 #'    head()
 #'
-#'  # multiple queries and givens
+#'  # multiple queries and givens, with ':' to identify conditioning distributions
+#'  query_distribution(model,
+#'    query = list(POC = "(Y[X=1] > Y[X=0]) : X == 1 & Y == 1",
+#'                 Q = "(Y[X=1] < Y[X=0]) : (Y[X=1] <= Y[X=0])"),
+#'    using = "priors")|>
+#'    head()
+#'
+#'  # multiple queries and givens, using 'given' argument
 #'  query_distribution(model,
 #'    query = list("(Y[X=1] > Y[X=0])", "(Y[X=1] < Y[X=0])"),
 #'    given = list("Y==1", "(Y[X=1] <= Y[X=0])"),
@@ -54,13 +63,9 @@
 #'  # linear queries
 #'  query_distribution(model, query = "(Y[X=1] - Y[X=0])")
 #'
-#'  # queries conditional on observables
-#'  query_distribution(model, query = "(Y[X=1] > Y[X=0])",
-#'                     given = "X==1 & Y ==1")
 #'
 #'  # Linear query conditional on potential outcomes
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0])",
-#'                     given = "Y[X=1]==0")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0]) : Y[X=1]==0")
 #'
 #'  # Use join_by to amend query interpretation
 #'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
@@ -119,7 +124,7 @@
 #' }
 #'
 query_distribution <- function(model,
-                               queries,
+                               queries = NULL,
                                given = NULL,
                                using  = "parameters",
                                parameters = NULL,
@@ -143,6 +148,17 @@ query_distribution <- function(model,
 
   if (!is.null(query)) {
     queries <- query
+  }
+
+  # ensure that givens are only specified via given argument or : in query
+  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  if (!is.null(given) && any(given_in_statement)) {
+    stop(
+      paste(
+        "please specify givens either via the `given` argument or via `:`",
+        "within your query statements; not both."
+      )
+    )
   }
 
   if ((!is.null(parameters)) && (!is.list(parameters))) {
@@ -182,7 +198,9 @@ query_distribution <- function(model,
 
   # prevent bugs from query helpers
   given <- vapply(given, as.character, character(1))
+  q_names <- names(queries)
   queries <- vapply(queries, as.character, character(1))
+  names(queries) <- q_names
 
   jobs <- lapply(model_names, function(m) {
     data.frame(
@@ -195,6 +213,15 @@ query_distribution <- function(model,
     )
   }) |>
     dplyr::bind_rows()
+
+  # alter jobs if givens are specified in queries
+  if(any(given_in_statement)) {
+    for (q in queries) {
+      split_query_statement <- deparse_given(q)
+      jobs[jobs$queries == q, "given"] <- split_query_statement$given
+      jobs[jobs$queries == q, "queries"] <- split_query_statement$query
+    }
+  }
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
@@ -237,7 +264,7 @@ query_distribution <- function(model,
       if (g == "ALL") {
         gn <- ""
       } else {
-        gn <- paste(" | ", g, sep = "")
+        gn <- paste(" : ", g, sep = "")
       }
       return(gn)
     }, character(1))
@@ -261,10 +288,14 @@ query_distribution <- function(model,
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param queries A vector of strings or list of strings specifying queries
 #'   on potential outcomes such as "Y[X=1] - Y[X=0]".
-#' @param given  A character vector specifying givens for each query.
-#'   A given is a quoted expression that evaluates to logical statement.
+#'   Queries can also indicate conditioning sets by placing second queries after a colon:
+#'   "Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+#'   conditioning marker '|' to avoid confusion with logical operators.
+#' @param given  A character vector specifying given conditions for each query.
+#'   A 'given' is a quoted expression that evaluates to logical statement.
 #'   \code{given} allows the query to be conditioned on either observed
 #'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+#'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param using A vector or list of strings. Whether to use priors,
 #'   posteriors or parameters.
 #' @param stats Functions to be applied to the query distribution.
@@ -287,6 +318,11 @@ query_distribution <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' query_model(model, "Y[X=1] - Y[X = 0]", using = "priors")
+#' query_model(model, "Y[X=1] - Y[X = 0] : X==1 & Y==1", using = "priors")
+#' query_model(model,
+#'   list("Y[X=1] - Y[X = 0]",
+#'        "Y[X=1] - Y[X = 0] : X==1 & Y==1"),
+#'   using = "priors")
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = "parameters")
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = c("priors", "parameters"))
 #' \donttest{
@@ -299,7 +335,7 @@ query_distribution <- function(model,
 #'    set_restrictions("Y[X=1] < Y[X=0]")
 #'  )
 #'
-#'
+#' # No expansion: lists should be equal length
 #' query_model(
 #'   models,
 #'   query = list(ATE = "Y[X=1] - Y[X=0]",
@@ -308,6 +344,15 @@ query_distribution <- function(model,
 #'   using = c("parameters", "priors"),
 #'   expand_grid = FALSE)
 #'
+#' # Expansion when query and given arguments coupled
+#' query_model(
+#'   models,
+#'   query = list(ATE = "Y[X=1] - Y[X=0]",
+#'                Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1"),
+#'   using = c("parameters", "priors"),
+#'   expand_grid = TRUE)
+#'
+#' # Expands over query and given argument when these are not coupled
 #' query_model(
 #'   models,
 #'   query = list(ATE = "Y[X=1] - Y[X=0]",
@@ -357,6 +402,17 @@ query_model <- function(model,
 
   if (!is.null(query)) {
     queries <- query
+  }
+
+  # ensure that givens are only specified via given argument or : in query
+  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  if (!is.null(given) && any(given_in_statement)) {
+    stop(
+      paste(
+        "please specify givens either via the `given` argument or via `:`",
+        "within your query statements; not both."
+      )
+    )
   }
 
   if ((!is.null(parameters)) && (!is.list(parameters))) {
@@ -447,9 +503,21 @@ query_model <- function(model,
 
   # merge queries onto jobs
   jobs$queries <- queries[jobs$query_name]
+
+  # alter jobs if givens are specified in queries
+  if(any(given_in_statement)) {
+    for (q in queries) {
+      split_query_statement <- deparse_given(q)
+      jobs[jobs$queries == q, "given"] <- split_query_statement$given
+      jobs[jobs$queries == q, "queries"] <- split_query_statement$query
+    }
+  }
+
+  # set query names
   if (no_query_names) {
     jobs$query_name <- jobs$queries
   }
+
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
@@ -804,7 +872,31 @@ get_estimands <- function(jobs,
     return(estimands)
   }
 
+#' helper to separate query and givens in query statement
+deparse_given <- function(query) {
+  # check for malformed query + given syntax
+  if (sum(grepl(":", strsplit(query, "")[[1]])) > 1) {
+    stop(
+      paste(
+        "Found multiple `:` in your query statement.",
+        "Please separate givens from queries via a single `:`."
+      )
+    )
+  }
 
+  split <- trimws(strsplit(query, ":")[[1]])
+  query <- split[1]
+  given <- split[2]
+
+  if(is.na(given)) {
+    given <- "ALL"
+  }
+
+  return(list(query = query, given = given))
+}
+
+
+#' S3 method for query plotting
 plot_query <- function(model_query) {
 
     if(any("posteriors" %in% model_query$using)){
@@ -827,7 +919,7 @@ plot_query <- function(model_query) {
     model_query <- model_query |>
       mutate(
         given = gsub("==", "=", given),
-        label = ifelse(given != "-", paste(query, "|", given), query),
+        label = ifelse(given != "-", paste(query, ":", given), query),
         label = ifelse(case_level, paste(label, "(case)"), label)
       )
     }
@@ -848,4 +940,5 @@ plot_query <- function(model_query) {
 plot.model_query <- function(x, ...) {
     plot_query(x,...)
   }
+
 
