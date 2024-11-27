@@ -88,7 +88,8 @@ update_model <- function(model,
                          keep_type_distribution = TRUE,
                          keep_event_probabilities = FALSE,
                          keep_fit = FALSE,
-                         censored_types = NULL, ...) {
+                         censored_types = NULL,
+                         ...) {
 
   # Guess data_type
   if (is.null(data_type)) {
@@ -192,10 +193,14 @@ update_model <- function(model,
   # Retain stanfit summary with readable names
   # Identify saved parameters
   params <- colnames(model$posterior_distribution)
-  if(keep_event_probabilities)
+  if(keep_event_probabilities) {
     params <- c(params, colnames(model$stan_objects$event_probabilities))
-  if(keep_type_distribution)
+  }
+
+  if(keep_type_distribution) {
     params <- c(params, colnames(model$stan_objects$type_distribution))
+  }
+
   params <- c(params,  "lp__")
 
   params_labels <- newfit$fit@sim$fnames_oi
