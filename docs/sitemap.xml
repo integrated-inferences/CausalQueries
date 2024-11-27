@@ -24,6 +24,7 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/data_helpers.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/data_type_names.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/democracy_data.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/deparse_given.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/draw_causal_type.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/drop_empty_families.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/expand_nodal_expression.html</loc></url>
@@ -35,6 +36,7 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/get_type_distributions.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/get_type_prob_c.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/get_type_prob_multiple_c.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/grab.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/index.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/inspection.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/institutions_data.html</loc></url>
@@ -57,8 +59,11 @@
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/plot_model.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/prep_stan_data.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.causal_model.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.event_probabilities.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.model_query.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.posterior_event_probabilities.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.stan_objects.html</loc></url>
+<url><loc>https://integrated-inferences.github.io/CausalQueries/reference/print.stan_summary.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/prior_setting.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/queries_to_types.html</loc></url>
 <url><loc>https://integrated-inferences.github.io/CausalQueries/reference/query_distribution.html</loc></url>

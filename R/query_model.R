@@ -378,7 +378,7 @@ query_model <- function(model,
                         parameters = NULL,
                         stats = NULL,
                         n_draws = 4000,
-                        expand_grid = FALSE,
+                        expand_grid = NULL,
                         case_level = FALSE,
                         query = NULL,
                         cred = 95,
@@ -397,7 +397,7 @@ query_model <- function(model,
 
   ## check arguments
   if (!is.null(query) & !is.null(queries)) {
-    stop("Please provide either queries or query.")
+    stop("Please provide either queries or query, not both.")
   }
 
   if (!is.null(query)) {
@@ -471,6 +471,17 @@ query_model <- function(model,
   given <- vapply(given, as.character, character(1))
   queries <- vapply(queries, as.character, character(1))
 
+  # Guess expand_grid
+  differing_lengths <-
+    list(queries, model_names, unname(unlist(using)), unname(unlist(given)) ,
+      query_names, unname(unlist(case_level))) |> sapply(length) |>
+    unique() |> setdiff(c(0,1))
+
+  if(is.null(expand_grid)) expand_grid <- length(differing_lengths) > 1
+
+  if(!expand_grid & length(differing_lengths) > 1)
+    stop("If expand_grid = FALSE, then supplied arguments should be of equal length (or of length 1)")
+
   # create jobs
   if (expand_grid) {
     jobs <- expand.grid(
@@ -515,7 +526,11 @@ query_model <- function(model,
 
   # set query names
   if (no_query_names) {
-    jobs$query_name <- jobs$queries
+    jobs <- jobs |>
+      mutate(
+      query_name = queries,
+      query_name= ifelse(given != "ALL", paste(queries, ":", given), query_name))
+
   }
 
 
@@ -583,11 +598,11 @@ query_model <- function(model,
 
   # prepare output
   query_id <- jobs |>
-    dplyr::select(model_names, query_name, given, using, case_level) |>
+    dplyr::select(label= query_name, model_names, queries, given, using, case_level) |>
     dplyr::mutate(given = ifelse(given == "ALL", "-", given))
 
   colnames(query_id) <-
-    c("model", "query", "given", "using", "case_level")
+    c("label", "model", "query", "given", "using", "case_level")
 
   estimands <- cbind(query_id, estimands)
 
@@ -643,6 +658,7 @@ query_model <- function(model,
 #' @param fun string specifying the name of the parent function
 #' @return list of altered arguments
 #' @keywords internal
+#' @noRd
 
 check_args <-
   function(model,
@@ -728,6 +744,7 @@ check_args <-
 #' @return jobs data frame with a nested column of
 #'   \code{map_query_to_nodal_type} outputs
 #' @keywords internal
+#' @noRd
 
 queries_to_types <- function(jobs,
                              model,
@@ -873,6 +890,9 @@ get_estimands <- function(jobs,
   }
 
 #' helper to separate query and givens in query statement
+#' @keywords internal
+#' @noRd
+
 deparse_given <- function(query) {
   # check for malformed query + given syntax
   if (sum(grepl(":", strsplit(query, "")[[1]])) > 1) {
@@ -897,6 +917,9 @@ deparse_given <- function(query) {
 
 
 #' S3 method for query plotting
+#' @keywords internal
+#' @noRd
+
 plot_query <- function(model_query) {
 
     if(any("posteriors" %in% model_query$using)){
