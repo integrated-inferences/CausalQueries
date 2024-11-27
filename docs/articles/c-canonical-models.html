@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -98,8 +98,8 @@ That is the “effects of causes” estimand is identified, but the “causes
 of effects” estimand is not.</p>
 <p>In the illustration below we generate data from a parameterized model
 and then try to recover the average treatment effect and the
-“probability of causation” for <code>X=1, Y=1</code> cases. The former
-has a tight credibility interval, the latter does not.</p>
+“probability of causation” (POC) for <code>X=1, Y=1</code> cases. The
+former has a tight credibility interval, the latter does not.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10"</span>, <span class="st">"01"</span><span class="op">)</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.6</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -108,10 +108,10 @@ has a tight credibility interval, the latter does not.</p>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
-<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span>,</span>
-<span>              labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATE"</span>, <span class="st">"POC"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
+<span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] : X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>              using <span class="op">=</span> <span class="st">"posteriors"</span> <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
@@ -141,10 +141,10 @@ much greater.</p>
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
-<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span>,</span>
-<span>              labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATE"</span>, <span class="st">"POC"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
+<span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] : X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>

@@ -127,24 +127,27 @@ Examples of *unconditional* queries:
 
 ```{r}
 xy_model |> 
-  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors")) 
+  query_model("Y[X=1] > Y[X=0]", 
+              using = c("priors", "posteriors")) 
+
 ```
 
 Examples of *conditional* queries:
 
 ```{r}
 xy_model |> 
-  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
-              given = "X==1 & Y == 1") 
+  query_model("Y[X=1] > Y[X=0] : X == 1 & Y == 1", using = c("priors", "posteriors")) 
 ```
 
 Queries can even be conditional on counterfactual quantities. Here the probability of a positive effect given *some* effect:
 
 ```{r}
 xy_model |> 
-  query_model("Y[X=1] > Y[X=0]", using = c("priors", "posteriors"),
-              given = "Y[X=1] != Y[X=0]") 
+  query_model("Y[X=1] > Y[X=0] : Y[X=1] != Y[X=0]",
+              using = c("priors", "posteriors")) 
 ```
+
+Note that we use ":" to separate the base query from the condition rather than "|" to avoid confusion with logical operators. 
 
 ## Output
 
@@ -153,9 +156,9 @@ Query output is ready for printing as tables, but can also be plotted, which is 
 
 ```{r, fig.height = 4, fig.width = 8}
 batch_queries <- xy_model |> 
-  query_model(queries = c("Y[X=1] - Y[X=0]", "Y[X=1] > Y[X=0]"), 
+  query_model(queries = list(ATE = "Y[X=1] - Y[X=0]", 
+                             `Positive effect given any effect` = "Y[X=1] > Y[X=0] : Y[X=1] != Y[X=0]"), 
               using = c("priors", "posteriors"), 
-              given = c(TRUE, "Y[X=1] != Y[X=0]"),
               expand_grid = TRUE) 
 
 batch_queries |> kable(digits = 2, caption = "tabular output")

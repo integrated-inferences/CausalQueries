@@ -152,7 +152,6 @@ grab <- function(model, what = NULL, ...)
     "nodal_types",
     "data_types",
     "prior_hyperparameters",
-    "prior_event_probabilities",
     "posterior_distribution",
     "posterior_event_probabilities",
     "type_distribution",
@@ -166,6 +165,7 @@ grab <- function(model, what = NULL, ...)
     "parameter_mapping",
     "parameter_matrix",
     "causal_types",
+    "prior_event_probabilities",
     "prior_distribution",
     "ambiguities_matrix",
     "type_prior"

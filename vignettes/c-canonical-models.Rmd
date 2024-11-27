@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 
 ```{r setup, warning = FALSE, message = FALSE}
 library(CausalQueries)
-library(tidyverse)
 options(mc.cores = parallel::detectCores())
 set.seed(1)
 ```
@@ -37,7 +36,7 @@ model |> plot()
 
 This model could be justified by a randomized control trial. With a lot of data you can get tight estimates for the effect of $X$ on $Y$ but not for whether a given outcome on $Y$ is due to $X$. That is the "effects of causes" estimand is identified, but the "causes of effects" estimand is not. 
 
-In the illustration below we generate data from a parameterized model and then try to recover the average treatment effect and the "probability of causation" for `X=1, Y=1` cases. The former has a tight credibility interval, the latter does not.
+In the illustration below we generate data from a parameterized model and then try to recover the average treatment effect and the "probability of causation" (POC) for `X=1, Y=1` cases. The former has a tight credibility interval, the latter does not.
 
 ```{r}
 data <- model |> 
@@ -47,10 +46,10 @@ data <- model |>
 model |>
   update_model(data, refresh = 0, iter = 10000) |>
   
-  query_model(query = "Y[X=1] - Y[X=0]",
-              given = c(TRUE, "X==1 & Y==1"),
-              using = "posteriors",
-              labels = c("ATE", "POC")) |>
+  query_model(queries = 
+                list(ATE = "Y[X=1] - Y[X=0]",
+                     POC = "Y[X=1] - Y[X=0] : X==1 & Y==1"),
+              using = "posteriors" ) |>
   
   plot() +
   xlim(-1,1)
@@ -77,10 +76,10 @@ In the illustration below we use the same data, drawn from a model in which *X* 
 model |>
   update_model(data, refresh = 0, iter = 10000) |>
   
-  query_model(query = "Y[X=1] - Y[X=0]",
-              given = c(TRUE, "X==1 & Y==1"),
-              using = "posteriors",
-              labels = c("ATE", "POC")) |>
+  query_model(queries = 
+                list(ATE = "Y[X=1] - Y[X=0]",
+                     POC = "Y[X=1] - Y[X=0] : X==1 & Y==1"),
+              using = "posteriors") |>
   
   plot() +
   xlim(-1,1)

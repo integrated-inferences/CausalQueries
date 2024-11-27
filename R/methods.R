@@ -151,6 +151,8 @@ summary.causal_model <- function(object, include = NULL, ...) {
       )
     }
 
+    # Larger objects generated on demand
+
     if ("prior_event_probabilities" %in% include) {
       object$prior_event_probabilities <-
       list(object) |>
@@ -886,15 +888,33 @@ print.model_query <- function(x, ...) {
       text1 <- paste(text1, "(all at population level)")
     }
   }
+  if (all(c("query", "label", "given") %in% names(x))) {
+    if(all(x$query == x$label)) x <- select(x, -label)
+    if(all(x$label == paste(x$query, ":", x$given))) x <- dplyr::select(x, -query, -given)
+  }
 
-
-
-
+  # Printout requires modification for markdown disambiguation
+  r <- x
   cat("\n")
   cat(text1)
-  print(knitr::kable(x, escape = FALSE, digits = 3))
+  r$label <- clean_text(r$label)
+  r$query <- clean_text(r$query)
+  r$given <- clean_text(r$given)
+  print(knitr::kable(r, digits = 3))
   cat("\n")
+
   return(invisible(x))
+}
+
+
+# Helper function to clean up the text
+clean_text <- function(column) {
+  if (!is.null(column)) {
+    column <- gsub("\\|", "OR", column)
+    gsub("\\s+", " ", column)  # Return the cleaned column
+  } else {
+    NULL
+  }
 }
 
 

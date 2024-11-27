@@ -12,7 +12,7 @@ query_model(
   parameters = NULL,
   stats = NULL,
   n_draws = 4000,
-  expand_grid = FALSE,
+  expand_grid = NULL,
   case_level = FALSE,
   query = NULL,
   cred = 95,

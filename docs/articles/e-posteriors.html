@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -117,16 +117,18 @@ distribution with the <code>using</code> argument:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="21%">
-<col width="8%">
-<col width="15%">
-<col width="15%">
-<col width="6%">
+<col width="17%">
+<col width="17%">
 <col width="6%">
 <col width="12%">
-<col width="13%">
+<col width="12%">
+<col width="5%">
+<col width="5%">
+<col width="10%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
+<th align="left">label</th>
 <th align="left">query</th>
 <th align="left">given</th>
 <th align="left">using</th>
@@ -139,6 +141,7 @@ distribution with the <code>using</code> argument:</p>
 <tbody>
 <tr class="odd">
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
@@ -148,6 +151,7 @@ distribution with the <code>using</code> argument:</p>
 <td align="right">0.72</td>
 </tr>
 <tr class="even">
+<td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">Y[X=1] &gt; Y[X=0]</td>
 <td align="left">-</td>
 <td align="left">posteriors</td>
@@ -192,7 +196,7 @@ information as produced by <code>stan</code> thus:</p>
 <span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3652    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.04 1.53 -18.42 -15.31 -14.26 -13.52 -12.66  1214    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Nov 26 00:13:26 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Nov 27 14:53:01 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -329,7 +333,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
 <span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Nov 26 00:13:34 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Nov 27 14:53:10 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -362,7 +366,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
 <span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Nov 26 00:13:34 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Nov 27 14:53:10 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -393,7 +397,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
 <span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Nov 26 00:13:34 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Nov 27 14:53:10 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
@@ -473,7 +477,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
 <span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Nov 26 00:13:34 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Nov 27 14:53:10 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
