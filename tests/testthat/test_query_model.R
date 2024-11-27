@@ -126,7 +126,7 @@ testthat::test_that(
       using = "parameters",
       case_level = TRUE)
 
-    expect_true(all(colnames(q3) == c("Y[X=1] - Y[X=0]", "Y[X=1] - Y[X=0] | X==1")))
+    expect_true(all(colnames(q3) == c("Y[X=1] - Y[X=0]", "Y[X=1] - Y[X=0] : X==1")))
     expect_true(all(colnames(q4) == c("a", "b")))
 
     expect_true(is.data.frame(q))
@@ -162,3 +162,53 @@ testthat::test_that(
       c("A", "B"))
 
   })
+
+
+
+
+
+testthat::test_that(
+
+  desc = "Expand grid behavior.",
+
+  code = {
+
+
+models <- list(
+ M1 = make_model("X -> Y"),
+ M2 = make_model("X -> Y") |>
+   set_restrictions("Y[X=1] < Y[X=0]")
+ )
+
+n1 <- query_model(
+  models,
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
+  given = c(TRUE,  "Y==1 & X==1"),
+  using = c("parameters", "priors"),
+  expand_grid = FALSE) |> nrow()
+
+# Expands over query and given argument
+n2 <- query_model(
+  models,
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0]"),
+  given = c(TRUE,  "Y==1 & X==1"),
+  using = c("parameters", "priors"),
+  expand_grid = TRUE) |> nrow()
+
+# query and given arguments coupled
+n3 <- query_model(
+  models,
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1"),
+  using = c("parameters", "priors"),
+  expand_grid = TRUE) |> nrow()
+
+expect_true(n1 == 4)
+expect_true(n2 == 16)
+expect_true(n3 == 8)
+
+  }
+)
+
