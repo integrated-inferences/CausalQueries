@@ -78,6 +78,12 @@ set_confound <- function(model,
 
   is_a_model(model)
 
+  if (grepl("\\.", model$statement)) {
+    stop(
+      "Unsupported characters in variable names. No dots '.' in variable names for models with confounding."
+    )
+  }
+
   if (any(confound |> lapply(function(k)
     grepl(";", k)) |> unlist())) {
     stop("Please provide multipe confounds as a list")
