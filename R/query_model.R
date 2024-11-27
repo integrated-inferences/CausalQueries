@@ -873,7 +873,6 @@ get_estimands <- function(jobs,
   }
 
 #' helper to separate query and givens in query statement
-
 deparse_given <- function(query) {
   # check for malformed query + given syntax
   if (sum(grepl(":", strsplit(query, "")[[1]])) > 1) {
@@ -897,7 +896,7 @@ deparse_given <- function(query) {
 }
 
 
-
+#' S3 method for query plotting
 plot_query <- function(model_query) {
 
     if(any("posteriors" %in% model_query$using)){
