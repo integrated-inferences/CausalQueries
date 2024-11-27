@@ -892,7 +892,7 @@ print.model_query <- function(x, ...) {
 
   cat("\n")
   cat(text1)
-  print(knitr::kable(x, digits = 3))
+  print(knitr::kable(x, escape = FALSE, digits = 3))
   cat("\n")
   return(invisible(x))
 }

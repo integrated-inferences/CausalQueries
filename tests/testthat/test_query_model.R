@@ -212,3 +212,28 @@ expect_true(n3 == 8)
   }
 )
 
+
+
+
+testthat::test_that(
+
+  desc = "No operator confusion.",
+
+  code = {
+
+    q1 <- query_model(
+      make_model("X -> Y"),
+      query = "Y[X=1] > Y[X=0] | Y[X=1] < Y[X=0] : Y[X=1] >= Y[X=0]",
+      )
+
+    expect_true(q1$mean == 1/3)
+
+    q2 <- query_model(
+      make_model("X -> Y"),
+      query = "(Y[X=1] > Y[X=0]) & (Y[X=1] < Y[X=0]) : Y[X=1] >= Y[X=0]",
+    )
+
+    expect_true(q2$mean == 0)
+
+  }
+)
