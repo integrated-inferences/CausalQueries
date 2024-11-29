@@ -23,7 +23,7 @@ query_distribution(
 \item{queries}{A vector of strings or list of strings specifying queries
 on potential outcomes such as "Y[X=1] - Y[X=0]".
 Queries can also indicate conditioning sets by placing second queries after a colon:
-"Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+"Y[X=1] - Y[X=0] :|: X == 1 & Y == 1". Note a ':|:' is used rather than the traditional
 conditioning marker '|' to avoid confusion with logical operators.}
 
 \item{given}{A character vector specifying given conditions for each query.
@@ -75,8 +75,8 @@ model <- make_model("X -> Y") |>
 
  # multiple queries and givens, with ':' to identify conditioning distributions
  query_distribution(model,
-   query = list(POC = "(Y[X=1] > Y[X=0]) : X == 1 & Y == 1",
-                Q = "(Y[X=1] < Y[X=0]) : (Y[X=1] <= Y[X=0])"),
+   query = list(POC = "(Y[X=1] > Y[X=0]) :|: X == 1 & Y == 1",
+                Q = "(Y[X=1] < Y[X=0]) :|: (Y[X=1] <= Y[X=0])"),
    using = "priors")|>
    head()
 
@@ -92,7 +92,7 @@ model <- make_model("X -> Y") |>
 
 
  # Linear query conditional on potential outcomes
- query_distribution(model, query = "(Y[X=1] - Y[X=0]) : Y[X=1]==0")
+ query_distribution(model, query = "(Y[X=1] - Y[X=0]) :|: Y[X=1]==0")
 
  # Use join_by to amend query interpretation
  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")

@@ -126,7 +126,7 @@ testthat::test_that(
       using = "parameters",
       case_level = TRUE)
 
-    expect_true(all(colnames(q3) == c("Y[X=1] - Y[X=0]", "Y[X=1] - Y[X=0] : X==1")))
+    expect_true(all(colnames(q3) == c("Y[X=1] - Y[X=0]", "Y[X=1] - Y[X=0] :|: X==1")))
     expect_true(all(colnames(q4) == c("a", "b")))
 
     expect_true(is.data.frame(q))
@@ -208,7 +208,8 @@ n2 <- query_model(
 # query and given arguments coupled
 n3 <- query_model(
   models,
-  query = list(ATE = "Y[X=1] - Y[X=0]", Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1"),
+  query = list(ATE = "Y[X=1] - Y[X=0]",
+               Share_positive = "Y[X=1] > Y[X=0] :|: Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = TRUE
 ) |> nrow()
@@ -218,7 +219,7 @@ n4 <- query_model(
   models,
   query = list(
     ATE = "Y[X=1] - Y[X=0]",
-    Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1",
+    Share_positive = "Y[X=1] > Y[X=0] :|: Y==1 & X==1",
     P = "Y[X=1] ==1"
   ),
 
@@ -236,7 +237,7 @@ expect_error(query_model(
   models,
   query = list(
     ATE = "Y[X=1] - Y[X=0]",
-    Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1",
+    Share_positive = "Y[X=1] > Y[X=0] :|: Y==1 & X==1",
     P = "Y[X=1] ==1"
   ),
   using = c("parameters", "priors"),
@@ -259,17 +260,36 @@ testthat::test_that(
 
     q1 <- query_model(
       make_model("X -> Y"),
-      query = "Y[X=1] > Y[X=0] | Y[X=1] < Y[X=0] : Y[X=1] >= Y[X=0]",
+      query = "Y[X=1] > Y[X=0] | Y[X=1] < Y[X=0] :|: Y[X=1] >= Y[X=0]",
       )
 
     expect_true(q1$mean == 1/3)
 
     q2 <- query_model(
       make_model("X -> Y"),
-      query = "(Y[X=1] > Y[X=0]) & (Y[X=1] < Y[X=0]) : Y[X=1] >= Y[X=0]",
+      query = "(Y[X=1] > Y[X=0]) & (Y[X=1] < Y[X=0]) :|: Y[X=1] >= Y[X=0]",
     )
 
     expect_true(q2$mean == 0)
+
+
+    # Provide queries once
+    expect_error(
+      query_model(
+      make_model("X -> Y"),
+      query = "(Y[X=1] > Y[X=0]) & (Y[X=1] < Y[X=0]) :|: Y[X=1] >= Y[X=0]",
+      given = "Y==1"
+    )
+    )
+
+    # Provide queries once
+    expect_error(
+      query_distribution(
+        make_model("X -> Y"),
+        query = "(Y[X=1] > Y[X=0]) & (Y[X=1] < Y[X=0]) :|: Y[X=1] >= Y[X=0]",
+        given = "Y==1"
+      )
+      )
 
   }
 )

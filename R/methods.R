@@ -890,7 +890,7 @@ print.model_query <- function(x, ...) {
   }
   if (all(c("query", "label", "given") %in% names(x))) {
     if(all(x$query == x$label)) x <- select(x, -label)
-    if(all(x$label == paste(x$query, ":", x$given))) x <- dplyr::select(x, -query, -given)
+    if(all(x$label == paste(x$query, ":|:", x$given))) x <- dplyr::select(x, -query, -given)
   }
 
   # Printout requires modification for markdown disambiguation

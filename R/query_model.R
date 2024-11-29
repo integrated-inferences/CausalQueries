@@ -12,7 +12,7 @@
 #' @param queries A vector of strings or list of strings specifying queries
 #'   on potential outcomes such as "Y[X=1] - Y[X=0]".
 #'   Queries can also indicate conditioning sets by placing second queries after a colon:
-#'   "Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+#'   "Y[X=1] - Y[X=0] :|: X == 1 & Y == 1". Note a ':|:' is used rather than the traditional
 #'   conditioning marker '|' to avoid confusion with logical operators.
 #' @param given  A character vector specifying given conditions for each query.
 #'   A 'given' is a quoted expression that evaluates to logical statement.
@@ -48,8 +48,8 @@
 #'
 #'  # multiple queries and givens, with ':' to identify conditioning distributions
 #'  query_distribution(model,
-#'    query = list(POC = "(Y[X=1] > Y[X=0]) : X == 1 & Y == 1",
-#'                 Q = "(Y[X=1] < Y[X=0]) : (Y[X=1] <= Y[X=0])"),
+#'    query = list(POC = "(Y[X=1] > Y[X=0]) :|: X == 1 & Y == 1",
+#'                 Q = "(Y[X=1] < Y[X=0]) :|: (Y[X=1] <= Y[X=0])"),
 #'    using = "priors")|>
 #'    head()
 #'
@@ -65,7 +65,7 @@
 #'
 #'
 #'  # Linear query conditional on potential outcomes
-#'  query_distribution(model, query = "(Y[X=1] - Y[X=0]) : Y[X=1]==0")
+#'  query_distribution(model, query = "(Y[X=1] - Y[X=0]) :|: Y[X=1]==0")
 #'
 #'  # Use join_by to amend query interpretation
 #'  query_distribution(model, query = "(Y[X=.] == 1)", join_by = "&")
@@ -150,12 +150,12 @@ query_distribution <- function(model,
     queries <- query
   }
 
-  # ensure that givens are only specified via given argument or : in query
-  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  # ensure that givens are only specified via given argument or :|: in query
+  given_in_statement <- vapply(queries, function(i) grepl(":\\|:", i), logical(1))
   if (!is.null(given) && any(given_in_statement)) {
     stop(
       paste(
-        "please specify givens either via the `given` argument or via `:`",
+        "please specify givens either via the `given` argument or via `:|:`",
         "within your query statements; not both."
       )
     )
@@ -264,7 +264,7 @@ query_distribution <- function(model,
       if (g == "ALL") {
         gn <- ""
       } else {
-        gn <- paste(" : ", g, sep = "")
+        gn <- paste(" :|: ", g, sep = "")
       }
       return(gn)
     }, character(1))
@@ -289,7 +289,7 @@ query_distribution <- function(model,
 #' @param queries A vector of strings or list of strings specifying queries
 #'   on potential outcomes such as "Y[X=1] - Y[X=0]".
 #'   Queries can also indicate conditioning sets by placing second queries after a colon:
-#'   "Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+#'   "Y[X=1] - Y[X=0] :|: X == 1 & Y == 1". Note a colon, ':|:' is used rather than the traditional
 #'   conditioning marker '|' to avoid confusion with logical operators.
 #' @param given  A character vector specifying given conditions for each query.
 #'   A 'given' is a quoted expression that evaluates to logical statement.
@@ -318,10 +318,10 @@ query_distribution <- function(model,
 #' @examples
 #' model <- make_model("X -> Y")
 #' query_model(model, "Y[X=1] - Y[X = 0]", using = "priors")
-#' query_model(model, "Y[X=1] - Y[X = 0] : X==1 & Y==1", using = "priors")
+#' query_model(model, "Y[X=1] - Y[X = 0] :|: X==1 & Y==1", using = "priors")
 #' query_model(model,
 #'   list("Y[X=1] - Y[X = 0]",
-#'        "Y[X=1] - Y[X = 0] : X==1 & Y==1"),
+#'        "Y[X=1] - Y[X = 0] :|: X==1 & Y==1"),
 #'   using = "priors")
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = "parameters")
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = c("priors", "parameters"))
@@ -348,7 +348,7 @@ query_distribution <- function(model,
 #' query_model(
 #'   models,
 #'   query = list(ATE = "Y[X=1] - Y[X=0]",
-#'                Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1"),
+#'                Share_positive = "Y[X=1] > Y[X=0] :|: Y==1 & X==1"),
 #'   using = c("parameters", "priors"),
 #'   expand_grid = TRUE)
 #'
@@ -404,12 +404,12 @@ query_model <- function(model,
     queries <- query
   }
 
-  # ensure that givens are only specified via given argument or : in query
-  given_in_statement <- vapply(queries, function(i) grepl(":", i), logical(1))
+  # ensure that givens are only specified via given argument or :|: in query
+  given_in_statement <- vapply(queries, function(i) grepl(":\\|:", i), logical(1))
   if (!is.null(given) && any(given_in_statement)) {
     stop(
       paste(
-        "please specify givens either via the `given` argument or via `:`",
+        "please specify givens either via the `given` argument or via `:|:`",
         "within your query statements; not both."
       )
     )
@@ -529,7 +529,7 @@ query_model <- function(model,
     jobs <- jobs |>
       mutate(
       query_name = queries,
-      query_name= ifelse(given != "ALL", paste(queries, ":", given), query_name))
+      query_name = ifelse(given != "ALL", paste(queries, ":|:", given), query_name))
 
   }
 
@@ -895,16 +895,16 @@ get_estimands <- function(jobs,
 
 deparse_given <- function(query) {
   # check for malformed query + given syntax
-  if (sum(grepl(":", strsplit(query, "")[[1]])) > 1) {
+  if (gregexpr(":\\|", query)[[1]] |> length() > 1) {
     stop(
       paste(
-        "Found multiple `:` in your query statement.",
-        "Please separate givens from queries via a single `:`."
+        "Found multiple `:|:` in your query statement.",
+        "Please separate givens from queries via a single `:|:`."
       )
     )
   }
 
-  split <- trimws(strsplit(query, ":")[[1]])
+  split <- trimws(strsplit(query, ":\\|:")[[1]])
   query <- split[1]
   given <- split[2]
 
@@ -942,7 +942,7 @@ plot_query <- function(model_query) {
     model_query <- model_query |>
       mutate(
         given = gsub("==", "=", given),
-        label = ifelse(given != "-", paste(query, ":", given), query),
+        label = ifelse(given != "-", paste(query, ":|:", given), query),
         label = ifelse(case_level, paste(label, "(case)"), label)
       )
     }

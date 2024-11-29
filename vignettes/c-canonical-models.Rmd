@@ -49,7 +49,7 @@ model |>
   
   query_model(queries = 
                 list(ATE = "Y[X=1] - Y[X=0]",
-                     POC = "Y[X=1] - Y[X=0] : X==1 & Y==1"),
+                     POC = "Y[X=1] - Y[X=0] :|: X==1 & Y==1"),
               using = "posteriors" ) |>
   
   plot() +
@@ -79,7 +79,7 @@ model |>
   
   query_model(queries = 
                 list(ATE = "Y[X=1] - Y[X=0]",
-                     POC = "Y[X=1] - Y[X=0] : X==1 & Y==1"),
+                     POC = "Y[X=1] - Y[X=0] :|: X==1 & Y==1"),
               using = "posteriors") |>
   
   plot() +

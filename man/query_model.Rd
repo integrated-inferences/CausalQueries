@@ -26,7 +26,7 @@ query_model(
 \item{queries}{A vector of strings or list of strings specifying queries
 on potential outcomes such as "Y[X=1] - Y[X=0]".
 Queries can also indicate conditioning sets by placing second queries after a colon:
-"Y[X=1] - Y[X=0] : X == 1 & Y == 1". Note a colon, ':' is used rather than the traditional
+"Y[X=1] - Y[X=0] :|: X == 1 & Y == 1". Note a colon, ':|:' is used rather than the traditional
 conditioning marker '|' to avoid confusion with logical operators.}
 
 \item{given}{A character vector specifying given conditions for each query.
@@ -79,10 +79,10 @@ Nested or "complex" counterfactual queries of the form
 \examples{
 model <- make_model("X -> Y")
 query_model(model, "Y[X=1] - Y[X = 0]", using = "priors")
-query_model(model, "Y[X=1] - Y[X = 0] : X==1 & Y==1", using = "priors")
+query_model(model, "Y[X=1] - Y[X = 0] :|: X==1 & Y==1", using = "priors")
 query_model(model,
   list("Y[X=1] - Y[X = 0]",
-       "Y[X=1] - Y[X = 0] : X==1 & Y==1"),
+       "Y[X=1] - Y[X = 0] :|: X==1 & Y==1"),
   using = "priors")
 query_model(model, "Y[X=1] > Y[X = 0]", using = "parameters")
 query_model(model, "Y[X=1] > Y[X = 0]", using = c("priors", "parameters"))
@@ -109,7 +109,7 @@ query_model(
 query_model(
   models,
   query = list(ATE = "Y[X=1] - Y[X=0]",
-               Share_positive = "Y[X=1] > Y[X=0] : Y==1 & X==1"),
+               Share_positive = "Y[X=1] > Y[X=0] :|: Y==1 & X==1"),
   using = c("parameters", "priors"),
   expand_grid = TRUE)
 
