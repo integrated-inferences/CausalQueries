@@ -893,6 +893,10 @@ print.model_query <- function(x, ...) {
     if(all(x$label == paste(x$query, ":|:", x$given))) x <- dplyr::select(x, -query, -given)
   }
 
+  if (all(c("query", "label") %in% names(x))  &  !("given" %in% names(x))) {
+    if(all(x$label == x$query)) x <- dplyr::select(x, -query, -given)
+  }
+
   # Printout requires modification for markdown disambiguation
   r <- x
   cat("\n")
@@ -911,6 +915,7 @@ print.model_query <- function(x, ...) {
 clean_text <- function(column) {
   if (!is.null(column)) {
     column <- gsub("\\|", "OR", column)
+    column <- gsub(":OR:", " given ", column)
     gsub("\\s+", " ", column)  # Return the cleaned column
   } else {
     NULL
