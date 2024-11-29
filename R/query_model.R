@@ -942,10 +942,12 @@ plot_query <- function(model_query) {
     model_query <- model_query |>
       mutate(
         given = gsub("==", "=", given),
-        label = ifelse(given != "-", paste(query, ":|:", given), query),
+        label = ifelse(given != "-", paste(query, "\ngiven ", given), query),
         label = ifelse(case_level, paste(label, "(case)"), label)
       )
     }
+    # given formatting
+    model_query <- model_query |> mutate(label = gsub(":\\|:", "\ngiven", label))
 
     model_query |>
       ggplot(aes(mean, label, color = using)) +

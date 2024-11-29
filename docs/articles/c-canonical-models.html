@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -71,7 +71,6 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>Here we show properties of some canonical causal models, exploring in
@@ -110,11 +109,10 @@ former has a tight credibility interval, the latter does not.</p>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
-<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] : X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
 <span>              using <span class="op">=</span> <span class="st">"posteriors"</span> <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -143,11 +141,10 @@ much greater.</p>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
-<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] : X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
 <span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -201,8 +198,7 @@ posterior uncertainty.</p>
 <span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Z==1 &amp; Y==1"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==0"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==1"</span><span class="op">)</span>,</span>
 <span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -244,8 +240,7 @@ compliers.</p>
 <span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"X[Z=1] &gt; X[Z=0]"</span>, <span class="st">"X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
 <span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="c-canonical-models_files/figure-html/unnamed-chunk-9-1.png" alt="IV inferences" width="700"><p class="caption">
 IV inferences
@@ -333,8 +328,7 @@ effects.</p>
 <span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
 <span>    expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <div class="figure">
 <img src="c-canonical-models_files/figure-html/unnamed-chunk-11-1.png" alt="Mediation model" width="700"><p class="caption">
 Mediation model
@@ -372,8 +366,7 @@ the queries are also the same as before.</p>
 <span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
 <span>    expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span>  <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span>   </span></code></pre></div>
 <div class="figure">
 <img src="c-canonical-models_files/figure-html/unnamed-chunk-12-1.png" alt="Mediation model" width="700"><p class="caption">
 Mediation model
