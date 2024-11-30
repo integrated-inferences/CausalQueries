@@ -122,7 +122,9 @@ plot_model <- function(model = NULL,
     dag$e <- dag$y <- "NA"
    } else {
     # Usual case
-   coords <- (dag  |> ggraph::ggraph(layout = "sugiyama"))$data |>
+   coords <- (dag |>
+                # dplyr::filter(e != "<->")  |>
+                ggraph::ggraph(layout = "sugiyama"))$data |>
     dplyr::select(x, y, name)
    }
 

@@ -83,7 +83,7 @@ failures result in unreliable posteriors.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-2-1.png" width="50%"></p>
 <p>This model could be justified by a randomized control trial. With a
 lot of data you can get tight estimates for the effect of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
@@ -96,12 +96,15 @@ is due to
 That is the “effects of causes” estimand is identified, but the “causes
 of effects” estimand is not.</p>
 <p>In the illustration below we generate data from a parameterized model
-and then try to recover the average treatment effect and the
+and then try to recover the average treatment effect (ATE) and the
 “probability of causation” (POC) for <code>X=1, Y=1</code> cases. The
-former has a tight credibility interval, the latter does not.</p>
+ATE has a tight credibility interval. The PoC does not, although it is
+still considerably tighter than the prior.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10"</span>, <span class="st">"01"</span><span class="op">)</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.6</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10"</span>, <span class="st">"01"</span><span class="op">)</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">.6</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
@@ -110,7 +113,7 @@ former has a tight credibility interval, the latter does not.</p>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
 <span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span> <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
@@ -121,8 +124,8 @@ former has a tight credibility interval, the latter does not.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y; X &lt;-&gt; Y"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, y_coord <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-4-1.png" width="75%"></p>
 <p>This is the appropriate model if
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 is not randomized and it is possible that unknown factors affect both
@@ -130,19 +133,25 @@ the assignment of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 and the outcome
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>.</p>
-<p>In the illustration below we use the same data, drawn from a model in
-which <em>X</em> is <em>in fact</em> randomized (though we do do not
-know this) and there is a true treatment effect of 0.5. We see we have
-lost identification on the ATE but also our uncertainty about POC is
-much greater.</p>
+<p>In the illustration below we use data, drawn from a model in which
+<em>X</em> is <em>in fact</em> as if randomized (though we do not know
+this) and there is a true positive treatment effect. We see we have lost
+identification on the ATE but also our uncertainty about POC is much
+greater.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="st">"01"</span>, parameters <span class="op">=</span> <span class="fl">.7</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
 <span>                     POC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
@@ -153,7 +162,7 @@ much greater.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-6-1.png" width="75%"></p>
 <p>This is a chain model. This model is hard to justify from
 experimentation since randomization of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
@@ -186,28 +195,43 @@ caused
 Negative evidence has a much stronger effect, albeit with considerable
 posterior uncertainty.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X.10"</span>, <span class="st">"X.01"</span>, <span class="st">"Y.10"</span>, <span class="st">"Y.01"</span><span class="op">)</span>, </span>
-<span>                 parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">.85</span>, <span class="fl">.05</span>, <span class="fl">.85</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>                 parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">.85</span>, <span class="fl">.05</span>, <span class="fl">.85</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Y[Z=1] - Y[Z=0]"</span><span class="op">)</span>,</span>
-<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Z==1 &amp; Y==1"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==0"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"Z==1 &amp; Y==1"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==0"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==1"</span><span class="op">)</span>,</span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="iv-model">IV model<a class="anchor" aria-label="anchor" href="#iv-model"></a>
+<h2 id="iv-model-with-exclusion-restriction">IV model with exclusion restriction<a class="anchor" aria-label="anchor" href="#iv-model-with-exclusion-restriction"></a>
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y; X &lt;-&gt; Y"</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="co"># Model with exclusion restriction and monotonicity</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y; X &lt;-&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/set_restrictions.html">set_restrictions</a></span><span class="op">(</span><span class="fu"><a href="../reference/query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'Z'</span>, <span class="st">'X'</span><span class="op">)</span><span class="op">)</span>  <span class="co"># monotonicity restriction</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Adding parameters for data generation</span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y.10_X.01"</span>, <span class="st">"Y.01_X.01"</span><span class="op">)</span>, </span>
+<span>                 parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.75</span><span class="op">)</span><span class="op">)</span>     <span class="co"># complier effect</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-8-1.png" alt="IV model with exclusion restriction satisfied" width="75%"><p class="caption">
+IV model with exclusion restriction satisfied
+</p>
+</div>
 <p>This is the classic “instrumental variables” model. This model is
 sometimes justified by randomization of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
@@ -221,42 +245,101 @@ only though
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
 has a monotonic effect on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>,
-but we will not impose that here.</p>
-<p>Below we analyse using the same data as before but focusing our
+which we have also imposed here.</p>
+<p>Below we draw data from this model, update, and query, focusing our
 attention on the effects of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
-both for the population and also specifically for units for whom
+for the population and also specifically for units for whom
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 responds positively to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>,
-compliers.</p>
+compliers. In addition we ask about the probability of causation, both
+for units with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1, Y=1</annotation></semantics></math>
+(PoC) and for compliers with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1, Y=1</annotation></semantics></math>
+(PoCC). In the model that generated these data an effect is present for
+compliers only, though researchers do not know (or assume) this.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, <span class="fl">4000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Y[X=1] - Y[X=0]"</span><span class="op">)</span>,</span>
-<span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"X[Z=1] &gt; X[Z=0]"</span>, <span class="st">"X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
-<span>              using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">1000</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
+<span>    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>      LATE<span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X[Z=1] &gt; X[Z=0]"</span>, <span class="co"># ATE for compliers</span></span>
+<span>      PoC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span>,    <span class="co"># ATE for units with X=Y-1</span></span>
+<span>      PoCC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1 &amp; (X[Z=1] &gt; X[Z=0])"</span><span class="op">)</span>,    <span class="co"># ATE for units with X=Y-1</span></span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"posteriors"</span>, <span class="st">"parameters"</span><span class="op">)</span>,</span>
+<span>    cred <span class="op">=</span> <span class="fl">99</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="c-canonical-models_files/figure-html/unnamed-chunk-9-1.png" alt="IV inferences" width="700"><p class="caption">
-IV inferences
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-9-1.png" alt="IV inferences I" width="700"><p class="caption">
+IV inferences I
 </p>
 </div>
 <p>Note the relatively tight posterior for the complier average effect
-and the wide posterior for the average effect and for the probability of
-causation.</p>
+(LATE) and the wide posterior for the average effect and for the
+probability of causation.</p>
+</div>
+<div class="section level2">
+<h2 id="iv-model-without-exclusion-restriction">IV model without exclusion restriction<a class="anchor" aria-label="anchor" href="#iv-model-without-exclusion-restriction"></a>
+</h2>
+<p>Here is a model in which neither the exclusion restriction or
+monotonicity holds.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y &lt;- Z; X &lt;-&gt; Y"</span><span class="op">)</span> </span>
+<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-10-1.png" alt="Exclusion restriction not satisfied" width="75%"><p class="caption">
+Exclusion restriction not satisfied
+</p>
+</div>
+<p>Note that for comparability we assume again that the data is the same
+as before, generated by a model in which the exclusion restriction in
+fact holds (though researchers do not know this).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">1000</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
+<span>    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>      LATE<span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X[Z=1] &gt; X[Z=0]"</span>, <span class="co"># ATE for compliers</span></span>
+<span>      PoC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span>,    <span class="co"># ATE for units with X=Y-1</span></span>
+<span>      PoCC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1 &amp; (X[Z=1] &gt; X[Z=0])"</span><span class="op">)</span>, <span class="co"># ATE for compliers with X=Y-1</span></span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"posteriors"</span><span class="op">)</span>,</span>
+<span>    cred <span class="op">=</span> <span class="fl">99</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-11-1.png" alt="IV inferences II" width="700"><p class="caption">
+IV inferences II
+</p>
+</div>
+<p>We updated here using a relatively large number of iterations to
+ensure convergence. Note the failure of the two key assumptions are
+reflected by larger credibility intervals and underestimates for all
+quantities.</p>
 </div>
 <div class="section level2">
 <h2 id="mediation-model-with-sequential-ignorability">Mediation model with sequential ignorability<a class="anchor" aria-label="anchor" href="#mediation-model-with-sequential-ignorability"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y &lt;- Z"</span><span class="op">)</span></span>
-<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>This is a typical mediation type problem where you might want to
 understand the effects of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
@@ -300,7 +383,7 @@ exerts a negative effect on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>;
 there are both positive direct effects and negative indirect
 effects.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span>  </span>
 <span>  <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y &lt;- Z"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -330,7 +413,7 @@ effects.</p>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <div class="figure">
-<img src="c-canonical-models_files/figure-html/unnamed-chunk-11-1.png" alt="Mediation model" width="700"><p class="caption">
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-13-1.png" alt="Mediation model" width="700"><p class="caption">
 Mediation model
 </p>
 </div>
@@ -353,10 +436,20 @@ are independent of those for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>,
 though the researcher does not know this. The true (unknown) values of
 the queries are also the same as before.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y &lt;- Z; X &lt;-&gt; Y"</span><span class="op">)</span>  <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y &lt;- Z; X &lt;-&gt; Y"</span><span class="op">)</span>  <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"00"</span>, <span class="st">"10"</span><span class="op">)</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="st">"0001"</span>, parameters <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>   <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>nodal_type <span class="op">=</span> <span class="st">"0001"</span>, parameters <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>  </span>
+<span>  </span>
+<span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="c-canonical-models_files/figure-html/unnamed-chunk-14-1.png" alt="Mediation model without sequential ignorability" width="700"><p class="caption">
+Mediation model without sequential ignorability
+</p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
+<span>  <span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
 <span>  </span>
@@ -367,11 +460,7 @@ the queries are also the same as before.</p>
 <span>    expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span>   </span></code></pre></div>
-<div class="figure">
-<img src="c-canonical-models_files/figure-html/unnamed-chunk-12-1.png" alt="Mediation model" width="700"><p class="caption">
-Mediation model
-</p>
-</div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>We see we do not do nearly so well. To ensure stable estimates we ran
 a large number of iterations. For the non-identified quantities our
 credibility intervals are not tight (which is as it should be!) and in
@@ -380,11 +469,359 @@ be). This highlights the extreme difficulty of this problem.
 Nevertheless the gains relative to the priors are considerable.</p>
 </div>
 <div class="section level2">
+<h2 id="the-napkin-model">The napkin model<a class="anchor" aria-label="anchor" href="#the-napkin-model"></a>
+</h2>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<p>The “napkin” model (see Pearl’s <em>Book of Why</em>) involves two
+types of confounding. We will paramaterize a version in which (a) the
+average causal effect of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+is negative, arising in cases when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">W=0</annotation></semantics></math>
+(b) there is positive confounding arising from the fact that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+is liable to be 1 regardless of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
+when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">W = 1</annotation></semantics></math>
+and )
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+is liable to be 1 regardless of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">W = 1</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span>  </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"Y.10_W.0"</span>, parameters <span class="op">=</span> <span class="fl">.6</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"Y.11_W.1"</span>, parameters <span class="op">=</span> <span class="fl">.9</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"X.11_W.1"</span>, parameters <span class="op">=</span> <span class="fl">.9</span><span class="op">)</span></span></code></pre></div>
+<p>Naive regression performs very badly here.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">10000</span>, using <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">estimatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">texreg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/texreg/man/htmlreg.html" class="external-link">htmlreg</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Naive estimation"</span><span class="op">)</span></span></code></pre></div>
+<table class="table texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
+<caption>
+Naive estimation
+</caption>
+<thead><tr>
+<th style="padding-left: 5px;padding-right: 5px;">
+ 
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 1
+</th>
+</tr></thead>
+<tbody>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+(Intercept)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.75<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.73; 0.76]
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+X
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.04<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[-0.06; -0.03]
+</td>
+</tr>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Adj. R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Num. obs.
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+10000
+</td>
+</tr>
+<tr style="border-bottom: 2px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+RMSE
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.45
+</td>
+</tr>
+</tbody>
+<tfoot><tr>
+<td style="font-size: 0.8em;" colspan="2">
+<sup>*</sup> 0 outside the confidence interval.
+</td>
+</tr></tfoot>
+</table>
+<p>In contrast, the updated causal model yields good estimates for the
+ATE, though again we have somehwat more uncertainty for the probability
+of causation.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>      PoC <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"posteriors"</span>, <span class="st">"priors"</span>, <span class="st">"parameters"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="m-bias">
+<em>M</em>-bias<a class="anchor" aria-label="anchor" href="#m-bias"></a>
+</h2>
+<p>In the below model, also studied in Pearl (<em>Causality</em>), the
+effect of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+is identified without controlling for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>.
+Controlling for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>,
+however, introduces a backdoor path between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+which can introduce bias in naive estimation.</p>
+<p>Strikingly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
+might be prior to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+but it can still introduce bias. Here is the model</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z &lt;- U1 -&gt; Y; Z &lt;- U2 -&gt; X; X -&gt; Y"</span><span class="op">)</span></span></code></pre></div>
+<p>Here is a parameterization in which there is no true effect of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+yet a strong negative correlation between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+once you control for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"Y.0101"</span>, parameters <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"Z.0001"</span>, parameters <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"X.01"</span>, parameters <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p>With this model, naive regression results perform poorly when you
+control for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  `no controls` <span class="op">=</span> <span class="fu">estimatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span>,</span>
+<span>  `with controls` <span class="op">=</span> <span class="fu">estimatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">Z</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu">texreg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/texreg/man/htmlreg.html" class="external-link">htmlreg</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Estimation with and without controls"</span><span class="op">)</span></span></code></pre></div>
+<table class="table texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
+<caption>
+Estimation with and without controls
+</caption>
+<thead><tr>
+<th style="padding-left: 5px;padding-right: 5px;">
+ 
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+no controls
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+with controls
+</th>
+</tr></thead>
+<tbody>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+(Intercept)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.51<sup>*</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.44<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.49; 0.53]
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.42; 0.47]
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+X
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.00
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.12<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[-0.02; 0.03]
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[-0.15; -0.09]
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Z
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.41<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.38; 0.44]
+</td>
+</tr>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.00
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.13
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Adj. R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.00
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.13
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Num. obs.
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+5000
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+5000
+</td>
+</tr>
+<tr style="border-bottom: 2px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+RMSE
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.50
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.47
+</td>
+</tr>
+</tbody>
+<tfoot><tr>
+<td style="font-size: 0.8em;" colspan="3">
+<sup>*</sup> Null hypothesis value outside the confidence interval.
+</td>
+</tr></tfoot>
+</table>
+<p>Taking account of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
+does not harm (and could help) in the Bayesian setting.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  `Using Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span>,</span>
+<span>  `Ignoring Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span><span class="op">)</span><span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>      <span class="st">"Y[X=1] - Y[X=0] :|: X==1 &amp; Y==1"</span><span class="op">)</span>,</span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"priors"</span>,  <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="c-canonical-models_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
+</div>
+<div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Forastiere, Laura, Alessandra Mattei, and Peng Ding. “Principal
+<p>Forastiere, Laura, Alessandra Mattei, and Peng Ding. 2018. “Principal
 ignorability in mediation analysis: through and beyond sequential
-ignorability.” <em>Biometrika</em> 105.4 (2018): 979-986.</p>
+ignorability.” <em>Biometrika</em> 105.4: 979-986.</p>
+<p>Pearl, Judea. 2012. <em>Causality</em>. Cambridge University
+Press</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
