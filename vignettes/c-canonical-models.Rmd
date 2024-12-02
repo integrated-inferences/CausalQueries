@@ -19,8 +19,22 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, warning = FALSE, message = FALSE}
+if(!requireNamespace("estimatr", quietly = TRUE)) {
+  install.packages("estimatr")
+}
+
+if(!requireNamespace("texreg", quietly = TRUE)) {
+  install.packages("texreg")
+}
+
+
 library(CausalQueries)
-options(mc.cores = parallel::detectCores())
+library(dplyr)
+library(knitr)
+library(estimatr)
+library(texreg)
+
+options(mc.cores = 2)
 set.seed(1)
 ```
 
