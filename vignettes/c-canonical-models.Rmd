@@ -60,7 +60,7 @@ data <- model |>
   make_data(n = 5000)
 
 model |>
-  update_model(data, refresh = 0, iter = 10000) |>
+  update_model(data, refresh = 0, iter = 5000) |>
   
   query_model(queries = 
                 list(ATE = "Y[X=1] - Y[X=0]",
@@ -95,7 +95,7 @@ data <- model |>
   make_data(n = 5000)
 
 model |>
-  update_model(data, refresh = 0, iter = 10000) |>
+  update_model(data, refresh = 0, iter = 5000) |>
   
   query_model(queries = 
                 list(ATE = "Y[X=1] - Y[X=0]",
@@ -129,7 +129,7 @@ data <- model |>
   make_data(n = 5000)
 
 model |>
-  update_model(data, refresh = 0, iter = 10000) |>
+  update_model(data, refresh = 0, iter = 5000) |>
   
   query_model(query = list("Y[Z=1] - Y[Z=0]"),
               given = c("", "Z==1 & Y==1", "Z==1 & Y==1 & X==0", "Z==1 & Y==1 & X==1"),
@@ -166,7 +166,7 @@ data <- make_data(model, 4000)
 
 model |>
   
-  update_model(data, refresh = 1000, iter = 10000) |>
+  update_model(data, refresh = 0, iter = 5000) |>
   
   query_model(
     query = list(
@@ -198,7 +198,7 @@ Note that for comparability we assume again  that the data is the same as before
 
 model |>
   
-  update_model(data, refresh = 1000, iter = 20000) |>
+  update_model(data, refresh = 0, iter = 5000) |>
   
   query_model(
     query = list(
@@ -214,7 +214,7 @@ model |>
 
 ```
 
-We updated here using a relatively large number of iterations to ensure convergence. Note the failure of the two key assumptions are reflected by larger credibility intervals and underestimates for all quantities.
+We updated here using a relatively large number of iterations to ensure stable estimates. Note the failure of the two key assumptions are reflected by larger credibility intervals and underestimates for all quantities.
 
 
 ## Mediation model with sequential ignorability
@@ -259,8 +259,7 @@ model |>
   query_model(
     query = queries,
     cred = 99,
-    using = c("parameters", "posteriors"),
-    expand_grid = TRUE) |>
+    using = c("parameters", "posteriors")) |>
   
   plot() 
 ```
@@ -287,13 +286,13 @@ model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
   
   model |>
   
-  update_model(data, iter = 10000) |>   
+  update_model(data, iter = 5000) |>   
   
   query_model(
     query = queries,
     cred = 99,
-    using = c("parameters", "posteriors"),
-    expand_grid = TRUE) |>
+    using = c("parameters", "posteriors")
+    ) |>
   
   plot()   
 ```
@@ -322,7 +321,7 @@ model <- model |>
 Naive regression performs very badly here.
 
 ```{r, results = 'asis'}
-data <- make_data(model, n = 10000, using = "parameters")
+data <- make_data(model, n = 5000, using = "parameters")
 
 estimatr::lm_robust(Y ~ X, data = data) |> 
   texreg::htmlreg(caption = "Naive estimation")
@@ -374,7 +373,7 @@ plot(model)
 With this model, naive regression results perform poorly when you control for $Z$. 
 
 ```{r, results = 'asis'}
-data <- model |> make_data(n = 5000)
+data <- model |> make_data(n = 1000)
 
 
 list(
@@ -391,8 +390,8 @@ Taking account of $Z$ does not harm (and could help) in the Bayesian setting.
 ```{r}
 
 list(
-  `Using Z` = model |> update_model(data, iter = 20000),
-  `Ignoring Z` = model |> update_model(data |> dplyr::select(-Z), iter = 20000))|>
+  `Using Z` = model |> update_model(data, iter = 5000),
+  `Ignoring Z` = model |> update_model(data |> dplyr::select(-Z), iter = 5000))|>
   
   query_model(
     list(

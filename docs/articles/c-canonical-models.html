@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,22 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"estimatr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"estimatr"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"texreg"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"texreg"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/estimatr/" class="external-link">estimatr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/leifeld/texreg/" class="external-link">texreg</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>Here we show properties of some canonical causal models, exploring in
 particular estimates of non-identified queries. The examples include
@@ -108,7 +122,7 @@ still considerably tighter than the prior.</p>
 <span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
@@ -146,7 +160,7 @@ greater.</p>
 <span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
@@ -203,7 +217,7 @@ posterior uncertainty.</p>
 <span>  <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Y[Z=1] - Y[Z=0]"</span><span class="op">)</span>,</span>
 <span>              given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"Z==1 &amp; Y==1"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==0"</span>, <span class="st">"Z==1 &amp; Y==1 &amp; X==1"</span><span class="op">)</span>,</span>
@@ -268,7 +282,7 @@ compliers only, though researchers do not know (or assume) this.</p>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">1000</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -309,7 +323,7 @@ fact holds (though researchers do not know this).</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">1000</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, refresh <span class="op">=</span> <span class="fl">0</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -328,7 +342,7 @@ IV inferences II
 </p>
 </div>
 <p>We updated here using a relatively large number of iterations to
-ensure convergence. Note the failure of the two key assumptions are
+ensure stable estimates. Note the failure of the two key assumptions are
 reflected by larger credibility intervals and underestimates for all
 quantities.</p>
 </div>
@@ -408,8 +422,7 @@ effects.</p>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    query <span class="op">=</span> <span class="va">queries</span>,</span>
 <span>    cred <span class="op">=</span> <span class="fl">99</span>,</span>
-<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
-<span>    expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <div class="figure">
@@ -451,13 +464,13 @@ Mediation model without sequential ignorability
 <code class="sourceCode R"><span>  </span>
 <span>  <span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    query <span class="op">=</span> <span class="va">queries</span>,</span>
 <span>    cred <span class="op">=</span> <span class="fl">99</span>,</span>
-<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
-<span>    expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameters"</span>, <span class="st">"posteriors"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span>   </span></code></pre></div>
 <p><img src="c-canonical-models_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
@@ -502,7 +515,7 @@ when
 <span>  <span class="fu"><a href="../reference/parameter_setting.html">set_parameters</a></span><span class="op">(</span>param_name <span class="op">=</span> <span class="st">"X.11_W.1"</span>, parameters <span class="op">=</span> <span class="fl">.9</span><span class="op">)</span></span></code></pre></div>
 <p>Naive regression performs very badly here.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">10000</span>, using <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">5000</span>, using <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">estimatr</span><span class="fu">::</span><span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">texreg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/texreg/man/htmlreg.html" class="external-link">htmlreg</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Naive estimation"</span><span class="op">)</span></span></code></pre></div>
@@ -532,7 +545,7 @@ Model 1
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-[ 0.73; 0.76]
+[ 0.73; 0.78]
 </td>
 </tr>
 <tr>
@@ -540,7 +553,7 @@ Model 1
 X
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.04<sup>*</sup>
+-0.05<sup>*</sup>
 </td>
 </tr>
 <tr>
@@ -548,7 +561,7 @@ X
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-[-0.06; -0.03]
+[-0.08; -0.02]
 </td>
 </tr>
 <tr style="border-top: 1px solid #000000;">
@@ -572,7 +585,7 @@ Adj. R<sup>2</sup>
 Num. obs.
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-10000
+5000
 </td>
 </tr>
 <tr style="border-bottom: 2px solid #000000;">
@@ -654,7 +667,7 @@ once you control for
 control for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -684,51 +697,7 @@ with controls
 (Intercept)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.51<sup>*</sup>
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.44<sup>*</sup>
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
- 
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-[ 0.49; 0.53]
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-[ 0.42; 0.47]
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
-X
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.00
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
--0.12<sup>*</sup>
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
- 
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-[-0.02; 0.03]
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-[-0.15; -0.09]
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
-Z
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
- 
+0.47<sup>*</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 0.41<sup>*</sup>
@@ -739,10 +708,54 @@ Z
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
+[ 0.42; 0.51]
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.37; 0.46]
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+X
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.04
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.11<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-[ 0.38; 0.44]
+[-0.02; 0.10]
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[-0.18; -0.05]
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Z
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.44<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+[ 0.37; 0.51]
 </td>
 </tr>
 <tr style="border-top: 1px solid #000000;">
@@ -753,7 +766,7 @@ R<sup>2</sup>
 0.00
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.13
+0.14
 </td>
 </tr>
 <tr>
@@ -761,10 +774,10 @@ R<sup>2</sup>
 Adj. R<sup>2</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.00
+0.00
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.13
+0.14
 </td>
 </tr>
 <tr>
@@ -772,10 +785,10 @@ Adj. R<sup>2</sup>
 Num. obs.
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-5000
+1000
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-5000
+1000
 </td>
 </tr>
 <tr style="border-bottom: 2px solid #000000;">
@@ -786,7 +799,7 @@ RMSE
 0.50
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.47
+0.46
 </td>
 </tr>
 </tbody>
@@ -802,8 +815,8 @@ does not harm (and could help) in the Bayesian setting.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  `Using Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span>,</span>
-<span>  `Ignoring Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span>, iter <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span><span class="op">)</span><span class="op">|&gt;</span></span>
+<span>  `Using Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span>
+<span>  `Ignoring Z` <span class="op">=</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span>, iter <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span><span class="op">)</span><span class="op">|&gt;</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
