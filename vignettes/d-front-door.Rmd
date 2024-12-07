@@ -38,7 +38,7 @@ We might set priors thus:
 model <- set_priors(model, distribution = "jeffreys")
 ```
 
-You can plot the dag thus. 
+You can plot the dag like this: 
 
 ```{r}
 plot(model)

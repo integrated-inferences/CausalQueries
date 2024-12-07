@@ -8,8 +8,8 @@
 <title>Getting Started • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started">
 </head>
 <body>
@@ -70,11 +70,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"fabricatr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fabricatr"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -242,52 +238,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4866569</td>
-<td align="right">0.5133431</td>
-<td align="right">0.1779771</td>
-<td align="right">0.2021202</td>
-<td align="right">0.4300694</td>
-<td align="right">0.1898334</td>
+<td align="right">0.5753580</td>
+<td align="right">0.4246420</td>
+<td align="right">0.3200689</td>
+<td align="right">0.0212222</td>
+<td align="right">0.3026902</td>
+<td align="right">0.3560188</td>
 </tr>
 <tr class="even">
-<td align="right">0.5583331</td>
-<td align="right">0.4416669</td>
-<td align="right">0.0040999</td>
-<td align="right">0.3005823</td>
-<td align="right">0.5902477</td>
-<td align="right">0.1050701</td>
+<td align="right">0.4739469</td>
+<td align="right">0.5260531</td>
+<td align="right">0.0558439</td>
+<td align="right">0.2716129</td>
+<td align="right">0.6680584</td>
+<td align="right">0.0044848</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5271612</td>
-<td align="right">0.4728388</td>
-<td align="right">0.0531936</td>
-<td align="right">0.3516975</td>
-<td align="right">0.5905585</td>
-<td align="right">0.0045504</td>
+<td align="right">0.5536695</td>
+<td align="right">0.4463305</td>
+<td align="right">0.2796148</td>
+<td align="right">0.0394937</td>
+<td align="right">0.3828392</td>
+<td align="right">0.2980523</td>
 </tr>
 <tr class="even">
-<td align="right">0.5637254</td>
-<td align="right">0.4362746</td>
+<td align="right">0.5637255</td>
+<td align="right">0.4362745</td>
 <td align="right">0.0400795</td>
-<td align="right">0.2803068</td>
-<td align="right">0.5334359</td>
+<td align="right">0.2803051</td>
+<td align="right">0.5334376</td>
 <td align="right">0.1461778</td>
 </tr>
 <tr class="odd">
-<td align="right">0.6073027</td>
-<td align="right">0.3926973</td>
-<td align="right">0.2665650</td>
-<td align="right">0.0452801</td>
-<td align="right">0.3071206</td>
-<td align="right">0.3810344</td>
+<td align="right">0.5497653</td>
+<td align="right">0.4502347</td>
+<td align="right">0.2183308</td>
+<td align="right">0.1853638</td>
+<td align="right">0.4252914</td>
+<td align="right">0.1710140</td>
 </tr>
 <tr class="even">
-<td align="right">0.5437248</td>
-<td align="right">0.4562752</td>
-<td align="right">0.1933328</td>
-<td align="right">0.1887049</td>
-<td align="right">0.5473692</td>
-<td align="right">0.0705931</td>
+<td align="right">0.5753659</td>
+<td align="right">0.4246341</td>
+<td align="right">0.3354539</td>
+<td align="right">0.0511024</td>
+<td align="right">0.2544983</td>
+<td align="right">0.3589455</td>
 </tr>
 </tbody>
 </table>
@@ -312,7 +308,7 @@ model.</p>
 <span><span class="co">#&gt; |label           |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:---------------|:----------|-----:|-----:|--------:|---------:|</span></span>
 <span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.254| 0.196|    0.007|     0.722|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.446| 0.119|    0.196|     0.649|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.439| 0.122|    0.191|     0.648|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1)&gt; Y(0)</annotation></semantics></math>.</p>
 <p>Examples of <em>conditional</em> queries:</p>
@@ -325,7 +321,7 @@ model.</p>
 <span><span class="co">#&gt; |label                                 |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
 <span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.499| 0.287|    0.023|     0.978|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.677| 0.173|    0.335|     0.972|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.667| 0.174|    0.330|     0.963|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1) &gt; Y(0)</annotation></semantics></math><em>given</em>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1</annotation></semantics></math>
@@ -346,7 +342,7 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <span><span class="co">#&gt; |label                                  |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
 <span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.503| 0.290|    0.024|     0.975|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.748| 0.106|    0.574|     0.971|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.751| 0.106|    0.572|     0.971|</span></span></code></pre></div>
 <p>Note that we use “:” to separate the base query from the condition
 rather than “|” to avoid confusion with logical operators.</p>
 </div>
@@ -406,7 +402,7 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
 <td align="right">0.28</td>
-<td align="right">0.09</td>
+<td align="right">0.10</td>
 <td align="right">0.08</td>
 <td align="right">0.45</td>
 </tr>

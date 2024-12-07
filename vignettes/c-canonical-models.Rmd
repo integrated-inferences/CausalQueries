@@ -16,23 +16,20 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
 
-```{r setup, warning = FALSE, message = FALSE}
 if(!requireNamespace("estimatr", quietly = TRUE)) {
   install.packages("estimatr")
 }
 
-if(!requireNamespace("texreg", quietly = TRUE)) {
-  install.packages("texreg")
-}
 
+```
+
+```{r setup, warning = FALSE, message = FALSE}
 
 library(CausalQueries)
 library(dplyr)
 library(knitr)
 library(estimatr)
-library(texreg)
 
 options(mc.cores = 2)
 set.seed(1)
@@ -323,8 +320,9 @@ Naive regression performs very badly here.
 ```{r, results = 'asis'}
 data <- make_data(model, n = 5000, using = "parameters")
 
-estimatr::lm_robust(Y ~ X, data = data) |> 
-  texreg::htmlreg(caption = "Naive estimation")
+ estimatr::lm_robust(Y ~ X, data = data)  |> 
+   tidy() |> 
+   kable(digits = 2)
 
 ```
 
@@ -380,8 +378,8 @@ list(
   `no controls` = estimatr::lm_robust(Y ~ X, data = data),
   `with controls` = estimatr::lm_robust(Y ~ X + Z, data = data)
 ) |>
-  
-  texreg::htmlreg(caption = "Estimation with and without controls")
+   lapply(tidy) |> bind_rows(.id = "Model") |>   filter(term =="X") |>
+  kable(digits = 2, caption = "Estimation with and without controls")
 
 ```
 

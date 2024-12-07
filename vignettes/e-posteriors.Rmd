@@ -93,7 +93,7 @@ model <-
 
 ```
 
-You can access these warnings like this:
+You can access a summary of these warnings like this:
 
 ```{r}
 inspect(model, "stan_warnings")
