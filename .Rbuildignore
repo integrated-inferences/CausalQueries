@@ -12,3 +12,9 @@ cran-comments.md
 ^Meta$
 ^CRAN-SUBMISSION$
 ^CONTRIBUTING.md
+^rebuild_vignettes.R
+^a-getting-started.Rmd.orig
+^b-plotting.Rmd.orig
+^c-canonical-models.Rmd.orig
+^d-front-door.Rmd.orig
+^e-posteriors.Rmd.orig
