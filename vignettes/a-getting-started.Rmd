@@ -1,9 +1,9 @@
 ---
 title: "Getting Started"
-output: 
+output:
   rmarkdown::html_vignette:
-    md_extensions: [ 
-      "-autolink_bare_uris" 
+    md_extensions: [
+      "-autolink_bare_uris"
     ]
 vignette: >
   %\VignetteIndexEntry{Getting Started}
@@ -11,15 +11,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
 
-```
 
-```{r setup, message = FALSE, warning = FALSE}
+
+``` r
 library(CausalQueries)
 library(dplyr)
 library(knitr)
@@ -27,31 +22,64 @@ library(knitr)
 
 # Make a model
 
-**Generating**: To make a model you need to provide a DAG statement to `make_model`.  
-For instance 
+**Generating**: To make a model you need to provide a DAG statement to `make_model`.
+For instance
 
 * `"X->Y"`
-*  `"X -> M -> Y <- X"` or  
-* `"Z -> X -> Y <-> X"`. 
+*  `"X -> M -> Y <- X"` or
+* `"Z -> X -> Y <-> X"`.
 
-```{r}
+
+``` r
 # examples of models
 xy_model <- make_model("X -> Y")
 iv_model <- make_model("Z -> X -> Y <-> X")
-
 ```
 
 **Graphing**: Once you have made a model you can inspect the DAG:
 
-```{r}
+
+``` r
 plot(xy_model)
 ```
+
+![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
 
 **Simple summaries:** You can access a simple summary using `summary()`
 
 
-```{r}
+
+``` r
 summary(xy_model)
+#> 
+#> Causal statement: 
+#> X -> Y
+#> 
+#> Nodal types: 
+#> $X
+#> 0  1
+#> 
+#>   node position display interpretation
+#> 1    X       NA      X0          X = 0
+#> 2    X       NA      X1          X = 1
+#> 
+#> $Y
+#> 00  10  01  11
+#> 
+#>   node position display interpretation
+#> 1    Y        1   Y[*]*      Y | X = 0
+#> 2    Y        2   Y*[*]      Y | X = 1
+#> 
+#> Number of types by node:
+#> X Y 
+#> 2 4 
+#> 
+#> Number of causal types:  8
+#> 
+#> Note: Model does not contain: posterior_distribution, stan_objects;
+#> to include these objects use update_model()
+#> 
+#> Note: To pose causal queries of this model use query_model()
 ```
 
 or you can examine model details using `inspect()`.
@@ -59,57 +87,209 @@ or you can examine model details using `inspect()`.
 **Inspecting**: The model has a set of parameters and a default distribution over these.
 
 
-```{r}
-xy_model |> inspect("parameters_df") 
+
+``` r
+xy_model |> inspect("parameters_df")
+#> 
+#> parameters_df
+#> Mapping of model parameters to nodal types: 
+#> 
+#>   param_names: name of parameter
+#>   node:        name of endogeneous node associated
+#>                with the parameter
+#>   gen:         partial causal ordering of the
+#>                parameter's node
+#>   param_set:   parameter groupings forming a simplex
+#>   given:       if model has confounding gives
+#>                conditioning nodal type
+#>   param_value: parameter values
+#>   priors:      hyperparameters of the prior
+#>                Dirichlet distribution 
+#> 
+#>   param_names node gen param_set nodal_type given param_value priors
+#> 1         X.0    X   1         X          0              0.50      1
+#> 2         X.1    X   1         X          1              0.50      1
+#> 3        Y.00    Y   2         Y         00              0.25      1
+#> 4        Y.10    Y   2         Y         10              0.25      1
+#> 5        Y.01    Y   2         Y         01              0.25      1
+#> 6        Y.11    Y   2         Y         11              0.25      1
 ```
 
 **Tailoring**: These features can be edited using `set_restrictions`, `set_priors` and `set_parameters`.
 
-Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more): 
+Here is an example of setting a monotonicity restriction  (see `?set_restrictions` for more):
 
-```{r}
-iv_model <- 
+
+``` r
+iv_model <-
   iv_model |> set_restrictions(decreasing('Z', 'X'))
 ```
 
-Here is an example of setting priors (see `?set_priors` for more): 
+Here is an example of setting priors (see `?set_priors` for more):
 
-```{r}
-iv_model <- 
+
+``` r
+iv_model <-
   iv_model |> set_priors(distribution = "jeffreys")
+#> Altering all parameters.
 ```
 
 **Simulation**: Data can be drawn from a model like this:
 
-```{r}
-data <- make_data(iv_model, n = 4) 
+
+``` r
+data <- make_data(iv_model, n = 4)
 
 data |> kable()
-
 ```
+
+
+
+|  Z|  X|  Y|
+|--:|--:|--:|
+|  0|  0|  0|
+|  0|  0|  0|
+|  0|  0|  0|
+|  0|  1|  1|
+
+
 
 # Update the model
 
 **Updating**: Update using `update_model`. You can pass all `rstan` arguments to `update_model`.
 
-```{r}
-df <- 
+
+``` r
+df <-
   data.frame(X = rbinom(100, 1, .5)) |>
   mutate(Y = rbinom(100, 1, .25 + X*.5))
 
-xy_model <- 
-  xy_model |> 
+xy_model <-
+  xy_model |>
   update_model(df, refresh = 0)
+#> 
+#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).
+#> Chain 1: 
+#> Chain 1: Gradient evaluation took 1.5e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
+#> Chain 1: Adjust your expectations accordingly!
+#> Chain 1: 
+#> Chain 1: 
+#> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+#> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+#> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+#> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+#> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+#> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+#> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+#> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+#> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+#> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+#> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+#> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+#> Chain 1: 
+#> Chain 1:  Elapsed Time: 0.078 seconds (Warm-up)
+#> Chain 1:                0.06 seconds (Sampling)
+#> Chain 1:                0.138 seconds (Total)
+#> Chain 1: 
+#> 
+#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).
+#> Chain 2: 
+#> Chain 2: Gradient evaluation took 1.2e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#> Chain 2: Adjust your expectations accordingly!
+#> Chain 2: 
+#> Chain 2: 
+#> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+#> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+#> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+#> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+#> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+#> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+#> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+#> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+#> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+#> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+#> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+#> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+#> Chain 2: 
+#> Chain 2:  Elapsed Time: 0.085 seconds (Warm-up)
+#> Chain 2:                0.08 seconds (Sampling)
+#> Chain 2:                0.165 seconds (Total)
+#> Chain 2: 
+#> 
+#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).
+#> Chain 3: 
+#> Chain 3: Gradient evaluation took 1.5e-05 seconds
+#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
+#> Chain 3: Adjust your expectations accordingly!
+#> Chain 3: 
+#> Chain 3: 
+#> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
+#> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
+#> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
+#> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
+#> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
+#> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+#> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+#> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+#> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+#> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+#> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+#> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
+#> Chain 3: 
+#> Chain 3:  Elapsed Time: 0.078 seconds (Warm-up)
+#> Chain 3:                0.069 seconds (Sampling)
+#> Chain 3:                0.147 seconds (Total)
+#> Chain 3: 
+#> 
+#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).
+#> Chain 4: 
+#> Chain 4: Gradient evaluation took 1e-05 seconds
+#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#> Chain 4: Adjust your expectations accordingly!
+#> Chain 4: 
+#> Chain 4: 
+#> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
+#> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
+#> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
+#> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
+#> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
+#> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+#> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+#> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+#> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+#> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+#> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+#> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
+#> Chain 4: 
+#> Chain 4:  Elapsed Time: 0.067 seconds (Warm-up)
+#> Chain 4:                0.086 seconds (Sampling)
+#> Chain 4:                0.153 seconds (Total)
+#> Chain 4:
 ```
 
 **Inspecting**: You can access the posterior distribution on model parameters directly thus:
 
-```{r}
 
-xy_model |> grab("posterior_distribution") |> 
+``` r
+
+xy_model |> grab("posterior_distribution") |>
   head() |> kable()
-
 ```
+
+
+
+|       X.0|       X.1|      Y.00|      Y.10|      Y.01|      Y.11|
+|---------:|---------:|---------:|---------:|---------:|---------:|
+| 0.5832223| 0.4167777| 0.3364434| 0.0289015| 0.4300116| 0.2046435|
+| 0.5197472| 0.4802528| 0.0094979| 0.2362127| 0.6339646| 0.1203248|
+| 0.5027436| 0.4972564| 0.1816374| 0.0558691| 0.5533184| 0.2091751|
+| 0.5175010| 0.4824990| 0.1201199| 0.1788905| 0.6102219| 0.0907677|
+| 0.4523010| 0.5476990| 0.2520335| 0.1362207| 0.5555310| 0.0562148|
+| 0.4981273| 0.5018727| 0.2911425| 0.0848195| 0.5178918| 0.1061462|
+
+
 
 where each row is a draw of parameters.
 
@@ -117,50 +297,71 @@ where each row is a draw of parameters.
 
 ## Arbitrary queries
 
-**Querying**: You ask arbitrary causal queries of the model. 
+**Querying**: You ask arbitrary causal queries of the model.
 
 Examples of *unconditional* queries:
 
-```{r}
-xy_model |> 
-  query_model("Y[X=1] > Y[X=0]", 
-              using = c("priors", "posteriors")) 
 
+``` r
+xy_model |>
+  query_model("Y[X=1] > Y[X=0]",
+              using = c("priors", "posteriors"))
+#> 
+#> Causal queries generated by query_model (all at population level)
+#> 
+#> |query           |using      |  mean|    sd| cred.low| cred.high|
+#> |:---------------|:----------|-----:|-----:|--------:|---------:|
+#> |Y[X=1] > Y[X=0] |priors     | 0.246| 0.193|    0.007|     0.707|
+#> |Y[X=1] > Y[X=0] |posteriors | 0.523| 0.102|    0.317|     0.703|
 ```
 
 This query asks the probability that $Y(1)> Y(0)$.
 
 Examples of *conditional* queries:
 
-```{r}
-xy_model |> 
-  query_model("Y[X=1] > Y[X=0] :|: X == 1 & Y == 1", using = c("priors", "posteriors")) 
+
+``` r
+xy_model |>
+  query_model("Y[X=1] > Y[X=0] :|: X == 1 & Y == 1", using = c("priors", "posteriors"))
+#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
+#> 1: q <- var4>var3:|
+#>                    ^
 ```
 
 This query asks the probability that $Y(1) > Y(0)$ *given* $X=1$ and $Y=1$; it is a type of "causes of effects" query. Note that ":|:" is used to separate the main query element from the conditional statement to avoid ambiguity, since "|" is reserved for the "or" operator.
 
 Queries can even be conditional on counterfactual quantities. Here the probability of a positive effect given *some* effect:
 
-```{r}
-xy_model |> 
+
+``` r
+xy_model |>
   query_model("Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]",
-              using = c("priors", "posteriors")) 
+              using = c("priors", "posteriors"))
+#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
+#> 1: q <- var6>var5:|
+#>                    ^
 ```
 
-Note that we use ":" to separate the base query from the condition rather than "|" to avoid confusion with logical operators. 
+Note that we use ":" to separate the base query from the condition rather than "|" to avoid confusion with logical operators.
 
 ## Output
 
 Query output is ready for printing as tables, but can also be plotted, which is especially useful with batch requests:
 
 
-```{r, fig.height = 4, fig.width = 8}
-batch_queries <- xy_model |> 
-  query_model(queries = list(ATE = "Y[X=1] - Y[X=0]", 
-                             `Positive effect given any effect` = "Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]"), 
-              using = c("priors", "posteriors"), 
-              expand_grid = TRUE) 
+
+``` r
+batch_queries <- xy_model |>
+  query_model(queries = list(ATE = "Y[X=1] - Y[X=0]",
+                             `Positive effect given any effect` = "Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]"),
+              using = c("priors", "posteriors"),
+              expand_grid = TRUE)
+#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
+#> 1: q <- var6>var5:|
+#>                    ^
 
 batch_queries |> kable(digits = 2, caption = "tabular output")
-batch_queries |> plot() 
+#> Error in eval(expr, envir, enclos): object 'batch_queries' not found
+batch_queries |> plot()
+#> Error in eval(expr, envir, enclos): object 'batch_queries' not found
 ```
