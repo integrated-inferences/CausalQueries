@@ -22,8 +22,8 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
-library(dplyr)
 library(CausalQueries)
+library(dplyr)
 library(knitr)
 library(ggplot2)
 

@@ -1,3 +1,29 @@
+# CausalQueries 1.3.0 
+
+This is a minor release introducing the option to specify causal queries with
+givens in a single statement. This new functionality is meant to make query 
+specification more concise, expressive, and intuitive for users more comfortable 
+with standard statistical notation for conditional distributions.
+
+### New Functionality 
+
+#### 1. Combining queries and givens 
+Instead of specifying the conditioning set of a query in the `given` argument 
+the `given` statement specifying the conditioning set may now be added to the
+query statement directly after the `:|:` operator. We opt for `:|:` instead of 
+the traditional `|` conditioning operator to avoid confusion with the built in 
+logical or operator `|`. 
+
+```
+model <- CausalQueries::make_model("X -> Y")
+
+# using given argument 
+CausalQueries::query_model(model, queries = "Y[X=1] - Y[X=0]", given = "X == 1 & Y == 1")
+
+# new combined specification option
+CausalQueries::query_model(model, queries = "Y[X=1] - Y[X=0] :|: X == 1 & Y == 1")
+```
+
 # CausalQueries 1.2.1
 
 This is a minor release introducing changes meant to focus S3 methods and 

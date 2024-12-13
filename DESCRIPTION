@@ -50,10 +50,10 @@ Suggests:
     rmarkdown,
     DeclareDesign,
     fabricatr,
-    texreg,
     estimatr,
     bayesplot,
-    covr
+    covr,
+    curl
 SystemRequirements: GNU make
 Biarch: true
 VignetteBuilder: knitr

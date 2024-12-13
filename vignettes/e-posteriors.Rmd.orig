@@ -21,14 +21,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message = FALSE, warning = FALSE}
-
 library(CausalQueries)
 library(knitr)
 library(ggplot2)
 library(rstan)
 library(bayesplot)
 rstan_options(refresh = 0)
-
 ```
 
 # Accessing the posterior
@@ -48,7 +46,7 @@ model <- make_model("X -> Y") |>
 data <- data.frame(X = rep(c(0:1), 10), Y = rep(c(0:1), 10))
 
 model <- make_model("X -> Y") |>
-  update_model(data, refresh = 0)
+  CausalQueries:::update_model(data)
 ```
 
 The posterior over parameters can be accessed thus:

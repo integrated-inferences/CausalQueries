@@ -148,8 +148,8 @@ data |> kable()
 |  Z|  X|  Y|
 |--:|--:|--:|
 |  0|  0|  0|
-|  0|  0|  1|
-|  0|  1|  0|
+|  0|  0|  0|
+|  0|  0|  0|
 |  0|  1|  1|
 
 
@@ -170,8 +170,8 @@ xy_model <-
 #> 
 #> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 2.5e-05 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.
+#> Chain 1: Gradient evaluation took 1.5e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -188,9 +188,9 @@ xy_model <-
 #> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 0.146 seconds (Warm-up)
-#> Chain 1:                0.102 seconds (Sampling)
-#> Chain 1:                0.248 seconds (Total)
+#> Chain 1:  Elapsed Time: 0.078 seconds (Warm-up)
+#> Chain 1:                0.06 seconds (Sampling)
+#> Chain 1:                0.138 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).
@@ -213,15 +213,15 @@ xy_model <-
 #> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 0.141 seconds (Warm-up)
-#> Chain 2:                0.115 seconds (Sampling)
-#> Chain 2:                0.256 seconds (Total)
+#> Chain 2:  Elapsed Time: 0.085 seconds (Warm-up)
+#> Chain 2:                0.08 seconds (Sampling)
+#> Chain 2:                0.165 seconds (Total)
 #> Chain 2: 
 #> 
 #> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).
 #> Chain 3: 
-#> Chain 3: Gradient evaluation took 1.3e-05 seconds
-#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+#> Chain 3: Gradient evaluation took 1.5e-05 seconds
+#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
 #> Chain 3: Adjust your expectations accordingly!
 #> Chain 3: 
 #> Chain 3: 
@@ -238,15 +238,15 @@ xy_model <-
 #> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 3: 
-#> Chain 3:  Elapsed Time: 0.127 seconds (Warm-up)
-#> Chain 3:                0.119 seconds (Sampling)
-#> Chain 3:                0.246 seconds (Total)
+#> Chain 3:  Elapsed Time: 0.078 seconds (Warm-up)
+#> Chain 3:                0.069 seconds (Sampling)
+#> Chain 3:                0.147 seconds (Total)
 #> Chain 3: 
 #> 
 #> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).
 #> Chain 4: 
-#> Chain 4: Gradient evaluation took 1.2e-05 seconds
-#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#> Chain 4: Gradient evaluation took 1e-05 seconds
+#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
 #> Chain 4: Adjust your expectations accordingly!
 #> Chain 4: 
 #> Chain 4: 
@@ -263,9 +263,9 @@ xy_model <-
 #> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
 #> Chain 4: 
-#> Chain 4:  Elapsed Time: 0.123 seconds (Warm-up)
-#> Chain 4:                0.125 seconds (Sampling)
-#> Chain 4:                0.248 seconds (Total)
+#> Chain 4:  Elapsed Time: 0.067 seconds (Warm-up)
+#> Chain 4:                0.086 seconds (Sampling)
+#> Chain 4:                0.153 seconds (Total)
 #> Chain 4:
 ```
 
@@ -282,12 +282,12 @@ xy_model |> grab("posterior_distribution") |>
 
 |       X.0|       X.1|      Y.00|      Y.10|      Y.01|      Y.11|
 |---------:|---------:|---------:|---------:|---------:|---------:|
-| 0.5520502| 0.4479498| 0.1232512| 0.1056688| 0.4918974| 0.2791826|
-| 0.5680748| 0.4319252| 0.2676226| 0.0147913| 0.4088748| 0.3087113|
-| 0.5125959| 0.4874041| 0.2518409| 0.0562068| 0.3620440| 0.3299083|
-| 0.5636892| 0.4363108| 0.3425665| 0.0120278| 0.2980010| 0.3474046|
-| 0.5860162| 0.4139838| 0.0303448| 0.3815972| 0.5674809| 0.0205770|
-| 0.6471852| 0.3528148| 0.1797806| 0.1361915| 0.6149564| 0.0690715|
+| 0.5832223| 0.4167777| 0.3364434| 0.0289015| 0.4300116| 0.2046435|
+| 0.5197472| 0.4802528| 0.0094979| 0.2362127| 0.6339646| 0.1203248|
+| 0.5027436| 0.4972564| 0.1816374| 0.0558691| 0.5533184| 0.2091751|
+| 0.5175010| 0.4824990| 0.1201199| 0.1788905| 0.6102219| 0.0907677|
+| 0.4523010| 0.5476990| 0.2520335| 0.1362207| 0.5555310| 0.0562148|
+| 0.4981273| 0.5018727| 0.2911425| 0.0848195| 0.5178918| 0.1061462|
 
 
 
@@ -311,8 +311,8 @@ xy_model |>
 #> 
 #> |query           |using      |  mean|    sd| cred.low| cred.high|
 #> |:---------------|:----------|-----:|-----:|--------:|---------:|
-#> |Y[X=1] > Y[X=0] |priors     | 0.248| 0.195|    0.007|     0.721|
-#> |Y[X=1] > Y[X=0] |posteriors | 0.509| 0.110|    0.287|     0.697|
+#> |Y[X=1] > Y[X=0] |priors     | 0.246| 0.193|    0.007|     0.707|
+#> |Y[X=1] > Y[X=0] |posteriors | 0.523| 0.102|    0.317|     0.703|
 ```
 
 This query asks the probability that $Y(1)> Y(0)$.
