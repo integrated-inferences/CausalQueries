@@ -11,10 +11,10 @@ cran-comments.md
 ^doc$
 ^Meta$
 ^CRAN-SUBMISSION$
-^CONTRIBUTING.md
-^build_vignettes.R
-^a-getting-started.Rmd.orig
-^b-plotting.Rmd.orig
-^c-canonical-models.Rmd.orig
-^d-front-door.Rmd.orig
-^e-posteriors.Rmd.orig
+^CONTRIBUTING.md$
+^build_vignettes.R$
+^a-getting-started.Rmd.orig$
+^b-plotting.Rmd.orig$
+^c-canonical-models.Rmd.orig$
+^d-front-door.Rmd.orig$
+^e-posteriors.Rmd.orig$

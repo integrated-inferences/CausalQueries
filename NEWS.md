@@ -9,7 +9,7 @@ with standard statistical notation for conditional distributions.
 
 #### 1. Combining queries and givens 
 Instead of specifying the conditioning set of a query in the `given` argument 
-the `given` statement specifying the conditioning set may now be added to the
+the `given` statement defining the conditioning set may now be added to the
 query statement directly after the `:|:` operator. We opt for `:|:` instead of 
 the traditional `|` conditioning operator to avoid confusion with the built in 
 logical or operator `|`. 

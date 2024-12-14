@@ -5,6 +5,9 @@
 #'  When writing a new vignette add your vignette name as an optional argument
 #'  to the function call i.e. `build_vignettes("vignette-name")` and ensure
 #'  to add the new vignette name as a default in the vignettes argument
+#'
+#' @keywords internal
+#' @noRd
 
 build_vignettes <- function(vignettes = c("a-getting-started",
                                           "b-plotting",
