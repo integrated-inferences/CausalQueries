@@ -8,8 +8,8 @@
 <title>Inspecting posteriors • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Inspecting posteriors">
 </head>
 <body>
@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -70,8 +70,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://integrated-inferences.github.io/CausalQueries/">CausalQueries</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan/" class="external-link">rstan</a></span><span class="op">)</span></span>
@@ -88,7 +87,7 @@ model.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <p>The posterior over parameters can be accessed thus:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -101,8 +100,8 @@ model.</p>
 <span><span class="co">#&gt;   4000 rows (draws) by 6 cols (parameters)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;      mean   sd</span></span>
-<span><span class="co">#&gt; X.0  0.50 0.11</span></span>
-<span><span class="co">#&gt; X.1  0.50 0.11</span></span>
+<span><span class="co">#&gt; X.0  0.50 0.10</span></span>
+<span><span class="co">#&gt; X.1  0.50 0.10</span></span>
 <span><span class="co">#&gt; Y.00 0.08 0.07</span></span>
 <span><span class="co">#&gt; Y.10 0.04 0.04</span></span>
 <span><span class="co">#&gt; Y.01 0.80 0.11</span></span>
@@ -110,7 +109,7 @@ model.</p>
 <p>When querying a model you can request use of the posterior
 distribution with the <code>using</code> argument:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
 <span>    query <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,</span>
 <span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -158,7 +157,7 @@ distribution with the <code>using</code> argument:</p>
 <td align="left">FALSE</td>
 <td align="right">0.80</td>
 <td align="right">0.11</td>
-<td align="right">0.55</td>
+<td align="right">0.53</td>
 <td align="right">0.95</td>
 </tr>
 </tbody>
@@ -180,23 +179,23 @@ information as produced by <code>stan</code> thus:</p>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; X.0          0.50    0.00 0.11   0.30   0.42   0.50   0.57   0.72  2017    1</span></span>
-<span><span class="co">#&gt; X.1          0.50    0.00 0.11   0.28   0.43   0.50   0.58   0.70  2017    1</span></span>
-<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.27  2159    1</span></span>
-<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4189    1</span></span>
-<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.55   0.74   0.82   0.88   0.95  4365    1</span></span>
-<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.26  4005    1</span></span>
-<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2103    1</span></span>
-<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2172    1</span></span>
-<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3589    1</span></span>
-<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  4177    1</span></span>
-<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2417    1</span></span>
-<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.60  2407    1</span></span>
-<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  3899    1</span></span>
-<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3652    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.04 1.53 -18.42 -15.31 -14.26 -13.52 -12.66  1214    1</span></span>
+<span><span class="co">#&gt; X.0          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
+<span><span class="co">#&gt; X.1          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
+<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2186    1</span></span>
+<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3847    1</span></span>
+<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.53   0.74   0.82   0.88   0.95  3645    1</span></span>
+<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  3956    1</span></span>
+<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2256    1</span></span>
+<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2123    1</span></span>
+<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  3690    1</span></span>
+<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3610    1</span></span>
+<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.22   0.33   0.40   0.46   0.59  2512    1</span></span>
+<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2409    1</span></span>
+<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3842    1</span></span>
+<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Fri Dec  6 19:24:29 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Dec 16 14:31:42 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -223,11 +222,14 @@ on a mediator and the data pattern is consistent with two opposite
 models: one combining positive effects and one combining negative
 effects.)</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y; M &lt;-&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>               iter <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>               refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The largest R-hat is 1.75, indicating chains have not mixed.</span></span>
+<span><span class="co">#&gt; Running the chains for more iterations may help. See</span></span>
+<span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#r-hat</span></span>
 <span><span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
 <span><span class="co">#&gt; Running the chains for more iterations may help. See</span></span>
 <span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
@@ -240,6 +242,7 @@ effects.)</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; stan_warnings</span></span>
 <span><span class="co">#&gt; Stan warnings generated during updating:</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <p>But we will also remind you about them when you use the
@@ -261,6 +264,7 @@ effects.)</p>
 <span><span class="co">#&gt; Use inspect(model, 'stan_objects') to inspect stan summary</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Warnings passed from rstan during updating:</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <p>And also when you query the model:</p>
@@ -269,6 +273,7 @@ effects.)</p>
 <span><span class="co">#&gt; Note: warnings passed from rstan during updating:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model 1 warnings:</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -277,15 +282,18 @@ effects.)</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label |using      | mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-----|:----------|----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |X==1  |posteriors |  0.5| 0.004|    0.493|     0.507|</span></span></code></pre></div>
+<span><span class="co">#&gt; |X==1  |posteriors |  0.5| 0.004|    0.494|     0.507|</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"X==1"</span>, using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: warnings passed from rstan during updating:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model 1 warnings:</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
-<p><img src="e-posteriors_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<div class="float">
+<img src="unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"><div class="figcaption">plot of chunk unnamed-chunk-11</div>
+</div>
 <p>These warnings are not always important but safest to be aware of
 them if they arise and to investigate further. For more on warnings see
 <a href="https://mc-stan.org/misc/warnings.html" class="external-link">stan post on
@@ -297,7 +305,7 @@ warnings</a>.</p>
 <p>If you are interested in advanced diagnostics of performance you can
 save and access the <code>raw</code> stan output.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">data</span>, keep_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the summary for this raw output shows the labels used in
 the generic <code>stan</code> model: <code>lambda</code> for the vector
@@ -317,23 +325,23 @@ event probabilities
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.26  2048    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4175    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.55   0.74   0.81   0.88   0.96  4528    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  4225    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  1999    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2107    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  4059    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  3872    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.39   0.47   0.60  2567    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.34   0.40   0.47   0.60  2481    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3943    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
-<span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Fri Dec  6 19:24:35 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Dec 16 14:31:56 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -350,27 +358,29 @@ event probabilities
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.26  2048    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4175    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.55   0.74   0.81   0.88   0.96  4528    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  4225    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  1999    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2107    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  4059    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  3872    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.39   0.47   0.60  2567    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.34   0.40   0.47   0.60  2481    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3943    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
-<span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Fri Dec  6 19:24:35 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Dec 16 14:31:56 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
-<p><img src="e-posteriors_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<div class="float">
+<img src="unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15"><div class="figcaption">plot of chunk unnamed-chunk-15</div>
+</div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">np</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"stanfit"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">nuts_params</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -381,23 +391,23 @@ event probabilities
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.26  2048    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4175    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.55   0.74   0.81   0.88   0.96  4528    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  4225    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  1999    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2107    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  4059    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  3872    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.39   0.47   0.60  2567    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.34   0.40   0.47   0.60  2481    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3943    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
-<span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Fri Dec  6 19:24:35 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Dec 16 14:31:56 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
@@ -414,45 +424,45 @@ event probabilities
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9753211</td>
+<td align="right">0.9761858</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9603321</td>
+<td align="right">0.9923295</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">3</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9661280</td>
+<td align="right">0.9462610</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">4</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9968458</td>
+<td align="right">0.9934953</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">5</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.8585578</td>
+<td align="right">0.9442020</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">6</td>
 <td align="left">accept_stat__</td>
-<td align="right">0.9990942</td>
+<td align="right">0.9972044</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">model</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"stanfit"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-traces.html" class="external-link">mcmc_trace</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="st">"lambdas[5]"</span>, np <span class="op">=</span> <span class="va">np</span><span class="op">)</span> </span>
+<span>  <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-traces.html" class="external-link">mcmc_trace</a></span><span class="op">(</span>pars <span class="op">=</span> <span class="st">"lambdas[5]"</span>, np <span class="op">=</span> <span class="va">np</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; stanfit</span></span>
 <span><span class="co">#&gt; Stan model summary:</span></span>
@@ -461,28 +471,30 @@ event probabilities
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.50    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.50    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2139    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.26  2048    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  4175    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.55   0.74   0.81   0.88   0.96  4528    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  4225    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.05   0.14  1999    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2107    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  4059    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.07  3872    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.39   0.47   0.60  2567    1</span></span>
-<span><span class="co">#&gt; types[6]     0.40    0.00 0.10   0.22   0.34   0.40   0.47   0.60  2481    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3943    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4067    1</span></span>
-<span><span class="co">#&gt; lp__       -14.55    0.04 1.52 -18.45 -15.30 -14.24 -13.42 -12.63  1348    1</span></span>
+<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Fri Dec  6 19:24:35 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Dec 16 14:31:56 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
 <span><span class="co">#&gt; No divergences to plot.</span></span></code></pre></div>
-<p><img src="e-posteriors_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<div class="float">
+<img src="unnamed-chunk-16-1.png" alt="plot of chunk unnamed-chunk-16"><div class="figcaption">plot of chunk unnamed-chunk-16</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

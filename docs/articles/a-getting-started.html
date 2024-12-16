@@ -8,8 +8,8 @@
 <title>Getting Started • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started">
 </head>
 <body>
@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -77,13 +77,11 @@
 <h2 id="make-a-model">Make a model<a class="anchor" aria-label="anchor" href="#make-a-model"></a>
 </h2>
 <p><strong>Generating</strong>: To make a model you need to provide a
-DAG statement to <code>make_model</code>.<br>
-For instance</p>
+DAG statement to <code>make_model</code>. For instance</p>
 <ul>
 <li><code>"X-&gt;Y"</code></li>
 <li>
-<code>"X -&gt; M -&gt; Y &lt;- X"</code> or<br>
-</li>
+<code>"X -&gt; M -&gt; Y &lt;- X"</code> or</li>
 <li>
 <code>"Z -&gt; X -&gt; Y &lt;-&gt; X"</code>.</li>
 </ul>
@@ -95,7 +93,9 @@ For instance</p>
 the DAG:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xy_model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a-getting-started_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<div class="float">
+<img src="unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"><div class="figcaption">plot of chunk unnamed-chunk-3</div>
+</div>
 <p><strong>Simple summaries:</strong> You can access a simple summary
 using <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -133,7 +133,7 @@ using <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">
 <p><strong>Inspecting</strong>: The model has a set of parameters and a
 default distribution over these.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"parameters_df"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; parameters_df</span></span>
 <span><span class="co">#&gt; Mapping of model parameters to nodal types: </span></span>
@@ -163,18 +163,18 @@ default distribution over these.</p>
 <p>Here is an example of setting a monotonicity restriction (see
 <code><a href="../reference/set_restrictions.html">?set_restrictions</a></code> for more):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">iv_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/set_restrictions.html">set_restrictions</a></span><span class="op">(</span><span class="fu"><a href="../reference/query_helpers.html">decreasing</a></span><span class="op">(</span><span class="st">'Z'</span>, <span class="st">'X'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Here is an example of setting priors (see <code><a href="../reference/prior_setting.html">?set_priors</a></code>
 for more):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">iv_model</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">iv_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prior_setting.html">set_priors</a></span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"jeffreys"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Altering all parameters.</span></span></code></pre></div>
 <p><strong>Simulation</strong>: Data can be drawn from a model like
 this:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">iv_model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">iv_model</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -186,23 +186,23 @@ this:</p>
 <tbody>
 <tr class="odd">
 <td align="right">0</td>
-<td align="right">1</td>
+<td align="right">0</td>
 <td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">1</td>
+<td align="right">0</td>
 </tr>
 </tbody>
 </table>
@@ -214,18 +214,18 @@ this:</p>
 You can pass all <code>rstan</code> arguments to
 <code>update_model</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">.25</span> <span class="op">+</span> <span class="va">X</span><span class="op">*</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">xy_model</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">xy_model</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">xy_model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span><span class="va">df</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Inspecting</strong>: You can access the posterior
 distribution on model parameters directly thus:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">grab</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">xy_model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">grab</a></span><span class="op">(</span><span class="st">"posterior_distribution"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -238,52 +238,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.5753580</td>
-<td align="right">0.4246420</td>
-<td align="right">0.3200689</td>
-<td align="right">0.0212222</td>
-<td align="right">0.3026902</td>
-<td align="right">0.3560188</td>
+<td align="right">0.5515163</td>
+<td align="right">0.4484837</td>
+<td align="right">0.2847141</td>
+<td align="right">0.1177726</td>
+<td align="right">0.5741150</td>
+<td align="right">0.0233983</td>
 </tr>
 <tr class="even">
-<td align="right">0.4739469</td>
-<td align="right">0.5260531</td>
-<td align="right">0.0558439</td>
-<td align="right">0.2716129</td>
-<td align="right">0.6680584</td>
-<td align="right">0.0044848</td>
+<td align="right">0.5265501</td>
+<td align="right">0.4734499</td>
+<td align="right">0.1473281</td>
+<td align="right">0.2074736</td>
+<td align="right">0.6224344</td>
+<td align="right">0.0227639</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5536695</td>
-<td align="right">0.4463305</td>
-<td align="right">0.2796148</td>
-<td align="right">0.0394937</td>
-<td align="right">0.3828392</td>
-<td align="right">0.2980523</td>
+<td align="right">0.4597457</td>
+<td align="right">0.5402543</td>
+<td align="right">0.2233002</td>
+<td align="right">0.1362462</td>
+<td align="right">0.3923527</td>
+<td align="right">0.2481008</td>
 </tr>
 <tr class="even">
-<td align="right">0.5637255</td>
-<td align="right">0.4362745</td>
-<td align="right">0.0400795</td>
-<td align="right">0.2803051</td>
-<td align="right">0.5334376</td>
-<td align="right">0.1461778</td>
+<td align="right">0.5754801</td>
+<td align="right">0.4245199</td>
+<td align="right">0.1631742</td>
+<td align="right">0.1542270</td>
+<td align="right">0.6013710</td>
+<td align="right">0.0812279</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5497653</td>
-<td align="right">0.4502347</td>
-<td align="right">0.2183308</td>
-<td align="right">0.1853638</td>
-<td align="right">0.4252914</td>
-<td align="right">0.1710140</td>
+<td align="right">0.6779082</td>
+<td align="right">0.3220918</td>
+<td align="right">0.1429733</td>
+<td align="right">0.1443515</td>
+<td align="right">0.6242878</td>
+<td align="right">0.0883874</td>
 </tr>
 <tr class="even">
-<td align="right">0.5753659</td>
-<td align="right">0.4246341</td>
-<td align="right">0.3354539</td>
-<td align="right">0.0511024</td>
-<td align="right">0.2544983</td>
-<td align="right">0.3589455</td>
+<td align="right">0.5075180</td>
+<td align="right">0.4924820</td>
+<td align="right">0.0409841</td>
+<td align="right">0.2349819</td>
+<td align="right">0.6799476</td>
+<td align="right">0.0440865</td>
 </tr>
 </tbody>
 </table>
@@ -299,29 +299,29 @@ distribution on model parameters directly thus:</p>
 model.</p>
 <p>Examples of <em>unconditional</em> queries:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>, </span>
-<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0]"</span>,</span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label           |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:---------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.254| 0.196|    0.007|     0.722|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.439| 0.122|    0.191|     0.648|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.249| 0.195|    0.008|     0.722|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.552| 0.104|    0.327|     0.725|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1)&gt; Y(0)</annotation></semantics></math>.</p>
 <p>Examples of <em>conditional</em> queries:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0] :|: X == 1 &amp; Y == 1"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0] :|: X == 1 &amp; Y == 1"</span>, using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label                                 |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.499| 0.287|    0.023|     0.978|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.667| 0.174|    0.330|     0.963|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.498| 0.288|    0.027|     0.971|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.779| 0.126|    0.514|     0.983|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1) &gt; Y(0)</annotation></semantics></math><em>given</em>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1</annotation></semantics></math>
@@ -333,16 +333,16 @@ ambiguity, since “|” is reserved for the “or” operator.</p>
 <p>Queries can even be conditional on counterfactual quantities. Here
 the probability of a positive effect given <em>some</em> effect:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">xy_model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="st">"Y[X=1] &gt; Y[X=0] :|: Y[X=1] != Y[X=0]"</span>,</span>
-<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span> </span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label                                  |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.503| 0.290|    0.024|     0.975|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.751| 0.106|    0.572|     0.971|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.494| 0.291|    0.020|     0.977|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.829| 0.085|    0.673|     0.991|</span></span></code></pre></div>
 <p>Note that we use “:” to separate the base query from the condition
 rather than “|” to avoid confusion with logical operators.</p>
 </div>
@@ -352,22 +352,22 @@ rather than “|” to avoid confusion with logical operators.</p>
 <p>Query output is ready for printing as tables, but can also be
 plotted, which is especially useful with batch requests:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">&lt;-</span> <span class="va">xy_model</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>, </span>
-<span>                             `Positive effect given any effect` <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0] :|: Y[X=1] != Y[X=0]"</span><span class="op">)</span>, </span>
-<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>, </span>
-<span>              expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">&lt;-</span> <span class="va">xy_model</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span>queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
+<span>                             `Positive effect given any effect` <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0] :|: Y[X=1] != Y[X=0]"</span><span class="op">)</span>,</span>
+<span>              using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
+<span>              expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span>, caption <span class="op">=</span> <span class="st">"tabular output"</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <caption>tabular output</caption>
 <colgroup>
-<col width="28%">
+<col width="27%">
 <col width="13%">
 <col width="14%">
 <col width="9%">
 <col width="9%">
-<col width="4%">
+<col width="5%">
 <col width="4%">
 <col width="7%">
 <col width="8%">
@@ -390,10 +390,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.00</td>
+<td align="right">-0.01</td>
 <td align="right">0.32</td>
-<td align="right">-0.62</td>
-<td align="right">0.63</td>
+<td align="right">-0.64</td>
+<td align="right">0.62</td>
 </tr>
 <tr class="even">
 <td align="left">ATE</td>
@@ -401,10 +401,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.28</td>
-<td align="right">0.10</td>
-<td align="right">0.08</td>
-<td align="right">0.45</td>
+<td align="right">0.43</td>
+<td align="right">0.09</td>
+<td align="right">0.24</td>
+<td align="right">0.59</td>
 </tr>
 <tr class="odd">
 <td align="left">Positive effect given any effect</td>
@@ -414,7 +414,7 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">FALSE</td>
 <td align="right">0.50</td>
 <td align="right">0.29</td>
-<td align="right">0.02</td>
+<td align="right">0.03</td>
 <td align="right">0.98</td>
 </tr>
 <tr class="even">
@@ -423,16 +423,18 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.75</td>
-<td align="right">0.11</td>
-<td align="right">0.57</td>
-<td align="right">0.97</td>
+<td align="right">0.83</td>
+<td align="right">0.09</td>
+<td align="right">0.67</td>
+<td align="right">0.99</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="a-getting-started_files/figure-html/unnamed-chunk-14-1.png" width="768"></p>
+<code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="unnamed-chunk-14-1.png" alt="plot of chunk unnamed-chunk-14"><div class="figcaption">plot of chunk unnamed-chunk-14</div>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

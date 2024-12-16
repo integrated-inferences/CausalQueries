@@ -62,14 +62,9 @@ model |>
               using = c("parameters", "priors", "posteriors")) |>
 
   plot()
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 3, 2
 ```
+
+![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
 
 
 
@@ -111,8 +106,9 @@ model |>
               using = c("parameters", "priors", "posteriors")) |>
 
   plot()
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 3, 2
 ```
+
+![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
 
 
 
@@ -152,17 +148,6 @@ model |>
               using = c("parameters", "posteriors")) |>
 
   plot()
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Note: warnings passed from rstan during updating:
-#> 
-#> Model 1 warnings:
-#> Bulk Effective Samples Size (ESS) is too low
-#> Tail Effective Samples Size (ESS) is too low
 ```
 
 ![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
@@ -214,10 +199,9 @@ model |>
     cred = 99) |>
 
   plot()
-#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
-#> 1: q <- var7-var6:|
-#>                    ^
 ```
+
+![IV inferences I](unnamed-chunk-9-1.png)
 
 Note the relatively tight posterior for the complier average effect (LATE) and the wide posterior for the average effect and for the probability of causation.
 
@@ -257,16 +241,9 @@ model |>
 ) |>
 
   plot()
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
-#> 1: q <- var7-var6:|
-#>                    ^
 ```
+
+![IV inferences II](unnamed-chunk-11-1.png)
 
 We updated here using a relatively large number of iterations to ensure stable estimates. Note the failure of the two key assumptions are reflected by larger credibility intervals and underestimates for all quantities.
 
@@ -319,11 +296,9 @@ model |>
     using = c("parameters", "posteriors")) |>
 
   plot()
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 2, 7
 ```
+
+![Mediation model](unnamed-chunk-13-1.png)
 
 We estimate all quantities very well.
 
@@ -360,11 +335,9 @@ model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
     ) |>
 
   plot()
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 2, 7
 ```
+
+![plot of chunk unnamed-chunk-15](unnamed-chunk-15-1.png)
 
 
 We see we do not do nearly so well. To ensure stable estimates we ran a large number of iterations. For the non-identified quantities our credibility intervals are not tight (which is as it should be!) and in one case the  true value lies outside of them (which is not as it should be). This highlights the extreme difficulty of this problem.  Nevertheless the gains relative to the priors are considerable.
@@ -405,8 +378,8 @@ data <- make_data(model, n = 5000, using = "parameters")
 
 |term        | estimate| std.error| statistic| p.value| conf.low| conf.high|   df|outcome |
 |:-----------|--------:|---------:|---------:|-------:|--------:|---------:|----:|:-------|
-|(Intercept) |     0.76|      0.01|     67.11|       0|     0.74|      0.78| 4998|Y       |
-|X           |    -0.05|      0.01|     -3.98|       0|    -0.08|     -0.03| 4998|Y       |
+|(Intercept) |     0.75|      0.01|     66.39|       0|     0.73|      0.78| 4998|Y       |
+|X           |    -0.05|      0.01|     -3.63|       0|    -0.08|     -0.02| 4998|Y       |
 
 
 
@@ -424,8 +397,9 @@ model |>
       PoC = "Y[X=1] - Y[X=0] :|: X==1 & Y==1"),
     using = c("posteriors", "priors", "parameters")) |>
   plot()
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 3, 2
 ```
+
+![plot of chunk unnamed-chunk-19](unnamed-chunk-19-1.png)
 
 
 ## *M*-bias
@@ -476,8 +450,8 @@ Table: Estimation with and without controls
 
 |Model         |term | estimate| std.error| statistic| p.value| conf.low| conf.high|  df|outcome |
 |:-------------|:----|--------:|---------:|---------:|-------:|--------:|---------:|---:|:-------|
-|no controls   |X    |    -0.03|      0.03|     -0.90|    0.37|    -0.09|      0.03| 998|Y       |
-|with controls |X    |    -0.15|      0.03|     -4.85|    0.00|    -0.21|     -0.09| 997|Y       |
+|no controls   |X    |     0.04|      0.03|      1.32|    0.19|    -0.02|      0.10| 998|Y       |
+|with controls |X    |    -0.11|      0.03|     -3.48|    0.00|    -0.18|     -0.05| 997|Y       |
 
 
 
@@ -497,17 +471,9 @@ list(
     using = c("parameters", "priors",  "posteriors")) |>
 
   plot()
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Error in data.frame(model_names = m, using = unname(unlist(using)), given = unname(unlist(given)), : arguments imply differing number of rows: 1, 3, 2
 ```
+
+![plot of chunk unnamed-chunk-23](unnamed-chunk-23-1.png)
 
 ## References
 

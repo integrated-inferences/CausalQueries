@@ -76,10 +76,10 @@ query_model(
 
 
 
-|query           |given |using      |case_level | mean|   sd| cred.low| cred.high|
-|:---------------|:-----|:----------|:----------|----:|----:|--------:|---------:|
-|Y[X=1] - Y[X=0] |-     |priors     |FALSE      | 0.00| 0.15|    -0.33|      0.35|
-|Y[X=1] - Y[X=0] |-     |posteriors |FALSE      | 0.78| 0.02|     0.74|      0.81|
+|label           |query           |given |using      |case_level | mean|   sd| cred.low| cred.high|
+|:---------------|:---------------|:-----|:----------|:----------|----:|----:|--------:|---------:|
+|Y[X=1] - Y[X=0] |Y[X=1] - Y[X=0] |-     |priors     |FALSE      | 0.00| 0.14|    -0.34|      0.29|
+|Y[X=1] - Y[X=0] |Y[X=1] - Y[X=0] |-     |posteriors |FALSE      | 0.79| 0.02|     0.76|      0.82|
 
 
 
@@ -101,10 +101,10 @@ model |>
 
 
 
-|query           |given |using      |case_level | mean|   sd| cred.low| cred.high|
-|:---------------|:-----|:----------|:----------|----:|----:|--------:|---------:|
-|Y[X=1] - Y[X=0] |-     |priors     |FALSE      | 0.01| 0.15|    -0.31|      0.40|
-|Y[X=1] - Y[X=0] |-     |posteriors |FALSE      | 0.09| 0.15|    -0.03|      0.55|
+|label           |query           |given |using      |case_level | mean|   sd| cred.low| cred.high|
+|:---------------|:---------------|:-----|:----------|:----------|----:|----:|--------:|---------:|
+|Y[X=1] - Y[X=0] |Y[X=1] - Y[X=0] |-     |priors     |FALSE      |  0.0| 0.14|    -0.34|      0.34|
+|Y[X=1] - Y[X=0] |Y[X=1] - Y[X=0] |-     |posteriors |FALSE      |  0.1| 0.17|    -0.03|      0.60|
 
 
 

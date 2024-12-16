@@ -147,10 +147,10 @@ data |> kable()
 
 |  Z|  X|  Y|
 |--:|--:|--:|
-|  0|  0|  0|
-|  0|  0|  0|
-|  0|  0|  0|
-|  0|  1|  1|
+|  0|  0|  1|
+|  1|  0|  1|
+|  1|  1|  0|
+|  1|  1|  0|
 
 
 
@@ -167,106 +167,6 @@ df <-
 xy_model <-
   xy_model |>
   update_model(df, refresh = 0)
-#> 
-#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 1).
-#> Chain 1: 
-#> Chain 1: Gradient evaluation took 1.5e-05 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
-#> Chain 1: Adjust your expectations accordingly!
-#> Chain 1: 
-#> Chain 1: 
-#> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
-#> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
-#> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
-#> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
-#> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
-#> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-#> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-#> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-#> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-#> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-#> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-#> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
-#> Chain 1: 
-#> Chain 1:  Elapsed Time: 0.078 seconds (Warm-up)
-#> Chain 1:                0.06 seconds (Sampling)
-#> Chain 1:                0.138 seconds (Total)
-#> Chain 1: 
-#> 
-#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 2).
-#> Chain 2: 
-#> Chain 2: Gradient evaluation took 1.2e-05 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
-#> Chain 2: Adjust your expectations accordingly!
-#> Chain 2: 
-#> Chain 2: 
-#> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
-#> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
-#> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
-#> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
-#> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
-#> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-#> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-#> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-#> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-#> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-#> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-#> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
-#> Chain 2: 
-#> Chain 2:  Elapsed Time: 0.085 seconds (Warm-up)
-#> Chain 2:                0.08 seconds (Sampling)
-#> Chain 2:                0.165 seconds (Total)
-#> Chain 2: 
-#> 
-#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 3).
-#> Chain 3: 
-#> Chain 3: Gradient evaluation took 1.5e-05 seconds
-#> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
-#> Chain 3: Adjust your expectations accordingly!
-#> Chain 3: 
-#> Chain 3: 
-#> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
-#> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
-#> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
-#> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
-#> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
-#> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-#> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-#> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-#> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-#> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-#> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-#> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
-#> Chain 3: 
-#> Chain 3:  Elapsed Time: 0.078 seconds (Warm-up)
-#> Chain 3:                0.069 seconds (Sampling)
-#> Chain 3:                0.147 seconds (Total)
-#> Chain 3: 
-#> 
-#> SAMPLING FOR MODEL 'simplexes' NOW (CHAIN 4).
-#> Chain 4: 
-#> Chain 4: Gradient evaluation took 1e-05 seconds
-#> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-#> Chain 4: Adjust your expectations accordingly!
-#> Chain 4: 
-#> Chain 4: 
-#> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
-#> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
-#> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
-#> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
-#> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
-#> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-#> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-#> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-#> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-#> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-#> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-#> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
-#> Chain 4: 
-#> Chain 4:  Elapsed Time: 0.067 seconds (Warm-up)
-#> Chain 4:                0.086 seconds (Sampling)
-#> Chain 4:                0.153 seconds (Total)
-#> Chain 4:
 ```
 
 **Inspecting**: You can access the posterior distribution on model parameters directly thus:
@@ -282,12 +182,12 @@ xy_model |> grab("posterior_distribution") |>
 
 |       X.0|       X.1|      Y.00|      Y.10|      Y.01|      Y.11|
 |---------:|---------:|---------:|---------:|---------:|---------:|
-| 0.5832223| 0.4167777| 0.3364434| 0.0289015| 0.4300116| 0.2046435|
-| 0.5197472| 0.4802528| 0.0094979| 0.2362127| 0.6339646| 0.1203248|
-| 0.5027436| 0.4972564| 0.1816374| 0.0558691| 0.5533184| 0.2091751|
-| 0.5175010| 0.4824990| 0.1201199| 0.1788905| 0.6102219| 0.0907677|
-| 0.4523010| 0.5476990| 0.2520335| 0.1362207| 0.5555310| 0.0562148|
-| 0.4981273| 0.5018727| 0.2911425| 0.0848195| 0.5178918| 0.1061462|
+| 0.5515163| 0.4484837| 0.2847141| 0.1177726| 0.5741150| 0.0233983|
+| 0.5265501| 0.4734499| 0.1473281| 0.2074736| 0.6224344| 0.0227639|
+| 0.4597457| 0.5402543| 0.2233002| 0.1362462| 0.3923527| 0.2481008|
+| 0.5754801| 0.4245199| 0.1631742| 0.1542270| 0.6013710| 0.0812279|
+| 0.6779082| 0.3220918| 0.1429733| 0.1443515| 0.6242878| 0.0883874|
+| 0.5075180| 0.4924820| 0.0409841| 0.2349819| 0.6799476| 0.0440865|
 
 
 
@@ -309,10 +209,10 @@ xy_model |>
 #> 
 #> Causal queries generated by query_model (all at population level)
 #> 
-#> |query           |using      |  mean|    sd| cred.low| cred.high|
+#> |label           |using      |  mean|    sd| cred.low| cred.high|
 #> |:---------------|:----------|-----:|-----:|--------:|---------:|
-#> |Y[X=1] > Y[X=0] |priors     | 0.246| 0.193|    0.007|     0.707|
-#> |Y[X=1] > Y[X=0] |posteriors | 0.523| 0.102|    0.317|     0.703|
+#> |Y[X=1] > Y[X=0] |priors     | 0.249| 0.195|    0.008|     0.722|
+#> |Y[X=1] > Y[X=0] |posteriors | 0.552| 0.104|    0.327|     0.725|
 ```
 
 This query asks the probability that $Y(1)> Y(0)$.
@@ -323,9 +223,13 @@ Examples of *conditional* queries:
 ``` r
 xy_model |>
   query_model("Y[X=1] > Y[X=0] :|: X == 1 & Y == 1", using = c("priors", "posteriors"))
-#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
-#> 1: q <- var4>var3:|
-#>                    ^
+#> 
+#> Causal queries generated by query_model (all at population level)
+#> 
+#> |label                                 |using      |  mean|    sd| cred.low| cred.high|
+#> |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|
+#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |priors     | 0.498| 0.288|    0.027|     0.971|
+#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |posteriors | 0.779| 0.126|    0.514|     0.983|
 ```
 
 This query asks the probability that $Y(1) > Y(0)$ *given* $X=1$ and $Y=1$; it is a type of "causes of effects" query. Note that ":|:" is used to separate the main query element from the conditional statement to avoid ambiguity, since "|" is reserved for the "or" operator.
@@ -337,9 +241,13 @@ Queries can even be conditional on counterfactual quantities. Here the probabili
 xy_model |>
   query_model("Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]",
               using = c("priors", "posteriors"))
-#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
-#> 1: q <- var6>var5:|
-#>                    ^
+#> 
+#> Causal queries generated by query_model (all at population level)
+#> 
+#> |label                                  |using      |  mean|    sd| cred.low| cred.high|
+#> |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|
+#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.494| 0.291|    0.020|     0.977|
+#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.829| 0.085|    0.673|     0.991|
 ```
 
 Note that we use ":" to separate the base query from the condition rather than "|" to avoid confusion with logical operators.
@@ -356,12 +264,25 @@ batch_queries <- xy_model |>
                              `Positive effect given any effect` = "Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]"),
               using = c("priors", "posteriors"),
               expand_grid = TRUE)
-#> Error in parse(text = w_query): <text>:1:16: unexpected '|'
-#> 1: q <- var6>var5:|
-#>                    ^
 
 batch_queries |> kable(digits = 2, caption = "tabular output")
-#> Error in eval(expr, envir, enclos): object 'batch_queries' not found
-batch_queries |> plot()
-#> Error in eval(expr, envir, enclos): object 'batch_queries' not found
 ```
+
+
+
+Table: tabular output
+
+|label                            |query           |given            |using      |case_level |  mean|   sd| cred.low| cred.high|
+|:--------------------------------|:---------------|:----------------|:----------|:----------|-----:|----:|--------:|---------:|
+|ATE                              |Y[X=1] - Y[X=0] |-                |priors     |FALSE      | -0.01| 0.32|    -0.64|      0.62|
+|ATE                              |Y[X=1] - Y[X=0] |-                |posteriors |FALSE      |  0.43| 0.09|     0.24|      0.59|
+|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |priors     |FALSE      |  0.50| 0.29|     0.03|      0.98|
+|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |posteriors |FALSE      |  0.83| 0.09|     0.67|      0.99|
+
+
+
+``` r
+batch_queries |> plot()
+```
+
+![plot of chunk unnamed-chunk-14](unnamed-chunk-14-1.png)

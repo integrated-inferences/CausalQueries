@@ -8,8 +8,8 @@
 <title>Through the front door • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Through the front door">
 </head>
 <body>
@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -89,7 +89,9 @@ caused <code>Y</code> making use of the “front door criterion.”</p>
 <p>You can plot the dag like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="d-front-door_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<div class="float">
+<img src="unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4"><div class="figcaption">plot of chunk unnamed-chunk-4</div>
+</div>
 <p>Updating is done like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Lets imagine highly correlated data; here an effect of .9 at each step</span></span>
@@ -103,7 +105,7 @@ caused <code>Y</code> making use of the “front door criterion.”</p>
 <p>Finally you can calculate an estimand of interest like this:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span></span>
-<span>    model <span class="op">=</span> <span class="va">model</span>, </span>
+<span>    model <span class="op">=</span> <span class="va">model</span>,</span>
 <span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"priors"</span>, <span class="st">"posteriors"</span><span class="op">)</span>,</span>
 <span>    query <span class="op">=</span> <span class="st">"Y[X=1] - Y[X=0]"</span>,</span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -138,10 +140,10 @@ caused <code>Y</code> making use of the “front door criterion.”</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.0</td>
+<td align="right">0.00</td>
 <td align="right">0.14</td>
-<td align="right">-0.33</td>
-<td align="right">0.33</td>
+<td align="right">-0.34</td>
+<td align="right">0.29</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] - Y[X=0]</td>
@@ -149,10 +151,10 @@ caused <code>Y</code> making use of the “front door criterion.”</p>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.8</td>
+<td align="right">0.79</td>
 <td align="right">0.02</td>
 <td align="right">0.76</td>
-<td align="right">0.83</td>
+<td align="right">0.82</td>
 </tr>
 </tbody>
 </table>
@@ -198,10 +200,10 @@ average treatment effect estimand.</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.00</td>
+<td align="right">0.0</td>
 <td align="right">0.14</td>
-<td align="right">-0.33</td>
-<td align="right">0.32</td>
+<td align="right">-0.34</td>
+<td align="right">0.34</td>
 </tr>
 <tr class="even">
 <td align="left">Y[X=1] - Y[X=0]</td>
@@ -209,10 +211,10 @@ average treatment effect estimand.</p>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.09</td>
-<td align="right">0.15</td>
+<td align="right">0.1</td>
+<td align="right">0.17</td>
 <td align="right">-0.03</td>
-<td align="right">0.54</td>
+<td align="right">0.60</td>
 </tr>
 </tbody>
 </table>

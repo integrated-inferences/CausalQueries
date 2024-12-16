@@ -13,9 +13,12 @@ vignette: >
 
 
 
-Plotting functionality  makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering. 
 
-The `plot` method calls `plot_model` and passes any provided arguments to it.
+
+
+Plotting functionality makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering.
+
+The `plot` method calls `plot_model` and passes provided arguments to it.
 
 ## A basic plot:
 
