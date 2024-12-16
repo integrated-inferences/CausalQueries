@@ -82,6 +82,7 @@
 #' @importFrom rstan sampling
 #'
 #' @export
+
 update_model <- function(model,
                          data = NULL,
                          data_type = NULL,

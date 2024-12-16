@@ -1,9 +1,11 @@
-This is a patch release fixing issues flagged by CRAN incoming checks. 
+This is a minor release introducing new syntax to combine causal statements or 
+queries with givens via standard statistical notation for conditional 
+distributions. 
 
 ## Test environments
 
 * local Ubuntu 22.04.3 LTS install, R 4.4.1
-* win-builder, R version 4.4.1 
+* win-builder, R version 4.4.2 
 * win-builder, R version 4.3.3
 * win-builder, R r-devel
 * macOS, R version 4.3.3

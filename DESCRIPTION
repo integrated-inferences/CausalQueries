@@ -23,7 +23,7 @@ LazyData: true
 RoxygenNote: 7.3.2
 Depends:
     methods,
-    R (>= 3.4.0)
+    R (>= 3.5.0)
 Imports:
     dplyr,
     dirmult (>= 0.1.3-4),
@@ -50,10 +50,10 @@ Suggests:
     rmarkdown,
     DeclareDesign,
     fabricatr,
-    texreg,
     estimatr,
     bayesplot,
-    covr
+    covr,
+    curl
 SystemRequirements: GNU make
 Biarch: true
 VignetteBuilder: knitr

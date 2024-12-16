@@ -11,52 +11,59 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  echo = TRUE,
+  comment = "#>",
+  fig.path = ""
+)
+
+```
+
+```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
+library(CausalQueries)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+
+```
 
 
-Plotting functionality  makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering. 
+Plotting functionality uses `plot_model` makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering.
 
-The `plot` method calls `plot_model` and passes any provided arguments to it.
+The `plot` method calls `plot_model` and passes provided arguments to it.
 
 ## A basic plot:
 
-
-``` r
+```{r}
 model <- make_model("X -> Y")
 
 model |> plot_model()
 ```
 
-![plot of chunk unnamed-chunk-2](unnamed-chunk-2-1.png)
-
 ## ggplot layers
 
 The model that is produced is a `ggplot` object and additional layers can be added in the usual way.
 
-
-``` r
+```{r}
 model |>
   plot_model()  +
   annotate("text", x = c(1, -1) , y = c(1.5, 1.5), label = c("Some text", "Some more text")) +
   coord_flip()
 ```
 
-![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
-
 
 ## Adding labels
 
 Provide labels in the same order as model nodes.
 
-
-``` r
+```{r}
 model <- make_model("A -> B -> C <- A")
 
 
 # Check node ordering
 inspect(model, "nodes")
-#> 
-#> Nodes: 
-#> A, B, C
 
 # Provide labels
 model |>
@@ -65,86 +72,67 @@ model |>
      nodecol = "white", textcol = "black")
 ```
 
-![plot of chunk unnamed-chunk-4](unnamed-chunk-4-1.png)
-
 ## Controlling  positions
 
 You can manually set positions using the `x_coord` and `y_coord` arguments.
 
 You can manually set positions using the `x_coord` and `y_coord` arguments.
 
-
-``` r
+```{r}
 model |>
   plot(x_coord = 0:2,  y_coord = c(0, 2, 1))
 ```
-
-![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
 
 
 ## Controlling  color
 
 You can manually control node color and text color for all nodes together or separately.
 
-
-``` r
+```{r}
 model |>
   plot(x_coord = 0:2,  y_coord = c(0, 2, 1),
        nodecol = c("blue", "orange", "red"),
        textcol = c("white", "red", "blue"))
 ```
 
-![plot of chunk unnamed-chunk-6](unnamed-chunk-6-1.png)
-
 # Models with unobserved confounding
 
 Unobserved confounding is represented using dashed curves.
 
 
-
-``` r
+```{r}
 make_model('X -> K -> Y <- X; X <-> Y; K <-> Y') |>   plot()
 ```
-
-![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
 
 # More complex models
 
 ## Effective node placement
 
-
-``` r
+```{r}
 make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
            add_causal_types = FALSE) |>
   plot()
 ```
-
-![plot of chunk unnamed-chunk-8](unnamed-chunk-8-1.png)
 
 
 ## Requires manual coordinates
 
 This graph has bad node placement.
 
-
-``` r
+```{r}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
            add_causal_types = FALSE) |>
   plot()
 ```
 
-![plot of chunk unnamed-chunk-9](unnamed-chunk-9-1.png)
-
 Better:
 
-
-``` r
+```{r}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
            add_causal_types = FALSE) |>
   plot(x_coord = c(0, -.1, 0, .1, 0), y_coord = 5:1)
-```
 
-![plot of chunk unnamed-chunk-10](unnamed-chunk-10-1.png)
+```
 
 
 
