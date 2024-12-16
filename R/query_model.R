@@ -942,10 +942,13 @@ plot_query <- function(model_query) {
     model_query <- model_query |>
       mutate(
         given = gsub("==", "=", given),
-        label = ifelse(given != "-", paste(query, "\ngiven ", given), query),
-        label = ifelse(case_level, paste(label, "(case)"), label)
+        label = ifelse(given != "-", paste(query, "\ngiven ", given), query)
       )
     }
+    # add 'case' to case level query labels
+    model_query <- model_query |>
+      mutate(label = ifelse(case_level, paste(label, "(case)"), label))
+
     # given formatting
     model_query <- model_query |> mutate(label = gsub(":\\|:", "\ngiven", label))
 

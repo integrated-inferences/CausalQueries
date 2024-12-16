@@ -29,7 +29,7 @@ library(ggplot2)
 ```
 
 
-Plotting functionality uses `plot_model` makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering. 
+Plotting functionality via `plot_model` makes use of the Sugiyama layout from igraph which plots nodes to reflect their position in a causal ordering. 
 
 The `plot` method calls `plot_model` and passes provided arguments to it.
 
