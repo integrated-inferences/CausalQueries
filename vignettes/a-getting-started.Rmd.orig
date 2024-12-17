@@ -44,7 +44,7 @@ iv_model <- make_model("Z -> X -> Y <-> X")
 
 **Graphing**: Once you have made a model you can inspect the DAG:
 
-```{r}
+```{r a1xymodel}
 plot(xy_model)
 ```
 
@@ -155,7 +155,7 @@ Note that we use ":" to separate the base query from the condition rather than "
 Query output is ready for printing as tables, but can also be plotted, which is especially useful with batch requests:
 
 
-```{r, fig.height = 4, fig.width = 8}
+```{r a1batchplot, fig.height = 4, fig.width = 8}
 batch_queries <- xy_model |>
   query_model(queries = list(ATE = "Y[X=1] - Y[X=0]",
                              `Positive effect given any effect` = "Y[X=1] > Y[X=0] :|: Y[X=1] != Y[X=0]"),

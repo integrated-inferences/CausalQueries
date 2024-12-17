@@ -41,7 +41,7 @@ model <- set_priors(model, distribution = "jeffreys")
 
 You can plot the dag like this:
 
-```{r}
+```{r dfd}
 plot(model)
 ```
 

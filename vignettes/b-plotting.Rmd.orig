@@ -36,7 +36,7 @@ The `plot` method calls `plot_model` and passes provided arguments to it.
 
 ## A basic plot:
 
-```{r}
+```{r bbasic}
 model <- make_model("X -> Y")
 
 model |> plot_model()
@@ -46,7 +46,7 @@ model |> plot_model()
 
 The model that is produced is a `ggplot` object and additional layers can be added in the usual way.
 
-```{r}
+```{r bgg}
 model |>
   plot_model()  +
   annotate("text", x = c(1, -1) , y = c(1.5, 1.5), label = c("Some text", "Some more text")) +
@@ -58,7 +58,7 @@ model |>
 
 Provide labels in the same order as model nodes.
 
-```{r}
+```{r blabs}
 model <- make_model("A -> B -> C <- A")
 
 
@@ -78,7 +78,7 @@ You can manually set positions using the `x_coord` and `y_coord` arguments.
 
 You can manually set positions using the `x_coord` and `y_coord` arguments.
 
-```{r}
+```{r bcoord}
 model |>
   plot(x_coord = 0:2,  y_coord = c(0, 2, 1))
 ```
@@ -88,7 +88,7 @@ model |>
 
 You can manually control node color and text color for all nodes together or separately.
 
-```{r}
+```{r bcolor}
 model |>
   plot(x_coord = 0:2,  y_coord = c(0, 2, 1),
        nodecol = c("blue", "orange", "red"),
@@ -100,7 +100,7 @@ model |>
 Unobserved confounding is represented using dashed curves.
 
 
-```{r}
+```{r bdashed}
 make_model('X -> K -> Y <- X; X <-> Y; K <-> Y') |>   plot()
 ```
 
@@ -108,7 +108,7 @@ make_model('X -> K -> Y <- X; X <-> Y; K <-> Y') |>   plot()
 
 ## Effective node placement
 
-```{r}
+```{r bpos}
 make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
            add_causal_types = FALSE) |>
   plot()
@@ -119,7 +119,7 @@ make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
 
 This graph has bad node placement.
 
-```{r}
+```{r bbad}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
            add_causal_types = FALSE) |>
   plot()
@@ -127,7 +127,7 @@ make_model("D <- A -> B -> C -> D -> E; B -> E",
 
 Better:
 
-```{r}
+```{r bmanual}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
            add_causal_types = FALSE) |>
   plot(x_coord = c(0, -.1, 0, .1, 0), y_coord = 5:1)

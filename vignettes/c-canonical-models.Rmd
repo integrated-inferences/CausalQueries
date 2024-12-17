@@ -37,8 +37,8 @@ model |> plot()
 ```
 
 <div class="figure">
-<img src="unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="50%" />
-<p class="caption">plot of chunk unnamed-chunk-2</p>
+<img src="csimple-1.png" alt="plot of chunk csimple" width="50%" />
+<p class="caption">plot of chunk csimple</p>
 </div>
 
 This model could be justified by a randomized control trial. With a lot of data you can get tight estimates for the effect of $X$ on $Y$ but not for whether a given outcome on $Y$ is due to $X$. That is the "effects of causes" estimand is identified, but the "causes of effects" estimand is not.
@@ -64,7 +64,7 @@ model |>
   plot()
 ```
 
-![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
+![plot of chunk csimpleq](csimpleq-1.png)
 
 
 
@@ -80,8 +80,8 @@ model |> plot(x_coord = 0:1, y_coord = 1:0)
 ```
 
 <div class="figure">
-<img src="unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" width="75%" />
-<p class="caption">plot of chunk unnamed-chunk-4</p>
+<img src="cconfounded-1.png" alt="plot of chunk cconfounded" width="75%" />
+<p class="caption">plot of chunk cconfounded</p>
 </div>
 
 This is the appropriate model if $X$ is not randomized and it is possible that unknown factors affect both the assignment of $X$ and the outcome $Y$.
@@ -108,7 +108,7 @@ model |>
   plot()
 ```
 
-![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
+![plot of chunk cconfoundedq](cconfoundedq-1.png)
 
 
 
@@ -121,8 +121,8 @@ model |> plot()
 ```
 
 <div class="figure">
-<img src="unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" width="75%" />
-<p class="caption">plot of chunk unnamed-chunk-6</p>
+<img src="cchain-1.png" alt="plot of chunk cchain" width="75%" />
+<p class="caption">plot of chunk cchain</p>
 </div>
 
 This is a chain model. This model is hard to justify from experimentation since randomization of $Z$  does not guarantee that third features do not influence both $X$ and $Y$, or that $Z$ operates on  $Y$ only though $X$.
@@ -150,7 +150,7 @@ model |>
   plot()
 ```
 
-![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
+![plot of chunk cchainq](cchainq-1.png)
 
 
 ## IV model with exclusion restriction
@@ -171,7 +171,7 @@ model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
 ```
 
 <div class="figure">
-<img src="unnamed-chunk-8-1.png" alt="IV model with exclusion restriction satisfied" width="75%" />
+<img src="civ-1.png" alt="IV model with exclusion restriction satisfied" width="75%" />
 <p class="caption">IV model with exclusion restriction satisfied</p>
 </div>
 
@@ -201,7 +201,7 @@ model |>
   plot()
 ```
 
-![IV inferences I](unnamed-chunk-9-1.png)
+![IV inferences I](civq1-1.png)
 
 Note the relatively tight posterior for the complier average effect (LATE) and the wide posterior for the average effect and for the probability of causation.
 
@@ -217,7 +217,7 @@ model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
 ```
 
 <div class="figure">
-<img src="unnamed-chunk-10-1.png" alt="Exclusion restriction not satisfied" width="75%" />
+<img src="civ2-1.png" alt="Exclusion restriction not satisfied" width="75%" />
 <p class="caption">Exclusion restriction not satisfied</p>
 </div>
 
@@ -243,7 +243,7 @@ model |>
   plot()
 ```
 
-![IV inferences II](unnamed-chunk-11-1.png)
+![IV inferences II](civq2-1.png)
 
 We updated here using a relatively large number of iterations to ensure stable estimates. Note the failure of the two key assumptions are reflected by larger credibility intervals and underestimates for all quantities.
 
@@ -257,7 +257,10 @@ model <- make_model("Z -> X -> Y <- Z")
 model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
 ```
 
-![plot of chunk unnamed-chunk-12](unnamed-chunk-12-1.png)
+<div class="figure">
+<img src="cmed-1.png" alt="plot of chunk cmed" width="75%" />
+<p class="caption">plot of chunk cmed</p>
+</div>
 
 This is a typical mediation type problem where you might want to understand the effects of $Z$ on $Y$ that operate directly or that operate via $X$.
 
@@ -298,7 +301,7 @@ model |>
   plot()
 ```
 
-![Mediation model](unnamed-chunk-13-1.png)
+![Mediation model](cmedq-1.png)
 
 We estimate all quantities very well.
 
@@ -318,7 +321,7 @@ model <- make_model("Z -> X -> Y <- Z; X <-> Y")  |>
 model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
 ```
 
-![Mediation model without sequential ignorability](unnamed-chunk-14-1.png)
+![Mediation model without sequential ignorability](cmed2-1.png)
 
 
 
@@ -337,7 +340,7 @@ model |> plot(x_coord = c(0,1,0), y_coord = 2:0)
   plot()
 ```
 
-![plot of chunk unnamed-chunk-15](unnamed-chunk-15-1.png)
+![plot of chunk cmed2q](cmed2q-1.png)
 
 
 We see we do not do nearly so well. To ensure stable estimates we ran a large number of iterations. For the non-identified quantities our credibility intervals are not tight (which is as it should be!) and in one case the  true value lies outside of them (which is not as it should be). This highlights the extreme difficulty of this problem.  Nevertheless the gains relative to the priors are considerable.
@@ -350,7 +353,7 @@ model <- make_model("W->Z->X->Y; W <-> X; W <-> Y")
 plot(model)
 ```
 
-![plot of chunk unnamed-chunk-16](unnamed-chunk-16-1.png)
+![plot of chunk cnap](cnap-1.png)
 
 The "napkin" model (see Pearl's *Book of Why*) involves  two types of confounding.  We will paramaterize a version in which  (a) the average causal effect of $X$ on $Y$ is negative, arising in cases when $W=0$ (b) there is positive confounding arising from the fact that $X$ is liable to be 1 regardless of $Z$ when $W = 1$ and ) $Y$ is liable to be 1 regardless of $X$ when $W = 1$.
 
@@ -383,7 +386,7 @@ data <- make_data(model, n = 5000, using = "parameters")
 
 
 
-In contrast, the updated causal model yields good estimates for the ATE, though again we have somehwat  more uncertainty for the probability of causation.
+In contrast, the updated causal model yields good estimates for the ATE, though again we have somewhat  more uncertainty for the probability of causation.
 
 
 ``` r
@@ -399,7 +402,7 @@ model |>
   plot()
 ```
 
-![plot of chunk unnamed-chunk-19](unnamed-chunk-19-1.png)
+![plot of chunk cnapq](cnapq-1.png)
 
 
 ## *M*-bias
@@ -427,7 +430,7 @@ model <- model |>
 plot(model)
 ```
 
-![plot of chunk unnamed-chunk-21](unnamed-chunk-21-1.png)
+![plot of chunk cmbias](cmbias-1.png)
 
 With this model, naive regression results perform poorly when you control for $Z$.
 
@@ -473,7 +476,7 @@ list(
   plot()
 ```
 
-![plot of chunk unnamed-chunk-23](unnamed-chunk-23-1.png)
+![plot of chunk cmbiasq](cmbiasq-1.png)
 
 ## References
 

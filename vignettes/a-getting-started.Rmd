@@ -43,7 +43,7 @@ iv_model <- make_model("Z -> X -> Y <-> X")
 plot(xy_model)
 ```
 
-![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
+![plot of chunk a1xymodel](a1xymodel-1.png)
 
 **Simple summaries:** You can access a simple summary using `summary()`
 
@@ -147,9 +147,9 @@ data |> kable()
 
 |  Z|  X|  Y|
 |--:|--:|--:|
+|  0|  0|  0|
 |  0|  0|  1|
-|  1|  0|  1|
-|  1|  1|  0|
+|  1|  0|  0|
 |  1|  1|  0|
 
 
@@ -182,12 +182,12 @@ xy_model |> grab("posterior_distribution") |>
 
 |       X.0|       X.1|      Y.00|      Y.10|      Y.01|      Y.11|
 |---------:|---------:|---------:|---------:|---------:|---------:|
-| 0.5515163| 0.4484837| 0.2847141| 0.1177726| 0.5741150| 0.0233983|
-| 0.5265501| 0.4734499| 0.1473281| 0.2074736| 0.6224344| 0.0227639|
-| 0.4597457| 0.5402543| 0.2233002| 0.1362462| 0.3923527| 0.2481008|
-| 0.5754801| 0.4245199| 0.1631742| 0.1542270| 0.6013710| 0.0812279|
-| 0.6779082| 0.3220918| 0.1429733| 0.1443515| 0.6242878| 0.0883874|
-| 0.5075180| 0.4924820| 0.0409841| 0.2349819| 0.6799476| 0.0440865|
+| 0.4437492| 0.5562508| 0.1435012| 0.1668776| 0.6611371| 0.0284841|
+| 0.5610391| 0.4389609| 0.1575135| 0.0863474| 0.6842382| 0.0719009|
+| 0.5046267| 0.4953733| 0.0828828| 0.2344333| 0.5345040| 0.1481799|
+| 0.4572031| 0.5427969| 0.0713690| 0.0673845| 0.7393453| 0.1219012|
+| 0.5272423| 0.4727577| 0.2371260| 0.1109490| 0.4299078| 0.2220171|
+| 0.3700321| 0.6299679| 0.1879429| 0.0297487| 0.4371873| 0.3451211|
 
 
 
@@ -211,8 +211,8 @@ xy_model |>
 #> 
 #> |label           |using      |  mean|    sd| cred.low| cred.high|
 #> |:---------------|:----------|-----:|-----:|--------:|---------:|
-#> |Y[X=1] > Y[X=0] |priors     | 0.249| 0.195|    0.008|     0.722|
-#> |Y[X=1] > Y[X=0] |posteriors | 0.552| 0.104|    0.327|     0.725|
+#> |Y[X=1] > Y[X=0] |priors     | 0.253| 0.197|    0.009|     0.737|
+#> |Y[X=1] > Y[X=0] |posteriors | 0.536| 0.107|    0.308|     0.715|
 ```
 
 This query asks the probability that $Y(1)> Y(0)$.
@@ -228,8 +228,8 @@ xy_model |>
 #> 
 #> |label                                 |using      |  mean|    sd| cred.low| cred.high|
 #> |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|
-#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |priors     | 0.498| 0.288|    0.027|     0.971|
-#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |posteriors | 0.779| 0.126|    0.514|     0.983|
+#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |priors     | 0.502| 0.290|    0.025|     0.976|
+#> |Y[X=1] > Y[X=0] given X == 1 & Y == 1 |posteriors | 0.762| 0.136|    0.482|     0.985|
 ```
 
 This query asks the probability that $Y(1) > Y(0)$ *given* $X=1$ and $Y=1$; it is a type of "causes of effects" query. Note that ":|:" is used to separate the main query element from the conditional statement to avoid ambiguity, since "|" is reserved for the "or" operator.
@@ -246,8 +246,8 @@ xy_model |>
 #> 
 #> |label                                  |using      |  mean|    sd| cred.low| cred.high|
 #> |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|
-#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.494| 0.291|    0.020|     0.977|
-#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.829| 0.085|    0.673|     0.991|
+#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.500| 0.291|    0.026|     0.973|
+#> |Y[X=1] > Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.822| 0.089|    0.667|     0.987|
 ```
 
 Note that we use ":" to separate the base query from the condition rather than "|" to avoid confusion with logical operators.
@@ -272,12 +272,12 @@ batch_queries |> kable(digits = 2, caption = "tabular output")
 
 Table: tabular output
 
-|label                            |query           |given            |using      |case_level |  mean|   sd| cred.low| cred.high|
-|:--------------------------------|:---------------|:----------------|:----------|:----------|-----:|----:|--------:|---------:|
-|ATE                              |Y[X=1] - Y[X=0] |-                |priors     |FALSE      | -0.01| 0.32|    -0.64|      0.62|
-|ATE                              |Y[X=1] - Y[X=0] |-                |posteriors |FALSE      |  0.43| 0.09|     0.24|      0.59|
-|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |priors     |FALSE      |  0.50| 0.29|     0.03|      0.98|
-|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |posteriors |FALSE      |  0.83| 0.09|     0.67|      0.99|
+|label                            |query           |given            |using      |case_level | mean|   sd| cred.low| cred.high|
+|:--------------------------------|:---------------|:----------------|:----------|:----------|----:|----:|--------:|---------:|
+|ATE                              |Y[X=1] - Y[X=0] |-                |priors     |FALSE      | 0.00| 0.32|    -0.63|      0.64|
+|ATE                              |Y[X=1] - Y[X=0] |-                |posteriors |FALSE      | 0.41| 0.09|     0.23|      0.58|
+|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |priors     |FALSE      | 0.50| 0.29|     0.02|      0.97|
+|Positive effect given any effect |Y[X=1] > Y[X=0] |Y[X=1] != Y[X=0] |posteriors |FALSE      | 0.82| 0.09|     0.67|      0.99|
 
 
 
@@ -285,4 +285,4 @@ Table: tabular output
 batch_queries |> plot()
 ```
 
-![plot of chunk unnamed-chunk-14](unnamed-chunk-14-1.png)
+![plot of chunk a1batchplot](a1batchplot-1.png)
