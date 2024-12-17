@@ -44,7 +44,7 @@ You can plot the dag like this:
 plot(model)
 ```
 
-![plot of chunk dfd](dfd-1.png)
+![Front door model](dfd-1.png)
 
 
 Updating is done like this:

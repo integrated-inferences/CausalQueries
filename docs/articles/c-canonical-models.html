@@ -89,8 +89,8 @@ failures result in unreliable posteriors.</p>
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"X -&gt; Y"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="csimple-1.png" alt="plot of chunk csimple" width="50%"><p class="caption">
-plot of chunk csimple
+<img src="csimple-1.png" alt="Simple experiment" width="50%"><p class="caption">
+Simple experiment
 </p>
 </div>
 <p>This model could be justified by a randomized control trial. With a
@@ -126,7 +126,7 @@ still considerably tighter than the prior.</p>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="csimpleq-1.png" alt="plot of chunk csimpleq"><div class="figcaption">plot of chunk csimpleq</div>
+<img src="csimpleq-1.png" alt="Simple experiment query"><div class="figcaption">Simple experiment query</div>
 </div>
 </div>
 <div class="section level2">
@@ -137,8 +137,8 @@ still considerably tighter than the prior.</p>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, y_coord <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="cconfounded-1.png" alt="plot of chunk cconfounded" width="75%"><p class="caption">
-plot of chunk cconfounded
+<img src="cconfounded-1.png" alt="Confounded model" width="75%"><p class="caption">
+Confounded model
 </p>
 </div>
 <p>This is the appropriate model if
@@ -170,7 +170,7 @@ greater.</p>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cconfoundedq-1.png" alt="plot of chunk cconfoundedq"><div class="figcaption">plot of chunk cconfoundedq</div>
+<img src="cconfoundedq-1.png" alt="Confounded model query"><div class="figcaption">Confounded model query</div>
 </div>
 </div>
 <div class="section level2">
@@ -180,8 +180,8 @@ greater.</p>
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"Z -&gt; X -&gt; Y"</span><span class="op">)</span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="cchain-1.png" alt="plot of chunk cchain" width="75%"><p class="caption">
-plot of chunk cchain
+<img src="cchain-1.png" alt="Chain model" width="75%"><p class="caption">
+Chain model
 </p>
 </div>
 <p>This is a chain model. This model is hard to justify from
@@ -232,7 +232,7 @@ posterior uncertainty.</p>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cchainq-1.png" alt="plot of chunk cchainq"><div class="figcaption">plot of chunk cchainq</div>
+<img src="cchainq-1.png" alt="Chain model query"><div class="figcaption">Chain model query</div>
 </div>
 </div>
 <div class="section level2">
@@ -359,8 +359,8 @@ quantities.</p>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="cmed-1.png" alt="plot of chunk cmed" width="75%"><p class="caption">
-plot of chunk cmed
+<img src="cmed-1.png" alt="Mediation model with sequential ignorability satisfied" width="75%"><p class="caption">
+Mediation model with sequential ignorability satisfied
 </p>
 </div>
 <p>This is a typical mediation type problem where you might want to
@@ -435,7 +435,7 @@ effects.</p>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cmedq-1.png" alt="Mediation model"><div class="figcaption">Mediation model</div>
+<img src="cmedq-1.png" alt="Mediation model query"><div class="figcaption">Mediation model query</div>
 </div>
 <p>We estimate all quantities very well.</p>
 </div>
@@ -480,7 +480,8 @@ ignorability</div>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cmed2q-1.png" alt="plot of chunk cmed2q"><div class="figcaption">plot of chunk cmed2q</div>
+<img src="cmed2q-1.png" alt="Querying mediation model without sequential ignorability"><div class="figcaption">Querying mediation model without sequential
+ignorability</div>
 </div>
 <p>We see we do not do nearly so well. To ensure stable estimates we ran
 a large number of iterations. For the non-identified quantities our
@@ -496,7 +497,7 @@ Nevertheless the gains relative to the priors are considerable.</p>
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">"W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cnap-1.png" alt="plot of chunk cnap"><div class="figcaption">plot of chunk cnap</div>
+<img src="cnap-1.png" alt="Napkin model"><div class="figcaption">Napkin model</div>
 </div>
 <p>The “napkin” model (see Pearl’s <em>Book of Why</em>) involves two
 types of confounding. We will paramaterize a version in which (a) the
@@ -593,7 +594,7 @@ of causation.</p>
 <span>    using <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"posteriors"</span>, <span class="st">"priors"</span>, <span class="st">"parameters"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cnapq-1.png" alt="plot of chunk cnapq"><div class="figcaption">plot of chunk cnapq</div>
+<img src="cnapq-1.png" alt="Napkin model queries"><div class="figcaption">Napkin model queries</div>
 </div>
 </div>
 <div class="section level2">
@@ -640,7 +641,7 @@ once you control for
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cmbias-1.png" alt="plot of chunk cmbias"><div class="figcaption">plot of chunk cmbias</div>
+<img src="cmbias-1.png" alt="M bias model"><div class="figcaption">M bias model</div>
 </div>
 <p>With this model, naive regression results perform poorly when you
 control for
@@ -725,7 +726,7 @@ does not harm (and could help) in the Bayesian setting.</p>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="cmbiasq-1.png" alt="plot of chunk cmbiasq"><div class="figcaption">plot of chunk cmbiasq</div>
+<img src="cmbiasq-1.png" alt="Querying a model with M bias"><div class="figcaption">Querying a model with M bias</div>
 </div>
 </div>
 <div class="section level2">

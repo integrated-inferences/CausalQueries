@@ -94,7 +94,7 @@ the DAG:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">xy_model</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="a1xymodel-1.png" alt="plot of chunk a1xymodel"><div class="figcaption">plot of chunk a1xymodel</div>
+<img src="a1xymodel-1.png" alt="Simple model"><div class="figcaption">Simple model</div>
 </div>
 <p><strong>Simple summaries:</strong> You can access a simple summary
 using <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code></p>
@@ -192,7 +192,7 @@ this:</p>
 <tr class="even">
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">1</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">1</td>
@@ -238,52 +238,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4437492</td>
-<td align="right">0.5562508</td>
-<td align="right">0.1435012</td>
-<td align="right">0.1668776</td>
-<td align="right">0.6611371</td>
-<td align="right">0.0284841</td>
+<td align="right">0.5492781</td>
+<td align="right">0.4507219</td>
+<td align="right">0.2012814</td>
+<td align="right">0.0290333</td>
+<td align="right">0.6173449</td>
+<td align="right">0.1523404</td>
 </tr>
 <tr class="even">
-<td align="right">0.5610391</td>
-<td align="right">0.4389609</td>
-<td align="right">0.1575135</td>
-<td align="right">0.0863474</td>
-<td align="right">0.6842382</td>
-<td align="right">0.0719009</td>
+<td align="right">0.5721205</td>
+<td align="right">0.4278795</td>
+<td align="right">0.1636895</td>
+<td align="right">0.0076445</td>
+<td align="right">0.6178096</td>
+<td align="right">0.2108564</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5046267</td>
-<td align="right">0.4953733</td>
-<td align="right">0.0828828</td>
-<td align="right">0.2344333</td>
-<td align="right">0.5345040</td>
-<td align="right">0.1481799</td>
+<td align="right">0.5293741</td>
+<td align="right">0.4706259</td>
+<td align="right">0.1105087</td>
+<td align="right">0.0618505</td>
+<td align="right">0.6528884</td>
+<td align="right">0.1747524</td>
 </tr>
 <tr class="even">
-<td align="right">0.4572031</td>
-<td align="right">0.5427969</td>
-<td align="right">0.0713690</td>
-<td align="right">0.0673845</td>
-<td align="right">0.7393453</td>
-<td align="right">0.1219012</td>
+<td align="right">0.5455803</td>
+<td align="right">0.4544197</td>
+<td align="right">0.0507192</td>
+<td align="right">0.0324765</td>
+<td align="right">0.7909186</td>
+<td align="right">0.1258856</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5272423</td>
-<td align="right">0.4727577</td>
-<td align="right">0.2371260</td>
-<td align="right">0.1109490</td>
-<td align="right">0.4299078</td>
-<td align="right">0.2220171</td>
+<td align="right">0.5584022</td>
+<td align="right">0.4415978</td>
+<td align="right">0.0894235</td>
+<td align="right">0.0573218</td>
+<td align="right">0.6744541</td>
+<td align="right">0.1788006</td>
 </tr>
 <tr class="even">
-<td align="right">0.3700321</td>
-<td align="right">0.6299679</td>
-<td align="right">0.1879429</td>
-<td align="right">0.0297487</td>
-<td align="right">0.4371873</td>
-<td align="right">0.3451211</td>
+<td align="right">0.4334458</td>
+<td align="right">0.5665542</td>
+<td align="right">0.0484166</td>
+<td align="right">0.0208843</td>
+<td align="right">0.6617683</td>
+<td align="right">0.2689309</td>
 </tr>
 </tbody>
 </table>
@@ -307,8 +307,8 @@ model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label           |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:---------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.253| 0.197|    0.009|     0.737|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.536| 0.107|    0.308|     0.715|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.255| 0.196|    0.008|     0.715|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.652| 0.082|    0.483|     0.793|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1)&gt; Y(0)</annotation></semantics></math>.</p>
 <p>Examples of <em>conditional</em> queries:</p>
@@ -320,8 +320,8 @@ model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label                                 |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.502| 0.290|    0.025|     0.976|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.762| 0.136|    0.482|     0.985|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.496| 0.290|    0.025|     0.977|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.795| 0.091|    0.616|     0.967|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1) &gt; Y(0)</annotation></semantics></math><em>given</em>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1</annotation></semantics></math>
@@ -341,8 +341,8 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label                                  |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.500| 0.291|    0.026|     0.973|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.822| 0.089|    0.667|     0.987|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.502| 0.286|    0.029|     0.971|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.892| 0.063|    0.763|     0.995|</span></span></code></pre></div>
 <p>Note that we use “:” to separate the base query from the condition
 rather than “|” to avoid confusion with logical operators.</p>
 </div>
@@ -390,10 +390,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.00</td>
-<td align="right">0.32</td>
-<td align="right">-0.63</td>
-<td align="right">0.64</td>
+<td align="right">0.01</td>
+<td align="right">0.31</td>
+<td align="right">-0.60</td>
+<td align="right">0.63</td>
 </tr>
 <tr class="even">
 <td align="left">ATE</td>
@@ -401,10 +401,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.41</td>
-<td align="right">0.09</td>
-<td align="right">0.23</td>
-<td align="right">0.58</td>
+<td align="right">0.57</td>
+<td align="right">0.08</td>
+<td align="right">0.40</td>
+<td align="right">0.72</td>
 </tr>
 <tr class="odd">
 <td align="left">Positive effect given any effect</td>
@@ -412,10 +412,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.50</td>
+<td align="right">0.51</td>
 <td align="right">0.29</td>
-<td align="right">0.02</td>
-<td align="right">0.97</td>
+<td align="right">0.03</td>
+<td align="right">0.98</td>
 </tr>
 <tr class="even">
 <td align="left">Positive effect given any effect</td>
@@ -423,9 +423,9 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.82</td>
-<td align="right">0.09</td>
-<td align="right">0.67</td>
+<td align="right">0.89</td>
+<td align="right">0.06</td>
+<td align="right">0.76</td>
 <td align="right">0.99</td>
 </tr>
 </tbody>
@@ -433,7 +433,7 @@ plotted, which is especially useful with batch requests:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">batch_queries</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="a1batchplot-1.png" alt="plot of chunk a1batchplot"><div class="figcaption">plot of chunk a1batchplot</div>
+<img src="a1batchplot-1.png" alt="Simple query"><div class="figcaption">Simple query</div>
 </div>
 </div>
 </div>

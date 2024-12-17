@@ -29,7 +29,7 @@ model <- make_model("X -> Y")
 model |> plot_model()
 ```
 
-![plot of chunk bbasic](bbasic-1.png)
+![Simple model](bbasic-1.png)
 
 ## ggplot layers
 
@@ -43,7 +43,7 @@ model |>
   coord_flip()
 ```
 
-![plot of chunk bgg](bgg-1.png)
+![Adding additional `ggplot` layers](bgg-1.png)
 
 
 ## Adding labels
@@ -68,7 +68,7 @@ model |>
      nodecol = "white", textcol = "black")
 ```
 
-![plot of chunk blabs](blabs-1.png)
+![Adding labels](blabs-1.png)
 
 ## Controlling  positions
 
@@ -82,7 +82,7 @@ model |>
   plot(x_coord = 0:2,  y_coord = c(0, 2, 1))
 ```
 
-![plot of chunk bcoord](bcoord-1.png)
+![Specifying coordinates](bcoord-1.png)
 
 
 ## Controlling  color
@@ -97,7 +97,7 @@ model |>
        textcol = c("white", "red", "blue"))
 ```
 
-![plot of chunk bcolor](bcolor-1.png)
+![Controlling colors](bcolor-1.png)
 
 # Models with unobserved confounding
 
@@ -109,7 +109,7 @@ Unobserved confounding is represented using dashed curves.
 make_model('X -> K -> Y <- X; X <-> Y; K <-> Y') |>   plot()
 ```
 
-![plot of chunk bdashed](bdashed-1.png)
+![Plot showing confounding](bdashed-1.png)
 
 # More complex models
 
@@ -122,7 +122,7 @@ make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
   plot()
 ```
 
-![plot of chunk bpos](bpos-1.png)
+![Node positioning for complex model](bpos-1.png)
 
 
 ## Requires manual coordinates
@@ -136,7 +136,7 @@ make_model("D <- A -> B -> C -> D -> E; B -> E",
   plot()
 ```
 
-![plot of chunk bbad](bbad-1.png)
+![Poor node placement](bbad-1.png)
 
 Better:
 
@@ -147,7 +147,7 @@ make_model("D <- A -> B -> C -> D -> E; B -> E",
   plot(x_coord = c(0, -.1, 0, .1, 0), y_coord = 5:1)
 ```
 
-![plot of chunk bmanual](bmanual-1.png)
+![Manual node placement](bmanual-1.png)
 
 
 

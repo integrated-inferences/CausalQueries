@@ -41,7 +41,7 @@ model <- set_priors(model, distribution = "jeffreys")
 
 You can plot the dag like this:
 
-```{r dfd}
+```{r dfd, fig.cap = "Front door model"}
 plot(model)
 ```
 

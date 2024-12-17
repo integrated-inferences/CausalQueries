@@ -112,7 +112,7 @@ inspect(model, "stan_summary")
 #> X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1
 #> lp__       -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:35 2024.
+#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:07 2024.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -216,7 +216,7 @@ query_model(model, "X==1", using = "posteriors") |> plot()
 #> Tail Effective Samples Size (ESS) is too low
 ```
 
-![plot of chunk emod1](emod1-1.png)
+![Query invokes messages](emod1-1.png)
 
 These warnings are not always important but safest to be aware of them if they arise and to investigate further. For more on warnings see [stan post on warnings](https://mc-stan.org/misc/warnings.html).
 
@@ -261,7 +261,7 @@ model |> inspect("stanfit")
 #> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.
+#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -298,13 +298,13 @@ model |> inspect("stanfit") |>
 #> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.
+#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
 ```
 
-![plot of chunk ebayesplot](ebayesplot-1.png)
+![Diagnostics](ebayesplot-1.png)
 
 
 ``` r
@@ -333,7 +333,7 @@ np <- model |> inspect("stanfit") |> bayesplot::nuts_params()
 #> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.
+#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -382,13 +382,13 @@ model |>
 #> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.
+#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
 #> No divergences to plot.
 ```
 
-![plot of chunk ebayesplot2](ebayesplot2-1.png)
+![More diagnostics](ebayesplot2-1.png)
 
 

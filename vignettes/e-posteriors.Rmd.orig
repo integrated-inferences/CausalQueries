@@ -111,7 +111,7 @@ And also when you query the model:
 query_model(model, "X==1", using = "posteriors")
 ```
 
-```{r emod1}
+```{r emod1, fig.cap = "Query invokes messages"}
 query_model(model, "X==1", using = "posteriors") |> plot()
 ```
 
@@ -140,13 +140,13 @@ model |> inspect("stanfit")
 
 You can then  use diagnostic packages such as `bayesplot`.
 
-```{r ebayesplot}
+```{r ebayesplot, fig.cap = "Diagnostics"}
 model |> inspect("stanfit") |>
   bayesplot::mcmc_pairs(pars = c("lambdas[3]", "lambdas[4]", "lambdas[5]", "lambdas[6]"))
 
 ```
 
-```{r ebayesplot2}
+```{r ebayesplot2, fig.cap = "More diagnostics"}
 np <- model |> inspect("stanfit") |> bayesplot::nuts_params()
 head(np) |> kable()
 

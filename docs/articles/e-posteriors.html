@@ -195,7 +195,7 @@ information as produced by <code>stan</code> thus:</p>
 <span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:35 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:07 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -292,7 +292,7 @@ effects.)</p>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <div class="float">
-<img src="emod1-1.png" alt="plot of chunk emod1"><div class="figcaption">plot of chunk emod1</div>
+<img src="emod1-1.png" alt="Query invokes messages"><div class="figcaption">Query invokes messages</div>
 </div>
 <p>These warnings are not always important but safest to be aware of
 them if they arise and to investigate further. For more on warnings see
@@ -341,7 +341,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -374,12 +374,12 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
 <div class="float">
-<img src="ebayesplot-1.png" alt="plot of chunk ebayesplot"><div class="figcaption">plot of chunk ebayesplot</div>
+<img src="ebayesplot-1.png" alt="Diagnostics"><div class="figcaption">Diagnostics</div>
 </div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">np</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/inspection.html">inspect</a></span><span class="op">(</span><span class="st">"stanfit"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-extractors.html" class="external-link">nuts_params</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -407,7 +407,7 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
@@ -487,13 +487,13 @@ event probabilities
 <span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
 <span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 12:12:50 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
 <span><span class="co">#&gt; No divergences to plot.</span></span></code></pre></div>
 <div class="float">
-<img src="ebayesplot2-1.png" alt="plot of chunk ebayesplot2"><div class="figcaption">plot of chunk ebayesplot2</div>
+<img src="ebayesplot2-1.png" alt="More diagnostics"><div class="figcaption">More diagnostics</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

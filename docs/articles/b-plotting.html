@@ -81,7 +81,7 @@ provided arguments to it.</p>
 <span></span>
 <span><span class="va">model</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bbasic-1.png" alt="plot of chunk bbasic"><div class="figcaption">plot of chunk bbasic</div>
+<img src="bbasic-1.png" alt="Simple model"><div class="figcaption">Simple model</div>
 </div>
 </div>
 <div class="section level3">
@@ -95,7 +95,8 @@ additional layers can be added in the usual way.</p>
 <span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> , y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">1.5</span><span class="op">)</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Some text"</span>, <span class="st">"Some more text"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bgg-1.png" alt="plot of chunk bgg"><div class="figcaption">plot of chunk bgg</div>
+<img src="bgg-1.png" alt="Adding additional ggplot layers"><div class="figcaption">Adding additional <code>ggplot</code>
+layers</div>
 </div>
 </div>
 <div class="section level3">
@@ -118,7 +119,7 @@ additional layers can be added in the usual way.</p>
 <span>     labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"This is A"</span>, <span class="st">"Here is B"</span>, <span class="st">"And C"</span><span class="op">)</span>,</span>
 <span>     nodecol <span class="op">=</span> <span class="st">"white"</span>, textcol <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="blabs-1.png" alt="plot of chunk blabs"><div class="figcaption">plot of chunk blabs</div>
+<img src="blabs-1.png" alt="Adding labels"><div class="figcaption">Adding labels</div>
 </div>
 </div>
 <div class="section level3">
@@ -132,7 +133,7 @@ additional layers can be added in the usual way.</p>
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>,  y_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bcoord-1.png" alt="plot of chunk bcoord"><div class="figcaption">plot of chunk bcoord</div>
+<img src="bcoord-1.png" alt="Specifying coordinates"><div class="figcaption">Specifying coordinates</div>
 </div>
 </div>
 <div class="section level3">
@@ -146,7 +147,7 @@ together or separately.</p>
 <span>       nodecol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
 <span>       textcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bcolor-1.png" alt="plot of chunk bcolor"><div class="figcaption">plot of chunk bcolor</div>
+<img src="bcolor-1.png" alt="Controlling colors"><div class="figcaption">Controlling colors</div>
 </div>
 </div>
 <div class="section level2">
@@ -156,7 +157,7 @@ together or separately.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X -&gt; K -&gt; Y &lt;- X; X &lt;-&gt; Y; K &lt;-&gt; Y'</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bdashed-1.png" alt="plot of chunk bdashed"><div class="figcaption">plot of chunk bdashed</div>
+<img src="bdashed-1.png" alt="Plot showing confounding"><div class="figcaption">Plot showing confounding</div>
 </div>
 </div>
 <div class="section level2">
@@ -170,7 +171,7 @@ together or separately.</p>
 <span>           add_causal_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bpos-1.png" alt="plot of chunk bpos"><div class="figcaption">plot of chunk bpos</div>
+<img src="bpos-1.png" alt="Node positioning for complex model"><div class="figcaption">Node positioning for complex model</div>
 </div>
 </div>
 <div class="section level3">
@@ -182,7 +183,7 @@ together or separately.</p>
 <span>           add_causal_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bbad-1.png" alt="plot of chunk bbad"><div class="figcaption">plot of chunk bbad</div>
+<img src="bbad-1.png" alt="Poor node placement"><div class="figcaption">Poor node placement</div>
 </div>
 <p>Better:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -190,7 +191,7 @@ together or separately.</p>
 <span>           add_causal_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x_coord <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">.1</span>, <span class="fl">0</span>, <span class="fl">.1</span>, <span class="fl">0</span><span class="op">)</span>, y_coord <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="bmanual-1.png" alt="plot of chunk bmanual"><div class="figcaption">plot of chunk bmanual</div>
+<img src="bmanual-1.png" alt="Manual node placement"><div class="figcaption">Manual node placement</div>
 </div>
 </div>
 </div>
