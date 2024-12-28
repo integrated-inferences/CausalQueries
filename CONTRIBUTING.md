@@ -43,7 +43,8 @@
   2. save this file as `vignette-name.Rmd.orig` in the vignettes folder (replace `vignette-name` with your desired vignette name here)
   3. run `build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `build_vignettes("vignette-name")` 
   4. add your vignette's name as a default in the `vignettes` argument of `build_vignettes()`
-  5. push changes to github 
+  5. add your `vignette-name.Rmd.orig` to the `.Rbuildignore` file like so `^vignette-name.Rmd.orig$`
+  6. push changes to github 
   
   If you wish to update an existing vignette proceed as follows: 
   
