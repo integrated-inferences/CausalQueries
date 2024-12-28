@@ -1,6 +1,5 @@
-This is a minor release introducing new syntax to combine causal statements or 
-queries with givens via standard statistical notation for conditional 
-distributions. 
+This is a patch release fixing labeling bugs in the model_query class S3 plot 
+method. 
 
 ## Test environments
 

@@ -1,3 +1,10 @@
+# CausalQueries 1.3.1
+
+This is a patch release fixing a labeling bug in the `model_query` class S3
+plot method. Please refer to the `1.3.0` release note + news for the most recent
+functionality updates. 
+
+
 # CausalQueries 1.3.0 
 
 This is a minor release introducing the option to specify causal queries with
