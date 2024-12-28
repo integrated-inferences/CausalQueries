@@ -37,18 +37,22 @@
   file with non-executable code chunks is constructed from these outputs. This workflow is handled via the `build_vignettes()` function in 
   the package.
   
+  Whether you update an existing vignette or write a new one be sure to give your code chunks (particularly those producing plots) **unique** and **ìnformative** names.
+  
   If you wish to add a new vignette please proceed as follows: 
   
-  1. write your vignette as a R markdown file with executable code chunks + formatting in the normal fashion
-  2. save this file as `vignette-name.Rmd.orig` in the vignettes folder (replace `vignette-name` with your desired vignette name here)
-  3. run `build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `build_vignettes("vignette-name")` 
-  4. add your vignette's name as a default in the `vignettes` argument of `build_vignettes()`
-  5. add your `vignette-name.Rmd.orig` to the `.Rbuildignore` file like so `^vignette-name.Rmd.orig$`
-  6. push changes to github 
+  - write your vignette as a R markdown file with executable code chunks + formatting in the normal fashion
+  - save this file as `vignette-name.Rmd.orig` in the vignettes folder (replace `vignette-name` with your desired vignette name here)
+  - run `build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `build_vignettes("vignette-name")` 
+  - add your vignette's name as a default in the `vignettes` argument of `build_vignettes()`
+  - add your `vignette-name.Rmd.orig` to the `.Rbuildignore` file like so `^vignette-name.Rmd.orig$`
+  - push changes to github 
   
   If you wish to update an existing vignette proceed as follows: 
   
-  1. make desired changes in the `vignette-name.Rmd.orig` file 
-  2. run `build_vignettes()` 
-  3. push changes to github
+  - make desired changes in the `vignette-name.Rmd.orig` file 
+  - run `build_vignettes()` 
+  - push changes to github
+
+  
   
