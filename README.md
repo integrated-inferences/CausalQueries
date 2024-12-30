@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)
+[![](https://cranlogs.r-pkg.org/badges/CausalQueries)](https://cran.r-project.org/package=CausalQueries)
 [![DOI](https://zenodo.org/badge/186861431.svg)](https://doi.org/10.5281/zenodo.14191700)
 <!-- badges: end -->
 
