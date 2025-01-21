@@ -90,7 +90,10 @@ model |>
 
 \donttest{
 model <-
-  make_model("X -> Y") |>
+  make_model("X -> Y")
+
+model <-
+  model |>
   update_model(
     keep_event_probabilities = TRUE,
     keep_fit = TRUE,
@@ -101,7 +104,6 @@ print(summary(model), what = "type_distribution")
 print(summary(model), what = "posterior_distribution")
 print(summary(model), what = "posterior_event_probabilities")
 print(summary(model), what = "data_types")
-print(summary(model), what = "ambiguities_matrix")
 print(summary(model), what = "prior_hyperparameters")
 print(summary(model), what = c("statement", "nodes"))
 print(summary(model), what = "parameters_df")
@@ -110,6 +112,10 @@ print(summary(model), what = "posterior_distribution")
 print(summary(model), what = "data")
 print(summary(model), what = "stanfit")
 print(summary(model), what = "type_distribution")
+
+# Large objects have to be added to the summary before printing
+print(summary(model, include = "ambiguities_matrix"),
+  what = "ambiguities_matrix")
 }
 
 }

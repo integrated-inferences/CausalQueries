@@ -104,7 +104,8 @@ collapse_data <- function(data,
 
         # Merge in families
         data_events <- left_join(data_families, data_events, by = "event") |>
-          mutate(count = ifelse(is.na(count), 0, count))
+          mutate(count = ifelse(is.na(count), 0, count),
+                 count = as.integer(count))
 
     }
 
@@ -683,7 +684,8 @@ make_events <- function(model,
   }
 
   # Draw events (Compact data frame)
-  df <- data.frame(event = rownames(w), count = rmultinom(1, n, w))
+  df <- data.frame(event = rownames(w), count = rmultinom(1, n, w)) |>
+    mutate(count = as.integer(count))
 
   if (include_strategy) {
     df$strategy <- paste0(model$nodes, collapse = "")

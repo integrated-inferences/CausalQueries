@@ -1,4 +1,4 @@
-#' vignettes: a character vector vignette names of the vignettes you wish to
+#' vignettes: a character vector of names of the vignettes you wish to
 #'  build. Please write the vignette name without any file extension i.e.
 #'  instead of "vignette_name.Rmd" please specify "vignette_name".
 #'  When updating an existing vignette simply call `build_vignettes()`

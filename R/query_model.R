@@ -310,10 +310,11 @@ query_distribution <- function(model,
 #'   query for a case.
 #' @param query alias for queries
 #' @param cred size of the credible interval ranging between 0 and 100
-#' @param labels labels for queries: if provided labels should have the length of the combinations of requests
-#' @return A data frame with columns Model, Query, Given and Using
-#'   defined by corresponding input values. Further columns are generated
-#'   as specified in \code{stats}.
+#' @param labels labels for queries: if provided labels should have
+#'   the length of the combinations of requests
+#' @return An object of class \code{model_query}. A data frame with possible
+#'   columns: model, query, given, using, case_level, mean, sd, cred.low, cred.high.
+#'   Further columns are generated as specified in \code{stats}.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")

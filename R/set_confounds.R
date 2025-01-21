@@ -235,8 +235,7 @@ set_confound <- function(model,
   model$P <-
     model$P[match(model$parameters_df$param_names, rownames(model$P)), ]
 
-  class(model$P) <- c("parameter_matrix", "data.frame")
-  rownames(model$parameters_df) <- NULL
+    rownames(model$parameters_df) <- NULL
 
   # Export
   attr(model$P, "param_set") <- unique(model$parameters_df$param_set)

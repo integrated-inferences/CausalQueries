@@ -289,13 +289,6 @@ make_model <- function(statement,
   attr(model, "nonroot_nodes") <- endog_node
   attr(model, "root_nodes")  <- exog_node
 
-
-  # assign classes
-  class(model$statement) <- "character"
-  class(model$nodes) <- "character"
-  class(model$parents_df) <- "data.frame"
-  class(model$nodal_types) <- "list"
-
   return(model)
 
 }

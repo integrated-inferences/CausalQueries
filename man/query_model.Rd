@@ -60,12 +60,13 @@ query for a case.}
 
 \item{cred}{size of the credible interval ranging between 0 and 100}
 
-\item{labels}{labels for queries: if provided labels should have the length of the combinations of requests}
+\item{labels}{labels for queries: if provided labels should have
+the length of the combinations of requests}
 }
 \value{
-A data frame with columns Model, Query, Given and Using
-  defined by corresponding input values. Further columns are generated
-  as specified in \code{stats}.
+An object of class \code{model_query}. A data frame with possible
+  columns: model, query, given, using, case_level, mean, sd, cred.low, cred.high.
+  Further columns are generated as specified in \code{stats}.
 }
 \description{
 Calculated from a parameter vector, from a prior or
