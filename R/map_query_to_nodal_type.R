@@ -105,7 +105,6 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
                         evaluated_nodes = t(eval(parse(text = node))),
                         node = node)
 
-    class(return_list) <- "nodal_types_query"
     return(return_list)
 
 }
