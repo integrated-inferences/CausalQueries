@@ -42,7 +42,7 @@ NULL
 #'   \item "\code{stan_warnings}" Messages generated during the generation of a \code{stanfit}object.
 #'   \item "\code{stan_summary}" A list of Stan outputs that includes \code{stanfit}, \code{data}, and, if requested when updating the model, posterior \code{event_probabilities} and \code{type_distribution}; prints \code{stanfit} summary with updated parameter names.
 #'   }
-#' @param ... Other arguments passed to helper \code{"get_*"} functions: get_all_data_types, get_event_probabilities,  get_priors, Anys such additional arguments must be named.
+#' @param ... Other arguments passed to helper \code{"get_*"} functions: get_all_data_types, get_event_probabilities,  get_priors, Any such additional arguments must be named.
 #' @return Objects  that can be derived from a \code{causal_model}, with summary.
 #'
 #' @export
@@ -121,7 +121,7 @@ inspect <- function(model, what = NULL, ...)
 #'   \item "\code{stan_warnings}" Messages generated during the generation of a \code{stanfit}object.
 #'   \item "\code{stan_summary}" A list of Stan outputs that includes \code{stanfit}, \code{data}, and, if requested when updating the model, posterior \code{event_probabilities} and \code{type_distribution}; prints \code{stanfit} summary with updated parameter names.
 #'   }
-#' @param ... Other arguments passed to helper \code{"get_*"} functions: get_all_data_types, get_event_probabilities,  get_priors, Anys such additional arguments must be named.
+#' @param ... Other arguments passed to helper \code{"get_*"} functions: get_all_data_types, get_event_probabilities,  get_priors, Any such additional arguments must be named.
 #' @return Quiet return of objects that can be derived from a \code{causal_model}.
 #'
 #' @export
