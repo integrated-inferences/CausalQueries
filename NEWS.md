@@ -1,3 +1,19 @@
+# CausalQueries 1.3.2
+
+This is a patch release updating documentation and removing the deprecated 
+`causal_type_query` and `nodal_type_query` classes with their associated S3
+print methods. 
+
+### Non Backwards Compatible Changes 
+The `causal_type_query` and `nodal_type_query` with their associated S3 print 
+methods `print.causal_type_query` and `print.nodal_type_query` have 
+been removed. `nodal_types` and `causal_types` implicated by queries can
+still be inspected via the `list` output of `map_query_to_causal_type()` and
+`map_query_to_nodal_type()`.
+This deprecation supports our efforts to reduce complexity and improve usability 
+by centering methods around the core `causal_model` and `model_query` classes, 
+facilitating the make, update, query workflow of `CausalQueries`.
+
 # CausalQueries 1.3.1
 
 This is a patch release fixing a labeling bug in the `model_query` class S3

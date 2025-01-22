@@ -1,5 +1,4 @@
-This is a patch release fixing labeling bugs in the model_query class S3 plot 
-method. 
+This is a patch release updating documentation and removing deprecated classes. 
 
 ## Test environments
 
