@@ -34,7 +34,7 @@ Other contributors:
 \itemize{
   \item Clara Bicalho \email{clarabmcorreia@gmail.com} [contributor]
   \item Jasper Cooper \email{jjc2247@columbia.edu} [contributor]
-  \item Merlin Heidemanns \email{mnh2123@columbia.edu } [contributor]
+  \item Merlin Heidemanns \email{mnh2123@columbia.edu} [contributor]
   \item Julio Solis \email{juliosolisar@gmail.com} [contributor]
 }
 
