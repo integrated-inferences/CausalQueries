@@ -4,7 +4,7 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(statement, add_causal_types = TRUE, nodal_types = NULL)
+make_model(statement = "X -> Y", add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal

@@ -24,9 +24,23 @@ prep_stan_data <- function(model,
                            censored_types = NULL) {
     i <- NULL
     # check data is in correct compact form
-    if (!all(c("event", "strategy", "count") %in% names(data))) {
-      stop("Data should contain columns `event`, `strategy` and `count`")
+    if (!all(c("event",  "count") %in% names(data))) {
+      stop("Data should contain columns `event` and `count`")
     }
+
+
+    # Add strategy in case
+    if(!("strategy" %in% names(data))) {
+      names_check <- paste(data$event)
+
+      data <- left_join(
+        CausalQueries:::minimal_event_data(model) |> select(-count),
+        data) |>
+        mutate(count = ifelse(is.na(count), 0L, as.integer(count)))
+      if(!all(names_check %in%  paste(data$event)))
+      stop("Malformed event names provided in data. Generate compact data using collapse_data()")
+    }
+
     # 1 Parameter set handlers
     param_set  <- model$parameters_df$param_set
     param_sets <- unique(param_set)

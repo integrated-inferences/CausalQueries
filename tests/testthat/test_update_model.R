@@ -22,6 +22,25 @@ for(dag in dags){
 
 }
 
+
+testthat::test_that(
+
+  desc = "Test short data",
+
+  code = {
+    expect_error(
+      make_model() |>
+      update_model(data.frame(event = "X0Y0", count = 1L)), NA
+      )
+
+    expect_error(
+      make_model() |>
+        update_model(data.frame(event = "Y0X0", count = 1L)))
+
+  }
+)
+
+
 testthat::test_that(
 
 	desc = "Test functions on model X -> Y without confounding",

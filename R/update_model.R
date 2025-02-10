@@ -92,7 +92,7 @@ update_model <- function(model,
 
   # Guess data_type
   if (is.null(data_type)) {
-    data_type <- ifelse(all(c("event", "strategy", "count") %in% names(data)),
+    data_type <- ifelse(all(c("event", "count") %in% names(data)),
                         "compact", "long")
   }
 
@@ -117,10 +117,10 @@ update_model <- function(model,
   }
 
   if (data_type == "compact") {
-    if (!all(c("event", "strategy", "count") %in% names(data))) {
+    if (!all(c("event", "count") %in% names(data))) {
       stop(paste(
         "Compact data should contain columns",
-        "`event`, `strategy` and `count`"
+        "`event` and `count`"
       ))
     }
 

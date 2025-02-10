@@ -94,7 +94,7 @@
 #'  inspect("parameters_df")
 
 
-make_model <- function(statement,
+make_model <- function(statement = "X -> Y",
                        add_causal_types = TRUE,
                        nodal_types = NULL) {
 
