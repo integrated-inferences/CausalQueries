@@ -27,105 +27,106 @@ namespace model_simplexes_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 99> locations_array__ =
+static constexpr std::array<const char*, 100> locations_array__ =
   {" (found before start of program)",
-  " (in 'string', line 33, column 0 to column 47)",
-  " (in 'string', line 36, column 0 to column 43)",
-  " (in 'string', line 37, column 0 to column 41)",
-  " (in 'string', line 38, column 0 to column 33)",
-  " (in 'string', line 39, column 0 to column 33)",
-  " (in 'string', line 40, column 0 to column 38)",
-  " (in 'string', line 41, column 0 to column 35)",
-  " (in 'string', line 42, column 0 to column 42)",
-  " (in 'string', line 92, column 0 to column 22)",
-  " (in 'string', line 51, column 4 to line 52, column 58)",
-  " (in 'string', line 53, column 4 to line 55, column 20)",
-  " (in 'string', line 50, column 36 to line 56, column 5)",
-  " (in 'string', line 50, column 7 to line 56, column 5)",
-  " (in 'string', line 47, column 4 to column 22)",
-  " (in 'string', line 48, column 4 to column 29)",
-  " (in 'string', line 46, column 32 to line 49, column 5)",
-  " (in 'string', line 46, column 2 to line 56, column 5)",
-  " (in 'string', line 45, column 26 to line 57, column 3)",
-  " (in 'string', line 45, column 0 to line 57, column 3)",
-  " (in 'string', line 60, column 0 to column 49)",
-  " (in 'string', line 63, column 1 to column 66)",
-  " (in 'string', line 62, column 21 to line 64, column 2)",
-  " (in 'string', line 62, column 0 to line 64, column 2)",
-  " (in 'string', line 67, column 2 to column 29)",
-  " (in 'string', line 66, column 21 to line 68, column 2)",
-  " (in 'string', line 66, column 0 to line 68, column 2)",
-  " (in 'string', line 70, column 1 to column 14)",
-  " (in 'string', line 72, column 1 to column 16)",
-  " (in 'string', line 95, column 3 to column 48)",
-  " (in 'string', line 94, column 21 to line 96, column 1)",
-  " (in 'string', line 94, column 0 to line 96, column 1)",
-  " (in 'string', line 93, column 32 to line 96, column 2)",
-  " (in 'string', line 93, column 0 to line 96, column 2)",
-  " (in 'string', line 98, column 4 to column 35)",
-  " (in 'string', line 97, column 33 to line 99, column 2)",
-  " (in 'string', line 97, column 1 to line 99, column 2)",
-  " (in 'string', line 77, column 2 to line 78, column 43)",
-  " (in 'string', line 79, column 2 to column 50)",
-  " (in 'string', line 76, column 26 to line 80, column 2)",
-  " (in 'string', line 76, column 0 to line 80, column 2)",
-  " (in 'string', line 84, column 2 to line 87, column 55)",
-  " (in 'string', line 83, column 26 to line 88, column 2)",
-  " (in 'string', line 83, column 0 to line 88, column 2)",
-  " (in 'string', line 9, column 0 to column 22)",
-  " (in 'string', line 10, column 0 to column 21)",
-  " (in 'string', line 11, column 0 to column 21)",
-  " (in 'string', line 12, column 0 to column 26)",
-  " (in 'string', line 13, column 0 to column 21)",
-  " (in 'string', line 14, column 6 to column 18)",
-  " (in 'string', line 14, column 0 to column 46)",
-  " (in 'string', line 15, column 0 to column 20)",
-  " (in 'string', line 16, column 0 to column 22)",
-  " (in 'string', line 17, column 0 to column 26)",
-  " (in 'string', line 18, column 0 to column 45)",
-  " (in 'string', line 19, column 16 to column 24)",
-  " (in 'string', line 19, column 0 to column 40)",
-  " (in 'string', line 20, column 6 to column 18)",
-  " (in 'string', line 20, column 0 to column 42)",
-  " (in 'string', line 21, column 6 to column 18)",
-  " (in 'string', line 21, column 0 to column 40)",
-  " (in 'string', line 22, column 6 to column 13)",
-  " (in 'string', line 22, column 0 to column 40)",
-  " (in 'string', line 23, column 6 to column 13)",
-  " (in 'string', line 23, column 0 to column 38)",
-  " (in 'string', line 24, column 6 to column 18)",
-  " (in 'string', line 24, column 0 to column 49)",
-  " (in 'string', line 25, column 6 to column 18)",
-  " (in 'string', line 25, column 0 to column 47)",
-  " (in 'string', line 26, column 7 to column 15)",
-  " (in 'string', line 26, column 17 to column 24)",
-  " (in 'string', line 26, column 0 to column 28)",
-  " (in 'string', line 27, column 7 to column 15)",
-  " (in 'string', line 27, column 17 to column 24)",
-  " (in 'string', line 27, column 0 to column 33)",
-  " (in 'string', line 28, column 7 to column 14)",
-  " (in 'string', line 28, column 16 to column 22)",
-  " (in 'string', line 28, column 0 to column 28)",
-  " (in 'string', line 29, column 24 to column 32)",
-  " (in 'string', line 29, column 33 to column 39)",
-  " (in 'string', line 29, column 0 to column 43)",
-  " (in 'string', line 30, column 6 to column 14)",
-  " (in 'string', line 30, column 0 to column 31)",
-  " (in 'string', line 33, column 16 to column 39)",
-  " (in 'string', line 36, column 25 to column 33)",
-  " (in 'string', line 37, column 16 to column 28)",
-  " (in 'string', line 38, column 7 to column 15)",
-  " (in 'string', line 38, column 17 to column 24)",
-  " (in 'string', line 39, column 7 to column 14)",
-  " (in 'string', line 39, column 16 to column 23)",
-  " (in 'string', line 40, column 25 to column 32)",
-  " (in 'string', line 41, column 25 to column 31)",
-  " (in 'string', line 42, column 25 to column 33)",
-  " (in 'string', line 92, column 7 to column 14)",
+  " (in 'string', line 33, column 2 to column 49)",
+  " (in 'string', line 36, column 2 to column 45)",
+  " (in 'string', line 37, column 2 to column 43)",
+  " (in 'string', line 38, column 2 to column 35)",
+  " (in 'string', line 39, column 2 to column 35)",
+  " (in 'string', line 40, column 2 to column 40)",
+  " (in 'string', line 41, column 2 to column 37)",
+  " (in 'string', line 42, column 2 to column 44)",
+  " (in 'string', line 43, column 2 to column 38)",
+  " (in 'string', line 91, column 2 to column 24)",
+  " (in 'string', line 50, column 6 to column 78)",
+  " (in 'string', line 51, column 6 to line 53, column 22)",
+  " (in 'string', line 49, column 11 to line 54, column 5)",
+  " (in 'string', line 47, column 6 to column 24)",
+  " (in 'string', line 48, column 6 to column 31)",
+  " (in 'string', line 46, column 34 to line 49, column 5)",
+  " (in 'string', line 46, column 4 to line 54, column 5)",
+  " (in 'string', line 45, column 28 to line 55, column 3)",
+  " (in 'string', line 45, column 2 to line 55, column 3)",
+  " (in 'string', line 57, column 2 to column 50)",
+  " (in 'string', line 60, column 4 to column 71)",
+  " (in 'string', line 59, column 23 to line 61, column 3)",
+  " (in 'string', line 59, column 2 to line 61, column 3)",
+  " (in 'string', line 64, column 4 to column 41)",
+  " (in 'string', line 63, column 23 to line 65, column 3)",
+  " (in 'string', line 63, column 2 to line 65, column 3)",
+  " (in 'string', line 67, column 2 to column 17)",
+  " (in 'string', line 69, column 2 to column 17)",
+  " (in 'string', line 71, column 2 to column 35)",
+  " (in 'string', line 97, column 4 to column 35)",
+  " (in 'string', line 96, column 9 to line 98, column 3)",
+  " (in 'string', line 94, column 6 to column 54)",
+  " (in 'string', line 93, column 25 to line 95, column 5)",
+  " (in 'string', line 93, column 4 to line 95, column 5)",
+  " (in 'string', line 92, column 35 to line 96, column 3)",
+  " (in 'string', line 92, column 2 to line 98, column 3)",
+  " (in 'string', line 76, column 4 to line 77, column 67)",
+  " (in 'string', line 78, column 4 to column 51)",
+  " (in 'string', line 75, column 28 to line 79, column 3)",
+  " (in 'string', line 75, column 2 to line 79, column 3)",
+  " (in 'string', line 82, column 4 to line 86, column 6)",
+  " (in 'string', line 81, column 28 to line 87, column 3)",
+  " (in 'string', line 81, column 2 to line 87, column 3)",
+  " (in 'string', line 9, column 2 to column 24)",
+  " (in 'string', line 10, column 2 to column 23)",
+  " (in 'string', line 11, column 2 to column 23)",
+  " (in 'string', line 12, column 2 to column 28)",
+  " (in 'string', line 13, column 2 to column 23)",
+  " (in 'string', line 14, column 8 to column 20)",
+  " (in 'string', line 14, column 2 to column 48)",
+  " (in 'string', line 15, column 2 to column 22)",
+  " (in 'string', line 16, column 2 to column 24)",
+  " (in 'string', line 17, column 2 to column 28)",
+  " (in 'string', line 18, column 2 to column 47)",
+  " (in 'string', line 19, column 18 to column 26)",
+  " (in 'string', line 19, column 2 to column 42)",
+  " (in 'string', line 20, column 8 to column 20)",
+  " (in 'string', line 20, column 2 to column 44)",
+  " (in 'string', line 21, column 8 to column 20)",
+  " (in 'string', line 21, column 2 to column 42)",
+  " (in 'string', line 22, column 8 to column 15)",
+  " (in 'string', line 22, column 2 to column 42)",
+  " (in 'string', line 23, column 8 to column 15)",
+  " (in 'string', line 23, column 2 to column 40)",
+  " (in 'string', line 24, column 8 to column 20)",
+  " (in 'string', line 24, column 2 to column 51)",
+  " (in 'string', line 25, column 8 to column 20)",
+  " (in 'string', line 25, column 2 to column 49)",
+  " (in 'string', line 26, column 9 to column 17)",
+  " (in 'string', line 26, column 19 to column 26)",
+  " (in 'string', line 26, column 2 to column 30)",
+  " (in 'string', line 27, column 9 to column 17)",
+  " (in 'string', line 27, column 19 to column 26)",
+  " (in 'string', line 27, column 2 to column 35)",
+  " (in 'string', line 28, column 9 to column 16)",
+  " (in 'string', line 28, column 18 to column 24)",
+  " (in 'string', line 28, column 2 to column 30)",
+  " (in 'string', line 29, column 27 to column 35)",
+  " (in 'string', line 29, column 37 to column 43)",
+  " (in 'string', line 29, column 2 to column 47)",
+  " (in 'string', line 30, column 8 to column 16)",
+  " (in 'string', line 30, column 2 to column 33)",
+  " (in 'string', line 33, column 18 to column 41)",
+  " (in 'string', line 36, column 27 to column 35)",
+  " (in 'string', line 37, column 18 to column 30)",
+  " (in 'string', line 38, column 9 to column 17)",
+  " (in 'string', line 38, column 19 to column 26)",
+  " (in 'string', line 39, column 9 to column 16)",
+  " (in 'string', line 39, column 18 to column 25)",
+  " (in 'string', line 40, column 27 to column 34)",
+  " (in 'string', line 41, column 27 to column 33)",
+  " (in 'string', line 42, column 27 to column 35)",
+  " (in 'string', line 43, column 9 to column 21)",
+  " (in 'string', line 91, column 9 to column 16)",
   " (in 'string', line 3, column 15 to column 22)",
-  " (in 'string', line 3, column 4 to column 27)",
-  " (in 'string', line 4, column 4 to column 40)",
-  " (in 'string', line 5, column 4 to column 14)",
+  " (in 'string', line 3, column 4 to column 26)",
+  " (in 'string', line 4, column 4 to column 39)",
+  " (in 'string', line 5, column 4 to column 13)",
   " (in 'string', line 2, column 32 to line 6, column 3)"};
 template <typename T0__,
           stan::require_all_t<stan::is_eigen_matrix_dynamic<T0__>,
@@ -147,18 +148,18 @@ col_sums(const T0__& X_arg__, std::ostream* pstream__) {
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 94;
+    current_statement__ = 95;
     stan::math::validate_non_negative_index("s", "cols(X)",
       stan::math::cols(X));
     Eigen::Matrix<local_scalar_t__,1,-1> s =
       Eigen::Matrix<local_scalar_t__,1,-1>::Constant(stan::math::cols(X),
         DUMMY_VAR__);
-    current_statement__ = 96;
+    current_statement__ = 97;
     stan::model::assign(s,
       stan::math::multiply(
         stan::math::rep_row_vector(1, stan::math::rows(X)), X),
       "assigning variable s");
-    current_statement__ = 97;
+    current_statement__ = 98;
     return s;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -578,6 +579,9 @@ public:
       current_statement__ = 92;
       stan::math::validate_non_negative_index("w_full", "n_events", n_events);
       current_statement__ = 93;
+      stan::math::validate_non_negative_index("log_sum_gammas",
+        "n_param_sets", n_param_sets);
+      current_statement__ = 94;
       stan::math::validate_non_negative_index("types", "n_types", n_types);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -635,6 +639,9 @@ public:
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_data, DUMMY_VAR__);
       Eigen::Matrix<local_scalar_t__,-1,1> w_full =
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_events, DUMMY_VAR__);
+      Eigen::Matrix<local_scalar_t__,-1,1> log_sum_gammas =
+        Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_param_sets,
+          DUMMY_VAR__);
       current_statement__ = 19;
       for (int i = 1; i <= n_param_sets; ++i) {
         current_statement__ = 17;
@@ -651,40 +658,32 @@ public:
               stan::model::rvalue(l_starts, "l_starts",
                 stan::model::index_uni(i))));
         } else {
-          current_statement__ = 13;
-          if (stan::math::logical_lt(
-                stan::model::rvalue(l_starts, "l_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(l_ends, "l_ends",
-                  stan::model::index_uni(i)))) {
-            current_statement__ = 10;
-            stan::model::assign(sum_gammas, (1 +
-              stan::math::sum(
+          current_statement__ = 11;
+          stan::model::assign(sum_gammas, (1 +
+            stan::math::sum(
+              stan::model::rvalue(gamma, "gamma",
+                stan::model::index_min_max(
+                  (stan::model::rvalue(l_starts, "l_starts",
+                     stan::model::index_uni(i)) - (i - 1)),
+                  (stan::model::rvalue(l_ends, "l_ends",
+                     stan::model::index_uni(i)) - i))))),
+            "assigning variable sum_gammas", stan::model::index_uni(i));
+          current_statement__ = 12;
+          stan::model::assign(lambdas,
+            stan::math::divide(
+              stan::math::append_row(1,
                 stan::model::rvalue(gamma, "gamma",
                   stan::model::index_min_max(
                     (stan::model::rvalue(l_starts, "l_starts",
                        stan::model::index_uni(i)) - (i - 1)),
                     (stan::model::rvalue(l_ends, "l_ends",
-                       stan::model::index_uni(i)) - i))))),
-              "assigning variable sum_gammas", stan::model::index_uni(i));
-            current_statement__ = 11;
-            stan::model::assign(lambdas,
-              stan::math::divide(
-                stan::math::append_row(1,
-                  stan::model::rvalue(gamma, "gamma",
-                    stan::model::index_min_max(
-                      (stan::model::rvalue(l_starts, "l_starts",
-                         stan::model::index_uni(i)) - (i - 1)),
-                      (stan::model::rvalue(l_ends, "l_ends",
-                         stan::model::index_uni(i)) - i)))),
-                stan::model::rvalue(sum_gammas, "sum_gammas",
-                  stan::model::index_uni(i))), "assigning variable lambdas",
-              stan::model::index_min_max(
-                stan::model::rvalue(l_starts, "l_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(l_ends, "l_ends",
-                  stan::model::index_uni(i))));
-          }
+                       stan::model::index_uni(i)) - i)))),
+              stan::model::rvalue(sum_gammas, "sum_gammas",
+                stan::model::index_uni(i))), "assigning variable lambdas",
+            stan::model::index_min_max(
+              stan::model::rvalue(l_starts, "l_starts",
+                stan::model::index_uni(i)),
+              stan::model::rvalue(l_ends, "l_ends", stan::model::index_uni(i))));
         }
       }
       current_statement__ = 20;
@@ -709,9 +708,11 @@ public:
       for (int i = 1; i <= n_paths; ++i) {
         current_statement__ = 24;
         stan::model::assign(w_0,
-          stan::math::prod(
-            stan::model::rvalue(parlam2, "parlam2",
-              stan::model::index_omni(), stan::model::index_uni(i))),
+          stan::math::exp(
+            stan::math::sum(
+              stan::math::log(
+                stan::model::rvalue(parlam2, "parlam2",
+                  stan::model::index_omni(), stan::model::index_uni(i))))),
           "assigning variable w_0", stan::model::index_uni(i));
       }
       current_statement__ = 27;
@@ -721,6 +722,9 @@ public:
       current_statement__ = 28;
       stan::model::assign(w_full, stan::math::multiply(E, w),
         "assigning variable w_full");
+      current_statement__ = 29;
+      stan::model::assign(log_sum_gammas, stan::math::log(sum_gammas),
+        "assigning variable log_sum_gammas");
       current_statement__ = 2;
       stan::math::check_greater_or_equal(function__, "lambdas", lambdas, 0);
       current_statement__ = 2;
@@ -761,9 +765,8 @@ public:
           current_statement__ = 38;
           lp_accum__.add((-stan::model::rvalue(n_param_each, "n_param_each",
                              stan::model::index_uni(i)) *
-            stan::math::log(
-              stan::model::rvalue(sum_gammas, "sum_gammas",
-                stan::model::index_uni(i)))));
+            stan::model::rvalue(log_sum_gammas, "log_sum_gammas",
+              stan::model::index_uni(i))));
         }
         current_statement__ = 43;
         for (int i = 1; i <= n_strategies; ++i) {
@@ -859,6 +862,9 @@ public:
       Eigen::Matrix<double,-1,1> w_full =
         Eigen::Matrix<double,-1,1>::Constant(n_events,
           std::numeric_limits<double>::quiet_NaN());
+      Eigen::Matrix<double,-1,1> log_sum_gammas =
+        Eigen::Matrix<double,-1,1>::Constant(n_param_sets,
+          std::numeric_limits<double>::quiet_NaN());
       out__.write(gamma);
       if (stan::math::logical_negation(
             (stan::math::primitive_value(emit_transformed_parameters__) ||
@@ -881,40 +887,32 @@ public:
               stan::model::rvalue(l_starts, "l_starts",
                 stan::model::index_uni(i))));
         } else {
-          current_statement__ = 13;
-          if (stan::math::logical_lt(
-                stan::model::rvalue(l_starts, "l_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(l_ends, "l_ends",
-                  stan::model::index_uni(i)))) {
-            current_statement__ = 10;
-            stan::model::assign(sum_gammas, (1 +
-              stan::math::sum(
+          current_statement__ = 11;
+          stan::model::assign(sum_gammas, (1 +
+            stan::math::sum(
+              stan::model::rvalue(gamma, "gamma",
+                stan::model::index_min_max(
+                  (stan::model::rvalue(l_starts, "l_starts",
+                     stan::model::index_uni(i)) - (i - 1)),
+                  (stan::model::rvalue(l_ends, "l_ends",
+                     stan::model::index_uni(i)) - i))))),
+            "assigning variable sum_gammas", stan::model::index_uni(i));
+          current_statement__ = 12;
+          stan::model::assign(lambdas,
+            stan::math::divide(
+              stan::math::append_row(1,
                 stan::model::rvalue(gamma, "gamma",
                   stan::model::index_min_max(
                     (stan::model::rvalue(l_starts, "l_starts",
                        stan::model::index_uni(i)) - (i - 1)),
                     (stan::model::rvalue(l_ends, "l_ends",
-                       stan::model::index_uni(i)) - i))))),
-              "assigning variable sum_gammas", stan::model::index_uni(i));
-            current_statement__ = 11;
-            stan::model::assign(lambdas,
-              stan::math::divide(
-                stan::math::append_row(1,
-                  stan::model::rvalue(gamma, "gamma",
-                    stan::model::index_min_max(
-                      (stan::model::rvalue(l_starts, "l_starts",
-                         stan::model::index_uni(i)) - (i - 1)),
-                      (stan::model::rvalue(l_ends, "l_ends",
-                         stan::model::index_uni(i)) - i)))),
-                stan::model::rvalue(sum_gammas, "sum_gammas",
-                  stan::model::index_uni(i))), "assigning variable lambdas",
-              stan::model::index_min_max(
-                stan::model::rvalue(l_starts, "l_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(l_ends, "l_ends",
-                  stan::model::index_uni(i))));
-          }
+                       stan::model::index_uni(i)) - i)))),
+              stan::model::rvalue(sum_gammas, "sum_gammas",
+                stan::model::index_uni(i))), "assigning variable lambdas",
+            stan::model::index_min_max(
+              stan::model::rvalue(l_starts, "l_starts",
+                stan::model::index_uni(i)),
+              stan::model::rvalue(l_ends, "l_ends", stan::model::index_uni(i))));
         }
       }
       current_statement__ = 20;
@@ -939,9 +937,11 @@ public:
       for (int i = 1; i <= n_paths; ++i) {
         current_statement__ = 24;
         stan::model::assign(w_0,
-          stan::math::prod(
-            stan::model::rvalue(parlam2, "parlam2",
-              stan::model::index_omni(), stan::model::index_uni(i))),
+          stan::math::exp(
+            stan::math::sum(
+              stan::math::log(
+                stan::model::rvalue(parlam2, "parlam2",
+                  stan::model::index_omni(), stan::model::index_uni(i))))),
           "assigning variable w_0", stan::model::index_uni(i));
       }
       current_statement__ = 27;
@@ -951,6 +951,9 @@ public:
       current_statement__ = 28;
       stan::model::assign(w_full, stan::math::multiply(E, w),
         "assigning variable w_full");
+      current_statement__ = 29;
+      stan::model::assign(log_sum_gammas, stan::math::log(sum_gammas),
+        "assigning variable log_sum_gammas");
       current_statement__ = 2;
       stan::math::check_greater_or_equal(function__, "lambdas", lambdas, 0);
       current_statement__ = 2;
@@ -978,6 +981,7 @@ public:
         out__.write(w_0);
         out__.write(w);
         out__.write(w_full);
+        out__.write(log_sum_gammas);
       }
       if (stan::math::logical_negation(emit_generated_quantities__)) {
         return ;
@@ -985,11 +989,11 @@ public:
       Eigen::Matrix<double,-1,1> types =
         Eigen::Matrix<double,-1,1>::Constant(n_types,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 33;
+      current_statement__ = 36;
       if (stan::math::logical_eq(keep_type_distribution, 1)) {
-        current_statement__ = 31;
+        current_statement__ = 34;
         for (int i = 1; i <= n_types; ++i) {
-          current_statement__ = 29;
+          current_statement__ = 32;
           stan::model::assign(types,
             stan::math::prod(
               stan::math::subtract(
@@ -1001,10 +1005,8 @@ public:
                   stan::model::index_uni(i)))), "assigning variable types",
             stan::model::index_uni(i));
         }
-      }
-      current_statement__ = 36;
-      if (stan::math::logical_eq(keep_type_distribution, 0)) {
-        current_statement__ = 34;
+      } else {
+        current_statement__ = 30;
         stan::model::assign(types, stan::math::rep_vector(1, n_types),
           "assigning variable types");
       }
@@ -1088,7 +1090,7 @@ public:
     if (emit_transformed_parameters__) {
       std::vector<std::string>
         temp{"lambdas", "sum_gammas", "parlam", "parlam2", "w_0", "w",
-             "w_full"};
+             "w_full", "log_sum_gammas"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
@@ -1115,7 +1117,8 @@ public:
                static_cast<size_t>(n_paths)},
              std::vector<size_t>{static_cast<size_t>(n_paths)},
              std::vector<size_t>{static_cast<size_t>(n_data)},
-             std::vector<size_t>{static_cast<size_t>(n_events)}};
+             std::vector<size_t>{static_cast<size_t>(n_events)},
+             std::vector<size_t>{static_cast<size_t>(n_param_sets)}};
       dimss__.reserve(dimss__.size() + temp.size());
       dimss__.insert(dimss__.end(), temp.begin(), temp.end());
     }
@@ -1167,6 +1170,10 @@ public:
         param_names__.emplace_back(std::string() + "w_full" + '.' +
           std::to_string(sym1__));
       }
+      for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
+        param_names__.emplace_back(std::string() + "log_sum_gammas" + '.' +
+          std::to_string(sym1__));
+      }
     }
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
@@ -1216,6 +1223,10 @@ public:
         param_names__.emplace_back(std::string() + "w_full" + '.' +
           std::to_string(sym1__));
       }
+      for (int sym1__ = 1; sym1__ <= n_param_sets; ++sym1__) {
+        param_names__.emplace_back(std::string() + "log_sum_gammas" + '.' +
+          std::to_string(sym1__));
+      }
     }
     if (emit_generated_quantities__) {
       for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
@@ -1225,10 +1236,10 @@ public:
     }
   }
   inline std::string get_constrained_sizedtypes() const {
-    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
   }
   inline std::string get_unconstrained_sizedtypes() const {
-    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"gamma\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(gamma_1dim__) + "},\"block\":\"parameters\"},{\"name\":\"lambdas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_params) + "},\"block\":\"transformed_parameters\"},{\"name\":\"sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_params) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"parlam2\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(n_nodes) + ",\"cols\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_0\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_paths) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_data) + "},\"block\":\"transformed_parameters\"},{\"name\":\"w_full\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_events) + "},\"block\":\"transformed_parameters\"},{\"name\":\"log_sum_gammas\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_param_sets) + "},\"block\":\"transformed_parameters\"},{\"name\":\"types\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(n_types) + "},\"block\":\"generated_quantities\"}]");
   }
   // Begin method overload boilerplate
   template <typename RNG> inline void
@@ -1239,8 +1250,8 @@ public:
               pstream = nullptr) const {
     const size_t num_params__ = gamma_1dim__;
     const size_t num_transformed = emit_transformed_parameters *
-      (((((((n_params + n_param_sets) + (n_params * n_paths)) + (n_nodes *
-      n_paths)) + n_paths) + n_data) + n_events));
+      ((((((((n_params + n_param_sets) + (n_params * n_paths)) + (n_nodes *
+      n_paths)) + n_paths) + n_data) + n_events) + n_param_sets));
     const size_t num_gen_quantities = emit_generated_quantities * (n_types);
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;
@@ -1258,8 +1269,8 @@ public:
               pstream = nullptr) const {
     const size_t num_params__ = gamma_1dim__;
     const size_t num_transformed = emit_transformed_parameters *
-      (((((((n_params + n_param_sets) + (n_params * n_paths)) + (n_nodes *
-      n_paths)) + n_paths) + n_data) + n_events));
+      ((((((((n_params + n_param_sets) + (n_params * n_paths)) + (n_nodes *
+      n_paths)) + n_paths) + n_data) + n_events) + n_param_sets));
     const size_t num_gen_quantities = emit_generated_quantities * (n_types);
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;

@@ -80,13 +80,14 @@ testthat::test_that(
 
     expect_error(summary(model, include = c("xx")))
 
+    out <- capture.output(query_model(model, "Y[X=1] - Y[X=0]", using = "priors"))
+    expect_true(any(grepl("Causal queries", out)))
+    expect_true(any(grepl("|:---------------|:------|-----:|-----:|--------:|---------:|", out)))
+
     out <- capture.output((query_model(model, "Y[X=1] - Y[X=0]", using = "parameters")))
     expect_true(any(grepl("Causal queries", out)))
     expect_true(any(grepl("|:---------------|:----------|----:|", out)))
 
-    out <- capture.output(query_model(model, "Y[X=1] - Y[X=0]", using = "priors"))
-    expect_true(any(grepl("Causal queries", out)))
-    expect_true(any(grepl("|:---------------|:------|-----:|-----:|--------:|---------:|", out)))
 
   }
 
