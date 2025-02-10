@@ -239,7 +239,7 @@ query_distribution <- function(model,
     realisations = realisations
   )
   # handle type distributions
-  type_distributions <- get_type_distributions(
+  type_posteriors <- get_type_posteriors(
     jobs = jobs,
     model = model,
     n_draws = n_draws,
@@ -250,7 +250,7 @@ query_distribution <- function(model,
     jobs = jobs,
     given_types = given_types,
     query_types = query_types,
-    type_distributions = type_distributions
+    type_posteriors = type_posteriors
   ) |>
     as.data.frame()
 
@@ -551,7 +551,7 @@ query_model <- function(model,
     realisations = realisations
   )
   # handle type distributions
-  type_distributions <- get_type_distributions(
+  type_posteriors <- get_type_posteriors(
     jobs = jobs,
     model = model,
     n_draws = n_draws,
@@ -563,7 +563,7 @@ query_model <- function(model,
     jobs = jobs,
     given_types = given_types,
     query_types = query_types,
-    type_distributions = type_distributions
+    type_posteriors = type_posteriors
   )
 
   # compute statistics
@@ -781,7 +781,7 @@ queries_to_types <- function(jobs,
 #' @return jobs data frame with a nested column of type distributions
 #' @keywords internal
 
-get_type_distributions <- function(jobs,
+get_type_posteriors <- function(jobs,
                                    model,
                                    n_draws,
                                    parameters = NULL) {
@@ -819,7 +819,7 @@ get_type_distributions <- function(jobs,
                                P = model[[model_i]]$P)
     }
   }
-  unique_jobs$type_distribution <- distributions
+  unique_jobs$type_posterior <- distributions
   return(unique_jobs)
 }
 
@@ -828,14 +828,14 @@ get_type_distributions <- function(jobs,
 #' @param jobs a data frame of argument combinations
 #' @param given_types output from \code{queries_to_types}
 #' @param query_types output from \code{queries_to_types}
-#' @param type_distributions output from \code{get_type_distributions}
+#' @param type_posteriors output from \code{get_type_posteriors}
 #' @return a list of estimands
 #' @keywords internal
 
 get_estimands <- function(jobs,
                             given_types,
                             query_types,
-                            type_distributions) {
+                            type_posteriors) {
     estimands <- vector(mode = "list", length = nrow(jobs))
 
     for (i in seq_len(nrow(jobs))) {
@@ -851,11 +851,11 @@ get_estimands <- function(jobs,
       given <-
         given_types[(given_types$model_names == model_name_i &
                        given_types$given == given_i), "type_vec"][[1]]
-      type_distribution <-
-        type_distributions[(
-          type_distributions$model_names == model_name_i &
-            type_distributions$using == using_i
-        ), "type_distribution"][[1]]
+      type_posterior <-
+        type_posteriors[(
+          type_posteriors$model_names == model_name_i &
+            type_posteriors$using == using_i
+        ), "type_posterior"][[1]]
       x <- x[given]
 
       if (all(!given)) {
@@ -866,21 +866,21 @@ get_estimands <- function(jobs,
         if (using_i == "parameters") {
           # always case level when using parameters
           estimand <-
-            sum(x * type_distribution[given]) / sum(type_distribution[given])
+            sum(x * type_posterior[given]) / sum(type_posterior[given])
         }
         # using priors or posteriors
         if (using_i != "parameters") {
           # population level
           if (!case_level_i) {
             estimand <-
-              (x %*% type_distribution[given, , drop = FALSE]) /
-              apply(type_distribution[given, , drop = FALSE], 2, sum)
+              (x %*% type_posterior[given, , drop = FALSE]) /
+              apply(type_posterior[given, , drop = FALSE], 2, sum)
           }
           # case level
           if (case_level_i) {
             estimand <-
-              mean(x %*% type_distribution[given, , drop = FALSE]) /
-              mean(apply(type_distribution[given, , drop = FALSE], 2, sum))
+              mean(x %*% type_posterior[given, , drop = FALSE]) /
+              mean(apply(type_posterior[given, , drop = FALSE], 2, sum))
           }
         }
       }

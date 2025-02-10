@@ -36,7 +36,8 @@ print.causal_model <- function(x, ...) {
 
     if(x$stan_objects$stan_warnings != "") {
       cat("Warnings passed from rstan during updating:\n")
-      cat(x$stan_objects$stan_warnings)
+      cat(paste(x$stan_objects$stan_warnings, "\n"))
+
     }
   }
 
@@ -134,13 +135,13 @@ summary.causal_model <- function(object, include = NULL, ...) {
         "prior_event_probabilities",
         "ambiguities_matrix",
         "type_prior",
-        "type_distribution",
+        "type_posterior",
         "posterior_distribution",
         "posterior_event_probabilities",
         "data",
+        "stan_summary",
         "stanfit",
-        "stan_warnings",
-        "stan_summary"
+        "stan_warnings"
       ))
 
     if (length(wrong) > 0 & length(wrong) <= length(include)) {
@@ -228,7 +229,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see `"?get_event_probabilities"`,
 #'   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
 #'   \item \code{"type_prior"} A matrix of type probabilities using priors,
-#'   \item \code{"type_distribution"} A matrix of type probabilities using posteriors,
+#'   \item \code{"type_posterior"} A matrix of type probabilities using posteriors,
 #'   \item \code{"posterior_distribution"} A data frame of the parameter posterior distribution,
 #'   \item \code{"posterior_event_probabilities"} A sample of data (event) probabilities from the posterior,
 #'   \item \code{"data"} A data frame with data that was used to update model,
@@ -249,7 +250,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #'     data = make_data(model, n = 100)
 #'   )
 #'
-#' print(summary(model), what = "type_distribution")
+#' print(summary(model), what = "type_posterior")
 #' print(summary(model), what = "posterior_distribution")
 #' print(summary(model), what = "posterior_event_probabilities")
 #' print(summary(model), what = "data_types")
@@ -260,7 +261,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #' print(summary(model), what = "posterior_distribution")
 #' print(summary(model), what = "data")
 #' print(summary(model), what = "stanfit")
-#' print(summary(model), what = "type_distribution")
+#' print(summary(model), what = "type_posterior")
 #'
 #' # Large objects have to be added to the summary before printing
 #' print(summary(model, include = "ambiguities_matrix"),
@@ -354,11 +355,11 @@ print.summary.causal_model <-
             c(printout_upd, "'keep_event_probabilities = TRUE'")
         }
 
-        if (is.null(x$stan_objects$type_distribution)) {
+        if (is.null(x$stan_objects$type_posterior)) {
           printout <-
-            c(printout, "type_distribution")
+            c(printout, "type_posterior")
           printout_upd <-
-            c(printout_upd, "'type_distribution = TRUE'")
+            c(printout_upd, "'type_posterior = TRUE'")
         }
 
         if (is.null(x$stan_objects$stanfit)) {
@@ -432,13 +433,13 @@ print.summary.causal_model <-
           "prior_event_probabilities",
           "ambiguities_matrix",
           "type_prior",
-          "type_distribution",
+          "type_posterior",
           "posterior_distribution",
           "posterior_event_probabilities",
           "data",
+          "stan_summary",
           "stanfit",
-          "stan_warnings",
-          "stan_summary"
+          "stan_warnings"
         ))
 
       if (length(wrong) > 0 & length(wrong) <= length(what)) {
@@ -653,19 +654,19 @@ print.summary.causal_model <-
         warning("Model summary does not contain type_prior; to include this object use summary with 'include = 'type_prior''")
       }
 
-      # type_distribution
-      if ("type_distribution" %in% what) {
-        if (!is.null(x$stan_objects$type_distribution)) {
-          cat("\ntype_distribution\nPosterior draws of causal types (transformed parameters):\n")
+      # type_posterior
+      if ("type_posterior" %in% what) {
+        if (!is.null(x$stan_objects$type_posterior)) {
+          cat("\ntype_posterior\nPosterior draws of causal types (transformed parameters):\n")
           cat(paste(
             "\n  Distributions matrix dimensions are",
-            "\n ", dim(x$stan_objects$type_distribution)[1], "rows (draws) by",
-            dim(x$stan_objects$type_distribution)[2], "cols (causal types)\n\n",
+            "\n ", dim(x$stan_objects$type_posterior)[1], "rows (draws) by",
+            dim(x$stan_objects$type_posterior)[2], "cols (causal types)\n\n",
             sep = " "
           ))
           distribution_summary <-
             as.data.frame(t(apply(
-              x$stan_objects$type_distribution, 2,
+              x$stan_objects$type_posterior, 2,
               summarise_distribution
             )))
           rounding_threshold <- find_rounding_threshold(distribution_summary)
@@ -673,11 +674,11 @@ print.summary.causal_model <-
         } else {
           printout <- c(
             printout,
-            "posterior type_distribution"
+            "posterior type_posterior"
           )
           printout_upd <- c(
             printout_upd,
-            "'type_distribution = TRUE'"
+            "'type_posterior = TRUE'"
           )
         }
       }
@@ -771,7 +772,7 @@ print.summary.causal_model <-
       if ("stan_warnings" %in% what) {
         if (!is.null(x$stan_objects$stan_warnings)) {
           cat("\nstan_warnings\nStan warnings generated during updating:\n")
-          cat(x$stan_objects$stan_warnings)
+          cat(paste(x$stan_objects$stan_warnings, "\n"))
         } else {
           printout <- c(printout, "stan_warnings")
           printout_upd <- c(printout_upd, "'keep_fit = TRUE'")
@@ -825,7 +826,7 @@ print.summary.causal_model <-
       if(!is.null(x$posterior_distribution)){
         if(x$stan_objects$stan_warnings != "") {
           cat("Note: warnings passed from rstan during updating:\n")
-          cat(x$stan_objects$stan_warnings)
+          cat(paste(x$stan_objects$stan_warnings, "\n"))
         }}
 
     }

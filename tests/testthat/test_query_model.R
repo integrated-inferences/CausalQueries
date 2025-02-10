@@ -92,7 +92,7 @@ testthat::test_that(
 
   code = {
 
-    # Use saved type_distribution
+    # Use saved type_posterior
     model <- make_model("X -> Y") |>
       update_model(data.frame(X=0, Y=0), refresh = 0)
 

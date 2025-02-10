@@ -75,7 +75,7 @@ testthat::test_that(
     out <- capture.output(summary(model, include ="prior_event_probabilities"))
     expect_true(any(grepl("event_probs", out)))
 
-    out <- capture.output(summary(model, include ="type_distribution"))
+    out <- capture.output(summary(model, include ="type_posterior"))
     expect_true(any(grepl("Posterior draws", out)))
 
     expect_error(summary(model, include = c("xx")))

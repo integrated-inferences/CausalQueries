@@ -92,9 +92,9 @@ test_that("inspect outputs correct posterior_event_probabilities", {
   )
 })
 
-test_that("inspect outputs correct type_distribution", {
+test_that("inspect outputs correct type_posterior", {
   expect_output(
-    inspect(model, what = "type_distribution"),
+    inspect(model, what = "type_posterior"),
     "Posterior draws of causal types \\(transformed parameters\\):"
   )
 })

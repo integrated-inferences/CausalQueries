@@ -4,7 +4,7 @@
 \alias{get_estimands}
 \title{helper to get estimands}
 \usage{
-get_estimands(jobs, given_types, query_types, type_distributions)
+get_estimands(jobs, given_types, query_types, type_posteriors)
 }
 \arguments{
 \item{jobs}{a data frame of argument combinations}
@@ -13,7 +13,7 @@ get_estimands(jobs, given_types, query_types, type_distributions)
 
 \item{query_types}{output from \code{queries_to_types}}
 
-\item{type_distributions}{output from \code{get_type_distributions}}
+\item{type_posteriors}{output from \code{get_type_posteriors}}
 }
 \value{
 a list of estimands
