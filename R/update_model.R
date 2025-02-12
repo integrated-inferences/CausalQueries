@@ -239,8 +239,6 @@ update_model <- function(model,
 }
 
 
-
-
 capture_warnings <- function(expr) {
   # Initialize a variable to store captured warnings
   warnings_captured <- character()
@@ -256,7 +254,6 @@ capture_warnings <- function(expr) {
   # List containing the result of the expression and the warnings
   list(fit = fit, warnings = warnings_captured |> concise())
 }
-
 
 
 concise <- function(warnings) {

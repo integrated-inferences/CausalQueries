@@ -71,15 +71,13 @@ plot_model <- function(model = NULL,
                        shape = 16,
                        nodecol = 'black',
                        nodesize = 12,
-                       strength = .3
-) {
-
+                       strength = .3) {
   # Checks
-  if(is.null(model)) {
+  if (is.null(model)) {
     stop("Model object must be provided")
   }
 
-  if(!is(model, "causal_model")) {
+  if (!is(model, "causal_model")) {
     stop("Model object must be of type causal_model")
   }
 
@@ -116,60 +114,78 @@ plot_model <- function(model = NULL,
     dplyr::mutate(weight = 1)
 
   # Figure out ggraph data structure
-  if(nrow(dag)==1 & all(is.na(dag$e))) {
+  if (nrow(dag) == 1 & all(is.na(dag$e))) {
     # Special case with one node
-    coords <- data.frame(x=0, y=0, name = dag$x)
+    coords <- data.frame(x = 0, y = 0, name = dag$x)
     dag$e <- dag$y <- "NA"
-   } else {
+  } else {
     # Usual case
-   coords <- (dag |>
-                # dplyr::filter(e != "<->")  |>
-                ggraph::ggraph(layout = "sugiyama"))$data |>
-    dplyr::select(x, y, name)
-   }
+    coords <- (dag |>
+                 # dplyr::filter(e != "<->")  |>
+                 ggraph::ggraph(layout = "sugiyama"))$data |>
+      dplyr::select(x, y, name)
+  }
 
   # reorder nodes to match model ordering
   .r <- match(coords$name, model$nodes)
-  r <- function(z) z[.r]
+  r <- function(z)
+    z[.r]
 
-  if (!is.null(x_coord)) coords$x <- r(x_coord)
-  if (!is.null(y_coord)) coords$y <- r(y_coord)
-  if (!is.null(labels)) coords$name <- r(labels)
-  if (length(shape) > 1) shape <- r(shape)
-  if (length(nodecol) > 1) nodecol <- r(nodecol)
-  if (length(nodesize) > 1) nodesize <- r(nodesize)
-  if (length(textcol) > 1) textcol <- r(textcol)
-  if (length(textsize) > 1) textsize <- r(textsize)
+  if (!is.null(x_coord))
+    coords$x <- r(x_coord)
+  if (!is.null(y_coord))
+    coords$y <- r(y_coord)
+  if (!is.null(labels))
+    coords$name <- r(labels)
+  if (length(shape) > 1)
+    shape <- r(shape)
+  if (length(nodecol) > 1)
+    nodecol <- r(nodecol)
+  if (length(nodesize) > 1)
+    nodesize <- r(nodesize)
+  if (length(textcol) > 1)
+    textcol <- r(textcol)
+  if (length(textsize) > 1)
+    textsize <- r(textsize)
 
   # plot
-   dag  |>
-      ggraph::ggraph(layout = "manual", x = coords$x, y = coords$y) +
-      ggraph::geom_edge_arc(data = arc_selector("<->"),
-                  start_cap = ggraph::circle(8, 'mm'),
-                  end_cap = ggraph::circle(8, 'mm'),
-                  linetype = "dashed",
-                  strength = strength) +
-      ggraph::geom_edge_link(data = arc_selector("->"),
-                   arrow = grid::arrow(length = grid::unit(4, 'mm'), type = "closed"),
-                   start_cap = ggraph::circle(8, 'mm'),
-                   end_cap = ggraph::circle(8, 'mm'))  +
-      geom_point(data = coords,
-                 aes(x, y),
-                 size = nodesize,
-                 color = nodecol,
-                 shape = shape) +
-      theme_void()  +
-      ggraph::geom_node_text(
-        data = coords,
-        aes(x, y, label = name),
-        color = textcol,
-        size = textsize) +
-      ggplot2::labs(title = latex2exp::TeX(title))
+  dag  |>
+    ggraph::ggraph(layout = "manual",
+                   x = coords$x,
+                   y = coords$y) +
+    ggraph::geom_edge_arc(
+      data = arc_selector("<->"),
+      start_cap = ggraph::circle(8, 'mm'),
+      end_cap = ggraph::circle(8, 'mm'),
+      linetype = "dashed",
+      strength = strength
+    ) +
+    ggraph::geom_edge_link(
+      data = arc_selector("->"),
+      arrow = grid::arrow(length = grid::unit(4, 'mm'), type = "closed"),
+      start_cap = ggraph::circle(8, 'mm'),
+      end_cap = ggraph::circle(8, 'mm')
+    )  +
+    geom_point(
+      data = coords,
+      aes(x, y),
+      size = nodesize,
+      color = nodecol,
+      shape = shape
+    ) +
+    theme_void()  +
+    ggraph::geom_node_text(
+      data = coords,
+      aes(x, y, label = name),
+      color = textcol,
+      size = textsize
+    ) +
+    ggplot2::labs(title = latex2exp::TeX(title))
 }
 
 #' @export
 plot.causal_model <- function(x, ...) {
-  plot_model(x,...)
+  plot_model(x, ...)
 }
 
 
@@ -182,8 +198,3 @@ arc_selector <- function(x) {
     res
   }
 }
-
-
-
-
-
