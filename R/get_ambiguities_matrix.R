@@ -1,4 +1,5 @@
 
+
 #' Get ambiguities matrix
 #'
 #' Return ambiguities matrix if it exists; otherwise calculate
@@ -14,8 +15,7 @@
 
 
 get_ambiguities_matrix <- function(model) {
-
-    is_a_model(model)
+  is_a_model(model)
 
   # Return the ambiguities matrix if it exists
   if (!is.null(model$A)) {
@@ -85,12 +85,9 @@ make_ambiguities_matrix <- function(model) {
 #' @noRd
 
 set_ambiguities_matrix <- function(model, A = NULL) {
-    if(is.null(A)) {
-      A <- make_ambiguities_matrix(model)
-    }
-    model$A <- A
-    return(model)
+  if (is.null(A)) {
+    A <- make_ambiguities_matrix(model)
+  }
+  model$A <- A
+  return(model)
 }
-
-
-

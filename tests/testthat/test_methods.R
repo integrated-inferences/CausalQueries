@@ -53,7 +53,7 @@ testthat::test_that(
 
     out <- capture.output(summary(model, include = "posterior_distribution"))
     expect_true(any(grepl("posterior distributions", out)))
-    expect_true(any(grepl("not contain the following objects: specified 'data', stanfit", out)))
+    expect_true(any(grepl("not contain the following objects: stanfit", out)))
 
     model <- update_model(model,  keep_event_probabilities = TRUE, data = data.frame(X = 1))
     out <- capture.output(summary(model, include = "posterior_distribution"))
@@ -80,13 +80,14 @@ testthat::test_that(
 
     expect_error(summary(model, include = c("xx")))
 
+    out <- capture.output(query_model(model, "Y[X=1] - Y[X=0]", using = "priors"))
+    expect_true(any(grepl("Causal queries", out)))
+    expect_true(any(grepl("|:---------------|:------|-----:|-----:|--------:|---------:|", out)))
+
     out <- capture.output((query_model(model, "Y[X=1] - Y[X=0]", using = "parameters")))
     expect_true(any(grepl("Causal queries", out)))
     expect_true(any(grepl("|:---------------|:----------|----:|", out)))
 
-    out <- capture.output(query_model(model, "Y[X=1] - Y[X=0]", using = "priors"))
-    expect_true(any(grepl("Causal queries", out)))
-    expect_true(any(grepl("|:---------------|:------|-----:|-----:|--------:|---------:|", out)))
 
   }
 

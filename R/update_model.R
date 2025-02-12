@@ -89,11 +89,9 @@ update_model <- function(model,
                          keep_fit = FALSE,
                          censored_types = NULL,
                          ...) {
-
   # Guess data_type
   if (is.null(data_type)) {
-    data_type <- ifelse(all(c("event", "count") %in% names(data)),
-                        "compact", "long")
+    data_type <- ifelse(all(c("event", "count") %in% names(data)), "compact", "long")
   }
 
   # Checks on data_types
@@ -124,7 +122,7 @@ update_model <- function(model,
       ))
     }
 
-    if(!is.integer(data$count)){
+    if (!is.integer(data$count)) {
       data$count <- as.integer(data$count)
       warning("count column should be integer valued; value has been forced to integer")
     }
@@ -132,10 +130,12 @@ update_model <- function(model,
     data_events <- data
   }
 
-  stan_data <- prep_stan_data(model = model,
-                              data = data_events,
-                              keep_type_distribution = keep_type_distribution,
-                              censored_types = censored_types)
+  stan_data <- prep_stan_data(
+    model = model,
+    data = data_events,
+    keep_type_distribution = keep_type_distribution,
+    censored_types = censored_types
+  )
   # assign fit
   stanfit <- stanmodels$simplexes
 
@@ -151,15 +151,17 @@ update_model <- function(model,
   }
 
 
-  sampling_args <- set_sampling_args(object = stanfit,
-                                     user_dots = list(...),
-                                     data = stan_data,
-                                     pars = drop_pars,
-                                     include = FALSE)
+  sampling_args <- set_sampling_args(
+    object = stanfit,
+    user_dots = list(...),
+    data = stan_data,
+    pars = drop_pars,
+    include = FALSE
+  )
 
   newfit <- do.call(rstan::sampling, sampling_args) |> capture_warnings()
 
-  model$stan_objects  <- list(data = data, stan_warnings = newfit$warnings)
+  model$stan_objects  <- list(data = stan_data$data, stan_warnings = newfit$warnings)
 
 
   # Keep full fit object
@@ -174,7 +176,7 @@ update_model <- function(model,
   colnames(model$posterior_distribution) <- get_parameter_names(model)
 
   # Retain type distribution
-  if(keep_type_distribution) {
+  if (keep_type_distribution) {
     model$stan_objects$type_posterior <- extract(newfit$fit, pars = "types")$types
 
     colnames(model$stan_objects$type_posterior) <- colnames(stan_data$P)
@@ -189,33 +191,35 @@ update_model <- function(model,
   # Retain stanfit summary with readable names
   # Identify saved parameters
   params <- colnames(model$posterior_distribution)
-  if(keep_event_probabilities) {
-    params <- c(params, colnames(model$stan_objects$event_probabilities))
+  if (keep_event_probabilities) {
+    params <- c(params,
+                colnames(model$stan_objects$event_probabilities))
   }
 
-  if(keep_type_distribution) {
+  if (keep_type_distribution) {
     params <- c(params, colnames(model$stan_objects$type_posterior))
   }
 
-  params <- c(params,  "lp__")
+  params <- c(params, "lp__")
 
   params_labels <- newfit$fit@sim$fnames_oi
 
   raname_list <-
     lapply(
       X = list(params, params_labels),
-      FUN = function(x) vapply(
-        X = x,
-        FUN = function(y) {
-          paste0(y, paste0(
-            rep(" ",
-                times =
-                  max(vapply(c(params, params_labels), nchar, numeric(1))) -
-                  nchar(y)),
-            collapse = ""))
-        },
-        FUN.VALUE = character(1),
-        USE.NAMES = FALSE)
+      FUN = function(x)
+        vapply(
+          X = x,
+          FUN = function(y) {
+            paste0(y, paste0(rep(" ", times =
+                                   max(
+                                     vapply(c(params, params_labels), nchar, numeric(1))
+                                   ) -
+                                   nchar(y)), collapse = ""))
+          },
+          FUN.VALUE = character(1),
+          USE.NAMES = FALSE
+        )
     )
 
 
@@ -223,16 +227,16 @@ update_model <- function(model,
 
   for (i in seq_along(params)) {
     model$stan_objects$stan_summary <-
-      gsub(pattern = raname_list[[2]][i],
-           replacement = raname_list[[1]][i],
-           x = model$stan_objects$stan_summary,
-           fixed = TRUE)
+      gsub(
+        pattern = raname_list[[2]][i],
+        replacement = raname_list[[1]][i],
+        x = model$stan_objects$stan_summary,
+        fixed = TRUE
+      )
   }
 
   return(model)
 }
-
-
 
 
 capture_warnings <- function(expr) {
@@ -252,7 +256,6 @@ capture_warnings <- function(expr) {
 }
 
 
-
 concise <- function(warnings) {
   # Apply transformations based on the patterns
   sapply(warnings, function(warning) {
@@ -264,5 +267,5 @@ concise <- function(warnings) {
       warning  # Leave the warning unchanged if no match
     }
   }, USE.NAMES = FALSE) |>
-    paste(collapse ="\n")# Ensure it returns a vector
+    paste(collapse = "\n")# Ensure it returns a vector
 }

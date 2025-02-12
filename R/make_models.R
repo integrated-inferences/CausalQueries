@@ -97,7 +97,6 @@
 make_model <- function(statement = "X -> Y",
                        add_causal_types = TRUE,
                        nodal_types = NULL) {
-
   parent <- NULL
 
   if (length(statement) != 1) {
@@ -122,9 +121,9 @@ make_model <- function(statement = "X -> Y",
                       paste(paste(.dag$v, .dag$e, .dag$w), collapse = "; "))
 
   # parent child data.frame
-   dag  <- .dag |>
-      dplyr::filter(e == "->" | is.na(e)) |>
-      dplyr::select(v, w)
+  dag  <- .dag |>
+    dplyr::filter(e == "->" | is.na(e)) |>
+    dplyr::select(v, w)
 
   # disallow dangling confound e.g. X -> M <-> Y (single nodes allowed)
   if (any(!(unlist(.dag[, 1:2]) %in% unlist(dag)))) {
@@ -152,7 +151,7 @@ make_model <- function(statement = "X -> Y",
   }
 
   # dag is now given a causal order which is preserved in the parameters_df
-  dag <- dag[order(gen, dag[, 1], dag[, 2]),]
+  dag <- dag[order(gen, dag[, 1], dag[, 2]), ]
 
   endog_node <- as.character(rev(unique(rev(dag$children))))
   if (all(is.na(endog_node))) {
@@ -181,15 +180,14 @@ make_model <- function(statement = "X -> Y",
 
   # Model is a list
   model <-
-    list(
-      statement = statement,
-      nodes = nodes,
-      parents_df = parents_df
-    )
+    list(statement = statement,
+         nodes = nodes,
+         parents_df = parents_df)
 
   # Nodal types
   # Check nodal types map to nodes in model
-  if ((!is.null(nodal_types)) && (!all(names(nodal_types) %in% nodes))) {
+  if ((!is.null(nodal_types)) &&
+      (!all(names(nodal_types) %in% nodes))) {
     stop("Check provided nodal_types are nodes in the model")
   }
 
@@ -266,7 +264,7 @@ make_model <- function(statement = "X -> Y",
     # Reorder by reverse causal order (thus in X -> Y we have
     # type_Y conditional on type_X)
     for (i in seq_len(nrow(z))) {
-      z[i,] <- rev(nodes[nodes %in% as.character(z[i, ])])
+      z[i, ] <- rev(nodes[nodes %in% as.character(z[i, ])])
     }
     # Generate confounds list
     confounds <- as.list(as.character(z$w))
@@ -301,19 +299,27 @@ make_model <- function(statement = "X -> Y",
 #'
 #' CausalQueries:::make_parameters_df(list(X = "1", Y = c("01", "10")))
 
-make_parameters_df <- function(nodal_types){
+make_parameters_df <- function(nodal_types) {
   pdf <- data.frame(node = rep(names(nodal_types), lapply(nodal_types, length)),
                     nodal_type = nodal_types |> unlist()) |>
-    dplyr::mutate(param_set = node,
-                  given = "",
-                  priors = 1,
-                  param_names = paste0(node, ".", nodal_type)) |>
+    dplyr::mutate(
+      param_set = node,
+      given = "",
+      priors = 1,
+      param_names = paste0(node, ".", nodal_type)
+    ) |>
     dplyr::group_by(param_set) |>
-    dplyr::mutate(param_value = 1/n(), gen =  cur_group_id()) |>
+    dplyr::mutate(param_value = 1 / n(), gen =  cur_group_id()) |>
     dplyr::ungroup() |>
     dplyr::mutate(gen = match(node, names(nodal_types))) |>
-    dplyr::select(param_names, node, gen, param_set, nodal_type,
-                  given, param_value, priors)
+    dplyr::select(param_names,
+                  node,
+                  gen,
+                  param_set,
+                  nodal_type,
+                  given,
+                  param_value,
+                  priors)
 
   class(pdf) <- "data.frame"
   return(pdf)
@@ -372,15 +378,18 @@ clean_statement <- function(statement) {
   has_dangling_edge <- any(c(is_edge[1], is_edge[length(is_edge)]))
   # or consecutive edges within statement
   consecutive_edge <- rle(is_edge)
-  has_consecutive_edge <- any(consecutive_edge$values & consecutive_edge$lengths >= 2)
+  has_consecutive_edge <- any(consecutive_edge$values &
+                                consecutive_edge$lengths >= 2)
 
-  if(has_dangling_edge || has_consecutive_edge) {
-    stop("Statement contains bare edges without a source or destination node or both. Edges should connect nodes.")
+  if (has_dangling_edge || has_consecutive_edge) {
+    stop(
+      "Statement contains bare edges without a source or destination node or both. Edges should connect nodes."
+    )
   }
 
   ## consolidate nodes
   # check for unsupported characters in varnames
-  if(any(c("<",">") %in% st_edge[!is_edge])) {
+  if (any(c("<", ">") %in% st_edge[!is_edge])) {
     stop(
       paste0(
         "Unsupported characters in variable names. No '<' or '>' in variable names please.",
@@ -391,7 +400,7 @@ clean_statement <- function(statement) {
     )
   }
 
-  if("-" %in% st_edge[!is_edge]) {
+  if ("-" %in% st_edge[!is_edge]) {
     stop(
       paste0(
         "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots?",
@@ -402,7 +411,7 @@ clean_statement <- function(statement) {
     )
   }
 
-  if("_" %in% st_edge[!is_edge]) {
+  if ("_" %in% st_edge[!is_edge]) {
     stop(
       paste0(
         "Unsupported characters in variable names. No underscores '_' in variable names please; try dots?",
@@ -413,7 +422,8 @@ clean_statement <- function(statement) {
     )
   }
 
-  if(("<->" %in% st_edge[is_edge]) && ("." %in% st_edge[!is_edge])) {
+  if (("<->" %in% st_edge[is_edge]) &&
+      ("." %in% st_edge[!is_edge])) {
     stop(
       "Unsupported characters in variable names. No dots '.' in variable names for models with confounding."
     )
@@ -446,8 +456,7 @@ make_dag <- function(statement) {
   sub_statements <- strsplit(statement, ";")[[1]]
 
   dags <- lapply(sub_statements, function(sub_statement) {
-
-    if(sub_statement == "") {
+    if (sub_statement == "") {
       return(NULL)
     }
 
@@ -456,22 +465,22 @@ make_dag <- function(statement) {
     nodes <- sub_statement$nodes
     edges <- sub_statement$edges
 
-    if(length(nodes) == 1) {
+    if (length(nodes) == 1) {
       return(NULL)
     }
 
     dag <- as.data.frame(matrix(NA, length(nodes) - 1, 3))
-    colnames(dag) <- c("v","w","e")
+    colnames(dag) <- c("v", "w", "e")
 
-    for(i in 1:(length(nodes) - 1)) {
-      if((!is.na(edges[i])) && (edges[i] == "<-")) {
-        dag[i,"v"] <- nodes[i+1]
-        dag[i,"w"] <- nodes[i]
-        dag[i,"e"] <- "->"
+    for (i in 1:(length(nodes) - 1)) {
+      if ((!is.na(edges[i])) && (edges[i] == "<-")) {
+        dag[i, "v"] <- nodes[i + 1]
+        dag[i, "w"] <- nodes[i]
+        dag[i, "e"] <- "->"
       } else {
-        dag[i,"v"] <- nodes[i]
-        dag[i,"w"] <- nodes[i+1]
-        dag[i,"e"] <- edges[i]
+        dag[i, "v"] <- nodes[i]
+        dag[i, "w"] <- nodes[i + 1]
+        dag[i, "e"] <- edges[i]
       }
     }
 
@@ -480,12 +489,11 @@ make_dag <- function(statement) {
 
   dag <- dags[!vapply(dags, is.null, logical(1))]
 
-  if(length(dag) == 0) {
+  if (length(dag) == 0) {
     # Single node case
     data.frame(v = statement, w = NA, e = NA)
 
   } else {
-
     dag |>
       dplyr::bind_rows() |>
       dplyr::arrange(v) |>
@@ -498,7 +506,8 @@ make_dag <- function(statement) {
 
 
 remove_duplicates <- function(df) {
-  if(nrow(df) == 1) return(df)
+  if (nrow(df) == 1)
+    return(df)
 
   df <- df |> mutate(
     normalized_v = ifelse(e == "<->", pmin(v, w), v),
@@ -511,6 +520,3 @@ remove_duplicates <- function(df) {
   df[, c("v", "w", "e")]
 
 }
-
-
-
