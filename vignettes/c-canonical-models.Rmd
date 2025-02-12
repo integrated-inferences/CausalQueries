@@ -363,6 +363,7 @@ model <- model |>
   set_parameters(param_name = "Y.10_W.0", parameters = .6) |>
   set_parameters(param_name = "Y.11_W.1", parameters = .9) |>
   set_parameters(param_name = "X.11_W.1", parameters = .9)
+
 ```
 
 

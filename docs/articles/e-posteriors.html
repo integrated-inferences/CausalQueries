@@ -8,8 +8,8 @@
 <title>Inspecting posteriors • CausalQueries</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Inspecting posteriors">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,24 +178,26 @@ information as produced by <code>stan</code> thus:</p>
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; X.0          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
-<span><span class="co">#&gt; X.1          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
-<span><span class="co">#&gt; Y.00         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2186    1</span></span>
-<span><span class="co">#&gt; Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3847    1</span></span>
-<span><span class="co">#&gt; Y.01         0.80    0.00 0.11   0.53   0.74   0.82   0.88   0.95  3645    1</span></span>
-<span><span class="co">#&gt; Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  3956    1</span></span>
-<span><span class="co">#&gt; X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2256    1</span></span>
-<span><span class="co">#&gt; X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2123    1</span></span>
-<span><span class="co">#&gt; X0.Y10       0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  3690    1</span></span>
-<span><span class="co">#&gt; X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3610    1</span></span>
-<span><span class="co">#&gt; X0.Y01       0.40    0.00 0.10   0.22   0.33   0.40   0.46   0.59  2512    1</span></span>
-<span><span class="co">#&gt; X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2409    1</span></span>
-<span><span class="co">#&gt; X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3842    1</span></span>
-<span><span class="co">#&gt; X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1</span></span>
+<span><span class="co">#&gt;                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; X.0                 0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
+<span><span class="co">#&gt; X.1                 0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1</span></span>
+<span><span class="co">#&gt; Y.00                0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2186    1</span></span>
+<span><span class="co">#&gt; Y.10                0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3847    1</span></span>
+<span><span class="co">#&gt; Y.01                0.80    0.00 0.11   0.53   0.74   0.82   0.88   0.95  3645    1</span></span>
+<span><span class="co">#&gt; Y.11                0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  3956    1</span></span>
+<span><span class="co">#&gt; X0.Y00              0.71    0.00 0.22   0.37   0.56   0.69   0.84   1.19  2212    1</span></span>
+<span><span class="co">#&gt; X1.Y00              3.11    0.04 1.33   1.30   2.17   2.84   3.77   6.46   995    1</span></span>
+<span><span class="co">#&gt; X0.Y10              0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2256    1</span></span>
+<span><span class="co">#&gt; X1.Y10              0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2123    1</span></span>
+<span><span class="co">#&gt; X0.Y01              0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  3690    1</span></span>
+<span><span class="co">#&gt; X1.Y01              0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3610    1</span></span>
+<span><span class="co">#&gt; X0.Y11              0.40    0.00 0.10   0.22   0.33   0.40   0.46   0.59  2512    1</span></span>
+<span><span class="co">#&gt; X1.Y11              0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2409    1</span></span>
+<span><span class="co">#&gt; lp__                0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3842    1</span></span>
+<span><span class="co">#&gt; types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1</span></span>
+<span><span class="co">#&gt; lp__              -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:07 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:15 2025.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -227,7 +229,7 @@ effects.)</p>
 <span>  <span class="fu"><a href="../reference/update_model.html">update_model</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>               iter <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>               refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: The largest R-hat is 1.75, indicating chains have not mixed.</span></span>
+<span><span class="co">#&gt; Warning: The largest R-hat is 1.76, indicating chains have not mixed.</span></span>
 <span><span class="co">#&gt; Running the chains for more iterations may help. See</span></span>
 <span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#r-hat</span></span>
 <span><span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
@@ -242,7 +244,7 @@ effects.)</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; stan_warnings</span></span>
 <span><span class="co">#&gt; Stan warnings generated during updating:</span></span>
-<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.76, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <p>But we will also remind you about them when you use the
@@ -261,10 +263,10 @@ effects.)</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model has been updated and contains a posterior distribution with</span></span>
 <span><span class="co">#&gt; 4 chains, each with iter=500; warmup=250; thin=1;  </span></span>
-<span><span class="co">#&gt; Use inspect(model, 'stan_objects') to inspect stan summary</span></span>
+<span><span class="co">#&gt; Use inspect(model, 'stan_summary') to inspect stan summary</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Warnings passed from rstan during updating:</span></span>
-<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.76, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <p>And also when you query the model:</p>
@@ -273,7 +275,7 @@ effects.)</p>
 <span><span class="co">#&gt; Note: warnings passed from rstan during updating:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model 1 warnings:</span></span>
-<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.76, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -282,13 +284,13 @@ effects.)</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label |using      | mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-----|:----------|----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |X==1  |posteriors |  0.5| 0.004|    0.494|     0.507|</span></span></code></pre></div>
+<span><span class="co">#&gt; |X==1  |posteriors |  0.5| 0.004|    0.493|     0.507|</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/query_model.html">query_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"X==1"</span>, using <span class="op">=</span> <span class="st">"posteriors"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: warnings passed from rstan during updating:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model 1 warnings:</span></span>
-<span><span class="co">#&gt; The largest R-hat is 1.75, indicating chains have not mixed</span></span>
+<span><span class="co">#&gt; The largest R-hat is 1.76, indicating chains have not mixed</span></span>
 <span><span class="co">#&gt; Bulk Effective Samples Size (ESS) is too low</span></span>
 <span><span class="co">#&gt; Tail Effective Samples Size (ESS) is too low</span></span></code></pre></div>
 <div class="float">
@@ -324,24 +326,26 @@ event probabilities
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
-<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
+<span><span class="co">#&gt;                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1</span></span>
+<span><span class="co">#&gt; types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -357,24 +361,26 @@ event probabilities
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
-<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
+<span><span class="co">#&gt;                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1</span></span>
+<span><span class="co">#&gt; types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
@@ -390,24 +396,26 @@ event probabilities
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
-<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
+<span><span class="co">#&gt;                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1</span></span>
+<span><span class="co">#&gt; types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>
@@ -470,24 +478,26 @@ event probabilities
 <span><span class="co">#&gt; 4 chains, each with iter=2000; warmup=1000; thin=1; </span></span>
 <span><span class="co">#&gt; post-warmup draws per chain=1000, total post-warmup draws=4000.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
-<span><span class="co">#&gt; lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
-<span><span class="co">#&gt; lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
-<span><span class="co">#&gt; lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
-<span><span class="co">#&gt; lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
-<span><span class="co">#&gt; types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
-<span><span class="co">#&gt; types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
-<span><span class="co">#&gt; types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
-<span><span class="co">#&gt; types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
-<span><span class="co">#&gt; types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
-<span><span class="co">#&gt; types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
-<span><span class="co">#&gt; types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
-<span><span class="co">#&gt; types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
-<span><span class="co">#&gt; lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
+<span><span class="co">#&gt;                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1</span></span>
+<span><span class="co">#&gt; lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1</span></span>
+<span><span class="co">#&gt; lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1</span></span>
+<span><span class="co">#&gt; lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1</span></span>
+<span><span class="co">#&gt; lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1</span></span>
+<span><span class="co">#&gt; log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1</span></span>
+<span><span class="co">#&gt; types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1</span></span>
+<span><span class="co">#&gt; types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1</span></span>
+<span><span class="co">#&gt; types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1</span></span>
+<span><span class="co">#&gt; types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1</span></span>
+<span><span class="co">#&gt; types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1</span></span>
+<span><span class="co">#&gt; types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1</span></span>
+<span><span class="co">#&gt; types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1</span></span>
+<span><span class="co">#&gt; types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1</span></span>
+<span><span class="co">#&gt; lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.</span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.</span></span>
 <span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">#&gt; convergence, Rhat=1).</span></span>

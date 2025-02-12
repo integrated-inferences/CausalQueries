@@ -95,24 +95,26 @@ inspect(model, "stan_summary")
 #> 4 chains, each with iter=2000; warmup=1000; thin=1; 
 #> post-warmup draws per chain=1000, total post-warmup draws=4000.
 #> 
-#>              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> X.0          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1
-#> X.1          0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1
-#> Y.00         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2186    1
-#> Y.10         0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3847    1
-#> Y.01         0.80    0.00 0.11   0.53   0.74   0.82   0.88   0.95  3645    1
-#> Y.11         0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  3956    1
-#> X0.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2256    1
-#> X1.Y00       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2123    1
-#> X0.Y10       0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  3690    1
-#> X1.Y10       0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3610    1
-#> X0.Y01       0.40    0.00 0.10   0.22   0.33   0.40   0.46   0.59  2512    1
-#> X1.Y01       0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2409    1
-#> X0.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3842    1
-#> X1.Y11       0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1
-#> lp__       -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1
+#>                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+#> X.0                 0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1
+#> X.1                 0.50    0.00 0.10   0.31   0.43   0.50   0.57   0.69  2184    1
+#> Y.00                0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.27  2186    1
+#> Y.10                0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3847    1
+#> Y.01                0.80    0.00 0.11   0.53   0.74   0.82   0.88   0.95  3645    1
+#> Y.11                0.08    0.00 0.07   0.00   0.02   0.06   0.11   0.28  3956    1
+#> X0.Y00              0.71    0.00 0.22   0.37   0.56   0.69   0.84   1.19  2212    1
+#> X1.Y00              3.11    0.04 1.33   1.30   2.17   2.84   3.77   6.46   995    1
+#> X0.Y10              0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  2256    1
+#> X1.Y10              0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2123    1
+#> X0.Y01              0.02    0.00 0.02   0.00   0.01   0.02   0.03   0.08  3690    1
+#> X1.Y01              0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.07  3610    1
+#> X0.Y11              0.40    0.00 0.10   0.22   0.33   0.40   0.46   0.59  2512    1
+#> X1.Y11              0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.59  2409    1
+#> lp__                0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3842    1
+#> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1
+#> lp__              -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:07 2024.
+#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:15 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -135,7 +137,7 @@ model <-
   update_model(data = data.frame(X = rep(0:1, 10000), Y = rep(0:1, 10000)),
                iter = 500,
                refresh = 0)
-#> Warning: The largest R-hat is 1.75, indicating chains have not mixed.
+#> Warning: The largest R-hat is 1.76, indicating chains have not mixed.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#r-hat
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
@@ -154,7 +156,7 @@ inspect(model, "stan_warnings")
 #> 
 #> stan_warnings
 #> Stan warnings generated during updating:
-#> The largest R-hat is 1.75, indicating chains have not mixed
+#> The largest R-hat is 1.76, indicating chains have not mixed
 #> Bulk Effective Samples Size (ESS) is too low
 #> Tail Effective Samples Size (ESS) is too low
 ```
@@ -176,10 +178,10 @@ model
 #> 
 #> Model has been updated and contains a posterior distribution with
 #> 4 chains, each with iter=500; warmup=250; thin=1;  
-#> Use inspect(model, 'stan_objects') to inspect stan summary
+#> Use inspect(model, 'stan_summary') to inspect stan summary
 #> 
 #> Warnings passed from rstan during updating:
-#> The largest R-hat is 1.75, indicating chains have not mixed
+#> The largest R-hat is 1.76, indicating chains have not mixed
 #> Bulk Effective Samples Size (ESS) is too low
 #> Tail Effective Samples Size (ESS) is too low
 ```
@@ -193,7 +195,7 @@ query_model(model, "X==1", using = "posteriors")
 #> Note: warnings passed from rstan during updating:
 #> 
 #> Model 1 warnings:
-#> The largest R-hat is 1.75, indicating chains have not mixed
+#> The largest R-hat is 1.76, indicating chains have not mixed
 #> Bulk Effective Samples Size (ESS) is too low
 #> Tail Effective Samples Size (ESS) is too low
 #> 
@@ -202,7 +204,7 @@ query_model(model, "X==1", using = "posteriors")
 #> 
 #> |label |using      | mean|    sd| cred.low| cred.high|
 #> |:-----|:----------|----:|-----:|--------:|---------:|
-#> |X==1  |posteriors |  0.5| 0.004|    0.494|     0.507|
+#> |X==1  |posteriors |  0.5| 0.004|    0.493|     0.507|
 ```
 
 
@@ -211,7 +213,7 @@ query_model(model, "X==1", using = "posteriors") |> plot()
 #> Note: warnings passed from rstan during updating:
 #> 
 #> Model 1 warnings:
-#> The largest R-hat is 1.75, indicating chains have not mixed
+#> The largest R-hat is 1.76, indicating chains have not mixed
 #> Bulk Effective Samples Size (ESS) is too low
 #> Tail Effective Samples Size (ESS) is too low
 ```
@@ -244,24 +246,26 @@ model |> inspect("stanfit")
 #> 4 chains, each with iter=2000; warmup=1000; thin=1; 
 #> post-warmup draws per chain=1000, total post-warmup draws=4000.
 #> 
-#>              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
-#> lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
-#> lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
-#> lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
-#> lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
-#> lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
-#> types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
-#> types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
-#> types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
-#> types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
-#> types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
-#> types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
-#> types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
-#> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
-#> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
+#>                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+#> lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
+#> lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
+#> lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
+#> lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
+#> lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
+#> lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
+#> log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1
+#> log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1
+#> types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
+#> types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
+#> types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
+#> types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
+#> types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
+#> types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
+#> types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
+#> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
+#> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
+#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -281,24 +285,26 @@ model |> inspect("stanfit") |>
 #> 4 chains, each with iter=2000; warmup=1000; thin=1; 
 #> post-warmup draws per chain=1000, total post-warmup draws=4000.
 #> 
-#>              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
-#> lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
-#> lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
-#> lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
-#> lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
-#> lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
-#> types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
-#> types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
-#> types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
-#> types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
-#> types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
-#> types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
-#> types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
-#> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
-#> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
+#>                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+#> lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
+#> lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
+#> lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
+#> lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
+#> lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
+#> lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
+#> log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1
+#> log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1
+#> types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
+#> types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
+#> types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
+#> types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
+#> types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
+#> types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
+#> types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
+#> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
+#> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
+#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -316,24 +322,26 @@ np <- model |> inspect("stanfit") |> bayesplot::nuts_params()
 #> 4 chains, each with iter=2000; warmup=1000; thin=1; 
 #> post-warmup draws per chain=1000, total post-warmup draws=4000.
 #> 
-#>              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
-#> lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
-#> lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
-#> lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
-#> lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
-#> lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
-#> types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
-#> types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
-#> types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
-#> types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
-#> types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
-#> types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
-#> types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
-#> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
-#> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
+#>                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+#> lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
+#> lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
+#> lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
+#> lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
+#> lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
+#> lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
+#> log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1
+#> log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1
+#> types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
+#> types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
+#> types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
+#> types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
+#> types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
+#> types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
+#> types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
+#> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
+#> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
+#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -365,24 +373,26 @@ model |>
 #> 4 chains, each with iter=2000; warmup=1000; thin=1; 
 #> post-warmup draws per chain=1000, total post-warmup draws=4000.
 #> 
-#>              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> lambdas[1]   0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
-#> lambdas[2]   0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
-#> lambdas[3]   0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
-#> lambdas[4]   0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
-#> lambdas[5]   0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
-#> lambdas[6]   0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
-#> types[1]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
-#> types[2]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
-#> types[3]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
-#> types[4]     0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
-#> types[5]     0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
-#> types[6]     0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
-#> types[7]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
-#> types[8]     0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
-#> lp__       -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
+#>                     mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+#> lambdas[1]          0.51    0.00 0.10   0.30   0.43   0.50   0.58   0.71  2038    1
+#> lambdas[2]          0.49    0.00 0.10   0.29   0.42   0.50   0.57   0.70  2038    1
+#> lambdas[3]          0.08    0.00 0.07   0.00   0.03   0.06   0.12   0.28  2075    1
+#> lambdas[4]          0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  3806    1
+#> lambdas[5]          0.80    0.00 0.11   0.53   0.74   0.81   0.88   0.96  4103    1
+#> lambdas[6]          0.08    0.00 0.07   0.00   0.03   0.06   0.11   0.28  4415    1
+#> log_sum_gammas[1]   0.71    0.00 0.22   0.34   0.55   0.68   0.84   1.20  2076    1
+#> log_sum_gammas[2]   3.02    0.04 1.23   1.28   2.15   2.80   3.62   6.10   892    1
+#> types[1]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.15  1850    1
+#> types[2]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  2155    1
+#> types[3]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3769    1
+#> types[4]            0.02    0.00 0.02   0.00   0.01   0.01   0.03   0.08  3520    1
+#> types[5]            0.40    0.00 0.10   0.21   0.33   0.40   0.47   0.61  2399    1
+#> types[6]            0.39    0.00 0.10   0.21   0.32   0.39   0.46   0.59  2480    1
+#> types[7]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4065    1
+#> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
+#> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Tue Dec 17 17:38:21 2024.
+#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
