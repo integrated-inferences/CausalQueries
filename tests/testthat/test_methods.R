@@ -53,7 +53,7 @@ testthat::test_that(
 
     out <- capture.output(summary(model, include = "posterior_distribution"))
     expect_true(any(grepl("posterior distributions", out)))
-    expect_true(any(grepl("not contain the following objects: specified 'data', stanfit", out)))
+    expect_true(any(grepl("not contain the following objects: stanfit", out)))
 
     model <- update_model(model,  keep_event_probabilities = TRUE, data = data.frame(X = 1))
     out <- capture.output(summary(model, include = "posterior_distribution"))
