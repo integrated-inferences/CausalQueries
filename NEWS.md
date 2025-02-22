@@ -1,3 +1,10 @@
+# CausalQueries 1.3.3
+
+This is a patch release implementing Stan optimization improving run time and 
+output formatting of the core Stan model. Additionally `type_distribution` has
+been renamed to `type_posterior` for clarity. See `grab()` or `inspect()` 
+documentation for details. 
+
 # CausalQueries 1.3.2
 
 This is a patch release updating documentation and removing the deprecated 

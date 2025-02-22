@@ -1,8 +1,8 @@
-This is a patch release updating documentation and removing deprecated classes. 
+This is a patch release implementing Stan optimization. 
 
 ## Test environments
 
-* local Ubuntu 22.04.3 LTS install, R 4.4.1
+* local Ubuntu 22.04.5 LTS install, R 4.4.2
 * win-builder, R version 4.4.2 
 * win-builder, R version 4.3.3
 * win-builder, R r-devel

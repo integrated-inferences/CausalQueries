@@ -18,6 +18,8 @@ prep_stan_data <- function(model,
                            keep_type_distribution = TRUE,
                            censored_types = NULL) {
   i <- NULL
+  s <- NULL
+
   # check data is in correct compact form
   if (!all(c("event", "count") %in% names(data))) {
     stop("Data should contain columns `event` and `count`")
