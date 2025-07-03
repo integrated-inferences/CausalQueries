@@ -11,8 +11,11 @@
 #' and \code{set_parameters}
 #'
 #' @param statement character string. Statement describing causal
-#'   relations between nodes. Only directed relations are
-#'   permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".
+#'   relations between nodes. Directed relations can be specified
+#'   using '->' or '<-' and can be combined.
+#'   For instance "X -> Y", "Y <- X" or  "X1 -> Y <- X2; X1 -> X2".
+#'   Confounded relations can be specified using a double headed arrow,
+#'   "X <-> Y", to indicate unobserved confounding between X and Y
 #' @param add_causal_types Logical. Whether to create and attach causal
 #'   types to \code{model}. Defaults to `TRUE`.
 #' @param nodal_types List of nodal types associated with model nodes
@@ -97,20 +100,13 @@
 make_model <- function(statement = "X -> Y",
                        add_causal_types = TRUE,
                        nodal_types = NULL) {
+
   parent <- NULL
 
-  if (length(statement) != 1) {
-    stop(
-      paste(
-        "The length of the character vector of the statement",
-        "is unequal to 1. Please provide only 1 causal model."
-      )
-    )
+  if (!is.character(statement) || length(statement) != 1) {
+    stop("The model statement should be a single character string.")
   }
 
-  if (!(is.character(statement))) {
-    stop("The model statement should be of type character.")
-  }
 
   # generate DAG
   .dag <- make_dag(statement)
@@ -164,19 +160,26 @@ make_model <- function(statement = "X -> Y",
   nodes <- c(exog_node, endog_node)
 
   # parent count df
-  parents_df <-
-    data.frame(node = nodes, root = nodes %in% exog_node) |>
-    dplyr::mutate(parents = vapply(node, function(n) {
-      dag |>
-        dplyr::filter(children == n) |>
-        nrow()
-    }, numeric(1))) |>
-    dplyr::mutate(parent_nodes = sapply(node, function(n) {
-      dag |>
-        dplyr::filter(children == n) |>
-        dplyr::pull(parent) |>
-        paste(collapse = ", ")
-    }))
+  # parents_df <-
+  #   data.frame(node = nodes, root = nodes %in% exog_node) |>
+  #   dplyr::mutate(parents = vapply(node, function(n) {
+  #     dag |>
+  #       dplyr::filter(children == n) |>
+  #       nrow()
+  #   }, numeric(1))) |>
+  #   dplyr::mutate(parent_nodes = sapply(node, function(n) {
+  #     dag |>
+  #       dplyr::filter(children == n) |>
+  #       dplyr::pull(parent) |>
+  #       paste(collapse = ", ")
+  #   }))
+
+  parents_df <- tibble(node = nodes) |>
+    mutate(
+      root = node %in% exog_node,
+      parents = purrr::map_int(node, ~ sum(dag$children == .x)),
+      parent_nodes = purrr::map_chr(node, ~ paste(dag$parent[dag$children == .x], collapse = ", "))
+    )
 
   # Model is a list
   model <-
