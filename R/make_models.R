@@ -15,7 +15,7 @@
 #'   using '->' or '<-' and can be combined.
 #'   For instance "X -> Y", "Y <- X" or  "X1 -> Y <- X2; X1 -> X2".
 #'   Confounded relations can be specified using a double headed arrow,
-#'   "X <-> Y", to indicate unobserved confounding between X and Y
+#'   "X <-> Y", to indicate unobserved confounding between X and Y.
 #' @param add_causal_types Logical. Whether to create and attach causal
 #'   types to \code{model}. Defaults to `TRUE`.
 #' @param nodal_types List of nodal types associated with model nodes

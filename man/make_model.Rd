@@ -8,8 +8,11 @@ make_model(statement = "X -> Y", add_causal_types = TRUE, nodal_types = NULL)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal
-relations between nodes. Only directed relations are
-permitted. For instance "X -> Y" or  "X1 -> Y <- X2; X1 -> X2".}
+relations between nodes. Directed relations can be specified
+using '->' or '<-' and can be combined.
+For instance "X -> Y", "Y <- X" or  "X1 -> Y <- X2; X1 -> X2".
+Confounded relations can be specified using a double headed arrow,
+"X <-> Y", to indicate unobserved confounding between X and Y.}
 
 \item{add_causal_types}{Logical. Whether to create and attach causal
 types to \code{model}. Defaults to `TRUE`.}
