@@ -432,6 +432,17 @@ clean_statement <- function(statement) {
     )
   }
 
+  if (any(c("/", "^") %in% st_edge[!is_edge])) {
+    stop(
+      paste0(
+        "Unsupported characters in variable names. No '/' or '^' in variable names please.",
+        "\n",
+        "\n Adding mathematical operators describing non-linear transformations to variable names",
+        "\n will cause downstream issues when specifying queries."
+      )
+    )
+  }
+
   # counter that increments every time we hit an edge --> each character
   # belonging to a node thus has the same number (node_id)
   node_id <- cumsum(is_edge)
