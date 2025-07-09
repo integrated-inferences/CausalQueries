@@ -456,9 +456,7 @@ check_query <- function(query) {
     }
   }
 
-  if(any(c("/", "^") %in% query)) {
-    non_linear_warn <- TRUE
-  }
+  non_linear_warn <- any(c("/", "^", "ln(", "log(") %in% query)
 
   query <- paste(q, collapse = "")
 

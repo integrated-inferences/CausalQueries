@@ -160,26 +160,19 @@ make_model <- function(statement = "X -> Y",
   nodes <- c(exog_node, endog_node)
 
   # parent count df
-  # parents_df <-
-  #   data.frame(node = nodes, root = nodes %in% exog_node) |>
-  #   dplyr::mutate(parents = vapply(node, function(n) {
-  #     dag |>
-  #       dplyr::filter(children == n) |>
-  #       nrow()
-  #   }, numeric(1))) |>
-  #   dplyr::mutate(parent_nodes = sapply(node, function(n) {
-  #     dag |>
-  #       dplyr::filter(children == n) |>
-  #       dplyr::pull(parent) |>
-  #       paste(collapse = ", ")
-  #   }))
-
-  parents_df <- tibble(node = nodes) |>
-    mutate(
-      root = node %in% exog_node,
-      parents = purrr::map_int(node, ~ sum(dag$children == .x)),
-      parent_nodes = purrr::map_chr(node, ~ paste(dag$parent[dag$children == .x], collapse = ", "))
-    )
+   parents_df <-
+     data.frame(node = nodes, root = nodes %in% exog_node) |>
+     dplyr::mutate(parents = vapply(node, function(n) {
+       dag |>
+         dplyr::filter(children == n) |>
+         nrow()
+     }, numeric(1))) |>
+     dplyr::mutate(parent_nodes = sapply(node, function(n) {
+       dag |>
+         dplyr::filter(children == n) |>
+         dplyr::pull(parent) |>
+         paste(collapse = ", ")
+     }))
 
   # Model is a list
   model <-
