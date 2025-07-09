@@ -394,33 +394,33 @@ clean_statement <- function(statement) {
   # check for unsupported characters in varnames
   if (any(c("<", ">") %in% st_edge[!is_edge])) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No '<' or '>' in variable names please.",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc."
+      paste(
+        "Unsupported characters in variable names. No '<' or '>' in variable names please. \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc.",
+        sep = " "
       )
     )
   }
 
   if ("-" %in% st_edge[!is_edge]) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots?",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not -."
+      paste(
+        "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots? \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not -.",
+        sep = " "
       )
     )
   }
 
   if ("_" %in% st_edge[!is_edge]) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No underscores '_' in variable names please; try dots?",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not _>, <_, <_> etc."
+      paste(
+        "Unsupported characters in variable names. No underscores '_' in variable names please; try dots? \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not _>, <_, <_> etc.",
+        sep = " "
       )
     )
   }
@@ -434,11 +434,11 @@ clean_statement <- function(statement) {
 
   if (any(c("/", "^") %in% st_edge[!is_edge])) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No '/' or '^' in variable names please.",
-        "\n",
-        "\n Adding mathematical operators describing non-linear transformations to variable names",
-        "\n will cause downstream issues when specifying queries."
+      paste(
+        "Unsupported characters in variable names. No '/' or '^' in variable names please. \n",
+        "Adding mathematical operators describing non-linear transformations to variable names",
+        "will cause downstream issues when specifying queries.",
+        sep = " "
       )
     )
   }
