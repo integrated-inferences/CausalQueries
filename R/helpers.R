@@ -456,6 +456,8 @@ check_query <- function(query) {
     }
   }
 
+  non_linear_warn <- any(c("/", "^") %in% query)
+
   query <- paste(q, collapse = "")
 
   if (do_warn != 0) {
@@ -476,6 +478,16 @@ check_query <- function(query) {
         "some value should be specified with `==` not `=`. The query has been",
         "changed accordingly:",
         query,
+        sep = " "
+      )
+    )
+  }
+
+  if (non_linear_warn) {
+    warning(
+      paste(
+        "non-linear transformations e.g. / or ^ are not supported in querying.",
+        "Queries will output NaN or NA for estimates.",
         sep = " "
       )
     )
@@ -525,5 +537,7 @@ get_args_for <- function(fun, dots) {
 }
 
 
-has_posterior <- function(model)
+has_posterior <- function(model) {
   !is.null(model$posterior_distribution)
+}
+

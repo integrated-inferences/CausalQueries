@@ -26,7 +26,7 @@ test_that("inspect outputs correct parents_df", {
                 "node\\s+root\\s+parents\\s+parent_nodes")
   expect_output(inspect(model, what = "parents_df"), "1\\s+X\\s+TRUE\\s+0")
   expect_output(inspect(model, what = "parents_df"),
-                "2\\s+Y\\s+FALSE\\s+1\\s+X")
+                '2\\s+Y\\s+FALSE\\s+1\\s+X')
 })
 
 test_that("inspect outputs correct parameters_df", {

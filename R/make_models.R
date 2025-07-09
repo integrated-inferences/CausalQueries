@@ -160,26 +160,19 @@ make_model <- function(statement = "X -> Y",
   nodes <- c(exog_node, endog_node)
 
   # parent count df
-  # parents_df <-
-  #   data.frame(node = nodes, root = nodes %in% exog_node) |>
-  #   dplyr::mutate(parents = vapply(node, function(n) {
-  #     dag |>
-  #       dplyr::filter(children == n) |>
-  #       nrow()
-  #   }, numeric(1))) |>
-  #   dplyr::mutate(parent_nodes = sapply(node, function(n) {
-  #     dag |>
-  #       dplyr::filter(children == n) |>
-  #       dplyr::pull(parent) |>
-  #       paste(collapse = ", ")
-  #   }))
-
-  parents_df <- tibble(node = nodes) |>
-    mutate(
-      root = node %in% exog_node,
-      parents = purrr::map_int(node, ~ sum(dag$children == .x)),
-      parent_nodes = purrr::map_chr(node, ~ paste(dag$parent[dag$children == .x], collapse = ", "))
-    )
+   parents_df <-
+     data.frame(node = nodes, root = nodes %in% exog_node) |>
+     dplyr::mutate(parents = vapply(node, function(n) {
+       dag |>
+         dplyr::filter(children == n) |>
+         nrow()
+     }, numeric(1))) |>
+     dplyr::mutate(parent_nodes = sapply(node, function(n) {
+       dag |>
+         dplyr::filter(children == n) |>
+         dplyr::pull(parent) |>
+         paste(collapse = ", ")
+     }))
 
   # Model is a list
   model <-
@@ -394,33 +387,33 @@ clean_statement <- function(statement) {
   # check for unsupported characters in varnames
   if (any(c("<", ">") %in% st_edge[!is_edge])) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No '<' or '>' in variable names please.",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc."
+      paste(
+        "Unsupported characters in variable names. No '<' or '>' in variable names please. \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not >, <, <> or ->>, <<-, <<->> etc.",
+        sep = " "
       )
     )
   }
 
   if ("-" %in% st_edge[!is_edge]) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots?",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not -."
+      paste(
+        "Unsupported characters in variable names. No hyphens '-' in variable names please; try dots? \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not -.",
+        sep = " "
       )
     )
   }
 
   if ("_" %in% st_edge[!is_edge]) {
     stop(
-      paste0(
-        "Unsupported characters in variable names. No underscores '_' in variable names please; try dots?",
-        "\n",
-        "\n You may have tried to define an edge but misspecified it.",
-        "\n Edges should be specified via ->, <-, <-> not _>, <_, <_> etc."
+      paste(
+        "Unsupported characters in variable names. No underscores '_' in variable names please; try dots? \n",
+        "You may have tried to define an edge but misspecified it.",
+        "Edges should be specified via ->, <-, <-> not _>, <_, <_> etc.",
+        sep = " "
       )
     )
   }
@@ -429,6 +422,17 @@ clean_statement <- function(statement) {
       ("." %in% st_edge[!is_edge])) {
     stop(
       "Unsupported characters in variable names. No dots '.' in variable names for models with confounding."
+    )
+  }
+
+  if (any(c("/", "^") %in% st_edge[!is_edge])) {
+    stop(
+      paste(
+        "Unsupported characters in variable names. No '/' or '^' in variable names please. \n",
+        "Adding mathematical operators describing non-linear transformations to variable names",
+        "will cause downstream issues when specifying queries.",
+        sep = " "
+      )
     )
   }
 
