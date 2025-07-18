@@ -420,6 +420,11 @@ check_query <- function(query) {
   query <- gsub(" ", "", query)
   query <- unlist(strsplit(query, ""))
 
+  # nonlinear indicators  to exclude
+  not_allowed <- c("\\^", "\\\\", "exp\\(")
+  non_linear_warn <- any(sapply(not_allowed, grepl, query))
+
+
   q <- c()
   do_warn <- 0
   non_do_warn <- 0
@@ -456,8 +461,6 @@ check_query <- function(query) {
     }
   }
 
-  non_linear_warn <- any(c("/", "^") %in% query)
-
   query <- paste(q, collapse = "")
 
   if (do_warn != 0) {
@@ -485,11 +488,7 @@ check_query <- function(query) {
 
   if (non_linear_warn) {
     warning(
-      paste(
         "non-linear transformations e.g. / or ^ are not supported in querying.",
-        "Queries will output NaN or NA for estimates.",
-        sep = " "
-      )
     )
   }
 
