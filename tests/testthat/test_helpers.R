@@ -154,7 +154,9 @@ testthat::test_that(
     expect_no_error(CausalQueries:::check_query("D[C=B[A=1]] == 1"))
     expect_warning(CausalQueries:::check_query("D[C=B[A=1] == 1"))
     expect_warning(CausalQueries:::check_query("X=1"))
-
+    expect_warning(CausalQueries:::check_query("X^2"))
+    expect_warning(CausalQueries:::check_query("X/Y"))
+    expect_warning(CausalQueries:::check_query("ln(X)"))
   }
 )
 
