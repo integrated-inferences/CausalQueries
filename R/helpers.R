@@ -418,7 +418,7 @@ is_a_model <- function(model){
 
 check_query <- function(query) {
   # nonlinear indicators  to exclude
-  not_allowed <- c("\\^", "\\\\", "exp\\(", "ln\\(")
+  not_allowed <- c("\\^", "/", "exp\\(", "ln\\(")
   non_linear_warn <- any(sapply(not_allowed, grepl, query))
 
   query <- gsub(" ", "", query)
