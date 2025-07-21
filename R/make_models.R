@@ -5,10 +5,7 @@
 #' and default priors are provided under the assumption of no confounding.
 #' Models can be updated with specification of a parameter matrix, \code{P}, by
 #' providing restrictions on causal types, and/or by providing informative
-#' priors on parameters. The default setting for a causal model have flat
-#' (uniform) priors and parameters putting equal weight on each parameter
-#' within each parameter set. These can be adjust with \code{set_priors}
-#' and \code{set_parameters}
+#' priors on parameters.
 #'
 #' @param statement character string. Statement describing causal
 #'   relations between nodes. Directed relations can be specified
@@ -40,6 +37,11 @@
 #' \item{causal_types}{A \code{data.frame} listing causal types and the
 #'   nodal types that produce them}
 #'
+#' By default a causal model has flat  (uniform) priors and parameters that
+#' put equal weight on each parameter within each parameter set. The parameter
+#' ranges (range of the nodal types) can be adjusted with \code{\link{set_restrictions}}.
+#' The priors can be adjusted with \code{\link{set_priors}}. Specific parameter
+#' values can be adjusted with \code{\link{set_parameters}}.
 #'
 #' @seealso \code{\link{summary.causal_model}} provides summary method for
 #'   output objects of class \code{causal_model}
