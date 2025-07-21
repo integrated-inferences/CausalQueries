@@ -299,19 +299,25 @@ print.summary.causal_model <-
         nt <- nodal_types[[n]]
         interpret <- attr(nodal_types, "interpret")[[n]]
         stop_at <- min(length(nt), 16)
-        cat(paste0("$", n, "\n"))
+        cat(paste0("\nNodal types for ", n, ":\n"))
 
         cat(paste0(nt[1:stop_at], collapse = "  "))
 
         if (stop_at != length(nt)) {
           cat(paste0(" ...", length(nt) - 16, " nodal types omitted"))
         }
-        cat("\n\n")
-        print(interpret)
-        cat("\n")
+          cat("\n")
+          if(!is.null(interpret)) {
+          cat(paste0("\nGuide to interpreting nodal types for ", n, ":\n"))
+
+          cat("\n")
+          print(interpret)
+          cat("\n")
+          }
+
       }
 
-      cat("Number of types by node:\n")
+      cat("Number of nodal types by node:\n")
 
       print(vapply(nodal_types, length, numeric(1), USE.NAMES = TRUE))
 

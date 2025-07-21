@@ -144,7 +144,8 @@ clean_condition <- function(condition) {
 #' @param position A named list of integers. The name is the name of the child
 #'   node in \code{model}, and its value a vector of digit positions in that
 #'   node's nodal type to be interpreted. See `Details`.
-#' @param nodes A vector of names of nodes. Can be used to limit interpretation to selected nodes.
+#' @param nodes A vector of names of nodes. Can be used to limit interpretation to
+#'   selected nodes. By default limited to non root nodes.
 #' @return A named \code{list} with interpretation of positions of
 #'   the digits in a nodal type
 #' @details A node for a child node X with \code{k} parents has a nodal type
@@ -173,9 +174,15 @@ clean_condition <- function(condition) {
 interpret_type <- function(model,
                            condition = NULL,
                            position = NULL,
-                           nodes = NULL) {
+                           nodes = model$parents_df[!model$parents_df$root, 1]) {
 
   # Checks
+
+   if(!is.null(position) && !all(names(position) %in% nodes )){
+     message("Specify position variables from among requested nodes only")
+     position <- NULL
+   }
+
     if (!is.null(condition) & !is.null(position)) {
       stop("Must specify either `condition` or `nodal_position`, but not both.")
     }
@@ -278,7 +285,6 @@ parse_conditions <- function(condition, nodes) {
   # Extract LHS and RHS
   lhs <- sapply(split_conditions, function(x) x[1])
   rhs <- sapply(split_conditions, function(x) x[2])
-  print("check1")
 
   x <- lapply(rhs, function(x) {
 

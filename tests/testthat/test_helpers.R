@@ -76,7 +76,7 @@ testthat::test_that(
 		                                          'X | Z=0 & R=0'),
 		                            position = list(X = c(3,4), Y = 1)))
 		# not in types
-		expect_error(CausalQueries:::interpret_type(model,
+		expect_message(CausalQueries:::interpret_type(model,
 		                                            position = list(Q = c(3,5),
 		                                                            Y = 1)))
 	}
