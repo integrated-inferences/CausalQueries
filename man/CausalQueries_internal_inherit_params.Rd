@@ -31,7 +31,7 @@ interrogate. An expression of the form
 \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters dataframe.
+specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 See \code{inspect(model, "parameters_df")}.}
 
 \item{P}{A \code{data.frame}. Parameter matrix. Not required but may be

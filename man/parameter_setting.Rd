@@ -31,13 +31,13 @@ get_parameters(model, param_type = NULL)
 \code{\link{make_model}}.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters dataframe.
+specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 See \code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to make
 "flat", "prior_mean", "posterior_mean", "prior_draw",
 "posterior_draw", "define". With param_type set to \code{define} use
-arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
+arguments to be passed to \code{\link{make_priors()}}; otherwise \code{flat} sets
 equal probabilities on each nodal type in each parameter set;
 \code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
 \code{posterior_draw} take parameters as the means or as draws
@@ -49,7 +49,7 @@ from the prior or posterior.}
 residual elements are normalized so that parameters in param_set sum
 to 1 and provided params are unaltered.}
 
-\item{...}{Options passed onto \code{\link{make_priors}}.}
+\item{...}{Options passed onto \code{\link{make_priors()}}.}
 }
 \value{
 A vector of draws from the prior or distribution of parameters
@@ -67,8 +67,8 @@ Functionality for altering parameters:
 A vector of 'true' parameters; possibly drawn from prior or posterior.
 
 Add a true parameter vector to a model. Parameters can be created using
-arguments passed to \code{\link{make_parameters}} and
-\code{\link{make_priors}}.
+arguments passed to \code{\link{make_parameters()}} and
+\code{\link{make_priors()}}.
 
 Extracts parameters as a named vector
 }

@@ -39,11 +39,11 @@ following components:
 \item{causal_types}{A \code{data.frame} listing causal types and the
   nodal types that produce them}
 
-By default a causal model has flat  (uniform) priors and parameters that
+By default a causal model has flat (uniform) priors and parameters that
 put equal weight on each parameter within each parameter set. The parameter
-ranges (range of the nodal types) can be adjusted with \code{\link{set_restrictions}}.
-The priors can be adjusted with \code{\link{set_priors}}. Specific parameter
-values can be adjusted with \code{\link{set_parameters}}.
+ranges (range of the nodal types) can be adjusted with \code{\link{set_restrictions()}}.
+The priors can be adjusted with \code{\link{set_priors()}}. Specific parameter
+values can be adjusted with \code{\link{set_parameters()}}.
 }
 \description{
 \code{make_model} uses causal statements encoded as strings to specify
@@ -57,7 +57,7 @@ priors on parameters.
 make_model(statement = "X -> Y")
 modelXKY <- make_model("X -> K -> Y; X -> Y")
 
-# Example where cyclicaly dag attempted
+# Example where a cyclical dag is attempted
 \dontrun{
  modelXKX <- make_model("X -> K -> X")
 }

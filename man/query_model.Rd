@@ -39,7 +39,7 @@ A given statement can alternatively be provided after a colon in the query state
 posteriors or parameters.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters dataframe.
+specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 See \code{inspect(model, "parameters_df")}.}
 
 \item{stats}{Functions to be applied to the query distribution.

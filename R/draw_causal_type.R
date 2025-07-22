@@ -5,7 +5,7 @@
 #' the case level causal type.
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
-#' @param ... Arguments passed to  `set_parameters`
+#' @param ... Arguments passed to \code{\link{set_parameters()}}
 #' @export
 #' @examples
 #'

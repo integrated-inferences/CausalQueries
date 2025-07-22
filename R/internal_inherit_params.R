@@ -8,7 +8,7 @@
 #' @param join_by A logical operator. Used to connect causal statements:
 #'   \emph{AND} ('&') or \emph{OR} ('|'). Defaults to '|'.
 #' @param parameters A vector of real numbers in [0,1]. Values of parameters to
-#'   specify (optional). By default, parameters is drawn from the parameters dataframe.
+#'   specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 #'   See \code{inspect(model, "parameters_df")}.
 #' @param P A \code{data.frame}. Parameter matrix. Not required but may be
 #'   provided to avoid repeated computation for simulations. See \code{inspect(model, "parameter_matrix")}.

@@ -11,7 +11,7 @@
 }
 \arguments{
 \item{object}{An object of \code{causal_model} class produced using
-\code{make_model} or \code{update_model}.}
+\code{\link{make_model()}} or \code{\link{update_model()}}.}
 
 \item{include}{A character string specifying the additional objects to include in summary. Defaults to \code{NULL}. See details for full list of available values.}
 
@@ -59,10 +59,10 @@ In addition to the default objects included in `summary.causal_model` users can 
   \item \code{"parameter_matrix"} A matrix mapping from parameters into causal types,
   \item \code{"causal_types"} A data frame listing causal types and the nodal types that produce them,
   \item \code{"nodal_types"} A list with the nodal types of the model,
-  \item \code{"data_types"} A list with the all data types consistent with the model; for options see `"?get_all_data_types"`,
-  \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output `inspect(prior_hyperparameters, c('M', 'Y'))`
+  \item \code{"data_types"} A list with the all data types consistent with the model; for options see \code{?get_all_data_types},
+  \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{inspect(prior_hyperparameters, c('M', 'Y'))}
   \item \code{"prior_distribution"} A data frame of the parameter prior distribution,
-  \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see `"?get_event_probabilities"`,
+  \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see \code{?get_event_probabilities"},
   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
   \item \code{"type_prior"} A matrix of type probabilities using priors,
   \item \code{"type_posterior"} A matrix of type probabilities using posteriors,

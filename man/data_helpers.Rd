@@ -69,7 +69,7 @@ Defaults to `FALSE`.}
 \item{n}{An integer. Number of observations.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters dataframe.
+specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 See \code{inspect(model, "parameters_df")}.}
 
 \item{param_type}{A character. String specifying type of parameters to make

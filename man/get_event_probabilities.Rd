@@ -17,7 +17,7 @@ get_event_probabilities(
 \code{\link{make_model}}.}
 
 \item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters dataframe.
+specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
 See \code{inspect(model, "parameters_df")}.}
 
 \item{A}{A \code{data.frame}. Ambiguities matrix. Not required but may be

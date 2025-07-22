@@ -5,13 +5,13 @@
 #' @param param_type A character. String specifying type of parameters to make
 #'   "flat", "prior_mean", "posterior_mean", "prior_draw",
 #'   "posterior_draw", "define". With param_type set to \code{define} use
-#'   arguments to be passed to \code{make_priors}; otherwise \code{flat} sets
+#'   arguments to be passed to \code{\link{make_priors()}}; otherwise \code{flat} sets
 #'   equal probabilities on each nodal type in each parameter set;
 #'   \code{prior_mean}, \code{prior_draw}, \code{posterior_mean},
 #'   \code{posterior_draw} take parameters as the means or as draws
 #'   from the prior or posterior.
 #' @param warning Logical. Whether to warn about parameter renormalization.
-#' @param ... Options passed onto \code{\link{make_priors}}.
+#' @param ... Options passed onto \code{\link{make_priors()}}.
 #' @inheritParams CausalQueries_internal_inherit_params
 #'
 #' @name parameter_setting
@@ -189,8 +189,8 @@ make_parameters <- function(model,
 #' Set parameters
 #'
 #' Add a true parameter vector to a model. Parameters can be created using
-#' arguments passed to \code{\link{make_parameters}} and
-#' \code{\link{make_priors}}.
+#' arguments passed to \code{\link{make_parameters()}} and
+#' \code{\link{make_priors()}}.
 #'
 #' @rdname parameter_setting
 #' @return An object of class \code{causal_model}. It essentially returns a

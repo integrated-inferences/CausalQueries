@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{x}{An object of \code{causal_model} class, usually a result of
-a call to \code{make_model} or \code{update_model}.}
+a call to \code{\ling{make_model()}} or \code{\link{update_model()}}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
