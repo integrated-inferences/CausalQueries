@@ -11,7 +11,7 @@
 }
 \arguments{
 \item{object}{An object of \code{causal_model} class produced using
-\code{\link{make_model()}} or \code{\link{update_model()}}.}
+\code{\link{make_model}} or \code{\link{update_model}}.}
 
 \item{include}{A character string specifying the additional objects to include in summary. Defaults to \code{NULL}. See details for full list of available values.}
 

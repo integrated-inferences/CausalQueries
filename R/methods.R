@@ -3,7 +3,7 @@
 #' print method for class \code{causal_model}.
 #'
 #' @param x An object of \code{causal_model} class, usually a result of
-#'   a call to \code{\link{make_model()}} or \code{\link{update_model()}}.
+#'   a call to \code{\link{make_model}} or \code{\link{update_model}}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @details
@@ -49,7 +49,7 @@ print.causal_model <- function(x, ...) {
 #' summary method for class "\code{causal_model}".
 #'
 #' @param object An object of \code{causal_model} class produced using
-#'   \code{\link{make_model()}} or \code{\link{update_model()}}.
+#'   \code{\link{make_model}} or \code{\link{update_model}}.
 #' @param include A character string specifying the additional objects to include in summary. Defaults to \code{NULL}. See details for full list of available values.
 #' @param ... Further arguments passed to or from other methods.
 #'

@@ -39,9 +39,9 @@
 #'
 #' By default a causal model has flat (uniform) priors and parameters that
 #' put equal weight on each parameter within each parameter set. The parameter
-#' ranges (range of the nodal types) can be adjusted with \code{\link{set_restrictions()}}.
-#' The priors can be adjusted with \code{\link{set_priors()}}. Specific parameter
-#' values can be adjusted with \code{\link{set_parameters()}}.
+#' ranges (range of the nodal types) can be adjusted with \code{\link{set_restrictions}}.
+#' The priors can be adjusted with \code{\link{set_priors}}. Specific parameter
+#' values can be adjusted with \code{\link{set_parameters}}.
 #'
 #' @seealso \code{\link{summary.causal_model}} provides summary method for
 #'   output objects of class \code{causal_model}
