@@ -189,7 +189,7 @@ make_parameters <- function(model,
 #' Set parameters
 #'
 #' Add a true parameter vector to a model. Parameters can be created using
-#' arguments passed to \code{\link{make_parameters()}} and
+#' arguments passed to \code{\link{make_parameters}} and
 #' \code{\link{make_priors}}.
 #'
 #' @rdname parameter_setting

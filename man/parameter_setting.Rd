@@ -67,7 +67,7 @@ Functionality for altering parameters:
 A vector of 'true' parameters; possibly drawn from prior or posterior.
 
 Add a true parameter vector to a model. Parameters can be created using
-arguments passed to \code{\link{make_parameters()}} and
+arguments passed to \code{\link{make_parameters}} and
 \code{\link{make_priors}}.
 
 Extracts parameters as a named vector
