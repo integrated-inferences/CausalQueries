@@ -157,7 +157,8 @@ testthat::test_that(
     expect_warning(CausalQueries:::check_query("X=1"))
     expect_warning(CausalQueries:::check_query("X^2"))
     expect_warning(CausalQueries:::check_query("X/Y"))
-    expect_warning(CausalQueries:::check_query("ln(X)"))
+    expect_warning(CausalQueries:::check_query("log(X)"))
+    expect_warning(CausalQueries:::check_query("exp(X)"))
   }
 )
 

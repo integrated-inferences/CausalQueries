@@ -420,24 +420,6 @@ clean_statement <- function(statement) {
     )
   }
 
-  if (("<->" %in% st_edge[is_edge]) &&
-      ("." %in% st_edge[!is_edge])) {
-    stop(
-      "Unsupported characters in variable names. No dots '.' in variable names for models with confounding."
-    )
-  }
-
-  if (any(c("/", "^") %in% st_edge[!is_edge])) {
-    stop(
-      paste(
-        "Unsupported characters in variable names. No '/' or '^' in variable names please. \n",
-        "Adding mathematical operators describing non-linear transformations to variable names",
-        "will cause downstream issues when specifying queries.",
-        sep = " "
-      )
-    )
-  }
-
   # counter that increments every time we hit an edge --> each character
   # belonging to a node thus has the same number (node_id)
   node_id <- cumsum(is_edge)
@@ -445,6 +427,42 @@ clean_statement <- function(statement) {
   nodes <- split(st_edge[!is_edge], node_id[!is_edge]) |>
     vapply(paste, collapse = "", "") |>
     unname()
+
+  # ensure that no non-linear mathematical operators are embedded in variable names
+  # we have to check this to ensure correct query parsing
+  non_linear_operators <- c("\\^", "/", "exp\\(", "log\\(")
+  non_linear_warn <- any(
+    vapply(non_linear_operators, function(operator) {grepl(operator, nodes)}, logical(length(nodes)))
+  )
+
+  if(non_linear_warn) {
+    stop(
+      paste(
+        "Unsupported substrings in variable names. No non-linear mathematical operators like:",
+        "^, /, exp( or log( in variable names please. Adding such operator substrings to variable names",
+        "will cause downstream issues in query specification and parsing.",
+        sep = " "
+      )
+    )
+  }
+
+  # ensure that no query specific syntax is embedded in variable names
+  # we have to check this to ensure correct query parsing
+  query_operators <- c("\\[", "\\]", ":\\|:")
+  query_warn <- any(
+    vapply(query_operators, function(operator) {grepl(operator, nodes)}, logical(length(nodes)))
+  )
+
+  if(query_warn) {
+    stop(
+      paste(
+        "Unsupported substrings in variable names. No query operators like:",
+        "[, ] or :|: in variable names please. Adding such operator substrings to variable names",
+        "will cause downstream issues in query specification and parsing.",
+        sep = " "
+      )
+    )
+  }
 
   return(list(nodes = nodes, edges = st_edge[is_edge]))
 }
