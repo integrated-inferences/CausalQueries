@@ -10,7 +10,7 @@ to guard against silent undefined behavior when querying models.
 non-linear mathematical transformations (`log(`, `exp(`, `^`, `\`) or `CausalQueries`
 query operators (`[`, `]`, `:|:`). This guards against silent undefined behavior 
 when parsing and evaluating queries. 
-Query related functions now also throw an error when non-linear transformations 
+Query related functions now throw a warning when non-linear transformations 
 (`log(`, `exp(`, `^`, `\`) are specified; as non-linear queries are not 
 currently supported by `CausalQueries`. Previously non-linear queries would 
 silently return `NaN` or `Inf`.  
