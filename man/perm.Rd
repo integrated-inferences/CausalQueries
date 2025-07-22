@@ -17,9 +17,4 @@ A \code{matrix} of permutations
 \description{
 Produces the possible permutations of a set of nodes
 }
-\examples{
-\donttest{
-CausalQueries:::perm(3)
-}
-}
 \keyword{internal}

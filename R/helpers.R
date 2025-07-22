@@ -7,11 +7,6 @@
 #' @keywords internal
 #' @return A \code{matrix} of permutations
 #' @importFrom rlang exprs
-#' @examples
-#
-#' \donttest{
-#' CausalQueries:::perm(3)
-#' }
 
 perm <- function(max = rep(1, 2)) {
 
@@ -191,8 +186,8 @@ interpret_type <- function(model,
     nodes <- model$nodes
   }
 
-    parents <- CausalQueries:::get_parents(model)
-    types <- lapply(lapply(parents, length), function(l) CausalQueries:::perm(rep(1, l)))
+    parents <- get_parents(model)
+    types <- lapply(lapply(parents, length), function(l) perm(rep(1, l)))
 
     if (is.null(position)) {
       position <-

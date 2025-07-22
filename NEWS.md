@@ -1,3 +1,20 @@
+# CausalQueries 1.4.3
+
+This is a minor release implementing more intuitive nodal type interpretations 
+as well as improved warnings around inadmissible model and query specifications 
+to guard against silent undefined behavior when querying models. 
+
+### Non Backwards Compatible Changes
+
+`make_model()` now throws an error if node names contain substrings matching
+non-linear mathematical transformations (`log(`, `exp(`, `^`, `\`) or `CausalQueries`
+query operators (`[`, `]`, `:|:`). This guards against silent undefined behavior 
+when parsing and evaluating queries. 
+Query related functions now also throw an error when non-linear transformations 
+(`log(`, `exp(`, `^`, `\`) are specified; as non-linear queries are not 
+currently supported by `CausalQueries`. Previously non-linear queries would 
+silently return `NaN` or `Inf`.  
+
 # CausalQueries 1.3.3
 
 This is a patch release implementing Stan optimization improving run time and 
