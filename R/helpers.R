@@ -465,13 +465,13 @@ is_a_model <- function(model){
 
 check_query <- function(query) {
   # nonlinear indicators  to exclude
-  not_allowed <- c("\\^", "/", "exp\\(", "ln\\(")
-  non_linear_warn <- any(sapply(not_allowed, grepl, query))
+  non_linear_operators <- c("\\^", "/", "exp\\(", "log\\(")
+  non_linear_warn <- any(
+    vapply(non_linear_operators, function(operator) {grepl(operator, query)}, logical(1))
+  )
 
   query <- gsub(" ", "", query)
   query <- unlist(strsplit(query, ""))
-
-
 
   q <- c()
   do_warn <- 0
@@ -536,7 +536,7 @@ check_query <- function(query) {
 
   if (non_linear_warn) {
     warning(
-        "Non-linear transformations (such as / or ^) are not supported in querying."
+        "Non-linear transformations (such as /, ^, exp() or log()) are not supported in querying."
     )
   }
 
