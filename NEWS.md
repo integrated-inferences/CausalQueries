@@ -211,7 +211,7 @@ Checks for correct variable naming are now reinstated.
 
 #### 1. type safety 
 
-Calls to `sapply()` have ben replaced with `vapply()` wherever possible to 
+Calls to `sapply()` have been replaced with `vapply()` wherever possible to 
 enforce type safety.   
 
 

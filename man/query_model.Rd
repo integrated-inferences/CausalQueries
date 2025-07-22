@@ -32,7 +32,7 @@ conditioning marker '|' to avoid confusion with logical operators.}
 \item{given}{A character vector specifying given conditions for each query.
 A 'given' is a quoted expression that evaluates to logical statement.
 \code{given} allows the query to be conditioned on either observed
-or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+or counterfactual distributions. A value of TRUE is interpreted as no conditioning.
 A given statement can alternatively be provided after a colon in the query statement.}
 
 \item{using}{A vector or list of strings. Whether to use priors,
