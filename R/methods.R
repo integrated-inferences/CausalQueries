@@ -1,9 +1,9 @@
 #' Print a short summary for a causal model
 #'
-#' print method for class "\code{causal_model}".
+#' print method for class \code{causal_model}.
 #'
 #' @param x An object of \code{causal_model} class, usually a result of
-#'   a call to \code{\ling{make_model()}} or \code{\link{update_model()}}.
+#'   a call to \code{\link{make_model()}} or \code{\link{update_model()}}.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @details
@@ -58,9 +58,9 @@ print.causal_model <- function(x, ...) {
 #'   \item \code{"parents"} a list of parents of all nodes in a model,
 #'   \item \code{"parameters"} a vector of 'true' parameters,
 #'   \item \code{"parameter_names"} a vector of names of parameters,
-#'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{"?get_all_data_types"},
-#'   \item \code{"prior_event_probabilities"} a vector of prior data (event) probabilities given a parameter vector; for options see \code{"?get_event_probabilities"},
-#'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{"inspect(prior_hyperparameters, c('M', 'Y'))"}
+#'   \item \code{"data_types"} a list with the all data  types consistent with the model; for options see \code{?get_all_data_types},
+#'   \item \code{"prior_event_probabilities"} a vector of prior data (event) probabilities given a parameter vector; for options see \code{?get_event_probabilities},
+#'   \item \code{"prior_hyperparameters"} a vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{inspect(prior_hyperparameters, c('M', 'Y'))}
 #' }
 #'
 #' @details
@@ -226,7 +226,7 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #'   \item \code{"data_types"} A list with the all data types consistent with the model; for options see \code{?get_all_data_types},
 #'   \item \code{"prior_hyperparameters"} A vector of alpha values used to parameterize Dirichlet prior distributions; optionally provide node names to reduce output \code{inspect(prior_hyperparameters, c('M', 'Y'))}
 #'   \item \code{"prior_distribution"} A data frame of the parameter prior distribution,
-#'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see \code{?get_event_probabilities"},
+#'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (sepcified) parameter vector; for options see \code{?get_event_probabilities},
 #'   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
 #'   \item \code{"type_prior"} A matrix of type probabilities using priors,
 #'   \item \code{"type_posterior"} A matrix of type probabilities using posteriors,
