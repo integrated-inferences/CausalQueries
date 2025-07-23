@@ -5,15 +5,31 @@ as well as improved warnings around inadmissible model and query specifications
 to guard against silent undefined behavior when querying models. 
 
 ### Non Backwards Compatible Changes
-
 `make_model()` now throws an error if node names contain substrings matching
 non-linear mathematical transformations (`log(`, `exp(`, `^`, `\`) or `CausalQueries`
 query operators (`[`, `]`, `:|:`). This guards against silent undefined behavior 
 when parsing and evaluating queries. 
+
+### New Functionality
+
+#### 1. Warnings for unsupported queries
 Query related functions now throw a warning when non-linear transformations 
 (`log(`, `exp(`, `^`, `\`) are specified; as non-linear queries are not 
 currently supported by `CausalQueries`. Previously non-linear queries would 
 silently return `NaN` or `Inf`.  
+
+#### 2. More intuitive nodal type interpretations
+`summary.causal_model()` and `inspect(model, "nodal_types")` now print a more 
+intuitive nodal type interpretation guide. For a model `X -> Y <- Z` the updated
+interpretation guide looks as follows: 
+
+```
+  index          interpretation
+1  *---  Y = * if X = 0 & Z = 0
+2  -*--  Y = * if X = 1 & Z = 0
+3  --*-  Y = * if X = 0 & Z = 1
+4  ---*  Y = * if X = 1 & Z = 1
+```
 
 # CausalQueries 1.3.3
 
