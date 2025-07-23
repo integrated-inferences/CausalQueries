@@ -11,7 +11,7 @@ correspond to one or more given condition."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,12 @@ correspond to one or more given <code>condition</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, condition <span class="op">=</span> <span class="cn">NULL</span>, position <span class="op">=</span> <span class="cn">NULL</span>, nodes <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interpret_type</span><span class="op">(</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  condition <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="va">model</span><span class="op">$</span><span class="va">parents_df</span><span class="op">[</span><span class="op">!</span><span class="va">model</span><span class="op">$</span><span class="va">parents_df</span><span class="op">$</span><span class="va">root</span>, <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,7 +82,8 @@ node's nodal type to be interpreted. See `Details`.</p></dd>
 
 
 <dt id="arg-nodes">nodes<a class="anchor" aria-label="anchor" href="#arg-nodes"></a></dt>
-<dd><p>A vector of names of nodes. Can be used to limit interpretation to selected nodes.</p></dd>
+<dd><p>A vector of names of nodes. Can be used to limit interpretation to
+selected nodes. By default limited to non root nodes.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -101,88 +107,66 @@ node's nodal type to be interpreted. See `Details`.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'R -&gt; X; Z -&gt; X; X -&gt; Y'</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">#Return interpretation of all digit positions of all nodes</span></span></span>
+<span class="r-in"><span><span class="co"># Return interpretation of all digit positions of all nodes</span></span></span>
 <span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    R       NA      R0          R = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    R       NA      R1          R = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $Z</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Z       NA      Z0          Z = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Z       NA      Z1          Z = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display    interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    X        1 X[*]*** X | R = 0 &amp; Z = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    X        2 X*[*]** X | R = 1 &amp; Z = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    X        3 X**[*]* X | R = 0 &amp; Z = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    X        4 X***[*] X | R = 1 &amp; Z = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index          interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  *---  X = * if R = 0 &amp; Z = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -*--  X = * if R = 1 &amp; Z = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  --*-  X = * if R = 0 &amp; Z = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  ---*  X = * if R = 1 &amp; Z = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Y        1   Y[*]*      Y | X = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Y        2   Y*[*]      Y | X = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index  interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    *-  Y = * if X = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    -*  Y = * if X = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="co">#Example using digit position</span></span></span>
+<span class="r-in"><span><span class="co"># Example using digit position</span></span></span>
 <span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>, Y <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display    interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    X        3 X**[*]* X | R = 0 &amp; Z = 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    X        4 X***[*] X | R = 1 &amp; Z = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index          interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  --*-  X = * if R = 0 &amp; Z = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  ---*  X = * if R = 1 &amp; Z = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Y        1   Y[*]*      Y | X = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index  interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    *-  Y = * if X = 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>R <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    R        1  RNA[*]        R |  = </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="co">#Example using condition</span></span></span>
-<span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X | Z=0 &amp; R=1'</span>, <span class="st">'X | Z=0 &amp; R=0'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Specify position variables from among requested nodes only</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display    interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    X        1 X[*]*** X | R = 0 &amp; Z = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    X        2 X*[*]** X | R = 1 &amp; Z = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index          interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  *---  X = * if R = 0 &amp; Z = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -*--  X = * if R = 1 &amp; Z = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  --*-  X = * if R = 0 &amp; Z = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  ---*  X = * if R = 1 &amp; Z = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $&lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index  interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    *-  Y = * if X = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    -*  Y = * if X = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co"># Example using condition</span></span></span>
+<span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X | Z=0 &amp; R=1'</span>, <span class="st">'X | Z=0 &amp; R=0'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] index          interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index  interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    *-  Y = * if X = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    -*  Y = * if X = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Example using node names</span></span></span>
 <span class="r-in"><span><span class="fu">interpret_type</span><span class="op">(</span><span class="va">model</span>, nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span>, <span class="st">"R"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    Y        1   Y[*]*      Y | X = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    Y        2   Y*[*]      Y | X = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index  interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    *-  Y = * if X = 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    -*  Y = * if X = 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   node position display interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    R       NA      R0          R = 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    R       NA      R1          R = 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index interpretation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     *          R = *</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
@@ -195,7 +179,7 @@ node's nodal type to be interpreted. See `Details`.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

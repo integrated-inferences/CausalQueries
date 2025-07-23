@@ -4,18 +4,12 @@ the nodes and edges of a graph. Implied causal types are calculated
 and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, P, by
 providing restrictions on causal types, and/or by providing informative
-priors on parameters. The default setting for a causal model have flat
-(uniform) priors and parameters putting equal weight on each parameter
-within each parameter set. These can be adjust with set_priors
-and set_parameters"><meta property="og:description" content="make_model uses causal statements encoded as strings to specify
+priors on parameters."><meta property="og:description" content="make_model uses causal statements encoded as strings to specify
 the nodes and edges of a graph. Implied causal types are calculated
 and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, P, by
 providing restrictions on causal types, and/or by providing informative
-priors on parameters. The default setting for a causal model have flat
-(uniform) priors and parameters putting equal weight on each parameter
-within each parameter set. These can be adjust with set_priors
-and set_parameters"></head><body>
+priors on parameters."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +17,7 @@ and set_parameters"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,10 +57,7 @@ the nodes and edges of a graph. Implied causal types are calculated
 and default priors are provided under the assumption of no confounding.
 Models can be updated with specification of a parameter matrix, <code>P</code>, by
 providing restrictions on causal types, and/or by providing informative
-priors on parameters. The default setting for a causal model have flat
-(uniform) priors and parameters putting equal weight on each parameter
-within each parameter set. These can be adjust with <code>set_priors</code>
-and <code>set_parameters</code></p>
+priors on parameters.</p>
     </div>
 
     <div class="section level2">
@@ -80,8 +71,11 @@ and <code>set_parameters</code></p>
 
 <dl><dt id="arg-statement">statement<a class="anchor" aria-label="anchor" href="#arg-statement"></a></dt>
 <dd><p>character string. Statement describing causal
-relations between nodes. Only directed relations are
-permitted. For instance "X -&gt; Y" or  "X1 -&gt; Y &lt;- X2; X1 -&gt; X2".</p></dd>
+relations between nodes. Directed relations can be specified
+using '-&gt;' or '&lt;-' and can be combined.
+For instance "X -&gt; Y", "Y &lt;- X" or  "X1 -&gt; Y &lt;- X2; X1 -&gt; X2".
+Confounded relations can be specified using a double headed arrow,
+"X &lt;-&gt; Y", to indicate unobserved confounding between X and Y.</p></dd>
 
 
 <dt id="arg-add-causal-types">add_causal_types<a class="anchor" aria-label="anchor" href="#arg-add-causal-types"></a></dt>
@@ -126,7 +120,13 @@ following components:</p>
 <dd><p>A <code>data.frame</code> listing causal types and the
   nodal types that produce them</p></dd>
 
-</dl></div>
+
+</dl><p>By default a causal model has flat (uniform) priors and parameters that
+put equal weight on each parameter within each parameter set. The parameter
+ranges (range of the nodal types) can be adjusted with <code><a href="set_restrictions.html">set_restrictions</a></code>.
+The priors can be adjusted with <code><a href="prior_setting.html">set_priors</a></code>. Specific parameter
+values can be adjusted with <code><a href="parameter_setting.html">set_parameters</a></code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="summary.causal_model.html">summary.causal_model</a></code> provides summary method for
@@ -147,7 +147,7 @@ following components:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of causal types: 8</span>
 <span class="r-in"><span><span class="va">modelXKY</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; K -&gt; Y; X -&gt; Y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example where cyclicaly dag attempted</span></span></span>
+<span class="r-in"><span><span class="co"># Example where a cyclical dag is attempted</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span> <span class="va">modelXKX</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; K -&gt; X"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
@@ -1712,7 +1712,7 @@ following components:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

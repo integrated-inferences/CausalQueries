@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -164,7 +164,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1    0    0    0    1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1 0 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 3 3 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $P</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      X0.Y00 X1.Y00 X0.Y10 X1.Y10 X0.Y01 X1.Y01 X0.Y11 X1.Y11</span>
@@ -180,116 +180,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   event strategy count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0       XY     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0       XY     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1       XY     0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1       XY     4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_model.html">make_model</a></span><span class="op">(</span><span class="st">'X-&gt;Y'</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="set_confound.html">set_confound</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="st">'Y[X=1]&gt;Y[X=0]'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">data</span>  <span class="op">&lt;-</span>  <span class="fu"><a href="data_helpers.html">collapse_data</a></span><span class="op">(</span><span class="fu"><a href="data_helpers.html">make_data</a></span><span class="op">(</span><span class="va">model</span>, n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">CausalQueries</span><span class="fu">:::</span><span class="fu">prep_stan_data</span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $parmap</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      X0Y0 X1Y0 X0Y1 X1Y1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00    1    1    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10    0    1    1    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01    1    0    0    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11    0    0    1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"map")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      X0Y0 X1Y0 X0Y1 X1Y1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0    1    0    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0    0    1    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1    0    0    1    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1    0    0    0    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $map</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      X0Y0 X1Y0 X0Y1 X1Y1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0    1    0    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0    0    1    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1    0    0    1    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1    0    0    0    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_paths</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_params</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_param_sets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_param_each</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $l_starts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $l_ends</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $node_starts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $node_ends</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_nodes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $lambdas_prior</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00 Y.10 Y.01 Y.11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1    1    1    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_events</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_strategies</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $strategy_starts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $strategy_ends</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $keep_type_distribution</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      X0Y0 X1Y0 X0Y1 X1Y1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y0    1    0    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y0    0    1    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X0Y1    0    0    1    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1Y1    0    0    0    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 0 3 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      X0.Y00 X1.Y00 X0.Y10 X1.Y10 X0.Y01 X1.Y01 X0.Y11 X1.Y11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.00      1      1      0      0      0      0      0      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.10      0      0      1      1      0      0      0      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.01      0      0      0      0      1      1      0      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Y.11      0      0      0      0      0      0      1      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_types</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   event strategy count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0       XY     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0       XY     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  X0Y0       XY     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  X1Y0       XY     3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  X0Y1       XY     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1       XY     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  X1Y1       XY     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -304,7 +198,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

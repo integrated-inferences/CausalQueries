@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,34 @@
       <small>Source: <a href="https://github.com/integrated-inferences/CausalQueries/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.4.3" id="causalqueries-143">CausalQueries 1.4.3<a class="anchor" aria-label="anchor" href="#causalqueries-143"></a></h2><p class="text-muted">CRAN release: 2025-07-22</p>
+<p>This is a minor release implementing more intuitive nodal type interpretations as well as improved warnings around inadmissible model and query specifications to guard against silent undefined behavior when querying models.</p>
+<div class="section level4">
+<h4 id="non-backwards-compatible-changes-1-4-3">Non Backwards Compatible Changes<a class="anchor" aria-label="anchor" href="#non-backwards-compatible-changes-1-4-3"></a></h4>
+<p><code><a href="../reference/make_model.html">make_model()</a></code> now throws an error if node names contain substrings matching non-linear mathematical transformations (<code>log(</code>, <code>exp(</code>, <code>^</code>, <code>\</code>) or <code>CausalQueries</code> query operators (<code>[</code>, <code>]</code>, <code>:|:</code>). This guards against silent undefined behavior when parsing and evaluating queries.</p>
+</div>
+<div class="section level4">
+<h4 id="new-functionality-1-4-3">New Functionality<a class="anchor" aria-label="anchor" href="#new-functionality-1-4-3"></a></h4>
+<div class="section level5">
+<h5 id="id_1-warnings-for-unsupported-queries-1-4-3">1. Warnings for unsupported queries<a class="anchor" aria-label="anchor" href="#id_1-warnings-for-unsupported-queries-1-4-3"></a></h5>
+<p>Query related functions now throw a warning when non-linear transformations (<code>log(</code>, <code>exp(</code>, <code>^</code>, <code>\</code>) are specified; as non-linear queries are not currently supported by <code>CausalQueries</code>. Previously non-linear queries would silently return <code>NaN</code> or <code>Inf</code>.</p>
+</div>
+<div class="section level5">
+<h5 id="id_2-more-intuitive-nodal-type-interpretations-1-4-3">2. More intuitive nodal type interpretations<a class="anchor" aria-label="anchor" href="#id_2-more-intuitive-nodal-type-interpretations-1-4-3"></a></h5>
+<p><code><a href="../reference/summary.causal_model.html">summary.causal_model()</a></code> and <code>inspect(model, "nodal_types")</code> now print a more intuitive nodal type interpretation guide. For a model <code>X -&gt; Y &lt;- Z</code> the updated interpretation guide looks as follows:</p>
+<pre><code>  index          interpretation
+1  *---  Y = * if X = 0 &amp; Z = 0
+2  -*--  Y = * if X = 1 &amp; Z = 0
+3  --*-  Y = * if X = 0 &amp; Z = 1
+4  ---*  Y = * if X = 1 &amp; Z = 1</code></pre>
+</div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.3" id="causalqueries-133">CausalQueries 1.3.3<a class="anchor" aria-label="anchor" href="#causalqueries-133"></a></h2><p class="text-muted">CRAN release: 2025-02-22</p>
+<p>This is a patch release implementing Stan optimization improving run time and output formatting of the core Stan model. Additionally <code>type_distribution</code> has been renamed to <code>type_posterior</code> for clarity. See <code><a href="../reference/inspection.html">grab()</a></code> or <code><a href="../reference/inspection.html">inspect()</a></code> documentation for details.</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.2" id="causalqueries-132">CausalQueries 1.3.2<a class="anchor" aria-label="anchor" href="#causalqueries-132"></a></h2><p class="text-muted">CRAN release: 2025-01-22</p>
 <p>This is a patch release updating documentation and removing the deprecated <code>causal_type_query</code> and <code>nodal_type_query</code> classes with their associated S3 print methods.</p>
@@ -168,7 +196,7 @@ DAG:
 <h4 id="improvements-1-0-2">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-0-2"></a></h4>
 <div class="section level5">
 <h5 id="id_1-type-safety-1-0-2">1. type safety<a class="anchor" aria-label="anchor" href="#id_1-type-safety-1-0-2"></a></h5>
-<p>Calls to <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code> have ben replaced with <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code> wherever possible to enforce type safety.</p>
+<p>Calls to <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code> have been replaced with <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code> wherever possible to enforce type safety.</p>
 </div>
 <div class="section level5">
 <h5 id="id_2-range-based-looping-1-0-2">2. range based looping<a class="anchor" aria-label="anchor" href="#id_2-range-based-looping-1-0-2"></a></h5>
@@ -295,31 +323,31 @@ In check_query(query) :
 <h5 id="id_1-fast-realise_outcomes-1-0-0">1. Fast <code>realise_outcomes()</code>
 <a class="anchor" aria-label="anchor" href="#id_1-fast-realise_outcomes-1-0-0"></a></h5>
 <p>We achieved a ~100 fold speed gain in the <code><a href="../reference/realise_outcomes.html">realise_outcomes()</a></code> functionality. Nodal types on a given node are generated as the Cartesian product of parent realizations. Consider the meaning of nodal types on a node <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> with 3 parents <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>X</mi><mn>1</mn><mo>,</mo><mi>X</mi><mn>2</mn><mo>,</mo><mi>X</mi><mn>3</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[X1,X2,X3]</annotation></semantics></math>:</p>
-<table class="table"><thead><tr class="header"><th>X1</th>
+<table class="table"><thead><tr><th>X1</th>
 <th>X2</th>
 <th>X3</th>
-</tr></thead><tbody><tr class="odd"><td>0</td>
+</tr></thead><tbody><tr><td>0</td>
 <td>0</td>
 <td>0</td>
-</tr><tr class="even"><td>1</td>
+</tr><tr><td>1</td>
 <td>0</td>
 <td>0</td>
-</tr><tr class="odd"><td>0</td>
+</tr><tr><td>0</td>
 <td>1</td>
 <td>0</td>
-</tr><tr class="even"><td>1</td>
+</tr><tr><td>1</td>
 <td>1</td>
 <td>0</td>
-</tr><tr class="odd"><td>0</td>
+</tr><tr><td>0</td>
 <td>0</td>
 <td>1</td>
-</tr><tr class="even"><td>1</td>
+</tr><tr><td>1</td>
 <td>0</td>
 <td>1</td>
-</tr><tr class="odd"><td>0</td>
+</tr><tr><td>0</td>
 <td>1</td>
 <td>1</td>
-</tr><tr class="even"><td>1</td>
+</tr><tr><td>1</td>
 <td>1</td>
 <td>1</td>
 </tr></tbody></table><p>Each row in the above <code>DataFrame</code> corresponds to a digit in <code>Y's</code> nodal types. The first digit of each nodal type of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> (see first row above), corresponds to the realization of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mn>1</mn><mo>=</mo><mn>0</mn><mo>,</mo><mi>X</mi><mn>2</mn><mo>=</mo><mn>0</mn><mo>,</mo><mi>X</mi><mn>3</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">X1 = 0, X2 = 0, X3 = 0</annotation></semantics></math>. The fourth digit of each nodal type of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> (see fourth row above), corresponds to the realization of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mn>1</mn><mo>=</mo><mn>1</mn><mo>,</mo><mi>X</mi><mn>2</mn><mo>=</mo><mn>1</mn><mo>,</mo><mi>X</mi><mn>3</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">X1 = 1, X2 = 1, X3 = 0</annotation></semantics></math>. Finding the position of the realization value of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> in a nodal type given parent realizations is equivalent to finding the row number in the Cartesian product <code>DataFrame</code>. By definition of the Cartesian product, the number of consecutive 0 or 1 elements in a given column is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>c</mi><mi>o</mi><mi>l</mi><mi>u</mi><mi>m</mi><mi>n</mi><mi>i</mi><mi>n</mi><mi>d</mi><mi>e</mi><mi>x</mi></mrow></msup><annotation encoding="application/x-tex">2^{columnindex}</annotation></semantics></math>, when indexing columns from 0. Given a set of parent realizations <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math> indexed from 0, the corresponding row in a number in a <code>DataFrame</code> indexed from 0 can thus be computed via: <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>o</mi><mi>w</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>R</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>−</mo><mn>1</mn></mrow></munderover><mrow><mo stretchy="true" form="prefix">(</mo><msup><mn>2</mn><mi>i</mi></msup><mo>×</mo><msub><mi>R</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">row = (\sum_{i = 0}^{|R| - 1} (2^{i} \times R_i))</annotation></semantics></math>. We implement a fast <code>C++</code> version of this computing powers of 2 via bit shifting.</p>
@@ -339,7 +367,7 @@ In check_query(query) :
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

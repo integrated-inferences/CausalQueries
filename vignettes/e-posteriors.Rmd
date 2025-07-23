@@ -114,7 +114,7 @@ inspect(model, "stan_summary")
 #> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  3642    1
 #> lp__              -14.60    0.05 1.53 -18.42 -15.39 -14.26 -13.47 -12.66  1080    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:15 2025.
+#> Samples were drawn using NUTS(diag_e) at Wed Jul 23 13:54:59 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -265,7 +265,7 @@ model |> inspect("stanfit")
 #> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
+#> Samples were drawn using NUTS(diag_e) at Wed Jul 23 13:55:07 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -304,7 +304,7 @@ model |> inspect("stanfit") |>
 #> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
+#> Samples were drawn using NUTS(diag_e) at Wed Jul 23 13:55:07 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -341,7 +341,7 @@ np <- model |> inspect("stanfit") |> bayesplot::nuts_params()
 #> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
+#> Samples were drawn using NUTS(diag_e) at Wed Jul 23 13:55:07 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).
@@ -392,7 +392,7 @@ model |>
 #> types[8]            0.04    0.00 0.04   0.00   0.01   0.03   0.06   0.14  4228    1
 #> lp__              -14.60    0.05 1.56 -18.42 -15.44 -14.24 -13.43 -12.64  1061    1
 #> 
-#> Samples were drawn using NUTS(diag_e) at Wed Feb 12 17:41:30 2025.
+#> Samples were drawn using NUTS(diag_e) at Wed Jul 23 13:55:07 2025.
 #> For each parameter, n_eff is a crude measure of effective sample size,
 #> and Rhat is the potential scale reduction factor on split chains (at 
 #> convergence, Rhat=1).

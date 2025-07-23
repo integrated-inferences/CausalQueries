@@ -32,12 +32,12 @@
 ### Updating or writing vignettes 
   
   As vignettes making use of `update_model()` may have long run-/compile times and we wish to minimize time and resource demands both when 
-  testing an deploying `CausalQueries`; vignette writing and updating makes use of a slightly modified workflow. 
-  Vignettes are complied locally from a `vignette-name.Rmd.orig` file; its outputs are dumped to the `vignette` folder and a `vignette-name.Rmd` 
+  testing and deploying `CausalQueries`; vignette writing and updating makes use of a slightly modified workflow. 
+  Vignettes are complied locally from a `vignette-name.Rmd.orig` file; its outputs are passed to the `vignette` folder and a `vignette-name.Rmd` 
   file with non-executable code chunks is constructed from these outputs. This workflow is handled via the `build_vignettes()` function in 
   the package.
   
-  Whether you update an existing vignette or write a new one be sure to give your code chunks (particularly those producing plots) **unique** and **ìnformative** names.
+  Whether you update an existing vignette or write a new one, be sure to give your code chunks (particularly those producing plots) **unique** and **ìnformative** names.
   
   If you wish to add a new vignette please proceed as follows: 
   

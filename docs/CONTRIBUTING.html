@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,9 +58,9 @@
 <li>Clone your fork locally</li>
 <li>Always be up to date with the <code>master</code> branch</li>
 <li>Add your edits</li>
-<li>Run and pass <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code>
+<li>Run and pass <code>devtools::check()</code>
 </li>
-<li>Reach a 100% coverage <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>
+<li>Reach a 100% coverage <code>covr::package_coverage()</code>
 </li>
 <li>Add yourself as a contributor in the <code>DESCRIPTION</code> file</li>
 <li>Open a pull request</li>
@@ -68,8 +68,8 @@
 </div>
 <div class="section level3">
 <h3 id="updating-or-writing-vignettes">Updating or writing vignettes<a class="anchor" aria-label="anchor" href="#updating-or-writing-vignettes"></a></h3>
-<p>As vignettes making use of <code><a href="reference/update_model.html">update_model()</a></code> may have long run-/compile times and we wish to minimize time and resource demands both when testing an deploying <code>CausalQueries</code>; vignette writing and updating makes use of a slightly modified workflow. Vignettes are complied locally from a <code>vignette-name.Rmd.orig</code> file; its outputs are dumped to the <code>vignette</code> folder and a <code>vignette-name.Rmd</code> file with non-executable code chunks is constructed from these outputs. This workflow is handled via the <code>build_vignettes()</code> function in the package.</p>
-<p>Whether you update an existing vignette or write a new one be sure to give your code chunks (particularly those producing plots) <strong>unique</strong> and <strong>ìnformative</strong> names.</p>
+<p>As vignettes making use of <code><a href="reference/update_model.html">update_model()</a></code> may have long run-/compile times and we wish to minimize time and resource demands both when testing and deploying <code>CausalQueries</code>; vignette writing and updating makes use of a slightly modified workflow. Vignettes are complied locally from a <code>vignette-name.Rmd.orig</code> file; its outputs are passed to the <code>vignette</code> folder and a <code>vignette-name.Rmd</code> file with non-executable code chunks is constructed from these outputs. This workflow is handled via the <code>build_vignettes()</code> function in the package.</p>
+<p>Whether you update an existing vignette or write a new one, be sure to give your code chunks (particularly those producing plots) <strong>unique</strong> and <strong>ìnformative</strong> names.</p>
 <p>If you wish to add a new vignette please proceed as follows:</p>
 <ul><li>write your vignette as a R markdown file with executable code chunks + formatting in the normal fashion</li>
 <li>save this file as <code>vignette-name.Rmd.orig</code> in the vignettes folder (replace <code>vignette-name</code> with your desired vignette name here)</li>
@@ -97,7 +97,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

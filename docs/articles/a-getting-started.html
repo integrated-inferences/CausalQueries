@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CausalQueries</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/a-getting-started.html">Getting Started</a></li>
@@ -105,21 +105,20 @@ using <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">
 <span><span class="co">#&gt; X -&gt; Y</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Nodal types: </span></span>
-<span><span class="co">#&gt; $X</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Nodal types for X:</span></span>
 <span><span class="co">#&gt; 0  1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   node position display interpretation</span></span>
-<span><span class="co">#&gt; 1    X       NA      X0          X = 0</span></span>
-<span><span class="co">#&gt; 2    X       NA      X1          X = 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $Y</span></span>
+<span><span class="co">#&gt; Nodal types for Y:</span></span>
 <span><span class="co">#&gt; 00  10  01  11</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   node position display interpretation</span></span>
-<span><span class="co">#&gt; 1    Y        1   Y[*]*      Y | X = 0</span></span>
-<span><span class="co">#&gt; 2    Y        2   Y*[*]      Y | X = 1</span></span>
+<span><span class="co">#&gt; Guide to interpreting nodal types for Y:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Number of types by node:</span></span>
+<span><span class="co">#&gt;   index  interpretation</span></span>
+<span><span class="co">#&gt; 1    *-  Y = * if X = 0</span></span>
+<span><span class="co">#&gt; 2    -*  Y = * if X = 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of nodal types by node:</span></span>
 <span><span class="co">#&gt; X Y </span></span>
 <span><span class="co">#&gt; 2 4 </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -186,23 +185,23 @@ this:</p>
 <tbody>
 <tr class="odd">
 <td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td align="right">0</td>
 <td align="right">1</td>
+<td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="right">0</td>
 <td align="right">1</td>
 <td align="right">0</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr>
 </tbody>
 </table>
@@ -238,52 +237,52 @@ distribution on model parameters directly thus:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.4802981</td>
-<td align="right">0.5197019</td>
-<td align="right">0.1754291</td>
-<td align="right">0.1730648</td>
-<td align="right">0.5101839</td>
-<td align="right">0.1413222</td>
+<td align="right">0.5237547</td>
+<td align="right">0.4762453</td>
+<td align="right">0.1948964</td>
+<td align="right">0.0523208</td>
+<td align="right">0.5664182</td>
+<td align="right">0.1863645</td>
 </tr>
 <tr class="even">
-<td align="right">0.5969120</td>
-<td align="right">0.4030880</td>
-<td align="right">0.0672990</td>
-<td align="right">0.1458238</td>
-<td align="right">0.5314693</td>
-<td align="right">0.2554079</td>
+<td align="right">0.4261285</td>
+<td align="right">0.5738715</td>
+<td align="right">0.0597984</td>
+<td align="right">0.1743038</td>
+<td align="right">0.6544728</td>
+<td align="right">0.1114249</td>
 </tr>
 <tr class="odd">
-<td align="right">0.4081154</td>
-<td align="right">0.5918846</td>
-<td align="right">0.1279818</td>
-<td align="right">0.0784327</td>
-<td align="right">0.6366884</td>
-<td align="right">0.1568971</td>
+<td align="right">0.5796467</td>
+<td align="right">0.4203533</td>
+<td align="right">0.1538045</td>
+<td align="right">0.1640282</td>
+<td align="right">0.4844825</td>
+<td align="right">0.1976849</td>
 </tr>
 <tr class="even">
-<td align="right">0.5074739</td>
-<td align="right">0.4925261</td>
-<td align="right">0.1346880</td>
-<td align="right">0.0945238</td>
-<td align="right">0.6796534</td>
-<td align="right">0.0911348</td>
+<td align="right">0.5133653</td>
+<td align="right">0.4866347</td>
+<td align="right">0.0667460</td>
+<td align="right">0.1497083</td>
+<td align="right">0.5849814</td>
+<td align="right">0.1985644</td>
 </tr>
 <tr class="odd">
-<td align="right">0.5293336</td>
-<td align="right">0.4706664</td>
-<td align="right">0.1725529</td>
-<td align="right">0.0041493</td>
-<td align="right">0.4037340</td>
-<td align="right">0.4195638</td>
+<td align="right">0.5559260</td>
+<td align="right">0.4440740</td>
+<td align="right">0.1106234</td>
+<td align="right">0.1599240</td>
+<td align="right">0.6523280</td>
+<td align="right">0.0771246</td>
 </tr>
 <tr class="even">
-<td align="right">0.5379008</td>
-<td align="right">0.4620992</td>
-<td align="right">0.0359858</td>
-<td align="right">0.1687144</td>
-<td align="right">0.6990939</td>
-<td align="right">0.0962059</td>
+<td align="right">0.5738242</td>
+<td align="right">0.4261758</td>
+<td align="right">0.0211059</td>
+<td align="right">0.3386846</td>
+<td align="right">0.5650897</td>
+<td align="right">0.0751198</td>
 </tr>
 </tbody>
 </table>
@@ -307,8 +306,8 @@ model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label           |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:---------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.252| 0.192|    0.008|     0.702|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.586| 0.088|    0.401|     0.740|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |priors     | 0.249| 0.195|    0.009|     0.705|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] |posteriors | 0.529| 0.102|    0.313|     0.705|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1)&gt; Y(0)</annotation></semantics></math>.</p>
 <p>Examples of <em>conditional</em> queries:</p>
@@ -320,8 +319,8 @@ model.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; |label                                 |using      |  mean|    sd| cred.low| cred.high|</span></span>
 <span><span class="co">#&gt; |:-------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.504| 0.285|    0.030|     0.972|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.737| 0.106|    0.528|     0.940|</span></span></code></pre></div>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |priors     | 0.499| 0.283|    0.023|     0.970|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given X == 1 &amp; Y == 1 |posteriors | 0.751| 0.134|    0.479|     0.978|</span></span></code></pre></div>
 <p>This query asks the probability that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>&gt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y(1) &gt; Y(0)</annotation></semantics></math><em>given</em>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X=1</annotation></semantics></math>
@@ -339,10 +338,10 @@ the probability of a positive effect given <em>some</em> effect:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Causal queries generated by query_model (all at population level)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; |label                                  |using      |  mean|    sd| cred.low| cred.high|</span></span>
-<span><span class="co">#&gt; |:--------------------------------------|:----------|-----:|-----:|--------:|---------:|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.501| 0.290|    0.027|     0.973|</span></span>
-<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.863| 0.074|    0.725|     0.989|</span></span></code></pre></div>
+<span><span class="co">#&gt; |label                                  |using      |  mean|   sd| cred.low| cred.high|</span></span>
+<span><span class="co">#&gt; |:--------------------------------------|:----------|-----:|----:|--------:|---------:|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |priors     | 0.492| 0.29|    0.027|     0.974|</span></span>
+<span><span class="co">#&gt; |Y[X=1] &gt; Y[X=0] given Y[X=1] != Y[X=0] |posteriors | 0.809| 0.09|    0.648|     0.980|</span></span></code></pre></div>
 <p>Note that we use “:” to separate the base query from the condition
 rather than “|” to avoid confusion with logical operators.</p>
 </div>
@@ -390,10 +389,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">priors</td>
 <td align="left">FALSE</td>
-<td align="right">0.01</td>
-<td align="right">0.32</td>
-<td align="right">-0.62</td>
-<td align="right">0.64</td>
+<td align="right">0.00</td>
+<td align="right">0.31</td>
+<td align="right">-0.64</td>
+<td align="right">0.63</td>
 </tr>
 <tr class="even">
 <td align="left">ATE</td>
@@ -401,10 +400,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">-</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.49</td>
-<td align="right">0.08</td>
-<td align="right">0.32</td>
-<td align="right">0.64</td>
+<td align="right">0.39</td>
+<td align="right">0.09</td>
+<td align="right">0.21</td>
+<td align="right">0.56</td>
 </tr>
 <tr class="odd">
 <td align="left">Positive effect given any effect</td>
@@ -415,7 +414,7 @@ plotted, which is especially useful with batch requests:</p>
 <td align="right">0.50</td>
 <td align="right">0.29</td>
 <td align="right">0.02</td>
-<td align="right">0.98</td>
+<td align="right">0.97</td>
 </tr>
 <tr class="even">
 <td align="left">Positive effect given any effect</td>
@@ -423,10 +422,10 @@ plotted, which is especially useful with batch requests:</p>
 <td align="left">Y[X=1] != Y[X=0]</td>
 <td align="left">posteriors</td>
 <td align="left">FALSE</td>
-<td align="right">0.86</td>
-<td align="right">0.07</td>
-<td align="right">0.72</td>
-<td align="right">0.99</td>
+<td align="right">0.81</td>
+<td align="right">0.09</td>
+<td align="right">0.65</td>
+<td align="right">0.98</td>
 </tr>
 </tbody>
 </table>
@@ -448,7 +447,7 @@ plotted, which is especially useful with batch requests:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
