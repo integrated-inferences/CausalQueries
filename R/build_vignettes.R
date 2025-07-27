@@ -13,7 +13,8 @@ build_vignettes <- function(vignettes = c("a-getting-started",
                                           "b-plotting",
                                           "c-canonical-models",
                                           "d-front-door",
-                                          "e-posteriors"), ...) {
+                                          "e-posteriors", 
+                                          "f-complier-profiling"), ...) {
   call <- match.call()
 
   # use the default vignettes argument and append user-provided ones if necessary
