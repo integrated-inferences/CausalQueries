@@ -956,11 +956,11 @@ plot_query <- function(model_query) {
     model_query |>
       ggplot(aes(mean, label, color = using)) +
       geom_point(position = position_dodge(width = dodge_width)) +
-      geom_errorbarh(aes(
+      geom_errorbar(aes(
         xmin = cred.low,
-        xmax = cred.high,
-        height = .2
+        xmax = cred.high
       ),
+      orientation = "y",
       position = position_dodge(width = dodge_width)) +
       theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")
   }

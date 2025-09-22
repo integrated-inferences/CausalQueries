@@ -1,3 +1,22 @@
+# CausalQueries 1.4.4
+
+This release includes an improved Stan model that now includes:
+
+* Memory Efficiency: Eliminated large intermediate matrices (parlam, parlam2)
+* Numerical Stability: Added safeguards against log(0) with + 1e-10
+* Better Documentation: Clear section headers and comprehensive comments
+* Error Handling: Validation checks for edge cases
+* Mathematical Equivalence: Verified to produce identical results 
+  (within floating-point precision)
+
+The core of these edits were suggested by cursor and verified by 
+the development team.
+
+In addition:
+
+* Automatic Parallel Computation: Package now automatically sets up Stan parallel computation using all available CPU cores
+* Better Error Messages: Added helpful warning messages for common query syntax mistakes (e.g., using & instead of , in conditions) with auto-correction
+
 # CausalQueries 1.4.3
 
 This is a minor release implementing more intuitive nodal type interpretations 

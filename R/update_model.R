@@ -140,7 +140,7 @@ update_model <- function(model,
   stanfit <- stanmodels$simplexes
 
   # parameters to drop
-  drop_pars <- c("parlam", "parlam2", "gamma", "sum_gammas", "w_full", "w_0")
+  drop_pars <- c("gamma", "sum_gammas", "log_sum_gammas", "w_full", "w_0")
 
   if (!keep_event_probabilities) {
     drop_pars <- c(drop_pars, "w")
