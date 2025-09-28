@@ -54,6 +54,8 @@ data {
   array[n_events] int<lower=0> Y;         // Observed counts
 }
 
+// (Index validation is performed in R before calling Stan)
+
 parameters {
   // Unconstrained parameters (will be transformed to simplex)
   vector<lower=0>[n_params - n_param_sets] gamma;
@@ -62,65 +64,45 @@ parameters {
 transformed parameters {
   // === SIMPLEX CONSTRAINT HANDLING ===
   vector<lower=0, upper=1>[n_params] lambdas;
-  vector<lower=1>[n_param_sets] sum_gammas;
-  vector[n_param_sets] log_sum_gammas;
 
   // === PROBABILITY COMPUTATION ===
-  vector<lower=0, upper=1>[n_paths] w_0;
   vector<lower=0, upper=1>[n_data] w;
-  vector<lower=0, upper=1>[n_events] w_full;
 
   // Convert gamma to simplex lambdas
   for (i in 1:n_param_sets) {
-    // Validation
-    if (l_starts[i] > l_ends[i]) {
-      reject("Invalid parameter set bounds: start > end");
-    }
-
     if (l_starts[i] == l_ends[i]) {
       // Single parameter case
-      sum_gammas[i] = 1.0;
       lambdas[l_starts[i]] = 1.0;
     } else {
       // Multiple parameters - use stick-breaking
-      sum_gammas[i] = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
+      real sum_gammas_i = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
 
       // Simplex construction
       vector[l_ends[i] - l_starts[i] + 1] raw_params =
         append_row(1.0, gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
 
-      lambdas[l_starts[i]:l_ends[i]] = raw_params / sum_gammas[i];
+      lambdas[l_starts[i]:l_ends[i]] = raw_params / sum_gammas_i;
     }
-
-    log_sum_gammas[i] = log(sum_gammas[i]);
   }
 
   // === PROBABILITY COMPUTATION ===
-  // Compute path probabilities
-  for (i in 1:n_paths) {
-    real log_prob = 0.0;
+  // Compute path probabilities into a local w_0, then use BLAS GEMV for w = map' * w_0
+  {
+    vector[n_paths] w_0_local;
+    for (i in 1:n_paths) {
+      real log_prob = 0.0;
 
-    for (j in 1:n_nodes) {
-      // Sum probabilities over parameters for this node
-      real node_prob = sum(lambdas[node_starts[j]:node_ends[j]] .*
-                          parmap[node_starts[j]:node_ends[j], i]);
+      for (j in 1:n_nodes) {
+        // Sum probabilities over parameters for this node
+        real node_prob = sum(lambdas[node_starts[j]:node_ends[j]] .*
+                            parmap[node_starts[j]:node_ends[j], i]);
 
-      // Add small constant to avoid log(0)
-      log_prob += log(node_prob + 1e-10);
+        // Add small constant to avoid log(0)
+        log_prob += log(node_prob + 1e-10);
+      }
+      w_0_local[i] = exp(log_prob);
     }
-
-    w_0[i] = exp(log_prob);
-  }
-
-  // Map to data types (handles confounding)
-  w = map' * w_0;
-
-  // Map to observed events
-  w_full = E * w;
-
-  // Validation: check for numerical issues
-  if (min(w_full) < 1e-10) {
-    reject("Probabilities too close to zero - numerical instability");
+    w = map' * w_0_local;
   }
 }
 
@@ -130,14 +112,20 @@ model {
     if (l_starts[i] < l_ends[i]) {
       target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]] |
                               lambdas_prior[l_starts[i]:l_ends[i]]);
-      target += -n_param_each[i] * log_sum_gammas[i];
+      // Recompute normalization locally to avoid saving log_sum_gammas
+      {
+        real sum_gammas_i = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
+        target += -n_param_each[i] * log(sum_gammas_i);
+      }
     }
   }
 
   // === MULTINOMIAL LIKELIHOOD ===
+  // Compute event probabilities once here
+  vector[n_events] p = E * w;
   for (i in 1:n_strategies) {
     vector[strategy_ends[i] - strategy_starts[i] + 1] strategy_probs =
-      w_full[strategy_starts[i]:strategy_ends[i]];
+      p[strategy_starts[i]:strategy_ends[i]];
 
     // Normalize probabilities
     strategy_probs = strategy_probs / sum(strategy_probs);
