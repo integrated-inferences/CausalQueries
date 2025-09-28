@@ -86,21 +86,17 @@ transformed parameters {
   // === PROBABILITY COMPUTATION ===
   {
     vector[n_paths] w_0_local;
-    matrix[n_params, n_paths] parlam;
     matrix[n_nodes, n_paths] parlam2;
 
-    // Map parameters to causal paths
-    parlam = rep_matrix(lambdas, n_paths) .* parmap;
-
-    // Sum probabilities over nodes for each path
-    for (i in 1:n_nodes) {
-      parlam2[i, ] = col_sums(parlam[node_starts[i]:node_ends[i], ]);
+    // Compute node-path probabilities directly (avoid large parlam matrix)
+    for (j in 1:n_nodes) {
+      int a = node_starts[j];
+      int b = node_ends[j];
+      parlam2[j, ] = (lambdas[a:b]' * parmap[a:b, ])';
     }
 
-    // Calculate path probabilities
-    for (i in 1:n_paths) {
-      w_0_local[i] = exp(sum(log(parlam2[, i])));
-    }
+    // Vectorized path probability calculation
+    w_0_local = exp(to_vector(col_sums(log(parlam2))));
 
     // Map paths to data types
     w = map' * w_0_local;
