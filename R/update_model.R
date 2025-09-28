@@ -139,8 +139,8 @@ update_model <- function(model,
   # assign fit
   stanfit <- stanmodels$simplexes
 
-  # parameters to drop (match Stan: we no longer materialize w_full or log_sum_gammas/w_0)
-  drop_pars <- c("gamma")
+  # parameters to drop (match Stan: we no longer materialize w_full or intermediate computation objects)
+  drop_pars <- c("gamma", "sum_gammas", "log_sum_gammas")
 
   if (!keep_event_probabilities) {
     drop_pars <- c(drop_pars, "w")

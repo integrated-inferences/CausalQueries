@@ -12,12 +12,6 @@ functions {
   row_vector col_sums(matrix X) {
     return rep_row_vector(1, rows(X)) * X;
   }
-
-  // log-sum-exp for small vectors
-  real log_sum_exp_stable(vector x) {
-    real max_x = max(x);
-    return max_x + log(sum(exp(x - max_x)));
-  }
 }
 
 data {
@@ -64,44 +58,51 @@ parameters {
 transformed parameters {
   // === SIMPLEX CONSTRAINT HANDLING ===
   vector<lower=0, upper=1>[n_params] lambdas;
+  vector<lower=1>[n_param_sets] sum_gammas;
+  vector[n_param_sets] log_sum_gammas;
 
   // === PROBABILITY COMPUTATION ===
   vector<lower=0, upper=1>[n_data] w;
 
-  // Convert gamma to simplex lambdas
+  // Convert unconstrained parameters to simplex probabilities
   for (i in 1:n_param_sets) {
     if (l_starts[i] == l_ends[i]) {
       // Single parameter case
       lambdas[l_starts[i]] = 1.0;
+      sum_gammas[i] = 1.0;
     } else {
-      // Multiple parameters - use stick-breaking
-      real sum_gammas_i = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
+      // Multiple parameters - construct simplex
+      sum_gammas[i] = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
 
       // Simplex construction
       vector[l_ends[i] - l_starts[i] + 1] raw_params =
         append_row(1.0, gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
 
-      lambdas[l_starts[i]:l_ends[i]] = raw_params / sum_gammas_i;
+      lambdas[l_starts[i]:l_ends[i]] = raw_params / sum_gammas[i];
     }
+    log_sum_gammas[i] = log(sum_gammas[i]);
   }
 
   // === PROBABILITY COMPUTATION ===
-  // Compute path probabilities into a local w_0, then use BLAS GEMV for w = map' * w_0
   {
     vector[n_paths] w_0_local;
-    for (i in 1:n_paths) {
-      real log_prob = 0.0;
+    matrix[n_params, n_paths] parlam;
+    matrix[n_nodes, n_paths] parlam2;
 
-      for (j in 1:n_nodes) {
-        // Sum probabilities over parameters for this node
-        real node_prob = sum(lambdas[node_starts[j]:node_ends[j]] .*
-                            parmap[node_starts[j]:node_ends[j], i]);
+    // Map parameters to causal paths
+    parlam = rep_matrix(lambdas, n_paths) .* parmap;
 
-        // Add small constant to avoid log(0)
-        log_prob += log(node_prob + 1e-10);
-      }
-      w_0_local[i] = exp(log_prob);
+    // Sum probabilities over nodes for each path
+    for (i in 1:n_nodes) {
+      parlam2[i, ] = col_sums(parlam[node_starts[i]:node_ends[i], ]);
     }
+
+    // Calculate path probabilities
+    for (i in 1:n_paths) {
+      w_0_local[i] = exp(sum(log(parlam2[, i])));
+    }
+
+    // Map paths to data types
     w = map' * w_0_local;
   }
 }
@@ -109,29 +110,17 @@ transformed parameters {
 model {
   // === DIRICHLET PRIORS ===
   for (i in 1:n_param_sets) {
-    if (l_starts[i] < l_ends[i]) {
-      target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]] |
-                              lambdas_prior[l_starts[i]:l_ends[i]]);
-      // Recompute normalization locally to avoid saving log_sum_gammas
-      {
-        real sum_gammas_i = 1.0 + sum(gamma[(l_starts[i] - (i - 1)):(l_ends[i] - i)]);
-        target += -n_param_each[i] * log(sum_gammas_i);
-      }
-    }
+    target += dirichlet_lpdf(lambdas[l_starts[i]:l_ends[i]] |
+                            lambdas_prior[l_starts[i]:l_ends[i]]);
+    target += -n_param_each[i] * log_sum_gammas[i];
   }
 
   // === MULTINOMIAL LIKELIHOOD ===
-  // Compute event probabilities once here
-  vector[n_events] p = E * w;
   for (i in 1:n_strategies) {
-    vector[strategy_ends[i] - strategy_starts[i] + 1] strategy_probs =
-      p[strategy_starts[i]:strategy_ends[i]];
-
-    // Normalize probabilities
-    strategy_probs = strategy_probs / sum(strategy_probs);
-
     target += multinomial_lpmf(
-      Y[strategy_starts[i]:strategy_ends[i]] | strategy_probs
+      Y[strategy_starts[i]:strategy_ends[i]] |
+      w[strategy_starts[i]:strategy_ends[i]] /
+      sum(w[strategy_starts[i]:strategy_ends[i]])
     );
   }
 }

@@ -44,8 +44,8 @@ time_dev_vs_cran_micro <- function(fun, ..., lib = dir_cran, times = 5L) {
 }
 
 
-# Define once
-pipe_fun <- function(...) make_model("A -> B <- C <- A") |> update_model()
+# Define once: fairly heavy model
+pipe_fun <- function(...) make_model("A -> B <- C <- A; B <-> C") |> update_model()
 
 
 # Compare + time

@@ -4,14 +4,12 @@
     modules <- paste0("stan_fit4", names(stanmodels), "_mod")
     for (m in modules) loadModule(m, what = TRUE)
 
-    # Set up parallel computation for Stan
+    # Advise on parallel computation for Stan
     if (is.null(getOption("mc.cores"))) {
         cores <- parallel::detectCores()
-        options(mc.cores = cores)
         packageStartupMessage(
-            "CausalQueries: Stan parallel computation enabled with ",
-            cores, " cores.\n",
-            "To change: options(mc.cores = N)"
+            "CausalQueries: For large problems, consider enabling parallel computation.\n",
+            "Available cores: ", cores, ". To enable: options(mc.cores = ", cores, ")"
         )
     }
 } # nocov end
