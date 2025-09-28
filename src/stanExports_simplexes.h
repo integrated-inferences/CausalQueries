@@ -27,14 +27,14 @@ namespace model_simplexes_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 104> locations_array__ =
+static constexpr std::array<const char*, 93> locations_array__ =
   {" (found before start of program)",
   " (in 'string', line 47, column 2 to column 49)",
   " (in 'string', line 51, column 2 to column 45)",
   " (in 'string', line 52, column 2 to column 43)",
   " (in 'string', line 53, column 2 to column 38)",
   " (in 'string', line 55, column 2 to column 37)",
-  " (in 'string', line 116, column 2 to column 24)",
+  " (in 'string', line 106, column 2 to column 24)",
   " (in 'string', line 64, column 6 to column 80)",
   " (in 'string', line 66, column 13 to column 40)",
   " (in 'string', line 66, column 6 to line 67, column 72)",
@@ -47,44 +47,33 @@ static constexpr std::array<const char*, 104> locations_array__ =
   " (in 'string', line 70, column 4 to column 43)",
   " (in 'string', line 57, column 28 to line 71, column 3)",
   " (in 'string', line 57, column 2 to line 71, column 3)",
+  " (in 'string', line 74, column 11 to column 18)",
+  " (in 'string', line 74, column 4 to column 30)",
   " (in 'string', line 75, column 11 to column 18)",
-  " (in 'string', line 75, column 4 to column 30)",
-  " (in 'string', line 76, column 11 to column 19)",
-  " (in 'string', line 76, column 21 to column 28)",
-  " (in 'string', line 76, column 4 to column 37)",
-  " (in 'string', line 77, column 11 to column 18)",
-  " (in 'string', line 77, column 20 to column 27)",
-  " (in 'string', line 77, column 4 to column 37)",
-  " (in 'string', line 79, column 4 to column 52)",
-  " (in 'string', line 82, column 6 to column 69)",
-  " (in 'string', line 81, column 25 to line 83, column 5)",
-  " (in 'string', line 81, column 4 to line 83, column 5)",
-  " (in 'string', line 86, column 6 to column 57)",
-  " (in 'string', line 85, column 25 to line 87, column 5)",
-  " (in 'string', line 85, column 4 to line 87, column 5)",
-  " (in 'string', line 89, column 4 to column 25)",
-  " (in 'string', line 74, column 2 to line 90, column 3)",
-  " (in 'string', line 123, column 4 to column 37)",
-  " (in 'string', line 122, column 9 to line 124, column 3)",
-  " (in 'string', line 120, column 6 to column 56)",
-  " (in 'string', line 119, column 25 to line 121, column 5)",
-  " (in 'string', line 119, column 4 to line 121, column 5)",
-  " (in 'string', line 117, column 35 to line 122, column 3)",
-  " (in 'string', line 117, column 2 to line 124, column 3)",
-  " (in 'string', line 96, column 6 to line 97, column 68)",
-  " (in 'string', line 98, column 6 to column 53)",
-  " (in 'string', line 95, column 33 to line 99, column 5)",
-  " (in 'string', line 95, column 4 to line 99, column 5)",
-  " (in 'string', line 94, column 28 to line 100, column 3)",
-  " (in 'string', line 94, column 2 to line 100, column 3)",
-  " (in 'string', line 103, column 9 to column 17)",
-  " (in 'string', line 103, column 2 to column 29)",
-  " (in 'string', line 105, column 11 to column 52)",
-  " (in 'string', line 105, column 4 to line 106, column 45)",
-  " (in 'string', line 108, column 4 to column 58)",
-  " (in 'string', line 109, column 4 to line 111, column 6)",
-  " (in 'string', line 104, column 28 to line 112, column 3)",
-  " (in 'string', line 104, column 2 to line 112, column 3)",
+  " (in 'string', line 75, column 20 to column 27)",
+  " (in 'string', line 75, column 4 to column 37)",
+  " (in 'string', line 78, column 6 to column 29)",
+  " (in 'string', line 79, column 6 to column 27)",
+  " (in 'string', line 80, column 6 to column 51)",
+  " (in 'string', line 77, column 25 to line 81, column 5)",
+  " (in 'string', line 77, column 4 to line 81, column 5)",
+  " (in 'string', line 83, column 4 to column 55)",
+  " (in 'string', line 85, column 4 to column 25)",
+  " (in 'string', line 73, column 2 to line 86, column 3)",
+  " (in 'string', line 113, column 4 to column 37)",
+  " (in 'string', line 112, column 9 to line 114, column 3)",
+  " (in 'string', line 110, column 6 to column 56)",
+  " (in 'string', line 109, column 25 to line 111, column 5)",
+  " (in 'string', line 109, column 4 to line 111, column 5)",
+  " (in 'string', line 107, column 35 to line 112, column 3)",
+  " (in 'string', line 107, column 2 to line 114, column 3)",
+  " (in 'string', line 91, column 4 to line 92, column 66)",
+  " (in 'string', line 93, column 4 to column 51)",
+  " (in 'string', line 90, column 28 to line 94, column 3)",
+  " (in 'string', line 90, column 2 to line 94, column 3)",
+  " (in 'string', line 97, column 4 to line 101, column 6)",
+  " (in 'string', line 96, column 28 to line 102, column 3)",
+  " (in 'string', line 96, column 2 to line 102, column 3)",
   " (in 'string', line 17, column 2 to column 24)",
   " (in 'string', line 18, column 2 to column 23)",
   " (in 'string', line 19, column 2 to column 23)",
@@ -129,7 +118,7 @@ static constexpr std::array<const char*, 104> locations_array__ =
   " (in 'string', line 52, column 18 to column 30)",
   " (in 'string', line 53, column 9 to column 21)",
   " (in 'string', line 55, column 27 to column 33)",
-  " (in 'string', line 116, column 9 to column 16)",
+  " (in 'string', line 106, column 9 to column 16)",
   " (in 'string', line 12, column 4 to column 42)",
   " (in 'string', line 11, column 32 to line 13, column 3)"};
 template <typename T0__,
@@ -152,7 +141,7 @@ col_sums(const T0__& X_arg__, std::ostream* pstream__) {
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 102;
+    current_statement__ = 91;
     return stan::math::multiply(
              stan::math::rep_row_vector(1, stan::math::rows(X)), X);
   } catch (const std::exception& e) {
@@ -211,102 +200,102 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 57;
+      current_statement__ = 46;
       context__.validate_dims("data initialization", "n_params", "int",
         std::vector<size_t>{});
       n_params = std::numeric_limits<int>::min();
-      current_statement__ = 57;
+      current_statement__ = 46;
       n_params = context__.vals_i("n_params")[(1 - 1)];
-      current_statement__ = 57;
+      current_statement__ = 46;
       stan::math::check_greater_or_equal(function__, "n_params", n_params, 1);
-      current_statement__ = 58;
+      current_statement__ = 47;
       context__.validate_dims("data initialization", "n_paths", "int",
         std::vector<size_t>{});
       n_paths = std::numeric_limits<int>::min();
-      current_statement__ = 58;
+      current_statement__ = 47;
       n_paths = context__.vals_i("n_paths")[(1 - 1)];
-      current_statement__ = 58;
+      current_statement__ = 47;
       stan::math::check_greater_or_equal(function__, "n_paths", n_paths, 1);
-      current_statement__ = 59;
+      current_statement__ = 48;
       context__.validate_dims("data initialization", "n_types", "int",
         std::vector<size_t>{});
       n_types = std::numeric_limits<int>::min();
-      current_statement__ = 59;
+      current_statement__ = 48;
       n_types = context__.vals_i("n_types")[(1 - 1)];
-      current_statement__ = 59;
+      current_statement__ = 48;
       stan::math::check_greater_or_equal(function__, "n_types", n_types, 1);
-      current_statement__ = 60;
+      current_statement__ = 49;
       context__.validate_dims("data initialization", "n_param_sets", "int",
         std::vector<size_t>{});
       n_param_sets = std::numeric_limits<int>::min();
-      current_statement__ = 60;
+      current_statement__ = 49;
       n_param_sets = context__.vals_i("n_param_sets")[(1 - 1)];
-      current_statement__ = 60;
+      current_statement__ = 49;
       stan::math::check_greater_or_equal(function__, "n_param_sets",
         n_param_sets, 1);
-      current_statement__ = 61;
+      current_statement__ = 50;
       context__.validate_dims("data initialization", "n_nodes", "int",
         std::vector<size_t>{});
       n_nodes = std::numeric_limits<int>::min();
-      current_statement__ = 61;
+      current_statement__ = 50;
       n_nodes = context__.vals_i("n_nodes")[(1 - 1)];
-      current_statement__ = 61;
+      current_statement__ = 50;
       stan::math::check_greater_or_equal(function__, "n_nodes", n_nodes, 1);
-      current_statement__ = 62;
+      current_statement__ = 51;
       context__.validate_dims("data initialization", "n_data", "int",
         std::vector<size_t>{});
       n_data = std::numeric_limits<int>::min();
-      current_statement__ = 62;
+      current_statement__ = 51;
       n_data = context__.vals_i("n_data")[(1 - 1)];
-      current_statement__ = 62;
+      current_statement__ = 51;
       stan::math::check_greater_or_equal(function__, "n_data", n_data, 1);
-      current_statement__ = 63;
+      current_statement__ = 52;
       context__.validate_dims("data initialization", "n_events", "int",
         std::vector<size_t>{});
       n_events = std::numeric_limits<int>::min();
-      current_statement__ = 63;
+      current_statement__ = 52;
       n_events = context__.vals_i("n_events")[(1 - 1)];
-      current_statement__ = 63;
+      current_statement__ = 52;
       stan::math::check_greater_or_equal(function__, "n_events", n_events, 1);
-      current_statement__ = 64;
+      current_statement__ = 53;
       context__.validate_dims("data initialization", "n_strategies", "int",
         std::vector<size_t>{});
       n_strategies = std::numeric_limits<int>::min();
-      current_statement__ = 64;
+      current_statement__ = 53;
       n_strategies = context__.vals_i("n_strategies")[(1 - 1)];
-      current_statement__ = 64;
+      current_statement__ = 53;
       stan::math::check_greater_or_equal(function__, "n_strategies",
         n_strategies, 1);
-      current_statement__ = 65;
+      current_statement__ = 54;
       context__.validate_dims("data initialization",
         "keep_type_distribution", "int", std::vector<size_t>{});
       keep_type_distribution = std::numeric_limits<int>::min();
-      current_statement__ = 65;
+      current_statement__ = 54;
       keep_type_distribution = context__.vals_i("keep_type_distribution")[(1
         - 1)];
-      current_statement__ = 65;
+      current_statement__ = 54;
       stan::math::check_greater_or_equal(function__,
         "keep_type_distribution", keep_type_distribution, 0);
-      current_statement__ = 65;
+      current_statement__ = 54;
       stan::math::check_less_or_equal(function__, "keep_type_distribution",
         keep_type_distribution, 1);
-      current_statement__ = 66;
+      current_statement__ = 55;
       stan::math::validate_non_negative_index("n_param_each", "n_param_sets",
         n_param_sets);
-      current_statement__ = 67;
+      current_statement__ = 56;
       context__.validate_dims("data initialization", "n_param_each", "int",
         std::vector<size_t>{static_cast<size_t>(n_param_sets)});
       n_param_each = std::vector<int>(n_param_sets,
                        std::numeric_limits<int>::min());
-      current_statement__ = 67;
+      current_statement__ = 56;
       n_param_each = context__.vals_i("n_param_each");
-      current_statement__ = 67;
+      current_statement__ = 56;
       stan::math::check_greater_or_equal(function__, "n_param_each",
         n_param_each, 1);
-      current_statement__ = 68;
+      current_statement__ = 57;
       stan::math::validate_non_negative_index("lambdas_prior", "n_params",
         n_params);
-      current_statement__ = 69;
+      current_statement__ = 58;
       context__.validate_dims("data initialization", "lambdas_prior",
         "double", std::vector<size_t>{static_cast<size_t>(n_params)});
       lambdas_prior_data__ = Eigen::Matrix<double,-1,1>::Constant(n_params,
@@ -316,102 +305,102 @@ public:
         n_params);
       {
         std::vector<local_scalar_t__> lambdas_prior_flat__;
-        current_statement__ = 69;
+        current_statement__ = 58;
         lambdas_prior_flat__ = context__.vals_r("lambdas_prior");
-        current_statement__ = 69;
+        current_statement__ = 58;
         pos__ = 1;
-        current_statement__ = 69;
+        current_statement__ = 58;
         for (int sym1__ = 1; sym1__ <= n_params; ++sym1__) {
-          current_statement__ = 69;
+          current_statement__ = 58;
           stan::model::assign(lambdas_prior, lambdas_prior_flat__[(pos__ -
             1)], "assigning variable lambdas_prior",
             stan::model::index_uni(sym1__));
-          current_statement__ = 69;
+          current_statement__ = 58;
           pos__ = (pos__ + 1);
         }
       }
-      current_statement__ = 69;
+      current_statement__ = 58;
       stan::math::check_greater_or_equal(function__, "lambdas_prior",
         lambdas_prior, 0);
-      current_statement__ = 70;
+      current_statement__ = 59;
       stan::math::validate_non_negative_index("l_starts", "n_param_sets",
         n_param_sets);
-      current_statement__ = 71;
+      current_statement__ = 60;
       context__.validate_dims("data initialization", "l_starts", "int",
         std::vector<size_t>{static_cast<size_t>(n_param_sets)});
       l_starts = std::vector<int>(n_param_sets,
                    std::numeric_limits<int>::min());
-      current_statement__ = 71;
+      current_statement__ = 60;
       l_starts = context__.vals_i("l_starts");
-      current_statement__ = 71;
+      current_statement__ = 60;
       stan::math::check_greater_or_equal(function__, "l_starts", l_starts, 1);
-      current_statement__ = 72;
+      current_statement__ = 61;
       stan::math::validate_non_negative_index("l_ends", "n_param_sets",
         n_param_sets);
-      current_statement__ = 73;
+      current_statement__ = 62;
       context__.validate_dims("data initialization", "l_ends", "int",
         std::vector<size_t>{static_cast<size_t>(n_param_sets)});
       l_ends = std::vector<int>(n_param_sets,
                  std::numeric_limits<int>::min());
-      current_statement__ = 73;
+      current_statement__ = 62;
       l_ends = context__.vals_i("l_ends");
-      current_statement__ = 73;
+      current_statement__ = 62;
       stan::math::check_greater_or_equal(function__, "l_ends", l_ends, 1);
-      current_statement__ = 74;
+      current_statement__ = 63;
       stan::math::validate_non_negative_index("node_starts", "n_nodes",
         n_nodes);
-      current_statement__ = 75;
+      current_statement__ = 64;
       context__.validate_dims("data initialization", "node_starts", "int",
         std::vector<size_t>{static_cast<size_t>(n_nodes)});
       node_starts = std::vector<int>(n_nodes,
                       std::numeric_limits<int>::min());
-      current_statement__ = 75;
+      current_statement__ = 64;
       node_starts = context__.vals_i("node_starts");
-      current_statement__ = 75;
+      current_statement__ = 64;
       stan::math::check_greater_or_equal(function__, "node_starts",
         node_starts, 1);
-      current_statement__ = 76;
+      current_statement__ = 65;
       stan::math::validate_non_negative_index("node_ends", "n_nodes", n_nodes);
-      current_statement__ = 77;
+      current_statement__ = 66;
       context__.validate_dims("data initialization", "node_ends", "int",
         std::vector<size_t>{static_cast<size_t>(n_nodes)});
       node_ends = std::vector<int>(n_nodes, std::numeric_limits<int>::min());
-      current_statement__ = 77;
+      current_statement__ = 66;
       node_ends = context__.vals_i("node_ends");
-      current_statement__ = 77;
+      current_statement__ = 66;
       stan::math::check_greater_or_equal(function__, "node_ends", node_ends,
         1);
-      current_statement__ = 78;
+      current_statement__ = 67;
       stan::math::validate_non_negative_index("strategy_starts",
         "n_strategies", n_strategies);
-      current_statement__ = 79;
+      current_statement__ = 68;
       context__.validate_dims("data initialization", "strategy_starts",
         "int", std::vector<size_t>{static_cast<size_t>(n_strategies)});
       strategy_starts = std::vector<int>(n_strategies,
                           std::numeric_limits<int>::min());
-      current_statement__ = 79;
+      current_statement__ = 68;
       strategy_starts = context__.vals_i("strategy_starts");
-      current_statement__ = 79;
+      current_statement__ = 68;
       stan::math::check_greater_or_equal(function__, "strategy_starts",
         strategy_starts, 1);
-      current_statement__ = 80;
+      current_statement__ = 69;
       stan::math::validate_non_negative_index("strategy_ends",
         "n_strategies", n_strategies);
-      current_statement__ = 81;
+      current_statement__ = 70;
       context__.validate_dims("data initialization", "strategy_ends", "int",
         std::vector<size_t>{static_cast<size_t>(n_strategies)});
       strategy_ends = std::vector<int>(n_strategies,
                         std::numeric_limits<int>::min());
-      current_statement__ = 81;
+      current_statement__ = 70;
       strategy_ends = context__.vals_i("strategy_ends");
-      current_statement__ = 81;
+      current_statement__ = 70;
       stan::math::check_greater_or_equal(function__, "strategy_ends",
         strategy_ends, 1);
-      current_statement__ = 82;
+      current_statement__ = 71;
       stan::math::validate_non_negative_index("P", "n_params", n_params);
-      current_statement__ = 83;
+      current_statement__ = 72;
       stan::math::validate_non_negative_index("P", "n_types", n_types);
-      current_statement__ = 84;
+      current_statement__ = 73;
       context__.validate_dims("data initialization", "P", "double",
         std::vector<size_t>{static_cast<size_t>(n_params),
           static_cast<size_t>(n_types)});
@@ -421,28 +410,28 @@ public:
         n_params, n_types);
       {
         std::vector<local_scalar_t__> P_flat__;
-        current_statement__ = 84;
+        current_statement__ = 73;
         P_flat__ = context__.vals_r("P");
-        current_statement__ = 84;
+        current_statement__ = 73;
         pos__ = 1;
-        current_statement__ = 84;
+        current_statement__ = 73;
         for (int sym1__ = 1; sym1__ <= n_types; ++sym1__) {
-          current_statement__ = 84;
+          current_statement__ = 73;
           for (int sym2__ = 1; sym2__ <= n_params; ++sym2__) {
-            current_statement__ = 84;
+            current_statement__ = 73;
             stan::model::assign(P, P_flat__[(pos__ - 1)],
               "assigning variable P", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 84;
+            current_statement__ = 73;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 85;
+      current_statement__ = 74;
       stan::math::validate_non_negative_index("parmap", "n_params", n_params);
-      current_statement__ = 86;
+      current_statement__ = 75;
       stan::math::validate_non_negative_index("parmap", "n_paths", n_paths);
-      current_statement__ = 87;
+      current_statement__ = 76;
       context__.validate_dims("data initialization", "parmap", "double",
         std::vector<size_t>{static_cast<size_t>(n_params),
           static_cast<size_t>(n_paths)});
@@ -453,28 +442,28 @@ public:
         n_params, n_paths);
       {
         std::vector<local_scalar_t__> parmap_flat__;
-        current_statement__ = 87;
+        current_statement__ = 76;
         parmap_flat__ = context__.vals_r("parmap");
-        current_statement__ = 87;
+        current_statement__ = 76;
         pos__ = 1;
-        current_statement__ = 87;
+        current_statement__ = 76;
         for (int sym1__ = 1; sym1__ <= n_paths; ++sym1__) {
-          current_statement__ = 87;
+          current_statement__ = 76;
           for (int sym2__ = 1; sym2__ <= n_params; ++sym2__) {
-            current_statement__ = 87;
+            current_statement__ = 76;
             stan::model::assign(parmap, parmap_flat__[(pos__ - 1)],
               "assigning variable parmap", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 87;
+            current_statement__ = 76;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 88;
+      current_statement__ = 77;
       stan::math::validate_non_negative_index("map", "n_paths", n_paths);
-      current_statement__ = 89;
+      current_statement__ = 78;
       stan::math::validate_non_negative_index("map", "n_data", n_data);
-      current_statement__ = 90;
+      current_statement__ = 79;
       context__.validate_dims("data initialization", "map", "double",
         std::vector<size_t>{static_cast<size_t>(n_paths),
           static_cast<size_t>(n_data)});
@@ -484,28 +473,28 @@ public:
         n_paths, n_data);
       {
         std::vector<local_scalar_t__> map_flat__;
-        current_statement__ = 90;
+        current_statement__ = 79;
         map_flat__ = context__.vals_r("map");
-        current_statement__ = 90;
+        current_statement__ = 79;
         pos__ = 1;
-        current_statement__ = 90;
+        current_statement__ = 79;
         for (int sym1__ = 1; sym1__ <= n_data; ++sym1__) {
-          current_statement__ = 90;
+          current_statement__ = 79;
           for (int sym2__ = 1; sym2__ <= n_paths; ++sym2__) {
-            current_statement__ = 90;
+            current_statement__ = 79;
             stan::model::assign(map, map_flat__[(pos__ - 1)],
               "assigning variable map", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 90;
+            current_statement__ = 79;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 91;
+      current_statement__ = 80;
       stan::math::validate_non_negative_index("E", "n_events", n_events);
-      current_statement__ = 92;
+      current_statement__ = 81;
       stan::math::validate_non_negative_index("E", "n_data", n_data);
-      current_statement__ = 93;
+      current_statement__ = 82;
       context__.validate_dims("data initialization", "E", "double",
         std::vector<size_t>{static_cast<size_t>(n_events),
           static_cast<size_t>(n_data)});
@@ -515,55 +504,55 @@ public:
         n_events, n_data);
       {
         std::vector<local_scalar_t__> E_flat__;
-        current_statement__ = 93;
+        current_statement__ = 82;
         E_flat__ = context__.vals_r("E");
-        current_statement__ = 93;
+        current_statement__ = 82;
         pos__ = 1;
-        current_statement__ = 93;
+        current_statement__ = 82;
         for (int sym1__ = 1; sym1__ <= n_data; ++sym1__) {
-          current_statement__ = 93;
+          current_statement__ = 82;
           for (int sym2__ = 1; sym2__ <= n_events; ++sym2__) {
-            current_statement__ = 93;
+            current_statement__ = 82;
             stan::model::assign(E, E_flat__[(pos__ - 1)],
               "assigning variable E", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 93;
+            current_statement__ = 82;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 93;
+      current_statement__ = 82;
       stan::math::check_greater_or_equal(function__, "E", E, 0);
-      current_statement__ = 93;
+      current_statement__ = 82;
       stan::math::check_less_or_equal(function__, "E", E, 1);
-      current_statement__ = 94;
+      current_statement__ = 83;
       stan::math::validate_non_negative_index("Y", "n_events", n_events);
-      current_statement__ = 95;
+      current_statement__ = 84;
       context__.validate_dims("data initialization", "Y", "int",
         std::vector<size_t>{static_cast<size_t>(n_events)});
       Y = std::vector<int>(n_events, std::numeric_limits<int>::min());
-      current_statement__ = 95;
+      current_statement__ = 84;
       Y = context__.vals_i("Y");
-      current_statement__ = 95;
+      current_statement__ = 84;
       stan::math::check_greater_or_equal(function__, "Y", Y, 0);
-      current_statement__ = 96;
+      current_statement__ = 85;
       gamma_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 96;
+      current_statement__ = 85;
       gamma_1dim__ = (n_params - n_param_sets);
-      current_statement__ = 96;
+      current_statement__ = 85;
       stan::math::validate_non_negative_index("gamma",
         "n_params - n_param_sets", gamma_1dim__);
-      current_statement__ = 97;
+      current_statement__ = 86;
       stan::math::validate_non_negative_index("lambdas", "n_params", n_params);
-      current_statement__ = 98;
+      current_statement__ = 87;
       stan::math::validate_non_negative_index("sum_gammas", "n_param_sets",
         n_param_sets);
-      current_statement__ = 99;
+      current_statement__ = 88;
       stan::math::validate_non_negative_index("log_sum_gammas",
         "n_param_sets", n_param_sets);
-      current_statement__ = 100;
+      current_statement__ = 89;
       stan::math::validate_non_negative_index("w", "n_data", n_data);
-      current_statement__ = 101;
+      current_statement__ = 90;
       stan::math::validate_non_negative_index("types", "n_types", n_types);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -690,52 +679,40 @@ public:
           Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_paths,
             DUMMY_VAR__);
         current_statement__ = 21;
-        stan::math::validate_non_negative_index("parlam", "n_params",
-          n_params);
-        current_statement__ = 22;
-        stan::math::validate_non_negative_index("parlam", "n_paths", n_paths);
-        Eigen::Matrix<local_scalar_t__,-1,-1> parlam =
-          Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(n_params, n_paths,
-            DUMMY_VAR__);
-        current_statement__ = 24;
         stan::math::validate_non_negative_index("parlam2", "n_nodes", n_nodes);
-        current_statement__ = 25;
+        current_statement__ = 22;
         stan::math::validate_non_negative_index("parlam2", "n_paths", n_paths);
         Eigen::Matrix<local_scalar_t__,-1,-1> parlam2 =
           Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(n_nodes, n_paths,
             DUMMY_VAR__);
-        current_statement__ = 27;
-        stan::model::assign(parlam,
-          stan::math::elt_multiply(stan::math::rep_matrix(lambdas, n_paths),
-            parmap), "assigning variable parlam");
-        current_statement__ = 30;
-        for (int i = 1; i <= n_nodes; ++i) {
-          current_statement__ = 28;
+        current_statement__ = 28;
+        for (int j = 1; j <= n_nodes; ++j) {
+          int a = std::numeric_limits<int>::min();
+          current_statement__ = 24;
+          a = stan::model::rvalue(node_starts, "node_starts",
+                stan::model::index_uni(j));
+          int b = std::numeric_limits<int>::min();
+          current_statement__ = 25;
+          b = stan::model::rvalue(node_ends, "node_ends",
+                stan::model::index_uni(j));
+          current_statement__ = 26;
           stan::model::assign(parlam2,
-            col_sums(
-              stan::model::rvalue(parlam, "parlam",
-                stan::model::index_min_max(
-                  stan::model::rvalue(node_starts, "node_starts",
-                    stan::model::index_uni(i)),
-                  stan::model::rvalue(node_ends, "node_ends",
-                    stan::model::index_uni(i))), stan::model::index_omni()),
-              pstream__), "assigning variable parlam2",
-            stan::model::index_uni(i), stan::model::index_omni());
+            stan::math::multiply(
+              stan::math::transpose(
+                stan::model::rvalue(lambdas, "lambdas",
+                  stan::model::index_min_max(a, b))),
+              stan::model::rvalue(parmap, "parmap",
+                stan::model::index_min_max(a, b), stan::model::index_omni())),
+            "assigning variable parlam2", stan::model::index_uni(j),
+            stan::model::index_omni());
         }
-        current_statement__ = 33;
-        for (int i = 1; i <= n_paths; ++i) {
-          current_statement__ = 31;
-          stan::model::assign(w_0_local,
-            stan::math::exp(
-              stan::math::sum(
-                stan::math::log(
-                  stan::math::add(
-                    stan::model::rvalue(parlam2, "parlam2",
-                      stan::model::index_omni(), stan::model::index_uni(i)),
-                    1e-10)))), "assigning variable w_0_local",
-            stan::model::index_uni(i));
-        }
-        current_statement__ = 34;
+        current_statement__ = 29;
+        stan::model::assign(w_0_local,
+          stan::math::exp(
+            stan::math::to_vector(
+              col_sums(stan::math::log(parlam2), pstream__))),
+          "assigning variable w_0_local");
+        current_statement__ = 30;
         stan::model::assign(w,
           stan::math::multiply(stan::math::transpose(map), w_0_local),
           "assigning variable w");
@@ -752,76 +729,32 @@ public:
       current_statement__ = 5;
       stan::math::check_less_or_equal(function__, "w", w, 1);
       {
-        current_statement__ = 48;
+        current_statement__ = 42;
         for (int i = 1; i <= n_param_sets; ++i) {
-          current_statement__ = 46;
-          if (stan::math::logical_lt(
-                stan::model::rvalue(l_starts, "l_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(l_ends, "l_ends",
-                  stan::model::index_uni(i)))) {
-            current_statement__ = 43;
-            lp_accum__.add(stan::math::dirichlet_lpdf<false>(
-                             stan::model::rvalue(lambdas, "lambdas",
-                               stan::model::index_min_max(
-                                 stan::model::rvalue(l_starts, "l_starts",
-                                   stan::model::index_uni(i)),
-                                 stan::model::rvalue(l_ends, "l_ends",
-                                   stan::model::index_uni(i)))),
-                             stan::model::rvalue(lambdas_prior,
-                               "lambdas_prior",
-                               stan::model::index_min_max(
-                                 stan::model::rvalue(l_starts, "l_starts",
-                                   stan::model::index_uni(i)),
-                                 stan::model::rvalue(l_ends, "l_ends",
-                                   stan::model::index_uni(i))))));
-            current_statement__ = 44;
-            lp_accum__.add((-stan::model::rvalue(n_param_each,
-                               "n_param_each", stan::model::index_uni(i)) *
-              stan::model::rvalue(log_sum_gammas, "log_sum_gammas",
-                stan::model::index_uni(i))));
-          }
+          current_statement__ = 39;
+          lp_accum__.add(stan::math::dirichlet_lpdf<false>(
+                           stan::model::rvalue(lambdas, "lambdas",
+                             stan::model::index_min_max(
+                               stan::model::rvalue(l_starts, "l_starts",
+                                 stan::model::index_uni(i)),
+                               stan::model::rvalue(l_ends, "l_ends",
+                                 stan::model::index_uni(i)))),
+                           stan::model::rvalue(lambdas_prior,
+                             "lambdas_prior",
+                             stan::model::index_min_max(
+                               stan::model::rvalue(l_starts, "l_starts",
+                                 stan::model::index_uni(i)),
+                               stan::model::rvalue(l_ends, "l_ends",
+                                 stan::model::index_uni(i))))));
+          current_statement__ = 40;
+          lp_accum__.add((-stan::model::rvalue(n_param_each, "n_param_each",
+                             stan::model::index_uni(i)) *
+            stan::model::rvalue(log_sum_gammas, "log_sum_gammas",
+              stan::model::index_uni(i))));
         }
-        current_statement__ = 49;
-        stan::math::validate_non_negative_index("p", "n_events", n_events);
-        Eigen::Matrix<local_scalar_t__,-1,1> p =
-          Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_events,
-            DUMMY_VAR__);
-        current_statement__ = 50;
-        stan::model::assign(p, stan::math::multiply(E, w),
-          "assigning variable p");
-        current_statement__ = 56;
+        current_statement__ = 45;
         for (int i = 1; i <= n_strategies; ++i) {
-          current_statement__ = 51;
-          stan::math::validate_non_negative_index("strategy_probs",
-            "strategy_ends[i] - strategy_starts[i] + 1",
-            ((stan::model::rvalue(strategy_ends, "strategy_ends",
-                stan::model::index_uni(i)) -
-            stan::model::rvalue(strategy_starts, "strategy_starts",
-              stan::model::index_uni(i))) + 1));
-          Eigen::Matrix<local_scalar_t__,-1,1> strategy_probs =
-            Eigen::Matrix<local_scalar_t__,-1,1>::Constant(((stan::model::rvalue(
-                                                               strategy_ends,
-                                                               "strategy_ends",
-                                                               stan::model::index_uni(
-                                                                 i)) -
-              stan::model::rvalue(strategy_starts, "strategy_starts",
-                stan::model::index_uni(i))) + 1), DUMMY_VAR__);
-          current_statement__ = 52;
-          stan::model::assign(strategy_probs,
-            stan::model::rvalue(p, "p",
-              stan::model::index_min_max(
-                stan::model::rvalue(strategy_starts, "strategy_starts",
-                  stan::model::index_uni(i)),
-                stan::model::rvalue(strategy_ends, "strategy_ends",
-                  stan::model::index_uni(i)))),
-            "assigning variable strategy_probs");
-          current_statement__ = 53;
-          stan::model::assign(strategy_probs,
-            stan::math::divide(stan::model::deep_copy(strategy_probs),
-              stan::math::sum(strategy_probs)),
-            "assigning variable strategy_probs");
-          current_statement__ = 54;
+          current_statement__ = 43;
           lp_accum__.add(stan::math::multinomial_lpmf<false>(
                            stan::model::rvalue(Y, "Y",
                              stan::model::index_min_max(
@@ -829,7 +762,23 @@ public:
                                  "strategy_starts", stan::model::index_uni(i)),
                                stan::model::rvalue(strategy_ends,
                                  "strategy_ends", stan::model::index_uni(i)))),
-                           strategy_probs));
+                           stan::math::divide(
+                             stan::model::rvalue(w, "w",
+                               stan::model::index_min_max(
+                                 stan::model::rvalue(strategy_starts,
+                                   "strategy_starts",
+                                   stan::model::index_uni(i)),
+                                 stan::model::rvalue(strategy_ends,
+                                   "strategy_ends", stan::model::index_uni(i)))),
+                             stan::math::sum(
+                               stan::model::rvalue(w, "w",
+                                 stan::model::index_min_max(
+                                   stan::model::rvalue(strategy_starts,
+                                     "strategy_starts",
+                                     stan::model::index_uni(i)),
+                                   stan::model::rvalue(strategy_ends,
+                                     "strategy_ends",
+                                     stan::model::index_uni(i))))))));
         }
       }
     } catch (const std::exception& e) {
@@ -970,52 +919,40 @@ public:
           Eigen::Matrix<double,-1,1>::Constant(n_paths,
             std::numeric_limits<double>::quiet_NaN());
         current_statement__ = 21;
-        stan::math::validate_non_negative_index("parlam", "n_params",
-          n_params);
-        current_statement__ = 22;
-        stan::math::validate_non_negative_index("parlam", "n_paths", n_paths);
-        Eigen::Matrix<double,-1,-1> parlam =
-          Eigen::Matrix<double,-1,-1>::Constant(n_params, n_paths,
-            std::numeric_limits<double>::quiet_NaN());
-        current_statement__ = 24;
         stan::math::validate_non_negative_index("parlam2", "n_nodes", n_nodes);
-        current_statement__ = 25;
+        current_statement__ = 22;
         stan::math::validate_non_negative_index("parlam2", "n_paths", n_paths);
         Eigen::Matrix<double,-1,-1> parlam2 =
           Eigen::Matrix<double,-1,-1>::Constant(n_nodes, n_paths,
             std::numeric_limits<double>::quiet_NaN());
-        current_statement__ = 27;
-        stan::model::assign(parlam,
-          stan::math::elt_multiply(stan::math::rep_matrix(lambdas, n_paths),
-            parmap), "assigning variable parlam");
-        current_statement__ = 30;
-        for (int i = 1; i <= n_nodes; ++i) {
-          current_statement__ = 28;
+        current_statement__ = 28;
+        for (int j = 1; j <= n_nodes; ++j) {
+          int a = std::numeric_limits<int>::min();
+          current_statement__ = 24;
+          a = stan::model::rvalue(node_starts, "node_starts",
+                stan::model::index_uni(j));
+          int b = std::numeric_limits<int>::min();
+          current_statement__ = 25;
+          b = stan::model::rvalue(node_ends, "node_ends",
+                stan::model::index_uni(j));
+          current_statement__ = 26;
           stan::model::assign(parlam2,
-            col_sums(
-              stan::model::rvalue(parlam, "parlam",
-                stan::model::index_min_max(
-                  stan::model::rvalue(node_starts, "node_starts",
-                    stan::model::index_uni(i)),
-                  stan::model::rvalue(node_ends, "node_ends",
-                    stan::model::index_uni(i))), stan::model::index_omni()),
-              pstream__), "assigning variable parlam2",
-            stan::model::index_uni(i), stan::model::index_omni());
+            stan::math::multiply(
+              stan::math::transpose(
+                stan::model::rvalue(lambdas, "lambdas",
+                  stan::model::index_min_max(a, b))),
+              stan::model::rvalue(parmap, "parmap",
+                stan::model::index_min_max(a, b), stan::model::index_omni())),
+            "assigning variable parlam2", stan::model::index_uni(j),
+            stan::model::index_omni());
         }
-        current_statement__ = 33;
-        for (int i = 1; i <= n_paths; ++i) {
-          current_statement__ = 31;
-          stan::model::assign(w_0_local,
-            stan::math::exp(
-              stan::math::sum(
-                stan::math::log(
-                  stan::math::add(
-                    stan::model::rvalue(parlam2, "parlam2",
-                      stan::model::index_omni(), stan::model::index_uni(i)),
-                    1e-10)))), "assigning variable w_0_local",
-            stan::model::index_uni(i));
-        }
-        current_statement__ = 34;
+        current_statement__ = 29;
+        stan::model::assign(w_0_local,
+          stan::math::exp(
+            stan::math::to_vector(
+              col_sums(stan::math::log(parlam2), pstream__))),
+          "assigning variable w_0_local");
+        current_statement__ = 30;
         stan::model::assign(w,
           stan::math::multiply(stan::math::transpose(map), w_0_local),
           "assigning variable w");
@@ -1043,11 +980,11 @@ public:
       Eigen::Matrix<double,-1,1> types =
         Eigen::Matrix<double,-1,1>::Constant(n_types,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 42;
+      current_statement__ = 38;
       if (stan::math::logical_eq(keep_type_distribution, 1)) {
-        current_statement__ = 40;
+        current_statement__ = 36;
         for (int i = 1; i <= n_types; ++i) {
-          current_statement__ = 38;
+          current_statement__ = 34;
           stan::model::assign(types,
             stan::math::prod(
               stan::math::add(
@@ -1060,7 +997,7 @@ public:
             "assigning variable types", stan::model::index_uni(i));
         }
       } else {
-        current_statement__ = 36;
+        current_statement__ = 32;
         stan::model::assign(types, stan::math::rep_vector(1.0, n_types),
           "assigning variable types");
       }

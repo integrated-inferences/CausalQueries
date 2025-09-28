@@ -92,7 +92,7 @@ transformed parameters {
     for (j in 1:n_nodes) {
       int a = node_starts[j];
       int b = node_ends[j];
-      parlam2[j, ] = (lambdas[a:b]' * parmap[a:b, ])';
+      parlam2[j, ] = lambdas[a:b]' * parmap[a:b, ];
     }
 
     // Vectorized path probability calculation
