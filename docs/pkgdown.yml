@@ -7,7 +7,8 @@ articles:
   c-canonical-models: c-canonical-models.html
   d-front-door: d-front-door.html
   e-posteriors: e-posteriors.html
-last_built: 2025-07-23T12:06Z
+  f-complier-profiling: f-complier-profiling.html
+last_built: 2025-10-26T11:26Z
 urls:
   reference: https://integrated-inferences.github.io/CausalQueries/reference
   article: https://integrated-inferences.github.io/CausalQueries/articles
