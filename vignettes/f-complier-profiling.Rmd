@@ -1,5 +1,7 @@
 ---
 title: "Profiling compliers and non-compliers"
+subtitle: "Characterizing latent groups in an encouragement design"
+author: "Moritz Marbach"
 output:
   rmarkdown::html_vignette:
     md_extensions: [
