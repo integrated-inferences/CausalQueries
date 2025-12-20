@@ -29,7 +29,6 @@ using namespace stan::math;
 stan::math::profile_map profiles__;
 static constexpr std::array<const char*, 93> locations_array__ =
   {" (found before start of program)",
-<<<<<<< HEAD
   " (in 'string', line 47, column 2 to column 49)",
   " (in 'string', line 51, column 2 to column 45)",
   " (in 'string', line 52, column 2 to column 43)",
@@ -122,7 +121,6 @@ static constexpr std::array<const char*, 93> locations_array__ =
   " (in 'string', line 106, column 9 to column 16)",
   " (in 'string', line 12, column 4 to column 42)",
   " (in 'string', line 11, column 32 to line 13, column 3)"};
-=======
   " (in 'simplexes', line 33, column 2 to column 49)",
   " (in 'simplexes', line 36, column 2 to column 45)",
   " (in 'simplexes', line 37, column 2 to column 43)",
@@ -222,7 +220,6 @@ static constexpr std::array<const char*, 93> locations_array__ =
   " (in 'simplexes', line 4, column 4 to column 39)",
   " (in 'simplexes', line 5, column 4 to column 13)",
   " (in 'simplexes', line 2, column 32 to line 6, column 3)"};
->>>>>>> master
 template <typename T0__,
           stan::require_all_t<stan::is_eigen_matrix_dynamic<T0__>,
                               stan::is_vt_not_complex<T0__>>* = nullptr>

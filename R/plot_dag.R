@@ -26,7 +26,6 @@
 #' @importFrom grid arrow
 #' @importFrom grid unit
 #' @importFrom graphics plot
-#' @importFrom latex2exp TeX
 #'
 #' @export
 #' @examples
