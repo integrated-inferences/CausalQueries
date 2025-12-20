@@ -1,0 +1,168 @@
+✔ | F W  S  OK | Context
+⠏ |          0 | clean_params                                                                                          ⠏ |          0 | Testing clean_params                                                                                  ⠹ |          3 | Testing clean_params                                                                                  ✔ |          5 | Testing clean_params
+⠏ |          0 | data_helpers                                                                                          ⠏ |          0 | Testing data helperse                                                                                 ⠹ |          3 | Testing data helperse                                                                                 ⠼ |          5 | Testing data helperse                                                                                 ⠦ |          7 | Testing data helperse                                                                                 ⠏ |         10 | Testing data helperse                                                                                 ⠸ |         14 | Testing data helperse                                                                                 ⠦ |         17 | Testing data helperse                                                                                 ✔ |         20 | Testing data helperse
+⠏ |          0 | data_strategy                                                                                         ⠏ |          0 | Testing make_model                                                                                    ⠋ |          1 | Testing make_model                                                                                    ✔ |          5 | Testing make_model
+⠏ |          0 | Testing make_data                                                                                     ⠙ |          2 | Testing make_data                                                                                     ⠸ |          4 | Testing make_data                                                                                     ✔ |          5 | Testing make_data
+⠏ |          0 | draw_causal_type                                                                                      ⠏ |          0 | draw_causal_type                                                                                      ✔ |          2 | draw_causal_type
+⠏ |          0 | get_ambiguity_matrix                                                                                  ⠏ |          0 | Testing get_ambiguity_matrix                                                                          ⠙ |          2 | Testing get_ambiguity_matrix                                                                          ✔ |          2 | Testing get_ambiguity_matrix
+⠏ |          0 | get_causal_types                                                                                      ⠏ |          0 | get_causal_types                                                                                      ✔ |          1 | get_causal_types
+⠏ |          0 | get_event_prob                                                                                        ⠏ |          0 | Testing get_event_probabilities                                                                       ⠙ |          2 | Testing get_event_probabilities                                                                       ✔ |          3 | Testing get_event_probabilities
+⠏ |          0 | get_nodal_types                                                                                       ⠏ |          0 | Testing get_nodal_types                                                                               ⠸ |          4 | Testing get_nodal_types                                                                               ✔ |          7 | Testing get_nodal_types
+⠏ |          0 | get_posterior_distribution                                                                            ⠏ |          0 | Testing get_posterior_distribution                                                                    ⠋ |          1 | Testing get_posterior_distribution                                                                    ✔ |          1 | Testing get_posterior_distribution [7.6s]
+⠏ |          0 | get_query_types                                                                                       ⠏ |          0 | Testing get_query_types                                                                               ⠸ |          4 | Testing get_query_types                                                                               ✔ |          4 | Testing get_query_types
+⠏ |          0 | get_type_prob                                                                                         ⠏ |          0 | Testing get_type_prob                                                                                 ⠸ |          4 | Testing get_type_prob                                                                                 ⠧ |          8 | Testing get_type_prob                                                                                 ⠇ |          9 | Testing get_type_prob                                                                                 ✔ |         12 | Testing get_type_prob
+⠏ |          0 | get_types                                                                                             ⠏ |          0 | Error messages of map_query_to_causal_type                                                            Generated expanded expression:
+(Y[Z=0]==1 | Y[Z=1]==1)
+✔ |          4 | Error messages of map_query_to_causal_type
+⠏ |          0 | Proper output.                                                                                        Generated expanded expression:
+(Y[X=0]==1 | Y[X=1]==1)
+✔ |          5 | Proper output.
+⠏ |          0 | Summary functions of map_query_to_causal_type                                                         Generated expanded expression:
+(Y[X=0]==1 | Y[X=1]==1)
+✔ |          4 | Summary functions of map_query_to_causal_type
+⠏ |          0 | helpers                                                                                               ⠏ |          0 | Testing helper functions.                                                                             ⠇ |          9 | Testing helper functions.                                                                             Generated expanded expression:
+Y[X=1, M=0] ==1 | Y[X=1, M=1] ==1
+Generated expanded expression:
+(Y[X=1, M=1] > Y[X=1, M=0])
+Generated expanded expression:
+(Y[X=1, M=0] > Y[X=1, M=0] & Y[X=1, M=1] > Y[X=1, M=1])
+Generated expanded expression:
+(Y[X=0]==1 & Y[X=0]==0 & Y[X=1]==1 & Y[X=1]==0)
+⠏ |         20 | Testing helper functions.                                                                             ✔ |         28 | Testing helper functions.
+⠏ |          0 | inspect                                                                                               ⠏ |          0 | Inspect function check                                                                                ⠹ |          3 | Inspect function check                                                                                ⠙ |         12 | Inspect function check                                                                                ⠦ |         17 | Inspect function check                                                                                
+prior_hyperparameters
+Alpha parameter values used for Dirichlet prior distributions:
+
+Y.00 Y.10 Y.01 Y.11 
+   1    1    1    1 
+⠙ |         22 | Inspect function check                                                                                ✔ |         24 | Inspect function check [8.6s]
+⠏ |          0 | layering                                                                                              ⠏ |          0 | Testing layering                                                                                      ⠋ |          1 | Testing layering                                                                                      ⠙ |          2 | Testing layering                                                                                      ✔ |          3 | Testing layering [17.6s]
+⠏ |          0 | lookuptype                                                                                            ⠏ |          0 | Testing type lookup                                                                                   ⠼ |          5 | Testing type lookup                                                                                   ✔ |         10 | Testing type lookup
+⠏ |          0 | make_confounders                                                                                      ⠙ |          2 | make_confounders                                                                                      ✔ |          2 | make_confounders
+⠏ |          0 | make_data                                                                                             ⠏ |          0 | Testing make_data 1                                                                                   ⠹ |          3 | Testing make_data 1                                                                                   ✔ |          3 | Testing make_data 1
+⠏ |          0 | Testing make_data 2                                                                                   ⠋ |          1 | Testing make_data 2                                                                                   ⠙ |          2 | Testing make_data 2                                                                                   ✔ |          3 | Testing make_data 2
+⠏ |          0 | make_events                                                                                           ⠏ |          0 | Testing make_events.                                                                                  ⠴ |          6 | Testing make_events.                                                                                  ⠋ |         11 | Testing make_events.                                                                                  ✔ |         14 | Testing make_events.
+⠏ |          0 | make_model                                                                                            ⠏ |          0 | Testing make_model                                                                                    
+Causal statement: 
+X -> Y
+
+Nodal types: 
+
+Nodal types for X:
+0  1
+
+Nodal types for Y:
+00  10  01  11
+
+Guide to interpreting nodal types for Y:
+
+  index  interpretation
+1    *-  Y = * if X = 0
+2    -*  Y = * if X = 1
+
+Number of nodal types by node:
+X Y 
+2 4 
+
+Number of causal types:  8
+
+Model has been updated and contains a posterior distribution with
+4 chains, each with iter=2000; warmup=1000; thin=1;  
+Use inspect(model, 'stan_summary') to inspect stan summary
+
+Note: Model does not contain the following objects: posterior event_probabilities, stanfit;
+to include these objects update model with 'keep_event_probabilities = TRUE', 'keep_fit = TRUE'
+
+Note: To pose causal queries of this model use query_model()
+
+⠹ |          3 | Testing make_model                                                                                    ⠼ |          5 | Testing make_model                                                                                    ⠋ |         21 | Testing make_model                                                                                    ⠦ |         27 | Testing make_model                                                                                    ⠇ |         29 | Testing make_model                                                                                    ✔ |         29 | Testing make_model [8.6s]
+⠏ |          0 | make_par_values                                                                                       ⠏ |          0 | Test make_par_values                                                                                  ⠹ |          3 | Test make_par_values                                                                                  ⠏ |         10 | Test make_par_values                                                                                  ⠙ |         12 | Test make_par_values                                                                                  ⠏ |         20 | Test make_par_values                                                                                  ⠦ |         37 | Test make_par_values                                                                                  ✔ |         41 | Test make_par_values
+⠏ |          0 | map_query_to_causal_types                                                                             ⠏ |          0 | Testing map_query_to_causal_type                                                                      ✔ |          2 | Testing map_query_to_causal_type
+⠏ |          0 | map_query_to_nodal_type                                                                               ⠏ |          0 | Testing map_query_to_nodal_type                                                                       ✔ |          2 | Testing map_query_to_nodal_type
+⠏ |          0 | methods                                                                                               ⠏ |          0 | Print and Summary methods                                                                             ⠸ |          4 | Print and Summary methods                                                                             ⠧ |          8 | Print and Summary methods                                                                             ⠏ |         10 | Print and Summary methods                                                                             ⠋ |         11 | Print and Summary methods                                                                             ⠸ |         14 | Print and Summary methods                                                                             ⠏ |         20 | Print and Summary methods                                                                             ⠼ |         25 | Print and Summary methods                                                                             ✔ |         26 | Print and Summary methods [18.5s]
+⠏ |          0 | misc                                                                                                  ⠏ |          0 | Testing misc                                                                                          ✔ |          1 | Testing misc
+⠏ |          0 | observe                                                                                               ⠏ |          0 | Testing observe                                                                                       ⠴ |          6 | Testing observe                                                                                       ✔ |          7 | Testing observe
+⠏ |          0 | parmap                                                                                                ⠏ |          0 | Testing parmap                                                                                        ⠋ |          1 | Testing parmap                                                                                        ⠹ |          3 | Testing parmap                                                                                        ✔ |          4 | Testing parmap
+⠏ |          0 | plot_dag                                                                                              ⠏ |          0 | Testing plot_model                                                                                    ⠋ |          1 | Testing plot_model                                                                                    ⠹ |          3 | Testing plot_model                                                                                    ⠼ |          5 | Testing plot_model                                                                                    ✔ |          8 | Testing plot_model
+⠏ |          0 | plot_query                                                                                            ⠏ |          0 | Testing plot_model_query                                                                              ⠋ |          1 | Testing plot_model_query                                                                              ⠙ |          2 | Testing plot_model_query                                                                              ✔ |          2 | Testing plot_model_query
+⠏ |          0 | prep_stan_data                                                                                        ⠏ |          0 | Testing prep_stan_data                                                                                ⠙ |          2 | Testing prep_stan_data                                                                                ⠸ |          4 | Testing prep_stan_data                                                                                ⠼ |          5 | Testing prep_stan_data                                                                                ✔ |          6 | Testing prep_stan_data
+⠏ |          0 | query_error_messages                                                                                  ⠏ |          0 | Testing improved query error messages                                                                 ⠹ |          3 | Testing improved query error messages                                                                 ⠼ |          5 | Testing improved query error messages                                                                 ✔ |          7 | Testing improved query error messages
+⠏ |          0 | query_helpers                                                                                         ⠏ |          0 | Tests for query_helpers                                                                               ✔ |         11 | Tests for query_helpers
+⠏ |          0 | query_model                                                                                           ⠏ |          0 | Query model, query distribution                                                                       ⠋ |          1 | Query model, query distribution                                                                       ⠏ |         10 | Query model, query distribution                                                                       ⠴ |         16 | Query model, query distribution                                                                       ⠧ |         18 | Query model, query distribution                                                                       ⠦ |         27 | Query model, query distribution                                                                       ⠧ |         28 | Query model, query distribution                                                                       ⠸ |         34 | Query model, query distribution                                                                       ⠴ |         36 | Query model, query distribution                                                                       ✔ |         37 | Query model, query distribution [21.3s]
+⠏ |          0 | restrictions                                                                                          ⠏ |          0 | Testing restrictions                                                                                  ⠙ |          2 | Testing restrictions                                                                                  ⠼ |          5 | Testing restrictions                                                                                  ⠧ |          8 | Testing restrictions                                                                                  ⠏ |         10 | Testing restrictions                                                                                  ⠙ |         12 | Testing restrictions                                                                                  ⠹ |         13 | Testing restrictions                                                                                  ⠼ |         15 | Testing restrictions                                                                                  ✔ |         17 | Testing restrictions [9.7s]
+⠏ |          0 | reveal_outcomes                                                                                       ⠏ |          0 | Testing realise_outcomes                                                                              ⠋ |          1 | Testing realise_outcomes                                                                              ⠸ |          4 | Testing realise_outcomes                                                                              ✔ |          5 | Testing realise_outcomes
+⠏ |          0 | set_confound                                                                                          ⠏ |          0 | Testing set_confound                                                                                  ⠋ |          1 | Testing set_confound                                                                                  ⠙ |          2 | Testing set_confound                                                                                  ⠸ |          4 | Testing set_confound                                                                                  ⠴ |          6 | Testing set_confound                                                                                  ⠦ |          7 | Testing set_confound                                                                                  ⠧ |          8 | Testing set_confound                                                                                  ⠇ |          9 | Testing set_confound                                                                                  ⠏ |         10 | Testing set_confound                                                                                  ⠙ |         12 | Testing set_confound                                                                                  ⠹ |         13 | Testing set_confound                                                                                  ⠼ |         15 | Testing set_confound                                                                                  ⠴ |         16 | Testing set_confound                                                                                  ⠧ |         18 | Testing set_confound                                                                                  ✔ |         18 | Testing set_confound [2.2s]
+⠏ |          0 | set_parameter_matrix                                                                                  ⠏ |          0 | Testing summary commands for set_parameter_matrix                                                     ✔ |          1 | Testing summary commands for set_parameter_matrix
+⠏ |          0 | set_parameters                                                                                        ⠏ |          0 | Testing set_parameters                                                                                ⠹ |          3 | Testing set_parameters                                                                                ⠏ |         10 | Testing set_parameters                                                                                ⠦ |         17 | Testing set_parameters                                                                                ✔ |         17 | Testing set_parameters [10.2s]
+⠏ |          0 | set_prior_distribution                                                                                ⠏ |          0 | Set_prior_distribution                                                                                
+prior_distribution
+Summary statistics of model parameters prior distributions:
+
+  Distributions matrix dimensions are 
+  30 rows (draws) by 6 cols (parameters)
+
+     mean   sd
+X.0  0.55 0.23
+X.1  0.45 0.23
+Y.00 0.27 0.18
+Y.10 0.21 0.18
+Y.01 0.26 0.20
+Y.11 0.27 0.21
+
+prior_distribution
+Summary statistics of model parameters prior distributions:
+
+  Distributions matrix dimensions are 
+  10 rows (draws) by 2 cols (parameters)
+
+    mean   sd
+X.0 0.45 0.16
+X.1 0.55 0.16
+⠹ |          3 | Set_prior_distribution                                                                                ✔ |          3 | Set_prior_distribution
+⠏ |          0 | set_priors                                                                                            ⠏ |          0 | Testing set_priors                                                                                    ⠸ |          4 | Testing set_priors                                                                                    ⠋ |         11 | Testing set_priors                                                                                    ⠼ |         15 | Testing set_priors                                                                                    ✔ |         15 | Testing set_priors
+⠏ |          0 | set_restrictions                                                                                      ⠏ |          0 | Testing set_restrictions                                                                              ⠴ |          6 | Testing set_restrictions                                                                              ⠧ |          8 | Testing set_restrictions                                                                              ⠏ |         10 | Testing set_restrictions                                                                              ⠋ |         11 | Testing set_restrictions                                                                              ⠙ |         12 | Testing set_restrictions                                                                              ⠹ |         13 | Testing set_restrictions                                                                              ✔ |         14 | Testing set_restrictions
+⠏ |          0 | Test restrict_by_query                                                                                ⠹ |          3 | Test restrict_by_query                                                                                ✔ |          3 | Test restrict_by_query
+⠏ |          0 | Test restrict_by_labels                                                                               ⠹ |          3 | Test restrict_by_labels                                                                               ✔ |          5 | Test restrict_by_labels
+⠏ |          0 | Test get_type_names                                                                                   ✔ |          2 | Test get_type_names
+⠏ |          0 | Test unpack_wildcard                                                                                  ✔ |          2 | Test unpack_wildcard
+⠏ |          0 | type_helpers                                                                                          ⠏ |          0 | Tests for type_helpers                                                                                ✔ |          2 | Tests for type_helpers
+⠏ |          0 | update_model                                                                                          ⠏ |          0 | Testing that canonical models work as they should                                                     ⠹ |          3 | Testing that canonical models work as they should                                                     ⠼ |          5 | Testing that canonical models work as they should                                                     ⠦ |          7 | Testing that canonical models work as they should                                                     
+parameter_matrix:
+
+  rows:   parameters
+  cols:   causal types
+  cells:  whether a parameter probability is used
+          in the calculation of causal type probability
+
+     X0.Y00 X1.Y00 X0.Y10 X1.Y10 X0.Y01 X1.Y01 X0.Y11 X1.Y11
+X.0       1      0      1      0      1      0      1      0
+X.1       0      1      0      1      0      1      0      1
+Y.00      1      1      0      0      0      0      0      0
+Y.10      0      0      1      1      0      0      0      0
+Y.01      0      0      0      0      1      1      0      0
+Y.11      0      0      0      0      0      0      1      1
+⠇ |          9 | Testing that canonical models work as they should                                                     ⠋ |         11 | Testing that canonical models work as they should                                                     
+parameter_matrix:
+
+  rows:   parameters
+  cols:   causal types
+  cells:  whether a parameter probability is used
+          in the calculation of causal type probability
+
+         X0.Y00 X1.Y00 X0.Y10 X1.Y10 X0.Y01 X1.Y01 X0.Y11 X1.Y11
+X.0           1      0      1      0      1      0      1      0
+X.1           0      1      0      1      0      1      0      1
+Y.00_X.0      1      0      0      0      0      0      0      0
+Y.10_X.0      0      0      1      0      0      0      0      0
+Y.01_X.0      0      0      0      0      1      0      0      0
+Y.11_X.0      0      0      0      0      0      0      1      0
+Y.00_X.1      0      1      0      0      0      0      0      0
+Y.10_X.1      0      0      0      1      0      0      0      0
+Y.01_X.1      0      0      0      0      0      1      0      0
+Y.11_X.1      0      0      0      0      0      0      0      1
+⠙ |         12 | Testing that canonical models work as they should                                                     ⠸ |         14 | Testing that canonical models work as they should                                                     ⠦ |         17 | Testing that canonical models work as they should                                                     ⠇ |         19 | Testing that canonical models work as they should                                                     ⠋ |         21 | Testing that canonical models work as they should                                                     ⠹ |         23 | Testing that canonical models work as they should                                                     ⠼ |         25 | Testing that canonical models work as they should                                                     ⠦ |         27 | Testing that canonical models work as they should                                                     ⠇ |         29 | Testing that canonical models work as they should                                                     ⠋ |         31 | Testing that canonical models work as they should                                                     ⠙ |         32 | Testing that canonical models work as they should                                                     ⠼ |         35 | Testing that canonical models work as they should                                                     ⠧ |         38 | Testing that canonical models work as they should                                                     ⠋ |         41 | Testing that canonical models work as they should                                                     ⠙ |         42 | Testing that canonical models work as they should                                                     ⠹ |         43 | Testing that canonical models work as they should                                                     ⠸ |         44 | Testing that canonical models work as they should                                                     ⠼ |         45 | Testing that canonical models work as they should                                                     ⠴ |         46 | Testing that canonical models work as they should                                                     ✔ |         48 | Testing that canonical models work as they should [171.8s]
+
+══ Results ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+Duration: 286.4 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 502 ]

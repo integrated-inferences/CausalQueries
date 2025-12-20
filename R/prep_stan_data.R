@@ -99,6 +99,21 @@ prep_stan_data <- function(model,
   parmap <- get_parmap(model)
   map <- attr(parmap, "map")
 
+  # ==========================
+  # Validation before Stan
+  # ==========================
+  validate_stan_inputs(
+    parmap = parmap,
+    map = map,
+    P = P,
+    E = E,
+    l_starts = as.array(l_starts),
+    l_ends = as.array(l_ends),
+    n_starts = as.array(n_starts),
+    n_ends = as.array(n_ends),
+    model = model
+  )
+
   # stan data
   list(
     parmap = parmap,
@@ -125,4 +140,43 @@ prep_stan_data <- function(model,
     n_types = ncol(P),
     data = data  # saved but not used directly by stan
   )
+}
+
+#' @keywords internal
+validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts, n_ends, model) {
+  n_params <- nrow(parmap)
+  n_paths  <- nrow(map)
+  n_data_types <- ncol(map)
+
+  # Parameter set indices
+  if (!all(l_starts <= l_ends)) {
+    stop("prep_stan_data: l_starts must be <= l_ends for all parameter sets")
+  }
+  if (min(l_starts) < 1L || max(l_ends) > n_params) {
+    stop("prep_stan_data: l_starts/l_ends out of [1, n_params] range")
+  }
+
+  # Node indices
+  if (!all(n_starts <= n_ends)) {
+    stop("prep_stan_data: node starts must be <= node ends for all nodes")
+  }
+  if (min(n_starts) < 1L || max(n_ends) > n_params) {
+    stop("prep_stan_data: node start/end indices out of [1, n_params] range")
+  }
+
+  # Dimensions consistency
+  if (nrow(P) != n_params) {
+    stop("prep_stan_data: nrow(P) must equal n_params")
+  }
+  if (ncol(parmap) != n_paths) {
+    stop("prep_stan_data: ncol(parmap) must equal n_paths (nrow(map))")
+  }
+  # Map/E must have expected number of data types (from model)
+  n_data_calc <- get_all_data_types(model, possible_data = TRUE) |> nrow()
+  if (ncol(map) != n_data_calc) {
+    stop("prep_stan_data: ncol(map) must equal number of possible data types")
+  }
+  if (ncol(E) != n_data_calc) {
+    stop("prep_stan_data: ncol(E) must equal number of possible data types")
+  }
 }

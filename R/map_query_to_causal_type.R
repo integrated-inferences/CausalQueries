@@ -88,6 +88,22 @@ map_query_to_causal_type <- function(model,
 
     # Split expression by ',' 'x = 1, m = 0' into 'x = 1' 'm=0'
     .query <- paste0(.query, collapse = "")
+    
+    # Check for common syntax error: using & instead of ,
+    if (grepl("&", .query) && !grepl(",", .query)) {
+      # Suggest correction
+      corrected_query <- gsub("\\s*&\\s*", ", ", .query)
+      warning(
+        paste0(
+          "Query syntax error detected!\n",
+          "You wrote: ", .query, "\n",
+          "Did you mean: ", corrected_query, " ?"
+        )
+      )
+      # Auto-correct the query
+      .query <- corrected_query
+    }
+    
     .query <- unlist(strsplit(.query, ","))
     dos <- list()
 
