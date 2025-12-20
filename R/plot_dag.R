@@ -26,7 +26,6 @@
 #' @importFrom grid arrow
 #' @importFrom grid unit
 #' @importFrom graphics plot
-#' @importFrom latex2exp TeX
 #'
 #' @export
 #' @examples
@@ -180,7 +179,7 @@ plot_model <- function(model = NULL,
       color = textcol,
       size = textsize
     ) +
-    ggplot2::labs(title = latex2exp::TeX(title))
+    ggplot2::labs(title = TeX_internal(title))
 }
 
 #' @export

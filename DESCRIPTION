@@ -34,7 +34,6 @@ Imports:
     rstan (>= 2.26.0),
     rstantools (>= 2.0.0),
     stringr (>= 1.4.0),
-    latex2exp (>= 0.9.4),
     knitr (>= 1.45),
     ggplot2 (>= 3.3.5),
     lifecycle (>= 1.0.1),
