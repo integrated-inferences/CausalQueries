@@ -34,8 +34,7 @@
   As vignettes making use of `update_model()` may have long run-/compile times and we wish to minimize time and resource demands both when 
   testing and deploying `CausalQueries`; vignette writing and updating makes use of a slightly modified workflow. 
   Vignettes are complied locally from a `vignette-name.Rmd.orig` file; its outputs are passed to the `vignette` folder and a `vignette-name.Rmd` 
-  file with non-executable code chunks is constructed from these outputs. This workflow is handled via the `build_vignettes()` function in 
-  the package.
+  file with non-executable code chunks is constructed from these outputs. This workflow is handled via the `build_vignettes()` function of this package.
   
   Whether you update an existing vignette or write a new one, be sure to give your code chunks (particularly those producing plots) **unique** and **ìnformative** names.
   
@@ -43,7 +42,7 @@
   
   - write your vignette as a R markdown file with executable code chunks + formatting in the normal fashion
   - save this file as `vignette-name.Rmd.orig` in the vignettes folder (replace `vignette-name` with your desired vignette name here)
-  - run `build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `build_vignettes("vignette-name")` 
+  - run `CausalQueries:::build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `CausalQueries:::build_vignettes("vignette-name")` 
   - add your vignette's name as a default in the `vignettes` argument of `build_vignettes()`
   - add your `vignette-name.Rmd.orig` to the `.Rbuildignore` file like so `^vignette-name.Rmd.orig$`
   - push changes to github 

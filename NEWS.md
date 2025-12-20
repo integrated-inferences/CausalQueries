@@ -14,8 +14,11 @@ the development team.
 
 In addition:
 
-* Automatic Parallel Computation: Package now automatically sets up Stan parallel computation using all available CPU cores
+* Startup advice on Automatic Parallel Computation
 * Better Error Messages: Added helpful warning messages for common query syntax mistakes (e.g., using & instead of , in conditions) with auto-correction
+* Removed dependency on latex2exp
+* Allow expressions for labels in plot_model. See examples.
+
 
 # CausalQueries 1.4.3
 
