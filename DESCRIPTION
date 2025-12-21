@@ -41,7 +41,6 @@ Imports:
     Rcpp (>= 0.12.0)
 LinkingTo: 
     Rcpp (>= 0.12.0),
-    BH (>= 1.66.0),
     RcppArmadillo,
     RcppEigen (>= 0.3.3.3.0),
     rstan (>= 2.26.0),

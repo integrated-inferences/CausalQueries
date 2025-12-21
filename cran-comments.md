@@ -1,6 +1,5 @@
-This is a minor release implementing more intuitive nodal type interpretations 
-as well as improved warnings around inadmissible model and query specifications 
-to guard against silent undefined behavior when querying models. 
+This patch release introduces a more efficient Stan model and removes the dependency 
+on the soon to be archived latex2exp package.
 
 ## Test environments
 

@@ -1,6 +1,6 @@
 # CausalQueries 1.4.4
 
-This release includes an improved Stan model that now includes:
+This patch release includes an improved Stan model that implements:
 
 * Memory Efficiency: Eliminated large intermediate matrices (parlam, parlam2)
 * Numerical Stability: Added safeguards against log(0) with + 1e-10

@@ -16,7 +16,7 @@ A data frame with 79 rows and 5 columns:
 }
 }
 \source{
-\url{https://drodrik.scholar.harvard.edu/publications/institutions-rule-primacy-institutions-over-geography-and-integration}
+\url{https://drodrik.scholars.harvard.edu/publications/institutions-rule-primacy-institutions-over-geography-and-integration}
 }
 \usage{
 institutions_data

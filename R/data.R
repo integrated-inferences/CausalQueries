@@ -53,5 +53,5 @@
 #'   \item{M}{Settler mortality (from Acemoglu, Johnson, and Robinson), dichotomized}
 #'   \item{country}{Country}
 #' }
-#' @source \url{https://drodrik.scholar.harvard.edu/publications/institutions-rule-primacy-institutions-over-geography-and-integration}
+#' @source \url{https://drodrik.scholars.harvard.edu/publications/institutions-rule-primacy-institutions-over-geography-and-integration}
 "institutions_data"

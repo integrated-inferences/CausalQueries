@@ -15,6 +15,7 @@ plot_model(
   shape = 16,
   nodecol = "black",
   nodesize = 12,
+  parse = FALSE,
   strength = 0.3
 )
 }
@@ -70,14 +71,27 @@ model |>
     nodecol = "white",
     textcol = "black")
 
-# Controlling  positions and using math labels
-model |> plot_model(
-    x_coord = 0:2,
-    y_coord = 0:2,
-    title = "Mixed text and math: $\\\\alpha^2 + \\\\Gamma$")
+# Math labels: add parse = TRUE
+make_model() |>
+  plot_model(
+    labels = c("alpha^2", "beta[1]"),
+    parse = TRUE,
+    textcol  = "black", nodecol = "white")
+
+# Mixed math text labels: add parse = TRUE
+make_model() |>
+  plot_model(
+      labels = c('alpha ~ "class"', 'beta ~ "class"'),
+      parse = TRUE,
+      textcol  = "black", nodecol = "white",)
+
+# Adding math title after graph creation
+make_model() |>
+  plot_model() +
+  ggplot2::labs(title = expression(paste(Gamma, " graph")))
 }
 
-# DAG with unobserved confounding and shapes
+# DAG with unobserved confounding and shapes and position control
 make_model('Z -> X -> Y; X <-> Y') |>
   plot(x_coord = 1:3, y_coord = 1:3, shape = c(15, 16, 16))
 
