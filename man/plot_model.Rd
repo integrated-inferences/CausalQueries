@@ -95,5 +95,9 @@ make_model() |>
 make_model('Z -> X -> Y; X <-> Y') |>
   plot(x_coord = 1:3, y_coord = 1:3, shape = c(15, 16, 16))
 
+# Sometimes clipping of nodes or labels arises and can be dealt with thus:
+make_model() |>
+  plot_model() +
+  ggplot2::coord_cartesian(clip = "off")
 }
 \keyword{internal}

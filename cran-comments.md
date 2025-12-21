@@ -3,13 +3,11 @@ on the soon to be archived latex2exp package.
 
 ## Test environments
 
-* local Ubuntu 22.04.5 LTS install, R 4.4.2
+* local Ubuntu 24.04.3 LTS install, R 4.5.1
 * win-builder, R version 4.4.3 
-* win-builder, R version 4.5.1
+* win-builder, R version 4.5.2
 * win-builder, R r-devel
-* macOS, R version 4.4.2
-* R-hub Windows Server (r-devel)
-* R-hub Fedora Linux, clang, gfortran (r-devel)
+* macOS, R version 4.5.1
 
 ## R CMD check results
 
