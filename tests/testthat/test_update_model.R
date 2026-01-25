@@ -235,6 +235,21 @@ testthat::test_that(
 	}
 )
 
+testthat::test_that(
+
+  desc = "Check partial data",
+
+  code = {
+    data <- data.frame(X = c(1, NA), Y = 0:1)
+
+    model <- make_model('X->Y')
+    updated <- suppressWarnings(update_model(model,
+                                             data,
+                                             refresh = 0))
+    expect_true(all(dim(updated$posterior_distribution) == c(4000, 6)))
+  }
+)
+
 
 testthat::test_that(
 
