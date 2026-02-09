@@ -385,5 +385,52 @@ testthat::test_that(desc = "error messages", code = {
 
 })
 
+test_that("results right for partial data model", {
 
+  model <- make_model("X-> M ->Y") |>
+    update_model(data.frame(X = rep(0:1, 8), Y = rep(0:1, 8)),
+                 iter = 10000)
+
+  q <- query_model(model,
+                   list(ATE = "Y[X=1] - Y[X=0]", FS = "M[X=1] - M[X=0]"),
+                   using = "posteriors")
+
+  expect_true(q$mean[1] > .35)
+  expect_true(q$mean[1] < .4)
+  expect_true(abs(q$mean[2]) < .05)
+})
+
+
+test_that("stan_summary has expected parameter names", {
+
+  model <- make_model("X -> M -> Y") |>
+    update_model()
+
+  # `grab(model, "stan_summary")` returns a character vector of printed lines
+  lines <- grab(model, "stan_summary")
+
+  # Extract the parameter name from each *data row*:
+  # - Must start at beginning of line
+  # - Must be followed by whitespace and then a number (mean column)
+  name_matches <- regexpr("^\\S+(?=\\s+[-+]?\\d)", lines, perl = TRUE)
+  grabbed_names <- regmatches(lines, name_matches)
+  grabbed_names <- grabbed_names[grabbed_names != ""]  # drop non-matches
+
+  expected_names <- c(
+    "X.0", "X.1",
+    "M.00", "M.10", "M.01", "M.11",
+    "Y.00", "Y.10", "Y.01", "Y.11",
+    "X0.M00.Y00", "X1.M00.Y00", "X0.M10.Y00", "X1.M10.Y00",
+    "X0.M01.Y00", "X1.M01.Y00", "X0.M11.Y00", "X1.M11.Y00",
+    "X0.M00.Y10", "X1.M00.Y10", "X0.M10.Y10", "X1.M10.Y10",
+    "X0.M01.Y10", "X1.M01.Y10", "X0.M11.Y10", "X1.M11.Y10",
+    "X0.M00.Y01", "X1.M00.Y01", "X0.M10.Y01", "X1.M10.Y01",
+    "X0.M01.Y01", "X1.M01.Y01", "X0.M11.Y01", "X1.M11.Y01",
+    "X0.M00.Y11", "X1.M00.Y11", "X0.M10.Y11", "X1.M10.Y11",
+    "X0.M01.Y11", "X1.M01.Y11", "X0.M11.Y11", "X1.M11.Y11",
+    "lp__"
+  )
+
+  expect_identical(grabbed_names, expected_names)
+})
 
