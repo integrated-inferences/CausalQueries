@@ -1,3 +1,10 @@
+# CausalQueries 1.4.5
+
+This patch release reverts changes made to the main Stan model in 1.4.4 which 
+introduced a bug when updating models with multiple data strategies.
+This patch release additionally reintroduces linking to BH as dropping this package
+introduced compilation issues on some systems.
+
 # CausalQueries 1.4.4
 
 This patch release includes an improved Stan model that implements:
