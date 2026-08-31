@@ -127,14 +127,14 @@ Two arguments govern what values to apply:
 
 * \code{alphas} is one or more non-negative numbers and
 
-* \code{distribution} indicates one of a common class: uniform, Jeffreys, or
-  'certain'
+* \code{distribution} indicates one of a common class: 'uniform',
+  'jeffreys', or 'certainty'
 
 Forbidden statements include:
 \itemize{
   \item Setting \code{distribution} and \code{values} at the same time.
-  \item Setting a \code{distribution} other than uniform, Jeffreys, or
-    certainty.
+  \item Setting a \code{distribution} other than 'uniform', 'jeffreys', or
+    'certainty'.
   \item Setting negative values.
   \item specifying \code{alter_at} with any of \code{node},
     \code{nodal_type}, \code{param_set}, \code{given}, \code{statement}, or

@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_dag.R
 \name{plot_model}
 \alias{plot_model}
+\alias{plot.causal_model}
 \title{Plots a DAG in ggplot style using a causal model input}
 \usage{
 plot_model(
@@ -18,6 +19,8 @@ plot_model(
   parse = FALSE,
   strength = 0.3
 )
+
+\method{plot}{causal_model}(x, ...)
 }
 \arguments{
 \item{model}{A \code{causal_model} object generated from \code{make_model}}
@@ -43,14 +46,27 @@ ggplot's default palette}
 
 \item{nodesize}{Size of node.}
 
+\item{parse}{Logical. If `TRUE`, node labels are parsed as R expressions,
+which allows mathematical notation (for example `"alpha^2"`).
+Defaults to `FALSE`.}
+
 \item{strength}{Degree of curvature of curved arcs}
+
+\item{x}{A \code{causal_model} object generated from \code{make_model}.}
+
+\item{...}{Arguments passed to \code{\link{plot_model}}.}
 }
 \value{
+A ggplot object.
+
 A ggplot object.
 }
 \description{
 Creates a plot of a DAG using ggplot functionality and a Sugiyama layout from igraph.  Unmeasured confounds  (<->) are indicated
 then these are represented as curved dotted lines.  Users can control node sizes and colors as well as coordinates and label behavior. Other modifications can be made by adding additional ggplot layers.
+
+A \code{plot} method for objects of class \code{causal_model}; a thin
+wrapper around \code{\link{plot_model}}.
 }
 \examples{
 
@@ -100,4 +116,3 @@ make_model() |>
   plot_model() +
   ggplot2::coord_cartesian(clip = "off")
 }
-\keyword{internal}

@@ -10,7 +10,6 @@
 #'   parent types as columns, if applicable. Defaults to `TRUE`.
 #' @keywords internal
 #' @noRd
-#' @importFrom rlang is_empty
 #' @return A named \code{list} of nodal types for each parent in a DAG
 
 get_nodal_types <- function(model, collapse = TRUE) {

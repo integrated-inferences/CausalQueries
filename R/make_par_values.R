@@ -319,7 +319,7 @@ make_par_values_stops <- function(model,
   }
 
   if (!is.na(label)) {
-    warning("label is depreciated, use nodal_type instead")
+    warning("label is deprecated, use nodal_type instead")
     nodal_type <- label
   }
 

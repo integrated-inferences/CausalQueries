@@ -44,6 +44,17 @@ iv_model <- make_model("Z -> X -> Y <-> X")
 
 ```
 
+**Size limits**: The number of causal types is the product of the numbers of
+nodal types across nodes. A node with $k$ parents has $2^{2^k}$ nodal types
+when types are auto-generated, so the product grows very quickly in the number
+of parents. Three parents is comfortable (2,048 causal types); four parents
+already implies over a million causal types, so `make_model` refuses it unless
+you insist with `allow_large = TRUE` (warning instead of error) or set
+`add_causal_types = FALSE`. Five or more parents cannot have nodal types
+auto-generated; pass a restricted `nodal_types` list explicitly. Restricted
+types are assessed by their actual lengths, so a many-parent node with a small
+type set is fine when the product stays below the limit.
+
 **Graphing**: Once you have made a model you can inspect the DAG:
 
 ```{r a1xymodel, fig.cap= "Simple model"}

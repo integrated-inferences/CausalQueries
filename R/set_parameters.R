@@ -270,7 +270,6 @@ set_parameters <- function(model,
 #'
 #' @rdname parameter_setting
 #' @return A vector of draws from the prior or distribution of parameters
-#' @importFrom dirmult rdirichlet
 #' @family parameters
 
 get_parameters <- function(model, param_type = NULL) {

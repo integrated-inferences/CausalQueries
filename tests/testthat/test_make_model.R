@@ -80,6 +80,81 @@ testthat::test_that(
 
 testthat::test_that(
 
+  desc = "Guard against too many causal types",
+
+  code = {
+    # five parents with auto-generated nodal types is refused before any
+    # type is built. Without the guard make_model() can allocate tens of GB,
+    # so fail loudly if the helpers are missing from the installed package.
+    if (!exists("check_causal_type_count",
+                envir = asNamespace("CausalQueries"),
+                inherits = FALSE)) {
+      fail(paste("check_causal_type_count() is absent from the CausalQueries",
+                 "namespace, so the model size guard is missing. Reinstall the",
+                 "package from source before running these tests."))
+    } else {
+      expect_error(make_model("A->Y; B->Y; C->Y; D->Y; E->Y"),
+                   "too many nodal types")
+      expect_error(make_model("A->Y; B->Y; C->Y; D->Y; E->Y",
+                              allow_large = TRUE),
+                   "too many nodal types")
+    }
+
+    # four binary parents imply 2^4 * 65536 = 1,048,576 causal types
+    four_parent_types <- c(A = 2, B = 2, C = 2, D = 2, Y = 65536)
+
+    expect_error(
+      CausalQueries:::check_causal_type_count(four_parent_types),
+      "causal types")
+    expect_error(
+      CausalQueries:::check_causal_type_count(four_parent_types),
+      "allow_large = TRUE")
+    expect_error(
+      CausalQueries:::check_causal_type_count(four_parent_types),
+      "add_causal_types = FALSE")
+
+    expect_warning(
+      CausalQueries:::check_causal_type_count(four_parent_types,
+                                              allow_large = TRUE),
+      "causal types")
+
+    # below the soft limit
+    expect_silent(
+      CausalQueries:::check_causal_type_count(c(A = 2, B = 2, C = 2, Y = 256)))
+
+    # add_causal_types = FALSE skips the product check even above the limit
+    expect_silent(
+      CausalQueries:::check_causal_type_count(four_parent_types,
+                                              add_causal_types = FALSE))
+
+    # restricted nodal_types: many parents but small product is allowed
+    expect_no_error(
+      make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
+                 nodal_types = list(
+                   A = c("0", "1"),
+                   B = c("0", "1"),
+                   C = c("0", "1"),
+                   D = c("0", "1"),
+                   E = c("0", "1"),
+                   Y = c("00000000000000000000000000000000",
+                         "11111111111111111111111111111111"))))
+
+    # supplied nodal_types whose product exceeds the limit still need allow_large
+    big_types <- list(
+      A = c("0", "1"),
+      B = as.character(seq_len(1000)),
+      Y = as.character(seq_len(2000))
+    )
+    # product = 2 * 1000 * 2000 = 4e6
+    expect_error(
+      CausalQueries:::check_causal_type_count(lengths(big_types)),
+      "causal types")
+  }
+)
+
+
+testthat::test_that(
+
   desc = "Clean statement",
 
   code = {

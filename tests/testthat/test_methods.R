@@ -94,3 +94,27 @@ testthat::test_that(
 
 
 )
+
+
+testthat::test_that(
+
+  desc = "summary of a model_query returns a summary.model_query object.",
+
+  code = {
+
+    q <- query_model(make_model("X -> Y"),
+                     "Y[X=1] - Y[X=0]",
+                     using = "priors")
+
+    s <- summary(q)
+    expect_s3_class(s, "summary.model_query")
+
+    # summarizing is silent; printing is what produces output
+    expect_silent(invisible(summary(q)))
+
+    out <- capture.output(print(s))
+    expect_true(any(grepl("Call:", out)))
+    expect_true(any(grepl("Causal queries", out)))
+
+  }
+)

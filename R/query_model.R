@@ -17,20 +17,20 @@
 #' @param given  A character vector specifying given conditions for each query.
 #'   A 'given' is a quoted expression that evaluates to logical statement.
 #'   \code{given} allows the query to be conditioned on either observed
-#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+#'   or counterfactual distributions. A value of TRUE is interpreted as no conditioning.
 #'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param join_by A character. The logical operator joining expanded types
 #'   when \code{query} contains wildcard (\code{.}). Can take values
 #'   \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction
 #'   contains wildcard (\code{.}) and \code{join_by} is not specified, it
 #'   defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param n_draws An integer. Number of draws.rm
+#' @param n_draws An integer. Number of draws.
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
 #' @param query alias for queries
 #' @return A data frame where columns contain draws from the distribution
 #'   of the potential outcomes specified in \code{query}
-#' @importFrom stats sd weighted.mean
+#' @importFrom stats sd
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") |>
@@ -144,6 +144,10 @@ query_distribution <- function(model,
         "You can pass a `causal_model` object directly or wrap it in a `list`."
       )
     )
+  }
+
+  if (is.null(query) && is.null(queries)) {
+    stop("Please supply at least one query via `queries` (or `query`).")
   }
 
   if (!is.null(query)) {
@@ -298,6 +302,9 @@ query_distribution <- function(model,
 #'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param using A vector or list of strings. Whether to use priors,
 #'   posteriors or parameters.
+#' @param parameters A list of numeric vectors. Optional parameter values
+#'   to use when \code{using} includes \code{"parameters"}; one vector per
+#'   model when \code{model} is a list.
 #' @param stats Functions to be applied to the query distribution.
 #'   If NULL, defaults to mean, standard deviation,
 #'   and 95\% confidence interval. Functions should return a single numeric
@@ -399,6 +406,10 @@ query_model <- function(model,
   ## check arguments
   if (!is.null(query) & !is.null(queries)) {
     stop("Please provide either queries or query, not both.")
+  }
+
+  if (is.null(query) && is.null(queries)) {
+    stop("Please supply at least one query via `queries` (or `query`).")
   }
 
   if (!is.null(query)) {
@@ -965,6 +976,9 @@ plot_query <- function(model_query) {
       theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")
   }
 
+#' @rdname print.model_query
+#' @param x an object of class \code{model_query}
+#' @param ... Further arguments passed to or from other methods.
 #' @export
 plot.model_query <- function(x, ...) {
     plot_query(x,...)

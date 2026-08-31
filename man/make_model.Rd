@@ -4,7 +4,12 @@
 \alias{make_model}
 \title{Make a model}
 \usage{
-make_model(statement = "X -> Y", add_causal_types = TRUE, nodal_types = NULL)
+make_model(
+  statement = "X -> Y",
+  add_causal_types = TRUE,
+  nodal_types = NULL,
+  allow_large = FALSE
+)
 }
 \arguments{
 \item{statement}{character string. Statement describing causal
@@ -18,6 +23,18 @@ Confounded relations can be specified using a double headed arrow,
 types to \code{model}. Defaults to `TRUE`.}
 
 \item{nodal_types}{List of nodal types associated with model nodes}
+
+\item{allow_large}{Logical. The number of causal types is the product of
+the numbers of nodal types across nodes. When that product exceeds
+one million and causal types will be built
+(\code{add_causal_types = TRUE}), \code{make_model} errors unless
+\code{allow_large} is `TRUE`, in which case it warns instead. Defaults
+to `FALSE`. Setting \code{add_causal_types = FALSE} skips the check.
+Restricted \code{nodal_types} are assessed by their actual lengths, so
+a many-parent node with a small type set is allowed when the product
+stays below the limit. Auto-generating nodal types for a node with
+five or more parents is refused (that set alone is too large to
+materialise); pass \code{nodal_types} explicitly in that case.}
 }
 \value{
 An object of class \code{causal_model}.

@@ -71,12 +71,26 @@ prep_stan_data <- function(model,
 
 
   # 2 Data parsing: allowing for censored types
-  data <- data[!c(data$event %in% censored_types), ]
-
   data_families <-
     model |>
     get_data_families(mapping_only = TRUE) |>
     data.frame()
+
+  # Censored types are checked against the events the *model* admits, not
+  # against the events present in this data: a type can be censored out of
+  # existence and so legitimately absent from the data at hand.
+  if (!is.null(censored_types)) {
+    unknown <- setdiff(as.character(censored_types), rownames(data_families))
+    if (length(unknown) > 0) {
+      stop("Unrecognized `censored_types`: ",
+           paste(unknown, collapse = ", "),
+           ".\nCensored types should be data types of the model, such as: ",
+           paste(utils::head(rownames(data_families), 6), collapse = ", "),
+           if (nrow(data_families) > 6) ", ..." else "")
+    }
+  }
+
+  data <- data[!c(data$event %in% censored_types), ]
 
   E <- data_families[data$event, ] |> as.matrix()
 
@@ -163,6 +177,20 @@ validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts, 
   if (min(n_starts) < 1L || max(n_ends) > n_params) {
     stop("prep_stan_data: node start/end indices out of [1, n_params] range")
   }
+
+  # Block contiguity: l_starts/l_ends and node starts/ends are derived from
+  # cumulative counts, which only describe parameters_df if each param_set and
+  # each node occupies a single run of rows. A violation would silently
+  # misalign the simplexes rather than fail.
+  check_blocks <- function(x, what) {
+    r <- rle(as.character(x))
+    if (anyDuplicated(r$values)) {
+      stop("prep_stan_data: rows of parameters_df are not contiguous by ", what,
+           "; simplex boundaries would be wrong. Internal error - please report.")
+    }
+  }
+  check_blocks(model$parameters_df$param_set, "param_set")
+  check_blocks(model$parameters_df$node,      "node")
 
   # Dimensions consistency
   if (nrow(P) != n_params) {

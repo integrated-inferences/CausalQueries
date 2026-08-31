@@ -22,3 +22,8 @@ vignettes/*.R
 inst/doc
 /doc/
 /Meta/
+
+# review scratch
+issues.md
+/dev/
+test_results.log

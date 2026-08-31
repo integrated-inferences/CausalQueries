@@ -16,16 +16,17 @@
 #' @param nodecol String indicating color of node that is accepted by
 #'   ggplot's default palette
 #' @param nodesize Size of node.
+#' @param parse Logical. If `TRUE`, node labels are parsed as R expressions,
+#'   which allows mathematical notation (for example `"alpha^2"`).
+#'   Defaults to `FALSE`.
 #' @param strength Degree of curvature of curved arcs
 #' @return A ggplot object.
 #'
-#' @keywords internal
 #' @import dplyr
 #' @import ggplot2
 #' @import ggraph
 #' @importFrom grid arrow
 #' @importFrom grid unit
-#' @importFrom graphics plot
 #'
 #' @export
 #' @examples
@@ -201,6 +202,16 @@ plot_model <- function(model = NULL,
     ggplot2::labs(title = title)
 }
 
+#' Plot method for a causal model
+#'
+#' A \code{plot} method for objects of class \code{causal_model}; a thin
+#' wrapper around \code{\link{plot_model}}.
+#'
+#' @param x A \code{causal_model} object generated from \code{make_model}.
+#' @param ... Arguments passed to \code{\link{plot_model}}.
+#' @return A ggplot object.
+#'
+#' @rdname plot_model
 #' @export
 plot.causal_model <- function(x, ...) {
   plot_model(x, ...)

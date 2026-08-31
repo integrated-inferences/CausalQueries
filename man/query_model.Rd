@@ -38,9 +38,9 @@ A given statement can alternatively be provided after a colon in the query state
 \item{using}{A vector or list of strings. Whether to use priors,
 posteriors or parameters.}
 
-\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
-See \code{inspect(model, "parameters_df")}.}
+\item{parameters}{A list of numeric vectors. Optional parameter values
+to use when \code{using} includes \code{"parameters"}; one vector per
+model when \code{model} is a list.}
 
 \item{stats}{Functions to be applied to the query distribution.
 If NULL, defaults to mean, standard deviation,

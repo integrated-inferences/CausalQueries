@@ -109,6 +109,40 @@ test_that("inspect outputs correct stanfit", {
 
 
 
+test_that("inspect and grab work without a `what` argument", {
+  simple <- make_model("X -> Y")
+
+  expect_output(inspect(simple), "Causal statement:")
+  expect_s3_class(grab(simple), "summary.causal_model")
+})
+
+
+test_that("inspect and grab accept a vector of `what`", {
+  simple <- make_model("X -> Y")
+
+  out <- grab(simple, what = c("nodes", "statement"))
+  expect_named(out, c("nodes", "statement"))
+  expect_equal(out$nodes, c("X", "Y"))
+
+  # a single request is still returned unwrapped
+  expect_equal(grab(simple, what = "nodes"), c("X", "Y"))
+
+  expect_output(inspect(simple, what = c("nodes", "statement")), "Nodes:")
+})
+
+
+test_that("inspect reports unsupported `what` values", {
+  simple <- make_model("X -> Y")
+
+  expect_error(grab(simple, what = "nonsense"),
+               "The following requested objects are not supported: nonsense")
+  expect_error(grab(simple, what = c("nodes", "nonsense")),
+               "The following requested objects are not supported: nonsense")
+  # available objects are listed exhaustively
+  expect_error(grab(simple, what = "nonsense"), "stan_warnings")
+})
+
+
 test_that("inspect handles dots", {
   model <- make_model("X->Y")
 

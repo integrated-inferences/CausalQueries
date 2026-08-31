@@ -51,7 +51,7 @@
 #'   types specified by \code{statement} or \code{labels}.
 #'
 #' @export
-#' @return An object of class \code{model}. The causal types and nodal types
+#' @return An object of class \code{causal_model}. The causal types and nodal types
 #'   in the model are reduced according to the stated restriction.
 #' @family set
 #' @examples

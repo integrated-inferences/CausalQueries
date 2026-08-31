@@ -242,6 +242,3 @@ set_confound <- function(model,
   return(model)
 }
 
-set_confounds <- set_confound
-
-

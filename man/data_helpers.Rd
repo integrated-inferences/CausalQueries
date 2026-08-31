@@ -116,7 +116,8 @@ Defaults to FALSE. Strategy vector does not vary with full data but
 expected by some functions.}
 }
 \value{
-A vector of data events
+A \code{data.frame} of event types and strategies (or a
+  \code{list} when \code{summary = TRUE}; see details).
 
 If \code{summary = TRUE} `collapse_data` returns a list containing the
   following components:

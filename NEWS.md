@@ -1,3 +1,51 @@
+# CausalQueries 1.4.6
+
+This is a patch release fixing a number of bugs and adding guards against model
+and query specifications that would otherwise fail silently or exhaust memory.
+
+### Non Backwards Compatible Changes
+
+`make_model()` gains an `allow_large` argument. The number of causal types is
+the product of the numbers of nodal types across nodes. When that product
+exceeds one million and causal types will be built, `make_model` now errors
+unless `allow_large = TRUE`, in which case it warns instead. Setting
+`add_causal_types = FALSE` skips the check. Restricted `nodal_types` are
+assessed by their actual lengths, so a many-parent node with a small type set
+is allowed when the product stays below the limit. Auto-generating nodal types
+for a node with five or more parents is refused; pass `nodal_types` explicitly
+in that case. This guards against accidental multi-gigabyte allocations.
+
+`update_model()` now throws an error when `censored_types` contains a data type
+that is not a data type of the model. Previously a misspelled type silently
+censored nothing and changed the answer with no indication.
+
+### Bug Fixes
+
+* `update_model()` no longer overrides `control` arguments supplied by the user:
+  `adapt_delta`, `max_treedepth`, and `save_warmup` are now respected, so tuning
+  away divergent transitions has an effect.
+* `inspect()` and `grab()` work when called with no `what` argument, and now
+  accept a vector of `what`, returning a named list. The list of supported
+  objects reported on an unsupported request is generated rather than
+  hand-maintained, so it no longer omits entries.
+* `summary()` on a `model_query` returns an object of class
+  `summary.model_query`, so that `print.summary.model_query` is dispatched.
+* `make_data()` works when `probs` is supplied without `n_steps`; a `subset`
+  referring to a node that has not yet been observed no longer errors; a subset
+  containing exactly one unit now selects that unit; and asking for more units
+  than the subset holds gives an explicit error.
+* `query_model()` and `query_distribution()` give an informative error when no
+  query is supplied.
+* `inspect(model, "prior_distribution", n_draws = 1)` no longer fails when
+  choosing a rounding threshold for degenerate input.
+* Updating now checks that the rows of `parameters_df` are contiguous by
+  `param_set` and by `node`, on which the Stan simplex boundaries depend; a
+  violation would previously have produced a silently wrong posterior.
+
+In addition: documentation fixes and corrections to declared dependencies.
+The package attach message again prints a copy-paste command for setting
+`options(mc.cores = parallel::detectCores())` when `mc.cores` is unset.
+
 # CausalQueries 1.4.5
 
 This patch release reverts changes made to the main Stan model in 1.4.4 which 

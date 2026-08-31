@@ -1,34 +1,23 @@
-.onLoad <- function(libname, pkgname) {
-  # nocov start
-  modules <- paste0("stan_fit4", names(stanmodels), "_mod")
-  for (m in modules) loadModule(m, what = TRUE)
-  # nocov end
-}
-
+#' Package attach hook
+#'
+#' Prints a copy-paste command for enabling parallel Stan chains when
+#' \code{mc.cores} is unset. Does not call \code{parallel::detectCores()}.
+#' Quiet on non-interactive sessions and when \code{mc.cores} is already set
+#' (including PSOCK workers that inherit options).
+#'
+#' @keywords internal
+#' @noRd
 
 .onAttach <- function(libname, pkgname) {
-  if (is.null(getOption("mc.cores"))) {
-
-    is_parallel_worker <- tryCatch({
-      exists("parallel:::mcexit") &&
-        !is.null(getOption("parallel.par.procname"))
-    }, error = function(e) FALSE)
-
-    is_worker <- is_parallel_worker ||
-      !is.null(getOption("parallel.par.procname")) ||
-      exists("parallel:::mcexit") ||
-      Sys.getenv("R_PARALLEL") != ""
-
-    if (!is_worker) {
-      cores <- parallel::detectCores()
-      packageStartupMessage(
-        "CausalQueries: For large problems, consider enabling parallel computation.\n",
-        "Available cores: ", cores,
-        ". To enable: options(mc.cores = ", cores, ")"
-      )
-    }
+  if (!interactive()) {
+    return(invisible(NULL))
   }
+  if (!is.null(getOption("mc.cores"))) {
+    return(invisible(NULL))
+  }
+  packageStartupMessage(
+    "CausalQueries: For large problems, consider enabling parallel computation.\n",
+    "To enable: options(mc.cores = parallel::detectCores())"
+  )
+  invisible(NULL)
 }
-
-
-utils::globalVariables(c("x", "y", "name"))

@@ -365,7 +365,7 @@ print.summary.causal_model <-
           printout <-
             c(printout, "type_posterior")
           printout_upd <-
-            c(printout_upd, "'type_posterior = TRUE'")
+            c(printout_upd, "'keep_type_distribution = TRUE'")
         }
 
         if (is.null(x$stan_objects$stanfit)) {
@@ -502,7 +502,7 @@ print.summary.causal_model <-
         cat("\nparameters_df\nMapping of model parameters to nodal types: \n")
         # cat("----------------------------------------------------------------\n")
         cat("\n  param_names: name of parameter")
-        cat("\n  node:        name of endogeneous node associated")
+        cat("\n  node:        name of endogenous node associated")
         cat("\n               with the parameter")
         cat("\n  gen:         partial causal ordering of the")
         cat("\n               parameter's node")
@@ -684,7 +684,7 @@ print.summary.causal_model <-
           )
           printout_upd <- c(
             printout_upd,
-            "'type_posterior = TRUE'"
+            "'keep_type_distribution = TRUE'"
           )
         }
       }
@@ -953,8 +953,8 @@ clean_text <- function(column) {
 #'
 #' @export
 summary.model_query <- function(object, ...) {
-  print_call_and_date(object)
-  print.model_query(object)
+  class(object) <- c("summary.model_query", class(object))
+  object
 }
 
 

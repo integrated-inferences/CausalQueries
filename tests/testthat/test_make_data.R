@@ -26,11 +26,37 @@ testthat::test_that(
 
 testthat::test_that(
 
-  desc = "Positive integer number of observations.",
+  desc = "Simulate data works when probs supplied without n_steps.",
+
+  code = {
+    dat <- make_data(model, n = 8, probs = 0.5)
+    expect_equal(nrow(dat), 8)
+    expect_equal(ncol(dat), 2)
+
+    # probs = 1 still short circuits to the complete data
+    dat <- make_data(model, n = 8, probs = 1)
+    expect_false(any(is.na(dat)))
+  }
+)
+
+testthat::test_that(
+
+  desc = "Non-negative integer number of observations; n = 0 is empty data.",
 
   code = {
     expect_error(make_data(model, n = -1),
-                 "Number of observation has to be an integer greater than 0.")
+                 "Number of observations has to be a non-negative integer.")
+    expect_error(make_data(model, n = 1.5),
+                 "Number of observations has to be a non-negative integer.")
+
+    # compact empty data: one row per event type, all counts zero
+    events0 <- make_events(model, n = 0)
+    expect_equal(sum(events0$count), 0L)
+
+    # long-form empty data: zero rows, correct columns
+    dat0 <- make_data(model, n = 0)
+    expect_equal(nrow(dat0), 0L)
+    expect_equal(names(dat0), model$nodes)
   }
 )
 

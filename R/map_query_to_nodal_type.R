@@ -4,7 +4,7 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @noRd
 #' @keywords internal
-#' @importFrom stringr str_split str_detect
+#' @importFrom stringr str_split
 #' @importFrom dplyr select
 #' @return A \code{list} containing the types and the evaluated expression.
 #'   `manipulated_outcomes` are the nodes on the left of a [] expression.
@@ -136,7 +136,7 @@ add_dots <- function(q, model) {
 
   var <- st_within(q)
   if (!all(var %in% model$nodes)) {
-    stop(paste0("Outcome node "), var, " not in model")
+    stop(paste0("Outcome node ", var, " not in model"))
   }
 
   # Only allow specification of var's parents
@@ -211,7 +211,7 @@ expand_nodal_expression <- function(model,
 #' @keywords internal
 #' @return A cleaned query expression
 #' @inheritParams CausalQueries_internal_inherit_params
-query_to_expression <- function(query, node){
+query_to_expression <- function(query){
     query <- gsub("=","==", query)
     query <- gsub("====","==", query)
     query <- gsub(">==",">=", query)
