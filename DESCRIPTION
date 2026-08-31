@@ -1,7 +1,7 @@
 Package: CausalQueries
 Type: Package
 Title: Make, Update, and Query Binary Causal Models
-Version: 1.4.5
+Version: 1.4.6
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("ctb")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("ctb")),
              person("Macartan", "Humphreys", email = "macartan@gmail.com", role = c("aut"),
@@ -17,7 +17,7 @@ Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role
                     comment = c(ORCID = "0000-0002-4391-6313")), 
              person("Moritz", "Marbach", email = "m.marbach@ucl.ac.uk", role = c("ctb"),
                     comment = c(ORCID = "0000-0002-7101-2821")))
-Description: Users can declare causal models over binary nodes, update beliefs about causal types given data, and calculate arbitrary queries.  Updating is implemented in 'stan'. See Humphreys and Jacobs, 2023, Integrated Inferences (<DOI: 10.1017/9781316718636>) and Pearl, 2009 Causality (<DOI:10.1017/CBO9780511803161>).
+Description: Users can declare causal models over binary nodes, update beliefs about causal types given data, and calculate arbitrary queries. Updating is implemented in 'stan'. See Tietz, Medina, Syunyaev and Humphreys (2026) <doi:10.18637/jss.v117.i01>, Humphreys and Jacobs (2023) <doi:10.1017/9781316718636> and Pearl (2009) <doi:10.1017/CBO9780511803161>.
 BugReports: https://github.com/integrated-inferences/CausalQueries/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -45,7 +45,7 @@ LinkingTo:
     RcppEigen (>= 0.3.3.3.0),
     rstan (>= 2.26.0),
     StanHeaders (>= 2.26.0),
-    BH (>=1.66.0)
+    BH (>= 1.66.0)
 Suggests: 
     testthat,
     rmarkdown,

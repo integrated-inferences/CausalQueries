@@ -104,6 +104,12 @@ nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
 make_model("Z -> Y", nodal_types = nodal_types) |>
  inspect("parameters_df")
 }
+\references{
+Tietz T, Medina L, Syunyaev G, Humphreys M (2026).
+"Making, Updating, and Querying Causal Models with CausalQueries."
+\emph{Journal of Statistical Software}, \bold{117}(1), 1--40.
+\doi{10.18637/jss.v117.i01}.
+}
 \seealso{
 \code{\link{summary.causal_model}} provides summary method for
   output objects of class \code{causal_model}

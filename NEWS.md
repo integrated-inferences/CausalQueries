@@ -1,3 +1,8 @@
+# CausalQueries 1.4.6
+
+This is a documentation-only release adding the citation for the Journal of
+Statistical Software paper (Tietz, Medina, Syunyaev and Humphreys 2026).
+
 # CausalQueries 1.4.5
 
 This patch release reverts changes made to the main Stan model in 1.4.4 which 

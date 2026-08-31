@@ -315,6 +315,11 @@ query_distribution <- function(model,
 #' @return An object of class \code{model_query}. A data frame with possible
 #'   columns: model, query, given, using, case_level, mean, sd, cred.low, cred.high.
 #'   Further columns are generated as specified in \code{stats}.
+#' @references
+#' Tietz T, Medina L, Syunyaev G, Humphreys M (2026).
+#' "Making, Updating, and Querying Causal Models with CausalQueries."
+#' \emph{Journal of Statistical Software}, \bold{117}(1), 1--40.
+#' \doi{10.18637/jss.v117.i01}.
 #' @export
 #' @examples
 #' model <- make_model("X -> Y")
