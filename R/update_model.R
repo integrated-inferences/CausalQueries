@@ -38,6 +38,12 @@
 #'   \code{\link{summary.causal_model}} provides a summary method for
 #'   output objects of class \code{causal_model}
 #'
+#' @references
+#' Tietz T, Medina L, Syunyaev G, Humphreys M (2026).
+#' "Making, Updating, and Querying Causal Models with CausalQueries."
+#' \emph{Journal of Statistical Software}, \bold{117}(1), 1--40.
+#' \doi{10.18637/jss.v117.i01}.
+#'
 #' @examples
 #'  model <- make_model('X->Y')
 #'  data_long   <- make_data(model, n = 4)

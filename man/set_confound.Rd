@@ -81,8 +81,8 @@ inspect(model, "statement")
 # plot(model)
 }
 \seealso{
-Other set: 
-\code{\link{set_prior_distribution}()},
-\code{\link{set_restrictions}()}
+Other set:
+\code{\link[=set_prior_distribution]{set_prior_distribution()}},
+\code{\link[=set_restrictions]{set_restrictions()}}
 }
 \concept{set}

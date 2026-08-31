@@ -180,11 +180,13 @@ realise_outcomes <- function(model,
 
 
 #' Helper to turn parents_list into a list of data_realizations column positions
+#'
+#' Used in realise_outcomes.
+#'
 #' @param parents_list a named list of character vectors specifying all
 #'   nodes in the DAG and their respective parents
 #' @return a list of column positions
 #' @keywords internal
-#' Used in realise_outcomes
 
 parents_to_int <- function(parents_list, position_set) {
   out <- parents_list |>

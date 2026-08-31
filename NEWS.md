@@ -1,4 +1,4 @@
-# CausalQueries 1.4.6
+# CausalQueries 1.4.7
 
 This is a patch release fixing a number of bugs and adding guards against model
 and query specifications that would otherwise fail silently or exhaust memory.
@@ -45,6 +45,11 @@ censored nothing and changed the answer with no indication.
 In addition: documentation fixes and corrections to declared dependencies.
 The package attach message again prints a copy-paste command for setting
 `options(mc.cores = parallel::detectCores())` when `mc.cores` is unset.
+
+# CausalQueries 1.4.6
+
+This is a documentation-only release adding the citation for the Journal of
+Statistical Software paper (Tietz, Medina, Syunyaev and Humphreys 2026).
 
 # CausalQueries 1.4.5
 

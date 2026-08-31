@@ -11,6 +11,12 @@ update over models given data, and calculate arbitrary causal queries.
 Model definition makes use of dagitty type syntax.
 Updating is implemented in 'stan'.
 }
+\references{
+Tietz T, Medina L, Syunyaev G, Humphreys M (2026).
+"Making, Updating, and Querying Causal Models with CausalQueries."
+\emph{Journal of Statistical Software}, \bold{117}(1), 1--40.
+\doi{10.18637/jss.v117.i01}.
+}
 \seealso{
 Useful links:
 \itemize{
@@ -24,6 +30,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Till Tietz \email{ttietz2014@gmail.com} (\href{https://orcid.org/0000-0002-2916-9059}{ORCID})
   \item Macartan Humphreys \email{macartan@gmail.com} (\href{https://orcid.org/0000-0001-7029-2326}{ORCID})
   \item Alan Jacobs \email{alan.jacobs@ubc.ca}
   \item Lily Medina \email{lilymiru@gmail.com} (\href{https://orcid.org/0009-0004-2423-524X}{ORCID})

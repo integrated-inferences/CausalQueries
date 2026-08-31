@@ -14,9 +14,6 @@ nodes in the DAG and their respective parents}
 a list of column positions
 }
 \description{
-Helper to turn parents_list into a list of data_realizations column positions
+Used in realise_outcomes.
 }
-\keyword{Used}
-\keyword{in}
 \keyword{internal}
-\keyword{realise_outcomes}
