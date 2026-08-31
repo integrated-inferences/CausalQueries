@@ -251,14 +251,9 @@ make_events(model = model, include_strategy = TRUE)
 
 }
 \seealso{
-Other data_generation: 
-\code{\link{get_all_data_types}()},
-\code{\link{make_data_single}()},
-\code{\link{observe_data}()}
-
-Other data_generation: 
-\code{\link{get_all_data_types}()},
-\code{\link{make_data_single}()},
-\code{\link{observe_data}()}
+Other data_generation:
+\code{\link[=get_all_data_types]{get_all_data_types()}},
+\code{\link[=make_data_single]{make_data_single()}},
+\code{\link[=observe_data]{observe_data()}}
 }
 \concept{data_generation}

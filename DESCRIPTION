@@ -22,7 +22,6 @@ BugReports: https://github.com/integrated-inferences/CausalQueries/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.3
 Depends:
     methods,
     R (>= 4.2.0)
@@ -59,3 +58,4 @@ SystemRequirements: GNU make
 Biarch: true
 VignetteBuilder: knitr
 URL: https://integrated-inferences.github.io/CausalQueries/
+Config/roxygen2/version: 8.0.0

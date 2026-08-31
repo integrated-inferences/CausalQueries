@@ -30,6 +30,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Till Tietz \email{ttietz2014@gmail.com} (\href{https://orcid.org/0000-0002-2916-9059}{ORCID})
   \item Macartan Humphreys \email{macartan@gmail.com} (\href{https://orcid.org/0000-0001-7029-2326}{ORCID})
   \item Alan Jacobs \email{alan.jacobs@ubc.ca}
   \item Lily Medina \email{lilymiru@gmail.com} (\href{https://orcid.org/0009-0004-2423-524X}{ORCID})

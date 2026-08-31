@@ -26,8 +26,8 @@ make_model('X -> Y') |>
 
 }
 \seealso{
-Other set: 
-\code{\link{set_confound}()},
-\code{\link{set_restrictions}()}
+Other set:
+\code{\link[=set_confound]{set_confound()}},
+\code{\link[=set_restrictions]{set_restrictions()}}
 }
 \concept{set}

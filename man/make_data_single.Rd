@@ -66,10 +66,10 @@ replicate(5, CausalQueries:::make_data_single(model, n = 5, w = w))
 
 }
 \seealso{
-Other data_generation: 
+Other data_generation:
 \code{\link{data_helpers}},
-\code{\link{get_all_data_types}()},
-\code{\link{observe_data}()}
+\code{\link[=get_all_data_types]{get_all_data_types()}},
+\code{\link[=observe_data]{observe_data()}}
 }
 \concept{data_generation}
 \keyword{internal}

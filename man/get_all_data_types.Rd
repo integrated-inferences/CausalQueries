@@ -47,9 +47,9 @@ model <- make_model('X -> Y') |>
 }
 }
 \seealso{
-Other data_generation: 
+Other data_generation:
 \code{\link{data_helpers}},
-\code{\link{make_data_single}()},
-\code{\link{observe_data}()}
+\code{\link[=make_data_single]{make_data_single()}},
+\code{\link[=observe_data]{observe_data()}}
 }
 \concept{data_generation}

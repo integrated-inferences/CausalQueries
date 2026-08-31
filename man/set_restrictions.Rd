@@ -166,8 +166,8 @@ inspect(model, "parameter_matrix")
 }
 }
 \seealso{
-Other set: 
-\code{\link{set_confound}()},
-\code{\link{set_prior_distribution}()}
+Other set:
+\code{\link[=set_confound]{set_confound()}},
+\code{\link[=set_prior_distribution]{set_prior_distribution()}}
 }
 \concept{set}

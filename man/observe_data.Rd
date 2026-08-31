@@ -49,10 +49,10 @@ CausalQueries:::observe_data(complete_data = df,
      subset = "X==1")
 }
 \seealso{
-Other data_generation: 
+Other data_generation:
 \code{\link{data_helpers}},
-\code{\link{get_all_data_types}()},
-\code{\link{make_data_single}()}
+\code{\link[=get_all_data_types]{get_all_data_types()}},
+\code{\link[=make_data_single]{make_data_single()}}
 }
 \concept{data_generation}
 \keyword{internal}
