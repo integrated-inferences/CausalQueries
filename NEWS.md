@@ -39,6 +39,15 @@ censored nothing and changed the answer with no indication.
 * `get_event_probabilities(given = )` conditions on the model's possible
   events. Previously it aligned `given` with the full \(2^n\) complete-data
   grid, which is longer than `w` after some restrictions and errored.
+* `realise_outcomes()` rejects `dos` values other than 0 or 1 (R and C++).
+* `set_restrictions()` warns and returns the model unchanged when a
+  restriction matches no parameters, and errors when a restriction would
+  empty a node's nodal types.
+* `&` inside do-brackets (e.g. `Y[X=1 & M=1]`) is an error with a comma
+  hint; it is no longer rewritten with a warning.
+* `make_parameters(..., param_type = "posterior_*")` checks for a posterior
+  with `has_posterior()` instead of `$` partial matching on `$posterior`.
+* `snippet()` uses `drop = FALSE` so one-column objects still print.
 * Updating now checks that the rows of `parameters_df` are contiguous by
   `param_set` and by `node`, on which the Stan simplex boundaries depend; a
   violation would previously have produced a silently wrong posterior.

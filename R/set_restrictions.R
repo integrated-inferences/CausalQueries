@@ -263,6 +263,27 @@ set_restrictions <- function(model,
     )
   }
 
+  drop_params <- unique(as.character(unlist(drop_params)))
+  drop_params <- drop_params[drop_params %in% model$parameters_df$param_names]
+
+  if (length(drop_params) == 0L) {
+    warning("Restriction matched no parameters; model unchanged.")
+    return(model)
+  }
+
+  remaining <- model$parameters_df[
+    !(model$parameters_df$param_names %in% drop_params),
+    ,
+    drop = FALSE
+  ]
+  empty_nodes <- setdiff(model$nodes, unique(remaining$node))
+  if (length(empty_nodes) > 0L) {
+    stop(
+      "Restriction would remove all nodal types for: ",
+      paste(empty_nodes, collapse = ", ")
+    )
+  }
+
   ## Clean up
   if (is.null(model$P)) {
     model <- set_parameter_matrix(model)
@@ -407,10 +428,20 @@ restrict_by_query <- function(model,
       map_query_to_nodal_type(model, query = statement[[i]], join_by[i])
     node <- restriction$node
     types <- names(restriction$types)[restriction$types]
-    names(types) <- node
 
     if (!keep) {
+      if (length(types) == 0L) {
+        drop_params[[i]] <- character(0)
+        next
+      }
       types <- setdiff(nodal_types[[node]], types)
+    } else if (length(types) == 0L) {
+      drop <- model$parameters_df$node %in% node
+      if (!is.null(given) && all(!is.na(given[[i]]))) {
+        drop <- drop & (model$parameters_df$given %in% given[[i]])
+      }
+      drop_params[[i]] <- model$parameters_df[drop, ]$param_names
+      next
     }
 
     drop <-

@@ -53,10 +53,8 @@ map_query_to_causal_type <- function(model,
   list_names <- ""
   continue <- TRUE
 
-  # strip whitespaces split query into single characters
-  # locate opening brackets and reverse oder
-  w_query <- gsub(" ", "", query)
-  w_query <- unlist(strsplit(query, ""))
+  # strip whitespaces, split into single characters, locate brackets
+  w_query <- unlist(strsplit(gsub(" ", "", query), ""))
   bracket_starts <- rev(grep("\\[", w_query))
   bracket_ends <- rev(grep("\\]", w_query))
 
@@ -91,17 +89,14 @@ map_query_to_causal_type <- function(model,
     
     # Check for common syntax error: using & instead of ,
     if (grepl("&", .query) && !grepl(",", .query)) {
-      # Suggest correction
       corrected_query <- gsub("\\s*&\\s*", ", ", .query)
-      warning(
+      stop(
         paste0(
-          "Query syntax error detected!\n",
+          "Query syntax error: `&` is not allowed inside do-brackets.\n",
           "You wrote: ", .query, "\n",
-          "Did you mean: ", corrected_query, " ?"
+          "Use a comma, e.g.: ", corrected_query
         )
       )
-      # Auto-correct the query
-      .query <- corrected_query
     }
     
     .query <- unlist(strsplit(.query, ","))

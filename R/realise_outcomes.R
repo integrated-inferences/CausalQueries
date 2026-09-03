@@ -58,6 +58,18 @@ realise_outcomes <- function(model,
     stop("Please specify only one node")
   }
 
+  if (!is.null(dos)) {
+    if (is.null(names(dos)) || any(!nzchar(names(dos)))) {
+      stop("`dos` must be a named list.")
+    }
+    bad <- vapply(dos, function(v) {
+      !all(as.character(v) %in% c("0", "1"))
+    }, logical(1))
+    if (any(bad)) {
+      stop("`dos` values must be 0 or 1.")
+    }
+  }
+
   # case with trivial single node model
   if(length(model$nodes) == 1) {
     data_realizations <- get_causal_types(model)

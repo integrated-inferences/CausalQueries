@@ -79,7 +79,7 @@ test_that("get_event_probabilities matches the previous node-sum/product formula
     if (!is.null(parameters)) {
       parameters <- CausalQueries:::clean_param_vector(model, parameters)
     } else {
-      parameters <- get_parameters(model)
+      parameters <- CausalQueries:::get_parameters(model)
     }
     parmap <- CausalQueries:::get_parmap(model)
     map <- t(attr(parmap, "map"))

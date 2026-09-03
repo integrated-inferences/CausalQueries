@@ -59,6 +59,9 @@ std::vector<std::vector<std::string>> realise_outcomes_c(std::vector<std::vector
       for(int k = 0; k < parents_list[endog_var].size(); ++k){
         const char * parent_k  = real[parents_list[endog_var][k]][j].c_str();
         int parent_val = str_to_int(parent_k);
+        if (parent_val != 0 && parent_val != 1) {
+          Rcpp::stop("`dos` values must be 0 or 1.");
+        }
         pos += (1 << k) * parent_val;
       }
 

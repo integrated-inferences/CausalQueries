@@ -848,7 +848,9 @@ print.summary.causal_model <-
 snippet <- function(df, nc = 10, nr = 10) {
   if (nrow(df) > nr | ncol(df) > nc) {
     cat(paste0("\nsnippet (use grab() to access full ", nrow(df), " x ", ncol(df), " object): \n\n"))
-    print.data.frame(df[1:(min(nrow(df), nr)), 1:(min(ncol(df), nc))])
+    print.data.frame(df[seq_len(min(nrow(df), nr)),
+                        seq_len(min(ncol(df), nc)),
+                        drop = FALSE])
   } else {
     print.data.frame(df)
   }

@@ -160,7 +160,7 @@ make_parameters <- function(model,
 
     # Posterior mean
     if (param_type == "posterior_mean") {
-      if (is.null(model$posterior)) {
+      if (!has_posterior(model)) {
         stop("Posterior distribution required")
       }
 
@@ -169,7 +169,7 @@ make_parameters <- function(model,
 
     # Posterior draw
     if (param_type == "posterior_draw") {
-      if (is.null(model$posterior)) {
+      if (!has_posterior(model)) {
         stop("Posterior distribution required")
       }
 
