@@ -36,8 +36,9 @@ censored nothing and changed the answer with no indication.
   than the subset holds gives an explicit error.
 * `query_model()` and `query_distribution()` give an informative error when no
   query is supplied.
-* `inspect(model, "prior_distribution", n_draws = 1)` no longer fails when
-  choosing a rounding threshold for degenerate input.
+* `get_event_probabilities(given = )` conditions on the model's possible
+  events. Previously it aligned `given` with the full \(2^n\) complete-data
+  grid, which is longer than `w` after some restrictions and errored.
 * Updating now checks that the rows of `parameters_df` are contiguous by
   `param_set` and by `node`, on which the Stan simplex boundaries depend; a
   violation would previously have produced a silently wrong posterior.
@@ -45,6 +46,23 @@ censored nothing and changed the answer with no indication.
 In addition: documentation fixes and corrections to declared dependencies.
 The package attach message again prints a copy-paste command for setting
 `options(mc.cores = parallel::detectCores())` when `mc.cores` is unset.
+
+### Performance
+
+Internal R paths that were recomputing the same objects, or using apply/dplyr
+where a single matrix call suffices, are now cheaper. Answers are unchanged.
+
+* `query_model()` subsets the type-probability matrix once per estimand and uses
+  `colSums` in place of `apply(..., 2, sum)`.
+* `set_confound()` drops all-zero rows with `rowSums`.
+* `update_model()` computes the `stan_summary` name-padding width once rather
+  than once per parameter.
+* `set_restrictions()` identifies retained causal types with `rowsum` rather
+  than a grouped dplyr pipeline.
+* `get_event_probabilities()` uses `rowsum` and a product across nodes.
+* `prep_stan_data()` builds data families once and reuses `n_data` in
+  validation, instead of reconstructing families and possible-data types
+  repeatedly.
 
 # CausalQueries 1.4.6
 

@@ -401,6 +401,9 @@ test_that("results right for partial data model", {
 })
 
 
+# Pins readable names on the printed Stan summary. Covers the padding/rename
+# path in update_model() (width is hoisted; which parameters are summarised
+# is unchanged).
 test_that("stan_summary has expected parameter names", {
 
   model <- make_model("X -> M -> Y") |>

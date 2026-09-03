@@ -886,17 +886,13 @@ get_estimands <- function(jobs,
         }
         # using priors or posteriors
         if (using_i != "parameters") {
-          # population level
+          tp <- type_posterior[given, , drop = FALSE]
+          denom <- colSums(tp)
           if (!case_level_i) {
-            estimand <-
-              (x %*% type_posterior[given, , drop = FALSE]) /
-              apply(type_posterior[given, , drop = FALSE], 2, sum)
+            estimand <- (x %*% tp) / denom
           }
-          # case level
           if (case_level_i) {
-            estimand <-
-              mean(x %*% type_posterior[given, , drop = FALSE]) /
-              mean(apply(type_posterior[given, , drop = FALSE], 2, sum))
+            estimand <- mean(x %*% tp) / mean(denom)
           }
         }
       }

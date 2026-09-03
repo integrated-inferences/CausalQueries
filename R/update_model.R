@@ -216,32 +216,19 @@ update_model <- function(model,
 
   params_labels <- newfit$fit@sim$fnames_oi
 
-  raname_list <-
-    lapply(
-      X = list(params, params_labels),
-      FUN = function(x)
-        vapply(
-          X = x,
-          FUN = function(y) {
-            paste0(y, paste0(rep(" ", times =
-                                   max(
-                                     vapply(c(params, params_labels), nchar, numeric(1))
-                                   ) -
-                                   nchar(y)), collapse = ""))
-          },
-          FUN.VALUE = character(1),
-          USE.NAMES = FALSE
-        )
-    )
-
+  width <- max(nchar(c(params, params_labels)))
+  pad <- function(x) paste0(x, strrep(" ", width - nchar(x)))
+  padded_params <- pad(params)
+  padded_labels <- pad(params_labels)
 
   model$stan_objects$stan_summary <- utils::capture.output(print(newfit$fit))
 
-  for (i in seq_along(params)) {
+  n_replace <- min(length(params), length(params_labels))
+  for (i in seq_len(n_replace)) {
     model$stan_objects$stan_summary <-
       gsub(
-        pattern = raname_list[[2]][i],
-        replacement = raname_list[[1]][i],
+        pattern = padded_labels[i],
+        replacement = padded_params[i],
         x = model$stan_objects$stan_summary,
         fixed = TRUE
       )

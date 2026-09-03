@@ -205,7 +205,7 @@ set_confound <- function(model,
       dplyr::bind_rows()
 
     # Remove impossible rows with all zeros
-    to_add <- filter(to_add, apply(to_add, 1, sum) != 0)
+    to_add <- filter(to_add, rowSums(to_add) != 0)
 
     # Add in
     model$P <- model$P |>

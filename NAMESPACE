@@ -50,21 +50,33 @@ import(ggraph)
 import(methods)
 import(rstantools)
 importFrom(dirmult,rdirichlet)
-importFrom(dplyr,filter)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
-importFrom(dplyr,tibble)
-importFrom(grid,arrow)
-importFrom(grid,unit)
-importFrom(rlang,expr)
-importFrom(rlang,exprs)
-importFrom(rstan,extract)
-importFrom(rstan,sampling)
-importFrom(stats,rmultinom)
-importFrom(stats,runif)
-importFrom(stats,sd)
-importFrom(stringr,boundary)
-importFrom(stringr,str_split)
+importFrom(dplyr,
+  filter,
+  left_join,
+  mutate,
+  select,
+  tibble
+)
+importFrom(grid,
+  arrow,
+  unit
+)
+importFrom(rlang,
+  expr,
+  exprs
+)
+importFrom(rstan,
+  extract,
+  sampling
+)
+importFrom(stats,
+  rmultinom,
+  runif,
+  sd
+)
+importFrom(stringr,
+  boundary,
+  str_split
+)
 importFrom(utils,globalVariables)
 useDynLib(CausalQueries, .registration = TRUE)

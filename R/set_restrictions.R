@@ -277,16 +277,13 @@ set_restrictions <- function(model,
     model$parameters_df[!(model$parameters_df$param_names %in% drop_params),]
 
   # remove causal types without component nodal types (remove columns from P)
-  keep_ct <-
-    model$P |>
-    dplyr::group_by(g = model$parameters_df$node) |>
-    dplyr::mutate(across(.cols = everything(), ~ max(.x))) |>
-    dplyr::slice(1) |>
-    dplyr::ungroup() |>
-    dplyr::select(-g) |>
-    apply(2, prod)
+  keep_ct <- apply(
+    rowsum(as.matrix(model$P), model$parameters_df$node, reorder = FALSE) > 0,
+    2,
+    all
+  )
 
-  model$P <- dplyr::select(model$P, names(keep_ct)[keep_ct == 1])
+  model$P <- dplyr::select(model$P, names(keep_ct)[keep_ct])
 
   #remove empty parameter families
   sets <- unique(model$parameters_df$param_set)
