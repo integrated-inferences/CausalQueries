@@ -21,6 +21,13 @@ censored nothing and changed the answer with no indication.
 
 ### Bug Fixes
 
+* `plot_model()` / `plot()`: nodes on a vertical chain are no longer clipped
+  at the panel edge; branched Sugiyama layouts no longer stretch a tiny
+  x-range across the whole plot; confound arcs (`<->`) are drawn with
+  `ggplot2::geom_curve` (shallow bows) instead of ggraph circular
+  semicircles. New arguments: `pad`, `normalize_layout`, `confound_bulge`,
+  and `clip`; `strength = NULL` (default) is auto curvature, or pass a
+  number for a fixed `geom_curve` curvature.
 * `update_model()` no longer overrides `control` arguments supplied by the user:
   `adapt_delta`, `max_treedepth`, and `save_warmup` are now respected, so tuning
   away divergent transitions has an effect.
@@ -58,8 +65,11 @@ The package attach message again prints a copy-paste command for setting
 
 ### Performance
 
-Internal R paths that were recomputing the same objects, or using apply/dplyr
-where a single matrix call suffices, are now cheaper. Answers are unchanged.
+Internal R paths that recomputed the same objects, or used nested `apply` /
+dplyr where a single matrix call suffices, have been rewritten. Answers are
+unchanged. On small models, wall-time gains are modest and run-to-run noisy;
+these are cleanliness / asymptotic improvements, not a claimed speedup for
+typical vignette-sized DAGs.
 
 * `query_model()` subsets the type-probability matrix once per estimand and uses
   `colSums` in place of `apply(..., 2, sum)`.
@@ -72,6 +82,10 @@ where a single matrix call suffices, are now cheaper. Answers are unchanged.
 * `prep_stan_data()` builds data families once and reuses `n_data` in
   validation, instead of reconstructing families and possible-data types
   repeatedly.
+* `get_data_families()` builds the event–type map `E` with one matrix
+  multiply instead of a nested `apply`. Rows still cover the full observed
+  partition (including coarsened / NA strategies); columns are possible
+  complete data types. Stan's `w_full = E * w` is unchanged.
 
 # CausalQueries 1.4.6
 

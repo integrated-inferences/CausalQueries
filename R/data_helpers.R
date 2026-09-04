@@ -885,24 +885,20 @@ get_data_families <- function(model,
     filter(event %in% possible_data_types)
 
   # Make E: Sign matrix used to see if data is
-  # *inconsistent* with reduced type
+  # *inconsistent* with a complete data type.
+  # Observed NA is coded 0 in the sign matrix. A complete type (row of
+  # type_matrix) is consistent with an event (row of sign_matrix) iff they
+  # never disagree on an observed node, i.e. sum_k sign[k]*type[k] equals
+  # the number of observed nodes. That is one matrix multiply; do not replace
+  # with a construction that drops coarsened / NA event rows — Stan needs the
+  # full observed partition for w_full = E * w.
   sign_matrix <- (2 * as.matrix(all_data[nodes]) - 1)
   sign_matrix[is.na(sign_matrix)] <- 0
 
   type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
 
-
-  E <- 1 * matrix(
-    apply(sign_matrix, 1,
-          function(j)
-            apply(type_matrix, 1,
-                  function(k)
-                    ! (any(
-                      k * j == -1
-                    )))),
-    nrow = length(all_data$event),
-    byrow = TRUE
-  )
+  n_obs <- rowSums(abs(sign_matrix))
+  E <- 1 * (sign_matrix %*% t(type_matrix) == n_obs)
 
   rownames(E) <- all_data$event
   colnames(E) <- full_data$event
