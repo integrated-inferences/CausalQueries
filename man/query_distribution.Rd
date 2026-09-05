@@ -13,7 +13,8 @@ query_distribution(
   n_draws = 4000,
   join_by = "|",
   case_level = FALSE,
-  query = NULL
+  query = NULL,
+  legacy = NULL
 )
 }
 \arguments{
@@ -50,6 +51,12 @@ defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 the query for a case.}
 
 \item{query}{alias for queries}
+
+\item{legacy}{Logical or \code{NULL}. \code{FALSE} uses the factorized /
+parameters-only path (type weights from lambdas without storing
+\code{type_posterior}; supports confounding). \code{TRUE} uses the
+causal-type path. \code{NULL} inherits \code{model$legacy} then
+\code{options(CausalQueries.legacy)}.}
 }
 \value{
 A data frame where columns contain draws from the distribution

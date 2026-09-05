@@ -52,12 +52,14 @@ END_RCPP
 }
 
 RcppExport SEXP _rcpp_module_boot_stan_fit4simplexes_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4simplexes_factorized_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CausalQueries_get_type_prob_c", (DL_FUNC) &_CausalQueries_get_type_prob_c, 2},
     {"_CausalQueries_get_type_prob_multiple_c", (DL_FUNC) &_CausalQueries_get_type_prob_multiple_c, 2},
     {"_CausalQueries_realise_outcomes_c", (DL_FUNC) &_CausalQueries_realise_outcomes_c, 4},
     {"_rcpp_module_boot_stan_fit4simplexes_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4simplexes_mod, 0},
+    {"_rcpp_module_boot_stan_fit4simplexes_factorized_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4simplexes_factorized_mod, 0},
     {NULL, NULL, 0}
 };
 

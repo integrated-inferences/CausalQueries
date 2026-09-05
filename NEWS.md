@@ -3,6 +3,25 @@
 This is a patch release fixing a number of bugs and adding guards against model
 and query specifications that would otherwise fail silently or exhaust memory.
 
+### Dual path (factorized / legacy)
+
+`make_model()`, `update_model()`, and `query_*` gain a `legacy` argument
+(default `FALSE`, overridable via `options(CausalQueries.legacy)`).
+`legacy = TRUE` keeps the current causal-type Stan and query path.
+`legacy = FALSE` is the parameters-only / factorized path: models may omit
+the global causal-type table; update uses a Stan model without a causal-type
+matrix `P` (unconfounded and confounded via path-encoded `parmap`); query uses
+relevant-set VE with stratified weights under `<->`; fitted models are stamped
+so later steps inherit the method. Coarsened / missing-data VE on this path
+is still forthcoming.
+
+### Type reductions for large models
+
+`make_model()` gains `drop_interactions`, `keep_interactions`, and `monotone`
+to build reduced nodal-type sets at construction (e.g. four parents without
+65,536 schedules). `simplify_model()` (alias `set_nodal_restrictions()`)
+applies the same rules to an existing model. See `?simplify_model`.
+
 ### Non Backwards Compatible Changes
 
 `make_model()` gains an `allow_large` argument. The number of causal types is

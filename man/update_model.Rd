@@ -12,6 +12,7 @@ update_model(
   keep_event_probabilities = FALSE,
   keep_fit = FALSE,
   censored_types = NULL,
+  legacy = NULL,
   ...
 )
 }
@@ -48,6 +49,12 @@ and the type distribution (types)}
 
 \item{censored_types}{vector of data types that are selected out of
 the data, e.g. \code{c("X0Y0")}}
+
+\item{legacy}{Logical or \code{NULL}. \code{FALSE} uses the factorized /
+parameters-only Stan model (currently unconfounded models only).
+\code{TRUE} uses the causal-type Stan path. \code{NULL} (default)
+inherits \code{model$legacy}, then \code{options(CausalQueries.legacy)}
+(package default \code{FALSE}).}
 
 \item{...}{Options passed onto \link[rstan]{sampling} call. For
 details see \code{?rstan::sampling}}

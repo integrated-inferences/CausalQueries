@@ -27,6 +27,11 @@
 #'   and the type distribution (types)
 #' @param censored_types vector of data types that are selected out of
 #'   the data, e.g. \code{c("X0Y0")}
+#' @param legacy Logical or \code{NULL}. \code{FALSE} uses the factorized /
+#'   parameters-only Stan model (currently unconfounded models only).
+#'   \code{TRUE} uses the causal-type Stan path. \code{NULL} (default)
+#'   inherits \code{model$legacy}, then \code{options(CausalQueries.legacy)}
+#'   (package default \code{FALSE}).
 #' @param ... Options passed onto \link[rstan]{sampling} call. For
 #'   details see \code{?rstan::sampling}
 #'
@@ -99,7 +104,14 @@ update_model <- function(model,
                          keep_event_probabilities = FALSE,
                          keep_fit = FALSE,
                          censored_types = NULL,
+                         legacy = NULL,
                          ...) {
+  legacy <- resolve_legacy(legacy, model)
+  if (!isTRUE(legacy)) {
+    # Factorized Stan has no type-posterior GQ
+    keep_type_distribution <- FALSE
+  }
+
   # Guess data_type
   if (is.null(data_type)) {
     data_type <- ifelse(all(c("event", "count") %in% names(data)), "compact", "long")
@@ -141,14 +153,26 @@ update_model <- function(model,
     data_events <- data
   }
 
-  stan_data <- prep_stan_data(
-    model = model,
-    data = data_events,
-    keep_type_distribution = keep_type_distribution,
-    censored_types = censored_types
-  )
-  # assign fit
-  stanfit <- stanmodels$simplexes
+  if (isTRUE(legacy)) {
+    stan_data <- prep_stan_data(
+      model = model,
+      data = data_events,
+      keep_type_distribution = keep_type_distribution,
+      censored_types = censored_types
+    )
+    stanfit <- stanmodels$simplexes
+  } else {
+    stan_data <- prep_stan_data_factorized(
+      model = model,
+      data = data_events,
+      keep_event_probabilities = keep_event_probabilities,
+      censored_types = censored_types
+    )
+    stanfit <- stanmodels$simplexes_factorized
+    if (is.null(stanfit)) {
+      stanfit <- get_stanmodel_factorized()
+    }
+  }
 
   # parameters to drop (match Stan: we no longer materialize w_full or intermediate computation objects)
   drop_pars <- c("gamma", "sum_gammas", "log_sum_gammas", "w_full", "w_0")
@@ -157,7 +181,7 @@ update_model <- function(model,
     drop_pars <- c(drop_pars, "w")
   }
 
-  if (!keep_type_distribution) {
+  if (isTRUE(legacy) && !keep_type_distribution) {
     drop_pars <- c(drop_pars, "types")
   }
 
@@ -186,8 +210,8 @@ update_model <- function(model,
     as.data.frame()
   colnames(model$posterior_distribution) <- get_parameter_names(model)
 
-  # Retain type distribution
-  if (keep_type_distribution) {
+  # Retain type distribution (legacy only)
+  if (isTRUE(legacy) && keep_type_distribution) {
     model$stan_objects$type_posterior <- extract(newfit$fit, pars = "types")$types
 
     colnames(model$stan_objects$type_posterior) <- colnames(stan_data$P)
@@ -208,7 +232,7 @@ update_model <- function(model,
                 colnames(model$stan_objects$event_probabilities))
   }
 
-  if (keep_type_distribution) {
+  if (isTRUE(legacy) && keep_type_distribution) {
     params <- c(params, colnames(model$stan_objects$type_posterior))
   }
 
@@ -233,6 +257,9 @@ update_model <- function(model,
         fixed = TRUE
       )
   }
+
+  # So query_* / later steps inherit the method used for this posterior
+  model <- stamp_legacy(model, legacy)
 
   return(model)
 }

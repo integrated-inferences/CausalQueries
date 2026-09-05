@@ -8,7 +8,11 @@ make_model(
   statement = "X -> Y",
   add_causal_types = TRUE,
   nodal_types = NULL,
-  allow_large = FALSE
+  allow_large = FALSE,
+  legacy = NULL,
+  drop_interactions = NULL,
+  keep_interactions = NULL,
+  monotone = NULL
 )
 }
 \arguments{
@@ -20,21 +24,39 @@ Confounded relations can be specified using a double headed arrow,
 "X <-> Y", to indicate unobserved confounding between X and Y.}
 
 \item{add_causal_types}{Logical. Whether to create and attach causal
-types to \code{model}. Defaults to `TRUE`.}
+types to \code{model}. Under \code{legacy = TRUE} defaults to `TRUE`.
+Under \code{legacy = FALSE} (default) causal types are not attached
+regardless of this argument.}
 
-\item{nodal_types}{List of nodal types associated with model nodes}
+\item{nodal_types}{Named list of character vectors of nodal types for
+**every** node (same names and causal order as \code{model$nodes}).
+Use this to keep a many-parent node small. If \code{NULL}, types are
+auto-generated (refused for five or more parents on one node).}
 
 \item{allow_large}{Logical. The number of causal types is the product of
 the numbers of nodal types across nodes. When that product exceeds
 one million and causal types will be built
 (\code{add_causal_types = TRUE}), \code{make_model} errors unless
 \code{allow_large} is `TRUE`, in which case it warns instead. Defaults
-to `FALSE`. Setting \code{add_causal_types = FALSE} skips the check.
+to `FALSE`. Setting \code{add_causal_types = FALSE} or
+\code{legacy = FALSE} skips attaching that product.
 Restricted \code{nodal_types} are assessed by their actual lengths, so
 a many-parent node with a small type set is allowed when the product
-stays below the limit. Auto-generating nodal types for a node with
-five or more parents is refused (that set alone is too large to
-materialise); pass \code{nodal_types} explicitly in that case.}
+stays below the limit.}
+
+\item{legacy}{Logical. \code{FALSE} (default) is the new parameters-only /
+factorized path (no global causal-type table at build). \code{TRUE}
+restores the current causal-type expansion. Override with
+\code{options(CausalQueries.legacy = TRUE)}.}
+
+\item{drop_interactions}{Drop interaction orders at least this high when
+auto-building nodal types. See \code{\link{simplify_model}}.}
+
+\item{keep_interactions}{Interaction parent-sets to keep despite
+\code{drop_interactions}. See \code{\link{simplify_model}}.}
+
+\item{monotone}{Monotonicity restrictions applied when building nodal
+types. See \code{\link{simplify_model}}.}
 }
 \value{
 An object of class \code{causal_model}.
@@ -54,7 +76,7 @@ following components:
 \item{parameters_df}{A \code{data.frame} with descriptive information
   of the parameters in the model}
 \item{causal_types}{A \code{data.frame} listing causal types and the
-  nodal types that produce them}
+  nodal types that produce them (legacy / when attached)}
 
 By default a causal model has flat (uniform) priors and parameters that
 put equal weight on each parameter within each parameter set. The parameter
@@ -64,12 +86,32 @@ values can be adjusted with \code{\link{set_parameters}}.
 }
 \description{
 \code{make_model} uses causal statements encoded as strings to specify
-the nodes and edges of a graph. Implied causal types are calculated
+the nodes and edges of a graph. Implied nodal types are calculated
 and default priors are provided under the assumption of no confounding.
-Models can be updated with specification of a parameter matrix, \code{P}, by
-providing restrictions on causal types, and/or by providing informative
+Models can be updated with restrictions on types and/or informative
 priors on parameters.
 }
+\section{Large and many-parent models}{
+
+The saturated type space grows very fast: a node with \(k\) binary parents
+has \(2^{2^k}\) nodal types (2, 4, 16, 256, 65536 for \(k = 1,\ldots,4\)).
+Practical options:
+\itemize{
+  \item Use the default \code{legacy = FALSE} path so a global causal-type
+    table is not attached at build.
+  \item Pass \code{drop_interactions} and/or \code{monotone} to build a
+    reduced type set at construction (see \code{\link{simplify_model}}),
+    e.g. \code{drop_interactions = TRUE, monotone = "+"}.
+  \item Pass a short \code{nodal_types} list for busy nodes (required for
+    five or more parents).
+  \item On an existing model, call \code{\link{simplify_model}}.
+  \item Set \code{allow_large = TRUE} only if you intentionally build a
+    causal-type product above one million under \code{legacy = TRUE}.
+}
+Nodal-type strings are one digit per parent assignment. Assignment order
+matches \code{get_parents()} / the column order in the node's type matrix.
+}
+
 \examples{
 make_model(statement = "X -> Y")
 modelXKY <- make_model("X -> K -> Y; X -> Y")
@@ -97,29 +139,52 @@ model <- make_model("X")
  model <- make_model("X <-> Y")
 }
 
-nodal_types <-
-  list(
-    A = c("0","1"),
-    B = c("0","1"),
-    C = c("0","1"),
-    D = c("0","1"),
-    E = c("0","1"),
-    Y = c(
-      "00000000000000000000000000000000",
-      "01010101010101010101010101010101",
-      "00110011001100110011001100110011",
-      "00001111000011110000111100001111",
-      "00000000111111110000000011111111",
-      "00000000000000001111111111111111",
-      "11111111111111111111111111111111" ))
+# ---- Large / many-parent models ------------------------------------------
 
-make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
-          nodal_types = nodal_types) |>
- inspect("parameters_df")
+# Preferred: reduce types at construction (no 65k table for 4 parents)
+m_bare <- make_model(
+  "A -> Y <- B; C -> Y; D -> Y",
+  drop_interactions = TRUE,
+  monotone = "+",
+  legacy = FALSE
+)
+length(m_bare$nodal_types$Y)
+nrow(m_bare$parameters_df)
 
-nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
-make_model("Z -> Y", nodal_types = nodal_types) |>
- inspect("parameters_df")
+# Default legacy = FALSE: wider DAG without attaching causal_types
+big <- make_model("A -> M -> Y; B -> Y; C -> Y", legacy = FALSE)
+big$causal_types  # NULL
+
+# Or thin after the fact
+make_model("A -> Y <- B; C -> Y") |>
+  simplify_model(drop_interactions = 2, monotone = "+") |>
+  inspect("nodal_types")
+
+# Hand-specified types still work (e.g. five parents)
+pa5 <- c("A", "B", "C", "D", "E")
+assign5 <- as.matrix(expand.grid(lapply(pa5, function(p) 0:1)))[, pa5, drop = FALSE]
+nt5 <- c(
+  setNames(lapply(pa5, function(p) c("0", "1")), pa5),
+  list(Y = c(
+    paste(rep(0, nrow(assign5)), collapse = ""),
+    paste(rep(1, nrow(assign5)), collapse = ""),
+    paste(assign5[, 1], collapse = "")
+  ))
+)
+make_model("A -> Y; B -> Y; C -> Y; D -> Y; E -> Y",
+           nodal_types = nt5) |>
+  inspect("parameters_df")
+
+make_model("Z -> Y", nodal_types = list(Z = c("0", "1"), Y = c("01", "10"))) |>
+  inspect("parameters_df")
+
+\dontrun{
+# Saturated four-parent Y (65,536 types) — avoid unless you mean it
+make_model("A -> Y <- B; C -> Y; D -> Y")
+
+# Legacy path with a huge causal-type *product*: allow_large = TRUE
+make_model("A -> Y <- B; C -> Y; D -> Y", legacy = TRUE, allow_large = TRUE)
+}
 }
 \references{
 Tietz T, Medina L, Syunyaev G, Humphreys M (2026).

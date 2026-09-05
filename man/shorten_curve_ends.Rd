@@ -2,11 +2,11 @@
 % Please edit documentation in R/plot_dag.R
 \name{shorten_curve_ends}
 \alias{shorten_curve_ends}
-\title{Pull geom_curve endpoints off node centres toward the rim.}
+\title{Pull geom_curve / geom_segment endpoints off node centres toward the rim.}
 \usage{
-shorten_curve_ends(df, rim)
+shorten_curve_ends(df, rim = 0.2, rim_start = rim, rim_end = rim)
 }
 \description{
-Pull geom_curve endpoints off node centres toward the rim.
+Pull geom_curve / geom_segment endpoints off node centres toward the rim.
 }
 \keyword{internal}

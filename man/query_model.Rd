@@ -16,7 +16,8 @@ query_model(
   case_level = FALSE,
   query = NULL,
   cred = 95,
-  labels = NULL
+  labels = NULL,
+  legacy = NULL
 )
 }
 \arguments{
@@ -62,6 +63,12 @@ query for a case.}
 
 \item{labels}{labels for queries: if provided labels should have
 the length of the combinations of requests}
+
+\item{legacy}{Logical or \code{NULL}. \code{FALSE} uses the factorized /
+parameters-only path (type weights from lambdas without storing
+\code{type_posterior}; supports confounding). \code{TRUE} uses the
+causal-type path. \code{NULL} inherits \code{model$legacy} then
+\code{options(CausalQueries.legacy)}.}
 }
 \value{
 An object of class \code{model_query}. A data frame with possible
