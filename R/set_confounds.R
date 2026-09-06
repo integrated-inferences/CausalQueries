@@ -170,6 +170,9 @@ set_confound <- function(model,
 
 
   # P matrix expand -----------------------------------------------------------
+  # Causal-type column names are "X0.Y00"-style tokens joined by "."; match
+  # condition tokens by exact membership (not grepl substring / regex).
+  names_P_tokens <- strsplit(names_P, ".", fixed = TRUE)
 
   for (i in seq_along(confound)) {
     from_nodal_types <-
@@ -191,10 +194,10 @@ set_confound <- function(model,
         row_elements <- conditions_from_type(rownames(newP))
 
         for (k in seq_along(row_elements)) {
-          to_zero <- vapply(row_elements[k][[1]], function(nd) {
-            vapply(nd, function(ndd) {
-              grepl(ndd, names_P)
-            }, logical(length(names_P)))
+          to_zero <- vapply(row_elements[[k]], function(ndd) {
+            vapply(names_P_tokens, function(tokens) {
+              ndd %in% tokens
+            }, logical(1))
           }, logical(length(names_P))) |>
             apply(1, prod)
           newP[k, to_zero == 0] <- 0
@@ -239,6 +242,7 @@ set_confound <- function(model,
 
   # Export
   attr(model$P, "param_set") <- unique(model$parameters_df$param_set)
+  model <- clear_model_cache(model)
   return(model)
 }
 

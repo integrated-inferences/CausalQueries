@@ -36,7 +36,12 @@ NULL
 #'   \item "\code{prior_distribution}" A data frame of the parameter prior distribution,
 #'   \item "\code{posterior_distribution}" A data frame of the parameter posterior distribution,
 #'   \item "\code{type_prior}" A matrix of type probabilities using priors,
-#'   \item "\code{type_posterior}" A matrix of type probabilities using posteriors,
+#'   \item "\code{type_posterior}" A matrix of type probabilities using posteriors
+#'     (legacy updates with \code{keep_type_distribution = TRUE} only). Under
+#'     the factorized default this is not stored; use
+#'     \code{posterior_distribution} and \code{query_model(..., using = "posteriors")}
+#'     for parameter draws and type-level estimands, or re-update with
+#'     \code{legacy = TRUE},
 #'   \item "\code{prior_event_probabilities}" A vector of data (event) probabilities given a single realization of parameters; for options see \code{?get_event_probabilities},
 #'   \item "\code{posterior_event_probabilities}" A sample of data (event) probabilities from the posterior,
 #'   \item "\code{data}" A data frame with data that was provided to update the model,
@@ -118,7 +123,12 @@ inspect <- function(model, what = NULL, ...)
 #'   \item "\code{prior_distribution}" A data frame of the parameter prior distribution,
 #'   \item "\code{posterior_distribution}" A data frame of the parameter posterior distribution,
 #'   \item "\code{type_prior}" A matrix of type probabilities using priors,
-#'   \item "\code{type_posterior}" A matrix of type probabilities using posteriors,
+#'   \item "\code{type_posterior}" A matrix of type probabilities using posteriors
+#'     (legacy updates with \code{keep_type_distribution = TRUE} only). Under
+#'     the factorized default this is not stored; use
+#'     \code{posterior_distribution} and \code{query_model(..., using = "posteriors")}
+#'     for parameter draws and type-level estimands, or re-update with
+#'     \code{legacy = TRUE},
 #'   \item "\code{prior_event_probabilities}" A vector of data (event) probabilities given a single realization of parameters; for options see \code{?get_event_probabilities},
 #'   \item "\code{posterior_event_probabilities}" A sample of data (event) probabilities from the posterior,
 #'   \item "\code{data}" A data frame with data that was provided to update the model,
@@ -207,7 +217,14 @@ grab <- function(model, what = NULL, ...)
   if (print) print(model_sum, what = what)
 
   extract_one <- function(w) {
-    if (w %in% c("stanfit", "data", "type_posterior",
+    if (w == "type_posterior") {
+      tp <- model_sum[["stan_objects"]][["type_posterior"]]
+      if (is.null(tp)) {
+        stop(type_posterior_unavailable_msg(model_sum), call. = FALSE)
+      }
+      return(tp)
+    }
+    if (w %in% c("stanfit", "data",
                  "stan_summary", "stan_warnings")) {
       model_sum[["stan_objects"]][[w]]
     } else if (w == "posterior_event_probabilities") {

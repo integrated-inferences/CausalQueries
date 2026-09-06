@@ -66,8 +66,20 @@ map_query_to_causal_type <- function(model,
     continue <- FALSE
   }
 
+  # Cache realise_outcomes by dos within this query (nested do reuse)
+  ro_cache <- new.env(parent = emptyenv())
+  cached_realise <- function(dos = NULL) {
+    key <- dos_cache_key(dos)
+    if (exists(key, envir = ro_cache, inherits = FALSE)) {
+      return(get(key, envir = ro_cache, inherits = FALSE))
+    }
+    val <- realise_outcomes(model, dos = dos)
+    assign(key, val, envir = ro_cache)
+    val
+  }
+
   if (is.null(eval_var)) {
-    eval_var <- realise_outcomes(model)
+    eval_var <- cached_realise(NULL)
   }
 
   list_names <- colnames(eval_var)
@@ -120,7 +132,7 @@ map_query_to_causal_type <- function(model,
       stop <- gregexpr("=", .query[j], perl = TRUE)[[1]][1] - 1
       var_name <- paste0(do[1:stop], collapse = "")
       var_name <- gsub(" ", "", var_name)
-      value <- c(eval(parse(text = paste0(do, collapse = "")), envir = eval_var))
+      value <- c(eval_with_data(paste0(do, collapse = ""), eval_var))
       vars <- model$nodes
       if (!var_name %in% vars) {
         stop(paste("Variable", var_name, "is not part of the model."))
@@ -137,7 +149,7 @@ map_query_to_causal_type <- function(model,
     # Save result from last iteration and remove corresponding
     # expression w_query
     var_length <- nchar(var)
-    data <- realise_outcomes(model, dos)
+    data <- cached_realise(dos)
     eval_var[, k] <- as.numeric(data[, var])
 
     .bracket_ends <- bracket_starts[i] + .bracket_ends - 1
@@ -161,8 +173,8 @@ map_query_to_causal_type <- function(model,
     paste0("q <- ", w_query)
   }
 
-  # Magic
-  types <- c(eval(parse(text = w_query), eval_var))
+  # Magic (child env so node / helper columns do not collide with locals)
+  types <- c(eval_with_data(w_query, eval_var))
 
   # Clean up
   names(eval_var) <- list_names

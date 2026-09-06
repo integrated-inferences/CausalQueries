@@ -8,20 +8,47 @@
 get_data_families_factorized <- function(model,
                                         drop_impossible = TRUE,
                                         drop_all_NA = TRUE,
-                                        mapping_only = FALSE) {
+                                        mapping_only = FALSE,
+                                        sparse = NULL) {
   event <- NULL
   nodes <- model$nodes
+  check_factorized_grid_size(model, "get_data_families_factorized")
   all_data <- get_all_data_types(model)
   full_data <- complete_data_grid(model)
 
-  sign_matrix <- (2 * as.matrix(all_data[nodes]) - 1)
-  sign_matrix[is.na(sign_matrix)] <- 0
-  type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
+  # sparse=TRUE: fill E by per-event completion (same answers; less peak RAM
+  # on wide event lists). Default: dense multiply under the grid cap; sparse
+  # when option CausalQueries.factorized_E_sparse is TRUE.
+  if (is.null(sparse)) {
+    sparse <- isTRUE(getOption("CausalQueries.factorized_E_sparse", FALSE))
+  }
 
-  n_obs <- rowSums(abs(sign_matrix))
-  E <- 1 * (sign_matrix %*% t(type_matrix) == n_obs)
-  rownames(E) <- all_data$event
-  colnames(E) <- full_data$event
+  if (sparse) {
+    E <- matrix(0L, nrow = nrow(all_data), ncol = nrow(full_data),
+                dimnames = list(all_data$event, full_data$event))
+    full_mat <- as.matrix(full_data[nodes])
+    for (i in seq_len(nrow(all_data))) {
+      row <- all_data[i, nodes, drop = FALSE]
+      obs <- nodes[!is.na(unlist(row))]
+      if (!length(obs)) {
+        E[i, ] <- 1L
+        next
+      }
+      ok <- rep(TRUE, nrow(full_data))
+      for (nm in obs) {
+        ok <- ok & (as.integer(full_mat[, nm]) == as.integer(row[[nm]]))
+      }
+      E[i, ok] <- 1L
+    }
+  } else {
+    sign_matrix <- (2 * as.matrix(all_data[nodes]) - 1)
+    sign_matrix[is.na(sign_matrix)] <- 0
+    type_matrix <- (2 * (as.matrix(full_data[nodes])) - 1)
+    n_obs <- rowSums(abs(sign_matrix))
+    E <- 1 * (sign_matrix %*% t(type_matrix) == n_obs)
+    rownames(E) <- all_data$event
+    colnames(E) <- full_data$event
+  }
 
   keep <- rep(TRUE, nrow(E))
   if (drop_impossible) {
@@ -60,6 +87,7 @@ prep_stan_data_factorized <- function(model,
   if (!all(c("event", "count") %in% names(data))) {
     stop("Data should contain columns `event` and `count`")
   }
+  check_factorized_grid_size(model, "prep_stan_data_factorized")
 
   families <- get_data_families_factorized(model)
   data_families <- families[, setdiff(names(families), c("event", "strategy")),

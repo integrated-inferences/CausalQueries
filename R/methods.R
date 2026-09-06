@@ -229,7 +229,9 @@ summary.causal_model <- function(object, include = NULL, ...) {
 #'   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (specified) parameter vector; for options see \code{?get_event_probabilities},
 #'   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
 #'   \item \code{"type_prior"} A matrix of type probabilities using priors,
-#'   \item \code{"type_posterior"} A matrix of type probabilities using posteriors,
+#'   \item \code{"type_posterior"} A matrix of type probabilities using posteriors
+#'     (legacy path with \code{keep_type_distribution = TRUE}; otherwise see
+#'     the error from \code{inspect} / \code{grab} for alternatives),
 #'   \item \code{"posterior_distribution"} A data frame of the parameter posterior distribution,
 #'   \item \code{"posterior_event_probabilities"} A sample of data (event) probabilities from the posterior,
 #'   \item \code{"data"} A data frame with data that was used to update model,
@@ -365,7 +367,12 @@ print.summary.causal_model <-
           printout <-
             c(printout, "type_posterior")
           printout_upd <-
-            c(printout_upd, "'keep_type_distribution = TRUE'")
+            c(printout_upd,
+              if (!isTRUE(get_model_legacy(x))) {
+                "'legacy = TRUE, keep_type_distribution = TRUE' (or use query_model / posterior_distribution; see ?inspect)"
+              } else {
+                "'keep_type_distribution = TRUE'"
+              })
         }
 
         if (is.null(x$stan_objects$stanfit)) {
@@ -678,14 +685,7 @@ print.summary.causal_model <-
           rounding_threshold <- find_rounding_threshold(distribution_summary)
           print.data.frame(round(distribution_summary, rounding_threshold))
         } else {
-          printout <- c(
-            printout,
-            "posterior type_posterior"
-          )
-          printout_upd <- c(
-            printout_upd,
-            "'keep_type_distribution = TRUE'"
-          )
+          stop(type_posterior_unavailable_msg(x), call. = FALSE)
         }
       }
 

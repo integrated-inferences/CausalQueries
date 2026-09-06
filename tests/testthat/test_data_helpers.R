@@ -49,13 +49,22 @@ testthat::test_that(desc = "collapse_data works when node not in data",
                       expect_true(!c("X") %in% data$strategy)
                     })
 
-testthat::test_that(desc = "collapse data inconsistent with model and ignored",
+testthat::test_that(desc = "collapse data inconsistent with model warns and counts drops",
 
                     code = {
                       model <- make_model('X -> Y') |>
                         set_restrictions('X[]==1')
                       data <- data.frame(X = 0:1)
-                      expect_message(collapse_data(data, model))
+                      expect_warning(
+                        out <- collapse_data(data, model),
+                        "Dropped 1 observation"
+                      )
+                      expect_equal(sum(out$count), 1L)
+
+                      expect_error(
+                        collapse_data(data.frame(X = 1L), model),
+                        "All 1 observation"
+                      )
                     })
 
 

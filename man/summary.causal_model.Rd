@@ -65,7 +65,9 @@ In addition to the default objects included in `summary.causal_model` users can 
   \item \code{"prior_event_probabilities"} A vector of data (event) probabilities given a single (specified) parameter vector; for options see \code{?get_event_probabilities},
   \item \code{"ambiguities_matrix"} A matrix mapping from causal types into data types,
   \item \code{"type_prior"} A matrix of type probabilities using priors,
-  \item \code{"type_posterior"} A matrix of type probabilities using posteriors,
+  \item \code{"type_posterior"} A matrix of type probabilities using posteriors
+    (legacy path with \code{keep_type_distribution = TRUE}; otherwise see
+    the error from \code{inspect} / \code{grab} for alternatives),
   \item \code{"posterior_distribution"} A data frame of the parameter posterior distribution,
   \item \code{"posterior_event_probabilities"} A sample of data (event) probabilities from the posterior,
   \item \code{"data"} A data frame with data that was used to update model,

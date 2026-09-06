@@ -224,42 +224,56 @@ update_model <- function(model,
     colnames(model$stan_objects$event_probabilities) <- colnames(stan_data$E)
   }
 
-  # Retain stanfit summary with readable names
-  # Identify saved parameters
+  # Retain stanfit summary with readable names (lambdas + lp__ by default;
+  # include w / types only when those objects are kept)
   params <- colnames(model$posterior_distribution)
+  print_pars <- "lambdas"
   if (keep_event_probabilities) {
     params <- c(params,
                 colnames(model$stan_objects$event_probabilities))
+    print_pars <- c(print_pars, "w")
   }
 
   if (isTRUE(legacy) && keep_type_distribution) {
     params <- c(params, colnames(model$stan_objects$type_posterior))
+    print_pars <- c(print_pars, "types")
   }
 
   params <- c(params, "lp__")
+  print_pars <- c(print_pars, "lp__")
+
+  model$stan_objects$stan_summary <- utils::capture.output(
+    print(newfit$fit, pars = print_pars)
+  )
 
   params_labels <- newfit$fit@sim$fnames_oi
-
-  width <- max(nchar(c(params, params_labels)))
-  pad <- function(x) paste0(x, strrep(" ", width - nchar(x)))
-  padded_params <- pad(params)
-  padded_labels <- pad(params_labels)
-
-  model$stan_objects$stan_summary <- utils::capture.output(print(newfit$fit))
-
+  # Only rename labels that appear in the printed subset
+  keep_lab <- grepl(
+    paste0("^(", paste(print_pars, collapse = "|"), ")(\\[|$)"),
+    params_labels
+  )
+  params_labels <- params_labels[keep_lab]
   n_replace <- min(length(params), length(params_labels))
-  for (i in seq_len(n_replace)) {
-    model$stan_objects$stan_summary <-
-      gsub(
-        pattern = padded_labels[i],
-        replacement = padded_params[i],
-        x = model$stan_objects$stan_summary,
-        fixed = TRUE
-      )
+  if (n_replace > 0L) {
+    width <- max(nchar(c(params[seq_len(n_replace)],
+                         params_labels[seq_len(n_replace)])))
+    pad <- function(x) paste0(x, strrep(" ", width - nchar(x)))
+    padded_params <- pad(params[seq_len(n_replace)])
+    padded_labels <- pad(params_labels[seq_len(n_replace)])
+    for (i in seq_len(n_replace)) {
+      model$stan_objects$stan_summary <-
+        gsub(
+          pattern = padded_labels[i],
+          replacement = padded_params[i],
+          x = model$stan_objects$stan_summary,
+          fixed = TRUE
+        )
+    }
   }
 
   # So query_* / later steps inherit the method used for this posterior
   model <- stamp_legacy(model, legacy)
+  model <- clear_model_cache(model)
 
   return(model)
 }

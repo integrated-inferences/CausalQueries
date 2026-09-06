@@ -1,11 +1,11 @@
 #' Dual path: factorized (default) vs legacy causal types
 #'
 #' \describe{
-#'   \item{\code{legacy = FALSE} (default)}{New parameters-only / factorized
+#'   \item{\code{legacy = FALSE} (default)}{Parameters-only / factorized
 #'     path: \code{make_model} does not attach a global causal-type table;
-#'     update and query work from nodal parameter draws (under construction).}
-#'   \item{\code{legacy = TRUE}}{Current causal-type expansion, type-level
-#'     maps, and Stan mixture likelihood.}
+#'     update and query work from nodal parameter draws.}
+#'   \item{\code{legacy = TRUE}}{Causal-type expansion, type-level maps,
+#'     and Stan mixture likelihood.}
 #' }
 #'
 #' **Inheritance.** The model carries the method used so far
@@ -118,6 +118,33 @@ factorized_not_ready <- function(what = "update_model") {
     "options(CausalQueries.legacy = TRUE).",
     call. = FALSE
   )
+}
+
+#' Message when type_posterior is requested but not stored.
+#' @keywords internal
+#' @noRd
+type_posterior_unavailable_msg <- function(model) {
+  stamped <- get_model_legacy(model)
+  factorized <- !isTRUE(stamped)
+
+  if (factorized) {
+    paste0(
+      "No type_posterior on this model. Factorized updates (legacy = FALSE) ",
+      "keep parameter draws, not a full causal-type draw matrix.\n",
+      "  - Parameter posterior: grab(model, \"posterior_distribution\")\n",
+      "  - Posterior for a particular type or potential-outcome query: ",
+      "query_model(model, query = \"...\", using = \"posteriors\")\n",
+      "  - Type labels / parameter map (on demand): ",
+      "grab(model, \"causal_types\"), grab(model, \"parameter_matrix\")\n",
+      "  - Full draws-by-types matrix as in older releases: ",
+      "update_model(..., legacy = TRUE, keep_type_distribution = TRUE)"
+    )
+  } else {
+    paste0(
+      "No type_posterior on this model. Re-run update_model() with ",
+      "keep_type_distribution = TRUE."
+    )
+  }
 }
 
 # Back-compat aliases used briefly during the representation= rename

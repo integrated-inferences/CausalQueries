@@ -211,6 +211,7 @@ set_priors <- function(model,
 
   model$parameters_df$priors <- priors
 
+  model <- clear_model_cache(model)
   return(model)
 
 }

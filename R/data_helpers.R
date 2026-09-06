@@ -91,12 +91,30 @@ collapse_data <- function(data,
         data_families <- get_data_families(model)[, c("event", "strategy")]
         data_type <- data_type_names(model, data)
 
-        # Inconsistent data
-        if (!all(unique(data_type) %in% data_families$event))
-          message(paste0(
-            unique(data_type)[!(unique(data_type) %in% data_families$event)],
-            " data is inconsistent with model and ignored")
+        # Inconsistent 0/1 (or other) coding relative to allowed events
+        inconsistent <- unique(data_type)[
+          !(unique(data_type) %in% data_families$event)
+        ]
+        if (length(inconsistent)) {
+          n_drop <- sum(data_type %in% inconsistent)
+          if (n_drop == length(data_type)) {
+            stop(
+              paste0(
+                "All ", n_drop, " observation(s) are inconsistent with the model (",
+                paste(inconsistent, collapse = ", "),
+                ") and cannot be used."
+              ),
+              call. = FALSE
             )
+          }
+          warning(
+            paste0(
+              "Dropped ", n_drop, " observation(s) inconsistent with the model: ",
+              paste(inconsistent, collapse = ", ")
+            ),
+            call. = FALSE
+          )
+        }
 
         # Collapse
         data_events <- data.frame(table(data_type), stringsAsFactors = FALSE)

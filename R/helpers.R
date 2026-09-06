@@ -538,6 +538,25 @@ check_query <- function(query) {
   return(query)
 }
 
+#' Evaluate an expression against named data bindings in a child environment.
+#'
+#' Lookups use only \code{data} plus \code{enclos} (default \code{baseenv()}),
+#' so node names cannot collide with locals in the calling function.
+#'
+#' @param expr language object or character string to parse
+#' @param data named list or data.frame of bindings
+#' @param enclos parent environment for unbound symbols (operators, etc.)
+#' @return result of \code{eval}
+#' @noRd
+#' @keywords internal
+eval_with_data <- function(expr, data, enclos = baseenv()) {
+  if (is.character(expr)) {
+    expr <- parse(text = expr)
+  }
+  env <- list2env(as.list(data), parent = enclos)
+  eval(expr, envir = env)
+}
+
 #' helper to compute mean and sd of a distribution data.frame
 #' @param x An object for summarizing
 #' @noRd

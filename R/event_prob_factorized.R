@@ -8,6 +8,44 @@
 #' @noRd
 NULL
 
+#' Max complete-data columns for factorized Stan prep (option override).
+#'
+#' Default \(2^{12}=4096\). Above this, prep refuses the full grid.
+#' R-side \code{prob_event_ve} can still marginalize without materializing
+#' \(2^n\) when few nodes are observed.
+#'
+#' @keywords internal
+#' @noRd
+factorized_grid_max <- function() {
+  as.integer(getOption("CausalQueries.factorized_grid_max", 4096L))
+}
+
+#' Number of complete binary assignments (= columns of full-grid E / parmap).
+#' @keywords internal
+#' @noRd
+n_complete_patterns <- function(model) {
+  as.integer(2^length(model$nodes))
+}
+
+#' Error if full-grid Stan prep would exceed \code{factorized_grid_max()}.
+#' @keywords internal
+#' @noRd
+check_factorized_grid_size <- function(model, what = "factorized prep") {
+  n <- n_complete_patterns(model)
+  cap <- factorized_grid_max()
+  if (n <= cap) {
+    return(invisible(n))
+  }
+  stop(
+    what, ": complete-data grid has ", n, " columns (2^",
+    length(model$nodes), "), over CausalQueries.factorized_grid_max=", cap,
+    ". Use fewer nodes, set_restrictions / simplify_model, raise the option ",
+    "for medium graphs, or use prob_event_ve() for R-side coarsened ",
+    "probabilities without Stan prep.",
+    call. = FALSE
+  )
+}
+
 #' Whether the model statement declares confounding.
 #' @keywords internal
 #' @noRd
@@ -127,6 +165,51 @@ complete_data_grid <- function(model) {
   get_all_data_types(model, complete_data = TRUE)
 }
 
+#' One complete assignment probability (unconfounded product or confound parmap).
+#' @keywords internal
+#' @noRd
+complete_assignment_prob <- function(model, parameters, assignment,
+                                     parmap = NULL) {
+  assignment <- lapply(assignment, as.integer)
+  if (!model_has_confound(model)) {
+    p <- 1
+    for (node in model$nodes) {
+      p <- p * nodal_assignment_prob(model, parameters, node, assignment)
+    }
+    return(as.numeric(p))
+  }
+  if (is.null(parmap)) {
+    parmap <- make_parmap_factorized(model)
+  }
+  grid <- complete_data_grid(model)
+  nodes <- model$nodes
+  ok <- rep(TRUE, nrow(grid))
+  for (nm in nodes) {
+    ok <- ok & (as.integer(grid[[nm]]) == as.integer(assignment[[nm]]))
+  }
+  j <- which(ok)
+  if (length(j) != 1L) {
+    stop("complete_assignment_prob: assignment not found on complete grid.",
+         call. = FALSE)
+  }
+  # Paths -> data via map (confound may split paths); same as event_prob_from_parmap
+  x <- rowsum(parmap * parameters,
+              group = model$parameters_df$node,
+              reorder = FALSE)
+  w0 <- apply(x, 2, prod)
+  map <- t(attr(parmap, "map"))
+  w <- as.numeric(map %*% w0)
+  data_names <- rownames(map)
+  if (is.null(data_names)) {
+    data_names <- as.character(grid$event)
+  }
+  hit <- match(as.character(grid$event[j]), data_names)
+  if (is.na(hit)) {
+    hit <- j
+  }
+  as.numeric(w[[hit]])
+}
+
 #' Event probabilities via parmap product (matches Stan / legacy).
 #' @keywords internal
 #' @noRd
@@ -160,6 +243,29 @@ event_prob_from_parmap <- function(model, parameters, parmap, given = NULL) {
   event_probs
 }
 
+#' Whether a complete assignment is realizable under remaining nodal types.
+#' Used to drop impossible data rows (match legacy ambiguities support).
+#' @keywords internal
+#' @noRd
+complete_assignment_possible <- function(model, assignment) {
+  assignment <- lapply(assignment, as.integer)
+  pdf <- model$parameters_df
+  for (node in model$nodes) {
+    rows <- which(pdf$node == node)
+    ok <- FALSE
+    for (i in rows) {
+      if (nodal_type_consistent(model, node, pdf$nodal_type[i], assignment)) {
+        ok <- TRUE
+        break
+      }
+    }
+    if (!ok) {
+      return(FALSE)
+    }
+  }
+  TRUE
+}
+
 #' Event probabilities (factorized path; supports confound via parmap).
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
@@ -188,9 +294,15 @@ event_prob_factorized <- function(model,
   nodes <- model$nodes
   n_ev <- nrow(grid)
   probs <- numeric(n_ev)
+  possible <- rep(TRUE, n_ev)
 
   for (i in seq_len(n_ev)) {
     assignment <- grid[i, nodes, drop = FALSE]
+    possible[i] <- complete_assignment_possible(model, assignment)
+    if (!possible[i]) {
+      probs[i] <- 0
+      next
+    }
     p <- 1
     for (node in nodes) {
       p <- p * nodal_assignment_prob(model, parameters, node, assignment)
@@ -199,11 +311,13 @@ event_prob_factorized <- function(model,
   }
 
   names(probs) <- as.character(grid$event)
+  # Drop impossible events so rownames match legacy ambiguities / possible data
+  probs <- probs[possible]
   event_probs <- matrix(probs, ncol = 1,
                         dimnames = list(names(probs), "event_probs"))
 
   if (!is.null(given)) {
-    matches <- with(grid, eval(parse(text = given)))
+    matches <- with(grid[possible, , drop = FALSE], eval(parse(text = given)))
     matches[is.na(matches)] <- FALSE
     w <- as.numeric(event_probs)
     w[!matches] <- 0
@@ -227,9 +341,11 @@ event_prob_factorized <- function(model,
 #' @noRd
 make_parmap_factorized <- function(model) {
   if (model_has_confound(model)) {
+    check_factorized_grid_size(model, "make_parmap_factorized")
     return(make_parmap(model))
   }
 
+  check_factorized_grid_size(model, "make_parmap_factorized")
   grid <- complete_data_grid(model)
   nodes <- model$nodes
   pdf <- model$parameters_df

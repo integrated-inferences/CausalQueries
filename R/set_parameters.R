@@ -258,7 +258,7 @@ set_parameters <- function(model,
 
   model$parameters_df$param_value <- parameters
   model$parameters_df <- clean_params(model$parameters_df, warning = warning)
-
+  model <- clear_model_cache(model)
   return(model)
 
 }

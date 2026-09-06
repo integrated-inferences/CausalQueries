@@ -31,6 +31,12 @@ get_event_probabilities <- function(model,
       parameters <- get_parameters(model)
     }
 
+    # Factorized stamp: parameters-only event probs (VE-backed helpers live in
+    # event_prob_ve.R; full conditional still uses the complete grid under N*).
+    if (!isTRUE(resolve_legacy(NULL, model))) {
+      return(event_prob_factorized(model, parameters = parameters, given = given))
+    }
+
     parmap <- get_parmap(model, A = A, P = P)
     map <- t(attr(parmap, "map"))
 

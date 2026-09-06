@@ -11,7 +11,7 @@ testthat::test_that(
 			set_confound('Y <-> X')
 		model_2 <- make_model('X -> Y') |>
 		  set_confound('Y <-> X')
-		expect_identical(model_1, model_2)
+		expect_equal(model_1, model_2)
 	}
 )
 
@@ -26,7 +26,7 @@ testthat::test_that(
       set_confound(list('Y <-> X','Y <-> M'))
     model_2 <- make_model('X -> M -> Y') |>
       set_confound(list('Y <-> X','Y <-> M'))
-    expect_identical(model_1, model_2)
+    expect_equal(model_1, model_2)
   }
 )
 

@@ -646,15 +646,15 @@ query_model <- function(model,
   )
   }
 
-  # compute statistics
+  # compute statistics (na.rm = TRUE throughout: given with zero mass → NA draws)
   if (is.null(stats)) {
     if (!is.null(parameters)) {
-      stats <- c(mean = mean)
+      stats <- c(mean = function(x) mean(x, na.rm = TRUE))
     } else {
       cred <- pmax(pmin(cred[1], 100), 0)
       stats <- c(
-        mean = mean,
-        sd = sd,
+        mean = function(x) mean(x, na.rm = TRUE),
+        sd = function(x) stats::sd(x, na.rm = TRUE),
         cred.low = function(x)
           unname(stats::quantile(
             x, probs = ((100 - cred) / 200), na.rm = TRUE
@@ -1041,12 +1041,30 @@ plot_query <- function(model_query) {
       theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")
   }
 
-#' @rdname print.model_query
-#' @param x an object of class \code{model_query}
-#' @param ... Further arguments passed to or from other methods.
+#' Plot model query results
+#'
+#' Plot method for class \code{model_query}. Draws point estimates (and
+#' credible intervals when present) from \code{\link{query_model}} output,
+#' faceted by model when more than one model is in the table.
+#'
+#' @param x An object of class \code{model_query}, usually from
+#'   \code{\link{query_model}}.
+#' @param ... Further arguments (currently unused; included for S3
+#'   compatibility).
+#' @return A \code{ggplot} object.
+#' @examples
+#' \donttest{
+#' model <- make_model("X -> Y")
+#' q <- query_model(
+#'   model,
+#'   query = "Y[X=1] - Y[X=0]",
+#'   using = "parameters"
+#' )
+#' plot(q)
+#' }
 #' @export
 plot.model_query <- function(x, ...) {
-    plot_query(x,...)
-  }
+  plot_query(x, ...)
+}
 
 

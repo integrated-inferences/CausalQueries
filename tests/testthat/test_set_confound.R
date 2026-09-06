@@ -12,7 +12,7 @@ testthat::test_that(
 		models <-
 		  make_model('X -> Y') |> set_confound(list('X <-> Y'))
 
-		expect_identical(model, models)
+		expect_equal(model, models)
 	}
 )
 
@@ -169,5 +169,39 @@ testthat::test_that(
       set_confound(model, list('Y <-> X', 'X <-> W'))$stan_objects
     )
 
+  }
+)
+
+
+testthat::test_that(
+
+  desc = "set_confound matches causal-type tokens exactly (not grepl)",
+
+  code = {
+    # grepl("X0", "X1.XX0.Y...") is TRUE; exact token membership is not.
+    model <- make_model("X -> Y <- XX") |> set_confound(list("X <-> Y"))
+    expect_equal(nrow(model$P), nrow(model$parameters_df))
+    expect_equal(rownames(model$P), model$parameters_df$param_names)
+    expect_true(all(rowSums(as.matrix(model$P)) != 0))
+
+    # Substring false positive would mis-zero columns and can drop rows /
+    # misalign P; keep a simple query sanity check.
+    q <- query_model(
+      model,
+      query = "Y[X=1] - Y[X=0]",
+      using = "parameters",
+      stats = c(mean = mean)
+    )
+    expect_true(is.finite(q$mean))
+  }
+)
+
+
+testthat::test_that(
+
+  desc = "clean_statement requires syntactic node names",
+
+  code = {
+    expect_error(make_model("1X -> Y"), "syntactic R names")
   }
 )

@@ -28,3 +28,24 @@ testthat::test_that(
 	}
 )
 
+testthat::test_that(
+
+	desc = "query eval uses child env (node names can match locals)",
+
+	code = {
+		# Loop locals in map_query_to_causal_type include i, k, var, ...
+		model <- make_model("i -> Y")
+		map <- CausalQueries:::map_query_to_causal_type(
+		  model, "Y[i=1] > Y[i=0]"
+		)
+		expect_true(is.logical(map$types))
+		expect_true(any(map$types))
+		expect_true(any(!map$types))
+
+		nodal <- CausalQueries:::map_query_to_nodal_type(
+		  model, "Y[i=1] > Y[i=0]"
+		)
+		expect_true(any(nodal$types))
+	}
+)
+

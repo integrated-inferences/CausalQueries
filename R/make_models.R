@@ -359,6 +359,9 @@ make_model <- function(statement = "X -> Y",
   # Add class
   class(model) <- "causal_model"
 
+  # Derived-object cache (realise_outcomes, etc.); cleared by mutators
+  model <- ensure_model_cache(model)
+
   # Add causal types
   if (add_causal_types) {
     model$causal_types <- update_causal_types(model)
@@ -695,6 +698,19 @@ clean_statement <- function(statement) {
         "will cause downstream issues in query specification and parsing.",
         sep = " "
       )
+    )
+  }
+
+  # Syntactic R names only (avoids ambiguous tokens in confound / type labels)
+  bad_names <- nodes[make.names(nodes) != nodes | nodes == ""]
+  if (length(bad_names)) {
+    stop(
+      paste0(
+        "Unsupported variable names. Node names must be syntactic R names ",
+        "(make.names(x) == x). Problem: ",
+        paste(unique(bad_names), collapse = ", ")
+      ),
+      call. = FALSE
     )
   }
 

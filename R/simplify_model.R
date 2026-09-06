@@ -127,7 +127,7 @@ simplify_model <- function(model,
   model$causal_types <- NULL
   model$parmap <- NULL
   model$A <- NULL
-  model
+  clear_model_cache(model)
 }
 
 #' @rdname simplify_model

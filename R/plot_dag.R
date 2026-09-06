@@ -212,7 +212,7 @@ plot_model <- function(model = NULL,
   if (is.null(pad)) {
     # Additive expand must be large enough in *data* units; node discs are
     # drawn in mm, so also rely on plot.margin below.
-    pad <- max(0.45, 0.45 * y_step)
+    pad <- max(0.315, 0.315 * y_step)
   }
 
   # Classify directed edges: same-layer-step links vs multi-layer skips
@@ -282,7 +282,7 @@ plot_model <- function(model = NULL,
   }
 
   # Margin must exceed node radius (nodesize is mm).
-  plot_margin <- grid::unit(c(0.75, 0.75, 0.75, 0.75), "cm")
+  plot_margin <- grid::unit(c(0.525, 0.525, 0.525, 0.525), "cm")
   # Dock edges with ggraph mm caps (not data-space shortening): paths stay
   # centre-to-centre; caps stop drawing at an absolute distance from the node.
   # Near-zero start_cap + nodes drawn on top => shaft appears to leave the disc

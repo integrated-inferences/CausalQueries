@@ -85,13 +85,12 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
 
     # Y: potential outcomes: possible nodal types (restrictions respected)
-    # dataset assigned to "node"
-    assign(node, get_nodal_types(model, collapse = FALSE)[[node]] |> t())
+    node_vals <- get_nodal_types(model, collapse = FALSE)[[node]] |> t()
 
-    # Magic: evaluate the query expression on potential outcomes
-    # This is a hard line; we use different values of Xs to pick out
-    # columns of Y potential outcomes (node)
-    types <- with(Xs, eval(parse(text = Q)))
+    # Magic: evaluate in a child env (parents + outcome node only)
+    eval_data <- as.list(Xs)
+    eval_data[[node]] <- node_vals
+    types <- eval_with_data(Q, eval_data)
 
     # Add name for singletons
     if(length(types) == 1 && is.null(names(types))) {
@@ -102,7 +101,7 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
     return_list <- list(types = types,
                         query = query,
                         expanded_query = expanded_query,
-                        evaluated_nodes = t(eval(parse(text = node))),
+                        evaluated_nodes = t(node_vals),
                         node = node)
 
 

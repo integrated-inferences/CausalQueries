@@ -1,8 +1,50 @@
 context("Equivalence tests for safe speed refactors")
 
-test_that("get_estimands colSums path matches apply-based formula", {
-  model <- make_model("X -> Y") |>
-    set_prior_distribution(n_draws = 25)
+test_that("realise_outcomes dos cache matches uncached nested queries", {
+  model <- make_model("X -> M -> Y")
+  expect_true(is.environment(model$.cache))
+
+  q_nested <- "Y[M=M[X=0], X=1] == 1"
+  a <- CausalQueries:::map_query_to_causal_type(model, q_nested)
+  # Second call should hit map_query local cache + model$.cache
+  b <- CausalQueries:::map_query_to_causal_type(model, q_nested)
+  expect_equal(a$types, b$types)
+
+  # Mutator clears model cache
+  r1 <- realise_outcomes(model, dos = list(X = 1))
+  expect_true(length(ls(model$.cache, all.names = TRUE)) >= 1L)
+  model2 <- set_parameters(model, parameters = CausalQueries:::get_parameters(model))
+  expect_equal(length(ls(model2$.cache, all.names = TRUE)), 0L)
+  r2 <- realise_outcomes(model2, dos = list(X = 1))
+  expect_equal(r1, r2, ignore_attr = "type_names")
+
+  # Full realise then factorized query (relevant-set schedule) must not
+  # collide on the dos=NULL cache key
+  invisible(realise_outcomes(model))
+  q <- query_model(model, "Y[X=1] - Y[X=0]", using = "parameters",
+                   stats = c(mean = mean))
+  expect_true(is.finite(q$mean))
+})
+
+test_that("get_type_prob_c sparse path matches R product formula", {
+  model <- make_model("X -> Y")
+  P <- CausalQueries:::get_parameter_matrix(model)
+  params <- CausalQueries:::get_parameters(model)
+  # Manual formula (same as pre-sparse C++)
+  old <- apply(P, 2, function(col) {
+    prod(col * params + 1 - col)
+  })
+  new <- CausalQueries:::get_type_prob_c(as.matrix(P), as.numeric(params))
+  expect_equal(as.numeric(new), as.numeric(old), tolerance = 1e-12)
+})
+
+
+test_that("query_model pop/case means match type-weighted formulas", {
+  # Legacy type weights are the reference; factorized path must agree.
+  model <- with_legacy_true({
+    make_model("X -> Y") |>
+      set_prior_distribution(n_draws = 25)
+  })
 
   query <- "Y[X=1] - Y[X=0]"
   given_q <- "X==1 & Y==1"
@@ -19,19 +61,31 @@ test_that("get_estimands colSums path matches apply-based formula", {
   case_old <- mean(x_g %*% tp_g) / mean(apply(tp_g, 2, sum))
 
   q_pop <- query_model(model, query, given = given_q, using = "priors",
-                       stats = c(mean = mean))
+                       stats = c(mean = mean), legacy = TRUE)
   expect_equal(q_pop$mean, mean(pop_old))
 
   q_uncond <- query_model(model, query, using = "priors",
-                          stats = c(mean = mean))
+                          stats = c(mean = mean), legacy = TRUE)
   pop_uncond <- as.vector((x %*% tp) / apply(tp, 2, sum))
   expect_equal(q_uncond$mean, mean(pop_uncond))
 
   q_case <- query_model(model, query, given = given_q, using = "priors",
-                        case_level = TRUE, stats = c(mean = mean))
+                        case_level = TRUE, stats = c(mean = mean),
+                        legacy = TRUE)
   expect_equal(q_case$mean, case_old)
-})
 
+  # Factorized agrees with legacy on the same estimands
+  q_fac <- suppressWarnings(query_model(
+    model, query, given = given_q, using = "priors",
+    stats = c(mean = mean), legacy = FALSE
+  ))
+  expect_equal(q_fac$mean, q_pop$mean, tolerance = 1e-10)
+  q_fac_u <- suppressWarnings(query_model(
+    model, query, using = "priors",
+    stats = c(mean = mean), legacy = FALSE
+  ))
+  expect_equal(q_fac_u$mean, q_uncond$mean, tolerance = 1e-10)
+})
 
 test_that("set_confound rowSums filter drops all-zero rows and keeps P aligned", {
   model <- make_model("X -> Y") |> set_confound(list("X <-> Y"))

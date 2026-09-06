@@ -7,13 +7,27 @@ and query specifications that would otherwise fail silently or exhaust memory.
 
 `make_model()`, `update_model()`, and `query_*` gain a `legacy` argument
 (default `FALSE`, overridable via `options(CausalQueries.legacy)`).
-`legacy = TRUE` keeps the current causal-type Stan and query path.
-`legacy = FALSE` is the parameters-only / factorized path: models may omit
-the global causal-type table; update uses a Stan model without a causal-type
-matrix `P` (unconfounded and confounded via path-encoded `parmap`); query uses
-relevant-set VE with stratified weights under `<->`; fitted models are stamped
-so later steps inherit the method. Coarsened / missing-data VE on this path
-is still forthcoming.
+`legacy = TRUE` keeps the previous causal-type Stan and query path.
+`legacy = FALSE` is the parameters-only / factorized path: update uses a Stan
+model without a causal-type matrix `P` (unconfounded and confounded via
+path-encoded `parmap`); query uses relevant-set VE with stratified weights
+under `<->`; fitted models are stamped so later steps inherit the method.
+Coarsened / missing-data VE on the R side is available (`prob_event_ve`);
+Stan prep remains capped by `CausalQueries.factorized_grid_max`. See vignette
+`g-factorized-path` (source `vignettes/sources/g-factorized-path.Rmd`).
+
+**Compatible for usual workflows.** `query_model` / `query_distribution`,
+`update_model`, `make_data`, `get_event_probabilities`, `realise_outcomes`,
+and `inspect` / `grab` for structure (`causal_types`, `parameter_matrix`,
+`ambiguities_matrix`, `type_prior`, …) still work. Those objects are built
+**on demand** when requested; they are not stored on the model by default.
+`grab(model, "causal_types")` does not attach a permanent
+`model$causal_types` slot.
+
+**Restore 1.4.6 behaviour** with `legacy = TRUE` (or
+`options(CausalQueries.legacy = TRUE)`), including attaching causal types at
+`make_model` and optional `type_posterior` after update when
+`keep_type_distribution = TRUE`.
 
 ### Type reductions for large models
 
@@ -24,29 +38,47 @@ applies the same rules to an existing model. See `?simplify_model`.
 
 ### Non Backwards Compatible Changes
 
-`make_model()` gains an `allow_large` argument. The number of causal types is
-the product of the numbers of nodal types across nodes. When that product
-exceeds one million and causal types will be built, `make_model` now errors
-unless `allow_large = TRUE`, in which case it warns instead. Setting
-`add_causal_types = FALSE` skips the check. Restricted `nodal_types` are
-assessed by their actual lengths, so a many-parent node with a small type set
-is allowed when the product stays below the limit. Auto-generating nodal types
-for a node with five or more parents is refused; pass `nodal_types` explicitly
-in that case. This guards against accidental multi-gigabyte allocations.
-
-`update_model()` now throws an error when `censored_types` contains a data type
-that is not a data type of the model. Previously a misspelled type silently
-censored nothing and changed the answer with no indication.
+* **Default path is factorized** (`legacy = FALSE`). Scripts that relied on
+  the old default without setting `legacy` now use the factorized Stan /
+  query path. Answers for supported queries match the legacy path; internals
+  differ (see below).
+* **`model$causal_types` and `model$P` are `NULL` by default** after
+  `make_model()`. Use `grab(model, "causal_types")` /
+  `grab(model, "parameter_matrix")` (or `inspect`) rather than the raw slots.
+  Direct `$` access that assumed those slots were always filled will break.
+* **No `type_posterior` on factorized updates.** Even with
+  `keep_type_distribution = TRUE`, factorized fits do not store type draws.
+  `grab` / `inspect(..., "type_posterior")` error with guidance:
+  use `posterior_distribution` and `query_model(..., using = "posteriors")`
+  for parameter draws and type-level estimands, or re-update with
+  `legacy = TRUE` and `keep_type_distribution = TRUE` for the full matrix.
+* **Default `stan_summary` is leaner:** printed Stan parameters are
+  `lambdas` and `lp__` unless `keep_event_probabilities` / (legacy)
+  `keep_type_distribution` retains `w` / types.
+* `make_model()` gains an `allow_large` argument. The number of causal types is
+  the product of the numbers of nodal types across nodes. When that product
+  exceeds one million and causal types will be built, `make_model` now errors
+  unless `allow_large = TRUE`, in which case it warns instead. Setting
+  `add_causal_types = FALSE` skips the check. Restricted `nodal_types` are
+  assessed by their actual lengths, so a many-parent node with a small type set
+  is allowed when the product stays below the limit. Auto-generating nodal types
+  for a node with five or more parents is refused; pass `nodal_types` explicitly
+  in that case. This guards against accidental multi-gigabyte allocations.
+* `update_model()` now throws an error when `censored_types` contains a data type
+  that is not a data type of the model. Previously a misspelled type silently
+  censored nothing and changed the answer with no indication.
 
 ### Bug Fixes
 
-* `plot_model()` / `plot()`: nodes on a vertical chain are no longer clipped
-  at the panel edge; branched Sugiyama layouts no longer stretch a tiny
-  x-range across the whole plot; confound arcs (`<->`) are drawn with
-  `ggplot2::geom_curve` (shallow bows) instead of ggraph circular
-  semicircles. New arguments: `pad`, `normalize_layout`, `confound_bulge`,
-  and `clip`; `strength = NULL` (default) is auto curvature, or pass a
-  number for a fixed `geom_curve` curvature.
+* `set_confound()` matches conditioning tokens in `P` by exact causal-type
+  membership (not `grepl` substring / regex). `clean_statement()` requires
+  syntactic R node names (`make.names(x) == x`).
+* `collapse_data()` warns with a drop count for inconsistent 0/1 coding and
+  errors when every observation is inconsistent (was a quiet `message`).
+* Default `query_model()` stats use `na.rm = TRUE` for mean and sd as well as
+  credible bounds, so draws with zero given mass do not mix NA handling.
+* Query evaluation (`map_query_to_causal_type` / `map_query_to_nodal_type`)
+  runs in a child environment so node names cannot collide with function locals.
 * `update_model()` no longer overrides `control` arguments supplied by the user:
   `adapt_delta`, `max_treedepth`, and `save_warmup` are now respected, so tuning
   away divergent transitions has an effect.
@@ -105,6 +137,10 @@ typical vignette-sized DAGs.
   multiply instead of a nested `apply`. Rows still cover the full observed
   partition (including coarsened / NA strategies); columns are possible
   complete data types. Stan's `w_full = E * w` is unchanged.
+* Query-path `realise_outcomes` results are memoized by `dos` (per-query and
+  on `model$.cache`, cleared by mutators).
+* `get_type_prob_c` skips inactive parameter rows; leaner `stan_summary`
+  prints `lambdas` + `lp__` unless event/type draws are retained.
 
 # CausalQueries 1.4.6
 

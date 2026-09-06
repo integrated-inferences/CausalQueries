@@ -3,9 +3,9 @@
  *
  * Same Dirichlet simplexes + strategy multinomial as simplexes.stan, but
  * no causal-type matrix P and no type posterior in generated quantities.
- * R prep supplies parmap/map/E from nodal factorization
- * (see memos/factorized_contract.md). Encoding is path-based so confound /
- * missing backends can enrich parmap/map later without a new Stan file.
+ * R prep supplies parmap/map/E from nodal factorization. Encoding is
+ * path-based so confound / missing backends can enrich parmap/map later
+ * without a new Stan file.
  */
 
 data {

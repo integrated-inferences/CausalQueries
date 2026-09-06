@@ -25,13 +25,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_type_prob_multiple_c
-arma::mat get_type_prob_multiple_c(arma::mat params, arma::mat P);
+arma::mat get_type_prob_multiple_c(const arma::mat& params, const arma::mat& P);
 RcppExport SEXP _CausalQueries_get_type_prob_multiple_c(SEXP paramsSEXP, SEXP PSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type params(paramsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP);
     rcpp_result_gen = Rcpp::wrap(get_type_prob_multiple_c(params, P));
     return rcpp_result_gen;
 END_RCPP

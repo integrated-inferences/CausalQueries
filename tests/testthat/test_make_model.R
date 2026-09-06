@@ -10,8 +10,12 @@ testthat::test_that(
 		model <- make_model("X -> Y")
 		out <- capture.output(print(model))
 		expect_true(any(grepl("X -> Y", out)) &
-		              any(grepl("^Number of nodal types by node:", out)) &
-		              any(grepl("^Number of causal types:", out)))
+		              any(grepl("^Number of nodal types by node:", out)))
+		# Causal-type count is printed only when causal_types are attached
+		# (legacy / on-demand). Factorized make_model omits that block.
+		if (!is.null(model$causal_types)) {
+		  expect_true(any(grepl("^Number of causal types:", out)))
+		}
 		out <- class(summary(model))
 		expect_equal(out, "summary.causal_model")
 

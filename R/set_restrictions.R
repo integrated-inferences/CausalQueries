@@ -374,6 +374,7 @@ set_restrictions <- function(model,
     model$stan_objects <- NULL
   }
 
+  model <- clear_model_cache(model)
   return(model)
 }
 

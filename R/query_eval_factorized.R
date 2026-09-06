@@ -3,7 +3,6 @@
 #' Relevant-set variable elimination over nodal types: expand only types that
 #' enter the query, weight by lambda products (stratified under confound)
 #' without storing type_posterior. Confound merges factor_blocks.
-#' See memos/factorized_contract.md §6.
 #'
 #' @keywords internal
 #' @noRd
@@ -325,8 +324,11 @@ factorized_query_schedule <- function(model, query = NULL, given = "ALL") {
     )
   }
 
+  # Shallow copy: private .cache so relevant-set realisations do not share
+  # keys with the caller's model cache (even with types_fp in the key).
   m <- model
   m$causal_types <- ct
+  m$.cache <- new.env(parent = emptyenv())
   list(
     causal_types = ct,
     type_nodes = type_nodes,
@@ -502,7 +504,15 @@ query_distribution_factorized <- function(model,
   if (!is.null(names(queries))) {
     colnames(out) <- make.unique(names(queries), sep = "_")
   } else {
-    colnames(out) <- make.unique(q_chr, sep = "_")
+    # Match legacy query_distribution naming: append " :|: <given>"
+    given_names <- vapply(g_chr, function(g) {
+      if (g %in% c("ALL", "TRUE") || identical(g, "TRUE")) {
+        ""
+      } else {
+        paste0(" :|: ", g)
+      }
+    }, character(1))
+    colnames(out) <- make.unique(paste0(q_chr, given_names), sep = "_")
   }
   out
 }

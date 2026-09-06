@@ -192,30 +192,42 @@ testthat::test_that(
 	desc = "update_model: keep_event_probabilities and keep_type_distribution",
 
 	code = {
+		# Factorized path: event probs kept; type distribution is legacy-only
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
 		                                         keep_type_distribution = TRUE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("X1Y1", updated$stan_objects$stan_summary[15]))
-		expect_true(grepl("X0.Y00", updated$stan_objects$stan_summary[16]))
+		expect_true(any(grepl("X1Y1", updated$stan_objects$stan_summary)))
+		expect_true(any(grepl("X0Y0", updated$stan_objects$stan_summary)))
+		expect_null(updated$stan_objects$type_posterior)
 
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = FALSE,
 		                                         keep_type_distribution = FALSE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("Y.11", updated$stan_objects$stan_summary[11]))
-		expect_true(grepl("lp__", updated$stan_objects$stan_summary[12]))
+		expect_true(any(grepl("Y.11", updated$stan_objects$stan_summary)))
+		expect_true(any(grepl("lp__", updated$stan_objects$stan_summary)))
 
 		updated <- suppressWarnings(update_model(make_model("X->Y"),
 		                                         keep_event_probabilities = TRUE,
 		                                         keep_type_distribution = FALSE,
 		                                         refresh = 0,
 		                                         keep_fit = TRUE  ))
-		expect_true(grepl("Y.11", updated$stan_objects$stan_summary[11]))
-		expect_true(grepl("X0Y0", updated$stan_objects$stan_summary[12]))
+		expect_true(any(grepl("Y.11", updated$stan_objects$stan_summary)))
+		expect_true(any(grepl("X0Y0", updated$stan_objects$stan_summary)))
 
+		skip_if_legacy_objects()
+		updated_leg <- with_legacy_true({
+		  suppressWarnings(update_model(make_model("X->Y"),
+		                                keep_event_probabilities = TRUE,
+		                                keep_type_distribution = TRUE,
+		                                refresh = 0,
+		                                keep_fit = TRUE))
+		})
+		expect_true(any(grepl("X0\\.Y00", updated_leg$stan_objects$stan_summary)))
+		expect_false(is.null(updated_leg$stan_objects$type_posterior))
 	}
 )
 
@@ -407,7 +419,7 @@ test_that("results right for partial data model", {
 test_that("stan_summary has expected parameter names", {
 
   model <- make_model("X -> M -> Y") |>
-    update_model()
+    update_model(refresh = 0)
 
   # `grab(model, "stan_summary")` returns a character vector of printed lines
   lines <- grab(model, "stan_summary")
@@ -419,21 +431,21 @@ test_that("stan_summary has expected parameter names", {
   grabbed_names <- regmatches(lines, name_matches)
   grabbed_names <- grabbed_names[grabbed_names != ""]  # drop non-matches
 
-  expected_names <- c(
+  # Always present: nodal parameters + lp__
+  expect_true(all(c(
     "X.0", "X.1",
     "M.00", "M.10", "M.01", "M.11",
     "Y.00", "Y.10", "Y.01", "Y.11",
-    "X0.M00.Y00", "X1.M00.Y00", "X0.M10.Y00", "X1.M10.Y00",
-    "X0.M01.Y00", "X1.M01.Y00", "X0.M11.Y00", "X1.M11.Y00",
-    "X0.M00.Y10", "X1.M00.Y10", "X0.M10.Y10", "X1.M10.Y10",
-    "X0.M01.Y10", "X1.M01.Y10", "X0.M11.Y10", "X1.M11.Y10",
-    "X0.M00.Y01", "X1.M00.Y01", "X0.M10.Y01", "X1.M10.Y01",
-    "X0.M01.Y01", "X1.M01.Y01", "X0.M11.Y01", "X1.M11.Y01",
-    "X0.M00.Y11", "X1.M00.Y11", "X0.M10.Y11", "X1.M10.Y11",
-    "X0.M01.Y11", "X1.M01.Y11", "X0.M11.Y11", "X1.M11.Y11",
     "lp__"
-  )
+  ) %in% grabbed_names))
 
-  expect_identical(grabbed_names, expected_names)
+  # Causal-type rows only on legacy path with type distribution kept
+  if (isTRUE(getOption("CausalQueries.legacy")) ||
+      !is.null(model$stan_objects$type_posterior)) {
+    expect_true("X0.M00.Y00" %in% grabbed_names)
+  } else {
+    # Factorized: no type rows in stan_summary
+    expect_false(any(grepl("^X[01]\\.M", grabbed_names)))
+  }
 })
 

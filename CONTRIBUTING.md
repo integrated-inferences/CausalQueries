@@ -31,27 +31,27 @@
   
 ### Updating or writing vignettes 
   
-  As vignettes making use of `update_model()` may have long run-/compile times and we wish to minimize time and resource demands both when 
-  testing and deploying `CausalQueries`; vignette writing and updating makes use of a slightly modified workflow. 
-  Vignettes are complied locally from a `vignette-name.Rmd.orig` file; its outputs are passed to the `vignette` folder and a `vignette-name.Rmd` 
-  file with non-executable code chunks is constructed from these outputs. This workflow is handled via the `build_vignettes()` function of this package.
+  Vignettes that call `update_model()` are slow, so we pre-knit them locally and ship frozen
+  `vignettes/<name>.Rmd` files to CRAN. See `vignettes/README.md` for the folder map.
   
-  Whether you update an existing vignette or write a new one, be sure to give your code chunks (particularly those producing plots) **unique** and **ìnformative** names.
+  - **Edit** only `vignettes/sources/<name>.Rmd`
+  - **Do not edit** the frozen `vignettes/<name>.Rmd` (it is generated)
+  - Figures land in `vignettes/figures/<name>/`
+  - Rebuild with `CausalQueries:::build_vignettes(only = "<name>")`
   
-  If you wish to add a new vignette please proceed as follows: 
+  Give code chunks (especially plots) **unique** and **informative** names so figure files stay stable.
   
-  - write your vignette as a R markdown file with executable code chunks + formatting in the normal fashion
-  - save this file as `vignette-name.Rmd.orig` in the vignettes folder (replace `vignette-name` with your desired vignette name here)
-  - run `CausalQueries:::build_vignettes()` specifying the name of your vignette without any file extension as an optional argument i.e. `CausalQueries:::build_vignettes("vignette-name")` 
-  - add your vignette's name as a default in the `vignettes` argument of `build_vignettes()`
-  - add your `vignette-name.Rmd.orig` to the `.Rbuildignore` file like so `^vignette-name.Rmd.orig$`
-  - push changes to github 
+  **New vignette:**
   
-  If you wish to update an existing vignette proceed as follows: 
+  - add `vignettes/sources/<name>.Rmd` with normal executable chunks
+  - set `fig.path = "figures/<name>/"` in the setup chunk
+  - run `CausalQueries:::build_vignettes(only = "<name>")`
+  - add `<name>` to the default list in `R/build_vignettes.R`
+  - ensure `.Rbuildignore` contains `^vignettes/sources$`
   
-  - make desired changes in the `vignette-name.Rmd.orig` file 
-  - run `build_vignettes()` 
-  - push changes to github
+  **Update an existing vignette:**
+  
+  - edit `vignettes/sources/<name>.Rmd`
+  - run `CausalQueries:::build_vignettes(only = "<name>")` (or omit `only` to rebuild all)
+  - commit the frozen `.Rmd` and any figure changes
 
-  
-  
