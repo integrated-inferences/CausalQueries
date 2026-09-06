@@ -1,3 +1,145 @@
+# CausalQueries 1.5.0
+
+**AI statement.** 1.5 is the first version of CausalQueries with major support
+from AI models for refactoring, including new AI-written code and documentation.
+The codebase and documentation build on architecture developed by humans in
+earlier versions of CausalQueries, and humans also generated multiple tests for
+all major parts of the codebase. So while we have reviewed the codebase for 1.5,
+we did not write it all. The guarantee offered for the package, then, is not
+that every line of code has been vouched for. Rather, it is that the package
+can be shown, through repeated testing, to do what it says it does.
+
+The major changes since the CRAN 1.4.x line (behavioural baseline: causal-type
+workflow through 1.4.6) are as follows.
+
+## Speed and scale
+
+### Factorized default (parameters-only path)
+
+`make_model()`, `update_model()`, and `query_*` gain a `legacy` argument
+(default `FALSE`, overridable via `options(CausalQueries.legacy)`).
+
+* `legacy = FALSE` (default): parameters-only / factorized path. Update uses
+  Stan model `simplexes_factorized` without a causal-type matrix `P`
+  (unconfounded and confounded via path-encoded `parmap`). Query uses
+  relevant-set variable elimination with stratified weights under `<->`.
+  Fitted models are stamped so later steps inherit the method. Usual workflows
+  (`query_model` / `query_distribution`, `update_model`, `make_data`,
+  `get_event_probabilities`, `realise_outcomes`, `inspect` / `grab`) still
+  work; large structural objects are built **on demand**, not stored on the
+  model by default.
+* `legacy = TRUE`: restores the previous causal-type Stan and query path,
+  including attaching causal types at `make_model` and optional
+  `type_posterior` when `keep_type_distribution = TRUE`.
+
+See vignette `g-factorized-path` (source `vignettes/g-factorized-path.Rmd.orig`).
+
+Answers for supported models and queries match the legacy path within MCMC /
+floating-point noise. The asymptotic win is avoiding the global causal-type
+**product** for ordinary update and query on modular DAGs; wall-clock gains on
+tiny vignette-sized graphs are modest and noisy.
+
+### Shrinking nodal types
+
+`make_model()` gains `drop_interactions`, `keep_interactions`, and `monotone`
+to build reduced nodal-type sets at construction (e.g. four parents without
+65,536 schedules). `simplify_model()` (alias `set_nodal_restrictions()`)
+applies the same rules to an existing model. See `?simplify_model`.
+
+### Size guards
+
+* `allow_large`: when the causal-type product exceeds one million and types
+  will be built, `make_model` errors unless `allow_large = TRUE` (then warns).
+  `add_causal_types = FALSE` skips the check. Restricted `nodal_types` are
+  assessed by actual lengths.
+* Auto-generating nodal types for a node with five or more parents is refused;
+  pass `nodal_types` explicitly.
+* Factorized Stan prep is capped by `options(CausalQueries.factorized_grid_max)`
+  (default 4096). Coarsened / missing-data VE on the R side is available
+  (`prob_event_ve`).
+
+### Performance hygiene
+
+Internal R paths that recomputed the same objects, or used nested `apply` /
+dplyr where a single matrix call suffices, have been rewritten. Answers are
+unchanged. These are cleanliness / asymptotic improvements, not a claimed
+user-facing speedup for typical vignette-sized DAGs.
+
+* `query_model()` subsets the type-probability matrix once per estimand;
+  `colSums` in place of `apply(..., 2, sum)`.
+* `set_confound()` / `set_restrictions()` / `get_event_probabilities()` use
+  `rowSums` / `rowsum` where appropriate.
+* `prep_stan_data()` builds data families once; `get_data_families()` builds
+  `E` with one matrix multiply (Stan still `w_full = E * w`).
+* Query-path `realise_outcomes` memoized by `dos` (`model$.cache`, cleared by
+  mutators); leaner C++ type-probability paths; leaner default `stan_summary`
+  (`lambdas` + `lp__` unless event/type draws are retained).
+
+## Fundamentals (API)
+
+### Non-backwards-compatible defaults
+
+* **Default path is factorized** (`legacy = FALSE`). Scripts that assumed the
+  old causal-type default without setting `legacy` now use the factorized
+  path.
+* **`model$causal_types` and `model$P` are `NULL` by default** after
+  `make_model()`. Use `grab` / `inspect` rather than raw slots.
+* **No `type_posterior` on factorized updates.** Even with
+  `keep_type_distribution = TRUE`, factorized fits do not store type draws.
+  Use `posterior_distribution` and `query_model(..., using = "posteriors")`,
+  or re-update with `legacy = TRUE` and `keep_type_distribution = TRUE`.
+* **Leaner default `stan_summary`:** printed Stan parameters are `lambdas`
+  and `lp__` unless event/type draws were retained.
+
+### Confounding and missing data
+
+Unobserved confounding (`<->`) is supported on the factorized path (confound
+blocks; stratified parameters). Likelihood contract unchanged in spirit:
+`w` on complete data types, `w_full = E * w` for observed / coarsened events.
+
+## Robustness and correctness
+
+* `update_model()` respects user `control` (`adapt_delta`, `max_treedepth`,
+  `save_warmup`); errors on invalid `censored_types`; checks `parameters_df`
+  contiguity by `param_set` / `node`.
+* `realise_outcomes()` rejects `dos` other than 0/1 (R and C++).
+* `set_restrictions()`: warn and return unchanged when nothing matches; error
+  if a node would lose all nodal types. `&` inside do-brackets errors with a
+  comma hint (no auto-rewrite).
+* `get_event_probabilities(given = )` conditions on possible events (rows of
+  `w`), not the full \(2^n\) grid after restrictions.
+* `collapse_data()`: warn with drop count for inconsistent 0/1 coding; error
+  if every row is inconsistent. `set_confound()` uses exact token match (not
+  substring `grepl`); `clean_statement` requires `make.names(x) == x`.
+* Default `query_model()` stats use `na.rm = TRUE` for mean, sd, and credible
+  bounds. Query evaluation runs in a child environment so node names cannot
+  collide with function locals.
+* `inspect()` / `grab()`: missing `what` OK; vector `what` returns a named
+  list; shared catalogue of component names with `summary` /
+  `print.summary`. `summary()` on a `model_query` returns class
+  `summary.model_query`.
+* `make_data()` / observe-data fixes for `probs`, subsets, and oversampling;
+  informative errors when no query is supplied to `query_*`;
+  `make_parameters(..., param_type = "posterior_*")` uses `has_posterior()`.
+
+## Interface, docs, and packaging
+
+* `plot.model_query`: explicit error-bar whisker width (ggplot2 4 default was
+  too tall and merged adjacent rows).
+* `plot_model`: layout normalization, confound-arc controls, modest pad /
+  margins, `clip = "off"`; panels fill the device (`coord_cartesian`).
+* Vignettes: edit `vignettes/<name>.Rmd.orig`, rebuild with
+  `CausalQueries:::build_vignettes()`; figures under `vignettes/figures/<name>/`.
+* Documentation: arrow syntax (not "dagitty"); clearer `type_posterior` vs
+  `keep_type_distribution`; `w` vs `w_full`; JSS citation; pkgdown reference
+  index grouped by task (make / inspect / update / query / data / helpers).
+* Package hex / favicons; print/summary methods split across
+  `methods_causal_model.R` and `methods_model_query.R`.
+
+In addition: documentation fixes and corrections to declared dependencies.
+The package attach message again prints a copy-paste command for setting
+`options(mc.cores = parallel::detectCores())` when `mc.cores` is unset.
+
 # CausalQueries 1.4.6
 
 This is a documentation-only release adding the citation for the Journal of

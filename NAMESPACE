@@ -35,11 +35,13 @@ export(query_distribution)
 export(query_model)
 export(realise_outcomes)
 export(set_confound)
+export(set_nodal_restrictions)
 export(set_parameter_matrix)
 export(set_parameters)
 export(set_prior_distribution)
 export(set_priors)
 export(set_restrictions)
+export(simplify_model)
 export(substitutes)
 export(te)
 export(update_model)
@@ -50,26 +52,33 @@ import(ggraph)
 import(methods)
 import(rstantools)
 importFrom(dirmult,rdirichlet)
-importFrom(dplyr,filter)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
-importFrom(dplyr,tibble)
-importFrom(graphics,plot)
-importFrom(grid,arrow)
-importFrom(grid,unit)
-importFrom(rlang,expr)
-importFrom(rlang,exprs)
-importFrom(rlang,is_empty)
-importFrom(rstan,extract)
-importFrom(rstan,sampling)
-importFrom(rstan,stan)
-importFrom(stats,rmultinom)
-importFrom(stats,runif)
-importFrom(stats,sd)
-importFrom(stats,weighted.mean)
-importFrom(stringr,boundary)
-importFrom(stringr,str_detect)
-importFrom(stringr,str_split)
+importFrom(dplyr,
+  filter,
+  left_join,
+  mutate,
+  select,
+  tibble
+)
+importFrom(grid,
+  arrow,
+  unit
+)
+importFrom(rlang,
+  expr,
+  exprs
+)
+importFrom(rstan,
+  extract,
+  sampling
+)
+importFrom(stats,
+  rmultinom,
+  runif,
+  sd
+)
+importFrom(stringr,
+  boundary,
+  str_split
+)
 importFrom(utils,globalVariables)
 useDynLib(CausalQueries, .registration = TRUE)

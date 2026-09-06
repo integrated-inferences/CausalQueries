@@ -72,6 +72,53 @@ testthat::test_that(
 
 testthat::test_that(
 
+	desc = "subsets referring to unobserved nodes do not error",
+
+	code = {
+		# "Y==1" evaluates to NA for every row because Y has not been observed
+		expect_message(
+			obs <- observe_data(complete_data = df,
+			                    nodes_to_observe = "X",
+			                    subset = "X==1 & Y==1"),
+			"Empty subset"
+		)
+		expect_true(all(!obs$X))
+		expect_true(all(!obs$Y))
+	}
+)
+
+testthat::test_that(
+
+	desc = "a single candidate row is the row that gets observed",
+
+	code = {
+		# only row 7 satisfies X==1; sample(7, 1) would draw from 1:7
+		single <- data.frame(X = c(rep(0, 6), 1), Y = rep(0, 7))
+		obs_x <- observe_data(complete_data = single, nodes_to_observe = "X")
+
+		picked <- replicate(50, which(observe_data(complete_data = single,
+		                                           observed = obs_x,
+		                                           nodes_to_observe = "Y",
+		                                           m = 1,
+		                                           subset = "X==1")$Y))
+		expect_equal(unique(picked), 7L)
+	}
+)
+
+testthat::test_that(
+
+	desc = "asking for more units than the subset holds errors informatively",
+
+	code = {
+		expect_error(
+			observe_data(complete_data = df, nodes_to_observe = "X", m = 10),
+			"Cannot observe 10 units"
+		)
+	}
+)
+
+testthat::test_that(
+
 	desc = "m overrides p (observe)",
 
 	code = {

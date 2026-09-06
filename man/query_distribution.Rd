@@ -13,7 +13,8 @@ query_distribution(
   n_draws = 4000,
   join_by = "|",
   case_level = FALSE,
-  query = NULL
+  query = NULL,
+  legacy = NULL
 )
 }
 \arguments{
@@ -29,7 +30,7 @@ conditioning marker '|' to avoid confusion with logical operators.}
 \item{given}{A character vector specifying given conditions for each query.
 A 'given' is a quoted expression that evaluates to logical statement.
 \code{given} allows the query to be conditioned on either observed
-or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+or counterfactual distributions. A value of TRUE is interpreted as no conditioning.
 A given statement can alternatively be provided after a colon in the query statement.}
 
 \item{using}{A character. Whether to use priors, posteriors or parameters}
@@ -38,7 +39,7 @@ A given statement can alternatively be provided after a colon in the query state
 A true parameter vector to be used instead of parameters attached to
 the model in case  \code{using} specifies \code{parameters}}
 
-\item{n_draws}{An integer. Number of draws.rm}
+\item{n_draws}{An integer. Number of draws.}
 
 \item{join_by}{A character. The logical operator joining expanded types
 when \code{query} contains wildcard (\code{.}). Can take values
@@ -50,6 +51,12 @@ defaults to \code{"|"}, otherwise it defaults to \code{NULL}.}
 the query for a case.}
 
 \item{query}{alias for queries}
+
+\item{legacy}{Logical or \code{NULL}. \code{FALSE} uses the factorized /
+parameters-only path (type weights from lambdas without storing
+\code{type_posterior}; supports confounding). \code{TRUE} uses the
+causal-type path. \code{NULL} inherits \code{model$legacy} then
+\code{options(CausalQueries.legacy)}.}
 }
 \value{
 A data frame where columns contain draws from the distribution

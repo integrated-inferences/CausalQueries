@@ -293,3 +293,19 @@ testthat::test_that(
 
   }
 )
+
+testthat::test_that(
+
+  desc = "Missing queries are flagged.",
+
+  code = {
+
+    model <- make_model("X -> Y")
+
+    expect_error(query_model(model),
+                 "Please supply at least one query")
+    expect_error(query_distribution(model),
+                 "Please supply at least one query")
+
+  }
+)

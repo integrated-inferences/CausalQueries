@@ -15,7 +15,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = ""
+  fig.path = "figures/e-posteriors/"
 )
 
 ```
@@ -26,6 +26,7 @@ library(knitr)
 library(ggplot2)
 library(rstan)
 library(bayesplot)
+CausalQueries:::enable_stan_parallel(quiet = TRUE)
 rstan_options(refresh = 0)
 ```
 

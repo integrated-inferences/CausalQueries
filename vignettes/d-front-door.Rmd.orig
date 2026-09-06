@@ -15,7 +15,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = ""
+  fig.path = "figures/d-front-door/"
 )
 ```
 
@@ -23,11 +23,12 @@ knitr::opts_chunk$set(
 library(CausalQueries)
 library(dplyr)
 library(knitr)
+CausalQueries:::enable_stan_parallel(quiet = TRUE)
 ```
 
 Here is an example of a model in which `X` causes `M` and  `M` causes `Y`. There is, in addition, unobservable confounding between `X` and `Y`. This is an example of a model in which you might use information on `M` to figure out whether `X` caused `Y` making use of the "front door criterion."
 
-The DAG is defined using `dagitty` syntax like this:
+The DAG is defined using arrow syntax like this:
 
 ```{r}
 model <- make_model("X -> M -> Y <-> X")

@@ -1,13 +1,14 @@
-# CausalQueries
+# CausalQueries <a href="https://shiny2.wzb.eu/ipi/process_tracing/"><img src="man/figures/logo.png" align="right" height="139" alt="CausalQueries hex logo" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 [![CRAN downloads total](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 [![CRAN downloads monthly](https://cranlogs.r-pkg.org/badges/CausalQueries)](https://cran.r-project.org/package=CausalQueries)
 [![DOI](https://zenodo.org/badge/186861431.svg)](https://doi.org/10.5281/zenodo.14191700)
+[![Shiny app](https://img.shields.io/badge/Shiny-try%20the%20app-blue)](https://shiny2.wzb.eu/ipi/process_tracing/)
 <!-- badges: end -->
 
-`CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition is implemented via a `dagitty` style syntax. Updating is implemented in `stan`. 
+`CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition uses arrow syntax for causal statements (e.g. `"X -> Y"`, `"X <-> Y"`). Updating is implemented in `stan`. 
 
 * See vignettes for a guide to getting started.
 
@@ -15,7 +16,7 @@
 
 * See [website](https://integrated-inferences.github.io/CausalQueries/) for a comprehensive overview of `CausalQueries`
 
- 
+* Try the interactive [Shiny app](https://shiny2.wzb.eu/ipi/process_tracing/) (process tracing / make–update–query)
 
 ## Installation
 
@@ -43,7 +44,7 @@ Causal models are defined by:
 
 * A **directed acyclic graph** (DAG), which provides the set of variables, a causal ordering between them, and a set of assumptions regarding conditional independence. If there is no arrow from `A` to `B` then a change in `A` never induces a change in `B`. 
 * **Functional forms**. Functional forms describe the causal relationships between nodes. You often have to make strong assumptions when you specify a functional form; fortunately however if variables are categorical  we do not need functional forms in the usual sense. The DAG implies a set of "causal types." Units can be classed together as of the same causal type if they respond to the same way to other variables.  For instance, a type might be the set of units for which `X=1` and for which `Y=1` if and only if `X=1`. The set of causal types grows rapidly with the number of nodes and the number of nodes pointing into any given node. In this setting imposing functional forms is the same as placing *restrictions on causal types*: such restrictions reduce  complexity but require substantive assumptions. An example of a restriction might be "`Y` is monotonic in `X`."
-* **Priors.** In the standard case, the DAG plus any restrictions imply a set of parameters that combine to form causal types. These are the  parameters we want to learn about. To learn about them we first provide priors over the parameters. With priors specified the causal model is complete (it is a "probabilistic causal model") and we are ready for inference.  Setting priors is done using the `set_priors` function and many examples can be seen by typing `? set_priors.R`.
+* **Priors.** In the standard case, the DAG plus any restrictions imply a set of parameters that combine to form causal types. These are the  parameters we want to learn about. To learn about them we first provide priors over the parameters. With priors specified the causal model is complete (it is a "probabilistic causal model") and we are ready for inference.  Setting priors is done using the `set_priors` function and many examples can be seen by typing `?set_priors`.
 
 
 A wrinkle:

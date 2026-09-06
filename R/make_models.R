@@ -1,11 +1,29 @@
 #' Make a model
 #'
 #' \code{make_model} uses causal statements encoded as strings to specify
-#' the nodes and edges of a graph. Implied causal types are calculated
+#' the nodes and edges of a graph. Implied nodal types are calculated
 #' and default priors are provided under the assumption of no confounding.
-#' Models can be updated with specification of a parameter matrix, \code{P}, by
-#' providing restrictions on causal types, and/or by providing informative
+#' Models can be updated with restrictions on types and/or informative
 #' priors on parameters.
+#'
+#' @section Large and many-parent models:
+#' The saturated type space grows very fast: a node with \(k\) binary parents
+#' has \(2^{2^k}\) nodal types (2, 4, 16, 256, 65536 for \(k = 1,\ldots,4\)).
+#' Practical options:
+#' \itemize{
+#'   \item Use the default \code{legacy = FALSE} path so a global causal-type
+#'     table is not attached at build.
+#'   \item Pass \code{drop_interactions} and/or \code{monotone} to build a
+#'     reduced type set at construction (see \code{\link{simplify_model}}),
+#'     e.g. \code{drop_interactions = TRUE, monotone = "+"}.
+#'   \item Pass a short \code{nodal_types} list for busy nodes (required for
+#'     five or more parents).
+#'   \item On an existing model, call \code{\link{simplify_model}}.
+#'   \item Set \code{allow_large = TRUE} only if you intentionally build a
+#'     causal-type product above one million under \code{legacy = TRUE}.
+#' }
+#' Nodal-type strings are one digit per parent assignment. Assignment order
+#' matches \code{get_parents()} / the column order in the node's type matrix.
 #'
 #' @param statement character string. Statement describing causal
 #'   relations between nodes. Directed relations can be specified
@@ -14,8 +32,33 @@
 #'   Confounded relations can be specified using a double headed arrow,
 #'   "X <-> Y", to indicate unobserved confounding between X and Y.
 #' @param add_causal_types Logical. Whether to create and attach causal
-#'   types to \code{model}. Defaults to `TRUE`.
-#' @param nodal_types List of nodal types associated with model nodes
+#'   types to \code{model}. Under \code{legacy = TRUE} defaults to `TRUE`.
+#'   Under \code{legacy = FALSE} (default) causal types are not attached
+#'   regardless of this argument.
+#' @param nodal_types Named list of character vectors of nodal types for
+#'   **every** node (same names and causal order as \code{model$nodes}).
+#'   Use this to keep a many-parent node small. If \code{NULL}, types are
+#'   auto-generated (refused for five or more parents on one node).
+#' @param allow_large Logical. The number of causal types is the product of
+#'   the numbers of nodal types across nodes. When that product exceeds
+#'   one million and causal types will be built
+#'   (\code{add_causal_types = TRUE}), \code{make_model} errors unless
+#'   \code{allow_large} is `TRUE`, in which case it warns instead. Defaults
+#'   to `FALSE`. Setting \code{add_causal_types = FALSE} or
+#'   \code{legacy = FALSE} skips attaching that product.
+#'   Restricted \code{nodal_types} are assessed by their actual lengths, so
+#'   a many-parent node with a small type set is allowed when the product
+#'   stays below the limit.
+#' @param legacy Logical. \code{FALSE} (default) is the new parameters-only /
+#'   factorized path (no global causal-type table at build). \code{TRUE}
+#'   restores the current causal-type expansion. Override with
+#'   \code{options(CausalQueries.legacy = TRUE)}.
+#' @param drop_interactions Drop interaction orders at least this high when
+#'   auto-building nodal types. See \code{\link{simplify_model}}.
+#' @param keep_interactions Interaction parent-sets to keep despite
+#'   \code{drop_interactions}. See \code{\link{simplify_model}}.
+#' @param monotone Monotonicity restrictions applied when building nodal
+#'   types. See \code{\link{simplify_model}}.
 #' @export
 #'
 #' @return An object of class \code{causal_model}.
@@ -35,7 +78,7 @@
 #' \item{parameters_df}{A \code{data.frame} with descriptive information
 #'   of the parameters in the model}
 #' \item{causal_types}{A \code{data.frame} listing causal types and the
-#'   nodal types that produce them}
+#'   nodal types that produce them (legacy / when attached)}
 #'
 #' By default a causal model has flat (uniform) priors and parameters that
 #' put equal weight on each parameter within each parameter set. The parameter
@@ -79,39 +122,83 @@
 #'  model <- make_model("X <-> Y")
 #' }
 #'
-#' nodal_types <-
-#'   list(
-#'     A = c("0","1"),
-#'     B = c("0","1"),
-#'     C = c("0","1"),
-#'     D = c("0","1"),
-#'     E = c("0","1"),
-#'     Y = c(
-#'       "00000000000000000000000000000000",
-#'       "01010101010101010101010101010101",
-#'       "00110011001100110011001100110011",
-#'       "00001111000011110000111100001111",
-#'       "00000000111111110000000011111111",
-#'       "00000000000000001111111111111111",
-#'       "11111111111111111111111111111111" ))
+#' # ---- Large / many-parent models ------------------------------------------
 #'
-#' make_model("A -> Y; B ->Y; C->Y; D->Y; E->Y",
-#'           nodal_types = nodal_types) |>
-#'  inspect("parameters_df")
+#' # Preferred: reduce types at construction (no 65k table for 4 parents)
+#' m_bare <- make_model(
+#'   "A -> Y <- B; C -> Y; D -> Y",
+#'   drop_interactions = TRUE,
+#'   monotone = "+",
+#'   legacy = FALSE
+#' )
+#' length(m_bare$nodal_types$Y)
+#' nrow(m_bare$parameters_df)
 #'
-#' nodal_types = list(Y = c("01", "10"), Z = c("0", "1"))
-#' make_model("Z -> Y", nodal_types = nodal_types) |>
-#'  inspect("parameters_df")
+#' # Default legacy = FALSE: wider DAG without attaching causal_types
+#' big <- make_model("A -> M -> Y; B -> Y; C -> Y", legacy = FALSE)
+#' big$causal_types  # NULL
+#'
+#' # Or thin after the fact
+#' make_model("A -> Y <- B; C -> Y") |>
+#'   simplify_model(drop_interactions = 2, monotone = "+") |>
+#'   inspect("nodal_types")
+#'
+#' # Hand-specified types still work (e.g. five parents)
+#' pa5 <- c("A", "B", "C", "D", "E")
+#' assign5 <- as.matrix(expand.grid(lapply(pa5, function(p) 0:1)))[, pa5, drop = FALSE]
+#' nt5 <- c(
+#'   setNames(lapply(pa5, function(p) c("0", "1")), pa5),
+#'   list(Y = c(
+#'     paste(rep(0, nrow(assign5)), collapse = ""),
+#'     paste(rep(1, nrow(assign5)), collapse = ""),
+#'     paste(assign5[, 1], collapse = "")
+#'   ))
+#' )
+#' make_model("A -> Y; B -> Y; C -> Y; D -> Y; E -> Y",
+#'            nodal_types = nt5) |>
+#'   inspect("parameters_df")
+#'
+#' make_model("Z -> Y", nodal_types = list(Z = c("0", "1"), Y = c("01", "10"))) |>
+#'   inspect("parameters_df")
+#'
+#' \dontrun{
+#' # Saturated four-parent Y (65,536 types) — avoid unless you mean it
+#' make_model("A -> Y <- B; C -> Y; D -> Y")
+#'
+#' # Legacy path with a huge causal-type *product*: allow_large = TRUE
+#' make_model("A -> Y <- B; C -> Y; D -> Y", legacy = TRUE, allow_large = TRUE)
+#' }
 
 
 make_model <- function(statement = "X -> Y",
                        add_causal_types = TRUE,
-                       nodal_types = NULL) {
+                       nodal_types = NULL,
+                       allow_large = FALSE,
+                       legacy = NULL,
+                       drop_interactions = NULL,
+                       keep_interactions = NULL,
+                       monotone = NULL) {
 
   parent <- NULL
+  legacy <- resolve_legacy(legacy)
 
   if (!is.character(statement) || length(statement) != 1) {
     stop("The model statement should be a single character string.")
+  }
+
+  if (!isTRUE(legacy)) {
+    add_causal_types <- FALSE
+  }
+
+  restrict_args_set <- !(is.null(drop_interactions) || isFALSE(drop_interactions)) ||
+    !is.null(keep_interactions) ||
+    !is.null(monotone)
+  if (restrict_args_set && !is.null(nodal_types)) {
+    stop(
+      "Pass either `nodal_types` or type-reduction arguments ",
+      "(`drop_interactions` / `keep_interactions` / `monotone`), not both.",
+      call. = FALSE
+    )
   }
 
 
@@ -185,7 +272,8 @@ make_model <- function(statement = "X -> Y",
   model <-
     list(statement = statement,
          nodes = nodes,
-         parents_df = parents_df)
+         parents_df = parents_df,
+         legacy = legacy)
 
   # Nodal types
   # Check nodal types map to nodes in model
@@ -229,7 +317,30 @@ make_model <- function(statement = "X -> Y",
   }
 
   if (is.null(nodal_types)) {
-    nodal_types <- get_nodal_types(model, collapse = TRUE)
+    if (restrict_args_set) {
+      nodal_types <- build_nodal_types_with_restrictions(
+        model,
+        drop_interactions = drop_interactions,
+        keep_interactions = keep_interactions,
+        monotone = monotone,
+        quiet = FALSE
+      )
+      check_causal_type_count(lengths(nodal_types),
+                              allow_large = allow_large,
+                              add_causal_types = add_causal_types)
+    } else {
+      n_types <- implied_nodal_type_counts(parents_df$parents)
+      names(n_types) <- parents_df$node
+      check_autogenerated_nodal_types(n_types)
+      check_causal_type_count(n_types,
+                              allow_large = allow_large,
+                              add_causal_types = add_causal_types)
+      nodal_types <- get_nodal_types(model, collapse = TRUE)
+    }
+  } else if (!is.logical(nodal_types)) {
+    check_causal_type_count(lengths(nodal_types),
+                            allow_large = allow_large,
+                            add_causal_types = add_causal_types)
   }
 
   # Add nodal types to model
@@ -247,6 +358,9 @@ make_model <- function(statement = "X -> Y",
 
   # Add class
   class(model) <- "causal_model"
+
+  # Derived-object cache (realise_outcomes, etc.); cleared by mutators
+  model <- ensure_model_cache(model)
 
   # Add causal types
   if (add_causal_types) {
@@ -292,6 +406,124 @@ make_model <- function(statement = "X -> Y",
 
   return(model)
 
+}
+
+
+#' Number of nodal types implied by a parent count: \code{2^(2^k)}
+#'
+#' Returns \code{Inf} when the value is not representable as a finite
+#' double (five or more parents).
+#'
+#' @param parents integer vector of parent counts
+#' @keywords internal
+#' @noRd
+
+implied_nodal_type_counts <- function(parents) {
+  parents <- as.numeric(parents)
+  out <- rep(Inf, length(parents))
+  ok <- is.finite(parents) & parents >= 0 & parents <= 4
+  out[ok] <- 2^(2^parents[ok])
+  # parents == 5 yields 2^32, which is finite in double but too large to
+  # materialise; treat parents >= 5 as non-representable here
+  out
+}
+
+
+#' Refuse auto-generation of an infeasibly large nodal type set
+#'
+#' @param n_types named numeric vector of per-node nodal type counts
+#' @param max_nodal_types maximum auto-generated types allowed for one node
+#' @keywords internal
+#' @noRd
+
+check_autogenerated_nodal_types <- function(n_types,
+                                            max_nodal_types = 65536) {
+  too_big <- !is.finite(n_types) | n_types > max_nodal_types
+  if (!any(too_big)) {
+    return(invisible(TRUE))
+  }
+  busiest <- paste(names(n_types)[too_big], collapse = ", ")
+  stop("Node(s) ", busiest,
+       " imply too many nodal types to auto-generate ",
+       "(more than ", format(max_nodal_types, big.mark = ","), ").\n",
+       "Supply `nodal_types` explicitly to work with a restricted type space, ",
+       "or reduce the number of parents.")
+}
+
+
+#' Guard against combinatorial explosion of causal types
+#'
+#' The number of causal types is the product of the numbers of nodal types.
+#' When that product exceeds \code{max_causal_types} and causal types will be
+#' built, error unless \code{allow_large} is \code{TRUE} (warning instead).
+#' Non-finite products always error. The check is skipped when
+#' \code{add_causal_types} is \code{FALSE}.
+#'
+#' @param n_types numeric vector of per-node nodal type counts
+#' @param allow_large logical. Permit products above the soft limit
+#' @param add_causal_types logical. Whether causal types will be attached
+#' @param max_causal_types soft upper bound on the product (default 1e6)
+#' @keywords internal
+#' @noRd
+
+check_causal_type_count <- function(n_types,
+                                    allow_large = FALSE,
+                                    add_causal_types = TRUE,
+                                    max_causal_types = 1e6) {
+  if (!isTRUE(add_causal_types)) {
+    return(invisible(TRUE))
+  }
+
+  n_types <- as.numeric(n_types)
+  if (length(n_types) == 0L || anyNA(n_types) || any(n_types < 1)) {
+    stop("Invalid nodal type counts.")
+  }
+
+  if (any(!is.finite(n_types))) {
+    stop("Implied type space is too large to represent.\n",
+         "Supply a restricted `nodal_types` list, set `add_causal_types = FALSE`, ",
+         "or reduce the model.")
+  }
+
+  # log-space product avoids overflow before the comparison
+  log_n <- sum(log(n_types))
+  log_max <- log(max_causal_types)
+  n_causal <- if (log_n > log(.Machine$double.xmax)) Inf else exp(log_n)
+
+  if (is.finite(log_n) && log_n <= log_max) {
+    return(invisible(TRUE))
+  }
+
+  counts_txt <- paste(format(n_types, big.mark = ",", scientific = FALSE),
+                      collapse = " x ")
+  n_txt <- if (is.finite(n_causal)) {
+    format(round(n_causal), big.mark = ",", scientific = FALSE)
+  } else {
+    "an astronomical number of"
+  }
+
+  msg <- paste0(
+    "This model implies ", n_txt, " causal types ",
+    "(product of nodal type counts: ", counts_txt, ").\n"
+  )
+
+  if (!is.finite(n_causal)) {
+    stop(msg,
+         "Supply a restricted `nodal_types` list, set `add_causal_types = FALSE`, ",
+         "or reduce the model.")
+  }
+
+  if (!allow_large) {
+    stop(msg,
+         "Building it takes substantial memory, and `update_model()` will ",
+         "typically fail to allocate.\n",
+         "Set `allow_large = TRUE` to build it anyway, supply restricted ",
+         "`nodal_types`, or set `add_causal_types = FALSE`.")
+  }
+
+  warning(msg,
+          "Model construction and updating will be slow and memory-hungry.")
+  invisible(TRUE)
 }
 
 
@@ -466,6 +698,19 @@ clean_statement <- function(statement) {
         "will cause downstream issues in query specification and parsing.",
         sep = " "
       )
+    )
+  }
+
+  # Syntactic R names only (avoids ambiguous tokens in confound / type labels)
+  bad_names <- nodes[make.names(nodes) != nodes | nodes == ""]
+  if (length(bad_names)) {
+    stop(
+      paste0(
+        "Unsupported variable names. Node names must be syntactic R names ",
+        "(make.names(x) == x). Problem: ",
+        paste(unique(bad_names), collapse = ", ")
+      ),
+      call. = FALSE
     )
   }
 

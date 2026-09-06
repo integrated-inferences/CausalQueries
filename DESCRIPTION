@@ -1,7 +1,7 @@
 Package: CausalQueries
 Type: Package
 Title: Make, Update, and Query Binary Causal Models
-Version: 1.4.6
+Version: 1.5.0
 Authors@R: c(person("Clara", "Bicalho", email = "clarabmcorreia@gmail.com", role = c("ctb")),
              person("Jasper", "Cooper", email = "jjc2247@columbia.edu", role = c("ctb")),
              person("Macartan", "Humphreys", email = "macartan@gmail.com", role = c("aut"),
@@ -37,7 +37,9 @@ Imports:
     ggplot2 (>= 3.3.5),
     lifecycle (>= 1.0.1),
     ggraph (>= 2.2.0),
-    Rcpp (>= 0.12.0)
+    Rcpp (>= 0.12.0),
+    grid,
+    utils
 LinkingTo: 
     Rcpp (>= 0.12.0),
     RcppArmadillo,
@@ -53,9 +55,10 @@ Suggests:
     estimatr,
     bayesplot,
     covr,
-    curl
+    curl,
+    haven
 SystemRequirements: GNU make
 Biarch: true
 VignetteBuilder: knitr
 URL: https://integrated-inferences.github.io/CausalQueries/
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

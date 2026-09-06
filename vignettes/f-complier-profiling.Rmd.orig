@@ -15,7 +15,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = ""
+  fig.path = "figures/f-complier-profiling/"
 )
 ```
 
@@ -24,6 +24,7 @@ library(CausalQueries)
 library(haven)
 library(knitr)
 library(dplyr)
+CausalQueries:::enable_stan_parallel(quiet = TRUE)
 ```
 
 Angrist, Imbens, and Rubin (1996) demonstrate that one can consistently estimate the local average treatment effect, LATE, (also called the complier average treatment effect, CATE) in randomized control trials with non-compliance. Compliers are units that comply with the treatment assignment, i.e., they participate if assigned to the treatment but not otherwise. In contrast, always-takers are units that always participate, regardless of their assignment. Never-takers are units that never participate, regardless of their assignment. Finally, defiers do the opposite of what they are assigned to do, i.e., they participate if assigned to the control group and do not participate if assigned to the treatment group. Angrist, Imbens, and Rubin (1996) highlight that to consistently estimate the LATE, randomization is not sufficient and one also needs to assume that there are no defiers, along with other assumptions.

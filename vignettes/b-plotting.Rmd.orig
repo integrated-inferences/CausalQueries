@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   echo = TRUE,
   comment = "#>",
-  fig.path = ""
+  fig.path = "figures/b-plotting/"
 )
 
 ```
@@ -115,9 +115,9 @@ make_model("I -> V -> G <- N; C -> I <- A -> G; G -> Z",
 ```
 
 
-## Requires manual coordinates
+## Manual coordinates
 
-This graph has bad node placement.
+Default node placement here requires curves.
 
 ```{r bbad, fig.cap = "Poor node placement"}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
@@ -125,12 +125,12 @@ make_model("D <- A -> B -> C -> D -> E; B -> E",
   plot()
 ```
 
-Better:
+Simpler alternative using manual node placement: 
 
 ```{r bmanual, fig.cap = "Manual node placement"}
 make_model("D <- A -> B -> C -> D -> E; B -> E",
            add_causal_types = FALSE) |>
-  plot(x_coord = c(0, -.1, 0, .1, 0), y_coord = 5:1)
+  plot(x_coord = c(.4, -.3, -.08, .1, 0), y_coord = 5:1)
 
 ```
 

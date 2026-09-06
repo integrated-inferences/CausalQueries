@@ -17,20 +17,25 @@
 #' @param given  A character vector specifying given conditions for each query.
 #'   A 'given' is a quoted expression that evaluates to logical statement.
 #'   \code{given} allows the query to be conditioned on either observed
-#'   or counterfactural distributions. A value of TRUE is interpreted as no conditioning.
+#'   or counterfactual distributions. A value of TRUE is interpreted as no conditioning.
 #'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param join_by A character. The logical operator joining expanded types
 #'   when \code{query} contains wildcard (\code{.}). Can take values
 #'   \code{"&"} (logical AND) or \code{"|"} (logical OR). When restriction
 #'   contains wildcard (\code{.}) and \code{join_by} is not specified, it
 #'   defaults to \code{"|"}, otherwise it defaults to \code{NULL}.
-#' @param n_draws An integer. Number of draws.rm
+#' @param n_draws An integer. Number of draws.
 #' @param case_level Logical. If TRUE estimates the probability of
 #'   the query for a case.
 #' @param query alias for queries
+#' @param legacy Logical or \code{NULL}. \code{FALSE} uses the factorized /
+#'   parameters-only path (type weights from lambdas without storing
+#'   \code{type_posterior}; supports confounding). \code{TRUE} uses the
+#'   causal-type path. \code{NULL} inherits \code{model$legacy} then
+#'   \code{options(CausalQueries.legacy)}.
 #' @return A data frame where columns contain draws from the distribution
 #'   of the potential outcomes specified in \code{query}
-#' @importFrom stats sd weighted.mean
+#' @importFrom stats sd
 #' @export
 #' @examples
 #' model <- make_model("X -> Y") |>
@@ -131,7 +136,10 @@ query_distribution <- function(model,
                                n_draws = 4000,
                                join_by = "|",
                                case_level = FALSE,
-                               query = NULL) {
+                               query = NULL,
+                               legacy = NULL) {
+  legacy <- resolve_legacy(legacy, model)
+
   ## check arguments
   if (is(model, "causal_model")) {
     model <- list(model)
@@ -144,6 +152,10 @@ query_distribution <- function(model,
         "You can pass a `causal_model` object directly or wrap it in a `list`."
       )
     )
+  }
+
+  if (is.null(query) && is.null(queries)) {
+    stop("Please supply at least one query via `queries` (or `query`).")
   }
 
   if (!is.null(query)) {
@@ -180,6 +192,19 @@ query_distribution <- function(model,
 
   given <- args_checked$given
   using <- args_checked$using
+
+  if (!isTRUE(legacy)) {
+    return(query_distribution_factorized(
+      model = model[[1]],
+      queries = queries,
+      given = given,
+      using = using,
+      parameters = parameters,
+      n_draws = n_draws,
+      join_by = join_by,
+      case_level = case_level
+    ))
+  }
 
   ## generate required data structures
   # generate model names
@@ -298,6 +323,9 @@ query_distribution <- function(model,
 #'   A given statement can alternatively be provided after a colon in the query statement.
 #' @param using A vector or list of strings. Whether to use priors,
 #'   posteriors or parameters.
+#' @param parameters A list of numeric vectors. Optional parameter values
+#'   to use when \code{using} includes \code{"parameters"}; one vector per
+#'   model when \code{model} is a list.
 #' @param stats Functions to be applied to the query distribution.
 #'   If NULL, defaults to mean, standard deviation,
 #'   and 95\% confidence interval. Functions should return a single numeric
@@ -312,6 +340,11 @@ query_distribution <- function(model,
 #' @param cred size of the credible interval ranging between 0 and 100
 #' @param labels labels for queries: if provided labels should have
 #'   the length of the combinations of requests
+#' @param legacy Logical or \code{NULL}. \code{FALSE} uses the factorized /
+#'   parameters-only path (type weights from lambdas without storing
+#'   \code{type_posterior}; supports confounding). \code{TRUE} uses the
+#'   causal-type path. \code{NULL} inherits \code{model$legacy} then
+#'   \code{options(CausalQueries.legacy)}.
 #' @return An object of class \code{model_query}. A data frame with possible
 #'   columns: model, query, given, using, case_level, mean, sd, cred.low, cred.high.
 #'   Further columns are generated as specified in \code{stats}.
@@ -388,8 +421,10 @@ query_model <- function(model,
                         case_level = FALSE,
                         query = NULL,
                         cred = 95,
-                        labels = NULL) {
+                        labels = NULL,
+                        legacy = NULL) {
   # handle global variables
+  legacy <- resolve_legacy(legacy, model)
 
   func_call <- match.call()
   date <- date()
@@ -404,6 +439,10 @@ query_model <- function(model,
   ## check arguments
   if (!is.null(query) & !is.null(queries)) {
     stop("Please provide either queries or query, not both.")
+  }
+
+  if (is.null(query) && is.null(queries)) {
+    stop("Please supply at least one query via `queries` (or `query`).")
   }
 
   if (!is.null(query)) {
@@ -465,13 +504,6 @@ query_model <- function(model,
     query_names <- paste("Q", seq_along(queries), sep = "")
     names(queries) <- query_names
   }
-
-  # realise_outcomes
-  realisations <- lapply(model, function(m) {
-    realise_outcomes(model = m)
-  })
-
-  names(realisations) <- model_names
 
   # prevent bugs from query helpers
   given <- vapply(given, as.character, character(1))
@@ -539,6 +571,48 @@ query_model <- function(model,
 
   }
 
+  if (!isTRUE(legacy)) {
+    schedules <- list()
+    estimands <- vector("list", nrow(jobs))
+    for (i in seq_len(nrow(jobs))) {
+      mname <- jobs$model_names[i]
+      m <- model[[mname]]
+      sk <- paste(
+        mname,
+        paste(query_type_nodes(m, jobs$queries[i], jobs$given[i]), collapse = "\r"),
+        sep = "\r"
+      )
+      if (is.null(schedules[[sk]])) {
+        schedules[[sk]] <- factorized_query_schedule(
+          m,
+          query = jobs$queries[i],
+          given = jobs$given[i]
+        )
+      }
+      pm <- factorized_param_draws(
+        m,
+        jobs$using[i],
+        parameters = if (!is.null(parameters)) parameters[[mname]] else NULL,
+        n_draws = n_draws
+      )
+      estimands[[i]] <- estimands_from_lambda_draws(
+        model = m,
+        schedule = schedules[[sk]],
+        query = jobs$queries[i],
+        given = jobs$given[i],
+        param_mat = pm,
+        join_by = "|",
+        case_level = isTRUE(jobs$case_level[i]),
+        using = jobs$using[i]
+      )
+    }
+  } else {
+  # realise_outcomes
+  realisations <- lapply(model, function(m) {
+    realise_outcomes(model = m)
+  })
+
+  names(realisations) <- model_names
 
   # only generate necessary data structures for unique subsets of jobs
   # handle givens
@@ -570,16 +644,17 @@ query_model <- function(model,
     query_types = query_types,
     type_posteriors = type_posteriors
   )
+  }
 
-  # compute statistics
+  # compute statistics (na.rm = TRUE throughout: given with zero mass → NA draws)
   if (is.null(stats)) {
     if (!is.null(parameters)) {
-      stats <- c(mean = mean)
+      stats <- c(mean = function(x) mean(x, na.rm = TRUE))
     } else {
       cred <- pmax(pmin(cred[1], 100), 0)
       stats <- c(
-        mean = mean,
-        sd = sd,
+        mean = function(x) mean(x, na.rm = TRUE),
+        sd = function(x) stats::sd(x, na.rm = TRUE),
         cred.low = function(x)
           unname(stats::quantile(
             x, probs = ((100 - cred) / 200), na.rm = TRUE
@@ -875,17 +950,13 @@ get_estimands <- function(jobs,
         }
         # using priors or posteriors
         if (using_i != "parameters") {
-          # population level
+          tp <- type_posterior[given, , drop = FALSE]
+          denom <- colSums(tp)
           if (!case_level_i) {
-            estimand <-
-              (x %*% type_posterior[given, , drop = FALSE]) /
-              apply(type_posterior[given, , drop = FALSE], 2, sum)
+            estimand <- (x %*% tp) / denom
           }
-          # case level
           if (case_level_i) {
-            estimand <-
-              mean(x %*% type_posterior[given, , drop = FALSE]) /
-              mean(apply(type_posterior[given, , drop = FALSE], 2, sum))
+            estimand <- mean(x %*% tp) / mean(denom)
           }
         }
       }
@@ -965,14 +1036,38 @@ plot_query <- function(model_query) {
         xmin = cred.low,
         xmax = cred.high
       ),
+      # ggplot2 4 default width is 0.9; with orientation = "y" that is the
+      # vertical whisker span and adjacent rows visually merge.
+      width = dodge_width,
       orientation = "y",
       position = position_dodge(width = dodge_width)) +
       theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")
   }
 
+#' Plot model query results
+#'
+#' Plot method for class \code{model_query}. Draws point estimates (and
+#' credible intervals when present) from \code{\link{query_model}} output,
+#' faceted by model when more than one model is in the table.
+#'
+#' @param x An object of class \code{model_query}, usually from
+#'   \code{\link{query_model}}.
+#' @param ... Further arguments (currently unused; included for S3
+#'   compatibility).
+#' @return A \code{ggplot} object.
+#' @examples
+#' \donttest{
+#' model <- make_model("X -> Y")
+#' q <- query_model(
+#'   model,
+#'   query = "Y[X=1] - Y[X=0]",
+#'   using = "parameters"
+#' )
+#' plot(q)
+#' }
 #' @export
 plot.model_query <- function(x, ...) {
-    plot_query(x,...)
-  }
+  plot_query(x, ...)
+}
 
 

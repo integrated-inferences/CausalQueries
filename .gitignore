@@ -22,4 +22,7 @@ vignettes/*.R
 inst/doc
 /doc/
 /Meta/
+
 issues.md
+/dev/
+test_results.log

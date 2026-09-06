@@ -50,7 +50,7 @@ specified as one of \code{NULL}, \code{NA}, \code{""} or \code{" "}.}
 types specified by \code{statement} or \code{labels}.}
 }
 \value{
-An object of class \code{model}. The causal types and nodal types
+An object of class \code{causal_model}. The causal types and nodal types
   in the model are reduced according to the stated restriction.
 }
 \description{

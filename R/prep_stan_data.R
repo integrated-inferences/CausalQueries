@@ -25,11 +25,18 @@ prep_stan_data <- function(model,
     stop("Data should contain columns `event` and `count`")
   }
 
+  # Families (event, strategy, mapping) computed once. The mapping columns
+  # are the E matrix used below; ncol(mapping) is n_data.
+  families <- get_data_families(model)
+  data_families <- families[, setdiff(names(families), c("event", "strategy")),
+                            drop = FALSE]
+  n_data <- ncol(data_families)
+
   # Add strategy in case missing and check event names
   if (!("strategy" %in% names(data))) {
     names_check <- paste(data$event)
 
-    data <- left_join(get_data_families(model) |> select(event, strategy), data) |>
+    data <- left_join(families |> select(event, strategy), data) |>
       mutate(count = ifelse(is.na(count), 0L, as.integer(count)))
     if (!all(names_check %in%  paste(data$event)))
       stop(
@@ -71,12 +78,21 @@ prep_stan_data <- function(model,
 
 
   # 2 Data parsing: allowing for censored types
-  data <- data[!c(data$event %in% censored_types), ]
+  # Censored types are checked against the events the *model* admits, not
+  # against the events present in this data: a type can be censored out of
+  # existence and so legitimately absent from the data at hand.
+  if (!is.null(censored_types)) {
+    unknown <- setdiff(as.character(censored_types), rownames(data_families))
+    if (length(unknown) > 0) {
+      stop("Unrecognized `censored_types`: ",
+           paste(unknown, collapse = ", "),
+           ".\nCensored types should be data types of the model, such as: ",
+           paste(utils::head(rownames(data_families), 6), collapse = ", "),
+           if (nrow(data_families) > 6) ", ..." else "")
+    }
+  }
 
-  data_families <-
-    model |>
-    get_data_families(mapping_only = TRUE) |>
-    data.frame()
+  data <- data[!c(data$event %in% censored_types), ]
 
   E <- data_families[data$event, ] |> as.matrix()
 
@@ -111,7 +127,8 @@ prep_stan_data <- function(model,
     l_ends = as.array(l_ends),
     n_starts = as.array(n_starts),
     n_ends = as.array(n_ends),
-    model = model
+    model = model,
+    n_data = n_data
   )
 
   # stan data
@@ -128,7 +145,7 @@ prep_stan_data <- function(model,
     node_ends = as.array(n_ends),
     n_nodes = length(n_sets),
     lambdas_prior = get_priors(model),
-    n_data = get_all_data_types(model, possible_data = TRUE) |> nrow(),
+    n_data = n_data,
     n_events = nrow(E),
     n_strategies = n_strategies,
     strategy_starts = as.array(w_starts),
@@ -143,7 +160,8 @@ prep_stan_data <- function(model,
 }
 
 #' @keywords internal
-validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts, n_ends, model) {
+validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts,
+                                 n_ends, model, n_data = NULL) {
   n_params <- nrow(parmap)
   n_paths  <- nrow(map)
   n_data_types <- ncol(map)
@@ -164,6 +182,20 @@ validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts, 
     stop("prep_stan_data: node start/end indices out of [1, n_params] range")
   }
 
+  # Block contiguity: l_starts/l_ends and node starts/ends are derived from
+  # cumulative counts, which only describe parameters_df if each param_set and
+  # each node occupies a single run of rows. A violation would silently
+  # misalign the simplexes rather than fail.
+  check_blocks <- function(x, what) {
+    r <- rle(as.character(x))
+    if (anyDuplicated(r$values)) {
+      stop("prep_stan_data: rows of parameters_df are not contiguous by ", what,
+           "; simplex boundaries would be wrong. Internal error - please report.")
+    }
+  }
+  check_blocks(model$parameters_df$param_set, "param_set")
+  check_blocks(model$parameters_df$node,      "node")
+
   # Dimensions consistency
   if (nrow(P) != n_params) {
     stop("prep_stan_data: nrow(P) must equal n_params")
@@ -172,7 +204,11 @@ validate_stan_inputs <- function(parmap, map, P, E, l_starts, l_ends, n_starts, 
     stop("prep_stan_data: ncol(parmap) must equal n_paths (nrow(map))")
   }
   # Map/E must have expected number of data types (from model)
-  n_data_calc <- get_all_data_types(model, possible_data = TRUE) |> nrow()
+  n_data_calc <- if (!is.null(n_data)) {
+    n_data
+  } else {
+    get_all_data_types(model, possible_data = TRUE) |> nrow()
+  }
   if (ncol(map) != n_data_calc) {
     stop("prep_stan_data: ncol(map) must equal number of possible data types")
   }

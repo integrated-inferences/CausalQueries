@@ -16,7 +16,8 @@ query_model(
   case_level = FALSE,
   query = NULL,
   cred = 95,
-  labels = NULL
+  labels = NULL,
+  legacy = NULL
 )
 }
 \arguments{
@@ -38,9 +39,9 @@ A given statement can alternatively be provided after a colon in the query state
 \item{using}{A vector or list of strings. Whether to use priors,
 posteriors or parameters.}
 
-\item{parameters}{A vector of real numbers in [0,1]. Values of parameters to
-specify (optional). By default, parameters is drawn from the parameters \code{data.frame}.
-See \code{inspect(model, "parameters_df")}.}
+\item{parameters}{A list of numeric vectors. Optional parameter values
+to use when \code{using} includes \code{"parameters"}; one vector per
+model when \code{model} is a list.}
 
 \item{stats}{Functions to be applied to the query distribution.
 If NULL, defaults to mean, standard deviation,
@@ -62,6 +63,12 @@ query for a case.}
 
 \item{labels}{labels for queries: if provided labels should have
 the length of the combinations of requests}
+
+\item{legacy}{Logical or \code{NULL}. \code{FALSE} uses the factorized /
+parameters-only path (type weights from lambdas without storing
+\code{type_posterior}; supports confounding). \code{TRUE} uses the
+causal-type path. \code{NULL} inherits \code{model$legacy} then
+\code{options(CausalQueries.legacy)}.}
 }
 \value{
 An object of class \code{model_query}. A data frame with possible

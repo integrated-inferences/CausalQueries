@@ -76,6 +76,7 @@ set_parameter_matrix <- function(model, P = NULL) {
     model$P <- P
   }
 
+  model <- clear_model_cache(model)
   return(model)
 }
 

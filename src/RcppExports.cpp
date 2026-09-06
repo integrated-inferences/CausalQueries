@@ -25,13 +25,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_type_prob_multiple_c
-arma::mat get_type_prob_multiple_c(arma::mat params, arma::mat P);
+arma::mat get_type_prob_multiple_c(const arma::mat& params, const arma::mat& P);
 RcppExport SEXP _CausalQueries_get_type_prob_multiple_c(SEXP paramsSEXP, SEXP PSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type params(paramsSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type P(PSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP);
     rcpp_result_gen = Rcpp::wrap(get_type_prob_multiple_c(params, P));
     return rcpp_result_gen;
 END_RCPP
@@ -52,12 +52,14 @@ END_RCPP
 }
 
 RcppExport SEXP _rcpp_module_boot_stan_fit4simplexes_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4simplexes_factorized_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CausalQueries_get_type_prob_c", (DL_FUNC) &_CausalQueries_get_type_prob_c, 2},
     {"_CausalQueries_get_type_prob_multiple_c", (DL_FUNC) &_CausalQueries_get_type_prob_multiple_c, 2},
     {"_CausalQueries_realise_outcomes_c", (DL_FUNC) &_CausalQueries_realise_outcomes_c, 4},
     {"_rcpp_module_boot_stan_fit4simplexes_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4simplexes_mod, 0},
+    {"_rcpp_module_boot_stan_fit4simplexes_factorized_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4simplexes_factorized_mod, 0},
     {NULL, NULL, 0}
 };
 

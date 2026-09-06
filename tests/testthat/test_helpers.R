@@ -150,6 +150,32 @@ testthat::test_that(
 
 
 testthat::test_that(
+  desc = "find_rounding_threshold",
+  code = {
+    # well behaved inputs keep their existing thresholds
+    expect_equal(CausalQueries:::find_rounding_threshold(c(0, 1)), 2)
+    expect_equal(CausalQueries:::find_rounding_threshold(c(0, 0.05)), 3)
+    expect_equal(CausalQueries:::find_rounding_threshold(c(0, 0.004)), 4)
+    expect_equal(CausalQueries:::find_rounding_threshold(c(1, 3, 7)), 2)
+    expect_equal(CausalQueries:::find_rounding_threshold(c(-2, 5)), 2)
+
+    # degenerate spreads fall back on a default rather than looping forever
+    expect_equal(CausalQueries:::find_rounding_threshold(c(1, 1)), 3)
+    expect_equal(CausalQueries:::find_rounding_threshold(0), 3)
+    expect_equal(CausalQueries:::find_rounding_threshold(c(NA_real_, NA_real_)), 3)
+  }
+)
+
+testthat::test_that(
+  desc = "prior distribution summaries print with a single draw",
+  code = {
+    model <- make_model("X -> Y")
+    expect_output(inspect(model, "prior_distribution", n_draws = 1),
+                  "prior distributions")
+  }
+)
+
+testthat::test_that(
   desc = "check_query",
   code = {
     expect_no_error(CausalQueries:::check_query("D[C=B[A=1]] == 1"))

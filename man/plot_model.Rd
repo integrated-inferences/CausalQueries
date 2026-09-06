@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_dag.R
 \name{plot_model}
 \alias{plot_model}
+\alias{plot.causal_model}
 \title{Plots a DAG in ggplot style using a causal model input}
 \usage{
 plot_model(
@@ -16,17 +17,24 @@ plot_model(
   nodecol = "black",
   nodesize = 12,
   parse = FALSE,
-  strength = 0.3
+  strength = NULL,
+  pad = NULL,
+  normalize_layout = TRUE,
+  confound_bulge = 0.3,
+  clip = "off"
 )
+
+\method{plot}{causal_model}(x, ...)
 }
 \arguments{
 \item{model}{A \code{causal_model} object generated from \code{make_model}}
 
-\item{x_coord}{A vector of x coordinates for DAG nodes.
-If left empty, coordinates are randomly generated}
+\item{x_coord}{A vector of x coordinates for DAG nodes, in the same order
+as \code{model$nodes}. If both \code{x_coord} and \code{y_coord} are
+\code{NULL}, a Sugiyama layout is computed from directed edges only.}
 
-\item{y_coord}{A vector of y coordinates for DAG nodes.
-If left empty, coordinates are randomly generated}
+\item{y_coord}{A vector of y coordinates for DAG nodes, in the same order
+as \code{model$nodes}.}
 
 \item{labels}{Optional labels for nodes}
 
@@ -43,14 +51,53 @@ ggplot's default palette}
 
 \item{nodesize}{Size of node.}
 
-\item{strength}{Degree of curvature of curved arcs}
+\item{parse}{Logical. If `TRUE`, node labels are parsed as R expressions,
+which allows mathematical notation (for example `"alpha^2"`).
+Defaults to `FALSE`.}
+
+\item{strength}{Curvature of confound arcs, passed to
+\code{\link[ggplot2]{geom_curve}} (\code{0} = straight,
+about \code{0.3} = a shallow bow, \code{1} ≈ a semicircle). Use
+\code{NULL} or \code{"auto"} (the default) to choose a shallow
+signed curvature from geometry (see \code{confound_bulge}). A numeric
+value restores a fixed curvature (the old ggraph default of \code{0.3}
+is a reasonable shallow arc under \code{geom_curve}).}
+
+\item{pad}{Additive scale padding in data units around nodes. \code{NULL}
+(default) chooses a pad from layer spacing so nodes are not clipped when
+several share an x or y coordinate (ggplot's multiplicative expand alone
+is zero in that case). Set to \code{0} to disable.}
+
+\item{normalize_layout}{Logical. If \code{TRUE} (default) and coordinates
+were not supplied by the user, rescale x so horizontal span matches
+typical layer spacing. Prevents a tiny x-range from stretching across the
+whole panel (e.g. a sink node at \code{x = 0.5} while others sit at
+\code{x = 0}).}
+
+\item{confound_bulge}{Absolute \code{geom_curve} curvature used when
+\code{strength} is \code{NULL}/\code{"auto"} (sign chosen to bend toward
+free space). Default \code{0.3}. Ignored when \code{strength} is numeric.}
+
+\item{clip}{Passed to \code{\link[ggplot2]{coord_cartesian}}. Default
+\code{"off"} so node discs are not cropped at the panel edge.}
+
+\item{x}{A \code{causal_model} object generated from \code{make_model}.}
+
+\item{...}{Arguments passed to \code{\link{plot_model}}.}
 }
 \value{
 A ggplot object.
+
+A ggplot object.
 }
 \description{
-Creates a plot of a DAG using ggplot functionality and a Sugiyama layout from igraph.  Unmeasured confounds  (<->) are indicated
-then these are represented as curved dotted lines.  Users can control node sizes and colors as well as coordinates and label behavior. Other modifications can be made by adding additional ggplot layers.
+Creates a plot of a DAG using ggplot and a Sugiyama layout from igraph
+(via ggraph). Unmeasured confounds (`<->`) are drawn as dashed arcs.
+Users can control node sizes, colors, coordinates, and label behavior.
+Other modifications can be made by adding ggplot layers.
+
+A \code{plot} method for objects of class \code{causal_model}; a thin
+wrapper around \code{\link{plot_model}}.
 }
 \examples{
 
@@ -95,9 +142,11 @@ make_model() |>
 make_model('Z -> X -> Y; X <-> Y') |>
   plot(x_coord = 1:3, y_coord = 1:3, shape = c(15, 16, 16))
 
-# Sometimes clipping of nodes or labels arises and can be dealt with thus:
-make_model() |>
-  plot_model() +
-  ggplot2::coord_cartesian(clip = "off")
+# Legacy confound curvature (fixed strength)
+make_model('X -> M -> Y <-> M') |>
+  plot_model(strength = 0.3, normalize_layout = FALSE, pad = 0)
+
+# Manual pad / bulge
+make_model('X -> M -> Y <-> M') |>
+  plot_model(pad = 0.5, confound_bulge = 0.25)
 }
-\keyword{internal}

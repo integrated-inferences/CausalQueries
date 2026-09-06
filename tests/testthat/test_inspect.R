@@ -47,9 +47,15 @@ test_that("inspect outputs correct parameters_df", {
 })
 
 test_that("inspect outputs correct causal_types", {
-  expect_output(inspect(model, what = "causal_types"), "Causal Types")
-  expect_output(inspect(model, what = "causal_types"), "X0\\.Y00\\s+0\\s+00")
-  expect_output(inspect(model, what = "causal_types"), "X1\\.Y11\\s+1\\s+11")
+  skip_if_legacy_objects()
+  # Factorized make_model may omit attached causal_types; build on demand / legacy
+  m <- model
+  if (is.null(m$causal_types)) {
+    m <- with_legacy_true(make_model("X -> Y"))
+  }
+  expect_output(inspect(m, what = "causal_types"), "Causal Types")
+  expect_output(inspect(m, what = "causal_types"), "X0\\.Y00\\s+0\\s+00")
+  expect_output(inspect(m, what = "causal_types"), "X1\\.Y11\\s+1\\s+11")
 })
 
 test_that("inspect outputs correct prior_distribution", {
@@ -78,6 +84,9 @@ model <- update_model(
   keep_event_probabilities = TRUE
 )
 
+# Separate legacy update when type_posterior is required
+model_legacy_types <- NULL
+
 test_that("inspect outputs correct posterior_distribution", {
   expect_output(
     inspect(model, what = "posterior_distribution"),
@@ -93,9 +102,39 @@ test_that("inspect outputs correct posterior_event_probabilities", {
 })
 
 test_that("inspect outputs correct type_posterior", {
+  skip_if_legacy_objects()
+  model_legacy_types <<- with_legacy_true({
+    update_model(
+      make_model("X -> Y"),
+      data = data,
+      keep_fit = TRUE,
+      keep_event_probabilities = TRUE,
+      keep_type_distribution = TRUE,
+      refresh = 0
+    )
+  })
   expect_output(
-    inspect(model, what = "type_posterior"),
-    "Posterior draws of causal types \\(transformed parameters\\):"
+    inspect(model_legacy_types, what = "type_posterior"),
+    "Posterior draws of causal types \\(draws x types\\):"
+  )
+})
+
+test_that("factorized models explain missing type_posterior", {
+  m_fac <- update_model(
+    make_model("X -> Y"),
+    data = data,
+    refresh = 0,
+    iter = 50,
+    chains = 1,
+    warmup = 25
+  )
+  expect_error(
+    inspect(m_fac, what = "type_posterior"),
+    "No type_posterior|query_model|posterior_distribution"
+  )
+  expect_error(
+    grab(m_fac, what = "type_posterior"),
+    "No type_posterior|query_model|posterior_distribution"
   )
 })
 
@@ -107,6 +146,40 @@ test_that("inspect outputs correct stanfit", {
   expect_output(inspect(model, what = "stanfit"), "Inference for Stan model: simplexes.")
 })
 
+
+
+test_that("inspect and grab work without a `what` argument", {
+  simple <- make_model("X -> Y")
+
+  expect_output(inspect(simple), "Causal statement:")
+  expect_s3_class(grab(simple), "summary.causal_model")
+})
+
+
+test_that("inspect and grab accept a vector of `what`", {
+  simple <- make_model("X -> Y")
+
+  out <- grab(simple, what = c("nodes", "statement"))
+  expect_named(out, c("nodes", "statement"))
+  expect_equal(out$nodes, c("X", "Y"))
+
+  # a single request is still returned unwrapped
+  expect_equal(grab(simple, what = "nodes"), c("X", "Y"))
+
+  expect_output(inspect(simple, what = c("nodes", "statement")), "Nodes:")
+})
+
+
+test_that("inspect reports unsupported `what` values", {
+  simple <- make_model("X -> Y")
+
+  expect_error(grab(simple, what = "nonsense"),
+               "The following requested objects are not supported: nonsense")
+  expect_error(grab(simple, what = c("nodes", "nonsense")),
+               "The following requested objects are not supported: nonsense")
+  # available objects are listed exhaustively
+  expect_error(grab(simple, what = "nonsense"), "stan_warnings")
+})
 
 
 test_that("inspect handles dots", {

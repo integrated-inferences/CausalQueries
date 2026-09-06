@@ -58,12 +58,37 @@ realise_outcomes <- function(model,
     stop("Please specify only one node")
   }
 
+  if (!is.null(dos)) {
+    if (is.null(names(dos)) || any(!nzchar(names(dos)))) {
+      stop("`dos` must be a named list.")
+    }
+    bad <- vapply(dos, function(v) {
+      !all(as.character(v) %in% c("0", "1"))
+    }, logical(1))
+    if (any(bad)) {
+      stop("`dos` values must be 0 or 1.")
+    }
+  }
+
+  # Model-level cache (lazy-attached). Key includes causal-type fingerprint
+  # so relevant-set schedules do not collide with full-type realise_outcomes.
+  cache_key <- dos_cache_key(
+    dos, node, add_rownames, causal_types_cache_fp(model)
+  )
+  if (!is.null(model$.cache) && is.environment(model$.cache) &&
+      exists(cache_key, envir = model$.cache, inherits = FALSE)) {
+    return(get(cache_key, envir = model$.cache, inherits = FALSE))
+  }
+
   # case with trivial single node model
   if(length(model$nodes) == 1) {
     data_realizations <- get_causal_types(model)
     if (add_rownames) {
       rownames(data_realizations) <-
         gsub("[[:alpha:]]", "", rownames(data_realizations))
+    }
+    if (!is.null(model$.cache) && is.environment(model$.cache)) {
+      assign(cache_key, data_realizations, envir = model$.cache)
     }
     return(data_realizations)
   }
@@ -174,6 +199,9 @@ realise_outcomes <- function(model,
       ncol = ncol(types))
     attr(data_realizations, "type_names") <-
       apply(type_names, 1, paste,  collapse = ".")
+  }
+  if (!is.null(model$.cache) && is.environment(model$.cache)) {
+    assign(cache_key, data_realizations, envir = model$.cache)
   }
   return(data_realizations)
 }

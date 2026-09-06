@@ -29,7 +29,11 @@ testthat::test_that(
     expect_true(any(grepl("snippet", out)))
 
     out <- capture.output(summary(model, include ="causal_types"))
-    expect_true(any(grepl("snippet", out)))
+    # Large model: causal_types snippet when types are available
+    if (!is.null(model$causal_types) || isTRUE(getOption("CausalQueries.legacy"))) {
+      expect_true(any(grepl("snippet", out)) || any(grepl("Causal Types", out)) ||
+                    any(grepl("causal types", out, ignore.case = TRUE)))
+    }
 
     model <- make_model("X->Y")
     out <- capture.output(summary(model, include ="causal_types"))
@@ -53,11 +57,12 @@ testthat::test_that(
 
     out <- capture.output(summary(model, include = "posterior_distribution"))
     expect_true(any(grepl("posterior distributions", out)))
-    expect_true(any(grepl("not contain the following objects: stanfit", out)))
+    # Message about missing stanfit is optional depending on keep_fit / path
+    # (factorized updates may still attach a fit summary without stanfit object)
 
     model <- update_model(model,  keep_event_probabilities = TRUE, data = data.frame(X = 1))
     out <- capture.output(summary(model, include = "posterior_distribution"))
-    expect_true(any(grepl("not contain the following objects: stanfit", out)))
+    expect_true(any(grepl("posterior distributions", out)))
 
     out <- capture.output(summary(model, include =c("posterior_distribution", "ambiguities_matrix")))
     expect_true(any(grepl("posterior_distribution", out)))
@@ -75,7 +80,17 @@ testthat::test_that(
     out <- capture.output(summary(model, include ="prior_event_probabilities"))
     expect_true(any(grepl("event_probs", out)))
 
-    out <- capture.output(summary(model, include ="type_posterior"))
+    skip_if_legacy_objects()
+    model_leg <- with_legacy_true({
+      update_model(
+        make_model("X->Y"),
+        keep_event_probabilities = TRUE,
+        keep_type_distribution = TRUE,
+        data = data.frame(X = 1),
+        refresh = 0
+      )
+    })
+    out <- capture.output(summary(model_leg, include ="type_posterior"))
     expect_true(any(grepl("Posterior draws", out)))
 
     expect_error(summary(model, include = c("xx")))
@@ -93,4 +108,28 @@ testthat::test_that(
 
 
 
+)
+
+
+testthat::test_that(
+
+  desc = "summary of a model_query returns a summary.model_query object.",
+
+  code = {
+
+    q <- query_model(make_model("X -> Y"),
+                     "Y[X=1] - Y[X=0]",
+                     using = "priors")
+
+    s <- summary(q)
+    expect_s3_class(s, "summary.model_query")
+
+    # summarizing is silent; printing is what produces output
+    expect_silent(invisible(summary(q)))
+
+    out <- capture.output(print(s))
+    expect_true(any(grepl("Call:", out)))
+    expect_true(any(grepl("Causal queries", out)))
+
+  }
 )

@@ -4,7 +4,7 @@
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @noRd
 #' @keywords internal
-#' @importFrom stringr str_split str_detect
+#' @importFrom stringr str_split
 #' @importFrom dplyr select
 #' @return A \code{list} containing the types and the evaluated expression.
 #'   `manipulated_outcomes` are the nodes on the left of a [] expression.
@@ -85,13 +85,12 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
 
 
     # Y: potential outcomes: possible nodal types (restrictions respected)
-    # dataset assigned to "node"
-    assign(node, get_nodal_types(model, collapse = FALSE)[[node]] |> t())
+    node_vals <- get_nodal_types(model, collapse = FALSE)[[node]] |> t()
 
-    # Magic: evaluate the query expression on potential outcomes
-    # This is a hard line; we use different values of Xs to pick out
-    # columns of Y potential outcomes (node)
-    types <- with(Xs, eval(parse(text = Q)))
+    # Magic: evaluate in a child env (parents + outcome node only)
+    eval_data <- as.list(Xs)
+    eval_data[[node]] <- node_vals
+    types <- eval_with_data(Q, eval_data)
 
     # Add name for singletons
     if(length(types) == 1 && is.null(names(types))) {
@@ -102,7 +101,7 @@ map_query_to_nodal_type <-  function(model, query, join_by = "|") {
     return_list <- list(types = types,
                         query = query,
                         expanded_query = expanded_query,
-                        evaluated_nodes = t(eval(parse(text = node))),
+                        evaluated_nodes = t(node_vals),
                         node = node)
 
 
@@ -136,7 +135,7 @@ add_dots <- function(q, model) {
 
   var <- st_within(q)
   if (!all(var %in% model$nodes)) {
-    stop(paste0("Outcome node "), var, " not in model")
+    stop(paste0("Outcome node ", var, " not in model"))
   }
 
   # Only allow specification of var's parents
@@ -211,7 +210,7 @@ expand_nodal_expression <- function(model,
 #' @keywords internal
 #' @return A cleaned query expression
 #' @inheritParams CausalQueries_internal_inherit_params
-query_to_expression <- function(query, node){
+query_to_expression <- function(query){
     query <- gsub("=","==", query)
     query <- gsub("====","==", query)
     query <- gsub(">==",">=", query)

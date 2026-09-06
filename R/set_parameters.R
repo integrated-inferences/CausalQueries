@@ -160,7 +160,7 @@ make_parameters <- function(model,
 
     # Posterior mean
     if (param_type == "posterior_mean") {
-      if (is.null(model$posterior)) {
+      if (!has_posterior(model)) {
         stop("Posterior distribution required")
       }
 
@@ -169,7 +169,7 @@ make_parameters <- function(model,
 
     # Posterior draw
     if (param_type == "posterior_draw") {
-      if (is.null(model$posterior)) {
+      if (!has_posterior(model)) {
         stop("Posterior distribution required")
       }
 
@@ -258,7 +258,7 @@ set_parameters <- function(model,
 
   model$parameters_df$param_value <- parameters
   model$parameters_df <- clean_params(model$parameters_df, warning = warning)
-
+  model <- clear_model_cache(model)
   return(model)
 
 }
@@ -270,7 +270,6 @@ set_parameters <- function(model,
 #'
 #' @rdname parameter_setting
 #' @return A vector of draws from the prior or distribution of parameters
-#' @importFrom dirmult rdirichlet
 #' @family parameters
 
 get_parameters <- function(model, param_type = NULL) {

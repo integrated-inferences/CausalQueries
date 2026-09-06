@@ -8,7 +8,8 @@
 \description{
 'CausalQueries' is a package that lets users generate binary causal models,
 update over models given data, and calculate arbitrary causal queries.
-Model definition makes use of dagitty type syntax.
+Model definition uses arrow syntax for causal statements
+(e.g. \code{"X -> Y"}, \code{"X <-> Y"}).
 Updating is implemented in 'stan'.
 }
 \references{

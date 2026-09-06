@@ -538,6 +538,25 @@ check_query <- function(query) {
   return(query)
 }
 
+#' Evaluate an expression against named data bindings in a child environment.
+#'
+#' Lookups use only \code{data} plus \code{enclos} (default \code{baseenv()}),
+#' so node names cannot collide with locals in the calling function.
+#'
+#' @param expr language object or character string to parse
+#' @param data named list or data.frame of bindings
+#' @param enclos parent environment for unbound symbols (operators, etc.)
+#' @return result of \code{eval}
+#' @noRd
+#' @keywords internal
+eval_with_data <- function(expr, data, enclos = baseenv()) {
+  if (is.character(expr)) {
+    expr <- parse(text = expr)
+  }
+  env <- list2env(as.list(data), parent = enclos)
+  eval(expr, envir = env)
+}
+
 #' helper to compute mean and sd of a distribution data.frame
 #' @param x An object for summarizing
 #' @noRd
@@ -550,20 +569,26 @@ summarise_distribution <- function(x) {
 
 #' helper to find rounding thresholds for print methods
 #' @param x An object for rounding
+#' @param max_pow An integer. Largest power considered before giving up.
 #' @noRd
 #' @keywords internal
 
-find_rounding_threshold <- function(x) {
-  x <- max(abs(x)) - min(abs(x))
-  pow <- 1
-  x_pow <- x * 10^pow
+find_rounding_threshold <- function(x, max_pow = 15L) {
+  # Degenerate spreads (all values of equal magnitude, all NA, non finite)
+  # provide no guidance on precision: fall back on a sensible default
+  x <- suppressWarnings(max(abs(x), na.rm = TRUE) - min(abs(x), na.rm = TRUE))
 
-  while(x_pow < 1) {
-    pow <- pow + 1
-    x_pow <- x * 10^pow
+  if (!is.finite(x) || x <= 0) {
+    return(3L)
   }
 
-  return(pow + 1)
+  pow <- 1L
+
+  while (x * 10^pow < 1 && pow < max_pow) {
+    pow <- pow + 1L
+  }
+
+  return(pow + 1L)
 }
 
 #' helper to extract arguments for a specific function

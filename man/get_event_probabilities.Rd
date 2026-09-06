@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_event_prob.R
 \name{get_event_probabilities}
 \alias{get_event_probabilities}
-\title{Draw event probabilities}
+\title{Draw complete-data event probabilities}
 \usage{
 get_event_probabilities(
   model,
@@ -29,11 +29,13 @@ provided to avoid repeated computation for simulations. See \code{inspect(model,
 \item{given}{A string specifying known values on nodes, e.g. "X==1 & Y==1"}
 }
 \value{
-An array of event probabilities
+An array of complete-data event probabilities (\code{w})
 }
 \description{
-`get_event_probabilities` draws event probability vector `w` given a single
-realization of parameters
+\code{get_event_probabilities} returns the vector \code{w} of probabilities
+of complete data patterns given a single realization of parameters.
+(Stan's likelihood uses the coarsened vector \code{w_full = E * w}; that
+object is not returned here.)
 }
 \examples{
 \donttest{
