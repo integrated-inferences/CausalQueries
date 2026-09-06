@@ -12,6 +12,6 @@ cran-comments.md
 ^Meta$
 ^CRAN-SUBMISSION$
 ^CONTRIBUTING.md$
-^vignettes/sources$
+^vignettes/.*\.Rmd\.orig$
 ^vignettes/README\.md$
 ^LICENSE\.md$

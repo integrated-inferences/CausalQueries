@@ -1,11 +1,13 @@
-#' Draw event probabilities
+#' Draw complete-data event probabilities
 #'
-#' `get_event_probabilities` draws event probability vector `w` given a single
-#' realization of parameters
+#' \code{get_event_probabilities} returns the vector \code{w} of probabilities
+#' of complete data patterns given a single realization of parameters.
+#' (Stan's likelihood uses the coarsened vector \code{w_full = E * w}; that
+#' object is not returned here.)
 #'
 #' @inheritParams CausalQueries_internal_inherit_params
 #' @param given A string specifying known values on nodes, e.g. "X==1 & Y==1"
-#' @return An array of event probabilities
+#' @return An array of complete-data event probabilities (\code{w})
 #' @export
 #' @examples
 #' \donttest{

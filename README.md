@@ -1,13 +1,14 @@
-# CausalQueries
+# CausalQueries <a href="https://shiny2.wzb.eu/ipi/process_tracing/"><img src="man/figures/logo.png" align="right" height="139" alt="CausalQueries hex logo" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 [![CRAN downloads total](https://cranlogs.r-pkg.org/badges/grand-total/CausalQueries)](https://CRAN.R-project.org/package=CausalQueries)
 [![CRAN downloads monthly](https://cranlogs.r-pkg.org/badges/CausalQueries)](https://cran.r-project.org/package=CausalQueries)
 [![DOI](https://zenodo.org/badge/186861431.svg)](https://doi.org/10.5281/zenodo.14191700)
+[![Shiny app](https://img.shields.io/badge/Shiny-try%20the%20app-blue)](https://shiny2.wzb.eu/ipi/process_tracing/)
 <!-- badges: end -->
 
-`CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition is implemented via a `dagitty` style syntax. Updating is implemented in `stan`. 
+`CausalQueries` is a package that lets you declare binary causal models, update beliefs about causal types given data and calculate arbitrary estimands. Model definition uses arrow syntax for causal statements (e.g. `"X -> Y"`, `"X <-> Y"`). Updating is implemented in `stan`. 
 
 * See vignettes for a guide to getting started.
 
@@ -15,7 +16,7 @@
 
 * See [website](https://integrated-inferences.github.io/CausalQueries/) for a comprehensive overview of `CausalQueries`
 
- 
+* Try the interactive [Shiny app](https://shiny2.wzb.eu/ipi/process_tracing/) (process tracing / make–update–query)
 
 ## Installation
 

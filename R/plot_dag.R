@@ -210,9 +210,10 @@ plot_model <- function(model = NULL,
 
   y_step <- layer_step(id_coords$y)
   if (is.null(pad)) {
-    # Additive expand must be large enough in *data* units; node discs are
-    # drawn in mm, so also rely on plot.margin below.
-    pad <- max(0.315, 0.315 * y_step)
+    # Enough data-space room for node discs under free (device-filling) scales.
+    # Do not pair this with coord_fixed / theme(aspect.ratio): those make tall
+    # DAGs into ultra-narrow strips and crop nodes on square devices.
+    pad <- max(0.22, 0.22 * y_step)
   }
 
   # Classify directed edges: same-layer-step links vs multi-layer skips
@@ -281,13 +282,14 @@ plot_model <- function(model = NULL,
     stop("Internal plot_model error: layout nodes missing coordinates")
   }
 
-  # Margin must exceed node radius (nodesize is mm).
-  plot_margin <- grid::unit(c(0.525, 0.525, 0.525, 0.525), "cm")
+  # Margin absorbs mm-sized node discs when clip = "off".
+  node_r_mm <- max(nodesize) * 0.5
+  plot_margin_cm <- max(0.45, node_r_mm / 10 + 0.15)
+  plot_margin <- grid::unit(rep(plot_margin_cm, 4), "cm")
   # Dock edges with ggraph mm caps (not data-space shortening): paths stay
   # centre-to-centre; caps stop drawing at an absolute distance from the node.
   # Near-zero start_cap + nodes drawn on top => shaft appears to leave the disc
   # with no gap. end_cap ≈ radius + tip gap => arrowhead sits just outside.
-  node_r_mm <- max(nodesize) * 0.5
   start_cap <- ggraph::circle(0.4, "mm")
   end_cap <- ggraph::circle(node_r_mm + 1.2, "mm")
   # Confounds have no arrow tip; stop near the rim on both ends.
@@ -335,11 +337,13 @@ plot_model <- function(model = NULL,
     ) +
     ggplot2::labs(title = title) +
     ggplot2::scale_x_continuous(
-      expand = ggplot2::expansion(mult = 0.05, add = pad)
+      expand = ggplot2::expansion(mult = 0.04, add = pad)
     ) +
     ggplot2::scale_y_continuous(
-      expand = ggplot2::expansion(mult = 0.05, add = pad)
+      expand = ggplot2::expansion(mult = 0.04, add = pad)
     ) +
+    # Free scales fill the device. Fixed aspect / aspect.ratio made chains and
+    # near-column layouts into thin strips with cropped nodes on square panes.
     ggplot2::coord_cartesian(clip = clip)
 }
 

@@ -130,19 +130,20 @@ type_posterior_unavailable_msg <- function(model) {
   if (factorized) {
     paste0(
       "No type_posterior on this model. Factorized updates (legacy = FALSE) ",
-      "keep parameter draws, not a full causal-type draw matrix.\n",
+      "keep posterior_distribution (parameter draws), not type_posterior ",
+      "(draws over causal types).\n",
       "  - Parameter posterior: grab(model, \"posterior_distribution\")\n",
-      "  - Posterior for a particular type or potential-outcome query: ",
+      "  - Posterior for a type or potential-outcome query: ",
       "query_model(model, query = \"...\", using = \"posteriors\")\n",
       "  - Type labels / parameter map (on demand): ",
       "grab(model, \"causal_types\"), grab(model, \"parameter_matrix\")\n",
-      "  - Full draws-by-types matrix as in older releases: ",
+      "  - To retain type_posterior: ",
       "update_model(..., legacy = TRUE, keep_type_distribution = TRUE)"
     )
   } else {
     paste0(
       "No type_posterior on this model. Re-run update_model() with ",
-      "keep_type_distribution = TRUE."
+      "keep_type_distribution = TRUE to retain type_posterior."
     )
   }
 }

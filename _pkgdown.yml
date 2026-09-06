@@ -1,4 +1,74 @@
 url: https://integrated-inferences.github.io/CausalQueries/
 template:
   bootstrap: 5
+home:
+  title: CausalQueries
+  links:
+  - text: Interactive Shiny app
+    href: https://shiny2.wzb.eu/ipi/process_tracing/
 
+reference:
+- title: Make models
+  desc: >
+    Declare a causal model and set structure, restrictions, parameters,
+    and priors.
+  contents:
+  - make_model
+  - simplify_model
+  - set_restrictions
+  - set_confound
+  - parameter_setting
+  - prior_setting
+  - set_prior_distribution
+
+- title: Inspect models
+  desc: >
+    Look inside a model — components, summaries, and DAG plots.
+  contents:
+  - inspection
+  - interpret_type
+  - get_all_data_types
+  - get_event_probabilities
+  - get_query_types
+  - summary.causal_model
+  - plot_model
+
+- title: Update models
+  desc: >
+    Bayesian updating given data (Stan).
+  contents:
+  - update_model
+
+- title: Query models
+  desc: >
+    Estimands and distributions over queries; plot query results.
+  contents:
+  - query_model
+  - query_distribution
+  - plot.model_query
+  - summary.model_query
+
+- title: Data
+  desc: >
+    Simulate, collapse, and expand data; package example datasets.
+  contents:
+  - data_helpers
+  - has_keyword("datasets")
+
+- title: Query helpers
+  desc: >
+    Compact helpers for common query phrases (effects, monotonicity,
+    interactions).
+  contents:
+  - query_helpers
+
+- title: Realise outcomes
+  desc: >
+    Map nodal / causal types to outcomes under interventions.
+  contents:
+  - realise_outcomes
+  - draw_causal_type
+
+- title: Package
+  contents:
+  - CausalQueries-package

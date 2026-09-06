@@ -18,6 +18,9 @@ options(CausalQueries.legacy = as.logical(cq_test_legacy))
 cq_test_legacy_objects <- Sys.getenv("CQ_TEST_LEGACY_OBJECTS", "TRUE")
 options(CausalQueries.test_legacy_objects = as.logical(cq_test_legacy_objects))
 
+# Parallel Stan chains: all cores locally; max 2 under R CMD check / CRAN
+CausalQueries:::enable_stan_parallel(quiet = FALSE)
+
 #' Skip when legacy-object attachment tests are turned off.
 #' @keywords internal
 skip_if_legacy_objects <- function() {

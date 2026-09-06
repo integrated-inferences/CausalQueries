@@ -34,24 +34,26 @@
   Vignettes that call `update_model()` are slow, so we pre-knit them locally and ship frozen
   `vignettes/<name>.Rmd` files to CRAN. See `vignettes/README.md` for the folder map.
   
-  - **Edit** only `vignettes/sources/<name>.Rmd`
+  - **Edit** only `vignettes/<name>.Rmd.orig`
   - **Do not edit** the frozen `vignettes/<name>.Rmd` (it is generated)
   - Figures land in `vignettes/figures/<name>/`
   - Rebuild with `CausalQueries:::build_vignettes(only = "<name>")`
   
   Give code chunks (especially plots) **unique** and **informative** names so figure files stay stable.
+  The `.orig` suffix keeps sources out of vignette/pkgdown discovery (plain `.Rmd` under
+  `vignettes/` would be built twice).
   
   **New vignette:**
   
-  - add `vignettes/sources/<name>.Rmd` with normal executable chunks
+  - add `vignettes/<name>.Rmd.orig` with normal executable chunks
   - set `fig.path = "figures/<name>/"` in the setup chunk
   - run `CausalQueries:::build_vignettes(only = "<name>")`
   - add `<name>` to the default list in `R/build_vignettes.R`
-  - ensure `.Rbuildignore` contains `^vignettes/sources$`
+  - ensure `.Rbuildignore` contains `^vignettes/.*\.Rmd\.orig$`
   
   **Update an existing vignette:**
   
-  - edit `vignettes/sources/<name>.Rmd`
+  - edit `vignettes/<name>.Rmd.orig`
   - run `CausalQueries:::build_vignettes(only = "<name>")` (or omit `only` to rebuild all)
   - commit the frozen `.Rmd` and any figure changes
 

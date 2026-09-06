@@ -115,7 +115,7 @@ test_that("inspect outputs correct type_posterior", {
   })
   expect_output(
     inspect(model_legacy_types, what = "type_posterior"),
-    "Posterior draws of causal types \\(transformed parameters\\):"
+    "Posterior draws of causal types \\(draws x types\\):"
   )
 })
 

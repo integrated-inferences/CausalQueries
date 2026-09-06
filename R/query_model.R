@@ -1036,6 +1036,9 @@ plot_query <- function(model_query) {
         xmin = cred.low,
         xmax = cred.high
       ),
+      # ggplot2 4 default width is 0.9; with orientation = "y" that is the
+      # vertical whisker span and adjacent rows visually merge.
+      width = dodge_width,
       orientation = "y",
       position = position_dodge(width = dodge_width)) +
       theme_bw() + facet_wrap( ~ model) + xlab("value") + ylab("")

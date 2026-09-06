@@ -20,6 +20,44 @@ n_check <- function(n) {
     }
 }
 
+#' Cores for Stan chain parallelism (CRAN-safe)
+#'
+#' At most 2 when \code{_R_CHECK_LIMIT_CORES_} is set (R CMD check / CRAN
+#' policy). Otherwise \code{parallel::detectCores()}.
+#'
+#' @return Integer >= 1
+#' @keywords internal
+#' @noRd
+stan_cores <- function() {
+  limit <- tolower(Sys.getenv("_R_CHECK_LIMIT_CORES_", ""))
+  if (nzchar(limit) && !identical(limit, "false")) {
+    return(2L)
+  }
+  n <- suppressWarnings(parallel::detectCores())
+  if (length(n) != 1L || is.na(n) || n < 1L) {
+    return(1L)
+  }
+  as.integer(n)
+}
+
+#' Set \code{options(mc.cores)} for parallel Stan chains
+#'
+#' @param quiet If \code{FALSE}, print the value set.
+#' @return Integer cores used, invisibly
+#' @keywords internal
+#' @noRd
+enable_stan_parallel <- function(quiet = FALSE) {
+  n <- stan_cores()
+  options(mc.cores = n)
+  if (!isTRUE(quiet)) {
+    message(
+      "CausalQueries: options(mc.cores = ", n,
+      ") for parallel Stan chains"
+    )
+  }
+  invisible(n)
+}
+
 #' default_stan_control
 #'
 #' @param adapt_delta A double between 0 and 1. It determines

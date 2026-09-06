@@ -29,17 +29,19 @@ have entries for each member of each strategy family to produce a
 valid simplex. When long form data is provided with missingness, missing
 data is assumed to be missing at random.}
 
-\item{keep_type_distribution}{Logical. Whether to keep the (transformed) distribution
-of the causal types.  Defaults to `TRUE`}
+\item{keep_type_distribution}{Logical. Whether to retain
+\code{type_posterior}: posterior draws over causal types (draws \eqn{\times}
+types). Applies only on the legacy (\code{legacy = TRUE}) path; factorized
+updates never store \code{type_posterior}. Defaults to \code{TRUE}.}
 
-\item{keep_event_probabilities}{Logical. Whether to keep the (transformed)
-distribution of data type probabilities. Despite the argument name, the
-object retained is the vector \code{w} of probabilities of the *data types*
--- the possible complete-data patterns, one per column of the ambiguity
-matrix \code{E} -- and not probabilities of observed events. Stan forms the
-event-level object as \code{w_full = E * w}, which maps data type
-probabilities onto the events that are actually observed under each
-data strategy; \code{w_full} is not retained. Defaults to `FALSE`}
+\item{keep_event_probabilities}{Logical. Whether to retain posterior draws of
+complete-data event probabilities \code{w} (one probability per complete
+data pattern / column of the ambiguity matrix \code{E}). Accessible after
+update as \code{posterior_event_probabilities} via \code{\link{inspect}} /
+\code{\link{grab}}. Despite the argument name, this is \emph{not} the
+coarsened / observed-event vector: Stan forms that as
+\code{w_full = E * w} for the likelihood and does not retain
+\code{w_full}. Defaults to \code{FALSE}.}
 
 \item{keep_fit}{Logical. Whether to keep the \code{stanfit} object produced
 by \link[rstan]{sampling} for further inspection.
