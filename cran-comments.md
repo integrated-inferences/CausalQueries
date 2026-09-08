@@ -14,3 +14,4 @@ registered after publication on CRAN.
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
+
