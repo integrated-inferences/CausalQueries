@@ -148,8 +148,14 @@ update_model <- function(model,
     }
 
     if (!is.integer(data$count)) {
-      data$count <- as.integer(data$count)
-      warning("count column should be integer valued; value has been forced to integer")
+      count_num <- as.numeric(data$count)
+      if (any(is.na(count_num) != is.na(data$count)) ||
+          any(abs(count_num - round(count_num)) > 1e-9, na.rm = TRUE)) {
+        warning(
+          "count column should be integer valued; value has been forced to integer"
+        )
+      }
+      data$count <- as.integer(round(count_num))
     }
 
     data_events <- data

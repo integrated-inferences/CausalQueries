@@ -332,6 +332,21 @@ testthat::test_that(
   }
 )
 
+testthat::test_that(
+
+  desc = "whole-number double counts do not warn",
+
+  code = {
+    model <- make_model("X->Y")
+    data <- make_events(model, 20, include_strategy = TRUE)
+    data$count <- as.numeric(data$count) # double, but whole numbers
+    expect_warning(
+      update_model(model, data, iter = 600, refresh = 0),
+      NA
+    )
+  }
+)
+
 
 testthat::test_that(
 
