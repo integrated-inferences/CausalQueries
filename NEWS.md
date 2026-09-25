@@ -44,7 +44,12 @@ tiny vignette-sized graphs are modest and noisy.
 `make_model()` gains `drop_interactions`, `keep_interactions`, and `monotone`
 to build reduced nodal-type sets at construction (e.g. four parents without
 65,536 schedules). `simplify_model()` (alias `set_nodal_restrictions()`)
-applies the same rules to an existing model. See `?simplify_model`.
+applies the same rules to an existing model. Monotone codes are `+` / `-`
+(weakly increasing / decreasing in a parent), `m` (no qualitative interaction:
+effect of that parent never sign-changes across backgrounds), and `n` (keep
+only sign-changing / qualitative-interaction types). Prefer
+`monotone = list(Y = c(A = "m", B = "+"))` or board-wide `monotone = "m"` /
+`"+"`. See `?simplify_model`.
 
 ### Size guards
 

@@ -38,11 +38,37 @@ allowed even when their order would otherwise be dropped. A list of
 character vectors of parent names; optionally a named list by child
 (e.g. \code{list(Y = list(c("A", "B")))}).}
 
-\item{monotone}{Monotonicity restrictions. \code{NULL}: none.
-\code{"+"} / \code{"-"}: every endogenous node weakly increasing /
-decreasing in each parent. Character vector of edge specs
-\code{"A+Y"}, \code{"B-Y"} (parent, sign, child). Or a named list
-\code{list(Y = c(A = "+", B = "-"))}.}
+\item{monotone}{Monotonicity and related restrictions on parent effects.
+  \code{NULL}: none. Prefer the **named list** form (no string parsing):
+  \code{list(Y = c(A = "m", B = "+", C = "n"))}.
+
+  Codes for a given parent of a child (effect of raising that parent,
+  holding other parents fixed):
+  \describe{
+    \item{\code{"+"}}{keep types that are weakly **increasing** in the parent
+      (never a negative effect). Example two-parent strings kept:
+      \code{"0011"} (Y equals X2), \code{"0001"} (AND); dropped:
+      \code{"1100"} (Y equals not X2), \code{"1001"} (XNOR).}
+    \item{\code{"-"}}{keep types that are weakly **decreasing** in the parent.
+      Keeps \code{"1100"}; drops \code{"0011"} and \code{"1001"}.}
+    \item{\code{"m"}}{keep types with **no qualitative interaction** in that
+      parent: the effect never sign-changes across backgrounds (uniformly
+      nondecreasing, uniformly nonincreasing, or flat). Keeps e.g.
+      \code{"0011"} and \code{"1100"}; drops XOR/XNOR-style \code{"0110"} /
+      \code{"1001"}. Weaker than \code{"+"} or \code{"-"} alone.}
+    \item{\code{"n"}}{keep only types with a **qualitative interaction** in
+      that parent (positive in some backgrounds and negative in others).
+      Usual practice is \code{"m"} (exclude those types), not \code{"n"}.}
+  }
+
+  Shorthands: \code{monotone = "+"}, \code{"-"}, \code{"m"}, or \code{"n"}
+  applies that code to **every** parent of every endogenous node.
+
+  Compact strings such as \code{"A+Y"} or \code{"AmY"} are optional sugar
+  (parent, code, child). You do **not** need them; use the list form if node
+  names are unusual. Rare ambiguous strings (e.g. \code{"AmmY"} when both
+  \code{Am -> Y} and \code{A -> mY} could parse) error and suggest the list
+  form.}
 
 \item{nodes}{Optional character vector of children to rebuild; default all
 endogenous nodes with parents.}
@@ -64,17 +90,28 @@ monotonicity rules, then attach them.
 \code{set_nodal_restrictions} is an alias of \code{simplify_model}.
 }
 \examples{
-# Main-effects-friendly collider: drop 2+ way interactions, all parents +
-m <- make_model(
+# Prefer list form: Y increasing in A, no QI in B, ...
+m <- simplify_model(
+  make_model("A -> Y <- B"),
+  monotone = list(Y = c(A = "+", B = "m"))
+)
+# AND and OR survive "+"/ "m"; XNOR/XOR do not survive "m"
+all(c("0001", "0111") \%in\% m$nodal_types$Y)
+!any(c("1001", "0110") \%in\% m$nodal_types$Y)
+
+# Across the board: exclude qualitative interactions on every edge
+m2 <- make_model("A -> Y <- B; C -> Y", monotone = "m")
+
+# Across the board: weakly increasing in every parent
+m3 <- make_model(
   "A -> Y <- B; C -> Y",
   drop_interactions = TRUE,
   monotone = "+"
 )
-length(m$nodal_types$Y)
+length(m3$nodal_types$Y)
 
-# Same rules after the fact
-m2 <- make_model("A -> Y <- B; C -> Y")
-m2 <- simplify_model(m2, drop_interactions = 2, monotone = c("A+Y", "B+Y", "C+Y"))
+# Compact strings are optional (same as list(Y = c(A = "m")))
+m4 <- simplify_model(make_model("A -> Y <- B"), monotone = "AmY")
 
 # Alias
 identical(

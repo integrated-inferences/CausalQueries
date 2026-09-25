@@ -18,11 +18,37 @@
 #'   allowed even when their order would otherwise be dropped. A list of
 #'   character vectors of parent names; optionally a named list by child
 #'   (e.g. \code{list(Y = list(c("A", "B")))}).
-#' @param monotone Monotonicity restrictions. \code{NULL}: none.
-#'   \code{"+"} / \code{"-"}: every endogenous node weakly increasing /
-#'   decreasing in each parent. Character vector of edge specs
-#'   \code{"A+Y"}, \code{"B-Y"} (parent, sign, child). Or a named list
-#'   \code{list(Y = c(A = "+", B = "-"))}.
+#' @param monotone Monotonicity and related restrictions on parent effects.
+#'   \code{NULL}: none. Prefer the **named list** form (no string parsing):
+#'   \code{list(Y = c(A = "m", B = "+", C = "n"))}.
+#'
+#'   Codes for a given parent of a child (effect of raising that parent,
+#'   holding other parents fixed):
+#'   \describe{
+#'     \item{\code{"+"}}{keep types that are weakly **increasing** in the parent
+#'       (never a negative effect). Example two-parent strings kept:
+#'       \code{"0011"} (Y equals X2), \code{"0001"} (AND); dropped:
+#'       \code{"1100"} (Y equals not X2), \code{"1001"} (XNOR).}
+#'     \item{\code{"-"}}{keep types that are weakly **decreasing** in the parent.
+#'       Keeps \code{"1100"}; drops \code{"0011"} and \code{"1001"}.}
+#'     \item{\code{"m"}}{keep types with **no qualitative interaction** in that
+#'       parent: the effect never sign-changes across backgrounds (uniformly
+#'       nondecreasing, uniformly nonincreasing, or flat). Keeps e.g.
+#'       \code{"0011"} and \code{"1100"}; drops XOR/XNOR-style \code{"0110"} /
+#'       \code{"1001"}. Weaker than \code{"+"} or \code{"-"} alone.}
+#'     \item{\code{"n"}}{keep only types with a **qualitative interaction** in
+#'       that parent (positive in some backgrounds and negative in others).
+#'       Usual practice is \code{"m"} (exclude those types), not \code{"n"}.}
+#'   }
+#'
+#'   Shorthands: \code{monotone = "+"}, \code{"-"}, \code{"m"}, or \code{"n"}
+#'   applies that code to **every** parent of every endogenous node.
+#'
+#'   Compact strings such as \code{"A+Y"} or \code{"AmY"} are optional sugar
+#'   (parent, code, child). You do **not** need them; use the list form if node
+#'   names are unusual. Rare ambiguous strings (e.g. \code{"AmmY"} when both
+#'   \code{Am -> Y} and \code{A -> mY} could parse) error and suggest the list
+#'   form.
 #' @param nodes Optional character vector of children to rebuild; default all
 #'   endogenous nodes with parents.
 #' @param quiet Logical. If \code{FALSE} (default), message kept vs saturated
@@ -33,17 +59,28 @@
 #'
 #' @export
 #' @examples
-#' # Main-effects-friendly collider: drop 2+ way interactions, all parents +
-#' m <- make_model(
+#' # Prefer list form: Y increasing in A, no QI in B, ...
+#' m <- simplify_model(
+#'   make_model("A -> Y <- B"),
+#'   monotone = list(Y = c(A = "+", B = "m"))
+#' )
+#' # AND and OR survive "+"/ "m"; XNOR/XOR do not survive "m"
+#' all(c("0001", "0111") %in% m$nodal_types$Y)
+#' !any(c("1001", "0110") %in% m$nodal_types$Y)
+#'
+#' # Across the board: exclude qualitative interactions on every edge
+#' m2 <- make_model("A -> Y <- B; C -> Y", monotone = "m")
+#'
+#' # Across the board: weakly increasing in every parent
+#' m3 <- make_model(
 #'   "A -> Y <- B; C -> Y",
 #'   drop_interactions = TRUE,
 #'   monotone = "+"
 #' )
-#' length(m$nodal_types$Y)
+#' length(m3$nodal_types$Y)
 #'
-#' # Same rules after the fact
-#' m2 <- make_model("A -> Y <- B; C -> Y")
-#' m2 <- simplify_model(m2, drop_interactions = 2, monotone = c("A+Y", "B+Y", "C+Y"))
+#' # Compact strings are optional (same as list(Y = c(A = "m")))
+#' m4 <- simplify_model(make_model("A -> Y <- B"), monotone = "AmY")
 #'
 #' # Alias
 #' identical(
@@ -234,6 +271,36 @@ parse_keep_interactions <- function(model, keep_interactions) {
 
 #' @keywords internal
 #' @noRd
+.mono_codes <- c("+", "-", "m", "n")
+
+#' Collect deltas for raising parent j under all backgrounds.
+#' @keywords internal
+#' @noRd
+parent_effect_deltas <- function(f, parents, j) {
+  k <- length(parents)
+  others <- setdiff(seq_len(k), j)
+  if (length(others) == 0L) {
+    fixings <- matrix(integer(0), nrow = 1L, ncol = 0L)
+  } else {
+    fixings <- as.matrix(perm(rep(1, length(others))))
+  }
+  deltas <- integer(nrow(fixings))
+  for (r in seq_len(nrow(fixings))) {
+    bg <- integer(k)
+    if (length(others)) {
+      bg[others] <- as.integer(fixings[r, ])
+    }
+    bg[j] <- 0L
+    i0 <- assignment_index(bg, parents)
+    bg[j] <- 1L
+    i1 <- assignment_index(bg, parents)
+    deltas[[r]] <- f[i1] - f[i0]
+  }
+  deltas
+}
+
+#' @keywords internal
+#' @noRd
 parse_monotone <- function(model, monotone) {
   if (is.null(monotone)) {
     return(list())
@@ -251,8 +318,11 @@ parse_monotone <- function(model, monotone) {
         call. = FALSE
       )
     }
-    if (!sign %in% c("+", "-")) {
-      stop("Monotone sign must be '+' or '-'.", call. = FALSE)
+    if (!sign %in% .mono_codes) {
+      stop(
+        "Monotone code must be one of '+', '-', 'm', 'n' (got `", sign, "`).",
+        call. = FALSE
+      )
     }
     cur <- out[[child]]
     if (is.null(cur)) {
@@ -263,7 +333,7 @@ parse_monotone <- function(model, monotone) {
   }
 
   if (is.character(monotone) && length(monotone) == 1L &&
-      monotone %in% c("+", "-")) {
+      monotone %in% .mono_codes) {
     for (v in model$nodes) {
       for (p in parents[[v]]) {
         add_edge(p, v, monotone)
@@ -278,7 +348,7 @@ parse_monotone <- function(model, monotone) {
       if (is.null(names(spec))) {
         stop(
           "list monotone for node ", child,
-          " must be named with parent signs, e.g. c(A = '+', B = '-').",
+          " must be named with parent codes, e.g. c(A = 'm', B = '+').",
           call. = FALSE
         )
       }
@@ -292,55 +362,130 @@ parse_monotone <- function(model, monotone) {
   if (is.character(monotone)) {
     for (spec in monotone) {
       spec <- gsub(" ", "", spec)
-      m <- regexec(
-        "^([A-Za-z][A-Za-z0-9._]*)([+-])([A-Za-z][A-Za-z0-9._]*)$",
-        spec
-      )
-      g <- regmatches(spec, m)[[1]]
-      if (length(g) != 4L) {
+      if (spec %in% .mono_codes) {
+        stop(
+          "Global monotone code `", spec,
+          "` must be a length-1 character, not mixed with edge specs.",
+          call. = FALSE
+        )
+      }
+      cands <- monotone_spec_candidates(spec, model, parents)
+      if (!length(cands)) {
         stop(
           "Cannot parse monotone spec `", spec,
-          "`. Use `+`, `-`, `A+Y`, or `A+B` (unique shared child).",
+          "`. Prefer list(Y = c(A = 'm')). Compact forms: `A+Y`, `AmY`.",
           call. = FALSE
         )
       }
-      left <- g[2]
-      sgn <- g[3]
-      right <- g[4]
-      # Edge form: left is parent of right
-      if (right %in% model$nodes && left %in% parents[[right]]) {
-        add_edge(left, right, sgn)
-        next
-      }
-      # Short form: both are parents of a unique common child
-      children_of_both <- model$nodes[
-        vapply(model$nodes, function(ch) {
-          all(c(left, right) %in% parents[[ch]])
-        }, logical(1))
-      ]
-      if (length(children_of_both) == 1L) {
-        add_edge(left, children_of_both, sgn)
-        add_edge(right, children_of_both, sgn)
-        next
-      }
-      if (length(children_of_both) == 0L) {
+      if (length(cands) > 1L) {
         stop(
-          "Monotone spec `", spec,
-          "`: not an edge parent±child and no shared child.",
+          "Monotone spec `", spec, "` is ambiguous. ",
+          "Use list form, e.g. list(Y = c(A = 'm')).",
           call. = FALSE
         )
       }
-      stop(
-        "Monotone spec `", spec, "` is ambiguous (shared children: ",
-        paste(children_of_both, collapse = ", "),
-        "). Use `A+Y` form.",
-        call. = FALSE
-      )
+      hit <- cands[[1]]
+      if (identical(hit$kind, "edge")) {
+        add_edge(hit$parent, hit$child, hit$sign)
+      } else {
+        # short form: both sides are parents of a unique shared child
+        add_edge(hit$left, hit$child, hit$sign)
+        add_edge(hit$right, hit$child, hit$sign)
+      }
     }
     return(out)
   }
 
   stop("`monotone` not recognized.", call. = FALSE)
+}
+
+#' Possible parses of a compact monotone string against the DAG.
+#' @keywords internal
+#' @noRd
+monotone_spec_candidates <- function(spec, model, parents) {
+  chars <- strsplit(spec, "", fixed = TRUE)[[1]]
+  out <- list()
+  for (i in seq_along(chars)) {
+    sgn <- chars[[i]]
+    if (!sgn %in% .mono_codes) {
+      next
+    }
+    left <- if (i > 1L) paste(chars[seq_len(i - 1L)], collapse = "") else ""
+    right <- if (i < length(chars)) {
+      paste(chars[seq.int(i + 1L, length(chars))], collapse = "")
+    } else {
+      ""
+    }
+    if (!nzchar(left) || !nzchar(right)) {
+      next
+    }
+    # Edge: left -> right with code sgn
+    if (right %in% model$nodes && left %in% parents[[right]]) {
+      out[[length(out) + 1L]] <- list(
+        kind = "edge", parent = left, child = right, sign = sgn
+      )
+    }
+    # Short: left and right both parents of a unique common child
+    children_of_both <- model$nodes[
+      vapply(model$nodes, function(ch) {
+        all(c(left, right) %in% parents[[ch]])
+      }, logical(1))
+    ]
+    if (length(children_of_both) == 1L) {
+      out[[length(out) + 1L]] <- list(
+        kind = "pair",
+        left = left,
+        right = right,
+        child = children_of_both[[1]],
+        sign = sgn
+      )
+    }
+  }
+  # Deduplicate identical edge parses
+  if (!length(out)) {
+    return(out)
+  }
+  keys <- vapply(out, function(x) {
+    if (identical(x$kind, "edge")) {
+      paste("e", x$parent, x$sign, x$child, sep = "\r")
+    } else {
+      paste("p", x$left, x$right, x$sign, x$child, sep = "\r")
+    }
+  }, character(1))
+  out[!duplicated(keys)]
+}
+
+#' Monotone / QI check for named parents.
+#' @keywords internal
+#' @noRd
+type_respects_monotone <- function(type_string, parents, mono_named) {
+  if (!length(mono_named)) {
+    return(TRUE)
+  }
+  f <- type_string_to_f(type_string)
+  for (p in names(mono_named)) {
+    j <- match(p, parents)
+    if (is.na(j)) {
+      next
+    }
+    sign <- mono_named[[p]]
+    deltas <- parent_effect_deltas(f, parents, j)
+    if (sign == "+" && any(deltas < 0)) {
+      return(FALSE)
+    }
+    if (sign == "-" && any(deltas > 0)) {
+      return(FALSE)
+    }
+    # m: no qualitative interaction (no sign change across backgrounds)
+    if (sign == "m" && any(deltas > 0) && any(deltas < 0)) {
+      return(FALSE)
+    }
+    # n: keep only qualitative-interaction (sign-changing) types
+    if (sign == "n" && !(any(deltas > 0) && any(deltas < 0))) {
+      return(FALSE)
+    }
+  }
+  TRUE
 }
 
 
@@ -590,48 +735,6 @@ type_has_forbidden_interaction <- function(type_string,
     }
   }
   FALSE
-}
-
-#' Monotone (weak) check for one parent.
-#' @keywords internal
-#' @noRd
-type_respects_monotone <- function(type_string, parents, mono_named) {
-  if (!length(mono_named)) {
-    return(TRUE)
-  }
-  f <- type_string_to_f(type_string)
-  k <- length(parents)
-  for (p in names(mono_named)) {
-    j <- match(p, parents)
-    if (is.na(j)) {
-      next
-    }
-    sign <- mono_named[[p]]
-    others <- setdiff(seq_len(k), j)
-    if (length(others) == 0L) {
-      fixings <- matrix(integer(0), nrow = 1L, ncol = 0L)
-    } else {
-      fixings <- as.matrix(perm(rep(1, length(others))))
-    }
-    for (r in seq_len(nrow(fixings))) {
-      bg <- integer(k)
-      if (length(others)) {
-        bg[others] <- as.integer(fixings[r, ])
-      }
-      bg[j] <- 0L
-      i0 <- assignment_index(bg, parents)
-      bg[j] <- 1L
-      i1 <- assignment_index(bg, parents)
-      d <- f[i1] - f[i0]
-      if (sign == "+" && d < 0) {
-        return(FALSE)
-      }
-      if (sign == "-" && d > 0) {
-        return(FALSE)
-      }
-    }
-  }
-  TRUE
 }
 
 #' Generate allowed collapsed nodal types for one node.
