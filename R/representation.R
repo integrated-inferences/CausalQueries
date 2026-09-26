@@ -17,6 +17,12 @@
 #' \code{legacy} that disagrees with the stamped model warns: do not mix
 #' factorized and causal-type answers silently.
 #'
+#' **Factorized query evaluators.** Under \code{legacy = FALSE},
+#' \code{query_model} / \code{query_distribution} accept \code{query_eval =
+#' "grid"|"ve"|"auto"} (or \code{options(CausalQueries.query_eval)}). This is
+#' \emph{not} a second \code{legacy} dimension: see
+#' \code{memos/query_twin_network_ve.md} and \code{?query_model}.
+#'
 #' **Draws.** Under both paths, prior / posterior draws of interest are
 #' **parameters** (lambdas / simplexes). Expanding those draws into a full
 #' causal-type weight matrix is a legacy convenience, not the factorized

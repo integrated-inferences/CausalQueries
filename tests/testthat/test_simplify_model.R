@@ -346,4 +346,14 @@ testthat::test_that("generation skeleton stays modular under monotone = m", {
   expect_equal(sum(ev$count), 1L)
   expect_null(m$causal_types)
   expect_lt(elapsed, 60)
+
+  # Query on D multiplies several fat nodes; refuse before expand.grid
+  expect_error(
+    query_model(m, "D[A=1] - D[A=0]", using = "parameters"),
+    "relevant type product is too large"
+  )
+  # Local effect on A stays within the limit
+  q <- query_model(m, "A[A1=1] - A[A1=0]", using = "parameters")
+  expect_s3_class(q, "data.frame")
+  expect_true("mean" %in% names(q) || any(grepl("mean", names(q), ignore.case = TRUE)))
 })

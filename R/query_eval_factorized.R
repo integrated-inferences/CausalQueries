@@ -1,8 +1,19 @@
 #' Parameters-only query evaluation (factorized path)
 #'
-#' Relevant-set variable elimination over nodal types: expand only types that
-#' enter the query, weight by lambda products (stratified under confound)
-#' without storing type_posterior. Confound merges factor_blocks.
+#' Relevant-set evaluation over nodal types: expand only types that enter the
+#' query, weight by lambda products (stratified under confound) without storing
+#' type_posterior. Confound merges factor_blocks.
+#'
+#' Factorized evaluators (\code{query_eval}, not a second \code{legacy}):
+#' \describe{
+#'   \item{\code{"grid"} (default)}{Relevant-set \code{expand.grid} then
+#'     \code{realise_outcomes} / \code{map_query_to_causal_type}.}
+#'   \item{\code{"ve"}}{Chunked twin-network accumulation with the same kernels;
+#'     allows a higher product cap for large queries.}
+#'   \item{\code{"auto"}}{\code{"grid"} when the product fits; \code{"ve"} when
+#'     the grid path would refuse.}
+#' }
+#' See \code{memos/query_twin_network_ve.md} and \code{?query_model}.
 #'
 #' @keywords internal
 #' @noRd
@@ -301,6 +312,26 @@ type_weights_matrix <- function(model, param_mat, causal_types, type_nodes) {
   W
 }
 
+#' Product of nodal-type counts on type_nodes (log-space; Inf if huge).
+#' @keywords internal
+#' @noRd
+estimate_relevant_type_product <- function(model, type_nodes) {
+  nt <- get_nodal_types(model, collapse = TRUE)
+  type_nodes <- model$nodes[model$nodes %in% type_nodes]
+  if (!length(type_nodes)) {
+    return(0)
+  }
+  counts <- vapply(type_nodes, function(v) length(nt[[v]]), numeric(1))
+  if (any(!is.finite(counts)) || any(counts < 1)) {
+    return(Inf)
+  }
+  log_n <- sum(log(counts))
+  if (!is.finite(log_n) || log_n > log(.Machine$double.xmax)) {
+    return(Inf)
+  }
+  exp(log_n)
+}
+
 #' One-shot VE schedule: relevant types + realisations (not kept on model).
 #' @keywords internal
 #' @noRd
@@ -313,13 +344,35 @@ factorized_query_schedule <- function(model, query = NULL, given = "ALL") {
     type_nodes <- query_type_nodes(model, query, given)
   }
 
+  # Refuse before expand.grid — same threshold, no change to answered queries
+  n_hat <- estimate_relevant_type_product(model, type_nodes)
+  max_types <- factorized_query_max_types()
+  if (!is.finite(n_hat) || n_hat > max_types) {
+    counts <- vapply(
+      model$nodes[model$nodes %in% type_nodes],
+      function(v) length(get_nodal_types(model, collapse = TRUE)[[v]]),
+      numeric(1)
+    )
+    stop(
+      "Factorized query (query_eval = \"grid\"): relevant type product is too large (",
+      if (is.finite(n_hat)) format(round(n_hat), big.mark = ",") else "non-finite",
+      "; product of nodal type counts on ",
+      paste(names(counts), counts, sep = "=", collapse = " x "),
+      "). ",
+      "Try query_eval = \"ve\" or \"auto\" for chunked evaluation, ",
+      "legacy = TRUE, or restrict the model. See ?query_model.",
+      call. = FALSE
+    )
+  }
+
   ct <- causal_types_relevant(model, type_nodes)
   n_types <- nrow(ct)
-  if (!is.finite(n_types) || n_types > 1e6) {
+  if (!is.finite(n_types) || n_types > max_types) {
     stop(
-      "Factorized query: relevant type product is too large (",
+      "Factorized query (query_eval = \"grid\"): relevant type product is too large (",
       format(n_types, big.mark = ","), "). ",
-      "Use legacy = TRUE or restrict the model.",
+      "Try query_eval = \"ve\" or \"auto\", legacy = TRUE, or restrict the model. ",
+      "See ?query_model.",
       call. = FALSE
     )
   }
@@ -433,8 +486,10 @@ query_distribution_factorized <- function(model,
                                          parameters = NULL,
                                          n_draws = 4000,
                                          join_by = "|",
-                                         case_level = FALSE) {
+                                         case_level = FALSE,
+                                         query_eval = NULL) {
   check_factorized_query(model, "query_distribution")
+  query_eval <- resolve_query_eval(query_eval)
 
   using_v <- unlist(using)
   given_v <- unlist(given)
@@ -464,29 +519,23 @@ query_distribution_factorized <- function(model,
     param_vec <- if (is.list(parameters)) parameters[[1]] else parameters
   }
 
-  # Cache schedules by (query, given) type-node set
-  schedule_cache <- list()
-  schedule_key <- function(q, g) paste(query_type_nodes(model, q, g), collapse = "\r")
-
   cols <- vector("list", length(q_chr))
   for (i in seq_along(q_chr)) {
-    key <- schedule_key(q_chr[i], g_chr[i])
-    if (is.null(schedule_cache[[key]])) {
-      schedule_cache[[key]] <- factorized_query_schedule(
-        model, query = q_chr[i], given = g_chr[i]
-      )
-    }
+    choice <- choose_factorized_query_eval(
+      model, q_chr[i], g_chr[i], query_eval
+    )
     pm <- factorized_param_draws(
       model, using_v[i],
       parameters = param_vec,
       n_draws = n_draws
     )
-    cols[[i]] <- estimands_from_lambda_draws(
+    cols[[i]] <- estimands_factorized_dispatch(
       model = model,
-      schedule = schedule_cache[[key]],
       query = q_chr[i],
       given = g_chr[i],
       param_mat = pm,
+      method = choice$method,
+      type_nodes = choice$type_nodes,
       join_by = join_by,
       case_level = case_v[i],
       using = using_v[i]

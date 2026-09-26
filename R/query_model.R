@@ -33,6 +33,41 @@
 #'   \code{type_posterior}; supports confounding). \code{TRUE} uses the
 #'   causal-type path. \code{NULL} inherits \code{model$legacy} then
 #'   \code{options(CausalQueries.legacy)}.
+#' @param query_eval Character or \code{NULL}. Factorized-only evaluator
+#'   (ignored when \code{legacy = TRUE}). This is \strong{not} a second
+#'   \code{legacy} switch. \code{NULL} uses
+#'   \code{options(CausalQueries.query_eval)} (default \code{"grid"}).
+#'
+#'   \describe{
+#'     \item{\code{"grid"} (default)}{Relevant-set \code{expand.grid}, then
+#'       \code{realise_outcomes} / \code{map_query_to_causal_type}. Safest
+#'       default; refuse if the type product exceeds ~1e6.}
+#'     \item{\code{"ve"}}{Chunked enumeration with the \emph{same} kernels as
+#'       grid (including nested do). Allows a higher product cap, but
+#'       \strong{runtime still scales with the type product} — large DAGs can
+#'       appear to hang for a long time without erroring. Prefer restricting
+#'       the model, or \code{"ve_struct"} when available for flat TEs.}
+#'     \item{\code{"ve_struct"}}{Optional structural twin-network sum-product
+#'       (flat constant-\code{do} queries). Can be far faster on sparse DAGs.
+#'       \strong{Risks:} admits only flat queries; nested do / symbolic dos /
+#'       confounding (until supported) fall back to grid/chunked with a
+#'       visible message — do not assume structural VE ran unless you check.
+#'       Not selected by \code{"auto"}.}
+#'     \item{\code{"auto"}}{Uses \code{"grid"} when the product fits, else
+#'       chunked \code{"ve"} (never \code{"ve_struct"}). \strong{Risk:} on
+#'       overflow it may enter a very long chunked run (same as calling
+#'       \code{"ve"}).}
+#'   }
+#'
+#' @section Factorized query_eval risks:
+#' Keep \code{query_eval = "grid"} (or omit it) for ordinary work and for
+#' reproducible pins. Call \code{"ve"} / \code{"auto"} / \code{"ve_struct"}
+#' only when you understand the tradeoffs above. Raising
+#' \code{options(CausalQueries.factorized_ve_max)} does not make an
+#' intractable product fast; it only delays the error. See
+#' \code{memos/query_twin_network_ve.md} and
+#' \code{memos/plan_structural_twin_ve.md}.
+#'
 #' @return A data frame where columns contain draws from the distribution
 #'   of the potential outcomes specified in \code{query}
 #' @importFrom stats sd
@@ -41,9 +76,25 @@
 #' model <- make_model("X -> Y") |>
 #'          set_parameters(c(.5, .5, .1, .2, .3, .4))
 #'  \donttest{
-#'  # simple  queries
+#'  # simple  queries (default query_eval = "grid" — safest)
 #'  query_distribution(model, query = "(Y[X=1] > Y[X=0])", using = "priors") |>
 #'    head()
+#'
+#'  # Explicit grid (same as default)
+#'  query_distribution(model, "Y[X=1] - Y[X=0]", query_eval = "grid")
+#'
+#'  # Chunked "ve": same answer as grid on small models; on huge type products
+#'  # it may run for a very long time (still O(product)) — interrupt if needed.
+#'  # Prefer model restrictions if the product is astronomical.
+#'  query_distribution(model, "Y[X=1] - Y[X=0]", query_eval = "ve")
+#'
+#'  # Structural twin VE (flat TE only). May message and fall back for nested
+#'  # do or confound; check messages before trusting that "ve_struct" ran.
+#'  # query_distribution(big, "D[A=1] - D[A=0]", query_eval = "ve_struct")
+#'
+#'  # auto: grid if product fits, else chunked ve (never ve_struct).
+#'  # Risk: overflow path can hang like query_eval = "ve".
+#'  # options(CausalQueries.query_eval = "auto")
 #'
 #'  # multiple  queries
 #'  query_distribution(model,
@@ -137,7 +188,8 @@ query_distribution <- function(model,
                                join_by = "|",
                                case_level = FALSE,
                                query = NULL,
-                               legacy = NULL) {
+                               legacy = NULL,
+                               query_eval = NULL) {
   legacy <- resolve_legacy(legacy, model)
 
   ## check arguments
@@ -202,7 +254,8 @@ query_distribution <- function(model,
       parameters = parameters,
       n_draws = n_draws,
       join_by = join_by,
-      case_level = case_level
+      case_level = case_level,
+      query_eval = query_eval
     ))
   }
 
@@ -345,6 +398,16 @@ query_distribution <- function(model,
 #'   \code{type_posterior}; supports confounding). \code{TRUE} uses the
 #'   causal-type path. \code{NULL} inherits \code{model$legacy} then
 #'   \code{options(CausalQueries.legacy)}.
+#' @param query_eval Character or \code{NULL}. Factorized-only evaluator
+#'   (ignored when \code{legacy = TRUE}). Same semantics as
+#'   \code{\link{query_distribution}}: \code{"grid"} (default, safest),
+#'   \code{"ve"} (chunked; can hang on huge type products),
+#'   \code{"ve_struct"} (optional structural twin VE for flat TE; may fall
+#'   back with a message), \code{"auto"} (grid or chunked \code{"ve"}, never
+#'   \code{"ve_struct"}). \code{NULL} uses
+#'   \code{options(CausalQueries.query_eval)}. Not a second \code{legacy}
+#'   switch. See \emph{Factorized query_eval risks} on
+#'   \code{?query_distribution}.
 #' @return An object of class \code{model_query}. A data frame with possible
 #'   columns: model, query, given, using, case_level, mean, sd, cred.low, cred.high.
 #'   Further columns are generated as specified in \code{stats}.
@@ -365,6 +428,22 @@ query_distribution <- function(model,
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = "parameters")
 #' query_model(model, "Y[X=1] > Y[X = 0]", using = c("priors", "parameters"))
 #' \donttest{
+#'
+#' # Default grid — prefer this unless the type product refuses
+#' query_model(model, "Y[X=1] - Y[X=0]", query_eval = "grid")
+#'
+#' # Chunked ve: OK on small models; on large relevant sets runtime is still
+#' # O(type product) and may look hung (interrupt rather than raise ve_max).
+#' query_model(model, "Y[X=1] - Y[X=0]", query_eval = "ve")
+#'
+#' # Structural twin VE for flat interventions (e.g. long-chain TE). Risks:
+#' # nested do / confound may fall back to grid/ve with a message — read it;
+#' # "auto" never selects ve_struct.
+#' # query_model(big, "Trust[Marginalization=1] - Trust[Marginalization=0]",
+#' #             query_eval = "ve_struct")
+#'
+#' # auto overflow uses chunked ve (hang risk), not ve_struct
+#' # query_model(big, "D[A=1] - D[A=0]", query_eval = "auto")
 #'
 #' # `expand_grid= TRUE` requests the Cartesian product of arguments
 #'
@@ -422,7 +501,8 @@ query_model <- function(model,
                         query = NULL,
                         cred = 95,
                         labels = NULL,
-                        legacy = NULL) {
+                        legacy = NULL,
+                        query_eval = NULL) {
   # handle global variables
   legacy <- resolve_legacy(legacy, model)
 
@@ -572,35 +652,27 @@ query_model <- function(model,
   }
 
   if (!isTRUE(legacy)) {
-    schedules <- list()
+    query_eval <- resolve_query_eval(query_eval)
     estimands <- vector("list", nrow(jobs))
     for (i in seq_len(nrow(jobs))) {
       mname <- jobs$model_names[i]
       m <- model[[mname]]
-      sk <- paste(
-        mname,
-        paste(query_type_nodes(m, jobs$queries[i], jobs$given[i]), collapse = "\r"),
-        sep = "\r"
+      choice <- choose_factorized_query_eval(
+        m, jobs$queries[i], jobs$given[i], query_eval
       )
-      if (is.null(schedules[[sk]])) {
-        schedules[[sk]] <- factorized_query_schedule(
-          m,
-          query = jobs$queries[i],
-          given = jobs$given[i]
-        )
-      }
       pm <- factorized_param_draws(
         m,
         jobs$using[i],
         parameters = if (!is.null(parameters)) parameters[[mname]] else NULL,
         n_draws = n_draws
       )
-      estimands[[i]] <- estimands_from_lambda_draws(
+      estimands[[i]] <- estimands_factorized_dispatch(
         model = m,
-        schedule = schedules[[sk]],
         query = jobs$queries[i],
         given = jobs$given[i],
         param_mat = pm,
+        method = choice$method,
+        type_nodes = choice$type_nodes,
         join_by = "|",
         case_level = isTRUE(jobs$case_level[i]),
         using = jobs$using[i]

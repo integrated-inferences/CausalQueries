@@ -254,12 +254,12 @@ inspect(model, "posterior_distribution") |>
 
 |   X.0|   X.1| Y.00_X.0| Y.10_X.0| Y.01_X.0| Y.11_X.0| Y.00_X.1| Y.10_X.1| Y.01_X.1| Y.11_X.1|
 |-----:|-----:|--------:|--------:|--------:|--------:|--------:|--------:|--------:|--------:|
-| 0.481| 0.519|    0.067|    0.568|    0.260|    0.106|    0.046|    0.398|    0.304|    0.251|
-| 0.527| 0.473|    0.394|    0.151|    0.077|    0.378|    0.297|    0.167|    0.494|    0.042|
-| 0.355| 0.645|    0.214|    0.117|    0.339|    0.329|    0.247|    0.102|    0.387|    0.264|
-| 0.542| 0.458|    0.264|    0.468|    0.185|    0.082|    0.171|    0.158|    0.107|    0.564|
-| 0.572| 0.428|    0.357|    0.017|    0.121|    0.504|    0.060|    0.485|    0.055|    0.400|
-| 0.480| 0.520|    0.323|    0.239|    0.018|    0.420|    0.404|    0.095|    0.448|    0.053|
+| 0.629| 0.371|    0.092|    0.320|    0.392|    0.197|    0.199|    0.246|    0.430|    0.125|
+| 0.491| 0.509|    0.369|    0.149|    0.104|    0.377|    0.197|    0.195|    0.085|    0.523|
+| 0.486| 0.514|    0.431|    0.175|    0.057|    0.337|    0.261|    0.188|    0.134|    0.416|
+| 0.447| 0.553|    0.160|    0.472|    0.104|    0.264|    0.005|    0.575|    0.352|    0.068|
+| 0.525| 0.475|    0.164|    0.593|    0.146|    0.096|    0.335|    0.056|    0.072|    0.538|
+| 0.519| 0.481|    0.349|    0.417|    0.129|    0.104|    0.188|    0.276|    0.256|    0.280|
 
 
 
@@ -313,6 +313,242 @@ query_model(
 
 Observational `given` clauses like `Y==1` restrict attention to units consistent with that data pattern. Whether you think of that as “conditioning on an event” or “keeping types that realize the event,” the answers are pinned against the legacy path in the test suite.
 
+## Query evaluators (`query_eval`) — not a second `legacy`
+
+Under `legacy = FALSE` only, `query_model` / `query_distribution` accept `query_eval`:
+
+| Value | Role | Risk if you call it |
+|-------|------|---------------------|
+| `"grid"` (default) | Relevant-set expand + `realise_outcomes` + `map_query_to_causal_type` | Refuses if the type product exceeds ~1e6 |
+| `"ve"` | **Chunked** walk of the same sum (higher cap) | Runtime still scales with the product — can look hung |
+| `"ve_struct"` | Structural twin-network sum-product (flat `do`) | Nested do falls back with a message; prefer for long-chain / Trust-like TEs |
+| `"auto"` | grid if product fits, else chunked `"ve"` | Never selects `"ve_struct"`; overflow can hang like `"ve"` |
+
+This is **not** a `legacy` × `query_eval` matrix. Keep `"grid"` for ordinary work and pins. See `?query_model` (*Factorized query_eval risks*).
+
+The two factorized evaluators are meant to return the **same number** whenever both run. Here is a confounded ATE and a chain TE, each computed both ways:
+
+
+``` r
+# 1) Confounded ATE: grid vs ve_struct (non-flat parameters so the shared
+#    number is visibly non-zero)
+m_xy <- make_model("X -> Y; X <-> Y") |>
+  set_parameters(
+    param_names = c("Y.10_X.0", "Y.01_X.0", "Y.10_X.1", "Y.01_X.1"),
+    parameters = c(0.1, 0.4, 0.2, 0.5)
+  )
+params_xy <- get_parameters(m_xy)
+q_ate <- "Y[X=1] - Y[X=0]"
+cmp_xy <- data.frame(
+  model = "X -> Y; X <-> Y",
+  query = q_ate,
+  grid = as.numeric(query_distribution(
+    m_xy, q_ate, parameters = params_xy, query_eval = "grid"
+  )),
+  ve_struct = as.numeric(query_distribution(
+    m_xy, q_ate, parameters = params_xy, query_eval = "ve_struct"
+  ))
+)
+cmp_xy$abs_diff <- abs(cmp_xy$grid - cmp_xy$ve_struct)
+
+# 2) Chain TE with tilted parameters
+m_ch <- make_model("A -> B -> C -> D") |>
+  set_parameters(
+    param_names = c("B.01", "C.01", "D.01"),
+    parameters = c(0.8, 0.7, 0.9)
+  )
+params_ch <- get_parameters(m_ch)
+q_ch <- "D[A=1] - D[A=0]"
+cmp_ch <- data.frame(
+  model = "A -> B -> C -> D",
+  query = q_ch,
+  grid = as.numeric(query_distribution(
+    m_ch, q_ch, parameters = params_ch, query_eval = "grid"
+  )),
+  ve_struct = as.numeric(query_distribution(
+    m_ch, q_ch, parameters = params_ch, query_eval = "ve_struct"
+  ))
+)
+cmp_ch$abs_diff <- abs(cmp_ch$grid - cmp_ch$ve_struct)
+
+rbind(cmp_xy, cmp_ch) |> kable(digits = 10)
+```
+
+
+
+|model            |query           |      grid| ve_struct| abs_diff|
+|:----------------|:---------------|---------:|---------:|--------:|
+|X -> Y; X <-> Y  |Y[X=1] - Y[X=0] | 0.3000000| 0.3000000|        0|
+|A -> B -> C -> D |D[A=1] - D[A=0] | 0.3813333| 0.3813333|        0|
+
+
+
+
+``` r
+# Same agreement via query_model summaries
+bind_rows <- function(...) do.call(rbind, list(...))
+qm_grid <- query_model(m_ch, q_ch, using = "parameters",
+                       parameters = list(params_ch), query_eval = "grid")
+qm_struct <- query_model(m_ch, q_ch, using = "parameters",
+                         parameters = list(params_ch), query_eval = "ve_struct")
+data.frame(
+  query_eval = c("grid", "ve_struct"),
+  mean = c(qm_grid$mean, qm_struct$mean)
+) |> kable(digits = 10)
+```
+
+
+
+|query_eval |      mean|
+|:----------|---------:|
+|grid       | 0.3813333|
+|ve_struct  | 0.3813333|
+
+
+
+# Large models: make → restrict → update → query
+
+The small confound example fits in memory either way. Theory DAGs with many parents do not: a node with $k$ parents has up to $2^{2^k}$ saturated nodal types. **Legacy** expands the *product* of those schedules into causal types. **Factorized** keeps nodal parameters and only expands what a query needs — or, with `ve_struct`, avoids expanding the product at all for flat interventions.
+
+## Make (and shrink nodal types)
+
+
+``` r
+theory <- make_model(
+  "
+  Marginalization -> Participation;
+  Marginalization -> Understanding;
+  Marginalization -> Inclusion;
+  Marginalization -> Connections;
+  Invitation -> Participation;
+  Municipality -> Participation;
+  Municipality -> Understanding;
+  Municipality -> Inclusion;
+  Municipality -> Connections;
+  Participation -> Understanding;
+  Participation -> Connections;
+  Participation -> Inclusion;
+  Inclusion -> Trust;
+  Understanding -> Trust;
+  Connections -> Trust
+  ",
+  monotone = "m",
+  drop_interactions = 3,
+  legacy = FALSE
+)
+#> Participation: kept 32 types (saturated would be 256)
+#> Connections: kept 32 types (saturated would be 256)
+#> Inclusion: kept 32 types (saturated would be 256)
+#> Understanding: kept 32 types (saturated would be 256)
+#> Trust: kept 32 types (saturated would be 256)
+# Inspect local complexity (not the causal-type product)
+vapply(get_nodal_types(theory, collapse = TRUE), length, integer(1))
+#>      Invitation Marginalization    Municipality   Participation     Connections 
+#>               2               2               2              32              32 
+#>       Inclusion   Understanding           Trust 
+#>              32              32              32
+```
+
+`monotone = "m"` and `drop_interactions` call into `simplify_model()` at build time so mediators keep dozens of types instead of 256. Prefer this over hoping `legacy = TRUE` will cope.
+
+When to stay on **legacy** at make time: you need `causal_types` / `P` attached by default, or you are debugging type-level objects. Otherwise keep `legacy = FALSE` (default).
+
+## Update
+
+Updating is still “prior on lambdas → data → posterior on lambdas.” Stan file `simplexes_factorized.stan` does not store a causal-type matrix. Limits that *do* remain:
+
+* Complete-data columns for Stan scale as $2^n$ (here $n=8$ → 256, fine).
+* Raise or respect `options(CausalQueries.factorized_grid_max)` on bigger graphs.
+* Pass `legacy = TRUE` to `update_model` only if you need `keep_type_distribution = TRUE` / `type_posterior`.
+
+
+``` r
+set.seed(1)
+dat <- make_data(theory, n = 80)
+# Short chains for vignette knit time; increase for real analysis
+theory <- update_model(
+  theory, dat,
+  iter = 400, warmup = 200, chains = 1, refresh = 0, seed = 1
+)
+theory$stan_objects$legacy
+#> [1] FALSE
+```
+
+## Query (grid vs structural twin VE)
+
+A flat TE such as `Trust[Marginalization=1] - Trust[Marginalization=0]` still involves many mediator types. The **grid** evaluator multiplies those counts (and may refuse). **`ve_struct`** eliminates along the twin network (shared types across the two interventions) so cost tracks a small frontier, not $\prod |T_v|$.
+
+On a **restriction-shrunk sibling** of the same DAG (fewer types, product still fits grid), both evaluators again agree exactly on parameters:
+
+
+``` r
+sib <- suppressMessages(make_model(
+  "Marginalization -> Participation -> Trust; Municipality -> Participation",
+  monotone = "m",
+  drop_interactions = 2,
+  legacy = FALSE
+)) |>
+  set_parameters(
+    param_names = c("Participation.0101", "Trust.01"),
+    parameters = c(0.75, 0.8)
+  )
+params_sib <- get_parameters(sib)
+q_sib <- "Trust[Marginalization=1] - Trust[Marginalization=0]"
+data.frame(
+  query_eval = c("grid", "ve_struct"),
+  mean = c(
+    query_model(sib, q_sib, using = "parameters",
+                parameters = list(params_sib), query_eval = "grid")$mean,
+    query_model(sib, q_sib, using = "parameters",
+                parameters = list(params_sib), query_eval = "ve_struct")$mean
+  )
+) |> kable(digits = 10)
+```
+
+
+
+|query_eval |      mean|
+|:----------|---------:|
+|grid       | 0.5133333|
+|ve_struct  | 0.5133333|
+
+
+
+On the full theory model, prefer `ve_struct` (grid may refuse or be slow):
+
+
+``` r
+q_te <- "Trust[Marginalization=1] - Trust[Marginalization=0]"
+# Relevant-set size (why grid struggles)
+tn <- CausalQueries:::query_type_nodes(theory, q_te, "ALL")
+n_hat <- CausalQueries:::estimate_relevant_type_product(theory, tn)
+c(type_nodes = paste(tn, collapse = ","), product = format(n_hat, scientific = TRUE))
+#>                                                                        type_nodes 
+#> "Invitation,Municipality,Participation,Connections,Inclusion,Understanding,Trust" 
+#>                                                                           product 
+#>                                                                    "1.342177e+08"
+
+query_model(
+  theory,
+  query = q_te,
+  using = "parameters",
+  query_eval = "ve_struct"
+) |>
+  kable(digits = 3)
+```
+
+
+
+|label                                               |query                                               |given |using      |case_level | mean| sd| cred.low| cred.high|
+|:---------------------------------------------------|:---------------------------------------------------|:-----|:----------|:----------|----:|--:|--------:|---------:|
+|Trust[Marginalization=1] - Trust[Marginalization=0] |Trust[Marginalization=1] - Trust[Marginalization=0] |-     |parameters |FALSE      |    0| NA|        0|         0|
+
+
+
+**Intuition (procedures).** Parameters are probabilities over **nodal types** (response schedules). Realising `Trust` under `do(Marginalization=m)` composes those schedules along the DAG. The ATE averages `Trust(1)-Trust(0)` with **one** draw of types in both worlds (twin network). Grid/`ve` enumerate type combinations; `ve_struct` multiplies λ node-by-node (or confound **block**-by-block) while propagating endogenous 0/1 values — see internals `twin_world_admit`, `twin_struct_eliminate`, `nodal_type_parent_index` / `child_value_from_nodal_type` (same encoding as `realise_outcomes_c`).
+
+Nested queries such as `Y[A=1, B=B[A=0], C=0]` are not admitted to `ve_struct` in v1: they fall back to grid/chunked with a **visible message**. Confounded models are supported for flat TE (atomic λ blocks matching `type_weights_matrix`).
+
 # Same answers as legacy (when both apply)
 
 On this small model, event probabilities match the causal-type path:
@@ -333,6 +569,7 @@ Use `legacy = TRUE` when you explicitly need type-level objects (`type_posterior
 
 * **Complete-data columns for Stan** scale as $2^n$ for $n$ binary nodes. Prep refuses grids larger than `getOption("CausalQueries.factorized_grid_max", 4096)` unless you raise that option or shrink the model (`simplify_model()`, restrictions).
 * **Incomplete data** is supported: missing nodes are handled by summing consistent completes (`E` in Stan; elimination helpers in R). Missingness does not remove the need for those complete columns inside Stan.
+* **Query type products:** `"grid"` ~1e6; chunked `"ve"` higher but still $O(\prod |T_v|)$; `"ve_struct"` for flat TE on sparse DAGs.
 * **Very large graphs** with few observed nodes: R-side `prob_event_ve()` can answer “how likely is this partial observation?” without materializing the full grid; MCMC update still needs the Stan encoding above.
 
 # Further reading
@@ -340,4 +577,5 @@ Use `legacy = TRUE` when you explicitly need type-level objects (`type_posterior
 * `vignette("a-getting-started")` — basic make / update / query workflow  
 * `vignette("e-posteriors")` — inspecting Stan posteriors  
 * `?simplify_model` — reducing nodal types on large parent sets  
-* `?update_model` / `?query_model` — `legacy` argument and inheritance  
+* `?update_model` / `?query_model` — `legacy`, `query_eval`, and inheritance  
+* `memos/plan_structural_twin_ve.md` / `memos/query_twin_network_ve.md` (package source tree) — design notes for evaluators  
