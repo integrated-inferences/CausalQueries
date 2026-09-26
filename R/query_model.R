@@ -46,12 +46,12 @@
 #'       grid (including nested do). Allows a higher product cap, but
 #'       \strong{runtime still scales with the type product} — large DAGs can
 #'       appear to hang for a long time without erroring. Prefer restricting
-#'       the model, or \code{"ve_struct"} when available for flat TEs.}
+#'       the model, or \code{"ve_struct"} when available.}
 #'     \item{\code{"ve_struct"}}{Optional structural twin-network sum-product
-#'       (flat constant-\code{do} queries). Can be far faster on sparse DAGs.
-#'       \strong{Risks:} admits only flat queries; nested do / symbolic dos /
-#'       confounding (until supported) fall back to grid/chunked with a
-#'       visible message — do not assume structural VE ran unless you check.
+#'       for constant and nested do (e.g. \code{Y[X=1, M=M[X=0]]}).
+#'       Can be far faster on sparse DAGs.
+#'       \strong{Risks:} wildcards / symbolic dos fall back to grid/chunked with
+#'       a visible message — do not assume structural VE ran unless you check.
 #'       Not selected by \code{"auto"}.}
 #'     \item{\code{"auto"}}{Uses \code{"grid"} when the product fits, else
 #'       chunked \code{"ve"} (never \code{"ve_struct"}). \strong{Risk:} on
@@ -92,8 +92,8 @@
 #'  # Prefer model restrictions if the product is astronomical.
 #'  query_distribution(model, "Y[X=1] - Y[X=0]", query_eval = "ve")
 #'
-#'  # Structural twin VE (flat TE only). May message and fall back for nested
-#'  # do or confound; check messages before trusting that "ve_struct" ran.
+#'  # Structural twin VE (constant + nested do). May message and fall back for
+#'  # wildcards / unsupported forms; check messages before trusting it ran.
 #'  # query_distribution(big, "D[A=1] - D[A=0]", query_eval = "ve_struct")
 #'
 #'  # auto: grid if product fits, else chunked ve (never ve_struct).
@@ -406,8 +406,8 @@ query_distribution <- function(model,
 #'   (ignored when \code{legacy = TRUE}). Same semantics as
 #'   \code{\link{query_distribution}}: \code{"grid"} (default, safest),
 #'   \code{"ve"} (chunked; can hang on huge type products),
-#'   \code{"ve_struct"} (optional structural twin VE for flat TE; may fall
-#'   back with a message), \code{"auto"} (grid or chunked \code{"ve"}, never
+#'   \code{"ve_struct"} (optional structural twin VE for constant / nested do;
+#'   may fall back with a message), \code{"auto"} (grid or chunked \code{"ve"}, never
 #'   \code{"ve_struct"}). \code{NULL} uses
 #'   \code{options(CausalQueries.query_eval)}. Not a second \code{legacy}
 #'   switch. See \emph{Factorized query_eval risks} on
@@ -441,7 +441,7 @@ query_distribution <- function(model,
 #' query_model(model, "Y[X=1] - Y[X=0]", query_eval = "ve")
 #'
 #' # Structural twin VE for flat interventions (e.g. long-chain TE). Risks:
-#' # nested do / confound may fall back to grid/ve with a message — read it;
+#' # wildcards / unsupported forms may fall back to grid/ve with a message — read it;
 #' # "auto" never selects ve_struct.
 #' # query_model(big, "Trust[Marginalization=1] - Trust[Marginalization=0]",
 #' #             query_eval = "ve_struct")

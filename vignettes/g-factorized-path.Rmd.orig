@@ -219,12 +219,12 @@ Under `legacy = FALSE` only, `query_model` / `query_distribution` accept `query_
 |-------|------|---------------------|
 | `"grid"` (default) | Relevant-set expand + `realise_outcomes` + `map_query_to_causal_type` | Refuses if the type product exceeds ~1e6 |
 | `"ve"` | **Chunked** walk of the same sum (higher cap) | Runtime still scales with the product — can look hung |
-| `"ve_struct"` | Structural twin-network sum-product (flat `do`) | Nested do falls back with a message; prefer for long-chain / Trust-like TEs |
+| `"ve_struct"` | Structural twin-network sum-product (constant + nested `do`) | Prefer for long-chain / Trust-like queries; wildcards fall back with a message |
 | `"auto"` | grid if product fits, else chunked `"ve"` | Never selects `"ve_struct"`; overflow can hang like `"ve"` |
 
 This is **not** a `legacy` × `query_eval` matrix. Keep `"grid"` for ordinary work and pins. See `?query_model` (*Factorized query_eval risks*).
 
-The two factorized evaluators are meant to return the **same number** whenever both run. Here is a confounded ATE and a chain TE, each computed both ways:
+The two factorized evaluators are meant to return the **same number** whenever both run. Here are a confounded ATE, a chain TE, and a **nested** query, each computed both ways:
 
 ```{r query-eval-parity-show}
 # 1) Confounded ATE: grid vs ve_struct (non-flat parameters so the shared
@@ -268,7 +268,23 @@ cmp_ch <- data.frame(
 )
 cmp_ch$abs_diff <- abs(cmp_ch$grid - cmp_ch$ve_struct)
 
-rbind(cmp_xy, cmp_ch) |> kable(digits = 10)
+# 3) Nested do (linked twin worlds)
+m_nest <- make_model("A -> Y <- B; A -> B -> Y; C -> Y")
+params_nest <- get_parameters(m_nest)
+q_nest <- "Y[A=1, B=B[A=0], C=0]"
+cmp_nest <- data.frame(
+  model = "A -> Y <- B; ...",
+  query = q_nest,
+  grid = as.numeric(query_distribution(
+    m_nest, q_nest, parameters = params_nest, query_eval = "grid"
+  )),
+  ve_struct = as.numeric(query_distribution(
+    m_nest, q_nest, parameters = params_nest, query_eval = "ve_struct"
+  ))
+)
+cmp_nest$abs_diff <- abs(cmp_nest$grid - cmp_nest$ve_struct)
+
+rbind(cmp_xy, cmp_ch, cmp_nest) |> kable(digits = 10)
 ```
 
 ```{r query-eval-parity-query-model}
@@ -286,7 +302,7 @@ data.frame(
 
 # Large models: make → restrict → update → query
 
-The small confound example fits in memory either way. Theory DAGs with many parents do not: a node with $k$ parents has up to $2^{2^k}$ saturated nodal types. **Legacy** expands the *product* of those schedules into causal types. **Factorized** keeps nodal parameters and only expands what a query needs — or, with `ve_struct`, avoids expanding the product at all for flat interventions.
+The small confound example fits in memory either way. Theory DAGs with many parents do not: a node with $k$ parents has up to $2^{2^k}$ saturated nodal types. **Legacy** expands the *product* of those schedules into causal types. **Factorized** keeps nodal parameters and only expands what a query needs — or, with `ve_struct`, avoids expanding the product at all for constant / nested interventions.
 
 ## Make (and shrink nodal types)
 
@@ -342,7 +358,7 @@ theory$stan_objects$legacy
 
 ## Query (grid vs structural twin VE)
 
-A flat TE such as `Trust[Marginalization=1] - Trust[Marginalization=0]` still involves many mediator types. The **grid** evaluator multiplies those counts (and may refuse). **`ve_struct`** eliminates along the twin network (shared types across the two interventions) so cost tracks a small frontier, not $\prod |T_v|$.
+A TE such as `Trust[Marginalization=1] - Trust[Marginalization=0]` still involves many mediator types. The **grid** evaluator multiplies those counts (and may refuse). **`ve_struct`** eliminates along the twin network (shared types across the two interventions) so cost tracks a small frontier, not $\prod |T_v|$.
 
 On a **restriction-shrunk sibling** of the same DAG (fewer types, product still fits grid), both evaluators again agree exactly on parameters:
 
@@ -390,7 +406,7 @@ query_model(
 
 **Intuition (procedures).** Parameters are probabilities over **nodal types** (response schedules). Realising `Trust` under `do(Marginalization=m)` composes those schedules along the DAG. The ATE averages `Trust(1)-Trust(0)` with **one** draw of types in both worlds (twin network). Grid/`ve` enumerate type combinations; `ve_struct` multiplies λ node-by-node (or confound **block**-by-block) while propagating endogenous 0/1 values — see internals `twin_world_admit`, `twin_struct_eliminate`, `nodal_type_parent_index` / `child_value_from_nodal_type` (same encoding as `realise_outcomes_c`).
 
-Nested queries such as `Y[A=1, B=B[A=0], C=0]` are not admitted to `ve_struct` in v1: they fall back to grid/chunked with a **visible message**. Confounded models are supported for flat TE (atomic λ blocks matching `type_weights_matrix`).
+Nested queries such as `Y[A=1, B=B[A=0], C=0]` are admitted to `ve_struct` (linked twin worlds). Wildcards / symbolic dos still fall back to grid/chunked with a **visible message**. Confounded models use atomic λ blocks matching `type_weights_matrix`.
 
 # Same answers as legacy (when both apply)
 
@@ -410,7 +426,7 @@ Use `legacy = TRUE` when you explicitly need type-level objects (`type_posterior
 
 * **Complete-data columns for Stan** scale as $2^n$ for $n$ binary nodes. Prep refuses grids larger than `getOption("CausalQueries.factorized_grid_max", 4096)` unless you raise that option or shrink the model (`simplify_model()`, restrictions).
 * **Incomplete data** is supported: missing nodes are handled by summing consistent completes (`E` in Stan; elimination helpers in R). Missingness does not remove the need for those complete columns inside Stan.
-* **Query type products:** `"grid"` ~1e6; chunked `"ve"` higher but still $O(\prod |T_v|)$; `"ve_struct"` for flat TE on sparse DAGs.
+* **Query type products:** `"grid"` ~1e6; chunked `"ve"` higher but still enumerates the full type product; `"ve_struct"` for constant / nested queries on sparse DAGs.
 * **Very large graphs** with few observed nodes: R-side `prob_event_ve()` can answer “how likely is this partial observation?” without materializing the full grid; MCMC update still needs the Stan encoding above.
 
 # Further reading

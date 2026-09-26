@@ -147,9 +147,9 @@ factorized_product_too_large_advice <- function(failed = c("grid", "ve")) {
   failed <- match.arg(failed)
   paste0(
     "Options:\n",
-    "1. query_eval = \"ve_struct\" — preferred for non-nested queries like ",
-    "Y[X=1] - Y[X=0] (constant interventions only); ",
-    "falls back with a message if nested do / unsupported.\n",
+    "1. query_eval = \"ve_struct\" — preferred for queries like ",
+    "Y[X=1] - Y[X=0] and nested forms like Y[X=1, M=M[X=0]] ",
+    "(constant interventions; falls back if wildcards / unsupported).\n",
     "2. Restrict the model (simplify_model / set_restrictions) — ",
     "reliable but changes the model.\n",
     if (identical(failed, "grid")) {

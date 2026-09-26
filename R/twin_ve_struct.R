@@ -195,7 +195,7 @@ twin_keep_value_names <- function(model, worlds, world_ids, parents,
       observational_query_nodes(model, given)
     )
     # do-world outcomes in given
-    gw <- tryCatch(parse_flat_constant_worlds(given), error = function(e) NULL)
+    gw <- tryCatch(parse_twin_worlds(given), error = function(e) NULL)
     if (!is.null(gw)) {
       for (w in gw) {
         if (!is.na(w$outcome) && nzchar(w$outcome)) {
@@ -208,6 +208,15 @@ twin_keep_value_names <- function(model, worlds, world_ids, parents,
     keep_nodes,
     observational_query_nodes(model, query)
   )
+  # Nested link sources (copy-from worlds)
+  for (w in worlds) {
+    if (!length(w$links)) {
+      next
+    }
+    for (lk in w$links) {
+      keep_nodes <- union(keep_nodes, lk$src_node)
+    }
+  }
   # Always keep remaining nodes' own values once realized? only if in keep
   keep_nodes <- intersect(model$nodes, keep_nodes)
   out <- character(0)
@@ -306,34 +315,96 @@ struct_elim_units <- function(model, type_nodes) {
 }
 
 #' Realise one node in all worlds into vals; returns NULL if parents missing.
+#' Supports constant dos and nested links (copy from another world).
 #' @keywords internal
 #' @noRd
-realise_node_into_vals <- function(v, worlds, world_ids, parents, dos_val,
+realise_node_into_vals <- function(v, worlds, world_ids, parents, dos_spec,
                                    tau, vals) {
-  for (wid in world_ids) {
-    if (!is.na(dos_val[[wid]])) {
-      vals[[twin_val_name(v, wid)]] <- dos_val[[wid]]
-      next
-    }
-    pa <- parents[[v]]
-    if (!length(pa)) {
-      vals[[twin_val_name(v, wid)]] <- as.integer(tau)
-    } else {
-      pv <- integer(length(pa))
-      for (j in seq_along(pa)) {
-        nm <- twin_val_name(pa[[j]], wid)
-        if (!nm %in% names(vals)) {
+  # Multi-pass so link targets can wait for source values set in this call
+  pending <- world_ids
+  guard <- 0L
+  while (length(pending) && guard <= length(world_ids) + 1L) {
+    guard <- guard + 1L
+    still <- character(0)
+    for (wid in pending) {
+      spec <- dos_spec[[wid]]
+      nm <- twin_val_name(v, wid)
+      if (identical(spec$kind, "const")) {
+        vals[[nm]] <- as.integer(spec$value)
+        next
+      }
+      if (identical(spec$kind, "link")) {
+        src <- twin_val_name(spec$src_node, spec$src_world)
+        if (!src %in% names(vals)) {
+          still <- c(still, wid)
+          next
+        }
+        vals[[nm]] <- as.integer(vals[[src]])
+        next
+      }
+      # Natural realisation under this world's parents
+      pa <- parents[[v]]
+      if (!length(pa)) {
+        vals[[nm]] <- as.integer(tau)
+      } else {
+        pv <- integer(length(pa))
+        missing_pa <- FALSE
+        for (j in seq_along(pa)) {
+          pnm <- twin_val_name(pa[[j]], wid)
+          if (!pnm %in% names(vals)) {
+            missing_pa <- TRUE
+            break
+          }
+          pv[[j]] <- as.integer(vals[[pnm]])
+        }
+        if (missing_pa) {
           return(NULL)
         }
-        pv[[j]] <- as.integer(vals[[nm]])
+        vals[[nm]] <- child_value_from_nodal_type(tau, pv)
       }
-      vals[[twin_val_name(v, wid)]] <- child_value_from_nodal_type(tau, pv)
     }
+    pending <- still
+  }
+  if (length(pending)) {
+    return(NULL)
   }
   vals
 }
 
-#' Dos values for node v across worlds.
+#' Per-world do spec for node v: const, link, or natural.
+#' @keywords internal
+#' @noRd
+dos_spec_by_world <- function(v, worlds, world_ids) {
+  lab_to_id <- setNames(
+    vapply(worlds, function(w) w$id, character(1)),
+    vapply(worlds, function(w) w$label, character(1))
+  )
+  out <- vector("list", length(world_ids))
+  names(out) <- world_ids
+  for (w in worlds) {
+    wid <- w$id
+    if (v %in% names(w$dos)) {
+      out[[wid]] <- list(kind = "const", value = as.integer(w$dos[[v]]))
+    } else if (v %in% names(w$links)) {
+      lk <- w$links[[v]]
+      src_id <- unname(lab_to_id[[lk$src_label]])
+      if (is.null(src_id) || is.na(src_id)) {
+        stop("Missing link source world for label ", lk$src_label, call. = FALSE)
+      }
+      out[[wid]] <- list(
+        kind = "link",
+        src_world = src_id,
+        src_node = lk$src_node
+      )
+    } else {
+      out[[wid]] <- list(kind = "none")
+    }
+  }
+  out
+}
+
+#' Dos values for node v across worlds (constants only; NA otherwise).
+#' Kept for callers that only need constant interventions.
 #' @keywords internal
 #' @noRd
 dos_by_world <- function(v, worlds, world_ids) {
@@ -427,10 +498,10 @@ twin_struct_eliminate_mat <- function(model, worlds, type_nodes, param_mat,
         vals <- parse_state_key(old_keys[[si]])
         ok <- TRUE
         for (v in unit_nodes) {
-          dos_val <- dos_by_world(v, worlds, world_ids)
+          dos_spec <- dos_spec_by_world(v, worlds, world_ids)
           tau <- as.character(nt[[v]][[1]])
           vals2 <- realise_node_into_vals(
-            v, worlds, world_ids, parents, dos_val, tau, vals
+            v, worlds, world_ids, parents, dos_spec, tau, vals
           )
           if (is.null(vals2)) {
             ok <- FALSE
@@ -479,10 +550,10 @@ twin_struct_eliminate_mat <- function(model, worlds, type_nodes, param_mat,
           vals <- base_vals
           ok <- TRUE
           for (v in unit_nodes) {
-            dos_val <- dos_by_world(v, worlds, world_ids)
+            dos_spec <- dos_spec_by_world(v, worlds, world_ids)
             tau <- as.character(type_row[[v]])
             vals2 <- realise_node_into_vals(
-              v, worlds, world_ids, parents, dos_val, tau, vals
+              v, worlds, world_ids, parents, dos_spec, tau, vals
             )
             if (is.null(vals2)) {
               ok <- FALSE
@@ -560,43 +631,28 @@ eval_fg_from_twin_state <- function(model, state_vals, worlds, query, given,
     if (!grepl("\\[", q0)) {
       return(list(expr = paste0("q <- ", q0), df = df))
     }
+    # Innermost-first; world labels match parse_twin_worlds (incl. nested var_i)
     w_query <- unlist(strsplit(q0, ""))
     bracket_starts <- rev(grep("\\[", w_query))
     local_df <- df
     k <- ncol(local_df) + 1L
+    lab_to_id <- setNames(
+      vapply(worlds, function(w) w$id, character(1)),
+      vapply(worlds, function(w) w$label, character(1))
+    )
     for (i in seq_along(bracket_starts)) {
       .query <- w_query[bracket_starts[i]:length(w_query)]
       .bracket_ends <- grep("\\]", .query)[1]
       .query <- .query[1:.bracket_ends]
       inside <- paste0(.query[!grepl("\\[|\\]", .query)], collapse = "")
-      parts <- if (!nzchar(inside)) character(0) else strsplit(inside, ",", fixed = TRUE)[[1]]
-      dos <- list()
-      for (p in parts) {
-        sp <- strsplit(p, "=", fixed = TRUE)[[1]]
-        dos[[sp[[1]]]] <- as.integer(sp[[2]])
-      }
       b <- seq_len(bracket_starts[i])
       var <- paste0(w_query[b], collapse = "")
       var <- st_within(var)
       outcome <- var[length(var)]
-      wid <- NULL
-      for (w in worlds) {
-        if (identical(w$label, "observational")) {
-          next
-        }
-        if (!identical(w$outcome, outcome)) {
-          next
-        }
-        if (length(w$dos) != length(dos) ||
-            !all(names(w$dos) %in% names(dos)) ||
-            !all(vapply(names(w$dos), function(n) w$dos[[n]] == dos[[n]], logical(1)))) {
-          next
-        }
-        wid <- w$id
-        break
-      }
-      if (is.null(wid)) {
-        stop("Could not match do-world for payoff.", call. = FALSE)
+      label <- paste0(outcome, "[", inside, "]")
+      wid <- unname(lab_to_id[[label]])
+      if (is.null(wid) || is.na(wid)) {
+        stop("Could not match do-world for payoff: ", label, call. = FALSE)
       }
       local_df[[k]] <- as.integer(world_vals[[wid]][[outcome]])
       names(local_df)[k] <- paste0("var", i)

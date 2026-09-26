@@ -75,8 +75,8 @@ causal-type path. \code{NULL} inherits \code{model$legacy} then
 (ignored when \code{legacy = TRUE}). Same semantics as
 \code{\link{query_distribution}}: \code{"grid"} (default, safest),
 \code{"ve"} (chunked; can hang on huge type products),
-\code{"ve_struct"} (optional structural twin VE for flat TE; may fall
-back with a message), \code{"auto"} (grid or chunked \code{"ve"}, never
+\code{"ve_struct"} (optional structural twin VE for constant / nested do;
+may fall back with a message), \code{"auto"} (grid or chunked \code{"ve"}, never
 \code{"ve_struct"}). \code{NULL} uses
 \code{options(CausalQueries.query_eval)}. Not a second \code{legacy}
 switch. See \emph{Factorized query_eval risks} on
@@ -116,7 +116,7 @@ query_model(model, "Y[X=1] - Y[X=0]", query_eval = "grid")
 query_model(model, "Y[X=1] - Y[X=0]", query_eval = "ve")
 
 # Structural twin VE for flat interventions (e.g. long-chain TE). Risks:
-# nested do / confound may fall back to grid/ve with a message — read it;
+# wildcards / unsupported forms may fall back to grid/ve with a message — read it;
 # "auto" never selects ve_struct.
 # query_model(big, "Trust[Marginalization=1] - Trust[Marginalization=0]",
 #             query_eval = "ve_struct")

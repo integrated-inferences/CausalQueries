@@ -1,7 +1,7 @@
 #' Twin world specification + admission (M2)
 #'
-#' Flat do only. Nested / symbolic dos / confound-before-M6 → unsupported
-#' with a structured reason (visible fallback).
+#' Constant and nested do (e.g. \code{Y[A=1, B=B[A=0]]}). Symbolic /
+#' wildcard dos still unsupported (visible fallback).
 #'
 #' @keywords internal
 #' @noRd
@@ -12,7 +12,6 @@ NULL
 #' @noRd
 query_has_nested_do <- function(query) {
   q <- gsub(" ", "", as.character(query))
-  # Bracket opens inside another bracket, or a dos RHS itself contains '['
   grepl("\\[[^\\]]*\\[", q) || grepl("=[A-Za-z0-9_]*\\[", q)
 }
 
@@ -45,13 +44,17 @@ strip_do_brackets <- function(query) {
   paste0(w, collapse = "")
 }
 
-#' Parse flat constant-dos worlds from a query; NULL if not flat.
-#' Each world: list(outcome, dos = named integer 0/1, label).
+#' Parse do-worlds (constant and nested), innermost-first like map_query.
+#'
+#' Each world: \code{outcome}, \code{dos} (named 0/1), \code{links}
+#' (named list of \code{list(src_label, src_node)}), \code{label}, \code{id}.
+#' Returns \code{NULL} if wildcards / non-constant non-link dos.
+#'
 #' @keywords internal
 #' @noRd
-parse_flat_constant_worlds <- function(query) {
+parse_twin_worlds <- function(query) {
   query <- gsub(" ", "", check_query(as.character(query)))
-  if (query_has_nested_do(query)) {
+  if (grepl(".", query, fixed = TRUE)) {
     return(NULL)
   }
   w_query <- unlist(strsplit(query, ""))
@@ -64,9 +67,15 @@ parse_flat_constant_worlds <- function(query) {
   if (!length(bracket_starts)) {
     return(worlds)
   }
+  # var_i -> world label (for nested RHS after substitution)
+  var_label <- list()
+
   for (i in seq_along(bracket_starts)) {
     .query <- w_query[bracket_starts[i]:length(w_query)]
     .bracket_ends <- grep("\\]", .query)[1]
+    if (is.na(.bracket_ends)) {
+      return(NULL)
+    }
     .query <- .query[1:.bracket_ends]
     inside <- paste0(.query[!grepl("\\[|\\]", .query)], collapse = "")
     parts <- if (!nzchar(inside)) {
@@ -75,40 +84,77 @@ parse_flat_constant_worlds <- function(query) {
       strsplit(inside, ",", fixed = TRUE)[[1]]
     }
     dos <- list()
+    links <- list()
     for (p in parts) {
       if (!nzchar(p)) {
         next
       }
-      sp <- strsplit(p, "=", fixed = TRUE)[[1]]
-      if (length(sp) != 2L || !sp[[2]] %in% c("0", "1")) {
+      eq <- regexpr("=", p, fixed = TRUE)[1]
+      if (eq < 1L) {
         return(NULL)
       }
-      if (!grepl("^[A-Za-z][A-Za-z0-9_]*$", sp[[1]])) {
+      lhs <- substr(p, 1L, eq - 1L)
+      rhs <- substr(p, eq + 1L, nchar(p))
+      if (!grepl("^[A-Za-z][A-Za-z0-9_]*$", lhs)) {
         return(NULL)
       }
-      dos[[sp[[1]]]] <- as.integer(sp[[2]])
+      if (rhs %in% c("0", "1")) {
+        dos[[lhs]] <- as.integer(rhs)
+      } else if (grepl("^var[0-9]+$", rhs)) {
+        src_lab <- var_label[[rhs]]
+        if (is.null(src_lab)) {
+          return(NULL)
+        }
+        # Source world label encodes Outcome[...]; outcome node is before '['
+        src_node <- sub("\\[.*$", "", src_lab)
+        links[[lhs]] <- list(src_label = src_lab, src_node = src_node)
+      } else {
+        # Nested not yet substituted, or symbolic — unsupported here
+        return(NULL)
+      }
     }
+
     b <- seq_len(bracket_starts[i])
     var <- paste0(w_query[b], collapse = "")
     var <- st_within(var)
     outcome <- var[length(var)]
-    label <- paste0(
-      outcome, "[",
-      paste(sprintf("%s=%s", names(dos), unlist(dos)), collapse = ","),
-      "]"
-    )
+    label <- paste0(outcome, "[", inside, "]")
+    wid <- paste0("w", length(worlds) + 1L)
     worlds[[length(worlds) + 1L]] <- list(
       outcome = outcome,
       dos = dos,
+      links = links,
       label = label,
-      id = paste0("w", length(worlds) + 1L)
+      id = wid
     )
+    var_name <- paste0("var", length(worlds))
+    var_label[[var_name]] <- label
+
     var_length <- nchar(outcome)
     .end <- bracket_starts[i] + .bracket_ends - 1L
     s <- seq(bracket_starts[i] - var_length, .end)
-    w_query[s[1]] <- paste0("var", length(worlds))
+    w_query[s[1]] <- var_name
     if (length(s) > 1L) {
       w_query[s[2:length(s)]] <- ""
+    }
+  }
+  worlds
+}
+
+#' Flat-only parse (no links); NULL if nested / non-constant.
+#' @keywords internal
+#' @noRd
+parse_flat_constant_worlds <- function(query) {
+  if (query_has_nested_do(query)) {
+    return(NULL)
+  }
+  worlds <- parse_twin_worlds(query)
+  if (is.null(worlds)) {
+    return(NULL)
+  }
+  for (w in worlds) {
+    if (length(w$links)) {
+      return(NULL)
     }
   }
   worlds
@@ -136,9 +182,13 @@ twin_world_admit <- function(model, query, given = "ALL",
     ))
   }
 
-  q_worlds <- parse_flat_constant_worlds(query)
+  q_worlds <- parse_twin_worlds(query)
   if (is.null(q_worlds)) {
-    reason <- if (query_has_nested_do(query)) "nested_do" else "non_constant_dos"
+    reason <- if (query_has_nested_do(query)) {
+      "nested_do_unsupported"
+    } else {
+      "non_constant_dos"
+    }
     return(list(
       ok = FALSE,
       reason = reason,
@@ -157,21 +207,16 @@ twin_world_admit <- function(model, query, given = "ALL",
 
   g_worlds <- list()
   if (!(isTRUE(given) || g %in% c("ALL", "TRUE"))) {
-    if (query_has_nested_do(g)) {
-      return(list(
-        ok = FALSE,
-        reason = "nested_do_given",
-        worlds = NULL,
-        need_observational = FALSE,
-        query = query,
-        given = g
-      ))
-    }
-    g_worlds <- parse_flat_constant_worlds(g)
+    g_worlds <- parse_twin_worlds(g)
     if (is.null(g_worlds)) {
+      reason <- if (query_has_nested_do(g)) {
+        "nested_do_given_unsupported"
+      } else {
+        "non_constant_dos_given"
+      }
       return(list(
         ok = FALSE,
-        reason = "non_constant_dos_given",
+        reason = reason,
         worlds = NULL,
         need_observational = FALSE,
         query = query,
@@ -185,12 +230,13 @@ twin_world_admit <- function(model, query, given = "ALL",
     }
   }
 
-  # Dedupe worlds by label (same dos + outcome)
+  # Dedupe worlds by label (same dos + outcome + links syntax)
   worlds <- c(q_worlds, g_worlds)
   if (need_obs) {
     worlds[[length(worlds) + 1L]] <- list(
       outcome = NA_character_,
       dos = list(),
+      links = list(),
       label = "observational",
       id = "obs"
     )
@@ -203,6 +249,12 @@ twin_world_admit <- function(model, query, given = "ALL",
         "obs"
       } else {
         paste0("w", i)
+      }
+      if (is.null(worlds[[i]]$links)) {
+        worlds[[i]]$links <- list()
+      }
+      if (is.null(worlds[[i]]$dos)) {
+        worlds[[i]]$dos <- list()
       }
     }
   }

@@ -39,6 +39,27 @@ floating-point noise. The asymptotic win is avoiding the global causal-type
 **product** for ordinary update and query on modular DAGs; wall-clock gains on
 tiny vignette-sized graphs are modest and noisy.
 
+### Factorized `query_eval` (grid / ve / ve_struct)
+
+Under `legacy = FALSE` only, `query_model` / `query_distribution` accept
+`query_eval` (or `options(CausalQueries.query_eval)`):
+
+* `"grid"` (default): relevant-set expand; safest for small products and pins.
+* `"ve"`: chunked enumeration with the same kernels (including nested do);
+  higher product cap, but runtime still tracks the full type product.
+* `"ve_struct"`: structural twin-network sum-product — constant **and nested**
+  do (e.g. `Y[X=1, M=M[X=0]]`), confound via atomic λ blocks. Cost tracks a
+  small frontier on sparse DAGs (Trust-like TEs). Prior/posterior draws are
+  weighted in chunks (`options(CausalQueries.ve_struct_draw_chunk)`, default
+  256) so many draws are roughly one structural pass per chunk, not per draw.
+  Wildcards / symbolic dos fall back to grid/chunked with a visible message.
+* `"auto"`: grid if the product fits, else chunked `"ve"` (never selects
+  `"ve_struct"`).
+
+When `"grid"` / `"ve"` refuse a huge product, the error lists options with
+`ve_struct` first. See `?query_model` (*Factorized query_eval risks*) and
+vignette `g-factorized-path`.
+
 ### Shrinking nodal types
 
 `make_model()` gains `drop_interactions`, `keep_interactions`, and `monotone`

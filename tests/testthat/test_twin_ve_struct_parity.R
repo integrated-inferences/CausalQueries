@@ -17,7 +17,7 @@ testthat::test_that("M1 lookup matches realise_outcomes on one-row types", {
   }
 })
 
-testthat::test_that("M2 admits flat TE and rejects nested do", {
+testthat::test_that("M2 admits flat TE and nested do", {
   m <- make_model("X -> Y", legacy = FALSE)
   a <- CausalQueries:::twin_world_admit(m, "Y[X=1] - Y[X=0]", "ALL")
   expect_true(a$ok)
@@ -25,9 +25,14 @@ testthat::test_that("M2 admits flat TE and rejects nested do", {
 
   nested <- "Y[A=1, B=B[A=0], C=0]"
   m2 <- make_model("A -> Y <- B; A -> B -> Y; C -> Y", legacy = FALSE)
-  b <- CausalQueries:::twin_world_admit(m2, nested, "ALL")
-  expect_false(b$ok)
-  expect_equal(b$reason, "nested_do")
+  b <- CausalQueries:::twin_world_admit(m2, nested, "ALL",
+                                       confound_supported = TRUE)
+  expect_true(b$ok)
+  expect_gte(length(b$worlds), 2L)
+  # Inner B[A=0] + outer Y[...]
+  labs <- vapply(b$worlds, function(w) w$label, character(1))
+  expect_true(any(grepl("^B\\[", labs)))
+  expect_true(any(grepl("^Y\\[", labs)))
 })
 
 testthat::test_that("M2 admits confound when supported (M6)", {
@@ -89,18 +94,38 @@ testthat::test_that("ve_struct matches grid on X->M->Y", {
   expect_equal(as.numeric(s), as.numeric(g), tolerance = 1e-10)
 })
 
-testthat::test_that("ve_struct falls back visibly on nested do", {
+testthat::test_that("ve_struct matches grid on nested do", {
   statement <- "A -> Y <- B; A -> B -> Y; C -> Y"
   m <- make_model(statement, legacy = FALSE)
   params <- get_parameters(m)
   q <- "Y[A=1, B=B[A=0], C=0]"
   g <- query_distribution(m, q, using = "parameters", parameters = params,
                           query_eval = "grid")
-  expect_message(
-    s <- query_distribution(m, q, using = "parameters", parameters = params,
-                            query_eval = "ve_struct"),
-    "ve_struct"
-  )
+  s <- query_distribution(m, q, using = "parameters", parameters = params,
+                          query_eval = "ve_struct")
+  expect_equal(as.numeric(s), as.numeric(g), tolerance = 1e-10)
+})
+
+testthat::test_that("ve_struct matches grid on nested mediator query", {
+  m <- make_model("X -> M -> Y; X -> Y", legacy = FALSE)
+  params <- get_parameters(m)
+  q <- "Y[X=1, M=M[X=0]] - Y[X=0, M=M[X=0]]"
+  g <- query_distribution(m, q, using = "parameters", parameters = params,
+                          query_eval = "grid")
+  s <- query_distribution(m, q, using = "parameters", parameters = params,
+                          query_eval = "ve_struct")
+  expect_equal(as.numeric(s), as.numeric(g), tolerance = 1e-10)
+})
+
+testthat::test_that("ve_struct matches grid with nested given", {
+  m <- make_model("X -> M -> Y; X -> Y", legacy = FALSE)
+  params <- get_parameters(m)
+  q <- "Y[X=1] - Y[X=0]"
+  gv <- "Y[X=1, M=M[X=0]]==1"
+  g <- query_distribution(m, q, given = gv, using = "parameters",
+                          parameters = params, query_eval = "grid")
+  s <- query_distribution(m, q, given = gv, using = "parameters",
+                          parameters = params, query_eval = "ve_struct")
   expect_equal(as.numeric(s), as.numeric(g), tolerance = 1e-10)
 })
 
