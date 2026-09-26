@@ -159,10 +159,23 @@ nodal_assignment_prob <- function(model, parameters, node, assignment) {
 }
 
 #' Complete-data patterns without causal types (2^n grid).
+#'
+#' Patterns unrealizable under the model's nodal types are dropped so the
+#' factorized event / parmap grids match legacy \code{realise_outcomes}
+#' support without expanding the causal-type product.
+#'
 #' @keywords internal
 #' @noRd
 complete_data_grid <- function(model) {
-  get_all_data_types(model, complete_data = TRUE)
+  grid <- get_all_data_types(model, complete_data = TRUE)
+  nodes <- model$nodes
+  if (!nrow(grid)) {
+    return(grid)
+  }
+  keep <- vapply(seq_len(nrow(grid)), function(i) {
+    complete_assignment_possible(model, grid[i, nodes, drop = FALSE])
+  }, logical(1))
+  grid[keep, , drop = FALSE]
 }
 
 #' One complete assignment probability (unconfounded product or confound parmap).

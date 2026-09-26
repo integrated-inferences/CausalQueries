@@ -88,7 +88,13 @@ collapse_data <- function(data,
 
     } else {
 
-        data_families <- get_data_families(model)[, c("event", "strategy")]
+        # Factorized path: 2^n event list (never causal-type expand.grid).
+        # Legacy path keeps realise_outcomes filtering of impossible types.
+        data_families <- if (!isTRUE(resolve_legacy(NULL, model))) {
+          get_data_families_factorized(model)[, c("event", "strategy")]
+        } else {
+          get_data_families(model)[, c("event", "strategy")]
+        }
         data_type <- data_type_names(model, data)
 
         # Inconsistent 0/1 (or other) coding relative to allowed events
@@ -742,10 +748,22 @@ make_events <- function(model,
 #' CausalQueries:::minimal_event_data(model)
 #' }
 
-minimal_event_data <- function(model){
-  make_data(model, n = 1) |>
-    collapse_data(model) |>
-    mutate(count = 0)
+minimal_event_data <- function(model) {
+  # Factorized: event list from the 2^n data grid (filtered by nodal types) —
+  # never the causal-type product. Legacy: realise_outcomes families.
+  if (!isTRUE(resolve_legacy(NULL, model))) {
+    fam <- get_data_families_factorized(model)
+  } else {
+    fam <- get_data_families(model)
+  }
+  out <- fam[, c("event", "strategy"), drop = FALSE]
+  # Historical behaviour (make_data(n=1) |> collapse_data): only the
+  # complete-data strategy, counts zeroed — not every coarsened strategy.
+  full_strat <- paste(model$nodes, collapse = "")
+  out <- out[out$strategy == full_strat, , drop = FALSE]
+  out$count <- 0L
+  rownames(out) <- NULL
+  out
 }
 
 

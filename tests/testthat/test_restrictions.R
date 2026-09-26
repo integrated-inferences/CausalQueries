@@ -95,8 +95,10 @@ testthat::test_that(
                        given = c('X.1'))
 
     expect_true(nrow(model$parameters_df)==8)
-    expect_true(all(get_ambiguities_matrix(model) |>
-                      apply(2, sum) == c(2,2,2)))
+    expect_equal(
+      as.numeric(get_ambiguities_matrix(model) |> apply(2, sum)),
+      c(2, 2, 2, 2)
+    )
   }
 )
 

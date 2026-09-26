@@ -291,11 +291,13 @@ capture_warnings <- function(expr) {
   # Initialize a variable to store captured warnings
   warnings_captured <- character()
 
-  # Capture warnings and the result
+  # Capture warnings and the result (muffle so callers / tests do not
+  # also see Stan ESS and similar sampling noise).
   fit <- withCallingHandlers(
     expr,
     warning = function(w) {
       warnings_captured <<- c(warnings_captured, conditionMessage(w))
+      tryInvokeRestart("muffleWarning")
     }
   )
 

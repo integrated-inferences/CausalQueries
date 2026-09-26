@@ -3,7 +3,9 @@
 #' Build or rebuild a model's nodal types without (necessarily) starting from a
 #' saturated many-parent table and cutting with queries. Intended for large
 #' parent sets: generate allowed schedules under interaction-order and
-#' monotonicity rules, then attach them.
+#' monotonicity rules, then attach them. When \code{drop_interactions} drops
+#' order \eqn{\ge 2}, more than four parents are allowed because candidates are
+#' built up (unary / kept blocks) rather than enumerated from the saturated set.
 #'
 #' \code{set_nodal_restrictions} is an alias of \code{simplify_model}.
 #'
@@ -147,12 +149,16 @@ simplify_model <- function(model,
       )
     }
     if (!quiet) {
-      sat <- if (length(pa) <= 4L) 2^(2^length(pa)) else NA_real_
+      sat <- if (length(pa) <= .MAX_PARENTS_SAT) {
+        2^(2^length(pa))
+      } else {
+        NA_real_
+      }
       if (is.finite(sat)) {
         message(v, ": kept ", after, " types (saturated would be ",
                 format(sat, big.mark = ","), ")")
       } else {
-        message(v, ": kept ", after, " types")
+        message(v, ": kept ", after, " types (saturated set not enumerated)")
       }
     }
   }
@@ -504,6 +510,14 @@ parent_assignment_grid <- function(parents) {
   g
 }
 
+# Caps for generative / saturated nodal-type construction
+.MAX_PARENTS_SAT <- 4L
+.MAX_PARENTS_STRING <- 16L
+.MAX_KEEP_BLOCK <- 4L
+.MAX_NODAL_TYPES_NODE <- 65536L
+# Max ANOVA dimension for free-cell enum (2^d candidates tried)
+.MAX_ORDER_LEQ_DIM <- 16L
+
 #' All saturated collapsed nodal types for a parent set (k <= 4).
 #' @keywords internal
 #' @noRd
@@ -512,10 +526,12 @@ saturated_nodal_types <- function(parents) {
   if (k == 0L) {
     return(c("0", "1"))
   }
-  if (k > 4L) {
+  if (k > .MAX_PARENTS_SAT) {
     stop(
       "Cannot enumerate saturated nodal types for ", k,
-      " parents; supply nodal_types or use restrictions with k <= 4.",
+      " parents; supply `nodal_types` or use `drop_interactions = TRUE` ",
+      "(optionally with `monotone` / `keep_interactions`) so types can be ",
+      "built without materialising the saturated set.",
       call. = FALSE
     )
   }
@@ -737,7 +753,295 @@ type_has_forbidden_interaction <- function(type_string,
   FALSE
 }
 
+#' Regime for restricted nodal-type generation (never saturates when avoidable).
+#' @return "root", "unary", "blocks", "order_leq", "sat", or "refuse"
+#' @keywords internal
+#' @noRd
+restriction_regime <- function(k, drop_min_order, keep_sets) {
+  if (k == 0L) {
+    return("root")
+  }
+  if (is.null(drop_min_order)) {
+    if (k <= .MAX_PARENTS_SAT) {
+      return("sat")
+    }
+    return("refuse")
+  }
+  r <- as.integer(drop_min_order) - 1L
+  if (length(keep_sets)) {
+    # keep exceptions: lean block union only for drop-order >= 2 (r <= 1);
+    # higher-order drop with keeps still needs saturate+filter for k <= 4
+    if (r <= 1L) {
+      return("blocks")
+    }
+    if (k <= .MAX_PARENTS_SAT) {
+      return("sat")
+    }
+    return("refuse")
+  }
+  if (r <= 1L) {
+    return("unary")
+  }
+  if (r >= k) {
+    if (k <= .MAX_PARENTS_SAT) {
+      return("sat")
+    }
+    return("refuse")
+  }
+  # order <= r via free-cell enumeration in the ANOVA subspace
+  d <- anova_order_dim(k, r)
+  if (is.finite(d) && d <= .MAX_ORDER_LEQ_DIM && 2^d <= .MAX_NODAL_TYPES_NODE) {
+    return("order_leq")
+  }
+  if (k <= .MAX_PARENTS_SAT) {
+    return("sat")
+  }
+  "refuse"
+}
+
+#' Dimension of real functions on {0,1}^k with interaction order <= r.
+#' @keywords internal
+#' @noRd
+anova_order_dim <- function(k, r) {
+  r <- min(as.integer(r), as.integer(k))
+  if (r < 0L) {
+    return(0)
+  }
+  sum(vapply(0:r, function(i) choose(k, i), numeric(1)))
+}
+
+#' Monomial design matrix for interaction order <= r (parent grid row order).
+#' @keywords internal
+#' @noRd
+monomial_design_order_leq <- function(grid, r) {
+  k <- ncol(grid)
+  n <- nrow(grid)
+  subsets <- list(integer(0))
+  if (r >= 1L) {
+    for (s in seq_len(min(r, k))) {
+      subsets <- c(subsets, utils::combn(k, s, simplify = FALSE))
+    }
+  }
+  d <- length(subsets)
+  M <- matrix(1, nrow = n, ncol = d)
+  for (j in seq_along(subsets)) {
+    S <- subsets[[j]]
+    if (length(S)) {
+      M[, j] <- apply(grid[, S, drop = FALSE], 1L, prod)
+    }
+  }
+  list(M = M, subsets = subsets)
+}
+
+#' Binary vectors of length d as rows (bit 0 = least significant).
+#' @keywords internal
+#' @noRd
+binary_enum_matrix <- function(d) {
+  n <- 2^d
+  out <- matrix(0L, nrow = n, ncol = d)
+  if (d == 0L) {
+    return(out)
+  }
+  for (j in seq_len(d)) {
+    period <- 2^(j - 1L)
+    out[, j] <- rep(rep(c(0L, 1L), each = period), length.out = n)
+  }
+  out
+}
+
+#' Generate nodal types with ANOVA interaction order at most r.
+#'
+#' Uses free cells at Hamming weight <= r (same parent-assignment order as
+#' \code{parent_assignment_grid}) and solves the degree-<=r monomial system.
+#' Does not change node or parent ordering.
+#'
+#' @keywords internal
+#' @noRd
+generate_order_leq_nodal_types <- function(parents, r) {
+  k <- length(parents)
+  r <- as.integer(r)
+  if (r <= 1L) {
+    return(generate_unary_nodal_types(parents))
+  }
+  if (r >= k) {
+    return(saturated_nodal_types(parents))
+  }
+  grid <- parent_assignment_grid(parents)
+  des <- monomial_design_order_leq(grid, r)
+  M <- des$M
+  free <- which(rowSums(grid) <= r)
+  if (length(free) != ncol(M)) {
+    stop(
+      "Internal error: free-cell count (", length(free),
+      ") != ANOVA dimension (", ncol(M), ").",
+      call. = FALSE
+    )
+  }
+  M_free <- M[free, , drop = FALSE]
+  if (qr(M_free)$rank < ncol(M)) {
+    stop(
+      "Internal error: order-<=", r, " free-cell design is rank-deficient.",
+      call. = FALSE
+    )
+  }
+  Minv <- solve(M_free)
+  d <- ncol(M)
+  bits <- binary_enum_matrix(d)
+  n_enum <- nrow(bits)
+  out <- character(n_enum)
+  n_keep <- 0L
+  for (i in seq_len(n_enum)) {
+    b <- bits[i, ]
+    beta <- as.vector(Minv %*% b)
+    f <- as.vector(M %*% beta)
+    if (max(abs(f - round(f))) > 1e-7) {
+      next
+    }
+    f01 <- as.integer(round(f))
+    if (any(f01 < 0L | f01 > 1L)) {
+      next
+    }
+    if (!all(f01[free] == b)) {
+      next
+    }
+    n_keep <- n_keep + 1L
+    out[[n_keep]] <- paste(f01, collapse = "")
+  }
+  unique(out[seq_len(n_keep)])
+}
+
+#' Upper bound on kept nodal types under restrictions (no allocation).
+#' @keywords internal
+#' @noRd
+estimate_restricted_nodal_type_count <- function(parents,
+                                                 drop_min_order = NULL,
+                                                 keep_sets = list(),
+                                                 mono = character(0)) {
+  k <- length(parents)
+  regime <- restriction_regime(k, drop_min_order, keep_sets)
+  if (identical(regime, "root")) {
+    return(2)
+  }
+  if (identical(regime, "refuse")) {
+    return(Inf)
+  }
+  if (identical(regime, "sat")) {
+    return(as.numeric(2^(2^k)))
+  }
+  if (identical(regime, "order_leq")) {
+    r <- as.integer(drop_min_order) - 1L
+    return(as.numeric(2^anova_order_dim(k, r)))
+  }
+  # QI codes cannot survive unary / block schedules that ignore other parents
+  if (length(mono) && any(mono == "n", na.rm = TRUE)) {
+    # blocks may still admit QI inside a kept pair; unary never does
+    if (identical(regime, "unary")) {
+      return(0)
+    }
+  }
+  if (identical(regime, "unary")) {
+    # constants + each parent and its negation; mono may drop half
+    ub <- 2L + 2L * k
+    if (length(mono)) {
+      signs <- unname(mono[names(mono) %in% parents])
+      if (length(signs) && all(signs %in% c("+", "-"))) {
+        # each constrained parent keeps one orientation; unconstrained keep both
+        n_con <- sum(parents %in% names(mono))
+        ub <- 2L + n_con + 2L * (k - n_con)
+      }
+    }
+    return(as.numeric(ub))
+  }
+  # blocks: union of functions of each keep-set and each singleton
+  if (any(vapply(keep_sets, length, integer(1)) > .MAX_KEEP_BLOCK)) {
+    return(Inf)
+  }
+  ub <- 0
+  for (ks in keep_sets) {
+    ks <- intersect(ks, parents)
+    if (!length(ks)) {
+      next
+    }
+    ub <- ub + 2^(2^length(ks))
+  }
+  ub <- ub + 2 + 2 * k
+  as.numeric(ub)
+}
+
+#' Schedules that depend only on parents in S (constant in others).
+#' @keywords internal
+#' @noRd
+nodal_types_depending_only_on <- function(parents, S) {
+  k <- length(parents)
+  n_assign <- 2^k
+  if (!length(S)) {
+    return(c(
+      paste(rep(0L, n_assign), collapse = ""),
+      paste(rep(1L, n_assign), collapse = "")
+    ))
+  }
+  S <- intersect(S, parents)
+  if (!length(S)) {
+    return(nodal_types_depending_only_on(parents, character(0)))
+  }
+  if (length(S) > .MAX_KEEP_BLOCK) {
+    stop(
+      "keep_interactions blocks of size > ", .MAX_KEEP_BLOCK,
+      " cannot be enumerated.",
+      call. = FALSE
+    )
+  }
+  grid <- parent_assignment_grid(parents)
+  mats <- type_matrix(length(S))
+  sub_bits <- grid[, match(S, parents), drop = FALSE]
+  sub_index <- apply(sub_bits, 1L, function(row) {
+    assignment_index(as.integer(row), S)
+  })
+  apply(mats, 1L, function(g) paste(g[sub_index], collapse = ""))
+}
+
+#' Unary (no pairwise interaction) candidate schedules.
+#' @keywords internal
+#' @noRd
+generate_unary_nodal_types <- function(parents) {
+  k <- length(parents)
+  n_assign <- 2^k
+  grid <- parent_assignment_grid(parents)
+  candidates <- c(
+    paste(rep(0L, n_assign), collapse = ""),
+    paste(rep(1L, n_assign), collapse = "")
+  )
+  for (j in seq_len(k)) {
+    candidates <- c(
+      candidates,
+      paste(grid[, j], collapse = ""),
+      paste(1L - grid[, j], collapse = "")
+    )
+  }
+  unique(candidates)
+}
+
+#' Block candidates: functions of each keep-set plus unary schedules.
+#' @keywords internal
+#' @noRd
+generate_block_nodal_types <- function(parents, keep_sets) {
+  candidates <- generate_unary_nodal_types(parents)
+  for (ks in keep_sets) {
+    ks <- intersect(as.character(ks), parents)
+    if (length(ks) >= 2L) {
+      candidates <- c(candidates, nodal_types_depending_only_on(parents, ks))
+    }
+  }
+  unique(candidates)
+}
+
 #' Generate allowed collapsed nodal types for one node.
+#'
+#' Uses a lean generative path when \code{drop_interactions} is set: order
+#' \eqn{\le 1} via unary / keep-block schedules, higher max-order via free-cell
+#' enumeration in the ANOVA subspace (never materialising
+#' \eqn{2^{2^k}} unless the saturated regime is required for \eqn{k \le 4}).
+#'
 #' @keywords internal
 #' @noRd
 generate_restricted_nodal_types <- function(parents,
@@ -748,41 +1052,65 @@ generate_restricted_nodal_types <- function(parents,
   if (k == 0L) {
     return(c("0", "1"))
   }
-  if (k > 4L) {
+  if (k > .MAX_PARENTS_STRING) {
     stop(
-      "Automatic type reduction supports at most 4 parents per node ",
-      "(node has ", k, "). Pass `nodal_types` explicitly for larger nodes.",
+      "Automatic type reduction supports at most ", .MAX_PARENTS_STRING,
+      " parents per node (node has ", k, ") because each type string has ",
+      "length 2^k. Pass `nodal_types` explicitly or reduce parents.",
       call. = FALSE
     )
   }
 
-  # Fast path: drop order >= 2 with no keep exceptions → types that depend
-  # on at most one parent (no pairwise interactions possible).
-  if (!is.null(drop_min_order) && drop_min_order <= 2L && !length(keep_sets)) {
-    n_assign <- 2^k
-    grid <- parent_assignment_grid(parents)
-    candidates <- c(
-      paste(rep(0, n_assign), collapse = ""),
-      paste(rep(1, n_assign), collapse = "")
+  regime <- restriction_regime(k, drop_min_order, keep_sets)
+  if (identical(regime, "refuse")) {
+    stop(
+      "Cannot auto-build nodal types for ", k, " parents without ",
+      "`drop_interactions` that drops order >= 2 (saturated size is 2^(2^",
+      k, ")). Pass `drop_interactions = TRUE` and/or explicit `nodal_types`.",
+      call. = FALSE
     )
-    for (j in seq_len(k)) {
-      candidates <- c(
-        candidates,
-        paste(grid[, j], collapse = ""),
-        paste(1L - grid[, j], collapse = "")
-      )
-    }
-    candidates <- unique(candidates)
-  } else {
-    candidates <- saturated_nodal_types(parents)
   }
 
-  keep <- vapply(candidates, function(ts) {
-    if (type_has_forbidden_interaction(ts, parents, drop_min_order, keep_sets)) {
-      return(FALSE)
-    }
-    type_respects_monotone(ts, parents, mono)
-  }, logical(1))
+  n_hat <- estimate_restricted_nodal_type_count(
+    parents, drop_min_order, keep_sets, mono
+  )
+  if (!is.finite(n_hat) || n_hat > .MAX_NODAL_TYPES_NODE) {
+    stop(
+      "Estimated nodal types for this node exceed ",
+      format(.MAX_NODAL_TYPES_NODE, big.mark = ","),
+      " (estimate ", format(n_hat, big.mark = ","), "). ",
+      "Tighten `drop_interactions` / `keep_interactions` or pass `nodal_types`.",
+      call. = FALSE
+    )
+  }
+
+  candidates <- switch(
+    regime,
+    unary = generate_unary_nodal_types(parents),
+    blocks = generate_block_nodal_types(parents, keep_sets),
+    order_leq = generate_order_leq_nodal_types(
+      parents, as.integer(drop_min_order) - 1L
+    ),
+    sat = saturated_nodal_types(parents),
+    stop("Unknown restriction regime.", call. = FALSE)
+  )
+
+  # Generative regimes already obey interaction-order rules; only sat needs
+  # the interaction filter. Monotone always applied.
+  if (regime %in% c("unary", "blocks", "order_leq")) {
+    keep <- vapply(
+      candidates,
+      function(ts) type_respects_monotone(ts, parents, mono),
+      logical(1)
+    )
+  } else {
+    keep <- vapply(candidates, function(ts) {
+      if (type_has_forbidden_interaction(ts, parents, drop_min_order, keep_sets)) {
+        return(FALSE)
+      }
+      type_respects_monotone(ts, parents, mono)
+    }, logical(1))
+  }
   unname(candidates[keep])
 }
 
@@ -822,9 +1150,18 @@ build_nodal_types_with_restrictions <- function(model,
         stop("No nodal types remain for node ", v, ".", call. = FALSE)
       }
       if (!quiet) {
-        sat <- 2^(2^length(pa))
-        message(v, ": kept ", length(nt[[v]]), " types (saturated would be ",
-                format(sat, big.mark = ","), ")")
+        sat <- if (length(pa) <= .MAX_PARENTS_SAT) {
+          2^(2^length(pa))
+        } else {
+          NA_real_
+        }
+        if (is.finite(sat)) {
+          message(v, ": kept ", length(nt[[v]]), " types (saturated would be ",
+                  format(sat, big.mark = ","), ")")
+        } else {
+          message(v, ": kept ", length(nt[[v]]),
+                  " types (saturated set not enumerated)")
+        }
       }
     }
   }

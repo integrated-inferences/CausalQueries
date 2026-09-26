@@ -15,6 +15,13 @@ get_data_families_factorized <- function(model,
   check_factorized_grid_size(model, "get_data_families_factorized")
   all_data <- get_all_data_types(model)
   full_data <- complete_data_grid(model)
+  if (!nrow(full_data)) {
+    stop(
+      "get_data_families_factorized: no complete data patterns are consistent ",
+      "with the model's nodal types.",
+      call. = FALSE
+    )
+  }
 
   # sparse=TRUE: fill E by per-event completion (same answers; less peak RAM
   # on wide event lists). Default: dense multiply under the grid cap; sparse

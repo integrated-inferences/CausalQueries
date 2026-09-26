@@ -33,16 +33,16 @@ regardless of this argument.}
 Use this to keep a many-parent node small. If \code{NULL}, types are
 auto-generated (refused for five or more parents on one node).}
 
-\item{allow_large}{Logical. The number of causal types is the product of
-the numbers of nodal types across nodes. When that product exceeds
-one million and causal types will be built
-(\code{add_causal_types = TRUE}), \code{make_model} errors unless
-\code{allow_large} is `TRUE`, in which case it warns instead. Defaults
+\item{allow_large}{Logical. Soft limits apply to (i) the causal-type
+product when types are attached, and (ii) the parameter count after
+confound stratification (confounding multiplies parameters for the
+expanded node). When either exceeds one million, \code{make_model}
+errors unless \code{allow_large} is `TRUE` (then warns). Defaults
 to `FALSE`. Setting \code{add_causal_types = FALSE} or
-\code{legacy = FALSE} skips attaching that product.
-Restricted \code{nodal_types} are assessed by their actual lengths, so
-a many-parent node with a small type set is allowed when the product
-stays below the limit.}
+\code{legacy = FALSE} skips attaching the causal-type product but
+still applies the parameter-count guard. Restricted \code{nodal_types}
+(or \code{drop_interactions} / \code{monotone}) are assessed by their
+actual lengths.}
 
 \item{legacy}{Logical. \code{FALSE} (default) is the new parameters-only /
 factorized path (no global causal-type table at build). \code{TRUE}
@@ -101,12 +101,15 @@ Practical options:
     table is not attached at build.
   \item Pass \code{drop_interactions} and/or \code{monotone} to build a
     reduced type set at construction (see \code{\link{simplify_model}}),
-    e.g. \code{drop_interactions = TRUE, monotone = "+"}.
+    e.g. \code{drop_interactions = TRUE, monotone = "+"}. With interaction
+    dropping, more than four parents are allowed because types are
+    generated without materialising the saturated set.
   \item Pass a short \code{nodal_types} list for busy nodes (required for
-    five or more parents).
+    five or more parents unless interaction dropping applies).
   \item On an existing model, call \code{\link{simplify_model}}.
-  \item Set \code{allow_large = TRUE} only if you intentionally build a
-    causal-type product above one million under \code{legacy = TRUE}.
+  \item Set \code{allow_large = TRUE} only if you intentionally exceed
+    the soft limits on causal-type product or confound-expanded
+    parameters.
 }
 Nodal-type strings are one digit per parent assignment. Assignment order
 matches \code{get_parents()} / the column order in the node's type matrix.

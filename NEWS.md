@@ -42,23 +42,35 @@ tiny vignette-sized graphs are modest and noisy.
 ### Shrinking nodal types
 
 `make_model()` gains `drop_interactions`, `keep_interactions`, and `monotone`
-to build reduced nodal-type sets at construction (e.g. four parents without
-65,536 schedules). `simplify_model()` (alias `set_nodal_restrictions()`)
-applies the same rules to an existing model. Monotone codes are `+` / `-`
-(weakly increasing / decreasing in a parent), `m` (no qualitative interaction:
-effect of that parent never sign-changes across backgrounds), and `n` (keep
-only sign-changing / qualitative-interaction types). Prefer
+to build reduced nodal-type sets at construction. When interaction order
+≥ 2 is dropped, types are **generated** (unary schedules / kept blocks /
+ANOVA order-≤r free-cell enumeration) rather than cut from the saturated
+table, so nodes with more than four parents are allowed when the kept set
+stays small. `simplify_model()` (alias `set_nodal_restrictions()`) applies
+the same rules to an existing model. Monotone codes are `+` / `-` (weakly
+increasing / decreasing in a parent), `m` (no qualitative interaction:
+effect of that parent never sign-changes across backgrounds), and `n`
+(keep only sign-changing / qualitative-interaction types). Prefer
 `monotone = list(Y = c(A = "m", B = "+"))` or board-wide `monotone = "m"` /
 `"+"`. See `?simplify_model`.
 
 ### Size guards
 
-* `allow_large`: when the causal-type product exceeds one million and types
-  will be built, `make_model` errors unless `allow_large = TRUE` (then warns).
-  `add_causal_types = FALSE` skips the check. Restricted `nodal_types` are
-  assessed by actual lengths.
-* Auto-generating nodal types for a node with five or more parents is refused;
-  pass `nodal_types` explicitly.
+* `allow_large`: soft limits apply to (i) the causal-type product when types
+  are attached, and (ii) the **parameter** count after confound
+  stratification (confounding multiplies parameters for the expanded node).
+  Either above one million errors unless `allow_large = TRUE` (then warns).
+  Restricted `nodal_types` / `drop_interactions` are assessed by actual
+  lengths.
+* Auto-generating the **saturated** set for a node with five or more parents
+  is refused; pass `drop_interactions = TRUE` (and/or `nodal_types`) instead.
+* No-data and with-data `update_model()` / `collapse_data()` on the
+  factorized path build event families from the \(2^n\) data grid
+  (`get_data_families_factorized`), not from the causal-type product via
+  `realise_outcomes` / `expand.grid`. Complete patterns unrealizable under
+  nodal-type restrictions are dropped (same role as legacy filtering).
+* `update_model()` muffles Stan sampling warnings after storing them on
+  `stan_objects$stan_warnings` (avoids ESS noise failing tests).
 * Factorized Stan prep is capped by `options(CausalQueries.factorized_grid_max)`
   (default 4096). Coarsened / missing-data VE on the R side is available
   (`prob_event_ve`).

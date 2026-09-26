@@ -84,7 +84,9 @@ The model with replaced \code{nodal_types} and \code{parameters_df}.
 Build or rebuild a model's nodal types without (necessarily) starting from a
 saturated many-parent table and cutting with queries. Intended for large
 parent sets: generate allowed schedules under interaction-order and
-monotonicity rules, then attach them.
+monotonicity rules, then attach them. When \code{drop_interactions} drops
+order \eqn{\ge 2}, more than four parents are allowed because candidates are
+built up (unary / kept blocks) rather than enumerated from the saturated set.
 }
 \details{
 \code{set_nodal_restrictions} is an alias of \code{simplify_model}.
