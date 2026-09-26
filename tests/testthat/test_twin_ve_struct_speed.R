@@ -67,3 +67,24 @@ testthat::test_that("ve_struct finishes Trust-like restricted TE quickly", {
   expect_true(is.finite(as.numeric(s)))
   expect_lt(t0, 30)
 })
+
+testthat::test_that("ve_struct priors scales sub-linearly vs naive per-draw cost", {
+  skip_on_cran()
+  m <- make_model("A -> B -> C -> D -> E", legacy = FALSE)
+  set.seed(4)
+  m <- set_prior_distribution(m, n_draws = 64)
+  q <- "E[A=1] - E[A=0]"
+
+  t1 <- system.time({
+    query_distribution(m, q, using = "parameters",
+                       parameters = as.numeric(m$prior_distribution[1, ]),
+                       query_eval = "ve_struct")
+  })[["elapsed"]]
+  t64 <- system.time({
+    s <- query_distribution(m, q, using = "priors", query_eval = "ve_struct")
+  })[["elapsed"]]
+
+  expect_equal(length(as.numeric(s[[1]])), 64L)
+  # Batched: 64 draws should be far cheaper than 64× one draw
+  expect_lt(t64, max(5, 12 * t1 + 1))
+})

@@ -153,6 +153,29 @@ testthat::test_that("ve_struct matches grid on IV with a single prior draw", {
   expect_equal(as.numeric(s), as.numeric(g), tolerance = 1e-10)
 })
 
+testthat::test_that("ve_struct matches grid under prior draws (batched)", {
+  m <- make_model("X -> M -> Y", legacy = FALSE)
+  set.seed(2)
+  m <- set_prior_distribution(m, n_draws = 40)
+  q <- "Y[X=1] - Y[X=0]"
+  g <- query_distribution(m, q, using = "priors", query_eval = "grid")
+  s <- query_distribution(m, q, using = "priors", query_eval = "ve_struct")
+  expect_equal(as.numeric(s[[1]]), as.numeric(g[[1]]), tolerance = 1e-10)
+})
+
+testthat::test_that("ve_struct matches grid under posterior draws (batched)", {
+  skip_on_cran()
+  m <- make_model("X -> Y", legacy = FALSE)
+  set.seed(3)
+  dat <- make_data(m, n = 30)
+  m <- update_model(m, dat, iter = 200, warmup = 100, chains = 1,
+                    refresh = 0, seed = 3)
+  q <- "Y[X=1] - Y[X=0]"
+  g <- query_distribution(m, q, using = "posteriors", query_eval = "grid")
+  s <- query_distribution(m, q, using = "posteriors", query_eval = "ve_struct")
+  expect_equal(as.numeric(s[[1]]), as.numeric(g[[1]]), tolerance = 1e-10)
+})
+
 testthat::test_that("ve_struct matches grid under monotone restrictions", {
   m <- suppressMessages(make_model("X -> M -> Y", monotone = "m", legacy = FALSE))
   params <- get_parameters(m)

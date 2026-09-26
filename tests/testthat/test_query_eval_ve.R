@@ -104,14 +104,29 @@ testthat::test_that("query_model respects query_eval = ve", {
   expect_equal(qv$mean, qg$mean, tolerance = 1e-10)
 })
 
-testthat::test_that("grid error message points to query_eval ve", {
+testthat::test_that("grid error message points to ve_struct and options", {
   m <- make_model("A -> B -> C -> D", legacy = FALSE)
   old <- getOption("CausalQueries.factorized_query_max")
   on.exit(options(CausalQueries.factorized_query_max = old), add = TRUE)
   options(CausalQueries.factorized_query_max = 10)
   expect_error(
     query_distribution(m, "D[A=1] - D[A=0]", query_eval = "grid"),
-    "query_eval = \"ve\""
+    "ve_struct"
+  )
+  expect_error(
+    query_distribution(m, "D[A=1] - D[A=0]", query_eval = "grid"),
+    "Options:"
+  )
+})
+
+testthat::test_that("ve error message points to ve_struct", {
+  m <- make_model("A -> B -> C -> D", legacy = FALSE)
+  old <- getOption("CausalQueries.factorized_ve_max")
+  on.exit(options(CausalQueries.factorized_ve_max = old), add = TRUE)
+  options(CausalQueries.factorized_ve_max = 10)
+  expect_error(
+    query_distribution(m, "D[A=1] - D[A=0]", query_eval = "ve"),
+    "ve_struct"
   )
 })
 

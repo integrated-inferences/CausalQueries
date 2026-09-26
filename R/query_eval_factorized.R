@@ -358,9 +358,8 @@ factorized_query_schedule <- function(model, query = NULL, given = "ALL") {
       if (is.finite(n_hat)) format(round(n_hat), big.mark = ",") else "non-finite",
       "; product of nodal type counts on ",
       paste(names(counts), counts, sep = "=", collapse = " x "),
-      "). ",
-      "Try query_eval = \"ve\" or \"auto\" for chunked evaluation, ",
-      "legacy = TRUE, or restrict the model. See ?query_model.",
+      ").\n",
+      factorized_product_too_large_advice("grid"),
       call. = FALSE
     )
   }
@@ -370,9 +369,8 @@ factorized_query_schedule <- function(model, query = NULL, given = "ALL") {
   if (!is.finite(n_types) || n_types > max_types) {
     stop(
       "Factorized query (query_eval = \"grid\"): relevant type product is too large (",
-      format(n_types, big.mark = ","), "). ",
-      "Try query_eval = \"ve\" or \"auto\", legacy = TRUE, or restrict the model. ",
-      "See ?query_model.",
+      format(n_types, big.mark = ","), ").\n",
+      factorized_product_too_large_advice("grid"),
       call. = FALSE
     )
   }

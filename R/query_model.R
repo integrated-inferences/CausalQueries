@@ -64,7 +64,11 @@
 #' reproducible pins. Call \code{"ve"} / \code{"auto"} / \code{"ve_struct"}
 #' only when you understand the tradeoffs above. Raising
 #' \code{options(CausalQueries.factorized_ve_max)} does not make an
-#' intractable product fast; it only delays the error. See
+#' intractable product fast; it only delays the error. For
+#' \code{ve_struct} with \code{using = "priors"} / \code{"posteriors"},
+#' draws are weighted in chunks
+#' (\code{options(CausalQueries.ve_struct_draw_chunk)}, default 256) so
+#' cost is roughly one structural pass per chunk, not per draw. See
 #' \code{memos/query_twin_network_ve.md} and
 #' \code{memos/plan_structural_twin_ve.md}.
 #'

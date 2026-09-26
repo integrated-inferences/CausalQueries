@@ -139,6 +139,39 @@ estimands_factorized_dispatch <- function(model,
   )
 }
 
+#' Advice block when a factorized type product refuses to expand.
+#' @param failed Character: evaluator that refused (\code{"grid"} or \code{"ve"}).
+#' @keywords internal
+#' @noRd
+factorized_product_too_large_advice <- function(failed = c("grid", "ve")) {
+  failed <- match.arg(failed)
+  paste0(
+    "Options:\n",
+    "1. query_eval = \"ve_struct\" — preferred for non-nested queries like ",
+    "Y[X=1] - Y[X=0] (constant interventions only); ",
+    "falls back with a message if nested do / unsupported.\n",
+    "2. Restrict the model (simplify_model / set_restrictions) — ",
+    "reliable but changes the model.\n",
+    if (identical(failed, "grid")) {
+      paste0(
+        "3. query_eval = \"ve\" or \"auto\" — still enumerates the full ",
+        "type product above; may hang or hit CausalQueries.factorized_ve_max.\n",
+        "4. legacy = TRUE — expands all causal types (usually much slower ",
+        "here); use when you need type_posterior etc.\n"
+      )
+    } else {
+      paste0(
+        "3. Raise options(CausalQueries.factorized_ve_max) ",
+        "(default ", format(factorized_ve_max_types(), scientific = FALSE), ") — ",
+        "only delays this error; does not make huge products fast.\n",
+        "4. legacy = TRUE — expands all causal types (usually much slower ",
+        "here); use when you need type_posterior etc.\n"
+      )
+    },
+    "See ?query_model."
+  )
+}
+
 #' Stop with a clear product message for VE.
 #' @keywords internal
 #' @noRd
@@ -153,11 +186,8 @@ stop_ve_product_too_large <- function(model, type_nodes, n_hat) {
     if (is.finite(n_hat)) format(round(n_hat), big.mark = ",") else "non-finite",
     "; product of nodal type counts on ",
     paste(names(counts), counts, sep = "=", collapse = " x "),
-    "). ",
-    "Restrict the model (simplify_model / set_restrictions) or raise ",
-    "options(CausalQueries.factorized_ve_max) (default ",
-    format(factorized_ve_max_types(), scientific = FALSE), "). ",
-    "See ?query_model and memos/query_twin_network_ve.md.",
+    ").\n",
+    factorized_product_too_large_advice("ve"),
     call. = FALSE
   )
 }
