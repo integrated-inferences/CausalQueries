@@ -111,3 +111,48 @@ testthat::test_that(
     expect_equal(out2$yend, 1.3, tolerance = 1e-8)
     expect_null(CausalQueries:::shorten_curve_ends(NULL, 0.2))
   })
+
+testthat::test_that(
+  desc = "Directed edges use geom_edge_link; only <-> uses geom_edge_arc",
+  code = {
+    # ggraph draws both geoms as GeomEdgePath; distinguish by stat class.
+    n_stat_edges <- function(built, p, stat_class) {
+      idx <- which(vapply(
+        p$layers,
+        function(l) inherits(l$stat, stat_class),
+        logical(1)
+      ))
+      if (!length(idx)) {
+        return(0L)
+      }
+      sum(vapply(idx, function(i) {
+        d <- built$data[[i]]
+        if (!nrow(d) || is.null(d$group)) {
+          return(0L)
+        }
+        length(unique(d$group))
+      }, integer(1)))
+    }
+    has_stat <- function(p, stat_class) {
+      any(vapply(p$layers, function(l) inherits(l$stat, stat_class), logical(1)))
+    }
+
+    collider <- make_model("X -> Y; X <- B -> Y")
+    p_dir <- CausalQueries:::plot_model(collider)
+    expect_true(has_stat(p_dir, "StatEdgeLink"))
+    pdf(file = NULL)
+    built_dir <- ggplot2::ggplot_build(p_dir)
+    dev.off()
+    expect_equal(n_stat_edges(built_dir, p_dir, "StatEdgeLink"), 3L)
+    expect_equal(n_stat_edges(built_dir, p_dir, "StatEdgeArc"), 0L)
+
+    mixed <- make_model("X -> Y; X <-> Y")
+    p_mix <- CausalQueries:::plot_model(mixed)
+    expect_true(has_stat(p_mix, "StatEdgeLink"))
+    expect_true(has_stat(p_mix, "StatEdgeArc"))
+    pdf(file = NULL)
+    built_mix <- ggplot2::ggplot_build(p_mix)
+    dev.off()
+    expect_equal(n_stat_edges(built_mix, p_mix, "StatEdgeLink"), 1L)
+    expect_equal(n_stat_edges(built_mix, p_mix, "StatEdgeArc"), 1L)
+  })

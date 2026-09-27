@@ -216,37 +216,13 @@ plot_model <- function(model = NULL,
     pad <- max(0.22, 0.22 * y_step)
   }
 
-  # Classify directed edges: same-layer-step links vs multi-layer skips
-  # (skip edges drawn as links are invisible on a vertical chain, e.g. A -> D).
+  # Directed (-> / <-, stored as ->) stay straight. Only bidirected
+  # confounds (<->) are arcs. Do not bow long-range directed "skips".
   dag$plot_edge <- NA_character_
-  for (i in seq_len(nrow(dag))) {
-    if (is.na(dag$e[i])) {
-      next
-    }
-    if (dag$e[i] == "<->") {
-      dag$plot_edge[i] <- "confound"
-      next
-    }
-    if (dag$e[i] != "->") {
-      next
-    }
-    a <- as.character(dag$x[i])
-    b <- as.character(dag$y[i])
-    if (!all(c(a, b) %in% rownames(pos))) {
-      dag$plot_edge[i] <- "link"
-      next
-    }
-    dy <- abs(pos[a, "y"] - pos[b, "y"])
-    dx <- abs(pos[a, "x"] - pos[b, "x"])
-    # Only bow edges that would otherwise sit on top of a vertical chain
-    dag$plot_edge[i] <- if (dy > y_step * 1.25 && dx < 0.25 * y_step) {
-      "skip"
-    } else {
-      "link"
-    }
-  }
+  dag$plot_edge[!is.na(dag$e) & dag$e == "<->"] <- "confound"
+  dag$plot_edge[!is.na(dag$e) & dag$e == "->"] <- "link"
 
-  # Arc bend for confounds / skips (ggraph strength; keep modest — 1 is a semicircle).
+  # Arc bend for confounds only (ggraph strength; keep modest — 1 is a semicircle).
   curv_vec <- confound_curve_curvatures(
     dag = dag,
     pos = pos,
@@ -259,20 +235,6 @@ plot_model <- function(model = NULL,
     sv[which.max(abs(sv))]
   } else {
     -0.3
-  }
-
-  skip_idx <- which(dag$plot_edge == "skip")
-  skip_strength <- if (length(skip_idx)) {
-    a <- as.character(dag$x[skip_idx[1]])
-    b <- as.character(dag$y[skip_idx[1]])
-    edge_mid <- mean(c(pos[a, "x"], pos[b, "x"]))
-    s <- 0.22
-    if (mean(pos$x) > edge_mid) {
-      s <- -s
-    }
-    s
-  } else {
-    0.22
   }
 
   layout_names <- unique(c(as.character(dag$x), as.character(dag$y)))
@@ -305,13 +267,6 @@ plot_model <- function(model = NULL,
       end_cap = conf_cap,
       linetype = "dashed",
       strength = conf_strength
-    ) +
-    ggraph::geom_edge_arc(
-      data = edge_selector(function(e) e$plot_edge == "skip"),
-      arrow = edge_arrow,
-      start_cap = start_cap,
-      end_cap = end_cap,
-      strength = skip_strength
     ) +
     ggraph::geom_edge_link(
       data = edge_selector(function(e) e$plot_edge == "link"),
