@@ -2,9 +2,7 @@
 title: "Plotting models"
 output:
   rmarkdown::html_vignette:
-    md_extensions: [
-      "-autolink_bare_uris"
-    ]
+    md_extensions: "-autolink_bare_uris"
 vignette: >
   %\VignetteIndexEntry{Plotting models}
   %\VignetteEngine{knitr::rmarkdown}
