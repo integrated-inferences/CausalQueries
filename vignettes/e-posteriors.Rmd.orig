@@ -2,9 +2,7 @@
 title: "Inspecting posteriors"
 output:
   rmarkdown::html_vignette:
-    md_extensions: [
-      "-autolink_bare_uris"
-    ]
+    md_extensions: "-autolink_bare_uris"
 vignette: >
   %\VignetteIndexEntry{Inspecting posteriors}
   %\VignetteEngine{knitr::rmarkdown}

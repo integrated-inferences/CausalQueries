@@ -1,7 +1,7 @@
-This is a documentation-only release adding the JSS citation.
-
-The DOI in the CITATION is for a new JSS publication that will be
-registered after publication on CRAN.
+This patch release fixes a vignette rebuilding error flagged by CRAN on Linux
+for CausalQueries 1.4.6. Recent Pandoc versions rejected the vignette YAML
+metadata with the error `']' is indented too little to end the flow sequence`.
+The vignette headers have been corrected.
 
 ## Test environments
 
